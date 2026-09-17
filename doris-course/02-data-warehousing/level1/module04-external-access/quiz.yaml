@@ -1,0 +1,63 @@
+title: "D04：湖表与内部表关联"
+description: "五道单选题；不需要数据库连接，提交后查看解释。"
+questions:
+  - id: q1
+    objective: "一批 Parquet 文件是否自动是一张 Iceberg 表？"
+    prompt: "一批 Parquet 文件是否自动是一张 Iceberg 表？"
+    options:
+      - id: a
+        text: "不是，Iceberg 还需要表元数据"
+      - id: b
+        text: "是，只要放在 S3"
+      - id: c
+        text: "是，只要文件名含 iceberg"
+    answer: a
+    explanation: "文件格式和表格式不是一回事。"
+  - id: q2
+    objective: "在本实验里外部 Catalog 做什么？"
+    prompt: "在本实验里外部 Catalog 做什么？"
+    options:
+      - id: a
+        text: "自动将所有湖数据永久导入内部表"
+      - id: b
+        text: "只负责压缩 CSV"
+      - id: c
+        text: "访问外部系统的表元数据"
+    answer: c
+    explanation: "直查与物化到内部表是不同操作。"
+  - id: q3
+    objective: "客户表同一个客户有两行，订单 JOIN 后会怎样？"
+    prompt: "客户表同一个客户有两行，订单 JOIN 后会怎样？"
+    options:
+      - id: a
+        text: "一定返回零行"
+      - id: b
+        text: "可能放大行数和金额，需要校验键唯一性"
+      - id: c
+        text: "Doris 必然自动去重"
+    answer: b
+    explanation: "关联数据粒度必须由业务设计并验证。"
+  - id: q4
+    objective: "尚无 Iceberg 环境时如何记录本 Lab？"
+    prompt: "尚无 Iceberg 环境时如何记录本 Lab？"
+    options:
+      - id: a
+        text: "明确未执行，不用内部表冒充湖表"
+      - id: b
+        text: "把内部表改名 iceberg 就算完成"
+      - id: c
+        text: "从预期结果复制一张成功截图"
+    answer: a
+    explanation: "环境缺失不能转换成虚构的验证证据。"
+  - id: q5
+    objective: "湖表读取成功说明什么？"
+    prompt: "湖表读取成功说明什么？"
+    options:
+      - id: a
+        text: "所有 Catalog 都支持完全相同的操作"
+      - id: b
+        text: "已经满足生产查询 SLA"
+      - id: c
+        text: "本次读取路径成功，不证明写入或演进能力"
+    answer: c
+    explanation: "产品支持边界和课程实测范围需要分开。"

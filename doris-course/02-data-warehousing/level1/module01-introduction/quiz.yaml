@@ -1,0 +1,63 @@
+title: "D01：连接 Doris，查询第一批订单"
+description: "五道单选题；不需要数据库连接，提交后查看解释。"
+questions:
+  - id: q1
+    objective: "Doris 在本课程中的主要职责是什么？"
+    prompt: "Doris 在本课程中的主要职责是什么？"
+    options:
+      - id: a
+        text: "承担订单分析，与源交易系统配合"
+      - id: b
+        text: "代替所有业务交易"
+      - id: c
+        text: "只保存看板图片"
+    answer: a
+    explanation: "分析需求与交易职责分开，本课程不迁移业务交易。"
+  - id: q2
+    objective: "哪个结果能证明入门订单样本导入正确？"
+    prompt: "哪个结果能证明入门订单样本导入正确？"
+    options:
+      - id: a
+        text: "只看到 HTTP 200"
+      - id: b
+        text: "只看到数据库存在"
+      - id: c
+        text: "10 笔、金额 1400，并核对明细"
+    answer: c
+    explanation: "既检查业务总量也检查明细，不能只看连接或接口响应。"
+  - id: q3
+    objective: "存算一体实验中 FE 和 BE 如何分工？"
+    prompt: "存算一体实验中 FE 和 BE 如何分工？"
+    options:
+      - id: a
+        text: "BE 只渲染图表"
+      - id: b
+        text: "FE 接收并规划查询，BE 执行且存储内部数据"
+      - id: c
+        text: "FE 保存全部订单，客户端执行 SQL"
+    answer: b
+    explanation: "这是本实验环境的职责划分，不应扩展成所有部署细节。"
+  - id: q4
+    objective: "SELECT VERSION() 显示 5.7.99，应该怎么判断 Doris 版本？"
+    prompt: "SELECT VERSION() 显示 5.7.99，应该怎么判断 Doris 版本？"
+    options:
+      - id: a
+        text: "继续查看实际构建信息和 FE/BE 版本"
+      - id: b
+        text: "认定安装了 MySQL"
+      - id: c
+        text: "认定是 Doris 5.7.99"
+    answer: a
+    explanation: "协议兼容版本不等于 Doris 产品版本。"
+  - id: q5
+    objective: "十笔数据的查询很快，能得出什么结论？"
+    prompt: "十笔数据的查询很快，能得出什么结论？"
+    options:
+      - id: a
+        text: "能保证所有报表毫秒响应"
+      - id: b
+        text: "能证明多副本恢复成功"
+      - id: c
+        text: "可以检查功能结果，不能证明生产 SLA"
+    answer: c
+    explanation: "正确性小样本不是性能或可靠性实验。"

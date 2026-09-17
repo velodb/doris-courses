@@ -1,0 +1,63 @@
+title: "D02：观察存储和写入批次"
+description: "五道单选题；不需要数据库连接，提交后查看解释。"
+questions:
+  - id: q1
+    objective: "哪组变量应在批次对照中保持相同？"
+    prompt: "哪组变量应在批次对照中保持相同？"
+    options:
+      - id: a
+        text: "表结构、逻辑数据和桶数"
+      - id: b
+        text: "只保持表名相同"
+      - id: c
+        text: "必须让每次结果金额不同"
+    answer: a
+    explanation: "控制其他变量才能解释写入批次差异。"
+  - id: q2
+    objective: "VersionCount 能直接当作什么？"
+    prompt: "VersionCount 能直接当作什么？"
+    options:
+      - id: a
+        text: "Segment 精确个数"
+      - id: b
+        text: "业务订单数"
+      - id: c
+        text: "版本相关观测，而非 Rowset/Segment 直接计数"
+    answer: c
+    explanation: "存储层对象不能仅凭名字相近的元数据指标互相代替。"
+  - id: q3
+    objective: "为何比较小事务时先关闭 Group Commit？"
+    prompt: "为何比较小事务时先关闭 Group Commit？"
+    options:
+      - id: a
+        text: "为了禁用分区"
+      - id: b
+        text: "避免后台合并事务改变实验变量"
+      - id: c
+        text: "为了自动开启 CDC"
+    answer: b
+    explanation: "首版要隔离批次大小的影响。"
+  - id: q4
+    objective: "小批写入后没出现持续积压，如何解释？"
+    prompt: "小批写入后没出现持续积压，如何解释？"
+    options:
+      - id: a
+        text: "后台 Compaction 可能已经跟上，应查看采样"
+      - id: b
+        text: "数据库肯定没写入"
+      - id: c
+        text: "所有生产负载都不需要攒批"
+    answer: a
+    explanation: "写入与合并的相对速率决定是否积压，不能强求固定现象。"
+  - id: q5
+    objective: "两张对照表的总金额不同，先做什么？"
+    prompt: "两张对照表的总金额不同，先做什么？"
+    options:
+      - id: a
+        text: "直接选更快的表"
+      - id: b
+        text: "把差异算作索引收益"
+      - id: c
+        text: "先查数据与写入完整性，再谈性能"
+    answer: c
+    explanation: "结果不等价的查询不能用于正常性能比较。"

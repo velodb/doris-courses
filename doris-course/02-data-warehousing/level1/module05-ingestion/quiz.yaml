@@ -1,0 +1,63 @@
+title: "D05：批量导入、失败与重试"
+description: "五道单选题；不需要数据库连接，提交后查看解释。"
+questions:
+  - id: q1
+    objective: "导入返回 HTTP 200，下一步做什么？"
+    prompt: "导入返回 HTTP 200，下一步做什么？"
+    options:
+      - id: a
+        text: "检查 Status、行数和业务结果"
+      - id: b
+        text: "直接宣布全部正确"
+      - id: c
+        text: "先删除目标表再导一次"
+    answer: a
+    explanation: "应用层状态与数据结果都需要检查。"
+  - id: q2
+    objective: "同 label 重试验证的是哪种身份？"
+    prompt: "同 label 重试验证的是哪种身份？"
+    options:
+      - id: a
+        text: "永久唯一的业务事件"
+      - id: b
+        text: "Kafka Partition 的名字"
+      - id: c
+        text: "有效期内同一个导入批次"
+    answer: c
+    explanation: "label 不替代业务主键和版本去重。"
+  - id: q3
+    objective: "严格模式下有一行坏金额且 max_filter_ratio=0，会怎样？"
+    prompt: "严格模式下有一行坏金额且 max_filter_ratio=0，会怎样？"
+    options:
+      - id: a
+        text: "金额自动填成零并成功"
+      - id: b
+        text: "本次导入批次失败，不提交部分合格行"
+      - id: c
+        text: "坏行自动进入业务拒收表"
+    answer: b
+    explanation: "错误行与整批是否提交需要分开理解。"
+  - id: q4
+    objective: "这次 Stream Load Lab 已验证了什么？"
+    prompt: "这次 Stream Load Lab 已验证了什么？"
+    options:
+      - id: a
+        text: "本地批量、重试和坏批拒绝"
+      - id: b
+        text: "MySQL Binlog 断点恢复"
+      - id: c
+        text: "Iceberg Schema 演进"
+    answer: a
+    explanation: "本 PR 未执行的外部路径不能算作实验结论。"
+  - id: q5
+    objective: "为何显式设置 CSV columns？"
+    prompt: "为何显式设置 CSV columns？"
+    options:
+      - id: a
+        text: "让 CSV 自动变成 CDC 日志"
+      - id: b
+        text: "保证任意错误数据都正确"
+      - id: c
+        text: "将输入顺序映射到目标字段"
+    answer: c
+    explanation: "清晰的数据契约比依赖隐含列顺序更可核对。"

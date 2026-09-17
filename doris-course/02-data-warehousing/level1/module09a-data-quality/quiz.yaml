@@ -1,0 +1,63 @@
+title: "D09-A：保留输入、分流拒收、自动验收"
+description: "五道单选题；不需要数据库连接，提交后查看解释。"
+questions:
+  - id: q1
+    objective: "怎样才能持久追踪错误输入？"
+    prompt: "怎样才能持久追踪错误输入？"
+    options:
+      - id: a
+        text: "先保留原始字段和输入行 ID，再显式分流"
+      - id: b
+        text: "只依赖临时 ErrorURL"
+      - id: c
+        text: "把坏金额默认成零"
+    answer: a
+    explanation: "错误日志不是业务拒收表。"
+  - id: q2
+    objective: "本样本正确的分流数量是什么？"
+    prompt: "本样本正确的分流数量是什么？"
+    options:
+      - id: a
+        text: "12 输入、12 合格、2 拒收"
+      - id: b
+        text: "10 输入、12 合格、0 拒收"
+      - id: c
+        text: "12 输入、10 合格、2 拒收"
+    answer: c
+    explanation: "分流集合应覆盖输入且不重叠。"
+  - id: q3
+    objective: "为什么不仅核对 COUNT(*)？"
+    prompt: "为什么不仅核对 COUNT(*)？"
+    options:
+      - id: a
+        text: "明细结果不重要"
+      - id: b
+        text: "丢一行并重复另一行可能保持总数不变"
+      - id: c
+        text: "COUNT(*) 永远不准确"
+    answer: b
+    explanation: "逐行预期结果可以发现抵消的错误。"
+  - id: q4
+    objective: "注入重复订单后质量报告应该怎样？"
+    prompt: "注入重复订单后质量报告应该怎样？"
+    options:
+      - id: a
+        text: "明确失败，恢复后再次通过"
+      - id: b
+        text: "始终显示成功"
+      - id: c
+        text: "静默删除所有异常"
+    answer: a
+    explanation: "故障注入证明校验确实能检测约定错误。"
+  - id: q5
+    objective: "固定业务截止时刻能否直接当作实时接入延迟？"
+    prompt: "固定业务截止时刻能否直接当作实时接入延迟？"
+    options:
+      - id: a
+        text: "可以，两者定义完全一样"
+      - id: b
+        text: "可以，只要使用同一个时区"
+      - id: c
+        text: "不能，实际延迟另需事件与观测时间"
+    answer: c
+    explanation: "离线口径与运行时新鲜度是不同指标。"

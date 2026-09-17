@@ -1,0 +1,63 @@
+title: "D06：乱序裁决、历史保留和可恢复重放"
+description: "五道单选题；不需要数据库连接，提交后查看解释。"
+questions:
+  - id: q1
+    objective: "订单版本 3 先到、2 后到，课程预期是什么？"
+    prompt: "订单版本 3 先到、2 后到，课程预期是什么？"
+    options:
+      - id: a
+        text: "保留版本 3"
+      - id: b
+        text: "最后到的版本 2 总胜出"
+      - id: c
+        text: "两条都成为当前状态"
+    answer: a
+    explanation: "同 Key 版本裁决不能等同到达顺序。"
+  - id: q2
+    objective: "为什么另建 event_id 为键的历史表？"
+    prompt: "为什么另建 event_id 为键的历史表？"
+    options:
+      - id: a
+        text: "让当前表自动成为跨表事务"
+      - id: b
+        text: "将投递次数变成金额"
+      - id: c
+        text: "保留不同业务事件并去重重复投递"
+    answer: c
+    explanation: "当前状态不能替代业务变化历史。"
+  - id: q3
+    objective: "先写历史后中断，重跑应该验证什么？"
+    prompt: "先写历史后中断，重跑应该验证什么？"
+    options:
+      - id: a
+        text: "磁盘空间一定变少"
+      - id: b
+        text: "历史不重复、当前状态补齐、逐行对账"
+      - id: c
+        text: "只看脚本没有报错"
+    answer: b
+    explanation: "本实验验证应用步骤可恢复，不假定跨表原子性。"
+  - id: q4
+    objective: "部分列更新后最需要核对什么？"
+    prompt: "部分列更新后最需要核对什么？"
+    options:
+      - id: a
+        text: "未提供字段保留且版本正确"
+      - id: b
+        text: "整张表所有字段都置空"
+      - id: c
+        text: "历史自动删除"
+    answer: a
+    explanation: "部分更新与省略字段的整行覆盖语义不同。"
+  - id: q5
+    objective: "退款和 SQL DELETE 在主线如何处理？"
+    prompt: "退款和 SQL DELETE 在主线如何处理？"
+    options:
+      - id: a
+        text: "所有退款订单必须删除"
+      - id: b
+        text: "DELETE 返回就代表文件立即回收"
+      - id: c
+        text: "保留退款与支付历史，DELETE 用独立副本"
+    answer: c
+    explanation: "业务退款不等于数据删除，可见性也不等于空间回收。"
