@@ -21,7 +21,7 @@ def main():
     parser.add_argument("--iceberg", action="store_true", help="Also execute D04 against a preconfigured Catalog")
     args = parser.parse_args()
     if os.environ.get("DW_ALLOW_WRITES") != "yes":
-        parser.error("Set DW_ALLOW_WRITES=yes after reading environments/README.md")
+        parser.error("Set DW_ALLOW_WRITES=yes after reading environments/single-node/README.md")
     modules = list(CORE)
     if args.iceberg:
         if "DW_ICEBERG_ORDERS" not in os.environ:

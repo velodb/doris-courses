@@ -37,7 +37,8 @@ remain unchanged. Paid GMV is 250.00 and refund amount 150.00.
 ## Validation methods and exclusions
 
 Run offline checks with `python -m unittest discover -s tests -v`.
-All 11 tests passed in the authoring environment.
+The initial delivery passed 11 tests; the structure/presentation alignment now
+passes 18 tests in the authoring environment.
 They validate fixtures against an independent replay calculation, clean notebook
 structure and Python syntax, quiz definitions and shared renderer loading,
 relative Markdown links, explicit write opt-in and scoped database names,
@@ -47,3 +48,24 @@ Notebook outputs remain empty in git. Browser rendering, recorded videos,
 Doris 4.1.3, Iceberg and the paths listed in
 [integration-backlog.md](integration-backlog.md) are **not verified**.
 The small correctness fixtures do not establish performance or resilience.
+
+## Course 01 structure and presentation alignment
+
+- Numbered reading/quiz filenames and single-node environment layout match the
+  existing course conventions; Markdown and Notebook links are checked.
+- Shared display functions are imported from course 01, not copied into a second
+  CSS implementation. Column-name preservation is unit-tested.
+- The six core labs passed another cell-runner pass and another real Jupyter
+  kernel pass after alignment. Kernel output includes the shared HTML success
+  cards and, where queries are displayed, the shared result-table markup.
+- All seven quiz notebooks executed in fresh kernels and emitted widget-view
+  output. Browser layout and user interaction were not visually inspected.
+- Docker Compose configuration validation passed. The locally available pinned
+  image contains the expected healthcheck. Startup ordering, explicit opt-in
+  and project/port/volume scope were unit-tested with mocks.
+- No new container was started or restarted; the new Compose startup path and
+  macOS execution remain unverified. Existing-instance mode was used for SQL tests.
+
+Local D01 execution metadata and quiz output were backed up under ignored
+`.runtime/alignment-backup/` before editing. Notebook source changes and the
+learner's added empty cell were retained; committed outputs remain cleared.

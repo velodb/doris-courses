@@ -8,6 +8,9 @@ from pathlib import Path
 
 import pymysql
 import requests
+import pandas as pd
+
+from .ui import card, in_notebook, install_styles, show_frame, show_sql
 
 COURSE_ROOT = Path(__file__).resolve().parents[1]
 
@@ -36,8 +39,13 @@ def normalized(value):
 def expect(actual, expected):
     """Raise on mismatch even when Python runs with optimization enabled."""
     if normalized(actual) != normalized(expected):
+        if in_notebook():
+            card("实际结果与预期不一致；请查看下方异常详情。", "fail", "验收未通过")
         raise AssertionError(f"Expected {expected!r}, got {actual!r}")
-    print("PASS", normalized(expected))
+    if in_notebook():
+        card("实际结果与独立预期一致。", "ok", "验收通过")
+    else:
+        print("PASS", normalized(expected))
 
 
 class WarehouseLab:
@@ -64,11 +72,29 @@ class WarehouseLab:
         self.execute(f"USE {self.database}")
         self.execute("SET time_zone = '+08:00'")
         self.execute("SET group_commit = 'off_mode'")
+        if in_notebook():
+            install_styles()
+            card(self.database, "ok", "实验库已连接")
 
     def query(self, sql, params=None):
         with self.connection.cursor() as cursor:
             cursor.execute(sql, params)
             return list(cursor.fetchall())
+
+    def sql(self, statement, params=None, *, title="Query result"):
+        """Display named columns like course 01; query() remains assertion-friendly."""
+        with self.connection.cursor() as cursor:
+            if in_notebook():
+                show_sql(title, cursor.mogrify(statement, params))
+            cursor.execute(statement, params)
+            rows = list(cursor.fetchall())
+            columns = [column[0] for column in cursor.description]
+        frame = pd.DataFrame(rows, columns=columns)
+        if in_notebook():
+            show_frame(title, frame)
+        else:
+            print(frame.to_string(index=False))
+        return frame
 
     def execute(self, sql, params=None):
         with self.connection.cursor() as cursor:

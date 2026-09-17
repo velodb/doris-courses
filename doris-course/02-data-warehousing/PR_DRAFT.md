@@ -12,7 +12,9 @@ not a single-video PR and not a claim that all planned Level 1 labs are complete
 - Add original synthetic order fixtures and independent expected results.
 - Implement and validate the core order workflow: load, reject, clean,
   maintain current state, retain history and replay.
-- Reuse the existing quiz renderer without modifying the real-time analytics course.
+- Align numbered reading/quiz filenames, single-node environment layout, and
+  notebook presentation with course 01; reuse its quiz and display components.
+- Add explicit opt-in Docker preparation with a separate Compose project and volumes.
 - Add offline tests, a notebook-cell runner and explicit integration gaps.
 
 ## Validation
@@ -20,8 +22,11 @@ not a single-video PR and not a claim that all planned Level 1 labs are complete
 See [VALIDATION.md](VALIDATION.md) for build IDs, observed results and limitations.
 Core notebook SQL has been executed on a development cluster; the target
 4.1.3 release and external integrations are not yet qualified.
-All 11 offline tests passed. The six core labs passed two cell-runner passes
-and one Jupyter-kernel pass, including reruns against the same course database.
+All 18 offline tests passed after structure/presentation alignment. The six core
+labs passed the cell runner and real Jupyter kernels again; all seven quizzes
+emitted widget-view output in fresh kernels. Compose configuration and mocked
+startup tests passed; actual Docker startup and browser visual checks remain
+unverified. See the validation record for initial and follow-up runs.
 
 ## Remaining scope
 
@@ -32,7 +37,7 @@ These are not silently skipped or represented by synthetic internal tables.
 
 ## Dependencies and review focus
 
-Based on merged main, not dependent on PR #2 or #3. The existing quiz renderer is
+Based on merged main, not dependent on PR #2 or #3. Existing display and quiz code is
 loaded from this repository, so keep both course directories when installing.
 Review the order/event contract, SQL learning sequence, assertions, explicit
 reset scope, and separation between implemented and planned material.

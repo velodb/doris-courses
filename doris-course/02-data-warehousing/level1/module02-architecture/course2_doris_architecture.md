@@ -2,7 +2,7 @@
 
 本讲义服务于 Data Warehousing with Apache Doris Level 1。版本：首版草稿；已实现与待补实验分别标明。
 
-[课程入口](../README.md) · [动手实验](lab2_observe_storage.ipynb) · [知识测验](quiz.yaml)
+[课程入口](../README.md) · [动手实验](lab2_observe_storage.ipynb) · [知识测验](quiz2_storage_and_write_batches.yaml)
 
 ## 学习目标
 

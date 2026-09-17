@@ -13,7 +13,7 @@
 持续接入、对象存储、部分性能演示及正式版本录制仍待补齐。
 
 - [Level 1 学习入口](level1/README.md)：按已确定的顺序学习。
-- [环境准备](environments/README.md)：安装、连接和重置范围。
+- [环境准备](environments/single-node/README.md)：安装、连接和重置范围。
 - [数据契约](datasets/README.md)：完整样本、脏数据、事件与独立预期结果。
 - [集成实验待办](integration-backlog.md)：明确哪些路径尚未交付。
 - [验证记录](VALIDATION.md)：实际执行范围与版本限制。
@@ -24,7 +24,7 @@
 
 ## 安装与运行
 
-从本课程目录操作；只安装本课程即可，Quiz 从同一仓库复用已有渲染器。
+从本课程目录操作；只安装本课程即可，Quiz 和 Lab 展示组件从同一仓库复用。
 不要只复制本课程目录后丢掉相邻的实时分析课程。
 
 ```bash
@@ -34,7 +34,7 @@ python3 -m venv .venv
 ```
 
 离线测试不连接数据库，检查样本、重放预期、Notebook 格式、Quiz 和辅助代码。
-Lab 需要按[环境说明](environments/README.md)设置连接信息及写入确认。
+Lab 需要按[环境说明](environments/single-node/README.md)设置连接信息及写入确认。
 
 ```bash
 # 在设置 DW_* 变量之后，执行六个核心 Lab 的原始代码单元。
@@ -48,7 +48,15 @@ Notebook 不提交执行输出，避免携带本机地址、临时错误 URL 和
 
 ## 复用与修改边界
 
-复用现有仓库的 Level / Module 组织、讲义 / Lab / Quiz 形式及
-`doris_course/quiz.py` 渲染器，不复制其数据源凭据或修改现有运行环境。
-新的 `dw_course` 只处理显式连接、数据契约和断言；SQL 留在 Notebook 中，
-共用的订单 DDL 在执行前打印。没有新增集群启动器，也不安装 Flink/Kafka。
+目录和命名对齐课程 01：每个 Module 使用 `course编号_主题.md`、
+`lab编号_任务.ipynb`、`quiz编号_主题.ipynb/.yaml`；
+单节点环境位于 `environments/single-node/`。D09-A 保留总纲编号，
+文件名使用 `9a`，不改变学习顺序。
+
+Quiz 复用现有渲染器；Lab 复用课程 01 的标题版式、SQL 展示、结果表格、
+状态卡片和日志组件，不另写一套 CSS。模块目录中打开 Notebook 时也会定位课程根目录。
+订单数据、独立数据库和业务断言仍由 `dw_course` 管理。
+
+D01 可选择连接已有实例，或显式启动课程 02 独立的 Docker 单节点环境。
+不更改课程 01 的容器、端口或数据卷，不安装 Flink/Kafka。
+新增启动路径尚未做容器启动实测，详见[验证记录](VALIDATION.md)。

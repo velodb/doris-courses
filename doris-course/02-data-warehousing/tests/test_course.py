@@ -97,6 +97,16 @@ class RuntimeTest(unittest.TestCase):
 
 
 class MaterialsTest(unittest.TestCase):
+    def test_numbered_material_names(self):
+        for module in (COURSE_ROOT / "level1").glob("module*"):
+            match = re.match(r"module(\d+)([a-z]?)", module.name)
+            number = str(int(match[1])) + match[2]
+            self.assertEqual(len(list(module.glob(f"course{number}_*.md"))), 1)
+            self.assertEqual(len(list(module.glob(f"quiz{number}_*.yaml"))), 1)
+            self.assertEqual(len(list(module.glob(f"quiz{number}_*.ipynb"))), 1)
+            self.assertFalse((module / "course.md").exists())
+            self.assertFalse((module / "quiz.ipynb").exists())
+
     def test_notebooks_are_valid_clean_and_compilable(self):
         paths = list((COURSE_ROOT / "level1").glob("*/*.ipynb"))
         self.assertEqual(len(paths), 14)
@@ -127,12 +137,84 @@ class MaterialsTest(unittest.TestCase):
 
     def test_local_markdown_links(self):
         for path in COURSE_ROOT.rglob("*.md"):
-            if ".venv" in path.parts:
+            if any(part in {".venv", ".runtime", ".ipynb_checkpoints"} for part in path.parts):
                 continue
             for target in re.findall(r"\]\(([^)]+)\)", path.read_text()):
                 if target.startswith(("https://", "http://", "#")):
                     continue
                 self.assertTrue((path.parent / target.split("#")[0]).exists(), f"{path}: {target}")
+
+
+    def test_notebook_markdown_links_and_covers(self):
+        for path in (COURSE_ROOT / "level1").glob("*/*.ipynb"):
+            notebook = nbformat.read(path, as_version=4)
+            self.assertIn("DATA WAREHOUSING WITH APACHE DORIS", notebook.cells[0].source)
+            self.assertIn("border-top:4px solid #0f766e", notebook.cells[0].source)
+            for cell in notebook.cells:
+                if cell.cell_type != "markdown":
+                    continue
+                for target in re.findall(r"\]\(([^)]+)\)", cell.source):
+                    if target.startswith(("https://", "http://", "#")):
+                        continue
+                    self.assertTrue((path.parent / target.split("#")[0]).exists(), f"{path}: {target}")
+
+
+class AlignmentTest(unittest.TestCase):
+    def test_display_components_are_reused(self):
+        from dw_course import ui
+        from dw_course._shared import load_component
+        shared = load_component("doris_client")
+        self.assertIs(ui.show_frame, shared.show_frame)
+        self.assertIs(ui.card, shared.card)
+        self.assertIs(ui.install_styles, shared.install_styles)
+
+    def test_sql_keeps_column_names(self):
+        lab = WarehouseLab.__new__(WarehouseLab)
+        cursor = Mock()
+        cursor.description = [("order_id",), ("amount",)]
+        cursor.fetchall.return_value = [(1001, Decimal("100.00"))]
+        manager = Mock()
+        manager.__enter__ = Mock(return_value=cursor)
+        manager.__exit__ = Mock(return_value=False)
+        lab.connection = Mock()
+        lab.connection.cursor.return_value = manager
+        with patch("dw_course.runtime.in_notebook", return_value=True), patch("dw_course.runtime.show_sql"), patch("dw_course.runtime.show_frame") as show:
+            frame = lab.sql("SELECT order_id, amount FROM example")
+        self.assertEqual(list(frame.columns), ["order_id", "amount"])
+        self.assertEqual(frame.iloc[0]["amount"], Decimal("100.00"))
+        show.assert_called_once()
+
+    def test_compose_scope_and_persistence(self):
+        from dw_course.docker_runtime import COMPOSE_FILE, CONNECTION, PROJECT
+        config = yaml.safe_load(COMPOSE_FILE.read_text())
+        self.assertEqual(config["name"], PROJECT)
+        service = config["services"]["doris"]
+        self.assertEqual(service["image"], "apache/doris:all-in-one-4.1.3")
+        self.assertEqual(service["ports"], ["127.0.0.1:52030:9030", "127.0.0.1:51030:8030", "127.0.0.1:51040:8040"])
+        self.assertEqual(CONNECTION["DW_PORT"], "52030")
+        self.assertEqual(set(config["volumes"]), {"fe-meta", "be-storage"})
+
+    def test_docker_start_requires_explicit_opt_in(self):
+        from dw_course.docker_runtime import prepare_environment
+        with patch.dict("os.environ", {}, clear=True), patch("subprocess.run") as run:
+            with self.assertRaises(RuntimeError):
+                prepare_environment()
+            run.assert_not_called()
+
+    def test_docker_start_checks_health_before_connection(self):
+        from dw_course.docker_runtime import prepare_environment, CONNECTION, compose_command
+        cursor = Mock()
+        cursor.fetchone.return_value = (1,)
+        manager = Mock()
+        manager.__enter__ = Mock(return_value=cursor)
+        manager.__exit__ = Mock(return_value=False)
+        connection = Mock()
+        connection.cursor.return_value = manager
+        with patch.dict("os.environ", {"DW_START_SANDBOX": "yes"}, clear=True), patch("subprocess.run") as run, patch("pymysql.connect", return_value=connection):
+            self.assertEqual(prepare_environment(), CONNECTION)
+            self.assertEqual(run.call_args_list[0].args[0], compose_command("config", "--quiet"))
+            self.assertEqual(run.call_args_list[1].args[0], compose_command("up", "-d", "--wait", "--wait-timeout", "300"))
+            connection.close.assert_called_once()
 
 
 if __name__ == "__main__":
