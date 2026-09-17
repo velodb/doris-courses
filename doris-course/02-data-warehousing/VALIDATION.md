@@ -37,8 +37,8 @@ remain unchanged. Paid GMV is 250.00 and refund amount 150.00.
 ## Validation methods and exclusions
 
 Run offline checks with `python -m unittest discover -s tests -v`.
-The initial delivery passed 11 tests; the structure/presentation alignment now
-passes 18 tests in the authoring environment.
+The initial delivery passed 11 tests; structure/presentation alignment passed
+18 tests. The D01 learner-facing revision below passes 20 tests.
 They validate fixtures against an independent replay calculation, clean notebook
 structure and Python syntax, quiz definitions and shared renderer loading,
 relative Markdown links, explicit write opt-in and scoped database names,
@@ -69,3 +69,59 @@ The small correctness fixtures do not establish performance or resilience.
 Local D01 execution metadata and quiz output were backed up under ignored
 `.runtime/alignment-backup/` before editing. Notebook source changes and the
 learner's added empty cell were retained; committed outputs remain cleared.
+
+## D01 learner-facing revision
+
+Date: 2026-09-17. This revision expands D01, not every Level 1 reading.
+
+- Course and Level 1 entry pages now lead with prerequisites, learning order
+  and links to readings, labs and quizzes. Implementation status is kept in
+  maintenance documents, with necessary learner-facing limitations retained.
+- D01 explains the order scenario, FE/BE responsibilities, data grain and
+  metrics. The lab contains explicit CREATE TABLE and ten-row INSERT SQL,
+  expected results, troubleshooting and a read-only filtering exercise.
+- Initialization imports tools and styles without connecting. Connection and
+  the optional Docker startup are separate, explicitly confirmed steps.
+- Removed the unrelated ten-million-event claim from the notebook cover.
+- The five quiz questions cover workload fit, result verification, FE/BE,
+  order versus paid amount, and Duplicate Key replay behavior.
+
+Validation:
+
+- All 20 offline tests passed against an exported Git index snapshot. The
+  working directory still contains the learner's executed Quiz 1 notebook:
+  its execution count causes the clean-notebook check to fail there. It was
+  neither cleared nor included in this revision. The unrelated course 01
+  Untitled notebook was also left untouched.
+- Two new tests verify that the visible D01 DDL/INSERT match the shared order
+  contract and that initialization is separate from connection/startup.
+- The updated D01 notebook passed twice in fresh Jupyter kernels, with its
+  module directory as the working directory. SQL checked all ten records,
+  1400.00 total order amount, zero paid/refund amounts, EAST=720.00,
+  WEST=680.00, and four orders totaling 900.00 for the >=150.00 exercise.
+- The D01 quiz executed in a fresh kernel and emitted interactive widget output.
+- All six core labs passed the notebook-cell runner after this revision.
+- SQL tests used the same development FE/BE builds recorded above and a new
+  dedicated database, dw_course_l1_d01_learner_20260917. The learner's existing
+  demonstration database and course 01 data were not changed.
+- Notebook execution stayed in memory; no generated results were saved into
+  course files. HTML result tables and success cards were checked in kernel
+  output, but browser layout and interactive clicks were not visually tested.
+
+The Docker lifecycle, target 4.1.3 release, macOS execution and D04 integration
+remain unverified. No cluster process was started, stopped or reconfigured.
+
+### Maintainer commands
+
+From this course directory, with its dependencies installed:
+
+```bash
+python -m unittest discover -s tests -v
+# Configure DW_* and explicitly acknowledge owned-table resets first.
+python scripts/run_labs.py
+# Only when a real Iceberg table is configured:
+python scripts/run_labs.py --iceberg
+```
+
+Use an independent test database. Do not clear a learner's notebook outputs
+just to satisfy the clean-source check; validate the staged source separately.

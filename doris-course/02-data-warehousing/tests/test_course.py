@@ -13,7 +13,7 @@ import nbformat
 import yaml
 
 from dw_course.runtime import COURSE_ROOT, WarehouseLab, expect, fixture, identifier
-from dw_course.schema import order_ddl
+from dw_course.schema import ORDER_COLUMNS, order_ddl, order_rows
 
 
 class FixturesTest(unittest.TestCase):
@@ -160,6 +160,59 @@ class MaterialsTest(unittest.TestCase):
 
 
 class AlignmentTest(unittest.TestCase):
+    def test_d01_teaches_explicit_sql_matching_order_contract(self):
+        path = COURSE_ROOT / "level1/module01-introduction/lab1_connect_and_query.ipynb"
+        notebook = nbformat.read(path, as_version=4)
+        statements = []
+        for cell in notebook.cells:
+            if cell.cell_type != "code":
+                continue
+            for node in ast.walk(ast.parse(cell.source)):
+                if (
+                    isinstance(node, ast.Call)
+                    and isinstance(node.func, ast.Attribute)
+                    and node.func.attr == "execute"
+                    and node.args
+                    and isinstance(node.args[0], ast.Constant)
+                ):
+                    statements.append(node.args[0].value)
+        create, = [sql for sql in statements if sql.lstrip().startswith("CREATE TABLE")]
+        self.assertEqual(
+            re.sub(r"\s+", "", create),
+            re.sub(r"\s+", "", order_ddl("d01_orders")),
+        )
+        insert, = [sql for sql in statements if sql.lstrip().startswith("INSERT INTO")]
+        header, values = insert.split("VALUES", 1)
+        columns = header[header.index("(") + 1:header.index(")")].split(",")
+        self.assertEqual(tuple(column.strip() for column in columns), ORDER_COLUMNS)
+        rows = ast.literal_eval("[" + values.strip() + "]")
+        actual = []
+        for row in rows:
+            record = dict(zip(ORDER_COLUMNS, row))
+            for column in ("order_amount", "paid_amount", "refund_amount"):
+                record[column] = format(Decimal(str(record[column])), ".2f")
+            actual.append(record)
+        self.assertEqual(order_rows(actual), order_rows(fixture("orders.json")))
+
+    def test_d01_initialization_is_separate_from_connection(self):
+        path = COURSE_ROOT / "level1/module01-introduction/lab1_connect_and_query.ipynb"
+        notebook = nbformat.read(path, as_version=4)
+        initialize, = [cell for cell in notebook.cells if cell.id == "initialize"]
+        calls = [
+            node.func.id
+            for node in ast.walk(ast.parse(initialize.source))
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+        ]
+        self.assertNotIn("WarehouseLab", calls)
+        self.assertNotIn("prepare_environment", calls)
+        self.assertIn("install_styles", calls)
+        source = "\n".join(cell.source for cell in notebook.cells)
+        self.assertNotIn("10 million", source)
+        self.assertNotIn("order_ddl(", source)
+        self.assertIn("自己动手", source)
+        self.assertIn("720.00", source)
+        self.assertIn("680.00", source)
+
     def test_display_components_are_reused(self):
         from dw_course import ui
         from dw_course._shared import load_component

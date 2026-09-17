@@ -1,24 +1,37 @@
-# Single-node integrated sandbox
+# 实验环境准备
 
-Like course 01, the sandbox pins `apache/doris:all-in-one-4.1.3`, runs one FE
-and one BE, and retains metadata/storage in named Docker volumes. Unlike course
-01, it uses its own Compose project, network, volumes and loopback-only ports.
-This is a teaching environment, not a production deployment.
+本课程使用一个 FE、一个 BE 的存算一体教学环境，或讲师提供的独立实验实例。
+单节点环境用于学习，不是生产部署方案。
 
-Choose **one** connection mode before starting Jupyter. Merely importing the
-helpers does not start Docker; only the explicit D01 preparation step can do so.
+## 1. 安装 Python 环境
 
-From `doris-course/02-data-warehousing`:
+保留完整仓库，在 `doris-course/02-data-warehousing` 目录执行：
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 ```
 
-## A. Use an existing Doris instance
+本课程复用相邻 01 课程的显示和测验组件，不要只复制 02 目录。
+如果 Jupyter 在远程服务器运行，下文的“本机”指服务器，不是浏览器所在的 Mac。
 
-This is the default. Replace the endpoints with your instructor's sandbox.
-Do not set DW_START_SANDBOX=yes in this mode.
+## 2. 选择连接方式
+
+只体验 D01 时，可以直接启动 Jupyter，在
+[Lab 1](../../level1/module01-introduction/lab1_connect_and_query.ipynb)
+的配置格选择环境并确认允许重建实验表：
+
+```bash
+.venv/bin/jupyter lab level1/module01-introduction/lab1_connect_and_query.ipynb
+```
+
+**继续其他 Lab 时，建议先按下面的方式配置，再启动 Jupyter。**
+Notebook 内设置的环境变量只在当前内核有效，不会自动传给其他 Notebook。
+按下面方式启动，可让所有新内核继承同一组连接参数。
+
+### A. 使用讲师提供的实例
+
+将地址和端口改成讲师提供的值；选择自己独立的实验库。
 
 ```bash
 export DW_START_SANDBOX=no
@@ -31,20 +44,19 @@ export DW_ALLOW_WRITES=yes
 .venv/bin/jupyter lab
 ```
 
-Set DW_PASSWORD in the process environment if required. Never put credentials
-in a notebook. Use trusted endpoints and HTTPS where available.
+DW_PORT 是 FE 的 MySQL 兼容查询端口。DW_BE_HTTP_URL 是同一集群的 BE HTTP 地址，
+供后续 Stream Load 使用，不能填写 FE HTTP 地址。
+需要认证时，从进程环境提供 DW_PASSWORD，或在各 Notebook 连接前用 getpass 输入；
+不要在 Notebook、Git 或截图中保存密码。
 
-The helper connects through FE's MySQL protocol. Stream Load deliberately targets
-the configured BE HTTP endpoint so it does not forward authentication to a
-redirect destination. The BE endpoint must belong to the same cluster.
+DW_ALLOW_WRITES=yes 表示你已确认各 Lab 的表重置范围，不是数据库权限机制。
+请勿连接生产实例或使用他人的实验库。
 
-## B. Start course 02's own Docker sandbox
+### B. 使用课程 Docker 沙箱
 
-Start Docker Desktop on macOS or Docker Engine on Linux first. Follow course
-01's baseline resource guidance: 4 CPU cores, 8 GB memory and 20 GB free disk.
-The new Compose startup path is configuration-checked, but has not been
-end-to-end tested on macOS or Linux; report startup failures as unverified setup,
-not a successful lab. Do not stop another service to free a port.
+先启动 Docker Desktop（macOS）或 Docker Engine（Linux），准备 Compose 插件。
+资源参考课程 01：4 CPU、8 GB 内存、20 GB 可用磁盘。
+镜像固定为 apache/doris:all-in-one-4.1.3。
 
 ```bash
 export DW_START_SANDBOX=yes
@@ -58,36 +70,57 @@ export DW_ALLOW_WRITES=yes
 .venv/bin/jupyter lab
 ```
 
-Run D01's **Prepare the single-node environment** cell before connecting.
-It validates [compose.yml](compose.yml), starts only project
-`doris-warehousing-course`, waits for the image's healthcheck, and checks
-`SELECT 1`. First pull/start can take several minutes. The container's internal
-ports stay 9030/8030/8040; host ports are 52030/51030/51040. The empty root
-password is only for this loopback-bound local sandbox.
+运行 D01 的“选择实验环境”和“启动（可选）并连接”单元。
+它会校验 [compose.yml](compose.yml)，启动课程项目，等待健康检查并执行 SELECT 1。
+首次下载和启动需要数分钟。目标版本与启动路径的实际测试范围见[验证记录](../../VALIDATION.md)，
+当前 Docker 启动尚未端到端实测。
 
-For troubleshooting, run these commands from the course root:
+| 项目 | 配置 |
+| --- | --- |
+| Compose 项目 | doris-warehousing-course |
+| FE 查询端口 | 宿主机 52030 → 容器 9030 |
+| FE HTTP 端口 | 宿主机 51030 → 容器 8030 |
+| BE HTTP 端口 | 宿主机 51040 → 容器 8040 |
+| 数据保留 | 项目专属 FE 元数据卷、BE 存储卷 |
+| 网络暴露 | 只绑定宿主机 127.0.0.1 |
+
+无密码 root 仅用于这个本机教学沙箱，不作为远程部署示例。
+课程 02 的项目、端口和卷与课程 01 分开，不会复用或停止课程 01 的容器。
+
+## 3. 常见问题
+
+| 现象 | 检查方法 |
+| --- | --- |
+| 导入 Python 包失败 | 确认 Notebook 使用安装课程依赖的 Python 内核 |
+| Connection refused | 核对 FE 查询端口，检查服务是否准备好 |
+| Access denied | 核对用户、密码、连接来源以及建库建表权限 |
+| BE 不存活、无法建表或写入 | 查看 SHOW BACKENDS 和 BE 日志 |
+| Docker 端口被占用 | 请讲师协调端口或改用已有实例；不要停止不属于你的服务 |
+| D01 成功而下一个 Lab 无法连接 | 按上面的环境变量方式重启 Jupyter，并重启旧内核 |
+
+排查自己的沙箱时，在课程目录运行：
 
 ```bash
 docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml ps
 docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml logs --tail 100 doris
-# Stop only this course's container, retaining both volumes.
+```
+
+## 4. 结束学习与继续学习
+
+暂停自己的沙箱，但保留数据卷：
+
+```bash
 docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml stop
-# Start an already-created container without deleting data.
+```
+
+恢复已创建的沙箱：
+
+```bash
 docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml start --wait
 ```
 
-Do not delete volumes as a retry mechanism. If ports conflict, use mode A or
-have the instructor consistently change Compose ports and DW_* settings;
-do not mix the two configurations.
+不要把删除数据卷当作重试手段。连接已有实例时，不要执行服务管理操作。
 
-## Reset and verification boundaries
-
-Labs reset only their named tables inside DW_DATABASE. The explicit write flag
-acknowledges that scope; it is not a SQL authorization mechanism. No notebook
-drops a database, stops services, or changes global configuration. D06 reads
-D09-A's clean table and only resets its own D06 tables.
-
-Check the printed FE/BE build information, not only SELECT VERSION(), which can
-report a MySQL compatibility version. This single-node environment cannot
-demonstrate replica recovery or multi-node isolation. Development-build success
-is not a substitute for target-release qualification.
+每个 Lab 开头都会说明它重建哪些表。D01 只重建 d01_orders；
+D06 读取 D09-A 的合格订单，并只重建自己的 D06 表。
+检查实际 FE/BE 构建版本；开发版本上的结果不能代替正式版本验证。

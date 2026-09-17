@@ -12,7 +12,7 @@ questions:
       - id: c
         text: "只保存看板图片"
     answer: a
-    explanation: "分析需求与交易职责分开，本课程不迁移业务交易。"
+    explanation: "下单、支付提交由源交易系统负责；Doris 接收数据后回答跨订单、地区和时间的分析问题。协议兼容不意味着需要把交易系统搬进来。"
   - id: q2
     objective: "哪个结果能证明入门订单样本导入正确？"
     prompt: "哪个结果能证明入门订单样本导入正确？"
@@ -24,7 +24,7 @@ questions:
       - id: c
         text: "10 笔、金额 1400，并核对明细"
     answer: c
-    explanation: "既检查业务总量也检查明细，不能只看连接或接口响应。"
+    explanation: "连接成功只证明通路可用。还要检查十行明细、金额 1400.00 和字段值；错误金额可能相互抵消，因此总额相同也不等于明细一定正确。"
   - id: q3
     objective: "存算一体实验中 FE 和 BE 如何分工？"
     prompt: "存算一体实验中 FE 和 BE 如何分工？"
@@ -36,28 +36,28 @@ questions:
       - id: c
         text: "FE 保存全部订单，客户端执行 SQL"
     answer: b
-    explanation: "这是本实验环境的职责划分，不应扩展成所有部署细节。"
+    explanation: "客户端通过 FE 查询端口提交 SQL。FE 规划和协调查询，BE 执行计划并保存本节内部表的数据；所以 FE 能连接还不足以证明 BE 能正常写入。"
   - id: q4
-    objective: "SELECT VERSION() 显示 5.7.99，应该怎么判断 Doris 版本？"
-    prompt: "SELECT VERSION() 显示 5.7.99，应该怎么判断 Doris 版本？"
+    objective: "区分订单金额与已支付金额"
+    prompt: "十笔 CREATED 订单的 order_amount 合计 1400.00，paid_amount 合计 0.00。可以得出什么结论？"
     options:
       - id: a
-        text: "继续查看实际构建信息和 FE/BE 版本"
+        text: "已有 1400.00 的订单金额，但样本尚未记录支付"
       - id: b
-        text: "认定安装了 MySQL"
+        text: "已收到 1400.00 的货款"
       - id: c
-        text: "认定是 Doris 5.7.99"
+        text: "已获得 1400.00 的利润"
     answer: a
-    explanation: "协议兼容版本不等于 Doris 产品版本。"
+    explanation: "订单金额不等于已支付金额，更不等于利润。应按业务问题选择字段和口径，本样本 paid_amount 全为零，因此不能声称已收到货款。"
   - id: q5
-    objective: "十笔数据的查询很快，能得出什么结论？"
-    prompt: "十笔数据的查询很快，能得出什么结论？"
+    objective: "理解 Duplicate Key 写入与实验重跑"
+    prompt: "在 d01_orders 中单独再执行一次相同的十行 INSERT，会发生什么？"
     options:
       - id: a
-        text: "能保证所有报表毫秒响应"
+        text: "order_id 相同，自动覆盖为十行"
       - id: b
-        text: "能证明多副本恢复成功"
+        text: "因为主键重复，写入一定失败"
       - id: c
-        text: "可以检查功能结果，不能证明生产 SLA"
+        text: "再追加十行；完整重跑应先重建本节表，再写入并核对"
     answer: c
-    explanation: "正确性小样本不是性能或可靠性实验。"
+    explanation: "DUPLICATE KEY 的键用于排序，不做唯一性约束。重复 INSERT 会使行数变为二十、订单金额变为 2800.00；应核对明细，再执行 Lab 中已说明范围的重建和写入步骤。"

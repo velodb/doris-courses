@@ -1,62 +1,58 @@
 # Data Warehousing with Apache Doris
 
-本课程围绕订单数仓展开：Level 1 接入、清洗与更新；Level 2 建模、
-分析与服务交付；Level 3 权限、资源与运行维护。它与
-[Real-time Analytics](../01-real-time-analytics/README.md) 是独立课程，
-不会沿用后者的 Level 编号或点击事件数据。
+从订单数据到可信的业务分析：学习如何接入数据、处理错误记录与状态变化，
+再逐步完成数仓建模、分析服务和运行治理。
 
-## 当前交付：Level 1 首个 PR 草稿
+本课程适合准备使用 Doris 搭建数仓的数据工程师和分析工程师。
+你需要能阅读基础 SQL；第一单元会带你完成环境连接和第一张订单表。
 
-**这不是完整 Level 1 的发布版本。** 首版包含七个教学单元的讲义、
-七个 Lab Notebook、七组互动 Quiz，以及确定性的订单数据。
-六个核心 Lab 已在开发实例执行；D04 是需要外部环境的候选实验。
-持续接入、对象存储、部分性能演示及正式版本录制仍待补齐。
+## 从这里开始
 
-- [Level 1 学习入口](level1/README.md)：按已确定的顺序学习。
-- [环境准备](environments/single-node/README.md)：安装、连接和重置范围。
-- [数据契约](datasets/README.md)：完整样本、脏数据、事件与独立预期结果。
-- [集成实验待办](integration-backlog.md)：明确哪些路径尚未交付。
-- [验证记录](VALIDATION.md)：实际执行范围与版本限制。
-- [PR 描述草稿](PR_DRAFT.md)：首个 Level 1 材料包的提交说明。
+1. 阅读[环境准备](environments/single-node/README.md)，准备 Python 环境。
+2. 打开 [Level 1 学习目录](level1/README.md)，从 D01 讲义开始。
+3. 在每个单元中依次完成讲义、Lab 和 Quiz。Lab 按单元顺序执行，Quiz 无需数据库。
 
-材料语言为中文，Doris SQL 及产品名称保留原文。讲义按总纲的 25 个视频
-编号组织，但目前是内容初稿，不是完整逐字稿或已录制视频。
+材料以中文讲解，SQL 和产品名称保留原文。
+讲义负责解释“为什么”，Lab 展示“怎么做”，Quiz 帮你检查理解。
 
-## 安装与运行
+## 学习路线
 
-从本课程目录操作；只安装本课程即可，Quiz 和 Lab 展示组件从同一仓库复用。
-不要只复制本课程目录后丢掉相邻的实时分析课程。
+| 阶段 | 你要解决的问题 | 学习成果 |
+| --- | --- | --- |
+| [Level 1：接入、清洗与更新](level1/README.md) | 数据怎样进入数仓，错误与变化怎样处理？ | 能解释订单输入、质量结果、当前状态和历史 |
+| Level 2：建模、分析与服务交付（后续） | 数据怎样组织并交付给业务？ | 分层建模、JOIN、指标加工与看板 |
+| Level 3：权限、资源与运行维护（后续） | 多人使用和持续运行怎样管理？ | 访问治理、资源控制和运行维护 |
+
+订单样本由仓库提供，不需要购买数据服务。
+D01 从十笔合成订单开始，后续加入错误记录、重复投递和乱序变更；
+字段含义见[数据说明](datasets/README.md)。
+
+## 安装并打开课程
+
+保留完整仓库：本课程的显示和测验组件复用相邻的 01 课程。
+下面从本课程目录执行：
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m unittest discover -s tests -v
+.venv/bin/jupyter lab level1/module01-introduction/lab1_connect_and_query.ipynb
 ```
 
-离线测试不连接数据库，检查样本、重放预期、Notebook 格式、Quiz 和辅助代码。
-Lab 需要按[环境说明](environments/single-node/README.md)设置连接信息及写入确认。
+在 Lab 1 内选择已有实例或课程 Docker 沙箱，并确认允许重建本节实验表。
+密码不要写进 Notebook，具体说明见[环境准备](environments/single-node/README.md)。
 
-```bash
-# 在设置 DW_* 变量之后，执行六个核心 Lab 的原始代码单元。
-.venv/bin/python scripts/run_labs.py
-# 仅在讲师预置了真实湖表后执行 D04；缺少配置时会报错，不静默跳过。
-.venv/bin/python scripts/run_labs.py --iceberg
-```
+## 当前可学习范围
 
-也可使用 JupyterLab 逐单元学习。命令行执行不等于浏览器 UI 验收；
-Notebook 不提交执行输出，避免携带本机地址、临时错误 URL 和认证信息。
+D01 已按逐步讲解的方式展开；其余 Level 1 单元已有实验初稿，仍在完善教学说明。
+D04 需要讲师预置 Iceberg；D05 当前可执行内容为 Stream Load。
+Kafka、CDC、对象存储持续接入等后续实验尚未提供。
 
-## 复用与修改边界
+实验目标版本为 Doris 4.1.3。当前 SQL 验证使用开发实例；
+正式版本及 Docker 启动路径的验证边界见[验证记录](VALIDATION.md)。
+小样本用于理解语义与核对结果，不用于证明性能或生产可靠性。
 
-目录和命名对齐课程 01：每个 Module 使用 `course编号_主题.md`、
-`lab编号_任务.ipynb`、`quiz编号_主题.ipynb/.yaml`；
-单节点环境位于 `environments/single-node/`。D09-A 保留总纲编号，
-文件名使用 `9a`，不改变学习顺序。
+## 维护者资料
 
-Quiz 复用现有渲染器；Lab 复用课程 01 的标题版式、SQL 展示、结果表格、
-状态卡片和日志组件，不另写一套 CSS。模块目录中打开 Notebook 时也会定位课程根目录。
-订单数据、独立数据库和业务断言仍由 `dw_course` 管理。
+[验证记录](VALIDATION.md) · [集成实验待办](integration-backlog.md) · [PR 草稿](PR_DRAFT.md)
 
-D01 可选择连接已有实例，或显式启动课程 02 独立的 Docker 单节点环境。
-不更改课程 01 的容器、端口或数据卷，不安装 Flink/Kafka。
-新增启动路径尚未做容器启动实测，详见[验证记录](VALIDATION.md)。
+离线测试和整组 Lab 的执行方式见验证记录；它们不是学员开始学习的前置步骤。
