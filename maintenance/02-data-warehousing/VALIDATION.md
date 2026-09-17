@@ -4,7 +4,7 @@ Date: 2026-09-17. Status: first Level 1 draft, not release-qualified.
 
 ## Database execution
 
-Six core notebooks were executed cell by cell through `scripts/run_labs.py`
+Six core notebooks were executed cell by cell through `maintenance/02-data-warehousing/scripts/run_labs.py`
 against an existing, single-node integrated development cluster. The runner
 executes the committed Python cells, not an alternate SQL implementation.
 The complete core sequence passed twice against the same dedicated database,
@@ -36,7 +36,7 @@ remain unchanged. Paid GMV is 250.00 and refund amount 150.00.
 
 ## Validation methods and exclusions
 
-Run offline checks with `python -m unittest discover -s tests -v`.
+Run offline checks with `python -m unittest discover -s maintenance/02-data-warehousing/tests -v`.
 The initial delivery passed 11 tests; structure/presentation alignment passed
 18 tests. The D01 learner-facing revision below passes 20 tests.
 They validate fixtures against an independent replay calculation, clean notebook
@@ -113,15 +113,36 @@ remain unverified. No cluster process was started, stopped or reconfigured.
 
 ### Maintainer commands
 
-From this course directory, with its dependencies installed:
+From the repository root, with the course dependencies installed:
 
 ```bash
-python -m unittest discover -s tests -v
+python -m unittest discover -s maintenance/02-data-warehousing/tests -v
 # Configure DW_* and explicitly acknowledge owned-table resets first.
-python scripts/run_labs.py
+python maintenance/02-data-warehousing/scripts/run_labs.py
 # Only when a real Iceberg table is configured:
-python scripts/run_labs.py --iceberg
+python maintenance/02-data-warehousing/scripts/run_labs.py --iceberg
 ```
 
 Use an independent test database. Do not clear a learner's notebook outputs
 just to satisfy the clean-source check; validate the staged source separately.
+
+## Learner directory cleanup
+
+Date: 2026-09-17.
+
+- Moved PR/status/backlog documents, the runner and offline tests to
+  maintenance/02-data-warehousing at repository level. Updated relative links.
+- The runner resolves the course from its own file location and executes each
+  notebook from its module directory. It can now run from the repository root.
+- All 22 offline tests passed against an exported index snapshot, including
+  maintenance separation, link checks and generated-file hiding configuration.
+- All six core labs passed using the moved runner and dedicated development
+  database dw_course_l1_layout_check_20260917. No learner tables were changed.
+- Restarted the localhost Jupyter server with the repository as its file root.
+  Its authenticated contents API lists exactly datasets, dw_course,
+  environments, level1, README.md, pyproject.toml and requirements.txt under
+  course 02. The moved validation document is also accessible through the API.
+- Generated installation metadata and caches remain on disk; they are hidden
+  from Jupyter's file list. Existing learner notebooks were left unchanged.
+- This verifies the file-list response, not a browser screenshot or new
+  Docker/target-release qualification.

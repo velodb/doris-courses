@@ -3,6 +3,7 @@
 import ast
 import json
 import re
+import sys
 import unittest
 from collections import Counter
 from decimal import Decimal
@@ -11,6 +12,10 @@ from unittest.mock import Mock, patch
 
 import nbformat
 import yaml
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+MAINTENANCE_ROOT = REPO_ROOT / "maintenance/02-data-warehousing"
+sys.path.insert(0, str(REPO_ROOT / "doris-course/02-data-warehousing"))
 
 from dw_course.runtime import COURSE_ROOT, WarehouseLab, expect, fixture, identifier
 from dw_course.schema import ORDER_COLUMNS, order_ddl, order_rows
@@ -136,7 +141,12 @@ class MaterialsTest(unittest.TestCase):
             self.assertIsInstance(CourseQuiz.from_yaml(path), CourseQuiz)
 
     def test_local_markdown_links(self):
-        for path in COURSE_ROOT.rglob("*.md"):
+        paths = [
+            *COURSE_ROOT.rglob("*.md"),
+            *MAINTENANCE_ROOT.rglob("*.md"),
+            REPO_ROOT / "README.md",
+        ]
+        for path in paths:
             if any(part in {".venv", ".runtime", ".ipynb_checkpoints"} for part in path.parts):
                 continue
             for target in re.findall(r"\]\(([^)]+)\)", path.read_text()):
@@ -160,6 +170,22 @@ class MaterialsTest(unittest.TestCase):
 
 
 class AlignmentTest(unittest.TestCase):
+    def test_learner_root_excludes_maintenance_materials(self):
+        for name in ("PR_DRAFT.md", "VALIDATION.md", "integration-backlog.md", "scripts", "tests"):
+            self.assertFalse((COURSE_ROOT / name).exists(), name)
+            self.assertTrue((MAINTENANCE_ROOT / name).exists(), name)
+
+    def test_jupyter_config_hides_generated_files_without_hiding_course(self):
+        from traitlets.config import Config
+        config = Config()
+        path = REPO_ROOT / "maintenance/jupyter_lab_config.py"
+        namespace = {"__file__": str(path), "get_config": lambda: config}
+        exec(compile(path.read_text(), str(path), "exec"), namespace)
+        self.assertEqual(config.ServerApp.root_dir, str(REPO_ROOT))
+        self.assertIn("*.egg-info", config.ContentsManager.hide_globs)
+        self.assertNotIn("dw_course", config.ContentsManager.hide_globs)
+        self.assertNotIn("maintenance", config.ContentsManager.hide_globs)
+
     def test_d01_teaches_explicit_sql_matching_order_contract(self):
         path = COURSE_ROOT / "level1/module01-introduction/lab1_connect_and_query.ipynb"
         notebook = nbformat.read(path, as_version=4)

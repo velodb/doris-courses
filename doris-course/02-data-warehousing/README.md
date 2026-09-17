@@ -48,11 +48,11 @@ D04 需要讲师预置 Iceberg；D05 当前可执行内容为 Stream Load。
 Kafka、CDC、对象存储持续接入等后续实验尚未提供。
 
 实验目标版本为 Doris 4.1.3。当前 SQL 验证使用开发实例；
-正式版本及 Docker 启动路径的验证边界见[验证记录](VALIDATION.md)。
+正式版本及 Docker 启动路径的验证边界见[验证记录](../../maintenance/02-data-warehousing/VALIDATION.md)。
 小样本用于理解语义与核对结果，不用于证明性能或生产可靠性。
 
 ## 维护者资料
 
-[验证记录](VALIDATION.md) · [集成实验待办](integration-backlog.md) · [PR 草稿](PR_DRAFT.md)
+[课程维护资料](../../maintenance/02-data-warehousing/README.md)：验证记录、集成待办和 PR 草稿。
 
 离线测试和整组 Lab 的执行方式见验证记录；它们不是学员开始学习的前置步骤。

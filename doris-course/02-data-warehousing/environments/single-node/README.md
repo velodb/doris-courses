@@ -72,7 +72,7 @@ export DW_ALLOW_WRITES=yes
 
 运行 D01 的“选择实验环境”和“启动（可选）并连接”单元。
 它会校验 [compose.yml](compose.yml)，启动课程项目，等待健康检查并执行 SELECT 1。
-首次下载和启动需要数分钟。目标版本与启动路径的实际测试范围见[验证记录](../../VALIDATION.md)，
+首次下载和启动需要数分钟。目标版本与启动路径的实际测试范围见[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)，
 当前 Docker 启动尚未端到端实测。
 
 | 项目 | 配置 |

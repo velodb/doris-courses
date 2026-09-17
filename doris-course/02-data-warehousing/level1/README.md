@@ -50,4 +50,4 @@ D04 需要预置 Iceberg 湖表，没有环境时可以先阅读讲义并继续 
 
 D05 当前可执行的是 Stream Load；Kafka、CDC、对象存储和 Group Commit
 尚未作为完整实验交付。D02、D03 使用小数据理解存储和模型，不做性能排名。
-环境版本与测试范围见[验证记录](../VALIDATION.md)。
+环境版本与测试范围见[验证记录](../../../maintenance/02-data-warehousing/VALIDATION.md)。

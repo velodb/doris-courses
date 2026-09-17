@@ -5,7 +5,7 @@
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
 | 前置知识 | 能阅读简单的 SELECT；无需 Doris 使用经验 |
 | 实验环境 | 一个 FE、一个 BE 的存算一体沙箱，或讲师提供的实验实例 |
-| 目标版本 | Apache Doris 4.1.3；实际验证范围见[验证记录](../../VALIDATION.md) |
+| 目标版本 | Apache Doris 4.1.3；实际验证范围见[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md) |
 | 建议时间 | 约 45 分钟，不含首次环境下载 |
 
 [课程目录](../README.md) · [打开 Lab 1](lab1_connect_and_query.ipynb) · [打开 Quiz 1](quiz1_doris_fundamentals.ipynb)

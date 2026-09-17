@@ -19,6 +19,10 @@ not a single-video PR and not a claim that all planned Level 1 labs are complete
 - Expand D01 into a learner-facing module: scenario, objectives, complete SQL,
   expected results, troubleshooting and an independent filtering exercise.
 - Separate learning entry pages from maintainer validation/status details.
+- Keep course 02's root focused on learner materials; move maintenance
+  documents, scripts and tests to repository-level maintenance/02-data-warehousing.
+- Add a shared Jupyter launch configuration that hides generated artifacts
+  without deleting them.
 
 ## Validation
 
@@ -35,6 +39,10 @@ The D01 learner-facing revision passes 20 offline tests on an exported index
 snapshot, two fresh-kernel D01 runs, its quiz widget check, and another full
 six-core-lab cell-runner pass. Learner notebook outputs were left untouched
 and excluded from the revision.
+
+After the directory cleanup, 22 offline tests and all six core labs passed
+with the relocated tooling. The Jupyter contents API confirms the simplified
+course root and access to maintenance links.
 
 ## Remaining scope
 

@@ -3,9 +3,11 @@
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3] / "doris-course/02-data-warehousing"
+sys.path.insert(0, str(ROOT))
 CORE = [
     "module01-introduction",
     "module02-architecture",
@@ -33,20 +35,23 @@ def main():
             raise RuntimeError(f"Expected exactly one lab in {module}")
         notebook = json.loads(paths[0].read_text())
         namespace = {"__name__": "__main__"}
+        previous_directory = Path.cwd()
         print(f"RUN {module}", flush=True)
         try:
+            os.chdir(paths[0].parent)
             for index, cell in enumerate(notebook["cells"]):
                 if cell["cell_type"] == "code":
                     source = cell["source"]
                     source = "".join(source) if isinstance(source, list) else source
                     exec(compile(source, f"{paths[0].name}:cell-{index}", "exec"), namespace)
         finally:
+            os.chdir(previous_directory)
             if "lab" in namespace and namespace["lab"].connection.open:
                 namespace["lab"].close()
         print(f"PASS {module}", flush=True)
     print("PASS: selected notebook code cells. This does not validate the browser UI.")
     if not args.iceberg:
-        print("NOT RUN: D04 Iceberg integration. See integration-backlog.md for other missing paths.")
+        print("NOT RUN: D04 Iceberg integration. See maintenance/02-data-warehousing/integration-backlog.md.")
 
 
 if __name__ == "__main__":
