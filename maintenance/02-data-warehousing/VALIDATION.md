@@ -2,6 +2,30 @@
 
 Date: 2026-09-17. Status: first Level 1 draft, not release-qualified.
 
+## Chinese module structure alignment
+
+Date: 2026-09-17.
+
+- All seven Level 1 readings follow course 01's section order with Chinese
+  headings: course information, module goal, learning objectives, module
+  structure, topic sections, lab, module summary, quiz and official references.
+- Each reading has topic-specific objectives, lab steps and references.
+  Quiz links open the interactive notebook rather than the authoring YAML.
+- Official reference pages were checked through web access on this date;
+  version limitations remain explicit. Suggested lesson times are estimates,
+  not measurements from a recorded or trial lesson.
+- Removed unrelated ten-million-event claims from the six remaining lab covers,
+  replacing them with their actual order-domain goals and environment limits.
+- All seven lab code-cell dictionaries (source and execution metadata) were
+  compared with HEAD and were unchanged. This was a materials-only revision;
+  no new database execution or server restart was needed.
+- All 23 offline tests passed on an exported Git index snapshot, including the
+  new Chinese section-order check and existing local-link/notebook checks.
+  Learner changes to course 01 and the executed course 02 quiz were preserved
+  and excluded from the revision.
+- Structure alignment does not complete the missing integration labs or bring
+  all remaining teaching text to D01's depth; those follow-up tasks remain.
+
 ## Database execution
 
 Six core notebooks were executed cell by cell through `maintenance/02-data-warehousing/scripts/run_labs.py`

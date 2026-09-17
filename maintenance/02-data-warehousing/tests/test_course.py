@@ -102,6 +102,23 @@ class RuntimeTest(unittest.TestCase):
 
 
 class MaterialsTest(unittest.TestCase):
+    def test_readings_follow_chinese_course_structure(self):
+        readings = list((COURSE_ROOT / "level1").glob("*/course*.md"))
+        self.assertEqual(len(readings), 7)
+        for path in readings:
+            content = path.read_text()
+            headings = re.findall(r"^## (.+)$", content, re.MULTILINE)
+            self.assertEqual(headings[:3], ["单元目标", "学习目标", "单元安排"], path)
+            self.assertRegex(headings[3], r"^D\d")
+            self.assertTrue(headings[-4].startswith("动手实验 "), path)
+            self.assertEqual(headings[-3], "单元总结", path)
+            self.assertTrue(headings[-2].startswith("知识测验 "), path)
+            self.assertEqual(headings[-1], "官方参考资料", path)
+            self.assertIn("| 课程信息 | 内容 |", content, path)
+            self.assertNotRegex(content, r"\]\(quiz[^)]+\.yaml\)")
+            references = content.split("## 官方参考资料", 1)[1]
+            self.assertGreaterEqual(len(re.findall(r"https://doris\.apache\.org/", references)), 2, path)
+
     def test_numbered_material_names(self):
         for module in (COURSE_ROOT / "level1").glob("module*"):
             match = re.match(r"module(\d+)([a-z]?)", module.name)
@@ -160,6 +177,7 @@ class MaterialsTest(unittest.TestCase):
             notebook = nbformat.read(path, as_version=4)
             self.assertIn("DATA WAREHOUSING WITH APACHE DORIS", notebook.cells[0].source)
             self.assertIn("border-top:4px solid #0f766e", notebook.cells[0].source)
+            self.assertNotIn("10 million", notebook.cells[0].source, path)
             for cell in notebook.cells:
                 if cell.cell_type != "markdown":
                     continue

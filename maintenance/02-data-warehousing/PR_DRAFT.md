@@ -23,6 +23,8 @@ not a single-video PR and not a claim that all planned Level 1 labs are complete
   documents, scripts and tests to repository-level maintenance/02-data-warehousing.
 - Add a shared Jupyter launch configuration that hides generated artifacts
   without deleting them.
+- Align all seven readings with course 01's module structure using Chinese
+  headings, standalone lab/summary/quiz sections and official references.
 
 ## Validation
 
@@ -43,6 +45,10 @@ and excluded from the revision.
 After the directory cleanup, 22 offline tests and all six core labs passed
 with the relocated tooling. The Jupyter contents API confirms the simplified
 course root and access to maintenance links.
+
+The subsequent Chinese structure revision passes 23 offline tests, including
+section order and links. Only reading and notebook Markdown changed; all lab
+code cells match the prior version, so no additional SQL run was performed.
 
 ## Remaining scope
 

@@ -11,6 +11,11 @@
 每个单元先读讲义，再执行 Lab，最后完成五道交互测验。
 点击下表中的“Lab”或“Quiz”即可打开 Notebook。
 
+讲义结构与课程 01 保持一致，本课程先提供中文版本：
+课程信息 → 单元目标 → 学习目标 → 单元安排 → 分节讲解 →
+动手实验 → 单元总结 → 知识测验 → 官方参考资料。
+SQL、API 和产品名称保留原文；课程主题与学习顺序沿用数仓总纲。
+
 | 顺序 | 单元与业务问题 | 动手实验 | 知识测验 |
 | --- | --- | --- | --- |
 | 1 · D01 | [连接 Doris，查询第一批订单](module01-introduction/course1_introduction_to_apache_doris.md) | [Lab 1](module01-introduction/lab1_connect_and_query.ipynb) | [Quiz 1](module01-introduction/quiz1_doris_fundamentals.ipynb) |
