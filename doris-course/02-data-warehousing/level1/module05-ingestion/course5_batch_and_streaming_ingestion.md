@@ -5,7 +5,7 @@
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
 | 产品版本 | Apache Doris 4.x |
 | 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 70 分钟，包含动手实验和测验 |
+| 预计时间 | 约 75 分钟，包含讲义阅读、动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 5](lab5_stream_load.ipynb) · [打开测验 5](quiz5_load_methods_and_retry_safety.ipynb)
 
@@ -36,7 +36,7 @@
 | D05-05：对象存储批量与 INSERT SELECT | 流程对照 | 5 分钟 | 区分查询、持久化和异步导入 |
 | D05-06：Kafka 与 Routine Load | 任务流程图 | 5 分钟 | 解释消费进度与业务状态的区别 |
 | D05-07：Flink CDC 与 Doris Connector | 变更流程图 | 5 分钟 | 解释快照、增量和恢复 |
-| D05-08：Streaming Job 与 CDC_STREAM | 模式对照 | 5 分钟 | 区分任务、数据源和目标表 |
+| D05-08：让业务库的订单变化持续进入 Doris | 订单同步过程与模式选择 | 10 分钟 | 解释 Streaming Job、CDC_STREAM 与目标表如何配合 |
 | D05-09：对象存储增量文件 | 文件进度案例 | 5 分钟 | 识别重复文件与迟到数据问题 |
 | 实验 5 | 动手操作 | 20 分钟 | 导入 WWI 十表，检查模拟 CSV 重试与拒绝 |
 | 测验 5 | 交互测验 | 5 分钟 | 检查路径选择、映射、结果、重试和金额口径 |
@@ -283,23 +283,109 @@ Flink CDC 读取源端数据和变更，Doris Connector 把处理结果写入 Do
 本课目前只讲流程，不要求运行这套外部环境；
 配置入口见 [Flink Doris Connector](https://doris.apache.org/docs/4.x/connection-integration/data-integration/flink-doris-connector/)。
 
-## D05-08：Streaming Job 与 CDC_STREAM
+## D05-08：让业务库的订单变化持续进入 Doris
 
-### 任务与数据源不是同一个对象
+### 从“导入一次”到“持续同步”
 
-当前 4.x 官方文档描述两种 Streaming Job 模式：
+假设订单保存在 MySQL。早上把订单导入 Doris 后，业务仍在继续：客户支付了已有订单，
+也有人提交了新订单。看板要展示最新情况，就需要把这些变化持续送到 Doris。
 
-| 模式 | 数据源与目标 | 理解重点 |
+这时要完成两件事：读取业务库中的数据变化，以及持续把读取结果写入目标表。
+本节介绍的 **CDC_STREAM 负责读取，Streaming Job 负责组织持续导入**。
+上一节的 Flink 路径通过独立的 Flink 任务组织同步；本节则在 Doris 中创建和管理持续导入任务。
+
+CDC（Change Data Capture，变更数据捕获）利用数据库的变更日志识别新增、更新和删除。
+以 MySQL 为例，这些变化记录在 Binlog 中。读取日志后，同步链路才能知道某笔订单的状态已经改变。
+
+### 两个功能怎样配合？
+
+先从一张源订单表同步到一张 Doris 订单表理解：
+
+| 对象 | 负责什么 | 在订单案例中对应什么 |
 | --- | --- | --- |
-| TVF 模式 | 从 S3 TVF 或 CDC Stream TVF 读取，写入指定表 | Job 管持续执行，TVF 管数据访问 |
-| 多表 CDC 模式 | 从上游数据库同步到目标数据库 | 多表范围、初始同步与建表规则需要明确 |
+| MySQL 源表及 Binlog | 保存业务数据和后续变更 | 订单当前记录，以及支付后产生的状态更新 |
+| CDC_STREAM | 将源库数据与变更提供给同步 SQL | 读取指定 MySQL 订单表的数据 |
+| Streaming Job | 持续组织读取、写入并管理任务进度 | 一项名为“订单同步”的长期任务 |
+| Doris 目标表 | 保存同步结果，供 SQL 和看板查询 | 按订单号维护当前状态的 Unique Key 表 |
 
-CDC_STREAM 是 CDC 数据访问入口；Streaming Job 是持续运行的任务。
-不能用“创建一个任务”替代对源表、目标键、快照、增量位置和恢复方式的说明。
+CDC_STREAM 是表值函数（TVF）：调用它时指定数据源连接和表，SQL 就能从这个入口读取数据。
+在这里，它通常与 `CREATE JOB ... ON STREAMING` 配合使用，完成单表持续同步。
+[CDC_STREAM 功能说明](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/cdc-stream/)
 
-这是概念介绍。官方 4.x 页面会覆盖不同补丁版本，不能据此认定所有选项均已在
-课程目标 4.1.3 实测；本课不提供该路径的可执行 Lab。
-具体模式与版本条件见 [CREATE STREAMING JOB](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/job/CREATE-STREAMING-JOB/)。
+Streaming Job 是在 Doris 中创建的持续导入任务。其 SQL 映射模式使用
+`INSERT INTO 目标表 SELECT ... FROM CDC_STREAM(...)` 描述一次读取结果如何写入目标表，
+再由任务持续组织执行。SELECT 中可以选择列、调整列名或转换类型。
+源库连接参数决定“从哪里读”，SELECT 决定“怎样映射”，INSERT INTO 决定“写到哪里”。
+[Streaming Job 的创建与模式](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/job/CREATE-STREAMING-JOB/)
+
+```text
+MySQL 订单表：已有订单 + Binlog 中的后续变化
+                         ↓ CDC_STREAM 读取
+                   SELECT 映射字段
+                         ↓ INSERT INTO 写入
+                   Doris 订单当前表
+
+Streaming Job 持续组织上述过程，并记录任务状态与同步进度
+```
+
+### 已有订单与新变化怎样衔接？
+
+第一次同步通常既要搬入已有订单，也要继续接收之后的变化。
+“初始快照”读取源表已有记录；“增量同步”继续读取变更日志。
+在 Job 与 CDC_STREAM 配合的同步配置中，`offset="initial"` 表示先做全量初始化，再接增量。
+`offset="latest"` 则从最新日志位置开始接收后续变化，适合明确只需要新增变化的场景。
+[MySQL SQL 映射同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/)
+
+下面用一笔订单说明过程。表中是预期行为示意，供理解同步阶段：
+
+| 阶段 | MySQL 中发生什么 | 同步需要完成的工作 | Doris 中应看到什么 |
+| --- | --- | --- | --- |
+| 初始同步 | 已有订单 900001，状态为 CREATED | 读取快照并写入目标表 | 订单 900001，状态为 CREATED |
+| 业务继续 | 同一订单更新为 PAID | 读取对应变更并更新目标记录 | 同一订单的状态变为 PAID |
+| 中断后恢复 | 任务中断期间源库继续产生变化 | 根据已保存进度衔接读取，并核对恢复结果 | 已同步订单保持正确，后续变化继续到达 |
+
+要得到“同一订单的当前状态”，目标表必须按订单号识别逻辑记录。
+官方 SQL 映射同步要求目标为主键表，对应 Doris 的 Unique Key 模型，并提前创建目标表。
+源端删除如何传递、目标主键怎样映射，也需要在配置和验证中明确。
+
+任务进度记录“同步处理到哪个位置”；D07 的业务版本规则解决“同一订单哪个版本应当胜出”。
+恢复时要同时核对进度和目标数据。如果所需 Binlog 已被源库清理，还需要重新评估补数或初始化方式。
+
+### 同步一张表，还是一组业务表？
+
+两种模式可以从你需要控制的内容来选择：
+
+| 需求 | 使用方式 | 需要准备的目标 |
+| --- | --- | --- |
+| 同步一张订单表，且需要选择字段、改列名或转换类型 | SQL 映射：Streaming Job + CDC_STREAM | 预先设计并创建 Doris Unique Key 表 |
+| 将订单、客户、商品等一组源表同步到 Doris，按源表结构建立对应表 | 自动建表同步：`FROM MYSQL (...) TO DATABASE ...` | 指定目标数据库、同步表范围和建表属性 |
+
+例如，只保留订单号、客户号、状态三个字段时，可以在 SQL 映射中明确列出它们。
+如果希望先接入订单、客户和商品三张完整业务表，则可以通过自动建表模式指定表范围，
+让 Doris 在初次同步时创建对应目标表。
+自动建表模式适合镜像接入；其首次建表规则、后续结构变更和恢复语义要按该模式单独确认。
+[MySQL 自动建表同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-database/)
+
+Streaming Job 也能配合 S3 TVF 持续导入文件。任务仍负责持续运行，数据入口换成对象存储中的文件，
+下一节会继续解释这种情况。
+
+### 实际接入时，先准备和检查什么？
+
+以 MySQL 为例，首先准备源库连接、匹配的 JDBC 驱动、同步账号与 Binlog 读取权限，
+并按 CDC 要求启用行模式 Binlog。然后确定源表范围、目标主键与列映射，以及从全量还是增量开始。
+初始同步较长或任务可能中断时，还要预留足够的源端日志保留时间。
+
+任务创建后，依次检查任务状态、同步进度和目标表：
+
+- 查看任务是否运行、是否有错误信息，确认同步流程已启动。
+- 在源库产生一笔可核对的变更，观察进度是否推进，再查询 Doris 中这笔订单的状态。
+- 在独立测试环境验证中断恢复，以及新增、更新和删除的处理结果。
+
+“任务正在运行”说明任务处于运行状态；订单查询结果和同步延迟，才是看板数据是否可用的验证依据。
+
+本节为流程讲解。官方 4.x 导航将 MySQL、PostgreSQL 的这类持续同步标为 Experimental（实验性）；
+本课 4.1.3 环境尚未验证该 CDC 路径，当前 Lab 5 仍聚焦 Stream Load。
+搭建实验时应按目标补丁版本确认参数、驱动和同步限制，配置入口见本节引用的官方说明。
 
 ## D05-09：对象存储增量文件
 
@@ -364,6 +450,9 @@ CDC_STREAM 是 CDC 数据访问入口；Streaming Job 是持续运行的任务�
 - [Group Commit](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)
 - [Flink Doris Connector](https://doris.apache.org/docs/4.x/connection-integration/data-integration/flink-doris-connector/)
 - [CREATE STREAMING JOB](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/job/CREATE-STREAMING-JOB/)
+- [CDC_STREAM 表值函数](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/cdc-stream/)
+- [MySQL 单表 SQL 映射同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/)
+- [MySQL 自动建表同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-database/)
 - [对象存储持续导入](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-s3/)
 
 官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。
