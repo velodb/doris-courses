@@ -16,6 +16,7 @@
 | 文件或目录 | 用途 |
 | --- | --- |
 | [VALIDATION.md](VALIDATION.md) | 实际验证结果与未验证范围 |
+| [WWI-VALIDATION.md](WWI-VALIDATION.md) | 候选 WWI 数据集的实际导入结果与业务缺口 |
 | [integration-backlog.md](integration-backlog.md) | 待补齐的集成实验 |
 | [PR_DRAFT.md](PR_DRAFT.md) | PR 说明草稿 |
 | scripts/run_labs.py | 执行课程 Notebook 的代码单元 |
