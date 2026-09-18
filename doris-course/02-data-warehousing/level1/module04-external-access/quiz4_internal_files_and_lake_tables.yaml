@@ -1,63 +1,63 @@
-title: "D04：湖表与内部表关联"
-description: "五道单选题；不需要数据库连接，提交后查看解释。"
+title: D04：湖表与内部表关联
+description: 五道单选题；不需要数据库连接，提交后查看解释。
 questions:
-  - id: q1
-    objective: "一批 Parquet 文件是否自动是一张 Iceberg 表？"
-    prompt: "一批 Parquet 文件是否自动是一张 Iceberg 表？"
-    options:
-      - id: a
-        text: "不是，Iceberg 还需要表元数据"
-      - id: b
-        text: "是，只要放在 S3"
-      - id: c
-        text: "是，只要文件名含 iceberg"
-    answer: a
-    explanation: "文件格式和表格式不是一回事。"
-  - id: q2
-    objective: "在本实验里外部 Catalog 做什么？"
-    prompt: "在本实验里外部 Catalog 做什么？"
-    options:
-      - id: a
-        text: "自动将所有湖数据永久导入内部表"
-      - id: b
-        text: "只负责压缩 CSV"
-      - id: c
-        text: "访问外部系统的表元数据"
-    answer: c
-    explanation: "直查与物化到内部表是不同操作。"
-  - id: q3
-    objective: "客户表同一个客户有两行，订单 JOIN 后会怎样？"
-    prompt: "客户表同一个客户有两行，订单 JOIN 后会怎样？"
-    options:
-      - id: a
-        text: "一定返回零行"
-      - id: b
-        text: "可能放大行数和金额，需要校验键唯一性"
-      - id: c
-        text: "Doris 必然自动去重"
-    answer: b
-    explanation: "关联数据粒度必须由业务设计并验证。"
-  - id: q4
-    objective: "尚无 Iceberg 环境时如何记录本 Lab？"
-    prompt: "尚无 Iceberg 环境时如何记录本 Lab？"
-    options:
-      - id: a
-        text: "明确未执行，不用内部表冒充湖表"
-      - id: b
-        text: "把内部表改名 iceberg 就算完成"
-      - id: c
-        text: "从预期结果复制一张成功截图"
-    answer: a
-    explanation: "环境缺失不能转换成虚构的验证证据。"
-  - id: q5
-    objective: "湖表读取成功说明什么？"
-    prompt: "湖表读取成功说明什么？"
-    options:
-      - id: a
-        text: "所有 Catalog 都支持完全相同的操作"
-      - id: b
-        text: "已经满足生产查询 SLA"
-      - id: c
-        text: "本次读取路径成功，不证明写入或演进能力"
-    answer: c
-    explanation: "产品支持边界和课程实测范围需要分开。"
+- id: q1
+  objective: 区分 Doris 内部表、Parquet 文件、Iceberg 表与 External Catalog。
+  prompt: Parquet、Iceberg 与 External Catalog 的关系是什么？
+  options:
+  - id: a
+    text: Parquet 是文件格式，Iceberg 管表元数据和文件，Catalog 是外部访问入口
+  - id: b
+    text: 任意 Parquet 目录自动成为 Iceberg 表
+  - id: c
+    text: 创建 Catalog 会自动复制所有外部文件到内部表
+  answer: a
+  explanation: 文件、表格式和访问入口处于不同层次。Iceberg 需要表元数据，Catalog 访问成功不代表已经导入内部表。
+- id: q2
+  objective: 根据探索和重复分析的需求选择外部直查或导入内部表。
+  prompt: 已有湖上历史订单，第一次探索某个问题，合理的起点是什么？
+  options:
+  - id: a
+    text: 无论场景都先完整迁移数据湖
+  - id: b
+    text: 先评估直查，若需要反复分析再评估导入和刷新成本
+  - id: c
+    text: 先把所有订单与客户拼成不可更新的宽表
+  answer: b
+  explanation: 直查可以降低探索前的搬运工作，但性能仍需实际评估。导入保留本次结果，不会自动变成长期同步。
+- id: q3
+  objective: 解释 Catalog、Database、Table 如何定位一张外部表。
+  prompt: wwi_lake.sales.orders 中三部分分别表示什么？
+  options:
+  - id: a
+    text: 对象存储桶、文件目录、Parquet 文件
+  - id: b
+    text: Doris 节点、Tablet、Segment
+  - id: c
+    text: Catalog、Database、Table
+  answer: c
+  explanation: 这是 SQL 的完整表名，不是文件路径。Lab 使用 DW_ICEBERG_ORDERS 配置实际表名，不假定示例 Catalog 已存在。
+- id: q4
+  objective: 通过关联前后对照发现维表重复或关联缺失。
+  prompt: 订单与客户做 JOIN 后行数变多，优先检查什么？
+  options:
+  - id: a
+    text: 关联键在客户侧是否有多行匹配
+  - id: b
+    text: 是否需要把结果再乘以副本数
+  - id: c
+    text: 是否把 SUM 改成 MAX 就能自动修复
+  answer: a
+  explanation: 重复维表键会复制匹配的订单行。反过来，内连接缺失客户也可能丢行，所以要检查键、行数和金额，而非用聚合掩盖问题。
+- id: q5
+  objective: 在具备 Iceberg 环境时核对直查、关联和导入后的同一批订单。
+  prompt: 怎样证明本 Lab 的直查与导入结果一致？
+  options:
+  - id: a
+    text: 外部查询无报错即可
+  - id: b
+    text: 对同一十单样本检查关联前后数量和金额，并逐字段比较内部结果
+  - id: c
+    text: 只确认内部表存在
+  answer: b
+  explanation: 预期十单、12220.60，还需核对完整字段，避免错误抵消。必须使用真实预置湖表；没有外部环境时应记录未执行。

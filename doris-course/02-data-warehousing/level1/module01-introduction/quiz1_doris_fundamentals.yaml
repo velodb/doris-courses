@@ -1,63 +1,63 @@
-title: "D01：连接 Doris，查询第一批订单"
-description: "五道单选题；不需要数据库连接，提交后查看解释。"
+title: D01：连接 Doris，查询第一批订单
+description: 五道单选题；不需要数据库连接，提交后查看解释。
 questions:
-  - id: q1
-    objective: "Doris 在本课程中的主要职责是什么？"
-    prompt: "Doris 在本课程中的主要职责是什么？"
-    options:
-      - id: a
-        text: "承担订单分析，与源交易系统配合"
-      - id: b
-        text: "代替所有业务交易"
-      - id: c
-        text: "只保存看板图片"
-    answer: a
-    explanation: "下单、支付提交由源交易系统负责；Doris 接收数据后回答跨订单、地区和时间的分析问题。协议兼容不意味着需要把交易系统搬进来。"
-  - id: q2
-    objective: "哪个结果能证明入门订单样本导入正确？"
-    prompt: "哪个结果能证明入门订单样本导入正确？"
-    options:
-      - id: a
-        text: "只看到 HTTP 200"
-      - id: b
-        text: "只看到数据库存在"
-      - id: c
-        text: "10 笔、金额 12220.60，并核对明细"
-    answer: c
-    explanation: "连接成功只证明通路可用。还要检查十行明细、金额 12220.60 和字段值；错误金额可能相互抵消，因此总额相同也不等于明细一定正确。"
-  - id: q3
-    objective: "存算一体实验中 FE 和 BE 如何分工？"
-    prompt: "存算一体实验中 FE 和 BE 如何分工？"
-    options:
-      - id: a
-        text: "BE 只渲染图表"
-      - id: b
-        text: "FE 接收并规划查询，BE 执行且存储内部数据"
-      - id: c
-        text: "FE 保存全部订单，客户端执行 SQL"
-    answer: b
-    explanation: "客户端通过 FE 查询端口提交 SQL。FE 规划和协调查询，BE 执行计划并保存本节内部表的数据；所以 FE 能连接还不足以证明 BE 能正常写入。"
-  - id: q4
-    objective: "区分订单金额与已支付金额"
-    prompt: "WWI 十单投影的税前 order_amount 合计 12220.60，但没有逐订单支付字段。可以得出什么结论？"
-    options:
-      - id: a
-        text: "十笔样本的税前订单金额是 12220.60，不能据此判断收款"
-      - id: b
-        text: "已收到 12220.60 的货款"
-      - id: c
-        text: "已获得 12220.60 的利润"
-    answer: a
-    explanation: "订单金额不等于已支付金额，更不等于利润。应按业务问题选择字段和口径，本样本没有逐订单支付字段，既不能声称全部收款，也不能推断完全未支付。"
-  - id: q5
-    objective: "理解 Duplicate Key 写入与实验重跑"
-    prompt: "在 d01_orders 中单独再执行一次相同的十行 INSERT，会发生什么？"
-    options:
-      - id: a
-        text: "order_id 相同，自动覆盖为十行"
-      - id: b
-        text: "因为主键重复，写入一定失败"
-      - id: c
-        text: "再追加十行；完整重跑应先重建本节表，再写入并核对"
-    answer: c
-    explanation: "DUPLICATE KEY 的键用于排序，不做唯一性约束。重复 INSERT 会使行数变为二十、订单金额变为 24441.20；应核对明细，再执行 Lab 中已说明范围的重建和写入步骤。"
+- id: q1
+  objective: 区分“完成一笔交易”和“分析一批订单”这两类工作。
+  prompt: 以下哪项主要属于分析工作？
+  options:
+  - id: a
+    text: 提交一笔订单并扣减对应库存
+  - id: b
+    text: 按日期汇总大量订单的数量和金额
+  - id: c
+    text: 按订单号修改一笔订单的地址
+  answer: b
+  explanation: 分析关注跨记录的扫描和汇总，交易关注一次业务操作。返回的结果只有几行，也可能需要分析很多订单。
+- id: q2
+  objective: 说明 Doris 在业务数据库与分析用户之间承担什么职责。
+  prompt: 本课程中 Doris 与源业务系统如何配合？
+  options:
+  - id: a
+    text: 源系统提交交易，Doris 接收数据供分析
+  - id: b
+    text: 使用 MySQL 协议后，Doris 自动承担所有原业务事务
+  - id: c
+    text: 报表数据必须先写回源业务库才能被查询
+  answer: a
+  explanation: 源交易系统继续记录下单、支付等操作，Doris 提供分析层。协议接口相似不代表事务语义和适用工作负载相同。
+- id: q3
+  objective: 说明存算一体环境中 Frontend（FE）和 Backend（BE）的分工。
+  prompt: 在本课存算一体环境中，哪项分工正确？
+  options:
+  - id: a
+    text: FE 执行列扫描，BE 只存查询计划
+  - id: b
+    text: 客户端拆分分布式计划，FE 只保存连接
+  - id: c
+    text: FE 接收并规划查询，BE 保存内部表数据并执行计划
+  answer: c
+  explanation: 客户端把 SQL 发给 FE，FE 规划和协调执行，BE 执行计划。本节的存储职责以存算一体架构为前提。
+- id: q4
+  objective: 连接 Doris，执行建表、写入和分组聚合 SQL。
+  prompt: d01_orders 一行是一笔订单，要按日期输出订单数和金额并稳定排序，应怎样查询？
+  options:
+  - id: a
+    text: 按 order_id 分组，再按金额排序
+  - id: b
+    text: 按 order_date 分组，计算 COUNT(*) 和 SUM(order_amount)，按日期排序
+  - id: c
+    text: 只按日期排序，不需要 GROUP BY
+  answer: b
+  explanation: GROUP BY 决定汇总粒度，COUNT 和 SUM 计算组内指标，ORDER BY 决定展示顺序。这一计数方法依赖一行一单；订单明细表不能直接照搬。
+- id: q5
+  objective: 用明细、行数和金额核对数据，区分税前订单金额与收款。
+  prompt: WWI 十单投影税前金额合计 12220.60，且没有逐订单支付字段。能得出什么结论？
+  options:
+  - id: a
+    text: 两天全量销售额和收款均为 12220.60
+  - id: b
+    text: 十笔订单都尚未支付
+  - id: c
+    text: 十笔样本税前金额为 12220.60，不能据此推断收款
+  answer: c
+  explanation: 这是子集，不是两天全部订单；缺少支付字段也不等于未支付。还需比对十行明细与字段，不能仅凭金额总数证明数据正确。

@@ -19,36 +19,138 @@
 
 完成本单元后，你应该能够：
 
-1. 预测相同键写入 Duplicate、Unique、Aggregate 三种模型后的结果。
-2. 区分订单当前状态和历史事件各自的逻辑键。
-3. 在 EXPLAIN 中识别日期和分桶键条件对扫描范围的影响。
+1. 预测相同输入在 Duplicate、Unique、Aggregate 模型中的结果。
+2. 按明细、当前状态或汇总指标的用途选择逻辑键和表模型。
+3. 区分分区、分桶、排序键和业务唯一键的职责。
+4. 通过 EXPLAIN 比较日期过滤和分桶键过滤的扫描范围。
+5. 结合明细与金额核对结果，不把计划裁剪等同于性能提升。
 
 ## 单元安排
 
 | 环节 | 学习形式 | 建议时间 | 学习成果 |
 | --- | --- | --- | --- |
-| D03-01：Doris Key Model | 讲解与示例 | 5 分钟 | 按重复键语义选择表模型 |
-| D03-02：分区、分桶与数据分布 | 讲解与示例 | 5 分钟 | 区分分区、分桶与逻辑唯一键 |
-| 实验 3 | 动手操作 | 20 分钟 | 完成下方实验并核对结果 |
-| 测验 3 | 五道知识测验 | 5 分钟 | 检查概念与场景选择 |
-
-当前实验验证模型结果与计划裁剪，大数据性能对照尚待补充。
+| D03-01：Doris Key Model | 输入与结果对照 | 5 分钟 | 为明细、当前状态和汇总选择模型 |
+| D03-02：分区、分桶与数据分布 | DDL 与查询计划 | 5 分钟 | 区分物理组织和逻辑唯一性 |
+| 实验 3 | 动手操作 | 20 分钟 | 验证三种模型结果，比较三个过滤计划 |
+| 测验 3 | 交互测验 | 5 分钟 | 检查模型选择、键和计划证据 |
 
 ## D03-01：Doris Key Model
 
-Duplicate Key 保留重复明细；Unique Key 用于维护同一逻辑 Key 的状态；Aggregate Key 按预定义聚合规则合并指标。模型决定重复键的语义，排序键和索引又承担不同职责。
+### 同样的输入，为什么结果不同？
 
-订单当前状态适合以订单号识别逻辑行，但历史事件需要自己的事件 ID。将历史和当前状态混成一张表，可能丢掉业务需要追踪的变化。D06 再加入显式版本裁决。
+WWI 订单 1 的金额是 2300.00，订单 2 是 405.00。现在在隔离实验表里，
+把订单 1 的金额人为修正为 2250.00。这是教学操作，不是原始历史变更。
+按下表顺序分三次提交，并等每次写入完成：
 
-**观察与练习：** 取 WWI 订单 1 的 2300.00，在隔离实验表中人为修正为 2250.00，再加入订单 2 的 405.00。此修正不是原始历史。Duplicate 保留三行，Unique 保留最新两行，Aggregate 将订单 1 累加为 4550.00；正确执行 SUM 不等于适合累计订单快照。
+| 写入顺序 | id | amount | 含义 |
+| --- | ---: | ---: | --- |
+| 1 | 1 | 2300.00 | 订单 1 的原金额 |
+| 2 | 1 | 2250.00 | 订单 1 的修正金额 |
+| 3 | 2 | 405.00 | 订单 2 的金额 |
+
+**Duplicate Key：保留每条明细。** 键决定排序，不是唯一性约束。
+
+| id | amount |
+| ---: | ---: |
+| 1 | 2250.00 |
+| 1 | 2300.00 |
+| 2 | 405.00 |
+
+**Unique Key：保留每个键的当前值。** 在本例顺序提交、未设置 Sequence 列的条件下，
+后一次写入替换同键的先前值；处理乱序业务版本时还要使用 D06 的版本规则。
+
+| id | amount |
+| ---: | ---: |
+| 1 | 2250.00 |
+| 2 | 405.00 |
+
+**Aggregate Key：按声明的函数合并值。** 本例 amount 声明为 SUM：
+
+| id | amount |
+| ---: | ---: |
+| 1 | 4550.00 |
+| 2 | 405.00 |
+
+4550.00 是 2300.00 + 2250.00。引擎正确执行了 SUM，
+但它不是订单 1 的当前金额：两个快照不能当成两笔销售累加。
+
+完成 Lab 3 后可以分别核对：
+
+```sql
+SELECT id, amount FROM d03_dup ORDER BY id, amount;
+SELECT id, amount FROM d03_unique ORDER BY id;
+SELECT id, amount FROM d03_agg ORDER BY id;
+```
+
+### 先问“一行表示什么”，再选模型
+
+| 要保留的内容 | 逻辑标识 | 本课程采用的模型 |
+| --- | --- | --- |
+| 每次原始投递 | 投递编号 | Duplicate Key 保留每次记录 |
+| 一笔订单的当前状态 | order_id | Unique Key，并在 D06 加业务版本 |
+| 每个不同业务事件 | event_id | Unique Key，对相同内容的重投去重 |
+| 按维度累计的可加指标 | 日期、商品等维度组合 | Aggregate Key，明确 SUM 等函数 |
+
+当前表与历史表可以都用 Unique Key，但键不同、用途不同。
+历史表用 order_id 会把同一订单的不同事件覆盖掉。
+模型的具体语义见文末三种模型的官方资料。
 
 ## D03-02：分区、分桶与数据分布
 
-分区支持生命周期管理及查询裁剪，分桶决定数据分布与并行扫描的组织方式。日期条件与 Hash 键等值条件可能在不同层次缩小扫描范围。
+### 四种设计不要混在一起
 
-分区键、排序键和业务唯一键不能混为一谈。当前表如果因分区设计扩大了唯一键，必须重新检查是否仍是一单一行。本节分区示例是独立明细表。
+| 设计 | 回答的问题 | 本节例子 |
+| --- | --- | --- |
+| 分区 | 哪些数据属于同一范围，哪些范围可以不读？ | 按 order_date 分两天 |
+| 分桶 | 分区内数据如何分到 Tablet？ | HASH(order_id)，每个分区四桶 |
+| 排序键 | 数据在存储中如何排序？ | order_date、order_id |
+| 业务唯一键 | 什么标识同一个业务对象？ | 订单当前状态以 order_id 标识 |
 
-**观察与练习：** 对比无过滤、日期过滤、日期加订单号过滤的 EXPLAIN。检查结果正确，并指出计划中的分区/Tablet 范围。
+Lab 的分区表是 Duplicate Key 明细表，不负责维护订单当前状态。
+不要因为某个分区表把日期放入键中，就把订单的业务唯一性也改成“日期＋订单号”。
+
+下面是 Lab 创建的物理布局，供阅读；建表和初始化由 Lab 执行：
+
+```text
+d03_partitioned
+├── p_day1：2013-01-01 ≤ order_date < 2013-01-02
+│   └── HASH(order_id)，4 个 Tablet
+└── p_day2：2013-01-02 ≤ order_date < 2013-01-03
+    └── HASH(order_id)，4 个 Tablet
+```
+
+### 比较三个查询计划
+
+完成 Lab 初始化后执行：
+
+```sql
+EXPLAIN SELECT * FROM d03_partitioned;
+EXPLAIN SELECT * FROM d03_partitioned WHERE order_date = '2013-01-01';
+EXPLAIN SELECT * FROM d03_partitioned
+WHERE order_date = '2013-01-01' AND order_id = 1;
+```
+
+| 查询 | 关注的变化 | 原因 |
+| --- | --- | --- |
+| 无过滤 | 两个分区及其 Tablet | 没有排除任何日期或订单 |
+| 日期过滤 | 只需第一天的分区 | 第二天的数据不满足日期条件 |
+| 日期＋订单号 | 第一天下进一步缩小 Tablet 范围 | Hash 键等值条件可用于分桶裁剪 |
+
+在扫描节点中找所选分区和 Tablet 数量；具体字段名称随版本而变。
+不要只截取一段计划就宣布查询加速：计划说明预期工作范围，
+实际效果还受扫描量、缓存和计算开销影响。
+
+### 裁剪不能改变答案
+
+```sql
+SELECT COUNT(*) AS sample_orders, SUM(amount) AS order_amount
+FROM d03_partitioned
+WHERE order_date = '2013-01-01';
+```
+
+结果应为五笔、3944.20。再加 order_id=1 时应回到订单 1 的 2300.00，
+不是隔离模型实验中的修正值 2250.00；这两组表的数据用途不同。
+本节只验证模型语义和计划裁剪，不用十笔样本比较生产性能。
 
 ## 动手实验 3：模型语义与分区分桶
 
@@ -69,9 +171,11 @@ Duplicate Key 保留重复明细；Unique Key 用于维护同一逻辑 Key 的�
 
 ## 单元总结
 
-- 三种模型对重复键的处理不同，选模型先看业务语义。
-- 分区负责数据组织与裁剪，分桶影响数据分布和并行扫描。
-- 物理设计不能破坏“一单一行”等业务约束；计划裁剪也不等于已证明性能收益。
+- Duplicate 保留三行，Unique 保留两笔当前值，Aggregate SUM 得到订单 1 的 4550.00；相同输入不代表相同业务语义。
+- 先确定一行的粒度和逻辑键，再选模型；order_id 维护当前状态，event_id 保留不同事件。
+- 分区管范围，分桶管分布，排序键管顺序；这些物理设计不能悄悄改变业务唯一性。
+- 日期条件与 Hash 键条件可以在不同层次裁剪；用 EXPLAIN 检查实际选择的分区和 Tablet。
+- 核对明细与金额后再讨论效率；SUM 正确执行不代表指标口径正确，计划缩小也不等于已测得加速。
 
 ## 知识测验 3：模型语义与分区分桶
 
@@ -83,6 +187,9 @@ Duplicate Key 保留重复明细；Unique Key 用于维护同一逻辑 Key 的�
 
 - [Duplicate Key 明细模型](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/)
 - [Unique Key 主键模型](https://doris.apache.org/docs/4.x/table-design/data-model/unique/)
+- [Aggregate Key 聚合模型](https://doris.apache.org/docs/4.x/table-design/data-model/aggregate/)
 - [分区与分桶基础](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)
+- [数据分桶](https://doris.apache.org/docs/4.x/table-design/data-partitioning/data-bucketing/)
+- [EXPLAIN](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/EXPLAIN/)
 
 官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

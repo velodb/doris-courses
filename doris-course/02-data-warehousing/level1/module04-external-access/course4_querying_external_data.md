@@ -19,27 +19,125 @@
 
 完成本单元后，你应该能够：
 
-1. 区分 Parquet 文件、Iceberg 表与 External Catalog 的职责。
-2. 说明外部直查与导入内部表分别适合解决什么问题。
-3. 在具备实验环境时，对直查、关联和导入后的订单进行对账。
+1. 区分 Doris 内部表、Parquet 文件、Iceberg 表与 External Catalog。
+2. 根据探索和重复分析的需求选择外部直查或导入内部表。
+3. 解释 Catalog、Database、Table 如何定位一张外部表。
+4. 通过关联前后对照发现维表重复或关联缺失。
+5. 在具备 Iceberg 环境时核对直查、关联和导入后的同一批订单。
 
 ## 单元安排
 
 | 环节 | 学习形式 | 建议时间 | 学习成果 |
 | --- | --- | --- | --- |
-| D04-01：内部表、外部文件与湖表查询 | 讲解与示例 | 5 分钟 | 选择访问路径并检查关联结果 |
-| 实验 4 | 动手操作（需外部环境） | 20 分钟 | 具备环境后完成湖表对账 |
-| 测验 4 | 五道知识测验 | 5 分钟 | 检查概念与场景选择 |
-
-这是需要额外环境的候选实验，当前未实测；可以先阅读并完成测验，待环境就绪后补做实验。独立文件 TVF 实验尚未提供。
+| D04-01：内部表、外部文件与湖表查询 | 对象对照与 SQL | 5 分钟 | 区分访问路径，解释 JOIN 和导入边界 |
+| 实验 4 | 动手操作（需 Iceberg） | 20 分钟 | 核对直查、关联、导入均为十单、12220.60 |
+| 测验 4 | 交互测验 | 5 分钟 | 检查对象、访问选择、表定位与关联结果 |
 
 ## D04-01：内部表、外部文件与湖表查询
 
-业务已有历史数据时，先探索数据、判断是否需要导入比默认全量迁移更合适。内部表由 Doris 管理数据；文件 TVF 直接访问文件；外部 Catalog 对接已有系统的表元数据。
+### 先分清文件、表和访问入口
 
-Parquet 是文件格式，Iceberg 是带元数据管理的表格式，文件目录不自动成为 Iceberg 表。通过 Catalog 关联内部客户表后，需要检查维表键唯一性，防止订单金额被重复累加。
+假设历史订单已经存放在数据湖，近期客户资料在 Doris 中。
+分析师希望一起查询它们，不希望为了探索一个问题先迁移所有历史。
+先分清下面四种对象：
 
-**观察与练习：** 候选 Lab 对预置 Iceberg 表进行直查、关联与导入后对账。没有外部服务时不能运行；独立文件 TVF 部分仍待补。
+| 对象 | 管理什么 | 与其他对象的关系 |
+| --- | --- | --- |
+| Doris 内部表 | Doris 管理的表结构和数据 | 可以作为导入后的分析表 |
+| Parquet 文件 | 按列编码的数据文件 | 可以单独读取，也可以是湖表的数据文件 |
+| Iceberg 表 | 表元数据、快照以及所引用的数据文件 | 不是一个放有 Parquet 的目录 |
+| External Catalog | Doris 访问外部系统元数据和表的入口 | 不是把全部外部数据复制到内部表 |
+
+把一批 Parquet 放进对象存储，不会自动生成 Iceberg 的表元数据。
+同样，创建 Catalog 也不等于完成数据导入。
+
+```text
+独立 Parquet ── 文件 TVF ──────────┐
+                                 ├─ SQL 查询结果
+Iceberg 元数据与数据文件 ─ Catalog ┘      │
+                                       └─ INSERT INTO ... SELECT
+                                                  │
+                                                  ▼
+                                             Doris 内部表
+```
+
+### 什么时候直查，什么时候导入？
+
+| 场景 | 可以先选择 | 还要考虑什么 |
+| --- | --- | --- |
+| 第一次探索历史数据 | 通过 Catalog 直查 | 外部服务、网络、权限与元数据是否可用 |
+| 将湖上历史与内部客户关联 | 跨 Catalog JOIN | 关联键是否唯一，是否有缺失客户 |
+| 反复查询同一份业务快照 | 导入内部表后分析 | 同步频率、存储成本和变更更新方式 |
+| 只检查一个独立文件 | 文件 TVF | 文件格式、字段和访问参数 |
+
+“先直查”是一种接入选择，不保证所有外部查询都同样快；
+“导入”保存的是此次查询得到的结果，不会自动建立长期同步任务。
+文件 TVF 的对象存储接入在 D05 介绍，本 Lab 不运行独立文件实验。
+
+### Catalog 如何定位外部表？
+
+完整表名是 `catalog.database.table`。例如讲师可以把湖表注册为
+`wwi_lake.sales.orders`：wwi_lake 是 Doris 中的 Catalog 名，sales 是外部数据库，
+orders 是湖表。它不是 Parquet 的文件路径。
+
+以下是查询形状示例；必须把外部表名替换成讲师提供的实际名称。
+课程 Notebook 从 `DW_ICEBERG_ORDERS` 读取该名称，不要求照用示例名。
+
+```sql
+SELECT order_date, COUNT(*) AS sample_orders, SUM(order_amount) AS amount
+FROM wwi_lake.sales.orders
+GROUP BY order_date
+ORDER BY order_date;
+```
+
+若外部表装入的是本课程十单投影，预期为第一天五单、3944.20，
+第二天五单、8276.40。这里是查询外部表，尚未写入 Doris 内部表。
+
+### JOIN 之后为什么还要数行？
+
+假设一个客户有两行维表记录，一笔 100.00 的订单就可能关联成两行，
+汇总后变成 200.00。JOIN 语法正确，不意味着业务金额正确。
+反过来，内连接时缺少客户也会让订单消失。
+
+```text
+订单：order_id=1，customer_id=832，amount=2300.00
+          │ 按 customer_id 关联
+          ├─ 客户行 A → 一条订单结果
+          └─ 客户行 B → 又一条订单结果（重复）
+```
+
+图中重复客户是说明关联放大的假设，不是说原 WWI 客户表有这个错误。
+Lab 用唯一键客户表，并检查关联前后行数、金额以及导入后的逐字段结果。
+
+完成外部实验后，以下查询可在课程内部实验库再次检查关联缺失：
+
+```sql
+SELECT COUNT(*) AS missing_customers
+FROM d04_orders o
+LEFT JOIN d04_customers c ON o.customer_id = c.customer_id
+WHERE c.customer_id IS NULL;
+```
+
+预期为 0；若不是，先核对客户键和数据范围，不要把缺失订单的汇总当作完整答案。
+
+### 导入后检查什么？
+
+Lab 显式选择六个字段写入 `d04_orders`，不依赖外部字段的隐含顺序。
+查询结果落入内部表后，再执行：
+
+```sql
+SELECT order_date, COUNT(*) AS sample_orders, SUM(order_amount) AS amount
+FROM d04_orders
+GROUP BY order_date
+ORDER BY order_date;
+```
+
+此结果应与直查湖表一致；再比对订单号、客户、日期、金额、明细数和来源，
+避免不同错误在汇总中抵消。
+
+**实验条件：** 当前 Lab 是尚未实测的外部集成实验，需要讲师预置 Iceberg
+服务、Catalog 和十单样本。没有环境时先读讲义并完成测验，实验记录为未执行；
+不能用另一张内部表替代湖表。示例不宣称已验证外部写入、Schema 演进或性能。
 
 ## 动手实验 4：湖表与内部表关联
 
@@ -61,9 +159,11 @@ Parquet 是文件格式，Iceberg 是带元数据管理的表格式，文件目�
 
 ## 单元总结
 
-- 文件格式不等于表格式，文件目录不会自动成为 Iceberg 表。
-- External Catalog 对接外部表元数据，直查不等于已经导入内部表。
-- 关联结果需要检查维表唯一性；没有外部环境不能用内部表代替湖表实验。
+- Parquet 是文件格式，Iceberg 是管理快照和文件的表格式；External Catalog 是访问入口，不是数据复制。
+- 探索数据可以先直查，重复分析可以评估导入；导入后的刷新与变更处理仍需明确设计。
+- catalog.database.table 定位外部表，文件路径不能代替完整表名；Notebook 使用讲师配置的表名。
+- 重复维表键会放大 JOIN 结果，缺失键会丢失内连接结果；同时核对行数、金额和明细。
+- 直查、关联和内部表是三个检查点；本样本都应对应十单、12220.60，外部环境未运行不能算实验完成。
 
 ## 知识测验 4：湖表与内部表关联
 
@@ -75,5 +175,7 @@ Parquet 是文件格式，Iceberg 是带元数据管理的表格式，文件目�
 
 - [数据目录概览](https://doris.apache.org/docs/4.x/lakehouse/catalog-overview/)
 - [Iceberg Catalog](https://doris.apache.org/docs/4.x/lakehouse/catalogs/iceberg-catalog/)
+- [S3 文件表值函数](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)
+- [INSERT INTO SELECT](https://doris.apache.org/docs/4.x/data-operate/import/import-way/insert-into-manual/)
 
 官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

@@ -1,63 +1,63 @@
-title: "D05：批量导入、失败与重试"
-description: "五道单选题；不需要数据库连接，提交后查看解释。"
+title: D05：批量导入、失败与重试
+description: 五道单选题；不需要数据库连接，提交后查看解释。
 questions:
-  - id: q1
-    objective: "导入返回 HTTP 200，下一步做什么？"
-    prompt: "导入返回 HTTP 200，下一步做什么？"
-    options:
-      - id: a
-        text: "检查 Status、行数和业务结果"
-      - id: b
-        text: "直接宣布全部正确"
-      - id: c
-        text: "先删除目标表再导一次"
-    answer: a
-    explanation: "应用层状态与数据结果都需要检查。"
-  - id: q2
-    objective: "同 label 重试验证的是哪种身份？"
-    prompt: "同 label 重试验证的是哪种身份？"
-    options:
-      - id: a
-        text: "永久唯一的业务事件"
-      - id: b
-        text: "Kafka Partition 的名字"
-      - id: c
-        text: "有效期内同一个导入批次"
-    answer: c
-    explanation: "label 不替代业务主键和版本去重。"
-  - id: q3
-    objective: "严格模式下有一行坏金额且 max_filter_ratio=0，会怎样？"
-    prompt: "严格模式下有一行坏金额且 max_filter_ratio=0，会怎样？"
-    options:
-      - id: a
-        text: "金额自动填成零并成功"
-      - id: b
-        text: "本次导入批次失败，不提交部分合格行"
-      - id: c
-        text: "坏行自动进入业务拒收表"
-    answer: b
-    explanation: "错误行与整批是否提交需要分开理解。"
-  - id: q4
-    objective: "这次 Stream Load Lab 已验证了什么？"
-    prompt: "这次 Stream Load Lab 已验证了什么？"
-    options:
-      - id: a
-        text: "本地批量、重试和坏批拒绝"
-      - id: b
-        text: "MySQL Binlog 断点恢复"
-      - id: c
-        text: "Iceberg Schema 演进"
-    answer: a
-    explanation: "本 PR 未执行的外部路径不能算作实验结论。"
-  - id: q5
-    objective: "为何显式设置 CSV columns？"
-    prompt: "为何显式设置 CSV columns？"
-    options:
-      - id: a
-        text: "让 CSV 自动变成 CDC 日志"
-      - id: b
-        text: "保证任意错误数据都正确"
-      - id: c
-        text: "将输入顺序映射到目标字段"
-    answer: c
-    explanation: "清晰的数据契约比依赖隐含列顺序更可核对。"
+- id: q1
+  objective: 按本地文件、对象存储、消息流和数据库变更选择接入路径。
+  prompt: 一个本地有限 CSV 批次与一个持续产生消息的 Kafka Topic，应分别从哪条路径考虑？
+  options:
+  - id: a
+    text: 两者都必须先创建 Iceberg Catalog
+  - id: b
+    text: CSV 用 Stream Load；Kafka 用 Routine Load
+  - id: c
+    text: CSV 用 Routine Load；Kafka 用一次 S3 TVF 查询
+  answer: b
+  explanation: 本地文件由客户端推送，Kafka 需要持续任务维护消费进度。对象存储和业务库 CDC 又是其他来源，不应把所有输入套成同一接入流程。
+- id: q2
+  objective: 说明 CSV 列映射、Parquet 字段和默认值各自的作用。
+  prompt: 本课无表头 CSV 与 WWI Parquet 的字段解释方式，哪项正确？
+  options:
+  - id: a
+    text: CSV 显式给出分隔符和 columns；Parquet 按文件字段对齐 DDL
+  - id: b
+    text: Parquet 也必须按逗号拆分
+  - id: c
+    text: 省略支付状态时一律默认 PAID，避免导入失败
+  answer: a
+  explanation: CSV 的位置需要明确映射，Parquet 使用自身结构。默认值是业务约定，不是填补未知支付事实的手段。
+- id: q3
+  objective: 结合导入响应、加载行数、关联和金额判断结果是否正确。
+  prompt: 请求 HTTP 200 后，怎样检查导入真正达到预期？
+  options:
+  - id: a
+    text: 只检查目标表存在
+  - id: b
+    text: 只看文件大小与请求耗时
+  - id: c
+    text: 检查 JSON 状态和加载/过滤行数，再核对主键、关联与金额
+  answer: c
+  explanation: 传输成功不等于导入或业务正确。十表导入还需理解一行的粒度、关联是否扩大，以及历史金额和模拟金额是否分开。
+- id: q4
+  objective: 区分导入批次重试、业务事件去重与持续任务恢复。
+  prompt: 相同文件的结果不确定，重试与业务去重应怎样区分？
+  options:
+  - id: a
+    text: 每次生成新 label 就一定不会重复
+  - id: b
+    text: 在 label 有效期内保留批次身份并查原结果；业务事件另用稳定键与版本
+  - id: c
+    text: 只要 Kafka offset 增加，订单状态就必然最新
+  answer: b
+  explanation: label 识别批次，业务键识别事件，消费或恢复位置识别进度。Publish Timeout 等情景应先确认原事务，不能盲目换 label 追加。
+- id: q5
+  objective: 区分 WWI 历史订单、账户收款与课程模拟新订单的粒度和口径。
+  prompt: WWI 订单明细、客户账户收款和本课模拟订单，哪项理解正确？
+  options:
+  - id: a
+    text: 明细数就是订单数，账户收款都能分摊到每单
+  - id: b
+    text: 所有负数收款都等于订单退款
+  - id: c
+    text: 明细需按订单粒度汇总，账户收款不能强行逐单分摊，模拟来源单独标记
+  answer: c
+  explanation: 历史三类金额与粒度不能混用。COURSE_SIMULATION 引用 WWI 客户和商品，但不代表真实历史支付、退款或地区。

@@ -1,63 +1,63 @@
-title: "D06：乱序裁决、历史保留和可恢复重放"
-description: "五道单选题；不需要数据库连接，提交后查看解释。"
+title: D06：乱序裁决、历史保留和可恢复重放
+description: 五道单选题；不需要数据库连接，提交后查看解释。
 questions:
-  - id: q1
-    objective: "订单版本 3 先到、2 后到，课程预期是什么？"
-    prompt: "订单版本 3 先到、2 后到，课程预期是什么？"
-    options:
-      - id: a
-        text: "保留版本 3"
-      - id: b
-        text: "最后到的版本 2 总胜出"
-      - id: c
-        text: "两条都成为当前状态"
-    answer: a
-    explanation: "同 Key 版本裁决不能等同到达顺序。"
-  - id: q2
-    objective: "为什么另建 event_id 为键的历史表？"
-    prompt: "为什么另建 event_id 为键的历史表？"
-    options:
-      - id: a
-        text: "让当前表自动成为跨表事务"
-      - id: b
-        text: "将投递次数变成金额"
-      - id: c
-        text: "保留不同业务事件并去重重复投递"
-    answer: c
-    explanation: "当前状态不能替代业务变化历史。"
-  - id: q3
-    objective: "先写历史后中断，重跑应该验证什么？"
-    prompt: "先写历史后中断，重跑应该验证什么？"
-    options:
-      - id: a
-        text: "磁盘空间一定变少"
-      - id: b
-        text: "历史不重复、当前状态补齐、逐行对账"
-      - id: c
-        text: "只看脚本没有报错"
-    answer: b
-    explanation: "本实验验证应用步骤可恢复，不假定跨表原子性。"
-  - id: q4
-    objective: "部分列更新后最需要核对什么？"
-    prompt: "部分列更新后最需要核对什么？"
-    options:
-      - id: a
-        text: "未提供字段保留且版本正确"
-      - id: b
-        text: "整张表所有字段都置空"
-      - id: c
-        text: "历史自动删除"
-    answer: a
-    explanation: "部分更新与省略字段的整行覆盖语义不同。"
-  - id: q5
-    objective: "退款和 SQL DELETE 在主线如何处理？"
-    prompt: "退款和 SQL DELETE 在主线如何处理？"
-    options:
-      - id: a
-        text: "所有退款订单必须删除"
-      - id: b
-        text: "DELETE 返回就代表文件立即回收"
-      - id: c
-        text: "保留退款与支付历史，DELETE 用独立副本"
-    answer: c
-    explanation: "业务退款不等于数据删除，可见性也不等于空间回收。"
+- id: q1
+  objective: 区分订单当前状态、事件历史和原始投递的键与用途。
+  prompt: 为什么需要当前表、事件历史和投递记录三种粒度？
+  options:
+  - id: a
+    text: 当前表就能完整保存所有中间事件
+  - id: b
+    text: 分别回答现在怎样、发生过什么、尝试投递过几次
+  - id: c
+    text: 三张表都按 order_id 覆盖才能避免重复
+  answer: b
+  explanation: order_id 标识当前订单，event_id 标识不同事件，attempt_id 与 delivery_id 记录投递。重复消息可以增加投递次数，但不应增加不同事件数。
+- id: q2
+  objective: 使用业务版本解释重复与乱序事件的处理结果。
+  prompt: 订单 900001 的版本 4 签收先到，版本 3 发货与版本 2 支付后到，应怎样处理？
+  options:
+  - id: a
+    text: 按最后到达事件变回 PAID
+  - id: b
+    text: 丢弃所有迟到事件，不再保留历史
+  - id: c
+    text: 当前保持版本 4；历史保留各不同事件，相同 E02 重投不新增历史
+  answer: c
+  explanation: 当前表用业务版本而非到达顺序裁决；历史按稳定 event_id 保存。课中事件是完整 after-image，同 ID 重投内容一致；冲突不是普通幂等重试。
+- id: q3
+  objective: 区分部分列更新与省略字段的整行写入。
+  prompt: 仅更新 d06_partial 的状态和版本，正确检查是什么？
+  options:
+  - id: a
+    text: 按部分更新配置执行，核对金额和地区保留，最后恢复会话开关
+  - id: b
+    text: 省略字段必然自动保留，不需任何配置
+  - id: c
+    text: 只要新状态正确，金额被清空也无关
+  answer: a
+  explanation: 部分更新与省略字段的整行写入不是同义操作。实验使用独立副本、递增版本，并验证未提供字段保持 100.00 和 EAST。
+- id: q4
+  objective: 区分软删除、SQL 删除与物理文件回收。
+  prompt: 软删除、SQL DELETE 和退款应如何理解？
+  options:
+  - id: a
+    text: 都必须马上释放物理文件
+  - id: b
+    text: 软删除需查询过滤，SQL DELETE 改变可见性，退款仍保留业务事实
+  - id: c
+    text: 退款成功后必须删除订单与支付记录
+  answer: b
+  explanation: is_deleted 是业务字段，普通查询仍可看到行；SQL DELETE 与后台文件回收不同。退款金额应保留用于对账，不用删除代替退款。
+- id: q5
+  objective: 通过重复重放、逐行比较和独立业务流水核对恢复结果。
+  prompt: 历史写入后、当前状态写入前中断，恢复后应检查什么？
+  options:
+  - id: a
+    text: 历史已有 event_id 就跳过剩余所有步骤
+  - id: b
+    text: 只确认当前行数没有超过投递次数
+  - id: c
+    text: 重复执行未完成流程，核对 11 当前、18 历史、19 投递及独立业务流水
+  answer: c
+  explanation: 本课不假设自动跨表原子提交。要逐字段核对状态，并用独立商品、支付、退款和配送记录验证金额与关系；这不是已完成真实 Binlog 恢复测试。

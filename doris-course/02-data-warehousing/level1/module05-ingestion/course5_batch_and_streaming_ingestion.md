@@ -19,105 +19,307 @@
 
 完成本单元后，你应该能够：
 
-1. 根据文件、消息流或数据库变更来源区分接入方式。
-2. 说明字段类型、列映射与业务质量规则的不同作用。
-3. 结合 Stream Load 响应、加载行数和查询结果判断导入结果。
-4. 区分导入 label 的重试保护与业务事件去重。
-5. 辨认当前可执行实验与仍需准备环境的持续接入路径。
+1. 按本地文件、对象存储、消息流和数据库变更选择接入路径。
+2. 说明 CSV 列映射、Parquet 字段和默认值各自的作用。
+3. 结合导入响应、加载行数、关联和金额判断结果是否正确。
+4. 区分导入批次重试、业务事件去重与持续任务恢复。
+5. 区分 WWI 历史订单、账户收款与课程模拟新订单的粒度和口径。
 
 ## 单元安排
 
 | 环节 | 学习形式 | 建议时间 | 学习成果 |
 | --- | --- | --- | --- |
-| D05-01：先决定访问还是导入 | 讲解与示例 | 5 分钟 | 按数据来源选择访问或导入 |
-| D05-02：数据类型与 Schema | 讲解与示例 | 5 分钟 | 明确类型与业务字段契约 |
-| D05-03：默认值与列映射 | 讲解与示例 | 5 分钟 | 解释默认值与列映射的边界 |
-| D05-04：Stream Load、结果检查与重试 | 讲解与示例 | 5 分钟 | 核对成功、重试和失败结果 |
-| D05-05：对象存储批量与 INSERT SELECT | 讲解与示例 | 5 分钟 | 区分对象存储查询与批量导入 |
-| D05-06：Kafka 与 Routine Load | 讲解与示例 | 5 分钟 | 理解 Kafka 消费进度 |
-| D05-07：Flink CDC 与 Doris Connector | 讲解与示例 | 5 分钟 | 区分快照、增量与恢复位置 |
-| D05-08：Streaming Job 与 CDC_STREAM | 讲解与示例 | 5 分钟 | 识别需按补丁版本验证的 CDC 路径 |
-| D05-09：对象存储增量文件 | 讲解与示例 | 5 分钟 | 提出文件发现、进度与补数问题 |
-| 实验 5 | 动手操作 | 20 分钟 | 完成下方实验并核对结果 |
-| 测验 5 | 五道知识测验 | 5 分钟 | 检查概念与场景选择 |
-
-当前可执行实验仅覆盖 Stream Load；对象存储、Kafka、CDC、Group Commit 等内容为路径介绍，完整实验尚待交付。
+| D05-01：先决定访问还是导入 | 接入选择表 | 5 分钟 | 按来源与完成方式选择接入路径 |
+| D05-02：数据类型与 Schema | 字段对照 | 5 分钟 | 区分可解析的数据与合格业务记录 |
+| D05-03：默认值与列映射 | 映射示例 | 5 分钟 | 确定字段顺序与省略字段的含义 |
+| D05-04：Stream Load、结果检查与重试 | 请求与响应 | 5 分钟 | 判断成功、拒绝和不确定状态 |
+| D05-05：对象存储批量与 INSERT SELECT | 流程对照 | 5 分钟 | 区分查询、持久化和异步导入 |
+| D05-06：Kafka 与 Routine Load | 任务流程图 | 5 分钟 | 解释消费进度与业务状态的区别 |
+| D05-07：Flink CDC 与 Doris Connector | 变更流程图 | 5 分钟 | 解释快照、增量和恢复 |
+| D05-08：Streaming Job 与 CDC_STREAM | 模式对照 | 5 分钟 | 区分任务、数据源和目标表 |
+| D05-09：对象存储增量文件 | 文件进度案例 | 5 分钟 | 识别重复文件与迟到数据问题 |
+| 实验 5 | 动手操作 | 20 分钟 | 导入 WWI 十表，检查模拟 CSV 重试与拒绝 |
+| 测验 5 | 交互测验 | 5 分钟 | 检查路径选择、映射、结果、重试和金额口径 |
 
 ## D05-01：先决定访问还是导入
 
-本轮提供本地 WWI Parquet 数据包，学员不需要安装 SQL Server，也不访问课程桶。
-订单税前金额、含税发票金额、账户收款是三种口径。26,637 条账户收款没有 InvoiceID，不能任意分摊到订单。
-后续发布对象存储后再独立验证 S3 TVF 路径；本地 Stream Load 成功不代表那条路径已经通过。
+### 从数据来源选择入口
 
-数据在哪里、谁管理、查询频率、新鲜度和复制成本共同决定接入方式。直查不等于没有缓存，导入也不自动得到业务正确性。
+建设数仓通常先接历史存量，再持续接收变化。文件后缀不能决定全部方案：
+同样是 Parquet，本地文件、对象存储上的固定文件集和不断增加的目录，
+需要不同的传输方式与进度管理。
 
-先区分一次性数据搬运与长期任务。文件、消息流、数据库变更日志需要不同的接入与恢复机制。
+| 数据在哪里、怎样产生 | 接入选择 | 主要检查 |
+| --- | --- | --- |
+| 本地 CSV、JSON 或 Parquet，一次有限批次 | Stream Load | 请求结果、加载行数和目标表 |
+| 对象存储上的固定文件集，希望先用 SQL 检查 | S3 TVF；需要落表时配合 INSERT INTO SELECT | 查询与写入是否分别完成 |
+| 对象存储上的大批量文件，使用异步导入任务 | Broker Load | 导入任务最终状态和目标数据 |
+| Kafka 持续产生消息 | Routine Load | 任务状态、提交进度和目标数据 |
+| 业务数据库不断增删改 | CDC 路径，例如 Flink CDC + Doris Connector | 初始快照、增量和故障恢复位置 |
+| 许多很小的写入请求 | 在兼容写入方式上评估 Group Commit | 确认模式、响应与可见性 |
 
-**观察与练习：** 用课程路径表说明当前版本 实现了本地批量，其他路径的执行实验还在哪里缺失。
+这些是按需求选择的路径，不是必须顺序经过的六道工序。
+D04 的直查也可以不落表；落表后是否持续刷新，要另作决定。
+
+### 本节连接两类数据，不混淆来源
+
+```text
+WWI 历史 Parquet ─ Stream Load → d05_wwi_*（10 张业务表）
+模拟新订单 CSV  ─ Stream Load → d05_stream（10 笔教学订单）
+                                      │
+                                      └─ 后续 D09-A 准入、D06 状态变化
+```
+
+历史包保留订单、明细、客户、商品、发票、账款及字典，共 701,846 行。
+“总行数”是十张表的行数之和，不是订单数。
+模拟订单号 900001–900010，引用 WWI 客户和商品，但价格、地区和事件时间由课程定义。
+
+**动手范围：** 本 Lab 执行本地 Parquet/CSV 的 Stream Load，不运行 S3、Kafka、
+CDC 或 Group Commit。后续小节解释这些路径的选择与工作方式，
+不是要求学员先部署所有服务。
 
 ## D05-02：数据类型与 Schema
 
-订单号与版本使用整数，金额使用明确精度的小数，事件时间与接入时间分别记录。类型合法只是最低要求，负金额或错误业务状态可能仍然需要拒收。
+### 可以转换，不一定符合业务规则
 
-原始层允许保留无法转换的文本，业务表则需要稳定契约。D05 坏 CSV 注入非法金额；D09-A 另验证空订单号和无效客户，不能说已经覆盖所有 Schema 演进异常。
+| 字段 | 技术要求 | 业务要求 |
+| --- | --- | --- |
+| order_id | 可表示为整数 | 必须存在，且粒度是一笔订单 |
+| order_amount | 可表示为明确精度的小数 | 金额符号与业务口径合理 |
+| customer_id | 可表示为整数 | 客户在客户维表中存在 |
+| event_time | 可表示为日期时间 | 表示业务发生时间，不冒充接入时间 |
+| data_source | 可表示为字符串 | 区分 WWI 与 COURSE_SIMULATION |
 
-**观察与练习：** 查看订单数据契约与 malformed CSV，在 D09-A 对照原始字符串和标准化结果。
+`not-a-number` 无法作为金额导入；客户号 `999999` 却可以转换成整数，
+仍可能找不到对应客户。前者是类型问题，后者需要业务关联校验。
+D09-A 会保留原始文本，再将不合格记录单独分流。
+
+### 历史表的粒度也属于 Schema 理解的一部分
+
+Orders 一行是一笔订单，OrderLines 一行是商品明细。
+JOIN 后如果直接 COUNT(*)，数到的是明细，不是订单。
+WWI 客户账款又属于账户层，不能因为出现收款就分摊到某笔订单。
+
+完成历史表导入后，可以运行 Lab 中的日期分析：
+
+```sql
+SELECT o.OrderDate,
+       COUNT(DISTINCT o.OrderID) AS orders,
+       SUM(l.Quantity * l.UnitPrice) AS order_amount
+FROM d05_wwi_orders o
+JOIN d05_wwi_order_lines l ON o.OrderID = l.OrderID
+GROUP BY o.OrderDate
+ORDER BY o.OrderDate
+LIMIT 10;
+```
+
+COUNT(DISTINCT) 按订单计数，SUM 按明细计算税前金额。
+这张历史日报与 D01 的十单子集不是同一个统计范围。
 
 ## D05-03：默认值与列映射
 
-导入列映射描述输入字段如何进入表，默认值只能按明确的缺省语义使用。未知支付状态不能为了导入成功被默认为已支付。
+### CSV 要明确顺序，Parquet 要对齐字段
 
-业务事件时间来自业务，ingest_time 来自接入，不应互相替代。生成列与更复杂转换的限制需要按目标版本单独验证。
+模拟 CSV 没有表头。Lab 显式传入以下列顺序：
 
-**观察与练习：** 现有 Lab 显式传递 CSV 列顺序；默认值、生成列和复杂映射的独立实验仍待补。
+```text
+order_id,customer_id,order_amount,status,event_version,event_id,
+event_time,paid_amount,refund_amount,region,data_source
+```
+
+`columns` 描述输入值如何对应目标列；它不是让 Doris 猜测每个值的业务含义。
+本课 Parquet 按 manifest 中的字段定义创建目标表，不使用 CSV 的逗号分隔设置。
+
+| 输入 | 格式设置 | 列解释方式 |
+| --- | --- | --- |
+| 模拟 orders.csv | format=csv，column_separator=逗号 | 显式 columns，与文件顺序一致 |
+| WWI orders.parquet 等 | format=parquet | 文件字段与课程 DDL 对齐 |
+
+### 默认值不能代替未知的业务事实
+
+默认值描述省略字段时的约定，不是修复错误数据的万能方式。
+例如未知支付状态不能默认成 PAID，缺失金额也不能随意补成 0。
+新增一个带默认值的技术字段，与补造真实支付事实，是两件事。
+
+字段映射可以承载导入转换；生成列则由表定义中的表达式计算。
+本 Lab 只演示显式映射，不执行默认值、生成列或复杂转换的独立实验。
+具体配置和限制参见 [Stream Load 文档](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)。
 
 ## D05-04：Stream Load、结果检查与重试
 
-本节在 off_mode 下先导入 WWI Parquet，再导入模拟新订单 CSV，同时核对响应 Status、加载行数和表内结果。HTTP 成功不等于业务数据正确，异常状态也不能简单清表后重来。
+### 看清请求的组成
 
-label 用于识别导入批次，在有效期内重试同一请求应检查原批次状态。业务事件去重另由主键与版本设计完成。Group Commit 不是另一种数据源连接器；其 sync/async 可见性实验尚待补。
+本课程工具把文件推送到已明确配置的同集群 BE HTTP 地址，
+由 BE 接收字节并参与导入事务。不把 FE 地址填入 `DW_BE_HTTP_URL`；
+课程工具不自动跟随重定向。
 
-**观察与练习：** 依次执行成功导入、同 label 重试、坏数据整批拒绝，检查十行基线始终正确。
+下面是 Lab 请求的结构说明，不是包含真实凭据的可复制请求：
+
+```text
+PUT <DW_BE_HTTP_URL>/api/<DW_DATABASE>/d05_stream/_stream_load
+label: <本批次唯一标识，重试时保留>
+format: csv
+column_separator: ,
+columns: <上节列顺序>
+strict_mode: true
+max_filter_ratio: 0
+group_commit: off_mode
+请求体：orders.csv 原始字节
+```
+
+历史 Parquet 使用 format=parquet，不附 CSV 分隔符。
+参数决定解析和质量处理方式；所有请求都要检查返回的 JSON，而不只看 HTTP 状态。
+
+### 响应与表内结果要一起看
+
+以下是成功导入模拟十单时需要核对的字段示意，并非完整响应：
+
+```json
+{
+  "Status": "Success",
+  "NumberLoadedRows": 10,
+  "NumberFilteredRows": 0
+}
+```
+
+再核对业务结果：
+
+```sql
+SELECT COUNT(*) AS orders, SUM(order_amount) AS amount
+FROM d05_stream;
+```
+
+预期十笔、1400.00。历史数据还要检查主键重复、客户/商品关联和金额，
+因为十表全部导入成功仍可能包含错误的关联口径。
+
+| 响应情景 | 判断与下一步 |
+| --- | --- |
+| Success | 检查加载/过滤行数，再核对目标表 |
+| Label Already Exists | 检查原批次状态；不是“本次又成功写入一批” |
+| Fail | 保留错误信息，查明拒绝原因，不把失败批次算入业务数据 |
+| Publish Timeout 或请求结果不确定 | 保留 label 与事务信息，确认原事务结果；不要换新 label 盲目追加 |
+
+### 重试保护不等于永久去重
+
+Lab 在 label 有效期内重发相同文件和相同 label，预期不再追加十行。
+若换成新 label，对 Duplicate Key 表就是另一批追加；业务去重还要依赖稳定键和版本。
+
+坏数据实验使用新 label、两行输入，其中一行金额无法转换。
+在本课 strict_mode=true、max_filter_ratio=0 的设置下，预期整批拒绝，
+原有十行和 1400.00 保持不变。ErrorURL 是排错线索，不是长期拒收表。
+
+Group Commit 是对兼容小写入进行合并的机制，不是新的数据源连接器。
+本 Lab 固定 off_mode；不能把这里的响应、可见性和 label 结论直接套到
+sync_mode 或 async_mode。模式差异见 [Group Commit 文档](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)。
 
 ## D05-05：对象存储批量与 INSERT SELECT
 
-S3 TVF 访问远端文件，INSERT SELECT 将查询结果写入目标表。Broker Load 以导入任务方式处理批量数据，应检查任务完成而不是仅看到提交成功。
+### 查询文件与保存结果是两个动作
 
-重跑批次如何避免重复、全量重建如何与后续数据衔接，是批量导入设计的一部分，不能只记录一条成功命令。
+```text
+对象存储固定文件集 → S3 TVF → SELECT 结果
+                                  │
+                                  └─ INSERT INTO SELECT → 内部表
+对象存储固定文件集 → Broker Load 任务 ── 完成后核对 → 内部表
+```
 
-**观察与练习：** 当前版本 未实现这两条对象存储实验；后续以同一份 WWI Parquet 数据包写入独立表并逐行对账。
+TVF（表值函数）把文件暴露成 SQL 可以读取的关系。
+单独 SELECT 不会建立长期内部表；INSERT INTO SELECT 才把选定结果写入目标表。
+Broker Load 是异步导入路径，提交被接受不等于任务已完成。
+
+例如先查看 orders.parquet 的字段，再选择需要的列落表；
+若再导一次相同文件，要先判断目标是全量重建、批次追加还是按键更新。
+“文件路径没变”不自动等于“再次执行不会重复”。
+
+本课程 WWI 包目前由讲师本地分发，尚无课程 S3 下载入口。
+本节不提供虚构的桶地址或假定可用的凭据；对象存储仅作概念讲解。
 
 ## D05-06：Kafka 与 Routine Load
 
-Kafka 消息有 Topic、Partition 和 offset。消费进度说明读到哪里，不直接证明业务状态是最新版本；重复与乱序仍需按数据模型处理。
+### 持续任务要保存进度
 
-持续任务需要观察提交进度、失败原因和暂停恢复。将原始消息转换到业务字段时应保留稳定事件 ID 和版本信息。
+```text
+业务生产者 → Kafka Topic / Partition
+                         │ 持续消费
+                         ▼
+                  Routine Load Job
+                         │ 分批写入并推进消费进度
+                         ▼
+                    Doris 目标表
+```
 
-**观察与练习：** 复用实时分析 Lab 3 的思路，后续接入本课程九次投递；当前版本 不提供已验证的 Kafka 环境。
+Topic 是消息集合，Partition 将其分片，offset 标识分区内的位置。
+任务负责持续消费；观察时既看任务状态和暂停原因，也看提交进度、错误行与目标数据。
+暂停、恢复、停止任务是任务生命周期，不是启动或停止 Doris 集群。
+
+offset 回答“读到了哪里”，业务 event_version 回答“同一订单哪个版本更新”。
+例如先消费签收、后消费迟到的支付事件，消费进度向前不代表应把订单状态倒退。
+本课没有运行 Kafka 环境；D06 的本地事件重放只解释后一个问题。
 
 ## D05-07：Flink CDC 与 Doris Connector
 
-CDC 从源库变更日志捕获变化，Connector 将结果写到目标系统。快照、增量位置和故障恢复必须组合验证。
+### 从业务库日志走到数仓
 
-业务事件日志不等于 MySQL Binlog。Flink、CDC、Connector 和数据库版本组成兼容矩阵，未固定版本就不能保证一套配置通用。
+CDC 是捕获已提交数据变更的方式，不是简单地定期全表导出。
+Flink CDC 读取源端数据和变更，Doris Connector 把处理结果写入 Doris。
 
-**观察与练习：** 计划在独立 MySQL orders 副本上测试增删改、任务中断和恢复；首版仅提供教学说明。
+```text
+源业务库：初始快照 + 后续变更日志
+                 │
+                 ▼
+            Flink CDC
+       处理变更、维护恢复状态
+                 │ Doris Connector
+                 ▼
+              Doris 表
+```
+
+只做初始快照会漏掉后续变化，只从最新日志开始又可能没有历史。
+需要说明两者如何衔接，以及任务中断后从哪里恢复。
+检查点/日志位置是恢复依据，不等于订单的业务版本号。
+
+选择该路径时一起核对 Flink、CDC、Connector 和数据库版本，
+再测试新增、更新、删除以及中断恢复。
+本课目前只讲流程，不要求运行这套外部环境；
+配置入口见 [Flink Doris Connector](https://doris.apache.org/docs/4.x/connection-integration/data-integration/flink-doris-connector/)。
 
 ## D05-08：Streaming Job 与 CDC_STREAM
 
-这一部分保留总纲中的 Doris 4.1 路径，但必须按具体补丁版本确认语法、源表主键要求以及单表/多表边界。
+### 任务与数据源不是同一个对象
 
-不能把本地手工事件重放称为 CDC_STREAM 实测，也不能将日志位点当作未经转换的业务序列。
+当前 4.x 官方文档描述两种 Streaming Job 模式：
 
-**观察与练习：** 待固定环境并验证后再录制；首版不提供猜测的可执行 SQL。
+| 模式 | 数据源与目标 | 理解重点 |
+| --- | --- | --- |
+| TVF 模式 | 从 S3 TVF 或 CDC Stream TVF 读取，写入指定表 | Job 管持续执行，TVF 管数据访问 |
+| 多表 CDC 模式 | 从上游数据库同步到目标数据库 | 多表范围、初始同步与建表规则需要明确 |
+
+CDC_STREAM 是 CDC 数据访问入口；Streaming Job 是持续运行的任务。
+不能用“创建一个任务”替代对源表、目标键、快照、增量位置和恢复方式的说明。
+
+这是概念介绍。官方 4.x 页面会覆盖不同补丁版本，不能据此认定所有选项均已在
+课程目标 4.1.3 实测；本课不提供该路径的可执行 Lab。
+具体模式与版本条件见 [CREATE STREAMING JOB](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/job/CREATE-STREAMING-JOB/)。
 
 ## D05-09：对象存储增量文件
 
-新文件发现需要明确定义进度：按什么规则发现、哪些文件已经处理、迟到文件如何补数。对象存储目录不是天然可靠的消息队列。
+### 新文件发现也是一种进度问题
 
-总纲中的 Streaming Job + S3 TVF 路径需要验证目标版本的命名与进度规则，再制定补数操作。历史批量与持续发现应分开测试。
+固定文件集导完即可结束，持续目录会不断新增文件。
+官方 Streaming Job + S3 TVF 路径面向后一类需求；
+一次普通 S3 查询本身不是持续任务。
 
-**观察与练习：** 首版列出待验证项，不用轮询 Python 脚本冒充 Doris 内建持续加载。
+| 情景 | 需要回答的问题 |
+| --- | --- |
+| 09:00 出现 orders-001.parquet | 如何发现并记录该文件的处理状态？ |
+| 09:05 又看到相同对象 | 如何避免把同一批订单重复追加？ |
+| 09:10 才收到昨天的文件 | 如何发现迟到数据并更新业务统计？ |
+| 任务写入后中断 | 恢复后哪些文件需要重试，怎样核对结果？ |
+
+文件处理进度与业务日期是两条线。不能只按“今天的文件名”决定处理范围，
+也不能把对象目录当作天然有消费确认的消息队列。
+本节不执行持续文件实验；实际发现规则、限制和参数以目标版本的
+[对象存储持续导入文档](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-s3/)为准。
 
 ## 动手实验 5：批量导入、失败与重试
 
@@ -139,9 +341,11 @@ CDC 从源库变更日志捕获变化，Connector 将结果写到目标系统。
 
 ## 单元总结
 
-- 选择接入路径先看来源、持续性与恢复要求。
-- 接口响应、导入行数与业务结果需要一起核对。
-- label 不是永久业务去重机制；后续仍需要模型和版本设计。
+- 从来源、批次或持续性、完成方式选择接入路径；Stream Load、S3 TVF、Routine Load 和 CDC 不是一条固定流水线。
+- CSV 需要明确列顺序和分隔符，Parquet 需要字段与 DDL 对齐；默认值不能补造支付等业务事实。
+- 先看导入事务和加载/过滤行数，再查目标表的明细、关联和金额；HTTP 成功不够。
+- 相同 label 识别有限期内的同批请求，业务键识别事件，任务进度用于恢复；三者不能互相替代。
+- 历史订单明细、账户收款和模拟订单属于不同粒度和来源；保留 WWI 历史，不把账户收款强行分摊到订单。
 
 ## 知识测验 5：批量导入、失败与重试
 
@@ -152,6 +356,14 @@ CDC 从源库变更日志捕获变化，Connector 将结果写到目标系统。
 ## 官方参考资料
 
 - [数据导入概览](https://doris.apache.org/docs/4.x/data-operate/import/load-manual/)
-- [Stream Load：参数、返回结果与导入示例](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)
+- [Stream Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)
+- [S3 文件表值函数](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)
+- [INSERT INTO SELECT](https://doris.apache.org/docs/4.x/data-operate/import/import-way/insert-into-manual/)
+- [Broker Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/broker-load-manual/)
+- [Routine Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/routine-load-manual/)
+- [Group Commit](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)
+- [Flink Doris Connector](https://doris.apache.org/docs/4.x/connection-integration/data-integration/flink-doris-connector/)
+- [CREATE STREAMING JOB](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/job/CREATE-STREAMING-JOB/)
+- [对象存储持续导入](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-s3/)
 
 官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

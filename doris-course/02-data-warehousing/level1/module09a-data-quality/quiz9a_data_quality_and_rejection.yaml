@@ -1,63 +1,63 @@
-title: "D09-A：保留输入、分流拒收、自动验收"
-description: "五道单选题；不需要数据库连接，提交后查看解释。"
+title: D09-A：保留输入、分流拒收、自动验收
+description: 五道单选题；不需要数据库连接，提交后查看解释。
 questions:
-  - id: q1
-    objective: "怎样才能持久追踪错误输入？"
-    prompt: "怎样才能持久追踪错误输入？"
-    options:
-      - id: a
-        text: "先保留原始字段和输入行 ID，再显式分流"
-      - id: b
-        text: "只依赖临时 ErrorURL"
-      - id: c
-        text: "把坏金额默认成零"
-    answer: a
-    explanation: "错误日志不是业务拒收表。"
-  - id: q2
-    objective: "本样本正确的分流数量是什么？"
-    prompt: "本样本正确的分流数量是什么？"
-    options:
-      - id: a
-        text: "13 输入、13 合格、3 拒收"
-      - id: b
-        text: "10 输入、13 合格、0 拒收"
-      - id: c
-        text: "13 输入、10 合格、3 拒收"
-    answer: c
-    explanation: "分流集合应覆盖输入且不重叠。"
-  - id: q3
-    objective: "为什么不仅核对 COUNT(*)？"
-    prompt: "为什么不仅核对 COUNT(*)？"
-    options:
-      - id: a
-        text: "明细结果不重要"
-      - id: b
-        text: "丢一行并重复另一行可能保持总数不变"
-      - id: c
-        text: "COUNT(*) 永远不准确"
-    answer: b
-    explanation: "逐行预期结果可以发现抵消的错误。"
-  - id: q4
-    objective: "注入重复订单后质量报告应该怎样？"
-    prompt: "注入重复订单后质量报告应该怎样？"
-    options:
-      - id: a
-        text: "明确失败，恢复后再次通过"
-      - id: b
-        text: "始终显示成功"
-      - id: c
-        text: "静默删除所有异常"
-    answer: a
-    explanation: "故障注入证明校验确实能检测约定错误。"
-  - id: q5
-    objective: "固定业务截止时刻能否直接当作实时接入延迟？"
-    prompt: "固定业务截止时刻能否直接当作实时接入延迟？"
-    options:
-      - id: a
-        text: "可以，两者定义完全一样"
-      - id: b
-        text: "可以，只要使用同一个时区"
-      - id: c
-        text: "不能，实际延迟另需事件与观测时间"
-    answer: c
-    explanation: "离线口径与运行时新鲜度是不同指标。"
+- id: q1
+  objective: 区分字段类型校验与业务质量规则。
+  prompt: 客户号 999999 能转成整数，但不在 WWI 客户表中，应怎样处理？
+  options:
+  - id: a
+    text: 类型正确就应直接接受
+  - id: b
+    text: 按业务引用规则拒收
+  - id: c
+    text: 先把它补进客户维表再接受
+  answer: b
+  explanation: 类型正确仅说明可以表示这个值，不能证明客户存在。为错误输入自动造维度会使引用检查失去意义。
+- id: q2
+  objective: 保留输入标识和原始字段，追踪每条拒收记录。
+  prompt: 怎样长期解释每条拒收记录？
+  options:
+  - id: a
+    text: 仅保留临时 ErrorURL
+  - id: b
+    text: 只保留一个错误总数
+  - id: c
+    text: 保留 input_id 和原始字段，用拒收原因关联回原始行
+  answer: c
+  explanation: 稳定输入标识连接原始字段与拒收原因。错误日志便于排查，但不能自动成为完整可追踪的业务拒收表。
+- id: q3
+  objective: 利用独立客户维度和明确规则分流合格与拒收数据。
+  prompt: 对本课十三行输入，正确的分流依据与结果是什么？
+  options:
+  - id: a
+    text: 使用 D05 的独立客户维度，按固定顺序校验，10 合格、3 拒收
+  - id: b
+    text: 从十三行输入创建客户维度，再宣告全部引用有效
+  - id: c
+    text: 只保留能转换的行，不记录其余去向
+  answer: a
+  explanation: 规则依次检查订单号、金额、客户和来源。本批异常分别是非法金额、缺失订单号和无效客户，每条输入应有明确且不重叠的去向。
+- id: q4
+  objective: 同时核对输入覆盖、业务唯一性、金额和逐行结果。
+  prompt: 只看到 10 行、金额 1400.00，为什么还要逐字段比较？
+  options:
+  - id: a
+    text: SQL 聚合总是不可信
+  - id: b
+    text: 错误金额可能抵消，缺失与重复也可能抵消，还需核对唯一性和关系
+  - id: c
+    text: 只要按 order_id 排序，就会自动修复错误数据
+  answer: b
+  explanation: 总量是必要检查但不充分。输入覆盖、键、关联、时间、状态及完整字段共同约束结果，预期不能从被测输出随意重建。
+- id: q5
+  objective: 用已知错误验证检查会失败，并区分离线时间口径与实际新鲜度。
+  prompt: 哪种做法真正检验质量检查有效性？
+  options:
+  - id: a
+    text: 追加重复后仍显示通过，再修改预期行数
+  - id: b
+    text: 固定截止时间通过就宣称接入延迟为零
+  - id: c
+    text: 追加重复必须失败，恢复后再通过；固定时间规则不等于实时新鲜度
+  answer: c
+  explanation: 错误注入验证检查能够发现约定问题。实时新鲜度还需事件、接入和观测时间，不能从历史样本的固定截止时刻推导。

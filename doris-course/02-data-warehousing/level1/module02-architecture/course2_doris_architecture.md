@@ -19,45 +19,154 @@
 
 完成本单元后，你应该能够：
 
-1. 描述 FE 规划查询、BE 执行扫描的基本路径。
-2. 解释 Tablet、Rowset、Segment 与后台 Compaction 的关系。
-3. 比较批量和逐行写入的业务结果，并说明哪些观测不能直接证明性能。
+1. 沿一条查询说明 FE 规划与 BE 执行的分工。
+2. 解释 Table、Partition、Tablet、Rowset 和 Segment 的层次。
+3. 说明写入批次、数据可见性与后台 Compaction 的关系。
+4. 控制表结构和数据，比较批量与逐行写入的结果。
+5. 区分查询计划、存储元数据和运行时证据各能说明什么。
 
 ## 单元安排
 
 | 环节 | 学习形式 | 建议时间 | 学习成果 |
 | --- | --- | --- | --- |
-| D02-01：列式存储与查询路径 | 讲解与示例 | 5 分钟 | 解释列裁剪与查询计划的作用 |
-| D02-02：Tablet、Rowset、Segment 与 Compaction | 讲解与示例 | 5 分钟 | 画出存储层次并解释后台合并 |
-| D02-03：写入批次与可见性 | 讲解与示例 | 5 分钟 | 比较相同数据的不同写入方式 |
-| 实验 2 | 动手操作 | 20 分钟 | 完成下方实验并核对结果 |
-| 测验 2 | 五道知识测验 | 5 分钟 | 检查概念与场景选择 |
-
-当前实验只观察小样本结果与基础元数据；大样本 Query Profile 和受控 Rowset 观察尚未补齐。
+| D02-01：列式存储与查询路径 | 查询流程图 | 5 分钟 | 沿订单查询解释 FE、BE 和列式读取 |
+| D02-02：存储层次与 Compaction | 层次图与例子 | 5 分钟 | 区分分片、写入版本和列式文件 |
+| D02-03：写入批次与可见性 | 对照分析 | 5 分钟 | 说明事务次数不同但业务结果相同 |
+| 实验 2 | 动手操作 | 20 分钟 | 完成两种写入并核对十行、12220.60 |
+| 测验 2 | 交互测验 | 5 分钟 | 检查查询路径、存储层次和观测方法 |
 
 ## D02-01：列式存储与查询路径
 
-列式存储按列组织数据，查询只需少数列时有机会减少读取。但行数、列选择、过滤条件与缓存都会影响扫描量，不能凭一次耗时判断原因。
+### 从一条查询看组件分工
 
-FE 决定查询计划，BE 执行扫描和计算。先用 EXPLAIN 看计划，再在较大样本上用 Query Profile 看实际工作量。首版 Lab 只展示基础计划，不提供性能结论。
+假设分析师只想看订单 1 的金额，而不是取回整张订单表。完成 Lab 2 后，
+下面的只读示例可以直接在同一实验库执行：
 
-**观察与练习：** 查看同一订单表的 CREATE TABLE、EXPLAIN 和业务结果。录制所需的大样本 Profile 对照尚待补充。
+```sql
+SELECT order_id, order_amount
+FROM d02_batch
+WHERE order_id = 1;
+```
+
+预期为一行：订单 1，税前金额 2300.00。客户端看到的是一条 SQL，
+系统内部却要完成解析、规划、读取和计算。
+
+```text
+Notebook / SQL 客户端
+        │ SQL
+        ▼
+FE：解析字段 → 优化查询 → 生成并分发执行计划
+        │ 计划片段
+        ▼
+BE：扫描需要的列 → 过滤订单号 → 返回金额
+        │
+        ▼
+客户端：展示结果
+```
+
+FE 决定要执行什么工作，BE 执行分配到的工作。大查询还可能在多个 BE 上
+分别扫描和聚合，再合并结果；单节点实验只帮助理解分工，不演示多节点扩展。
+
+### 为什么分析通常只读部分列？
+
+订单表还包含客户、日期、明细数和来源，但这条查询只需要订单号和金额。
+列式存储把同一列的值组织在一起，便于只读取查询所需的列。
+列裁剪回答“读哪些列”，过滤和数据跳过回答“处理哪些行或数据块”，两者不同。
+
+```sql
+EXPLAIN SELECT order_id, order_amount
+FROM d02_batch
+WHERE order_id = 1;
+```
+
+在计划中找扫描表、输出列和过滤条件。EXPLAIN 展示计划，不等于执行过查询，
+也不提供这次查询实际读取的字节数。运行时工作量要结合 Query Profile。
 
 ## D02-02：Tablet、Rowset、Segment 与 Compaction
 
-表可以按分区组织；分区中的桶对应数据分片 Tablet。写入会产生数据版本及 Rowset，Rowset 内包含 Segment；后台 Compaction 合并数据，降低大量小片段带来的读取负担。
+### 先看每一层负责什么
 
-SHOW TABLETS 提供 Tablet 和副本信息，版本相关指标不是 Rowset/Segment 的直接清单。讲授时应区分元数据证据和内部机制说明。单副本实验没有证明故障恢复。
+```text
+Table：SQL 中的一张表
+└── Partition：按范围等规则组织数据
+    └── Bucket / Tablet：分桶规则对应的数据分片
+        └── Rowset：一次写入或合并形成的版本化数据集合
+            └── Segment：不可变的列式数据文件
+```
 
-**观察与练习：** 展示分区与 Tablet 元数据，解释字段；Rowset 管理接口的受控观察作为待补录制内容。
+| 层次 | 用订单表理解 | 不应混淆的概念 |
+| --- | --- | --- |
+| Partition | 按订单日期划分数据范围；未显式分区也有默认分区 | 不是某个 BE 节点 |
+| Bucket / Tablet | 分桶把分区内数据分到多个分片，Tablet 是对应的物理分片 | 桶数不是副本数 |
+| Rowset | 写入涉及某个 Tablet 时，在该 Tablet 内形成版本化的数据集合 | 不是全表共享的一个文件 |
+| Segment | Rowset 中保存列数据的文件，一个 Rowset 可以有多个 Segment | 不是一笔业务订单 |
+
+例如，两天各一个分区，每个分区四个桶，得到八个 Tablet；
+若再配置副本，会增加物理副本，不会把逻辑订单复制成多笔。
+本课程沙箱使用单副本，不用于验证副本恢复。
+
+### 写入后为什么还要合并？
+
+连续小批写入会形成多个数据片段。读取同一 Tablet 时，需要处理这些片段；
+Compaction 在后台将多个 Rowset 合并，减少读取时需要处理的片段数量。
+**合并改变物理组织，不应改变逻辑查询结果。**
+
+```text
+一个 Tablet 内：
+写入 A → Rowset A ┐
+写入 B → Rowset B ├─ Compaction → 合并后的 Rowset
+写入 C → Rowset C ┘
+```
+
+这不是“先合并才能查询”的意思。写入事务发布为可见版本后即可供查询使用，
+不必等后台合并结束。各写入接口何时返回成功、何时可见，要按接口语义理解。
 
 ## D02-03：写入批次与可见性
 
-将同样十行一次写入和逐行写入，可以观察事务边界的差异。为了控制变量，首版明确关闭 Group Commit，并保持表结构、桶数和逻辑数据相同。
+### 公平比较一次写十行和分十次写
 
-后台合并可能在采样前完成。没有观察到持续版本积压不代表攒批无意义，也不能强行写出固定性能倍数。数据何时可见需要结合具体写入方式判断。
+Lab 使用 D01 的同一批 WWI 历史订单，不改金额或日期。
 
-**观察与练习：** 运行两种写入方式，对账均为十行、12220.60，再比较版本相关观测。
+| 对照项 | d02_batch | d02_small |
+| --- | --- | --- |
+| 数据与字段 | 相同十笔订单 | 相同十笔订单 |
+| 分桶与副本 | 一个桶、单副本 | 一个桶、单副本 |
+| 写入方式 | 一批十行 | 每次一行，共十次 |
+| Group Commit | off_mode | off_mode |
+| 最终业务结果 | 十行，12220.60 | 十行，12220.60 |
+
+关闭 Group Commit 是为了不让服务端攒批掩盖写入方式的差异。
+它不是所有生产导入的推荐设置。
+
+完成两种写入后，先检查业务结果，再看元数据：
+
+```sql
+SELECT 'batch' AS write_mode, COUNT(*) AS orders, SUM(order_amount) AS amount
+FROM d02_batch
+UNION ALL
+SELECT 'small' AS write_mode, COUNT(*) AS orders, SUM(order_amount) AS amount
+FROM d02_small
+ORDER BY write_mode;
+```
+
+```sql
+SHOW PARTITIONS FROM d02_batch;
+SHOW TABLETS FROM d02_batch;
+SHOW TABLETS FROM d02_small;
+```
+
+### 观察结果要怎么解释？
+
+| 证据 | 可以回答 | 不能据此断言 |
+| --- | --- | --- |
+| 行数、明细、金额 | 两种写法是否保存相同业务数据 | 哪种写法生产吞吐更高 |
+| EXPLAIN | 计划扫描什么、在哪里过滤 | 实际耗时与磁盘 IO |
+| Tablet 元数据中的版本相关信息 | 采样时的存储状态 | Rowset/Segment 的完整清单 |
+| Query Profile | 实际执行中的算子耗时、扫描统计等 | 脱离机器、缓存与数据规模的固定性能倍数 |
+
+后台合并可能在采样前完成。因此，Lab 不要求 VersionCount 必然不同，
+也不以十行数据的耗时排名。当前动手范围是小样本写入、查询计划和基础元数据，
+不包含大数据 Profile 或底层 Rowset 管理接口实验。
 
 ## 动手实验 2：观察存储和写入批次
 
@@ -78,9 +187,11 @@ SHOW TABLETS 提供 Tablet 和副本信息，版本相关指标不是 Rowset/Seg
 
 ## 单元总结
 
-- 列式读取、执行计划与实际扫描量是相关但不同的观察角度。
-- 写入会产生数据片段；Compaction 在后台合并，观测结果随时间变化。
-- 先确认业务结果相同，再讨论系统开销；十行样本不能证明生产性能。
+- 客户端提交 SQL，FE 规划并分发任务，BE 读取列数据并执行过滤、聚合等运算。
+- Table、Partition、Tablet、Rowset、Segment 是不同层次：表、范围、分片、版本集合和列式文件。
+- 写入可见性取决于事务发布和接口语义；Compaction 在后台改善物理组织，不应改变业务结果。
+- 比较批次时保持数据、表结构和配置一致；本实验两张表都必须是十行、12220.60。
+- 计划、元数据和运行时统计各有用途；小样本和一次采样不能证明固定性能收益。
 
 ## 知识测验 2：观察存储和写入批次
 
@@ -90,8 +201,11 @@ SHOW TABLETS 提供 Tablet 和副本信息，版本相关指标不是 Rowset/Seg
 
 ## 官方参考资料
 
-- [系统架构：FE、BE 与两种部署方式](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)
-- [Compaction 原理](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/)
+- [系统架构](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)
 - [分区与分桶基础](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)
+- [Compaction 原理](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/)
+- [EXPLAIN](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/EXPLAIN/)
+- [Query Profile](https://doris.apache.org/docs/4.x/query-acceleration/query-profile/)
+- [Group Commit](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)
 
 官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

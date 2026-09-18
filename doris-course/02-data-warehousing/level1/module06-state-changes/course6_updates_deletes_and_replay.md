@@ -20,68 +20,209 @@
 完成本单元后，你应该能够：
 
 1. 区分订单当前状态、事件历史和原始投递的键与用途。
-2. 使用业务版本解释乱序事件的胜出规则。
-3. 验证部分列更新不会意外清空未提供的业务字段。
+2. 使用业务版本解释重复与乱序事件的处理结果。
+3. 区分部分列更新与省略字段的整行写入。
 4. 区分软删除、SQL 删除与物理文件回收。
-5. 通过重复重放和逐行对账检查恢复结果。
+5. 通过重复重放、逐行比较和独立业务流水核对恢复结果。
 
 ## 单元安排
 
 | 环节 | 学习形式 | 建议时间 | 学习成果 |
 | --- | --- | --- | --- |
-| D06-01：当前状态与更新 | 讲解与示例 | 5 分钟 | 确定当前状态与历史的边界 |
-| D06-02：幂等与乱序 | 讲解与示例 | 5 分钟 | 解释重复与乱序事件处理 |
-| D06-03：Merge-on-Write 与部分列更新 | 讲解与示例 | 5 分钟 | 验证部分列更新保留其他字段 |
-| D06-04：软删除、SQL 删除与回收 | 讲解与示例 | 5 分钟 | 区分删除的不同含义 |
-| D06-05：历史、重放与恢复 | 讲解与示例 | 5 分钟 | 验证中断后的重放结果 |
-| 实验 6 | 动手操作 | 25 分钟 | 完成下方实验并核对结果 |
-| 测验 6 | 五道知识测验 | 5 分钟 | 检查概念与场景选择 |
-
-本实验是人工业务事件重放，不是真实 Binlog CDC 恢复；导入删除标记和事件冲突策略仍待集成验证。
+| D06-01：当前状态与更新 | 表粒度对照 | 5 分钟 | 选择当前、历史和投递的键 |
+| D06-02：幂等与乱序 | 事件时间线 | 5 分钟 | 解释晚到旧事件为何不覆盖新状态 |
+| D06-03：MoW 与部分列更新 | 更新前后对照 | 5 分钟 | 检查未提供的业务字段是否保留 |
+| D06-04：软删除、SQL 删除与回收 | 可见性对照 | 5 分钟 | 区分隐藏、删除与物理回收 |
+| D06-05：历史、重放与恢复 | 中断案例与对账 | 5 分钟 | 解释跨步骤中断后的恢复方法 |
+| 实验 6 | 动手操作 | 25 分钟 | 核对 11 笔当前订单、18 条历史、19 次投递 |
+| 测验 6 | 交互测验 | 5 分钟 | 检查状态、版本、部分更新、删除和恢复 |
 
 ## D06-01：当前状态与更新
 
-Unique Key 当前表以订单号识别逻辑行。更新的目标是使业务读到正确状态，不是让所有旧物理文件立即消失。
+### 业务想同时知道“现在怎样”和“发生过什么”
 
-业务退款要保留支付信息和订单，不能为了模拟删除而删掉退款事实。SQL DELETE 使用独立样本表。
+运营看板需要当前状态，排查退款则需要历史过程。
+只保留当前状态会丢失过程，只保留历史又需要每次查询挑选正确版本。
+本 Lab 把这两类需求分开：
 
-**观察与练习：** 观察当前表与历史表分别初始化，再进行状态变更。
+| 表 | 一行表示什么 | 键与作用 |
+| --- | --- | --- |
+| d06_current | 一笔订单的当前状态 | UNIQUE KEY(order_id)，按 event_version 裁决 |
+| d06_history | 一个不同的业务事件 | UNIQUE KEY(event_id)，相同事件重投不增加逻辑历史 |
+| d06_deliveries | 某次尝试中的一次投递 | 记录 attempt_id、delivery_id 和原始内容，保留重投 |
+
+同一个 order_id 可以有多个 event_id，同一个 event_id 又可能被投递多次。
+这里的 delivery_id 是投递编号，不是快递单号。
+
+### 从合格新订单开始，不改写历史
+
+D09-A 的 `orders_clean_demo` 提供十笔合格模拟订单；D06 将其初始化为
+当前状态与初始历史。来源均为 COURSE_SIMULATION，不更新 `d05_wwi_*` 历史表。
+
+Unique Key 的更新改变同键的逻辑当前值，不意味着旧物理文件马上被回收。
+当前表使用 Merge-on-Write（MoW），在写入侧处理同键版本的可见性，
+便于业务查询读取当前结果。
 
 ## D06-02：幂等与乱序
 
-模拟订单 900001 的版本 4（签收）先到，版本 3（发货）和版本 2（支付）后到。课程通过显式递增版本决定谁胜出，不依靠到达先后推测业务先后。
+### 业务顺序不等于到达顺序
 
-相同事件 ID 的重投必须携带相同业务内容；同 ID 不同内容是数据契约冲突，不属于普通幂等重试。版本值相同的冲突策略也需要明确。
+订单 900001 的业务流程是：
 
-**观察与练习：** 按 deliveries.json 的九次投递执行，验证 900001 仍为 DELIVERED，900003 依次经历支付、取消、退款。
+```text
+版本 1 CREATED → 版本 2 PAID → 版本 3 SHIPPED → 版本 4 DELIVERED
+```
+
+但本 Lab 中，版本 1 已初始化，后续事件的到达顺序故意打乱：
+
+| 首轮投递位置 | event_id | event_version | 事件状态 | 处理后当前状态 |
+| --- | --- | ---: | --- | --- |
+| 1 | E08 | 4 | DELIVERED | DELIVERED，版本 4 |
+| 2 | E02 | 3 | SHIPPED | 仍是 DELIVERED，版本 4 |
+| 3 | E01 | 2 | PAID | 仍是 DELIVERED，版本 4 |
+| 9 | E02 | 3 | SHIPPED，重复投递 | 仍是 DELIVERED，版本 4 |
+
+这些事件携带完整的更新后状态（after-image），不是只包含变化字段的补丁。
+当前表将 `event_version` 配置为 Sequence 列，按同订单的业务版本比较，
+不是按最后到达的消息覆盖。历史表则仍保留三个不同的事件。
+
+完成 Lab 后，在同一实验库核对：
+
+```sql
+SELECT order_id, status, event_version, paid_amount, refund_amount
+FROM d06_current
+WHERE order_id IN (900001, 900003)
+ORDER BY order_id;
+```
+
+| order_id | status | event_version | paid_amount | refund_amount |
+| ---: | --- | ---: | ---: | ---: |
+| 900001 | DELIVERED | 4 | 100.00 | 0.00 |
+| 900003 | REFUNDED | 4 | 150.00 | 150.00 |
+
+### 什么才是安全的重复？
+
+幂等的意思是重复处理同一件事，不改变已经正确的业务结果。
+本课要求同 event_id 的重投携带相同业务内容；同 ID 不同内容是冲突，
+不能用“重复了就覆盖”解释。
+
+event_version 是每笔订单单调递增的教学版本，不是 Kafka offset 或 Binlog 位点。
+同版本不同内容需要源端定义冲突规则，本 Lab 不验证这种冲突的自动解决。
+具体 Sequence 列行为见[并发更新控制](https://doris.apache.org/docs/4.x/data-operate/update/unique-update-concurrent-control/)。
 
 ## D06-03：Merge-on-Write 与部分列更新
 
-MoW 将同 Key 版本的可见性管理放到写入侧。业务通常读取当前逻辑结果，而不需要每条报表重复写最新版本选择逻辑。
+### 只给三个字段，其他字段应该怎样？
 
-部分列更新与省略列的整行写入不能混同；前者需要匹配配置，未提供字段是否保留必须验证。若使用版本字段，更新时也要给出正确版本。
+假设只需要取消订单 900001，不希望重发整条订单。
+“未提供字段”究竟表示保留旧值，还是按默认/空值等规则形成新行，
+取决于采用的更新方式，不能只看 INSERT 里少写了几列。
 
-**观察与练习：** 独立副本只更新状态和版本，检查金额和地域保留；恢复会话开关。
+Lab 在独立的 `d06_partial` 上演示，不改变主线当前表：
+
+| 阶段 | status | event_version | order_amount | region |
+| --- | --- | ---: | ---: | --- |
+| 初始行 | CREATED | 1 | 100.00 | EAST |
+| 部分更新只提交状态与版本 | CANCELLED | 2 | 100.00 | EAST |
+
+Notebook 保存会话原来的 `enable_unique_key_partial_update` 设置，
+开启后执行指定列的写入，最后恢复设置；即使写入失败也会恢复。
+版本也随这次业务修改递增。不要把整行写入省略字段与部分更新当作同义操作。
+
+```sql
+SELECT order_id, status, event_version, order_amount, region
+FROM d06_partial
+ORDER BY order_id;
+```
+
+结果应与表中第二行一致。只看到 CANCELLED 还不够，金额和地区必须未被清空。
+适用表模型和配置条件见[部分列更新](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/)。
 
 ## D06-04：软删除、SQL 删除与回收
 
-is_deleted 是业务字段，保留记录后由查询条件决定是否展示。SQL DELETE 改变普通查询可见结果，但不意味着存储文件立即回收。
+### 三种“删除”回答不同的问题
 
-导入删除标记、内部 Delete Bitmap 和业务软删除属于不同层面。首版执行软删除与 SQL DELETE，导入删除标记的路径留待验证。
+| 操作 | 查询结果 | 数据含义 |
+| --- | --- | --- |
+| 设置业务字段 is_deleted=true | 普通 SELECT 仍能看到，需要显式过滤 | 应用决定不再展示 |
+| SQL DELETE | 普通查询不再返回被删除的行 | 数据库层改变逻辑可见性 |
+| 后台物理回收 | 不是业务查询条件 | 存储文件在符合回收条件后释放 |
 
-**观察与练习：** 在两行副本中软删除一行、SQL 删除另一行，最后再次确认主线订单结果没有变化。
+Lab 的独立副本开始有两行：900001、900002。
+先软删除 900001，表里仍有两行，但 `WHERE is_deleted=false` 只返回 900002。
+再用 SQL DELETE 删除 900002，普通查询只剩软删除标记为真的 900001。
+
+```sql
+SELECT order_id, is_deleted, status
+FROM d06_delete
+ORDER BY order_id;
+```
+
+最终预期为 900001、true、CREATED。没有用这个结果推断磁盘空间已释放。
+业务软删除字段、导入删除标记和内部 Delete Bitmap 不是同一层机制；
+本 Lab 只执行软删除和 SQL DELETE。
+
+退款不是删除：主线中的 900003 应保留支付与退款金额，状态为 REFUNDED，
+不能为了让净收款变成零就删除支付事实。
 
 ## D06-05：历史、重放与恢复
 
-除了当前表与历史表，还用独立列出的模拟商品明细、支付、退款和配送事件逐订单对账。
-核对支付 250.00、退款 150.00，验证退款关联原支付、配送关联订单；客户和商品维度沿用 D05 导入的 WWI 表。
-这些情景由课程定义，不是从 WWI 静态快照恢复出的原始历史。
+### 中断可能发生在两个写入之间
 
-源端位点定位消费进度，事件版本裁决同 Key 的先后，业务时间用于时间窗口；三者职责不同。当前表不能替代完整业务历史。
+本 Lab 通过停止一个课程步骤模拟中断，不终止数据库进程：
 
-课程显式维护投递记录、去重历史和当前状态。中断可能发生在两个写入步骤之间，因此要能重试和对账，而不是假定自动跨表原子性。
+```text
+记录首次投递 → 写入历史 → [模拟中断] → 尚未写入当前表
+                                          │
+                 重新投递整批事件 ←────────┘
+                      │
+                      ├─ 原始投递继续记录
+                      ├─ 历史按 event_id 去重
+                      └─ 当前状态按 order_id + 版本裁决
+```
 
-**观察与练习：** 先写历史后中断，重投九次消息再完整重投一次；当前表 11 行、逻辑历史 18 行，原始投递累计 19 行。真实 Binlog 恢复仍待集成实验。
+这些表由代码分步维护，不假设三张表自动原子提交。
+恢复不能只检查“历史里已经有 event_id”，否则可能跳过尚未完成的当前状态写入。
+
+### 为什么三个行数不同？
+
+| 检查对象 | 预期数量 | 推导 |
+| --- | ---: | --- |
+| 当前订单 | 11 | 十笔初始订单＋一笔新订单 |
+| 逻辑历史 | 18 | 十条初始快照＋八个不同事件 |
+| 原始投递 | 19 | 中断前一次＋两轮各九次投递 |
+
+重复投递应增加投递记录，不应增加不同事件数或改变正确的当前状态。
+
+```sql
+SELECT 'current' AS record_type, COUNT(*) AS rows_count FROM d06_current
+UNION ALL
+SELECT 'history' AS record_type, COUNT(*) AS rows_count FROM d06_history
+UNION ALL
+SELECT 'deliveries' AS record_type, COUNT(*) AS rows_count FROM d06_deliveries
+ORDER BY record_type;
+```
+
+### 用另一套业务事实核对金额
+
+`business_events.json` 独立列出商品明细、支付、退款和配送事件，
+不是从被测当前表反向生成“预期”。Lab 检查退款关联原支付、配送关联订单，
+并确认客户和商品来自 D05 导入的 WWI 维度。
+
+```sql
+SELECT SUM(order_amount) AS orders_amount,
+       SUM(paid_amount) AS paid,
+       SUM(refund_amount) AS refunded,
+       SUM(paid_amount - refund_amount) AS net_receipts
+FROM d06_current;
+```
+
+预期依次为 1510.00、250.00、150.00、100.00。
+订单 900003 累计支付仍是 150.00，累计退款也是 150.00，净收款才是零。
+这些是教学模拟业务，与 WWI 原始账户收款分开。
+
+本实验验证应用步骤中断后的重放，不验证真实 CDC 快照切换、Binlog 位点恢复
+或服务崩溃恢复。理解这个边界后，才能把相同的对账思路用于持续接入系统。
 
 ## 动手实验 6：乱序裁决、历史保留和可恢复重放
 
@@ -104,9 +245,11 @@ is_deleted 是业务字段，保留记录后由查询条件决定是否展示。
 
 ## 单元总结
 
-- 到达顺序不能替代业务版本，消费位点也不能直接当作同 Key 版本。
-- 当前状态不能替代历史；跨表维护要明确中断与恢复步骤。
-- 退款不等于删除订单；更新和删除实验需核对未修改的字段和数据。
+- 当前表按 order_id，事件历史按 event_id，投递记录按每次尝试保存；三个粒度不能混用。
+- Sequence 列用业务版本裁决乱序，重投要求内容一致；到达顺序和日志位点不是业务新旧顺序。
+- 部分列更新需要相应模型与配置，既检查新状态，也检查未提供字段；实验结束恢复会话设置。
+- 软删除、SQL DELETE 和物理回收不同；退款要保留业务事实，不用删除订单代替退款。
+- 恢复后核对 11/18/19 三种行数、完整记录和独立业务流水；支付 250.00、退款 150.00、净收款 100.00。
 
 ## 知识测验 6：乱序裁决、历史保留和可恢复重放
 
@@ -117,7 +260,9 @@ is_deleted 是业务字段，保留记录后由查询条件决定是否展示。
 ## 官方参考资料
 
 - [Unique Key 主键模型](https://doris.apache.org/docs/4.x/table-design/data-model/unique/)
-- [Unique Key 并发更新与 Sequence 列](https://doris.apache.org/docs/4.x/data-operate/update/unique-update-concurrent-control/)
+- [Sequence 列与并发更新控制](https://doris.apache.org/docs/4.x/data-operate/update/unique-update-concurrent-control/)
 - [部分列更新](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/)
+- [DELETE](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-modification/DML/DELETE/)
+- [Compaction 原理](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/)
 
 官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

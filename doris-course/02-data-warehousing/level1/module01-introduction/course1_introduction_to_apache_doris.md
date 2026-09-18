@@ -19,22 +19,22 @@
 
 ## 学习目标
 
-完成讲义、实验和测验后，你应该能够：
+完成本单元后，你应该能够：
 
 1. 区分“完成一笔交易”和“分析一批订单”这两类工作。
 2. 说明 Doris 在业务数据库与分析用户之间承担什么职责。
-3. 说明本实验中 Frontend（FE）和 Backend（BE）的分工。
-4. 连接 Doris，阅读并执行建表、写入和聚合 SQL。
-5. 用明细、行数和金额一起核对数据，区分税前订单金额与收款。
+3. 说明存算一体环境中 Frontend（FE）和 Backend（BE）的分工。
+4. 连接 Doris，执行建表、写入和分组聚合 SQL。
+5. 用明细、行数和金额核对数据，区分税前订单金额与收款。
 
 ## 单元安排
 
-| 环节 | 内容 | 建议时间 | 学习成果 |
+| 环节 | 学习形式 | 建议时间 | 学习成果 |
 | --- | --- | --- | --- |
-| D01-01 | 什么是 Doris，交易与分析如何分工 | 7 分钟 | 解释 Doris 的位置和 FE/BE 职责 |
-| D01-02 | 为什么用 Doris 构建订单数仓 | 8 分钟 | 从业务问题理解接入、模型和分析服务 |
-| 实验 1 | 连接、建表、写入、核对、每日分析 | 25 分钟 | 十笔可核对的订单和一张每日汇总表 |
-| 测验 1 | 五道知识测验 | 5 分钟 | 检查理解，阅读答案解释 |
+| D01-01：什么是 Apache Doris？ | 场景与流程图 | 7 分钟 | 区分交易与分析，说明 FE/BE 分工 |
+| D01-02：为什么用 Doris 构建订单数仓？ | 案例与 SQL | 8 分钟 | 解释订单粒度、金额口径和查询结果 |
+| 实验 1 | 动手操作 | 25 分钟 | 创建十笔订单样本并生成日期汇总表 |
+| 测验 1 | 交互测验 | 5 分钟 | 检查产品定位、组件分工和第一条分析 SQL |
 
 ## D01-01：什么是 Apache Doris？
 
@@ -139,6 +139,21 @@ D03 和 D06 会分别解释模型选择与当前状态维护。
 ### 如何判断结果可信？
 
 先核对所有字段，再按日期汇总。这只是十笔子集，不是两天的全部营业额。
+完成 Lab 1 的初始化后，在同一实验库执行：
+
+```sql
+SELECT order_date,
+       COUNT(*) AS sample_orders,
+       SUM(order_amount) AS order_amount
+FROM d01_orders
+GROUP BY order_date
+ORDER BY order_date;
+```
+
+这张表一行是一笔订单，因此 COUNT(*) 可以计数订单；若换成订单明细表，
+一笔订单可能占多行，就不能直接沿用这个计数方法。
+GROUP BY 将同一天的订单分为一组，SUM 计算组内金额，ORDER BY 让日期顺序稳定。
+预期结果如下：
 
 | 日期 | 样本订单数 | 税前订单金额 |
 | --- | ---: | ---: |
@@ -167,21 +182,25 @@ D03 和 D06 会分别解释模型选择与当前状态维护。
 
 ## 单元总结
 
-- Doris 在这里承担分析职责，源系统继续负责业务交易。
-- 一个可信结果需要同时解释数据粒度、字段含义和查询口径。
-- 你完成的是小数据分析过程，还没有验证持续接入或生产性能。
+- 下单、支付提交是交易操作；按日期统计许多订单是分析操作，结果只有两行也可能需要扫描大量明细。
+- Doris 在本课程中接收业务数据并提供分析，源系统继续负责交易；MySQL 协议兼容不代表所有 MySQL 行为相同。
+- FE 接收 SQL、规划和协调查询；本节存算一体环境中的 BE 保存内部表数据并执行查询。
+- 第一条分析路径是连接、建表、写入、查询和核对；GROUP BY 决定汇总粒度，ORDER BY 决定展示顺序。
+- 十单样本税前金额为 12220.60，不代表完整两天的营业额，也不能推断收款；核对总量后还要核对明细。
 
 ## 知识测验 1：Doris 基础与第一批订单
 
 完成讲义和实验后，打开[测验 1](quiz1_doris_fundamentals.ipynb)。
-五道单选题涵盖分析职责、数据核对、FE/BE 分工、金额口径和重复写入；无需连接 Doris。
+五道单选题涵盖交易与分析、Doris 定位、FE/BE 分工、分组查询和金额口径；无需连接 Doris。
 提交后阅读解释，再检查自己能否说明其他选项为什么不合适。
 
 下一单元：[D02：观察存储与写入批次](../module02-architecture/course2_doris_architecture.md)。
 
 ## 官方参考资料
 
+- [Apache Doris 产品介绍](https://doris.apache.org/docs/4.x/getting-started/what-is-apache-doris/)
 - [系统架构：FE、BE 与两种部署方式](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)
+- [SELECT 查询](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/SELECT/)
 - [Duplicate Key 明细模型](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/)
 - [All-in-One 教学镜像](https://doris.apache.org/community/developer-guide/all-in-one-image/)
 

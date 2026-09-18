@@ -177,6 +177,58 @@ class RuntimeTest(unittest.TestCase):
 
 
 class MaterialsTest(unittest.TestCase):
+    def test_reading_information_and_schedules_are_consistent(self):
+        for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
+            content = path.read_text()
+            opening = content.split("## 单元目标", 1)[0]
+            fields = re.findall(r"^\| ([^|]+) \|", opening, re.MULTILINE)
+            self.assertEqual(fields, ["课程信息", "---", "所属课程", "产品版本", "实验版本", "预计时间"], path)
+            schedule = content.split("## 单元安排\n\n", 1)[1].split("\n## ", 1)[0]
+            self.assertIn("| 环节 | 学习形式 | 建议时间 | 学习成果 |", schedule, path)
+            minutes = [int(value) for value in re.findall(r"\| (\d+) 分钟 \|", schedule)]
+            total = int(re.search(r"\| 预计时间 \| 约 (\d+) 分钟", opening)[1])
+            self.assertEqual(sum(minutes), total, path)
+            self.assertNotIn("完成下方实验并核对结果", schedule, path)
+
+    def test_quiz_objectives_cover_each_reading_goal(self):
+        for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
+            content = path.read_text()
+            goals = content.split("## 学习目标\n\n", 1)[1].split("\n## ", 1)[0]
+            objectives = re.findall(r"^\d+\. (.+)$", goals, re.MULTILINE)
+            quiz = yaml.safe_load(next(path.parent.glob("quiz*.yaml")).read_text())
+            self.assertEqual([q["objective"] for q in quiz["questions"]], objectives, path)
+            summary = content.split("## 单元总结\n\n", 1)[1].split("\n## ", 1)[0]
+            self.assertEqual(len(re.findall(r"^- ", summary, re.MULTILINE)), len(objectives), path)
+
+    def test_readings_keep_examples_separate_from_lab_writes(self):
+        for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
+            content = path.read_text()
+            blocks = re.findall(r"^```sql\n(.*?)^```", content, re.MULTILINE | re.DOTALL)
+            self.assertTrue(blocks, path)
+            for block in blocks:
+                statements = [s.strip() for s in block.split(";") if s.strip()]
+                for statement in statements:
+                    self.assertRegex(statement, r"^(SELECT|EXPLAIN|SHOW)\b", path)
+            self.assertNotRegex(content, r"待补录制|待固定环境|录制所需|首版列出待验证|\*\*观察与练习：\*\*")
+
+    def test_reading_result_tables_match_wwi_and_replay_fixtures(self):
+        intro = next((COURSE_ROOT / "level1/module01-introduction").glob("course*.md")).read_text()
+        dates = sorted({row["order_date"] for row in sample()["orders"]})
+        for date in dates:
+            rows = [row for row in sample()["orders"] if row["order_date"] == date]
+            amount = sum(Decimal(row["order_amount"]) for row in rows)
+            self.assertIn(f"| {date} | {len(rows)} | {amount:.2f} |", intro)
+        changes = next((COURSE_ROOT / "level1/module06-state-changes").glob("course*.md")).read_text()
+        for row in fixture("deliveries.json"):
+            if row["order_id"] == 900001:
+                prefix = f'| {row["delivery_id"]} | {row["event_id"]} | {row["event_version"]} | {row["status"]}'
+                self.assertIn(prefix, changes)
+        for row in fixture("expected_current.json"):
+            if row["order_id"] in (900001, 900003):
+                expected = (f'| {row["order_id"]} | {row["status"]} | {row["event_version"]} '
+                            f'| {row["paid_amount"]} | {row["refund_amount"]} |')
+                self.assertIn(expected, changes)
+
     def test_readings_follow_chinese_course_structure(self):
         readings = list((COURSE_ROOT / "level1").glob("*/course*.md"))
         self.assertEqual(len(readings), 7)
