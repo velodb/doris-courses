@@ -177,6 +177,29 @@ class RuntimeTest(unittest.TestCase):
 
 
 class MaterialsTest(unittest.TestCase):
+    def test_reading_schedule_titles_match_sections(self):
+        for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
+            content = path.read_text()
+            schedule = content.split("## 单元安排\n\n", 1)[1].split("\n## ", 1)[0]
+            listed = re.findall(r"^\| (D\d+-\d+：[^|]+) \|", schedule, re.MULTILINE)
+            sections = re.findall(r"^## (D\d+-\d+：.+)$", content, re.MULTILINE)
+            self.assertEqual(listed, sections, path)
+
+    def test_learner_prose_excludes_author_status_notes(self):
+        paths = list((COURSE_ROOT / "level1").glob("*/course*.md"))
+        paths += list((COURSE_ROOT / "level1").glob("*/*.ipynb"))
+        for path in paths:
+            content = path.read_text()
+            if path.suffix == ".ipynb":
+                notebook = nbformat.read(path, as_version=4)
+                content = "\n".join(c.source for c in notebook.cells if c.cell_type == "markdown")
+            self.assertNotRegex(content, r"候选实验|候选 Lab|尚未实测|实验初稿|验收证据|未执行的步骤不要标记为完成|maintenance/.*/VALIDATION\.md", path)
+        for path in (COURSE_ROOT / "level1").glob("*/quiz*.ipynb"):
+            notebook = nbformat.read(path, as_version=4)
+            content = "\n".join(c.source for c in notebook.cells if c.cell_type == "markdown")
+            self.assertIn("### 加载测验", content, path)
+            self.assertIn("## 开始答题", content, path)
+
     def test_reading_information_and_schedules_are_consistent(self):
         for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
             content = path.read_text()

@@ -30,7 +30,7 @@
 | 环节 | 学习形式 | 建议时间 | 学习成果 |
 | --- | --- | --- | --- |
 | D02-01：列式存储与查询路径 | 查询流程图 | 5 分钟 | 沿订单查询解释 FE、BE 和列式读取 |
-| D02-02：存储层次与 Compaction | 层次图与例子 | 5 分钟 | 区分分片、写入版本和列式文件 |
+| D02-02：Tablet、Rowset、Segment 与 Compaction | 层次图与例子 | 5 分钟 | 区分分片、写入版本和列式文件 |
 | D02-03：写入批次与可见性 | 对照分析 | 5 分钟 | 说明事务次数不同但业务结果相同 |
 | 实验 2 | 动手操作 | 20 分钟 | 完成两种写入并核对十行、12220.60 |
 | 测验 2 | 交互测验 | 5 分钟 | 检查查询路径、存储层次和观测方法 |
@@ -84,6 +84,10 @@ WHERE order_id = 1;
 
 ## D02-02：Tablet、Rowset、Segment 与 Compaction
 
+订单到达 Doris 后，先按分区、分桶规则找到负责保存它的分片，再写成列式文件。
+阅读存储术语时，可以沿着这个过程理解：Tablet 回答“归哪个分片”，Rowset 回答
+“这一批写入形成了哪组数据”，Segment 回答“数据最终存在哪些文件里”。
+
 ### 先看每一层负责什么
 
 ```text
@@ -103,7 +107,12 @@ Table：SQL 中的一张表
 
 例如，两天各一个分区，每个分区四个桶，得到八个 Tablet；
 若再配置副本，会增加物理副本，不会把逻辑订单复制成多笔。
-本课程沙箱使用单副本，不用于验证副本恢复。
+本课程沙箱使用单副本，便于观察一份数据的写入过程。
+
+以 Lab 的单桶订单表为例：一次提交十笔订单，这些数据都写入同一个 Tablet；
+分十次提交时，同一个 Tablet 会陆续接收十批数据。每批写入形成自己的 Rowset，
+其中的列数据存放在 Segment 中。一个大批次可以生成多个 Segment，
+因此业务行数、提交次数和文件数需要分别理解。
 
 ### 写入后为什么还要合并？
 
@@ -118,8 +127,11 @@ Compaction 在后台将多个 Rowset 合并，减少读取时需要处理的片�
 写入 C → Rowset C ┘
 ```
 
-这不是“先合并才能查询”的意思。写入事务发布为可见版本后即可供查询使用，
-不必等后台合并结束。各写入接口何时返回成功、何时可见，要按接口语义理解。
+写入事务发布为可见版本后，查询就能读取新数据。后台合并在此后整理文件：
+即使三批数据仍分散在三个 Rowset 中，查询也能得到完整的订单汇总。
+所以“业务结果何时可见”和“文件何时合并”是两个独立问题。
+这也是排查写入问题时先检查事务结果、再检查 Compaction 的原因。
+存储层的合并过程见[Compaction 原理](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/)。
 
 ## D02-03：写入批次与可见性
 
@@ -164,9 +176,10 @@ SHOW TABLETS FROM orders_rowwise;
 | Tablet 元数据中的版本相关信息 | 采样时的存储状态 | Rowset/Segment 的完整清单 |
 | Query Profile | 实际执行中的算子耗时、扫描统计等 | 脱离机器、缓存与数据规模的固定性能倍数 |
 
-后台合并可能在采样前完成。因此，Lab 不要求 VersionCount 必然不同，
-也不以十行数据的耗时排名。当前动手范围是小样本写入、查询计划和基础元数据，
-不包含大数据 Profile 或底层 Rowset 管理接口实验。
+后台合并可能在采样前完成。如果两张表的版本相关信息相近，先确认写入方式，
+再结合采样时刻理解结果；一次采样反映的是当时的存储状态。
+本节用十行数据理解写入机制。评估生产吞吐时，还需要固定数据规模、并发和机器资源，
+持续观察写入延迟、版本积累及合并是否跟得上写入速度。
 
 ## 动手实验 2：观察存储和写入批次
 
@@ -177,8 +190,6 @@ SHOW TABLETS FROM orders_rowwise;
 1. 创建相同结构的批量写入表和逐行写入表。
 2. 用相同订单样本执行两种写入方式，观察 Tablet 元数据。
 3. 核对两表均为十行、12220.60，记录采样时刻和后台合并的影响。
-
-完成后保存查询结果与差异原因；未执行的步骤不要标记为完成。
 
 ### 数据来源与说明
 
@@ -197,7 +208,6 @@ SHOW TABLETS FROM orders_rowwise;
 
 完成讲义和实验后，打开[测验 2](quiz2_storage_and_write_batches.ipynb)。
 测验包含五道单选题，不依赖 Doris 或外部服务；提交后阅读答案解释。
-能解释结果和选择原因，比只记住命令名称更重要。
 
 ## 官方参考资料
 
@@ -207,5 +217,3 @@ SHOW TABLETS FROM orders_rowwise;
 - [EXPLAIN](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/EXPLAIN/)
 - [Query Profile](https://doris.apache.org/docs/4.x/query-acceleration/query-profile/)
 - [Group Commit](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)
-
-官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

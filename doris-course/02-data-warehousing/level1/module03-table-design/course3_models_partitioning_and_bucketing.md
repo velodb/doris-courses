@@ -36,10 +36,15 @@
 
 ## D03-01：Doris Key Model
 
+建表时选择的 Key Model（表模型），决定键相同的数据如何处理。
+原始接入表需要留下每次输入，订单当前表需要反映最新金额，销售汇总表需要累计指标。
+这三种需求分别对应保留明细、按键更新和按函数聚合。先确定一行的业务含义，
+再选模型，才能让写入行为与报表口径一致。
+
 ### 同样的输入，为什么结果不同？
 
 WWI 订单 1 的金额是 2300.00，订单 2 是 405.00。现在在隔离实验表里，
-把订单 1 的金额人为修正为 2250.00。这是教学操作，不是原始历史变更。
+把订单 1 的金额模拟修正为 2250.00。
 按下表顺序分三次提交，并等每次写入完成：
 
 | 写入顺序 | id | amount | 含义 |
@@ -99,6 +104,10 @@ SELECT id, amount FROM orders_aggregate ORDER BY id;
 
 ### 四种设计不要混在一起
 
+选好“相同订单如何处理”之后，还要决定“数据放在哪里”。例如每天都要查询订单日报，
+可以先按日期分区，让昨天的查询集中读取昨天的数据；一天的数据再按订单号分桶，
+分散到多个 Tablet，为并行处理提供分片。
+
 | 设计 | 回答的问题 | 本节例子 |
 | --- | --- | --- |
 | 分区 | 哪些数据属于同一范围，哪些范围可以不读？ | 按 order_date 分两天 |
@@ -106,8 +115,9 @@ SELECT id, amount FROM orders_aggregate ORDER BY id;
 | 排序键 | 数据在存储中如何排序？ | order_date、order_id |
 | 业务唯一键 | 什么标识同一个业务对象？ | 订单当前状态以 order_id 标识 |
 
-Lab 的分区表是 Duplicate Key 明细表，不负责维护订单当前状态。
-不要因为某个分区表把日期放入键中，就把订单的业务唯一性也改成“日期＋订单号”。
+Lab 的分区表使用 Duplicate Key 保留历史明细，日期和订单号用于排序。
+另建订单当前表时，应重新核对业务唯一键：如果同一订单的日期可能被修正，
+把日期也作为唯一键的一部分，就会把修正前后识别为两个不同的键。
 
 下面是 Lab 创建的物理布局，供阅读；建表和初始化由 Lab 执行：
 
@@ -120,6 +130,12 @@ orders_partitioned
 ```
 
 ### 比较三个查询计划
+
+Hash 分桶根据分桶列的值计算目标桶。同一分区内，相同订单号会落入同一个桶；
+具体桶号由 Hash 计算，不能把订单号直接当桶号。查询同时给出日期和订单号等值条件时，
+Doris 就有机会先锁定一天，再锁定该订单所在的桶。
+分桶数决定分片数量，增加分桶也会增加管理开销，需要结合数据量选择。
+相关规则见[分区与分桶](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)。
 
 完成 Lab 初始化后执行：
 
@@ -162,8 +178,6 @@ WHERE order_date = '2013-01-01';
 2. 创建独立的日期分区明细表，准备相同查询的不同过滤条件。
 3. 比较无过滤、日期过滤、日期加订单号过滤的计划和结果。
 
-完成后保存查询结果与差异原因；未执行的步骤不要标记为完成。
-
 ### 数据来源与说明
 
 实验使用 Microsoft WWI 官方模拟批发业务的历史子集，保留原始客户与商品标识。
@@ -181,7 +195,6 @@ WHERE order_date = '2013-01-01';
 
 完成讲义和实验后，打开[测验 3](quiz3_models_and_data_distribution.ipynb)。
 测验包含五道单选题，不依赖 Doris 或外部服务；提交后阅读答案解释。
-能解释结果和选择原因，比只记住命令名称更重要。
 
 ## 官方参考资料
 
@@ -191,5 +204,3 @@ WHERE order_date = '2013-01-01';
 - [分区与分桶基础](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)
 - [数据分桶](https://doris.apache.org/docs/4.x/table-design/data-partitioning/data-bucketing/)
 - [EXPLAIN](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/EXPLAIN/)
-
-官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

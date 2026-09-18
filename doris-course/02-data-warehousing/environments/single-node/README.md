@@ -51,12 +51,12 @@ python3 -m venv .venv
 无密码 root 仅用于这个本机教学沙箱，不作为远程部署示例。
 本课程使用独立的项目、端口和数据卷，不会复用或停止其他服务的容器。
 多人共用同一个沙箱时，可由讲师在启动各自 Jupyter 前设置不同的 DW_DATABASE；
-实验库名须以 dw_course_l1_ 开头。实际验证范围见[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。
+实验库名须以 dw_course_l1_ 开头。
 
 ## 3. 准备 D05 历史数据包
 
 D01–D03 的 WWI 小样本和 D06/D07 的模拟事件已在仓库内。
-D05 的完整 Parquet 包暂不从网络下载；请讲师按[数据说明](../../datasets/README.md)准备。
+D05 的完整 Parquet 包由讲师提供，请按[数据说明](../../datasets/README.md)准备。
 默认放在课程目录的 `.runtime/wwi/`；也可以在启动 Jupyter 前设置：
 
 ```bash
@@ -74,7 +74,7 @@ export DW_WWI_DATA_DIR=/absolute/path/to/wwi-parquet
 | Access denied | 核对用户、密码、连接来源以及建库建表权限 |
 | BE 不存活、无法建表或写入 | 查看 SHOW BACKENDS 和 BE 日志 |
 | Docker 端口被占用 | 请讲师协调课程环境；不要停止不属于你的服务 |
-| D01 成功而下一个 Lab 无法连接 | 确认内核在同一台机器、沙箱仍在运行；更新课程后重启内核并从初始化重跑 |
+| D01 成功而下一个 Lab 无法连接 | 确认内核在同一台机器、沙箱仍在运行；在当前 Notebook 中执行初始化与连接步骤 |
 
 排查自己的沙箱时，在课程目录运行：
 
@@ -100,9 +100,7 @@ docker compose --project-name doris-warehousing-course --file environments/singl
 不要把删除数据卷当作重试手段，也不要操作不属于本课程的容器。
 
 表名按业务含义或实验用途命名，含义见 [Level 1 表名说明](../../level1/README.md#实验表如何命名)。
-已有旧版实验表不会自动迁移或删除；使用新版时，请按学习顺序重新运行所需 Lab，
-让下游读取新版上游生成的表。
+继续学习时，确认前置 Lab 的表已准备好；需要重建数据时，按学习顺序重新执行相关 Lab。
 
 每个 Lab 开头都会说明它重建哪些表。D01 只重建 orders_sample；
 D07 读取 D06 的合格订单，并只重建自己的订单状态、事件和业务流水实验表。
-检查实际 FE/BE 构建版本；开发版本上的结果不能代替正式版本验证。

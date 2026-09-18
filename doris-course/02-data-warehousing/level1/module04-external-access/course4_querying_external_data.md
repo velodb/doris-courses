@@ -45,11 +45,17 @@
 | --- | --- | --- |
 | Doris 内部表 | Doris 管理的表结构和数据 | 可以作为导入后的分析表 |
 | Parquet 文件 | 按列编码的数据文件 | 可以单独读取，也可以是湖表的数据文件 |
-| Iceberg 表 | 表元数据、快照以及所引用的数据文件 | 不是一个放有 Parquet 的目录 |
-| External Catalog | Doris 访问外部系统元数据和表的入口 | 不是把全部外部数据复制到内部表 |
+| Iceberg 表 | 表元数据、快照以及所引用的数据文件 | 通过表元数据确定一次查询使用哪些文件 |
+| External Catalog | Doris 访问外部系统元数据和表的入口 | 让外部表可以通过 Doris SQL 查询 |
 
-把一批 Parquet 放进对象存储，不会自动生成 Iceberg 的表元数据。
-同样，创建 Catalog 也不等于完成数据导入。
+Parquet 描述一个文件内的列和数据；Iceberg 把多个文件组织成可管理的表。
+其中，快照记录表在某个版本所引用的数据文件。表发生变化时，元数据负责描述新的表状态，
+读取方据此选择文件。因此，查询一张 Iceberg 表需要同时访问它的元数据与数据文件。
+
+External Catalog 则解决 Doris 从哪里找到这张表的问题：配置元数据服务的连接与权限后，
+Doris 可以取得表结构、规划读取，再访问对应文件并执行过滤、关联与聚合。
+配置 Catalog 时应同时检查元数据服务和文件存储的访问权限。
+具体接入类型见[Iceberg Catalog](https://doris.apache.org/docs/4.x/lakehouse/catalogs/iceberg-catalog/)。
 
 ```text
 独立 Parquet ── 文件 TVF ──────────┐
@@ -106,8 +112,12 @@ ORDER BY order_date;
           └─ 客户行 B → 又一条订单结果（重复）
 ```
 
-图中重复客户是说明关联放大的假设，不是说原 WWI 客户表有这个错误。
-Lab 用唯一键客户表，并检查关联前后行数、金额以及导入后的逐字段结果。
+图中用重复客户演示关联放大。Lab 使用唯一键客户表，让每笔订单最多匹配一条客户记录；
+再检查关联前后行数、金额以及导入后的逐字段结果。
+
+LEFT JOIN 会保留左侧订单，缺少客户的订单仍会出现，客户字段为 NULL；
+INNER JOIN 只保留匹配成功的订单。做完整订单对账时，先用 LEFT JOIN 找出缺失客户，
+可以避免把“关联后少了订单”误读为业务量下降。
 
 完成外部实验后，以下查询可在课程内部实验库再次检查关联缺失：
 
@@ -135,9 +145,8 @@ ORDER BY order_date;
 此结果应与直查湖表一致；再比对订单号、客户、日期、金额、明细数和来源，
 避免不同错误在汇总中抵消。
 
-**实验条件：** 当前 Lab 是尚未实测的外部集成实验，需要讲师预置 Iceberg
-服务、Catalog 和十单样本。没有环境时先读讲义并完成测验，实验记录为未执行；
-不能用另一张内部表替代湖表。示例不宣称已验证外部写入、Schema 演进或性能。
+**实验条件：** 本实验需要讲师提供可查询的 Iceberg 服务、Catalog 和十单样本。
+准备好外部环境后再执行 Lab；也可以先完成本节讲义与测验，继续学习 D05，稍后补做湖表实验。
 
 ## 动手实验 4：湖表与内部表关联
 
@@ -148,8 +157,6 @@ ORDER BY order_date;
 1. 确认 DW_ICEBERG_ORDERS 指向讲师提供的真实外部表。
 2. 直接查询湖上十笔订单，核对金额 12220.60。
 3. 关联内部客户表并检查行数，再导入内部订单表进行对账。
-
-完成后保存查询结果与差异原因；未执行的步骤不要标记为完成。
 
 ### 数据来源与说明
 
@@ -177,5 +184,3 @@ ORDER BY order_date;
 - [Iceberg Catalog](https://doris.apache.org/docs/4.x/lakehouse/catalogs/iceberg-catalog/)
 - [S3 文件表值函数](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)
 - [INSERT INTO SELECT](https://doris.apache.org/docs/4.x/data-operate/import/import-way/insert-into-manual/)
-
-官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

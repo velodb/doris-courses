@@ -26,7 +26,7 @@
 课程采用 WWI 历史业务数据与独立的模拟新订单，不需要购买数据服务。
 D01 从仓库内的十笔 WWI 历史订单开始；D05 导入完整的 10 表 Parquet 包；
 D06、D07 处理引用同一批客户、商品的新订单，覆盖质量、支付退款和重复乱序。
-历史账户收款不冒充逐订单支付。来源、许可与本地数据准备见[数据说明](datasets/README.md)。
+历史账户收款与模拟订单支付按各自的业务粒度分析。来源、许可与本地数据准备见[数据说明](datasets/README.md)。
 
 ## 安装并打开课程
 
@@ -43,18 +43,21 @@ python3 -m venv .venv
 后续 Lab 自动连接同一个沙箱，不需要重新选择环境或填写连接地址。
 密码不要写进 Notebook，具体说明见[环境准备](environments/single-node/README.md)。
 
-## 当前可学习范围
+## 课程与实验安排
 
-D01 已按逐步讲解的方式展开；其余 Level 1 单元已有实验初稿，仍在完善教学说明。
-D04 需要讲师预置 Iceberg；D05 当前可执行内容为本地 Parquet 与 CSV 的 Stream Load。
-Kafka、CDC、对象存储持续接入等后续实验尚未提供。
+Level 1 提供七个单元，每个单元包含讲义、Lab 和五道交互测验。
 
-课程镜像为 apache/doris:all-in-one-4.1.3，已验证单容器启动和六个核心 Lab。
-镜像实际构建标识、验证平台及未覆盖范围见[验证记录](../../maintenance/02-data-warehousing/VALIDATION.md)。
-小样本用于理解语义与核对结果，不用于证明性能或生产可靠性。
+| 实验 | 所需环境与数据 |
+| --- | --- |
+| D01–D03 | 课程单容器沙箱、仓库内的十单样本 |
+| D04 | 沙箱及讲师预置的 Iceberg 服务、Catalog 和订单表 |
+| D05 | 沙箱、讲师提供的历史 Parquet 包、仓库内的模拟 CSV |
+| D06–D07 | 沙箱及前一单元产出的表、仓库内的模拟事件 |
+
+课程镜像为 apache/doris:all-in-one-4.1.3。D05 的 Lab 练习 Stream Load，
+讲义同时介绍 Kafka、CDC 与对象存储持续接入的适用场景和工作方式。
+尚未准备 Iceberg 时，可以先学习 D04 讲义与测验，继续 D05，稍后补做湖表实验。
 
 ## 维护者资料
 
-[课程维护资料](../../maintenance/02-data-warehousing/README.md)：验证记录、集成待办和 PR 草稿。
-
-离线测试和整组 Lab 的执行方式见验证记录；它们不是学员开始学习的前置步骤。
+[课程维护资料](../../maintenance/02-data-warehousing/README.md)记录环境验证、测试方式与集成实验准备情况。

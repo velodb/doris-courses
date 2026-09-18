@@ -443,5 +443,3 @@ ORDER BY order_id;
 - [Duplicate Key 明细模型](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/)
 - [Doris 数据类型](https://doris.apache.org/docs/4.x/table-design/data-type/)
 - [All-in-One 教学镜像](https://doris.apache.org/community/developer-guide/all-in-one-image/)
-
-官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。
