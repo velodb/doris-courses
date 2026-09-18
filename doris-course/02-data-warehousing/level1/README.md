@@ -23,11 +23,10 @@ SQL、API 和产品名称保留原文；课程主题与学习顺序沿用数仓�
 | 3 · D03 | [重复订单、分区与分桶怎样处理？](module03-table-design/course3_models_partitioning_and_bucketing.md) | [Lab 3](module03-table-design/lab3_models_and_pruning.ipynb) | [Quiz 3](module03-table-design/quiz3_models_and_data_distribution.ipynb) |
 | 4 · D04 | [已有湖表怎样与内部表关联？](module04-external-access/course4_querying_external_data.md) | [Lab 4](module04-external-access/lab4_query_iceberg.ipynb) | [Quiz 4](module04-external-access/quiz4_internal_files_and_lake_tables.ipynb) |
 | 5 · D05 | [怎样导入文件、判断失败并安全重试？](module05-ingestion/course5_batch_and_streaming_ingestion.md) | [Lab 5](module05-ingestion/lab5_stream_load.ipynb) | [Quiz 5](module05-ingestion/quiz5_load_methods_and_retry_safety.ipynb) |
-| 6 · D09-A | [怎样保留输入并分离错误记录？](module09a-data-quality/course9a_data_quality_and_schema_validation.md) | [Lab 9A](module09a-data-quality/lab9a_validate_orders.ipynb) | [Quiz 9A](module09a-data-quality/quiz9a_data_quality_and_rejection.ipynb) |
-| 7 · D06 | [怎样应对乱序、退款与事件重放？](module06-state-changes/course6_updates_deletes_and_replay.md) | [Lab 6](module06-state-changes/lab6_current_state_and_replay.ipynb) | [Quiz 6](module06-state-changes/quiz6_state_changes_and_replay.ipynb) |
+| 6 · D06 | [怎样保留输入并分离错误记录？](module06-data-quality/course6_data_quality_and_schema_validation.md) | [Lab 6](module06-data-quality/lab6_validate_orders.ipynb) | [Quiz 6](module06-data-quality/quiz6_data_quality_and_rejection.ipynb) |
+| 7 · D07 | [怎样应对乱序、退款与事件重放？](module07-state-changes/course7_updates_deletes_and_replay.md) | [Lab 7](module07-state-changes/lab7_current_state_and_replay.ipynb) | [Quiz 7](module07-state-changes/quiz7_state_changes_and_replay.ipynb) |
 
-编号对应课程总纲，不是运行顺序。D09-A 先产生合格订单，D06 再读取它。
-按上表顺序学习，不要按文件夹名称排序运行。
+按 Module 1–7 的顺序学习。D06 完成数据质量校验，D07 使用合格订单处理状态变化与事件重放。
 
 ## 数据怎样贯穿 Level 1？
 
@@ -36,8 +35,8 @@ SQL、API 和产品名称保留原文；课程主题与学习顺序沿用数仓�
 | D01–D03 | WWI 十单投影，税前金额 12220.60；查询、存储、模型与分区 |
 | D04 | 同一 WWI 子集预置为真实 Iceberg 表，关联内部客户；需额外环境 |
 | D05 | 10 张 WWI 历史表、701,846 行；再导入 10 笔模拟新订单 |
-| D09-A | 13 行模拟输入 → 10 行合格、3 行拒收，验证 WWI 客户引用 |
-| D06 | 11 笔当前订单、18 条逻辑历史、19 次投递；核对商品、支付、退款及配送 |
+| D06 | 13 行模拟输入 → 10 行合格、3 行拒收，验证 WWI 客户引用 |
+| D07 | 11 笔当前订单、18 条逻辑历史、19 次投递；核对商品、支付、退款及配送 |
 
 历史来源 WWI 与新增来源 COURSE_SIMULATION 分开，不能将客户账户收款强行分摊到历史订单。
 

@@ -218,7 +218,7 @@ class MaterialsTest(unittest.TestCase):
             rows = [row for row in sample()["orders"] if row["order_date"] == date]
             amount = sum(Decimal(row["order_amount"]) for row in rows)
             self.assertIn(f"| {date} | {len(rows)} | {amount:.2f} |", intro)
-        changes = next((COURSE_ROOT / "level1/module06-state-changes").glob("course*.md")).read_text()
+        changes = next((COURSE_ROOT / "level1/module07-state-changes").glob("course*.md")).read_text()
         for row in fixture("deliveries.json"):
             if row["order_id"] == 900001:
                 prefix = f'| {row["delivery_id"]} | {row["event_id"]} | {row["event_version"]} | {row["status"]}'
@@ -247,12 +247,28 @@ class MaterialsTest(unittest.TestCase):
             self.assertGreaterEqual(len(re.findall(r"https://doris\.apache\.org/", references)), 2, path)
 
     def test_numbered_material_names(self):
+        import runpy
+        modules = sorted((COURSE_ROOT / "level1").glob("module*"))
+        self.assertEqual([module.name for module in modules], [
+            "module01-introduction", "module02-architecture", "module03-table-design",
+            "module04-external-access", "module05-ingestion", "module06-data-quality",
+            "module07-state-changes",
+        ])
+        runner = runpy.run_path(str(MAINTENANCE_ROOT / "scripts/run_labs.py"))
+        self.assertEqual(runner["CORE"], [
+            module.name for module in modules if module.name != "module04-external-access"
+        ])
         for module in (COURSE_ROOT / "level1").glob("module*"):
             match = re.match(r"module(\d+)([a-z]?)", module.name)
             number = str(int(match[1])) + match[2]
             self.assertEqual(len(list(module.glob(f"course{number}_*.md"))), 1)
+            self.assertEqual(len(list(module.glob(f"lab{number}_*.ipynb"))), 1)
             self.assertEqual(len(list(module.glob(f"quiz{number}_*.yaml"))), 1)
             self.assertEqual(len(list(module.glob(f"quiz{number}_*.ipynb"))), 1)
+            quiz_path = next(module.glob(f"quiz{number}_*.ipynb"))
+            quiz_source = "\n".join(cell.source for cell in nbformat.read(quiz_path, as_version=4).cells)
+            yaml_path = next(module.glob(f"quiz{number}_*.yaml"))
+            self.assertIn(str(yaml_path.relative_to(COURSE_ROOT)), quiz_source)
             self.assertFalse((module / "course.md").exists())
             self.assertFalse((module / "quiz.ipynb").exists())
 
@@ -337,8 +353,8 @@ class MaterialsTest(unittest.TestCase):
 
         self.assertIn("CREATE TABLE orders_sample", sources["module01-introduction"])
         self.assertIn('target = "wwi_" + name', sources["module05-ingestion"])
-        quality = sources["module09a-data-quality"]
-        replay = sources["module06-state-changes"]
+        quality = sources["module06-data-quality"]
+        replay = sources["module07-state-changes"]
         self.assertIn("INSERT INTO customers SELECT CustomerID, CustomerName FROM wwi_customers", quality)
         self.assertIn("CREATE VIEW orders_classified", quality)
         self.assertIn('order_ddl("orders_clean")', quality)

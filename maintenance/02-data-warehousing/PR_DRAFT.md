@@ -6,7 +6,7 @@ not a single-video PR and not a claim that all planned Level 1 labs are complete
 ## Summary
 
 - Add an independent `02-data-warehousing/level1` course, preserving the agreed
-  D01/D02/D03/D04/D05/D09-A/D06 teaching order.
+  D01/D02/D03/D04/D05/D06/D07 teaching order.
 - Add seven course readings mapped to 25 video topics, seven Lab notebooks,
   seven interactive quiz notebooks and 35 questions.
 - Add original synthetic order fixtures and independent expected results.
@@ -32,7 +32,7 @@ not a single-video PR and not a claim that all planned Level 1 labs are complete
   all 701,846 rows from ten local Parquet files with manifest checks.
 - Keep new simulation orders in a separate ID range/source, referencing WWI
   customers and products. Add payment, refund and shipment ledgers for reconciliation.
-- Update D09-A to 13 inputs / 10 accepted / 3 rejected, and D06 to 11 current
+- Update D06 to 13 inputs / 10 accepted / 3 rejected, and D07 to 11 current
   orders / 18 history events / 19 deliveries. Update readings and relevant quizzes.
 - Retain local-only author preparation: no S3 upload, no credentials, no committed
   large files, and no claim that real CDC or Iceberg has been validated.

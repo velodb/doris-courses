@@ -1,4 +1,4 @@
-title: D06：乱序裁决、历史保留和可恢复重放
+title: D07：乱序裁决、历史保留和可恢复重放
 description: 五道单选题；不需要数据库连接，提交后查看解释。
 questions:
 - id: q1

@@ -13,8 +13,8 @@ CORE = [
     "module02-architecture",
     "module03-table-design",
     "module05-ingestion",
-    "module09a-data-quality",
-    "module06-state-changes",
+    "module06-data-quality",
+    "module07-state-changes",
 ]
 
 

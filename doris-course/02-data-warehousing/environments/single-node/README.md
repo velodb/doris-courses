@@ -55,7 +55,7 @@ python3 -m venv .venv
 
 ## 3. 准备 D05 历史数据包
 
-D01–D03 的 WWI 小样本和 D09-A/D06 的模拟事件已在仓库内。
+D01–D03 的 WWI 小样本和 D06/D07 的模拟事件已在仓库内。
 D05 的完整 Parquet 包暂不从网络下载；请讲师按[数据说明](../../datasets/README.md)准备。
 默认放在课程目录的 `.runtime/wwi/`；也可以在启动 Jupyter 前设置：
 
@@ -104,5 +104,5 @@ docker compose --project-name doris-warehousing-course --file environments/singl
 让下游读取新版上游生成的表。
 
 每个 Lab 开头都会说明它重建哪些表。D01 只重建 orders_sample；
-D06 读取 D09-A 的合格订单，并只重建自己的订单状态、事件和业务流水实验表。
+D07 读取 D06 的合格订单，并只重建自己的订单状态、事件和业务流水实验表。
 检查实际 FE/BE 构建版本；开发版本上的结果不能代替正式版本验证。
