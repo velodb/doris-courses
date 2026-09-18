@@ -26,6 +26,18 @@ not a single-video PR and not a claim that all planned Level 1 labs are complete
 - Align all seven readings with course 01's module structure using Chinese
   headings, standalone lab/summary/quiz sections and official references.
 
+## WWI dataset integration (2026-09-18)
+
+- Replace the D01–D04 historical baseline with an attributed WWI subset; D05 loads
+  all 701,846 rows from ten local Parquet files with manifest checks.
+- Keep new simulation orders in a separate ID range/source, referencing WWI
+  customers and products. Add payment, refund and shipment ledgers for reconciliation.
+- Update D09-A to 13 inputs / 10 accepted / 3 rejected, and D06 to 11 current
+  orders / 18 history events / 19 deliveries. Update readings and relevant quizzes.
+- Retain local-only author preparation: no S3 upload, no credentials, no committed
+  large files, and no claim that real CDC or Iceberg has been validated.
+- Existing learner quiz outputs and course 01 changes remain excluded.
+
 ## Validation
 
 See [VALIDATION.md](VALIDATION.md) for build IDs, observed results and limitations.

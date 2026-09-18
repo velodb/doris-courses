@@ -1,8 +1,8 @@
 [
   {
     "input_id": 1,
-    "order_id": 1001,
-    "customer_id": 101,
+    "order_id": "900001",
+    "customer_id": "1",
     "order_amount": "100.00",
     "status": "CREATED",
     "event_version": 1,
@@ -10,12 +10,13 @@
     "event_time": "2026-01-01 09:00:00",
     "paid_amount": "0.00",
     "refund_amount": "0.00",
-    "region": "EAST"
+    "region": "EAST",
+    "data_source": "COURSE_SIMULATION"
   },
   {
     "input_id": 2,
-    "order_id": 1002,
-    "customer_id": 102,
+    "order_id": "900002",
+    "customer_id": "2",
     "order_amount": "200.00",
     "status": "CREATED",
     "event_version": 1,
@@ -23,12 +24,13 @@
     "event_time": "2026-01-01 09:00:00",
     "paid_amount": "0.00",
     "refund_amount": "0.00",
-    "region": "WEST"
+    "region": "WEST",
+    "data_source": "COURSE_SIMULATION"
   },
   {
     "input_id": 3,
-    "order_id": 1003,
-    "customer_id": 103,
+    "order_id": "900003",
+    "customer_id": "3",
     "order_amount": "150.00",
     "status": "CREATED",
     "event_version": 1,
@@ -36,12 +38,13 @@
     "event_time": "2026-01-01 09:00:00",
     "paid_amount": "0.00",
     "refund_amount": "0.00",
-    "region": "EAST"
+    "region": "EAST",
+    "data_source": "COURSE_SIMULATION"
   },
   {
     "input_id": 4,
-    "order_id": 1004,
-    "customer_id": 104,
+    "order_id": "900004",
+    "customer_id": "4",
     "order_amount": "80.00",
     "status": "CREATED",
     "event_version": 1,
@@ -49,12 +52,13 @@
     "event_time": "2026-01-01 09:00:00",
     "paid_amount": "0.00",
     "refund_amount": "0.00",
-    "region": "WEST"
+    "region": "WEST",
+    "data_source": "COURSE_SIMULATION"
   },
   {
     "input_id": 5,
-    "order_id": 1005,
-    "customer_id": 105,
+    "order_id": "900005",
+    "customer_id": "5",
     "order_amount": "120.00",
     "status": "CREATED",
     "event_version": 1,
@@ -62,12 +66,13 @@
     "event_time": "2026-01-01 09:00:00",
     "paid_amount": "0.00",
     "refund_amount": "0.00",
-    "region": "EAST"
+    "region": "EAST",
+    "data_source": "COURSE_SIMULATION"
   },
   {
     "input_id": 6,
-    "order_id": 1006,
-    "customer_id": 106,
+    "order_id": "900006",
+    "customer_id": "6",
     "order_amount": "60.00",
     "status": "CREATED",
     "event_version": 1,
@@ -75,12 +80,13 @@
     "event_time": "2026-01-01 09:00:00",
     "paid_amount": "0.00",
     "refund_amount": "0.00",
-    "region": "WEST"
+    "region": "WEST",
+    "data_source": "COURSE_SIMULATION"
   },
   {
     "input_id": 7,
-    "order_id": 1007,
-    "customer_id": 107,
+    "order_id": "900007",
+    "customer_id": "7",
     "order_amount": "300.00",
     "status": "CREATED",
     "event_version": 1,
@@ -88,12 +94,13 @@
     "event_time": "2026-01-01 09:00:00",
     "paid_amount": "0.00",
     "refund_amount": "0.00",
-    "region": "EAST"
+    "region": "EAST",
+    "data_source": "COURSE_SIMULATION"
   },
   {
     "input_id": 8,
-    "order_id": 1008,
-    "customer_id": 108,
+    "order_id": "900008",
+    "customer_id": "8",
     "order_amount": "90.00",
     "status": "CREATED",
     "event_version": 1,
@@ -101,12 +108,13 @@
     "event_time": "2026-01-01 09:00:00",
     "paid_amount": "0.00",
     "refund_amount": "0.00",
-    "region": "WEST"
+    "region": "WEST",
+    "data_source": "COURSE_SIMULATION"
   },
   {
     "input_id": 9,
-    "order_id": 1009,
-    "customer_id": 109,
+    "order_id": "900009",
+    "customer_id": "9",
     "order_amount": "50.00",
     "status": "CREATED",
     "event_version": 1,
@@ -114,12 +122,13 @@
     "event_time": "2026-01-01 09:00:00",
     "paid_amount": "0.00",
     "refund_amount": "0.00",
-    "region": "EAST"
+    "region": "EAST",
+    "data_source": "COURSE_SIMULATION"
   },
   {
     "input_id": 10,
-    "order_id": 1010,
-    "customer_id": 110,
+    "order_id": "900010",
+    "customer_id": "10",
     "order_amount": "250.00",
     "status": "CREATED",
     "event_version": 1,
@@ -127,11 +136,12 @@
     "event_time": "2026-01-01 09:00:00",
     "paid_amount": "0.00",
     "refund_amount": "0.00",
-    "region": "WEST"
+    "region": "WEST",
+    "data_source": "COURSE_SIMULATION"
   },
   {
-    "order_id": 1012,
-    "customer_id": 101,
+    "order_id": "900012",
+    "customer_id": "1",
     "order_amount": "not-a-number",
     "status": "CREATED",
     "event_version": 1,
@@ -140,11 +150,12 @@
     "paid_amount": "0.00",
     "refund_amount": "0.00",
     "region": "EAST",
-    "input_id": 11
+    "input_id": 11,
+    "data_source": "COURSE_SIMULATION"
   },
   {
     "order_id": null,
-    "customer_id": 101,
+    "customer_id": "1",
     "order_amount": "100.00",
     "status": "CREATED",
     "event_version": 1,
@@ -153,6 +164,21 @@
     "paid_amount": "0.00",
     "refund_amount": "0.00",
     "region": "EAST",
-    "input_id": 12
+    "input_id": 12,
+    "data_source": "COURSE_SIMULATION"
+  },
+  {
+    "input_id": 13,
+    "order_id": "900013",
+    "customer_id": "999999",
+    "order_amount": "100.00",
+    "status": "CREATED",
+    "event_version": 1,
+    "event_id": "S1001",
+    "event_time": "2026-01-01 09:00:00",
+    "paid_amount": "0.00",
+    "refund_amount": "0.00",
+    "region": "EAST",
+    "data_source": "COURSE_SIMULATION"
   }
 ]

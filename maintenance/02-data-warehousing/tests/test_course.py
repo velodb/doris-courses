@@ -19,6 +19,7 @@ sys.path.insert(0, str(REPO_ROOT / "doris-course/02-data-warehousing"))
 
 from dw_course.runtime import COURSE_ROOT, WarehouseLab, expect, fixture, identifier
 from dw_course.schema import ORDER_COLUMNS, order_ddl, order_rows
+from dw_course.wwi import HISTORY_COLUMNS, history_ddl, history_rows, manifest, parquet_paths, sample
 
 
 class FixturesTest(unittest.TestCase):
@@ -29,8 +30,10 @@ class FixturesTest(unittest.TestCase):
         self.assertEqual(sum(Decimal(x["order_amount"]) for x in orders), Decimal("1400.00"))
         self.assertEqual(len({x["order_id"] for x in orders}), 10)
         raw = fixture("raw_orders.json")
-        self.assertEqual(len(raw), 12)
+        self.assertEqual(len(raw), 13)
         self.assertEqual([r["input_id"] for r in raw if r["order_id"] is None], [12])
+        self.assertTrue(all(r["data_source"] == "COURSE_SIMULATION" for r in orders))
+        self.assertEqual(min(r["order_id"] for r in orders), 900001)
 
     def test_replay_independent_oracle(self):
         initial = fixture("orders.json")
@@ -47,7 +50,7 @@ class FixturesTest(unittest.TestCase):
                 if old is None or record["event_version"] > old["event_version"]:
                     current[record["order_id"]] = record
             self.assertEqual([current[key] for key in sorted(current)], fixture("expected_current.json"))
-            self.assertEqual(len(history), 16)
+            self.assertEqual(len(history), 18)
         summary = fixture("expected_summary.json")
         self.assertEqual(Counter(row["status"] for row in current.values()), summary["statuses"])
         for column, expected in [("order_amount", "1510.00"), ("paid_amount", "250.00"), ("refund_amount", "150.00")]:
@@ -60,6 +63,49 @@ class FixturesTest(unittest.TestCase):
             rows = list(csv.reader(stream))
         expected = [[str(record[col]) for col in ORDER_COLUMNS] for record in fixture("orders.json")]
         self.assertEqual(rows, expected)
+
+    def test_wwi_subset_has_real_relationships_and_independent_totals(self):
+        data = sample()
+        self.assertEqual([r["order_id"] for r in data["orders"]], [1, 2, 3, 4, 5, 80, 81, 82, 83, 84])
+        self.assertEqual(sum(Decimal(r["order_amount"]) for r in data["orders"]), Decimal("12220.60"))
+        customers = {r["customer_id"] for r in data["customers"]}
+        products = {r["product_id"] for r in data["products"]}
+        for order in data["orders"]:
+            self.assertIn(order["customer_id"], customers)
+            lines = [r for r in data["order_lines"] if r["order_id"] == order["order_id"]]
+            self.assertEqual(len(lines), order["line_count"])
+            self.assertEqual(sum(r["quantity"] * Decimal(r["unit_price"]) for r in lines), Decimal(order["order_amount"]))
+            self.assertTrue(all(r["product_id"] in products for r in lines))
+            self.assertEqual(order["data_source"], "WWI")
+        self.assertEqual(sum(t["rows"] for t in manifest()["tables"].values()), 701846)
+
+    def test_simulation_business_ledgers_reconcile(self):
+        business = fixture("business_events.json")
+        current = fixture("expected_current.json")
+        customers = {r["customer_id"] for r in sample()["customers"]}
+        products = {r["product_id"] for r in sample()["products"]}
+        events = {r["event_id"]: r for r in fixture("deliveries.json")}
+        payments = {r["payment_id"]: r for r in business["payments"]}
+        for r in business["order_lines"]:
+            self.assertIn(r["product_id"], products)
+        for r in business["refunds"]:
+            self.assertEqual(r["order_id"], payments[r["payment_id"]]["order_id"])
+            self.assertLessEqual(Decimal(r["amount"]), Decimal(payments[r["payment_id"]]["amount"]))
+        for order in current:
+            self.assertIn(order["customer_id"], customers)
+            amount = sum(r["quantity"] * Decimal(r["unit_price"]) for r in business["order_lines"] if r["order_id"] == order["order_id"])
+            self.assertEqual(amount, Decimal(order["order_amount"]))
+            for collection, column in [("payments", "paid_amount"), ("refunds", "refund_amount")]:
+                total = sum(Decimal(r["amount"]) for r in business[collection] if r["order_id"] == order["order_id"])
+                self.assertEqual(total, Decimal(order[column]))
+        for collection in ("payments", "refunds", "shipments"):
+            for record in business[collection]:
+                self.assertEqual(record["order_id"], events[record["event_id"]]["order_id"])
+                self.assertEqual(record["event_time"], events[record["event_id"]]["event_time"])
+        self.assertEqual(len(fixture("deliveries.json")), 9)
+        self.assertEqual(len(events), 8)
+        self.assertEqual(current[0]["status"], "DELIVERED")
+        self.assertEqual(current[2]["status"], "REFUNDED")
 
 
 class RuntimeTest(unittest.TestCase):
@@ -99,6 +145,35 @@ class RuntimeTest(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 lab.stream_load("orders", COURSE_ROOT / "datasets/orders.csv", "test", "order_id")
         self.assertFalse(put.call_args.kwargs["allow_redirects"])
+
+    def test_parquet_stream_load_headers(self):
+        lab = WarehouseLab.__new__(WarehouseLab)
+        lab.database, lab.user, lab.password = "dw_course_l1_test", "student", "not-a-real-password"
+        response = Mock(status_code=200)
+        response.json.return_value = {"Status": "Success"}
+        with patch("requests.put", return_value=response) as put:
+            lab.stream_load("orders", COURSE_ROOT / "datasets/orders.csv", "test", format="parquet")
+        headers = put.call_args.kwargs["headers"]
+        self.assertEqual(headers["format"], "parquet")
+        self.assertNotIn("column_separator", headers)
+        self.assertNotIn("columns", headers)
+        self.assertFalse(put.call_args.kwargs["allow_redirects"])
+
+    def test_wwi_bundle_rejects_missing_or_changed_files(self):
+        import hashlib
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            payload = b"fixture-only-not-parquet"
+            metadata = {"tables": {"orders": {"bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()}}}
+            with patch("dw_course.wwi.manifest", return_value=metadata):
+                with self.assertRaises(FileNotFoundError):
+                    parquet_paths(directory)
+                path = Path(directory) / "orders.parquet"
+                path.write_bytes(payload)
+                self.assertEqual(parquet_paths(directory), {"orders": path})
+                path.write_bytes(b"changed")
+                with self.assertRaises(ValueError):
+                    parquet_paths(directory)
 
 
 class MaterialsTest(unittest.TestCase):
@@ -223,20 +298,20 @@ class AlignmentTest(unittest.TestCase):
         create, = [sql for sql in statements if sql.lstrip().startswith("CREATE TABLE")]
         self.assertEqual(
             re.sub(r"\s+", "", create),
-            re.sub(r"\s+", "", order_ddl("d01_orders")),
+            re.sub(r"\s+", "", history_ddl("d01_orders")),
         )
         insert, = [sql for sql in statements if sql.lstrip().startswith("INSERT INTO")]
         header, values = insert.split("VALUES", 1)
         columns = header[header.index("(") + 1:header.index(")")].split(",")
-        self.assertEqual(tuple(column.strip() for column in columns), ORDER_COLUMNS)
+        self.assertEqual(tuple(column.strip() for column in columns), HISTORY_COLUMNS)
         rows = ast.literal_eval("[" + values.strip() + "]")
         actual = []
         for row in rows:
-            record = dict(zip(ORDER_COLUMNS, row))
-            for column in ("order_amount", "paid_amount", "refund_amount"):
+            record = dict(zip(HISTORY_COLUMNS, row))
+            for column in ("order_amount",):
                 record[column] = format(Decimal(str(record[column])), ".2f")
             actual.append(record)
-        self.assertEqual(order_rows(actual), order_rows(fixture("orders.json")))
+        self.assertEqual([tuple(r[col] for col in HISTORY_COLUMNS) for r in actual], history_rows())
 
     def test_d01_initialization_is_separate_from_connection(self):
         path = COURSE_ROOT / "level1/module01-introduction/lab1_connect_and_query.ipynb"
@@ -254,8 +329,8 @@ class AlignmentTest(unittest.TestCase):
         self.assertNotIn("10 million", source)
         self.assertNotIn("order_ddl(", source)
         self.assertIn("自己动手", source)
-        self.assertIn("720.00", source)
-        self.assertIn("680.00", source)
+        self.assertIn("3944.20", source)
+        self.assertIn("8276.40", source)
 
     def test_display_components_are_reused(self):
         from dw_course import ui

@@ -4,7 +4,7 @@ from .runtime import identifier
 
 ORDER_COLUMNS = (
     "order_id", "customer_id", "order_amount", "status", "event_version",
-    "event_id", "event_time", "paid_amount", "refund_amount", "region",
+    "event_id", "event_time", "paid_amount", "refund_amount", "region", "data_source",
 )
 ORDER_TYPES = {
     "order_id": "BIGINT NOT NULL",
@@ -17,6 +17,7 @@ ORDER_TYPES = {
     "paid_amount": "DECIMAL(12,2) NOT NULL",
     "refund_amount": "DECIMAL(12,2) NOT NULL",
     "region": "VARCHAR(16) NOT NULL",
+    "data_source": "VARCHAR(32) NOT NULL",
 }
 
 

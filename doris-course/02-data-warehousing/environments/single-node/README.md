@@ -87,7 +87,19 @@ export DW_ALLOW_WRITES=yes
 无密码 root 仅用于这个本机教学沙箱，不作为远程部署示例。
 课程 02 的项目、端口和卷与课程 01 分开，不会复用或停止课程 01 的容器。
 
-## 3. 常见问题
+## 3. 准备 D05 历史数据包
+
+D01–D03 的 WWI 小样本和 D09-A/D06 的模拟事件已在仓库内。
+D05 的完整 Parquet 包暂不从网络下载；请讲师按[数据说明](../../datasets/README.md)准备。
+默认放在课程目录的 `.runtime/wwi/`；也可以在启动 Jupyter 前设置：
+
+```bash
+export DW_WWI_DATA_DIR=/absolute/path/to/wwi-parquet
+```
+
+路径指 Jupyter 内核所在机器。D05 会校验全部文件，不需要 Kaggle 账号、SQL Server 或 S3 密钥。
+
+## 4. 常见问题
 
 | 现象 | 检查方法 |
 | --- | --- |
@@ -105,7 +117,7 @@ docker compose --project-name doris-warehousing-course --file environments/singl
 docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml logs --tail 100 doris
 ```
 
-## 4. 结束学习与继续学习
+## 5. 结束学习与继续学习
 
 暂停自己的沙箱，但保留数据卷：
 

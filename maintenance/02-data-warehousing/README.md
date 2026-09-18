@@ -20,6 +20,7 @@
 | [integration-backlog.md](integration-backlog.md) | 待补齐的集成实验 |
 | [PR_DRAFT.md](PR_DRAFT.md) | PR 说明草稿 |
 | scripts/run_labs.py | 执行课程 Notebook 的代码单元 |
+| scripts/prepare_wwi.py | 校验并暂存本地 WWI Parquet 包，不上传 |
 | tests/test_course.py | 离线检查材料、数据与辅助工具 |
 
 安装课程依赖后，从仓库根目录执行：

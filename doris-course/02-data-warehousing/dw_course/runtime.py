@@ -107,23 +107,25 @@ class WarehouseLab:
         with self.connection.cursor() as cursor:
             return cursor.executemany(statement, rows)
 
-    def stream_load(self, table, path, label, columns):
+    def stream_load(self, table, path, label, columns=None, *, format="csv"):
         """Use an explicitly configured BE HTTP endpoint; do not forward secrets on redirects."""
         table = identifier(table)
+        if format not in ("csv", "parquet"):
+            raise ValueError("This lab supports CSV and Parquet")
+        headers = {
+            "label": label, "format": format, "strict_mode": "true",
+            "max_filter_ratio": "0", "group_commit": "off_mode",
+        }
+        if format == "csv":
+            headers["column_separator"] = ","
+        if columns is not None:
+            headers["columns"] = columns
         endpoint = os.environ.get("DW_BE_HTTP_URL", "http://127.0.0.1:8040").rstrip("/")
         with Path(path).open("rb") as payload:
             response = requests.put(
                 f"{endpoint}/api/{self.database}/{table}/_stream_load",
                 auth=(self.user, self.password),
-                headers={
-                    "label": label,
-                    "format": "csv",
-                    "column_separator": ",",
-                    "columns": columns,
-                    "strict_mode": "true",
-                    "max_filter_ratio": "0",
-                    "group_commit": "off_mode",
-                },
+                headers=headers,
                 data=payload,
                 allow_redirects=False,
                 timeout=120,

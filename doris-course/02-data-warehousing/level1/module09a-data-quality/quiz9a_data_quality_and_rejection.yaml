@@ -18,11 +18,11 @@ questions:
     prompt: "本样本正确的分流数量是什么？"
     options:
       - id: a
-        text: "12 输入、12 合格、2 拒收"
+        text: "13 输入、13 合格、3 拒收"
       - id: b
-        text: "10 输入、12 合格、0 拒收"
+        text: "10 输入、13 合格、0 拒收"
       - id: c
-        text: "12 输入、10 合格、2 拒收"
+        text: "13 输入、10 合格、3 拒收"
     answer: c
     explanation: "分流集合应覆盖输入且不重叠。"
   - id: q3

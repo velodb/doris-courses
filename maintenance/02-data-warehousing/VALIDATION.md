@@ -1,5 +1,34 @@
 # Validation record
 
+## 2026-09-18：Level 1 接入 WWI 与模拟新订单
+
+当前材料以本节记录为准；下方 2026-09-17 内容是旧合成样本的历史验证记录。
+
+- 七份讲义和七个 Lab 已调整数据来源、字段及验收口径，保留课程 01 的模块结构与中文呈现。
+- D01–D03 使用 WWI 十单投影，税前金额 12220.60；D04 的候选湖表契约同步更新。
+- D05 从本地 Parquet 导入 10 张历史表、701,846 行，核对主键、关联和金额；随后导入模拟新订单 CSV。
+- D09-A 使用 WWI 客户维度校验模拟订单：13 行输入、10 行合格、3 行拒收。
+- D06 引用同一批客户和商品，覆盖支付、发货、签收、取消、退款；11 笔当前订单、18 条历史、19 次投递。
+  独立商品明细、支付、退款、配送流水用于关系与金额核对，支付 250.00、退款 150.00。
+- 模拟来源标为 COURSE_SIMULATION，不将 WWI 客户账户收款伪造成逐订单支付。
+- 六个核心 Lab 的实际代码单元在独立库 `dw_course_l1_wwi_course_20260918` 顺序运行通过。
+  使用下方同一开发 FE/BE，未重启集群，未修改原演示库。
+- 同一验证库完整重跑也通过，覆盖实验表重置和重新导入。
+- 六个核心 Lab 均在新的 Jupyter 内核中通过，使用独立库 `dw_course_l1_wwi_kernel_20260918`。
+  D09-A/D06 改为读取 D05 导入的完整客户、商品维度后，又分别在新内核中通过。
+- 27 项离线检查在导出的 Git 暂存区快照上通过，包括历史子集金额/关联、模拟流水对账、
+  Parquet 请求参数、缺失/被改写文件拒绝、Notebook 结构、链接和测验定义。
+  工作目录只因用户已执行 Quiz 1 的 execution_count 不为空而不满足清洁性检查，未清空用户结果。
+- 大文件只放本机忽略目录 `.runtime/wwi/`，与固定 manifest 校验和一致；没有上传桶或提交 Parquet。
+- 未验证 D04 Iceberg、S3 TVF、真实 Kafka/CDC、Doris 4.1.3 发布镜像及浏览器视觉效果。
+  D05 本地 Stream Load 不冒充最终课程 S3 路径。
+- 用户已有的 Quiz 1 执行记录和课程 01 修改保留；不会为清洁性检查清空它们。
+
+复用数据的来源、许可和准备方法见[学员数据说明](../../doris-course/02-data-warehousing/datasets/README.md)，
+原始备份实测结果见 [WWI-VALIDATION.md](WWI-VALIDATION.md)。
+
+## Earlier validation history
+
 Date: 2026-09-17. Status: first Level 1 draft, not release-qualified.
 
 ## Chinese module structure alignment
