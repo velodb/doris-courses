@@ -1,11 +1,13 @@
 """Explicit opt-in lifecycle for course 02's own single-node Compose project."""
 
 import os
+import shlex
 import subprocess
 
 import pymysql
 
 from .runtime import COURSE_ROOT, WarehouseLab
+from .ui import WorkflowProgress
 
 COMPOSE_FILE = COURSE_ROOT / "environments/single-node/compose.yml"
 PROJECT = "doris-warehousing-course"
@@ -16,6 +18,14 @@ CONNECTION = {
     "DW_USER": "root",
     "DW_PASSWORD": "",
 }
+STARTUP_STEPS = {
+    1: "检查 Docker 与 Compose",
+    2: "校验课程单容器配置",
+    3: "准备 Doris 镜像",
+    4: "启动或复用容器、数据卷并等待健康",
+    5: "验证 FE 连接与 BE 计算",
+    6: "查看运行中的课程容器",
+}
 
 
 def compose_command(*arguments):
@@ -25,16 +35,16 @@ def compose_command(*arguments):
     ]
 
 
-def prepare_environment(*, start=False):
-    """Start only on explicit opt-in; apply connection settings after health succeeds."""
-    if not start and os.environ.get("DW_START_SANDBOX") != "yes":
-        raise RuntimeError("Set DW_START_SANDBOX=yes only to start course 02's Docker sandbox")
-    subprocess.run(compose_command("config", "--quiet"), check=True, timeout=30)
-    # The pinned image supplies the container healthcheck.
-    subprocess.run(
-        compose_command("up", "-d", "--wait", "--wait-timeout", "300"),
-        check=True, timeout=1800,
+def _run(command, progress, *, timeout=30):
+    progress.log("$ " + shlex.join(command))
+    result = subprocess.run(
+        command, check=True, timeout=timeout, text=True,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
     )
+    progress.log(result.stdout)
+
+
+def _verify_sql():
     connection = pymysql.connect(
         host=CONNECTION["DW_HOST"], port=int(CONNECTION["DW_PORT"]),
         user=CONNECTION["DW_USER"], password=CONNECTION["DW_PASSWORD"],
@@ -50,8 +60,42 @@ def prepare_environment(*, start=False):
                 raise RuntimeError("Sandbox BE execution check failed")
     finally:
         connection.close()
+
+
+def prepare_environment(*, start=False):
+    """Start on explicit opt-in and report each completed or failed step."""
+    if not start and os.environ.get("DW_START_SANDBOX") != "yes":
+        raise RuntimeError("Set DW_START_SANDBOX=yes only to start course 02's Docker sandbox")
+    progress = WorkflowProgress("准备 Doris 实验环境", STARTUP_STEPS)
+    try:
+        progress.advance(1)
+        _run(["docker", "info", "--format", "{{.ServerVersion}}"], progress)
+        _run(["docker", "compose", "version"], progress)
+        progress.advance(2)
+        _run(compose_command("config", "--quiet"), progress)
+        progress.advance(3)
+        _run(compose_command("pull", "--policy", "missing"), progress, timeout=1800)
+        progress.advance(4)
+        # The pinned image supplies the container healthcheck.
+        _run(compose_command("up", "-d", "--wait", "--wait-timeout", "300"),
+             progress, timeout=1800)
+        progress.advance(5)
+        _verify_sql()
+        progress.log("SELECT 1 = 1；BE SUM(number) = 45")
+        progress.advance(6)
+        _run(compose_command("ps"), progress)
+    except Exception as error:
+        detail = str(error)
+        if isinstance(error, (subprocess.CalledProcessError, subprocess.TimeoutExpired)):
+            output = error.output
+            if isinstance(output, bytes):
+                output = output.decode("utf-8", errors="replace")
+            if output:
+                detail += "\n" + output
+        progress.fail(detail)
+        raise
     os.environ.update(CONNECTION)
-    print("Sandbox ready on FE 52030 / BE HTTP 51040; named volumes retained.")
+    progress.finish()
     return dict(CONNECTION)
 
 

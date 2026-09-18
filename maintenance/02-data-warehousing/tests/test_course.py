@@ -457,6 +457,7 @@ class AlignmentTest(unittest.TestCase):
         self.assertIs(ui.show_frame, shared.show_frame)
         self.assertIs(ui.card, shared.card)
         self.assertIs(ui.install_styles, shared.install_styles)
+        self.assertIs(ui.workflow_html, shared.DorisLab._workflow_html)
 
     def test_sql_keeps_column_names(self):
         lab = WarehouseLab.__new__(WarehouseLab)
@@ -501,10 +502,12 @@ class AlignmentTest(unittest.TestCase):
         manager.__exit__ = Mock(return_value=False)
         connection = Mock()
         connection.cursor.return_value = manager
-        with patch.dict("os.environ", {"DW_START_SANDBOX": "yes"}, clear=True), patch("subprocess.run") as run, patch("pymysql.connect", return_value=connection):
+        with patch.dict("os.environ", {"DW_START_SANDBOX": "yes"}, clear=True), patch("subprocess.run", return_value=Mock(stdout="")) as run, patch("pymysql.connect", return_value=connection):
             self.assertEqual(prepare_environment(), CONNECTION)
-            self.assertEqual(run.call_args_list[0].args[0], compose_command("config", "--quiet"))
-            self.assertEqual(run.call_args_list[1].args[0], compose_command("up", "-d", "--wait", "--wait-timeout", "300"))
+            self.assertEqual(run.call_args_list[2].args[0], compose_command("config", "--quiet"))
+            self.assertEqual(run.call_args_list[3].args[0], compose_command("pull", "--policy", "missing"))
+            self.assertEqual(run.call_args_list[4].args[0], compose_command("up", "-d", "--wait", "--wait-timeout", "300"))
+            self.assertEqual(run.call_args_list[5].args[0], compose_command("ps"))
             self.assertEqual(cursor.execute.call_args_list[-1].args[0],
                              'SELECT SUM(number) FROM numbers("number"="10")')
             connection.close.assert_called_once()
@@ -543,7 +546,7 @@ class AlignmentTest(unittest.TestCase):
         connection = Mock()
         connection.cursor.return_value.__enter__ = Mock(return_value=cursor)
         connection.cursor.return_value.__exit__ = Mock(return_value=False)
-        with patch.dict("os.environ", {}, clear=True), patch("subprocess.run"), patch(
+        with patch.dict("os.environ", {}, clear=True), patch("subprocess.run", return_value=Mock(stdout="")), patch(
             "pymysql.connect", return_value=connection
         ):
             prepare_environment(start=True)
@@ -552,7 +555,9 @@ class AlignmentTest(unittest.TestCase):
     def test_sandbox_health_failure_does_not_connect(self):
         from dw_course.docker_runtime import prepare_environment
         import subprocess
-        with patch("subprocess.run", side_effect=[None, subprocess.CalledProcessError(1, "up")]), patch(
+        with patch("subprocess.run", side_effect=[
+            *[Mock(stdout="") for _ in range(4)], subprocess.CalledProcessError(1, "up")
+        ]), patch(
             "pymysql.connect"
         ) as connect:
             with self.assertRaises(subprocess.CalledProcessError):
@@ -568,12 +573,75 @@ class AlignmentTest(unittest.TestCase):
         connection.cursor.return_value.__enter__ = Mock(return_value=cursor)
         connection.cursor.return_value.__exit__ = Mock(return_value=False)
         with patch.dict(os.environ, {"DW_PORT": "19030"}, clear=True), patch(
-            "subprocess.run"
+            "subprocess.run", return_value=Mock(stdout="")
         ), patch("pymysql.connect", return_value=connection):
             with self.assertRaisesRegex(RuntimeError, "BE execution"):
                 prepare_environment(start=True)
             self.assertEqual(os.environ["DW_PORT"], "19030")
         connection.close.assert_called_once()
+
+    def test_startup_workflow_success_uses_shared_panel(self):
+        from dw_course.ui import WorkflowProgress
+        from dw_course.docker_runtime import STARTUP_STEPS
+        with patch("dw_course.ui.in_notebook", return_value=True), patch(
+            "dw_course.ui.display"
+        ) as display, patch("dw_course.ui.show_log") as log:
+            progress = WorkflowProgress("准备 Doris 实验环境", STARTUP_STEPS)
+            for step in STARTUP_STEPS:
+                progress.advance(step)
+            progress.finish()
+            display.assert_called_once()
+            panel = display.return_value.update.call_args.args[0].data
+            self.assertEqual(panel.count('doris-workflow-item success'), 6)
+            self.assertIn("<span>已完成</span>", panel)
+            self.assertIn("width:100%", panel)
+            self.assertNotIn("failure", panel)
+            log.assert_called_once()
+            self.assertEqual(log.call_args.args[0], "查看完整启动日志")
+
+    def test_startup_workflow_failure_keeps_remaining_steps_pending(self):
+        import subprocess
+        from dw_course.docker_runtime import prepare_environment
+        error = subprocess.CalledProcessError(
+            1, "up", output="bind: address already in use <script>"
+        )
+        with patch("dw_course.ui.in_notebook", return_value=True), patch(
+            "dw_course.ui.display"
+        ) as display, patch("dw_course.ui.show_log") as log, patch(
+            "subprocess.run", side_effect=[*[Mock(stdout="") for _ in range(4)], error]
+        ), patch("pymysql.connect") as connect:
+            with self.assertRaises(subprocess.CalledProcessError):
+                prepare_environment(start=True)
+            panel = display.return_value.update.call_args.args[0].data
+            self.assertEqual(panel.count("doris-workflow-item success"), 3)
+            self.assertEqual(panel.count("doris-workflow-item failure"), 1)
+            self.assertEqual(panel.count("doris-workflow-item pending"), 2)
+            self.assertIn("<span>失败</span>", panel)
+            self.assertIn("width:50%", panel)
+            self.assertIn("address already in use", panel)
+            self.assertNotIn("<script>", panel)
+            self.assertIn("&lt;script&gt;", panel)
+            self.assertIn("address already in use", log.call_args.args[1])
+            self.assertTrue(log.call_args.kwargs["opened"])
+            connect.assert_not_called()
+
+    def test_startup_workflow_timeout_marks_current_step_failed(self):
+        import subprocess
+        from dw_course.docker_runtime import prepare_environment
+        error = subprocess.TimeoutExpired("pull", 1800, output=b"download stalled")
+        with patch("dw_course.ui.in_notebook", return_value=True), patch(
+            "dw_course.ui.display"
+        ) as display, patch("dw_course.ui.show_log"), patch(
+            "subprocess.run", side_effect=[*[Mock(stdout="") for _ in range(3)], error]
+        ), patch("pymysql.connect") as connect:
+            with self.assertRaises(subprocess.TimeoutExpired):
+                prepare_environment(start=True)
+            panel = display.return_value.update.call_args.args[0].data
+            self.assertEqual(panel.count("doris-workflow-item success"), 2)
+            self.assertEqual(panel.count("doris-workflow-item failure"), 1)
+            self.assertEqual(panel.count("doris-workflow-item pending"), 3)
+            self.assertIn("download stalled", panel)
+            connect.assert_not_called()
 
     def test_explicit_write_confirmation_still_requires_scoped_database(self):
         with patch.dict("os.environ", {"DW_DATABASE": "production"}, clear=True), patch(
