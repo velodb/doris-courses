@@ -5,7 +5,7 @@ import subprocess
 
 import pymysql
 
-from .runtime import COURSE_ROOT
+from .runtime import COURSE_ROOT, WarehouseLab
 
 COMPOSE_FILE = COURSE_ROOT / "environments/single-node/compose.yml"
 PROJECT = "doris-warehousing-course"
@@ -25,12 +25,12 @@ def compose_command(*arguments):
     ]
 
 
-def prepare_environment():
+def prepare_environment(*, start=False):
     """Start only on explicit opt-in; apply connection settings after health succeeds."""
-    if os.environ.get("DW_START_SANDBOX") != "yes":
+    if not start and os.environ.get("DW_START_SANDBOX") != "yes":
         raise RuntimeError("Set DW_START_SANDBOX=yes only to start course 02's Docker sandbox")
     subprocess.run(compose_command("config", "--quiet"), check=True, timeout=30)
-    # The pinned image supplies the same healthcheck used in course 01.
+    # The pinned image supplies the container healthcheck.
     subprocess.run(
         compose_command("up", "-d", "--wait", "--wait-timeout", "300"),
         check=True, timeout=1800,
@@ -45,8 +45,17 @@ def prepare_environment():
             cursor.execute("SELECT 1")
             if cursor.fetchone() != (1,):
                 raise RuntimeError("Sandbox SQL readiness check failed")
+            cursor.execute('SELECT SUM(number) FROM numbers("number"="10")')
+            if cursor.fetchone() != (45,):
+                raise RuntimeError("Sandbox BE execution check failed")
     finally:
         connection.close()
     os.environ.update(CONNECTION)
     print("Sandbox ready on FE 52030 / BE HTTP 51040; named volumes retained.")
     return dict(CONNECTION)
+
+
+def connect_sandbox():
+    """Connect this notebook to the course container without starting Docker."""
+    os.environ.update(CONNECTION)
+    return WarehouseLab(allow_writes=True)

@@ -31,7 +31,9 @@ objective 保存对应的学习目标原文，离线测试检查覆盖关系。
 
 ```bash
 .venv/bin/python -m unittest discover -s maintenance/02-data-warehousing/tests -v
-# 先设置 DW_* 参数，使用独立测试库并确认实验表重置范围。
+# 使用课程单容器沙箱；先选择独立测试库并确认实验表重置范围。
+export DW_DATABASE=dw_course_l1_validation
+export DW_ALLOW_WRITES=yes
 .venv/bin/python maintenance/02-data-warehousing/scripts/run_labs.py
 # 仅在预置真实湖表并配置 DW_ICEBERG_ORDERS 后使用：
 .venv/bin/python maintenance/02-data-warehousing/scripts/run_labs.py --iceberg
@@ -51,4 +53,5 @@ objective 保存对应的学习目标原文，离线测试检查覆盖关系。
 
 配置以仓库为文件根目录，默认打开 doris-course，确保维护资料的相对链接也可访问。
 安装元数据、Python 缓存和 Jupyter 检查点只从文件列表隐藏，不删除；
-仍保留默认认证机制。DW_* 连接参数需在启动前设置。
+仍保留默认认证机制。学员无需预设连接地址；各 Lab 固定连接课程单容器沙箱。
+多人使用时，可在启动前用 DW_DATABASE 分配独立实验库。

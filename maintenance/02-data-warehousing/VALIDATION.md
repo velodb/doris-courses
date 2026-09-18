@@ -1,5 +1,33 @@
 # Validation record
 
+## 2026-09-18：统一单容器学员启动流程
+
+- D01 去掉已有实例 / Docker 选择与手工连接配置。初始化不启动服务；
+  显式执行 prepare_environment(start=True) 才启动课程沙箱，再由 connect_sandbox() 连接。
+- 后续六个 Lab 使用相同的 connect_sandbox()，不再启动容器。
+  各内核独立配置固定的 FE / BE HTTP 端点，覆盖继承的旧连接地址；
+  不需要先导出 DW_ALLOW_WRITES 或让其他 Notebook 继承 D01 的环境。
+  执行实验连接单元是对文中重置范围的显式确认，实验库前缀限制仍生效。
+- 在 Linux x86_64 上新建并启动 doris-warehousing-course-doris-1，只有一个容器，
+  内含一个 FE 和一个 BE；使用项目专属网络、元数据卷和存储卷。
+  没有停止、删除或重新配置其他服务。
+- 镜像标签为 apache/doris:all-in-one-4.1.3，本机镜像 ID 为
+  sha256:5d45eb13bf5e5434c3a2a0fab73ca75a39a5504a6b5ae8dc153efcab60683464；
+  FE / BE 实际报告 doris-4.1.3-rc02-7126cf65d96，应保留此构建标识而非仅凭标签推断。
+- Compose 健康检查通过；SHOW BACKENDS 显示 Alive=true；
+  SELECT SUM(number) FROM numbers("number"="10") 返回 45，验证了 BE 计算。
+- 独立库 dw_course_l1_container_20260918 中六个核心 Lab 顺序执行通过，
+  包括全部 WWI 文件导入、质量分流、状态重放与业务对账。
+  新 Python 进程携带错误的旧连接变量时，仍成功连接课程沙箱并查得
+  orders_sample 十行、金额 12220.60。
+- 38 项离线检查通过，包括单容器配置、显式启动、健康 / BE 失败分支、
+  新内核连接、非实验库拦截、材料及四选项测验检查。
+  保留用户 Notebook 执行记录，未运行要求所有输出为空的检查。
+- 容器和验证数据保留用于继续学习。BE 报告磁盘使用率约 96.12%，
+  可用空间约 78.24 GB，后续应关注空间；本轮没有清理或删除其他数据。
+- 未验证：macOS / ARM64 启动、浏览器视觉效果、真实 Iceberg 及其他外部集成。
+  Docker 容器日志可按环境说明中的 Compose logs 命令查看。
+
 ## 2026-09-18：按业务含义与实验用途命名表
 
 - 七份讲义、七个 Lab、相关测验与环境说明统一使用业务表名；目录和标题仍保留单元编号。

@@ -39,7 +39,8 @@ python3 -m venv .venv
 .venv/bin/jupyter lab level1/module01-introduction/lab1_connect_and_query.ipynb
 ```
 
-在 Lab 1 内选择已有实例或课程 Docker 沙箱，并确认允许重建本节实验表。
+先启动 Docker，再在 Lab 1 中初始化工具、启动课程单容器沙箱；执行前阅读实验表重置提示。
+后续 Lab 自动连接同一个沙箱，不需要重新选择环境或填写连接地址。
 密码不要写进 Notebook，具体说明见[环境准备](environments/single-node/README.md)。
 
 ## 当前可学习范围
@@ -48,8 +49,8 @@ D01 已按逐步讲解的方式展开；其余 Level 1 单元已有实验初稿�
 D04 需要讲师预置 Iceberg；D05 当前可执行内容为本地 Parquet 与 CSV 的 Stream Load。
 Kafka、CDC、对象存储持续接入等后续实验尚未提供。
 
-实验目标版本为 Doris 4.1.3。当前 SQL 验证使用开发实例；
-正式版本及 Docker 启动路径的验证边界见[验证记录](../../maintenance/02-data-warehousing/VALIDATION.md)。
+课程镜像为 apache/doris:all-in-one-4.1.3，已验证单容器启动和六个核心 Lab。
+镜像实际构建标识、验证平台及未覆盖范围见[验证记录](../../maintenance/02-data-warehousing/VALIDATION.md)。
 小样本用于理解语义与核对结果，不用于证明性能或生产可靠性。
 
 ## 维护者资料

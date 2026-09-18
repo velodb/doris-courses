@@ -68,8 +68,8 @@ customers 和 products 分别是从 WWI 历史表提取的客户、商品维度�
 
 - 能阅读 SELECT、WHERE、GROUP BY 等基础 SQL。
 - 按[环境准备](../environments/single-node/README.md)安装 Python 依赖。
-- 有一个教学 Doris 实例，或准备 Docker Desktop / Engine。
-- D01 的配置单元会让你选择环境并确认实验表重置范围；不要连接生产库。
+- 准备 Docker Desktop / Engine 和 Compose 插件；课程使用单容器 Doris 沙箱。
+- D01 负责启动沙箱，后续 Lab 自动连接同一环境。执行前先阅读各 Lab 的实验表重置范围。
 - D01–D03 使用仓库内的 WWI 十单子集；D05 另需讲师提供本地 Parquet 包，按[数据说明](../datasets/README.md)准备。
 
 ## 怎样完成一个 Lab？

@@ -478,6 +478,7 @@ class AlignmentTest(unittest.TestCase):
         from dw_course.docker_runtime import COMPOSE_FILE, CONNECTION, PROJECT
         config = yaml.safe_load(COMPOSE_FILE.read_text())
         self.assertEqual(config["name"], PROJECT)
+        self.assertEqual(set(config["services"]), {"doris"})
         service = config["services"]["doris"]
         self.assertEqual(service["image"], "apache/doris:all-in-one-4.1.3")
         self.assertEqual(service["ports"], ["127.0.0.1:52030:9030", "127.0.0.1:51030:8030", "127.0.0.1:51040:8040"])
@@ -494,7 +495,7 @@ class AlignmentTest(unittest.TestCase):
     def test_docker_start_checks_health_before_connection(self):
         from dw_course.docker_runtime import prepare_environment, CONNECTION, compose_command
         cursor = Mock()
-        cursor.fetchone.return_value = (1,)
+        cursor.fetchone.side_effect = [(1,), (45,)]
         manager = Mock()
         manager.__enter__ = Mock(return_value=cursor)
         manager.__exit__ = Mock(return_value=False)
@@ -504,7 +505,83 @@ class AlignmentTest(unittest.TestCase):
             self.assertEqual(prepare_environment(), CONNECTION)
             self.assertEqual(run.call_args_list[0].args[0], compose_command("config", "--quiet"))
             self.assertEqual(run.call_args_list[1].args[0], compose_command("up", "-d", "--wait", "--wait-timeout", "300"))
+            self.assertEqual(cursor.execute.call_args_list[-1].args[0],
+                             'SELECT SUM(number) FROM numbers("number"="10")')
             connection.close.assert_called_once()
+
+    def test_notebooks_use_one_sandbox_without_environment_selection(self):
+        for path in (COURSE_ROOT / "level1").glob("*/lab*.ipynb"):
+            notebook = nbformat.read(path, as_version=4)
+            code = "\n".join(c.source for c in notebook.cells if c.cell_type == "code")
+            self.assertIn("lab = connect_sandbox()", code, path)
+            self.assertNotIn("USE_DOCKER", code, path)
+            self.assertNotIn("FE_HOST =", code, path)
+            self.assertNotIn("ALLOW_LAB_WRITES =", code, path)
+            if path.parent.name == "module01-introduction":
+                self.assertIn("prepare_environment(start=True)", code)
+            else:
+                self.assertNotIn("prepare_environment(", code, path)
+
+    def test_fresh_notebook_connection_uses_sandbox_not_stale_environment(self):
+        from dw_course.docker_runtime import CONNECTION, connect_sandbox
+        import os
+        for environment in ({}, {"DW_HOST": "another-server", "DW_PORT": "19030",
+                                  "DW_BE_HTTP_URL": "http://another-server:8040",
+                                  "DW_USER": "another-user", "DW_PASSWORD": "not-a-real-password"}):
+            with patch.dict(os.environ, environment, clear=True), patch(
+                "dw_course.docker_runtime.WarehouseLab"
+            ) as constructor, patch("subprocess.run") as run:
+                self.assertIs(connect_sandbox(), constructor.return_value)
+                constructor.assert_called_once_with(allow_writes=True)
+                self.assertEqual({key: os.environ[key] for key in CONNECTION}, CONNECTION)
+                run.assert_not_called()
+
+    def test_explicit_sandbox_start_and_be_readiness(self):
+        from dw_course.docker_runtime import prepare_environment
+        cursor = Mock()
+        cursor.fetchone.side_effect = [(1,), (45,)]
+        connection = Mock()
+        connection.cursor.return_value.__enter__ = Mock(return_value=cursor)
+        connection.cursor.return_value.__exit__ = Mock(return_value=False)
+        with patch.dict("os.environ", {}, clear=True), patch("subprocess.run"), patch(
+            "pymysql.connect", return_value=connection
+        ):
+            prepare_environment(start=True)
+        connection.close.assert_called_once()
+
+    def test_sandbox_health_failure_does_not_connect(self):
+        from dw_course.docker_runtime import prepare_environment
+        import subprocess
+        with patch("subprocess.run", side_effect=[None, subprocess.CalledProcessError(1, "up")]), patch(
+            "pymysql.connect"
+        ) as connect:
+            with self.assertRaises(subprocess.CalledProcessError):
+                prepare_environment(start=True)
+            connect.assert_not_called()
+
+    def test_sandbox_be_failure_does_not_publish_connection(self):
+        from dw_course.docker_runtime import prepare_environment
+        import os
+        cursor = Mock()
+        cursor.fetchone.side_effect = [(1,), (None,)]
+        connection = Mock()
+        connection.cursor.return_value.__enter__ = Mock(return_value=cursor)
+        connection.cursor.return_value.__exit__ = Mock(return_value=False)
+        with patch.dict(os.environ, {"DW_PORT": "19030"}, clear=True), patch(
+            "subprocess.run"
+        ), patch("pymysql.connect", return_value=connection):
+            with self.assertRaisesRegex(RuntimeError, "BE execution"):
+                prepare_environment(start=True)
+            self.assertEqual(os.environ["DW_PORT"], "19030")
+        connection.close.assert_called_once()
+
+    def test_explicit_write_confirmation_still_requires_scoped_database(self):
+        with patch.dict("os.environ", {"DW_DATABASE": "production"}, clear=True), patch(
+            "pymysql.connect"
+        ) as connect:
+            with self.assertRaises(ValueError):
+                WarehouseLab(allow_writes=True)
+            connect.assert_not_called()
 
 
 if __name__ == "__main__":

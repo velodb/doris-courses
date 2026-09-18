@@ -49,8 +49,8 @@ def expect(actual, expected):
 
 
 class WarehouseLab:
-    def __init__(self):
-        if os.environ.get("DW_ALLOW_WRITES") != "yes":
+    def __init__(self, *, allow_writes=False):
+        if not allow_writes and os.environ.get("DW_ALLOW_WRITES") != "yes":
             raise RuntimeError("Read the reset scope, then set DW_ALLOW_WRITES=yes")
         self.database = identifier(os.environ.get("DW_DATABASE", "dw_course_l1_demo"))
         if not self.database.startswith("dw_course_l1_"):

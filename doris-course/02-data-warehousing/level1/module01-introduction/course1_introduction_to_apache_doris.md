@@ -168,7 +168,7 @@ GROUP BY 将同一天的订单分为一组，SUM 计算组内金额，ORDER BY �
 打开[实验 1](lab1_connect_and_query.ipynb)，依次完成：
 
 1. 加载实验工具；这一步不连接或修改数据库。
-2. 选择讲师实例或课程 Docker 沙箱，确认本节只重建 orders_sample。
+2. 启动课程单容器沙箱并连接实验库，确认本节只重建 orders_sample。
 3. 检查 FE/BE，确认当前实验数据库。
 4. 阅读并执行完整建表 SQL 和十行 INSERT。
 5. 核对明细和日期汇总，独立完成金额筛选练习。
