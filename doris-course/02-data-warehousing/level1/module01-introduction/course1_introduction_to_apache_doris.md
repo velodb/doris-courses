@@ -134,38 +134,6 @@ Doris，目标表按既定规则处理新旧记录，最后由查询或刷新后
 Doris 的另一种部署方式是存算分离，业务数据保存在共享存储中，由计算节点访问。
 两种模式的组件和存储位置见[系统架构](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)。
 
-### 第一次连接时，应该确认什么？
-
-Lab 把环境准备分成“加载工具”和“启动并连接”两步。
-前一步让 Notebook 具备提交 SQL 和展示结果的能力；后一步准备容器、等待健康检查，并验证查询。
-
-连接后先执行：
-
-```sql
-SELECT 1 AS connection_ok, DATABASE() AS current_database;
-```
-
-`connection_ok` 返回 1，说明这次请求成功到达数据库并获得响应。
-`current_database` 告诉你随后使用的实验库；本课默认值为 `dw_course_l1_demo`。
-确认库名后，再继续建表和写入。
-
-接着查看节点：
-
-```sql
-SHOW FRONTENDS;
-SHOW BACKENDS;
-```
-
-先关注节点是否列出、`Alive` 是否为 true，以及 `Version` 中的构建信息。
-FE、BE 各有自己的状态，后续访问 `orders_sample` 的查询还会实际读取内部表数据。
-常量查询 `SELECT 1` 只做基础连通性检查；Lab 的启动流程另有需要 BE 计算的查询来验证计算服务。
-
-如果要确认 Doris 构建版本，结合节点的 `Version` 和 `@@version_comment` 查看。
-`SELECT VERSION()` 可能返回协议兼容版本，单独看这一项容易认错安装版本。
-
-学到这里，可以先口头回答：Notebook、FE、BE 各自做了什么？订单数据保存在本课环境的哪个组件中？
-能顺着查询过程说清这两点，就可以进入第一批业务数据。
-
 ## D01-02：为什么用 Doris 构建订单数仓？
 
 ### 从数仓用户的工作出发
