@@ -599,6 +599,22 @@ class AlignmentTest(unittest.TestCase):
             log.assert_called_once()
             self.assertEqual(log.call_args.args[0], "查看完整启动日志")
 
+    def test_successful_subprocess_stderr_is_kept_in_folded_log(self):
+        from dw_course.docker_runtime import _run, STARTUP_STEPS
+        from dw_course.ui import WorkflowProgress
+        with patch("dw_course.ui.in_notebook", return_value=True), patch(
+            "dw_course.ui.display"
+        ), patch("dw_course.ui.show_log") as log:
+            progress = WorkflowProgress("准备 Doris 实验环境", STARTUP_STEPS)
+            _run([
+                sys.executable, "-c",
+                "import sys; print('Container Healthy', file=sys.stderr)",
+            ], progress)
+            self.assertEqual(progress.logs[-1], "Container Healthy\n")
+            progress.finish()
+            self.assertIn("Container Healthy", log.call_args.args[1])
+            self.assertFalse(log.call_args.kwargs.get("opened", False))
+
     def test_startup_workflow_failure_keeps_remaining_steps_pending(self):
         import subprocess
         from dw_course.docker_runtime import prepare_environment
