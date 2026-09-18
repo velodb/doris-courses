@@ -229,6 +229,33 @@ class MaterialsTest(unittest.TestCase):
                             f'| {row["paid_amount"]} | {row["refund_amount"]} |')
                 self.assertIn(expected, changes)
 
+    def test_intro_walkthrough_matches_sample_line_items_and_filters(self):
+        intro = next((COURSE_ROOT / "level1/module01-introduction").glob("course*.md")).read_text()
+        data = sample()
+        order = next(row for row in data["orders"] if row["order_id"] == 4)
+        self.assertIn(
+            f'| 4 | {order["customer_id"]} | {order["order_date"]} | '
+            f'{order["order_amount"]} | {order["line_count"]} |', intro,
+        )
+        for line in data["order_lines"]:
+            if line["order_id"] == 4:
+                amount = line["quantity"] * Decimal(line["unit_price"])
+                self.assertIn(
+                    f'| {line["product_id"]} | {line["quantity"]} | '
+                    f'{line["unit_price"]} | {amount:.2f} |', intro,
+                )
+        selected = [row for row in data["orders"] if Decimal(row["order_amount"]) >= 1000]
+        for order in selected:
+            self.assertIn(
+                f'| {order["order_id"]} | {order["order_date"]} | {order["order_amount"]} |', intro,
+            )
+        for date in sorted({row["order_date"] for row in selected}):
+            rows = [row for row in selected if row["order_date"] == date]
+            amount = sum(Decimal(row["order_amount"]) for row in rows)
+            self.assertIn(f"| {date} | {len(rows)} | {amount:.2f} |", intro)
+        doubled = 2 * sum(Decimal(row["order_amount"]) for row in data["orders"])
+        self.assertIn(f"金额变为 {doubled:.2f}", intro)
+
     def test_readings_follow_chinese_course_structure(self):
         readings = list((COURSE_ROOT / "level1").glob("*/course*.md"))
         self.assertEqual(len(readings), 7)
