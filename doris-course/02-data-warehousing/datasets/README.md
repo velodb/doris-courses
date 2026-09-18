@@ -5,10 +5,11 @@
 | 数据 | 来源及用途 | 口径 |
 | --- | --- | --- |
 | [wwi/sample.json](wwi/sample.json) | WWI 十笔历史订单及关联维度；D01–D04 | 税前订单金额 12220.60，不表示收款 |
-| WWI 全量核心 Parquet | D05：10 张表、701,846 行，约 16.2 MiB | 原始订单、明细、客户、商品、发票、客户账款及字典 |
+| [wwi/wwi-core.tar.gz](wwi/wwi-core.tar.gz) | D05：10 张表、701,846 行，解压后约 16.2 MiB | 原始订单、明细、客户、商品、发票、客户账款及字典 |
 | orders.json / orders.csv | 课程生成的十笔新订单；D05、D06 | 初始金额 1400.00，支付和退款均为零 |
 | raw_orders.json | 10 笔正常新订单 + 非法金额、空订单号、无效客户各一行 | 13 输入 → 10 合格、3 拒收 |
 | malformed_orders.csv | 一行正常、一行非法金额 | D05 严格模式整批拒绝 |
+| orders_reordered.csv | D05 独立练习：两笔订单，客户号在订单号之前 | 显式配置导入列映射，金额合计 260.00 |
 | deliveries.json | 新订单状态的九次投递，含八个不同事件 | 乱序、重复和中断恢复；不是 Binlog |
 | business_events.json | 独立列出的商品明细、支付、退款、配送事件 | 用于对账，不由被测 Notebook 的当前表生成 |
 | expected_current.json / expected_summary.json | 固定预期明细与汇总 | 不在 Lab 中根据实际输出改写 |
@@ -30,11 +31,12 @@ WWI 客户收款是账户层的记录，26,637 条收款的 InvoiceID 为空；
 
 ## 本地准备完整 Parquet 包
 
-D01–D03 与模拟事件的小文件随仓库提供。D05 使用讲师分发的完整 Parquet 包，
-包含 manifest 所列的十个文件。请向讲师取得数据包，并按下方步骤放到内核所在机器。
+D01–D03 小样本、模拟事件与 D05 完整 Parquet 压缩包都随仓库提供。
+D05 首次读取时将约 10 MiB 的压缩包解到课程目录 `.runtime/wwi/`，
+校验十个文件的大小与 SHA-256 后开始导入。已有文件保留，校验不一致时停止并提示差异。
 D06、D07 继续读取 D05 导入的客户和商品维度，因此应先完成 D05，再进入质量与状态实验。
 
-取得数据包后，在仓库根目录运行，将示例路径替换为包所在目录：
+如果已经单独保存了同版 Parquet 文件，也可以在仓库根目录运行：
 
 ```bash
 .venv/bin/python maintenance/02-data-warehousing/scripts/prepare_wwi.py \
@@ -42,7 +44,7 @@ D06、D07 继续读取 D05 导入的客户和商品维度，因此应先完成 D
 ```
 
 脚本校验十个文件后复制到本课程的 `.runtime/wwi/`。目标目录若已有同名文件，脚本会停止并提示使用新目录，以保留现有数据。
-或者在启动 Jupyter 前将 DW_WWI_DATA_DIR 设为包所在目录；路径是内核所在机器的路径。
+或者在启动 Jupyter 前将 DW_WWI_DATA_DIR 设为解压后的文件目录；路径是内核所在机器的路径。
 Lab 直接读取本地 Parquet，按课程清单检查文件完整性。
 缺失文件时 D05 在重建表之前停止。
 

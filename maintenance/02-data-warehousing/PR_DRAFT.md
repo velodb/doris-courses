@@ -7,7 +7,7 @@ not a single-video PR and not a claim that all planned Level 1 labs are complete
 
 - Add an independent `02-data-warehousing/level1` course, preserving the agreed
   D01/D02/D03/D04/D05/D06/D07 teaching order.
-- Add seven course readings mapped to 25 video topics, seven Lab notebooks,
+- Add seven course readings with numbered topic sections, seven Lab notebooks,
   seven interactive quiz notebooks and 35 questions.
 - Add original synthetic order fixtures and independent expected results.
 - Implement and validate the core order workflow: load, reject, clean,
@@ -34,42 +34,37 @@ not a single-video PR and not a claim that all planned Level 1 labs are complete
   customers and products. Add payment, refund and shipment ledgers for reconciliation.
 - Update D06 to 13 inputs / 10 accepted / 3 rejected, and D07 to 11 current
   orders / 18 history events / 19 deliveries. Update readings and relevant quizzes.
-- Retain local-only author preparation: no S3 upload, no credentials, no committed
-  large files, and no claim that real CDC or Iceberg has been validated.
+- Include the validated ~10 MiB WWI archive with its manifest and Microsoft MIT
+  license. D05 verifies and unpacks the archive locally; no cloud upload is needed.
+- Add a local MinIO/Iceberg REST fixture, isolated namespaces and sample preparation
+  for D04. Public fixture credentials are scoped to localhost-only teaching services.
+- Add blank independent exercises and folded, executable reference solutions to
+  all seven labs; validate answers with the notebook runner's `--solutions` flag.
+- Use business result tables and distinguish intended quality-check failures from
+  real errors. Keep lab connections available for independent work.
 - Existing learner quiz outputs and course 01 changes remain excluded.
 
 ## Validation
 
 See [VALIDATION.md](VALIDATION.md) for build IDs, observed results and limitations.
-Core notebook SQL has been executed on a development cluster; the target
-4.1.3 release and external integrations are not yet qualified.
-All 18 offline tests passed after structure/presentation alignment. The six core
-labs passed the cell runner and real Jupyter kernels again; all seven quizzes
-emitted widget-view output in fresh kernels. Compose configuration and mocked
-startup tests passed; actual Docker startup and browser visual checks remain
-unverified. See the validation record for initial and follow-up runs.
-
-The D01 learner-facing revision passes 20 offline tests on an exported index
-snapshot, two fresh-kernel D01 runs, its quiz widget check, and another full
-six-core-lab cell-runner pass. Learner notebook outputs were left untouched
-and excluded from the revision.
-
-After the directory cleanup, 22 offline tests and all six core labs passed
-with the relocated tooling. The Jupyter contents API confirms the simplified
-course root and access to maintenance links.
-
-The subsequent Chinese structure revision passes 23 offline tests, including
-section order and links. Only reading and notebook Markdown changed; all lab
-code cells match the prior version, so no additional SQL run was performed.
+All seven labs and reference solutions ran on the course's single-container
+Doris sandbox in an isolated test database, including a real Iceberg table.
+The image is tagged all-in-one-4.1.3 and reports a 4.1.3-rc02 build; retain that
+distinction when describing compatibility. Fresh D04/D06 Jupyter kernels
+validated output HTML, expected-error feedback and absence of stderr output.
+Pixel-level browser checks, macOS/ARM64 startup and human trial timing remain open.
+Offline checks cover notebook structure, four-choice quiz feedback, fixture
+integrity, local archive extraction and learner-facing runtime behavior.
+Existing learner outputs are preserved in the worktree and excluded from commits.
 
 ## Remaining scope
 
-Iceberg environment, file queries, Kafka, CDC, object-storage continuous loads,
+Standalone file queries, Kafka, CDC, object-storage continuous loads,
 Group Commit, larger performance demonstrations and recording remain open.
-D04 is a candidate lab requiring an instructor-provisioned external table.
-These are not silently skipped or represented by synthetic internal tables.
-The other Level 1 modules still need the same teaching depth and guided
-steps as the revised D01; filename/UI alignment alone is not completion.
+D04 now includes a self-service Iceberg lab. The remaining integration paths
+are tracked in integration-backlog.md and are not claimed as validated labs.
+All seven modules have readings and guided exercises; human trial sessions
+should still check difficulty, pacing and whether learners can solve new tasks.
 
 ## Dependencies and review focus
 

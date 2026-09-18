@@ -17,6 +17,7 @@ dependencies = [
   "ipywidgets>=8.1,<9",
   "PyYAML>=6.0,<7",
   "jupyterlab==4.4.10",
+  "boto3==1.40.0",
 ]
 
 [tool.setuptools.packages.find]

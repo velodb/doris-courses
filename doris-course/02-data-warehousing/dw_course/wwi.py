@@ -3,6 +3,8 @@
 import hashlib
 import json
 import os
+import tarfile
+import tempfile
 from pathlib import Path
 
 from .runtime import COURSE_ROOT, identifier
@@ -48,6 +50,8 @@ def parquet_ddl(name, table):
 def parquet_paths(directory=None):
     """Validate all files before a lab resets any of its target tables."""
     root = Path(directory or os.environ.get("DW_WWI_DATA_DIR", COURSE_ROOT / ".runtime/wwi"))
+    if directory is None and not os.environ.get("DW_WWI_DATA_DIR") and not root.exists():
+        _unpack_bundle(root)
     paths = {}
     for name, entry in manifest()["tables"].items():
         path = root / f"{name}.parquet"
@@ -61,3 +65,28 @@ def parquet_paths(directory=None):
             raise ValueError(f"WWI 数据文件与课程 manifest 不一致：{path}")
         paths[name] = path
     return paths
+
+
+def _unpack_bundle(root):
+    """Publish a validated local bundle; never replace existing learner files."""
+    root.parent.mkdir(parents=True, exist_ok=True)
+    entries = {name + ".parquet": entry for name, entry in manifest()["tables"].items()}
+    with tempfile.TemporaryDirectory(prefix="wwi-", dir=root.parent) as temporary:
+        unpacked = Path(temporary) / "data"
+        unpacked.mkdir()
+        with tarfile.open(COURSE_ROOT / "datasets/wwi/wwi-core.tar.gz", "r:gz") as archive:
+            members = archive.getmembers()
+            if len(members) != len(entries) or {m.name for m in members} != set(entries):
+                raise ValueError("WWI 数据包文件清单与 manifest 不一致")
+            for member in members:
+                if not member.isfile() or member.size != entries[member.name]["bytes"]:
+                    raise ValueError("WWI 数据包包含不符合 manifest 的文件")
+                with archive.extractfile(member) as source, (unpacked / member.name).open("xb") as target:
+                    for block in iter(lambda: source.read(1024 * 1024), b""):
+                        target.write(block)
+        parquet_paths(unpacked)
+        # A concurrent preparation must not replace a directory published by another kernel.
+        if root.exists():
+            parquet_paths(root)
+        else:
+            unpacked.rename(root)

@@ -14,7 +14,7 @@
 正文按业务问题、概念、示例与结果解释组织，不以“观察与练习”或录制待办代替讲解。
 分节标题保留简洁的功能名称，例如 Streaming Job 与 CDC_STREAM；业务场景、术语含义和工作过程放在正文讲清楚。
 学员材料保留实验前置条件、操作风险与功能成熟度；制作状态和测试记录集中在本目录。
-Level 1 的 Iceberg Lab 尚未实测，Kafka、Flink CDC、Streaming Job 和 Group Commit 目前为概念教学，未新增对应实操验证。
+Level 1 的 Iceberg Lab 提供本地自助环境并完成实测；Kafka、Flink CDC、Streaming Job 和 Group Commit 目前为概念教学，未新增对应实操验证。
 七份讲义的学习目标与五道测验逐项对应，单元总结回扣相同目标；题目定义中的
 objective 保存对应的学习目标原文，离线测试检查覆盖关系。
 教学时间是包含讲义、实验和测验的估计，不含环境准备，仍需试讲校准。
@@ -38,8 +38,8 @@ objective 保存对应的学习目标原文，离线测试检查覆盖关系。
 export DW_DATABASE=dw_course_l1_validation
 export DW_ALLOW_WRITES=yes
 .venv/bin/python maintenance/02-data-warehousing/scripts/run_labs.py
-# 仅在预置真实湖表并配置 DW_ICEBERG_ORDERS 后使用：
-.venv/bin/python maintenance/02-data-warehousing/scripts/run_labs.py --iceberg
+# 加入本地湖表实验，并执行所有折叠参考答案：
+.venv/bin/python maintenance/02-data-warehousing/scripts/run_labs.py --iceberg --solutions
 ```
 
 如果 Python 环境安装在课程目录，将上面的 .venv/bin/python 换成对应路径。

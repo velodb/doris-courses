@@ -3,6 +3,8 @@
 import json
 import os
 import re
+from contextlib import contextmanager
+from contextvars import ContextVar
 from decimal import Decimal
 from pathlib import Path
 
@@ -36,14 +38,41 @@ def normalized(value):
     return value
 
 
-def expect(actual, expected):
+_expected_failure = ContextVar("course_expected_failure", default=False)
+
+
+class CourseCheckError(AssertionError):
+    """A result mismatch, distinct from unrelated execution errors."""
+
+
+@contextmanager
+def expected_failure(title, message):
+    """Show success only when a course result check detects an intended mismatch."""
+    token = _expected_failure.set(True)
+    detected = False
+    try:
+        yield
+    except CourseCheckError:
+        detected = True
+    finally:
+        _expected_failure.reset(token)
+    if not detected:
+        expect("未检测到预期错误", "检测到预期错误")
+    if in_notebook():
+        card(message, "ok", title)
+    else:
+        print(title + ": " + message)
+
+
+def expect(actual, expected, *, title=None):
     """Raise on mismatch even when Python runs with optimization enabled."""
     if normalized(actual) != normalized(expected):
-        if in_notebook():
+        if in_notebook() and not _expected_failure.get():
             card("实际结果与预期不一致；请查看下方异常详情。", "fail", "验收未通过")
-        raise AssertionError(f"Expected {expected!r}, got {actual!r}")
+        raise CourseCheckError(f"Expected {expected!r}, got {actual!r}")
     if in_notebook():
-        card("实际结果与独立预期一致。", "ok", "验收通过")
+        if title is not None:
+            card("结果符合预期。", "ok", title)
     else:
         print("PASS", normalized(expected))
 

@@ -56,8 +56,8 @@ python3 -m venv .venv
 ## 3. 准备 D05 历史数据包
 
 D01–D03 的 WWI 小样本和 D06/D07 的模拟事件已在仓库内。
-D05 的完整 Parquet 包由讲师提供，请按[数据说明](../../datasets/README.md)准备。
-默认放在课程目录的 `.runtime/wwi/`；也可以在启动 Jupyter 前设置：
+D05 的完整 Parquet 压缩包也随仓库提供，首次使用时自动解压并校验，见[数据说明](../../datasets/README.md)。
+默认解到课程目录的 `.runtime/wwi/`；已有同版数据文件时，也可以在启动 Jupyter 前设置：
 
 ```bash
 export DW_WWI_DATA_DIR=/absolute/path/to/wwi-parquet

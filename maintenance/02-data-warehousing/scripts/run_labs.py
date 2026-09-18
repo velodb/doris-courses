@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -20,14 +21,13 @@ CORE = [
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--iceberg", action="store_true", help="Also execute D04 against a preconfigured Catalog")
+    parser.add_argument("--iceberg", action="store_true", help="Also prepare the local lakehouse fixture and execute D04")
+    parser.add_argument("--solutions", action="store_true", help="Validate folded reference solutions after each independent exercise")
     args = parser.parse_args()
     if os.environ.get("DW_ALLOW_WRITES") != "yes":
         parser.error("Set DW_ALLOW_WRITES=yes after reading environments/single-node/README.md")
     modules = list(CORE)
     if args.iceberg:
-        if "DW_ICEBERG_ORDERS" not in os.environ:
-            parser.error("--iceberg requires DW_ICEBERG_ORDERS")
         modules.insert(3, "module04-external-access")
     for module in modules:
         paths = list((ROOT / "level1" / module).glob("lab*.ipynb"))
@@ -40,6 +40,13 @@ def main():
         try:
             os.chdir(paths[0].parent)
             for index, cell in enumerate(notebook["cells"]):
+                if args.solutions and "course_solution" in cell.get("metadata", {}).get("tags", []):
+                    source = "".join(cell["source"])
+                    solutions = re.findall(r"```python\n(.*?)```", source, re.DOTALL)
+                    if len(solutions) != 1:
+                        raise ValueError("Expected one reference solution: " + cell["id"])
+                    exec(compile(solutions[0], f"{paths[0].name}:solution-{index}", "exec"), namespace)
+                    print("PASS reference solution: " + module, flush=True)
                 if cell["cell_type"] == "code":
                     source = cell["source"]
                     source = "".join(source) if isinstance(source, list) else source

@@ -5,7 +5,7 @@
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
 | 产品版本 | Apache Doris 4.x |
 | 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 30 分钟，包含动手实验和测验 |
+| 预计时间 | 约 45 分钟，包含讲义阅读、动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 4](lab4_query_iceberg.ipynb) · [打开测验 4](quiz4_internal_files_and_lake_tables.ipynb)
 
@@ -29,8 +29,8 @@
 
 | 环节 | 学习形式 | 建议时间 | 学习成果 |
 | --- | --- | --- | --- |
-| D04-01：内部表、外部文件与湖表查询 | 对象对照与 SQL | 5 分钟 | 区分访问路径，解释 JOIN 和导入边界 |
-| 实验 4 | 动手操作（需 Iceberg） | 20 分钟 | 核对直查、关联、导入均为十单、12220.60 |
+| D04-01：内部表、外部文件与湖表查询 | 对象对照与 SQL | 10 分钟 | 区分访问路径，解释 JOIN 和导入边界 |
+| 实验 4 | 动手操作（需 Iceberg） | 30 分钟 | 核对直查、关联、导入均为十单、12220.60 |
 | 测验 4 | 交互测验 | 5 分钟 | 检查对象、访问选择、表定位与关联结果 |
 
 ## D04-01：内部表、外部文件与湖表查询
@@ -82,12 +82,12 @@ Iceberg 元数据与数据文件 ─ Catalog ┘      │
 
 ### Catalog 如何定位外部表？
 
-完整表名是 `catalog.database.table`。例如讲师可以把湖表注册为
+完整表名是 `catalog.database.table`。例如，可以把湖表注册为
 `wwi_lake.sales.orders`：wwi_lake 是 Doris 中的 Catalog 名，sales 是外部数据库，
 orders 是湖表。它不是 Parquet 的文件路径。
 
-以下是查询形状示例；必须把外部表名替换成讲师提供的实际名称。
-课程 Notebook 从 `DW_ICEBERG_ORDERS` 读取该名称，不要求照用示例名。
+以下是查询形状示例；运行时应使用实际的完整表名。
+课程 Notebook 在准备湖表后把完整表名保存在 `source` 变量中，后续查询直接引用。
 
 ```sql
 SELECT order_date, COUNT(*) AS sample_orders, SUM(order_amount) AS amount
@@ -145,16 +145,16 @@ ORDER BY order_date;
 此结果应与直查湖表一致；再比对订单号、客户、日期、金额、明细数和来源，
 避免不同错误在汇总中抵消。
 
-**实验条件：** 本实验需要讲师提供可查询的 Iceberg 服务、Catalog 和十单样本。
-准备好外部环境后再执行 Lab；也可以先完成本节讲义与测验，继续学习 D05，稍后补做湖表实验。
+**实验条件：** 课程 Doris 已启动，Docker 可用。Lab 会启动 MinIO 和 Iceberg REST Catalog
+两个辅助容器并准备样本；端口和数据保留方式见[湖表环境说明](../../environments/lakehouse/README.md)。
 
 ## 动手实验 4：湖表与内部表关联
 
-开始前请完成 D01–D03；运行实验还需讲师预置可查询的 Iceberg 订单表，并使用课程独立实验库。
+开始前请完成 D01–D03，继续使用课程独立实验库。
 
 打开[实验 4](lab4_query_iceberg.ipynb)，按顺序完成：
 
-1. 确认 DW_ICEBERG_ORDERS 指向讲师提供的真实外部表。
+1. 运行准备步骤，启动湖表服务并取得真实 Iceberg 表名。
 2. 直接查询湖上十笔订单，核对金额 12220.60。
 3. 关联内部客户表并检查行数，再导入内部订单表进行对账。
 
@@ -162,13 +162,13 @@ ORDER BY order_date;
 
 实验使用 Microsoft WWI 官方模拟批发业务的历史子集，保留原始客户与商品标识。
 字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
-湖表应由讲师使用 datasets/wwi/sample.json 中 orders 的六个字段和十行数据预置，不能用内部表替代外部环境。
+准备步骤把 datasets/wwi/sample.json 中 orders 的六个字段和十行数据写入 Iceberg 表，数据文件保存在课程对象存储中。
 
 ## 单元总结
 
 - Parquet 是文件格式，Iceberg 是管理快照和文件的表格式；External Catalog 是访问入口，不是数据复制。
 - 探索数据可以先直查，重复分析可以评估导入；导入后的刷新与变更处理仍需明确设计。
-- catalog.database.table 定位外部表，文件路径不能代替完整表名；Notebook 使用讲师配置的表名。
+- catalog.database.table 定位外部表；Notebook 使用准备步骤返回的完整表名。
 - 重复维表键会放大 JOIN 结果，缺失键会丢失内连接结果；同时核对行数、金额和明细。
 - 直查、关联和内部表是三个检查点；本样本都应对应十单、12220.60，外部环境未运行不能算实验完成。
 

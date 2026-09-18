@@ -42,21 +42,21 @@ questions:
   - id: d
     text: D. Catalog、Database、Table
   answer: d
-  explanation: A：SQL 表名不是对象存储的物理文件路径。 B：SQL 对象层次与节点、分片的物理层次不同。 C：在本课的 Doris 三段式表名中，第一段是 Catalog，最后一段是表而不是列。 D：正确。Lab 需通过 DW_ICEBERG_ORDERS 指定实际预置表名，示例名称不保证存在。
+  explanation: A：SQL 表名不是对象存储的物理文件路径。 B：SQL 对象层次与节点、分片的物理层次不同。 C：在本课的 Doris 三段式表名中，第一段是 Catalog，最后一段是表而不是列。 D：正确。Lab 使用准备步骤返回的完整表名，示例名称不保证存在。
 - id: q4
   objective: 通过关联前后对照发现维表重复或关联缺失。
-  prompt: 订单与客户做 JOIN 后行数变多，优先检查什么？
+  prompt: 湖上 100 笔订单 LEFT JOIN 客户后变成 103 行，总金额也增加。最合适的下一步是什么？
   options:
   - id: a
-    text: A. 先检查客户表中同一关联键是否有多行匹配
+    text: A. 按客户关联键检查多行匹配，并核对受影响订单
   - id: b
-    text: B. 改用 LEFT JOIN，让每笔订单只匹配一条客户记录
+    text: B. 改成 INNER JOIN，保证每笔订单恰好匹配一次
   - id: c
-    text: C. 对结果加 DISTINCT，就认为维表和关联口径已经正确
+    text: C. 对全部结果 DISTINCT，直接把去重后的金额用于报表
   - id: d
-    text: D. 把订单金额的 SUM 改成 MAX，恢复总金额后结束检查
+    text: D. 把 SUM 改为 AVG，避免重复金额累加
   answer: a
-  explanation: A：正确。维表重复键可能使一笔订单匹配多行；也要检查关联缺失造成的丢行。 B：LEFT JOIN 保留左表未匹配行，但不会消除右表的多行匹配。 C：DISTINCT 可能掩盖重复或移除合法行，并没有修复关系；还需核对粒度和字段。 D：换聚合函数改变了指标含义，不能用于掩盖关联放大。
+  explanation: A：正确。右表多行匹配会放大左表订单，需定位关联键和明细。 B：INNER JOIN 不会消除多行匹配，还可能丢失未匹配订单。 C：DISTINCT 不能保证业务粒度正确，字段不同的重复仍会保留。 D：平均金额与总金额是不同指标。
 - id: q5
   objective: 在具备 Iceberg 环境时核对直查、关联和导入后的同一批订单。
   prompt: 怎样证明本 Lab 的直查与导入结果一致？

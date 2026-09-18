@@ -50,13 +50,13 @@ Level 1 提供七个单元，每个单元包含讲义、Lab 和五道交互测�
 | 实验 | 所需环境与数据 |
 | --- | --- |
 | D01–D03 | 课程单容器沙箱、仓库内的十单样本 |
-| D04 | 沙箱及讲师预置的 Iceberg 服务、Catalog 和订单表 |
-| D05 | 沙箱、讲师提供的历史 Parquet 包、仓库内的模拟 CSV |
+| D04 | 沙箱；Lab 自动准备的本地 Iceberg 湖表环境 |
+| D05 | 沙箱、仓库内的历史 Parquet 压缩包与模拟 CSV |
 | D06–D07 | 沙箱及前一单元产出的表、仓库内的模拟事件 |
 
 课程镜像为 apache/doris:all-in-one-4.1.3。D05 的 Lab 练习 Stream Load，
 讲义同时介绍 Kafka、CDC 与对象存储持续接入的适用场景和工作方式。
-尚未准备 Iceberg 时，可以先学习 D04 讲义与测验，继续 D05，稍后补做湖表实验。
+D04 按需启动两个湖表辅助容器，准备方式见[湖表环境说明](environments/lakehouse/README.md)。
 
 ## 维护者资料
 
