@@ -3,16 +3,17 @@
 | 课程信息 | 内容 |
 | --- | --- |
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 前置知识 | 完成 D01–D04 的相关概念；配置同一集群的 BE HTTP 接入地址 |
-| 实验环境 | 课程独立实验库 |
-| 目标版本 | Apache Doris 4.1.3；实际验证范围见[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md) |
-| 建议时间 | 约 70 分钟，含实验与测验，不含环境准备；待试讲校准 |
+| 产品版本 | Apache Doris 4.x |
+| 实验版本 | Apache Doris 4.1.3 |
+| 预计时间 | 约 70 分钟，包含动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 5](lab5_stream_load.ipynb) · [打开测验 5](quiz5_load_methods_and_retry_safety.ipynb)
 
 ## 单元目标
 
-文件导入返回成功后，业务数据就一定正确吗？重试会不会重复？本单元沿着来源选择、字段契约、导入响应与重试检查理解接入流程，先用 Stream Load 完成可执行的批量实验。
+本单元介绍常见的数据接入方式，以及导入结果检查和重试的基本方法。
+
+完成本单元后，你将能够使用 Stream Load 导入订单文件，核对结果，并验证失败和重试时的数据变化。
 
 ## 学习目标
 
@@ -116,6 +117,8 @@ CDC 从源库变更日志捕获变化，Connector 将结果写到目标系统。
 
 ## 动手实验 5：批量导入、失败与重试
 
+开始前请完成 D01–D04 的相关概念；配置同一集群的 BE HTTP 接入地址，并使用课程独立实验库。
+
 打开[实验 5](lab5_stream_load.ipynb)，按顺序完成：
 
 1. 通过 Stream Load 导入本地订单 CSV，保留响应并核对十行、1400.00。
@@ -146,4 +149,4 @@ CDC 从源库变更日志捕获变化，Connector 将结果写到目标系统。
 - [数据导入概览](https://doris.apache.org/docs/4.x/data-operate/import/load-manual/)
 - [Stream Load：参数、返回结果与导入示例](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)
 
-官方文档会随版本更新；实验中的目标版本和实际验证范围以课程信息为准。
+官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

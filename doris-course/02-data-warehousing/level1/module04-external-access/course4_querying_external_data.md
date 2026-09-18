@@ -3,16 +3,17 @@
 | 课程信息 | 内容 |
 | --- | --- |
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 前置知识 | 完成 D01–D03；运行实验还需讲师预置可查询的 Iceberg 订单表 |
-| 实验环境 | 课程独立实验库，另需预置 Iceberg 环境 |
-| 目标版本 | Apache Doris 4.1.3；实际验证范围见[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md) |
-| 建议时间 | 约 30 分钟，含实验与测验，不含环境准备；待试讲校准 |
+| 产品版本 | Apache Doris 4.x |
+| 实验版本 | Apache Doris 4.1.3 |
+| 预计时间 | 约 30 分钟，包含动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 4](lab4_query_iceberg.ipynb) · [打开测验 4](quiz4_internal_files_and_lake_tables.ipynb)
 
 ## 单元目标
 
-历史订单已经在数据湖里，是否一定要先搬到 Doris？本单元区分内部表、外部文件和湖表，学习先访问、再判断是否导入，并检查关联查询是否放大业务金额。
+本单元介绍内部表、外部文件和湖表的区别，以及通过 Doris 访问已有湖表的方式。
+
+在准备好 Iceberg 环境后，你将能够查询湖上订单、关联内部表，并核对导入前后的结果。
 
 ## 学习目标
 
@@ -41,6 +42,8 @@ Parquet 是文件格式，Iceberg 是带元数据管理的表格式，文件目�
 **观察与练习：** 候选 Lab 对预置 Iceberg 表进行直查、关联与导入后对账。没有外部服务时不能运行；独立文件 TVF 部分仍待补。
 
 ## 动手实验 4：湖表与内部表关联
+
+开始前请完成 D01–D03；运行实验还需讲师预置可查询的 Iceberg 订单表，并使用课程独立实验库。
 
 打开[实验 4](lab4_query_iceberg.ipynb)，按顺序完成：
 
@@ -73,4 +76,4 @@ Parquet 是文件格式，Iceberg 是带元数据管理的表格式，文件目�
 - [数据目录概览](https://doris.apache.org/docs/4.x/lakehouse/catalog-overview/)
 - [Iceberg Catalog](https://doris.apache.org/docs/4.x/lakehouse/catalogs/iceberg-catalog/)
 
-官方文档会随版本更新；实验中的目标版本和实际验证范围以课程信息为准。
+官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

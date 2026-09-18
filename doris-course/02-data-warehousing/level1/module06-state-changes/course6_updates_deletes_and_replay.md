@@ -3,16 +3,17 @@
 | 课程信息 | 内容 |
 | --- | --- |
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 前置知识 | 先完成 D09-A，实验会读取其 orders_clean_demo 合格订单表 |
-| 实验环境 | 课程独立实验库 |
-| 目标版本 | Apache Doris 4.1.3；实际验证范围见[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md) |
-| 建议时间 | 约 55 分钟，含实验与测验，不含环境准备；待试讲校准 |
+| 产品版本 | Apache Doris 4.x |
+| 实验版本 | Apache Doris 4.1.3 |
+| 预计时间 | 约 55 分钟，包含动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 6](lab6_current_state_and_replay.ipynb) · [打开测验 6](quiz6_state_changes_and_replay.ipynb)
 
 ## 单元目标
 
-订单会支付、发货、取消和退款，消息还可能重复或乱序。本单元把当前状态、业务历史和原始投递分开维护，验证发生中断后能否安全重放并恢复一致结果。
+本单元介绍订单状态更新、重复与乱序事件处理，以及历史保留和重放的方法。
+
+完成本单元后，你将能够通过模拟事件维护订单当前状态与历史，并核对中断后重放的结果。
 
 ## 学习目标
 
@@ -80,6 +81,8 @@ is_deleted 是业务字段，保留记录后由查询条件决定是否展示。
 
 ## 动手实验 6：乱序裁决、历史保留和可恢复重放
 
+开始前请先完成 D09-A，并使用同一课程独立实验库；本实验会读取其中的 orders_clean_demo 合格订单表。
+
 打开[实验 6](lab6_current_state_and_replay.ipynb)，按顺序完成：
 
 1. 从 D09-A 的合格订单初始化当前表、历史表和投递表。
@@ -112,4 +115,4 @@ is_deleted 是业务字段，保留记录后由查询条件决定是否展示。
 - [Unique Key 并发更新与 Sequence 列](https://doris.apache.org/docs/4.x/data-operate/update/unique-update-concurrent-control/)
 - [部分列更新](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/)
 
-官方文档会随版本更新；实验中的目标版本和实际验证范围以课程信息为准。
+官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

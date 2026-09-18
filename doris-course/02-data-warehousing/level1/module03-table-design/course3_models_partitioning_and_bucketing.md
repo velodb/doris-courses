@@ -3,16 +3,17 @@
 | 课程信息 | 内容 |
 | --- | --- |
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 前置知识 | 完成 D01、D02，了解订单字段和基本存储结构 |
-| 实验环境 | 课程独立实验库 |
-| 目标版本 | Apache Doris 4.1.3；实际验证范围见[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md) |
-| 建议时间 | 约 35 分钟，含实验与测验，不含环境准备；待试讲校准 |
+| 产品版本 | Apache Doris 4.x |
+| 实验版本 | Apache Doris 4.1.3 |
+| 预计时间 | 约 35 分钟，包含动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 3](lab3_models_and_pruning.ipynb) · [打开测验 3](quiz3_models_and_data_distribution.ipynb)
 
 ## 单元目标
 
-重复的订单号应该保留多行、覆盖成最新状态，还是汇总成指标？本单元先选择数据语义，再学习分区和分桶，避免把业务主键与物理分布混为一谈。
+本单元介绍 Doris 的三种表模型，以及分区和分桶的作用。
+
+完成本单元后，你将能够比较重复键在不同模型中的处理结果，并通过 EXPLAIN 观察查询的扫描范围。
 
 ## 学习目标
 
@@ -51,6 +52,8 @@ Duplicate Key 保留重复明细；Unique Key 用于维护同一逻辑 Key 的�
 
 ## 动手实验 3：模型语义与分区分桶
 
+开始前请完成 D01、D02，了解订单字段和基本存储结构，并使用课程独立实验库。
+
 打开[实验 3](lab3_models_and_pruning.ipynb)，按顺序完成：
 
 1. 向三种模型写入相同键的不同金额，核对逐行结果。
@@ -82,4 +85,4 @@ Duplicate Key 保留重复明细；Unique Key 用于维护同一逻辑 Key 的�
 - [Unique Key 主键模型](https://doris.apache.org/docs/4.x/table-design/data-model/unique/)
 - [分区与分桶基础](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)
 
-官方文档会随版本更新；实验中的目标版本和实际验证范围以课程信息为准。
+官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

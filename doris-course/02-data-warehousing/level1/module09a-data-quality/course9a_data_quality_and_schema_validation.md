@@ -3,16 +3,17 @@
 | 课程信息 | 内容 |
 | --- | --- |
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 前置知识 | 完成 D05，了解导入响应与业务质量的区别 |
-| 实验环境 | 课程独立实验库 |
-| 目标版本 | Apache Doris 4.1.3；实际验证范围见[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md) |
-| 建议时间 | 约 40 分钟，含实验与测验，不含环境准备；待试讲校准 |
+| 产品版本 | Apache Doris 4.x |
+| 实验版本 | Apache Doris 4.1.3 |
+| 预计时间 | 约 40 分钟，包含动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 9A](lab9a_validate_orders.ipynb) · [打开测验 9A](quiz9a_data_quality_and_rejection.ipynb)
 
 ## 单元目标
 
-导入后的记录里混有非法金额和缺失订单号，如何解释每一条输入的去向？本单元保留原始数据，显式分流合格与拒收记录，再验证质量检查确实能够发现错误。
+本单元介绍数据类型校验与业务质量规则，以及如何保留和处理不合格记录。
+
+完成本单元后，你将能够将订单数据分为合格和拒收记录，追踪拒收原因，并用已知错误验证检查规则。
 
 ## 学习目标
 
@@ -61,6 +62,8 @@
 
 ## 动手实验 9A：保留输入、分流拒收、自动验收
 
+开始前请完成 D05，了解导入响应与业务质量的区别，并使用课程独立实验库。
+
 打开[实验 9A](lab9a_validate_orders.ipynb)，按顺序完成：
 
 1. 暂存十二行输入，包括非法金额与缺失订单号。
@@ -91,4 +94,4 @@
 - [Stream Load：参数、返回结果与导入示例](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)
 - [Schema Change：表结构变更](https://doris.apache.org/docs/4.x/table-design/schema-change/)
 
-官方文档会随版本更新；实验中的目标版本和实际验证范围以课程信息为准。
+官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。

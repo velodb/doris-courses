@@ -3,16 +3,17 @@
 | 课程信息 | 内容 |
 | --- | --- |
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 前置知识 | 完成 D01，能够连接实验实例并核对订单总量 |
-| 实验环境 | 课程独立实验库 |
-| 目标版本 | Apache Doris 4.1.3；实际验证范围见[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md) |
-| 建议时间 | 约 40 分钟，含实验与测验，不含环境准备；待试讲校准 |
+| 产品版本 | Apache Doris 4.x |
+| 实验版本 | Apache Doris 4.1.3 |
+| 预计时间 | 约 40 分钟，包含动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 2](lab2_observe_storage.ipynb) · [打开测验 2](quiz2_storage_and_write_batches.ipynb)
 
 ## 单元目标
 
-同样十笔订单，一次写入和逐笔写入，为什么会带来不同的存储工作？本单元将 SQL 查询、写入批次与存储结构联系起来，帮助你分清业务结果与系统观测。
+本单元介绍 Doris 的查询路径、存储结构，以及不同写入批次与后台合并的关系。
+
+完成本单元后，你将能够比较批量与逐行写入的结果，并观察 Tablet 等存储元数据。
 
 ## 学习目标
 
@@ -60,6 +61,8 @@ SHOW TABLETS 提供 Tablet 和副本信息，版本相关指标不是 Rowset/Seg
 
 ## 动手实验 2：观察存储和写入批次
 
+开始前请完成 D01，能够连接实验实例并核对订单总量，并使用课程独立实验库。
+
 打开[实验 2](lab2_observe_storage.ipynb)，按顺序完成：
 
 1. 创建相同结构的批量写入表和逐行写入表。
@@ -91,4 +94,4 @@ SHOW TABLETS 提供 Tablet 和副本信息，版本相关指标不是 Rowset/Seg
 - [Compaction 原理](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/)
 - [分区与分桶基础](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)
 
-官方文档会随版本更新；实验中的目标版本和实际验证范围以课程信息为准。
+官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。
