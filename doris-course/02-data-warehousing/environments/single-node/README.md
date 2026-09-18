@@ -55,7 +55,7 @@ DW_ALLOW_WRITES=yes 表示你已确认各 Lab 的表重置范围，不是数据�
 ### B. 使用课程 Docker 沙箱
 
 先启动 Docker Desktop（macOS）或 Docker Engine（Linux），准备 Compose 插件。
-资源参考课程 01：4 CPU、8 GB 内存、20 GB 可用磁盘。
+教学沙箱建议预留 4 CPU、8 GB 内存、20 GB 可用磁盘。
 镜像固定为 apache/doris:all-in-one-4.1.3。
 
 ```bash
@@ -85,7 +85,7 @@ export DW_ALLOW_WRITES=yes
 | 网络暴露 | 只绑定宿主机 127.0.0.1 |
 
 无密码 root 仅用于这个本机教学沙箱，不作为远程部署示例。
-课程 02 的项目、端口和卷与课程 01 分开，不会复用或停止课程 01 的容器。
+本课程使用独立的项目、端口和数据卷，不会复用或停止其他课程的容器。
 
 ## 3. 准备 D05 历史数据包
 
