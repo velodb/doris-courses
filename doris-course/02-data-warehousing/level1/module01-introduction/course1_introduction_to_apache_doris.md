@@ -3,21 +3,19 @@
 | 课程信息 | 内容 |
 | --- | --- |
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 前置知识 | 能阅读简单的 SELECT；无需 Doris 使用经验 |
-| 实验环境 | 一个 FE、一个 BE 的存算一体沙箱，或讲师提供的实验实例 |
-| 目标版本 | Apache Doris 4.1.3；实际验证范围见[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md) |
-| 建议时间 | 约 45 分钟，不含首次环境下载 |
+| 产品版本 | Apache Doris 4.x |
+| 实验版本 | Apache Doris 4.1.3 |
+| 预计时间 | 约 45 分钟，包含动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 1](lab1_connect_and_query.ipynb) · [打开测验 1](quiz1_doris_fundamentals.ipynb)
 
 ## 单元目标
 
-假设你负责一家电商公司的订单分析。业务系统已经能下单，但运营还想知道：
-“各地区有多少订单？订单金额是多少？这些订单真的付过钱了吗？”
+本单元介绍 Apache Doris 是什么、交易与分析有什么区别，以及 Doris 在数据仓库中
+承担什么角色。
 
-这一单元先完成一个小而完整的过程：连接 Doris，创建订单表，写入十笔订单，
-再用 SQL 计算并解释结果。十笔数据足够让我们逐行核对，后续再学习持续接入、
-脏数据处理和订单状态变化。本节不做吞吐量或查询性能测试。
+完成本单元后，你将能够连接 Doris、创建订单表、写入示例数据，并用 SQL
+查询各地区的订单数量和金额。
 
 ## 学习目标
 
@@ -190,4 +188,4 @@ Lab 还会逐字段对照仓库的基准样本。检查失败时，应核对明�
 - [Duplicate Key 明细模型](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/)
 - [All-in-One 教学镜像](https://doris.apache.org/community/developer-guide/all-in-one-image/)
 
-官方文档会随版本更新；本课程目标版本及已验证环境以课程信息和验证记录为准。
+官方文档会随版本更新；本课程实验版本及已验证环境见课程信息和[验证记录](../../../../maintenance/02-data-warehousing/VALIDATION.md)。
