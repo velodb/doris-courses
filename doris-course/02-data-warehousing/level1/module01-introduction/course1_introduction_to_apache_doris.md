@@ -127,7 +127,7 @@ WWI 客户账款中的收款不直接关联发票，不能强行分摊到订单�
 
 ### 第一张表为什么使用 Duplicate Key？
 
-本节创建 d01_orders，显式写出字段类型、表模型、分桶和副本数。
+本节创建 orders_sample，显式写出字段类型、表模型、分桶和副本数。
 `DUPLICATE KEY(order_id)` 的键用于排序，**不会约束订单号唯一**。
 重复执行相同的 INSERT 会再追加一份记录。
 
@@ -145,7 +145,7 @@ D03 和 D06 会分别解释模型选择与当前状态维护。
 SELECT order_date,
        COUNT(*) AS sample_orders,
        SUM(order_amount) AS order_amount
-FROM d01_orders
+FROM orders_sample
 GROUP BY order_date
 ORDER BY order_date;
 ```
@@ -168,7 +168,7 @@ GROUP BY 将同一天的订单分为一组，SUM 计算组内金额，ORDER BY �
 打开[实验 1](lab1_connect_and_query.ipynb)，依次完成：
 
 1. 加载实验工具；这一步不连接或修改数据库。
-2. 选择讲师实例或课程 Docker 沙箱，确认本节只重建 d01_orders。
+2. 选择讲师实例或课程 Docker 沙箱，确认本节只重建 orders_sample。
 3. 检查 FE/BE，确认当前实验数据库。
 4. 阅读并执行完整建表 SQL 和十行 INSERT。
 5. 核对明细和日期汇总，独立完成金额筛选练习。

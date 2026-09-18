@@ -113,8 +113,8 @@ Lab 用唯一键客户表，并检查关联前后行数、金额以及导入后�
 
 ```sql
 SELECT COUNT(*) AS missing_customers
-FROM d04_orders o
-LEFT JOIN d04_customers c ON o.customer_id = c.customer_id
+FROM orders_from_lake o
+LEFT JOIN customers_sample c ON o.customer_id = c.customer_id
 WHERE c.customer_id IS NULL;
 ```
 
@@ -122,12 +122,12 @@ WHERE c.customer_id IS NULL;
 
 ### 导入后检查什么？
 
-Lab 显式选择六个字段写入 `d04_orders`，不依赖外部字段的隐含顺序。
+Lab 显式选择六个字段写入 `orders_from_lake`，不依赖外部字段的隐含顺序。
 查询结果落入内部表后，再执行：
 
 ```sql
 SELECT order_date, COUNT(*) AS sample_orders, SUM(order_amount) AS amount
-FROM d04_orders
+FROM orders_from_lake
 GROUP BY order_date
 ORDER BY order_date;
 ```

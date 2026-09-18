@@ -41,6 +41,29 @@ SQL、API 和产品名称保留原文；课程主题与学习顺序沿用数仓�
 
 历史来源 WWI 与新增来源 COURSE_SIMULATION 分开，不能将客户账户收款强行分摊到历史订单。
 
+## 实验表如何命名？
+
+表名说明数据的业务含义或实验用途；单元编号仅用于课程导航。
+例如，sample 表示小样本，current 表示当前状态，raw 表示保留原始输入。
+
+| 表名 | 含义 |
+| --- | --- |
+| orders_sample | 入门查询使用的十笔历史订单样本 |
+| orders_batch、orders_rowwise | 相同订单分别批量、逐行写入的对照表 |
+| orders_duplicate、orders_unique、orders_aggregate | 对比三种表模型的实验表 |
+| orders_partitioned | 观察日期分区和分桶裁剪的订单表 |
+| orders_from_lake、customers_sample | 湖表导入结果与关联用的客户样本 |
+| wwi_orders、wwi_customers 等 wwi_ 表 | 保留 WWI 来源的十张完整历史业务表 |
+| orders_imported | Stream Load 导入的模拟新订单 |
+| orders_raw、orders_classified | 原始订单输入与带校验结果的分类视图 |
+| orders_clean、orders_rejected | 合格订单与拒收记录 |
+| orders_current、order_events、event_deliveries | 当前订单、业务事件历史与消息投递记录 |
+| order_items、payments、refunds、shipment_events | 商品明细、支付、退款与配送事件 |
+
+customers 和 products 分别是从 WWI 历史表提取的客户、商品维度。
+部分更新和删除练习使用 orders_partial_update、orders_delete_demo，
+不修改订单当前表。每个 Lab 只重建自己拥有的表，跨单元依赖的表仅供读取。
+
 ## 开始前准备什么？
 
 - 能阅读 SELECT、WHERE、GROUP BY 等基础 SQL。

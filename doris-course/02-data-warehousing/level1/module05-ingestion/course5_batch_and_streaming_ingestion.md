@@ -64,8 +64,8 @@ D04 的直查也可以不落表；落表后是否持续刷新，要另作决定�
 ### 本节连接两类数据，不混淆来源
 
 ```text
-WWI 历史 Parquet ─ Stream Load → d05_wwi_*（10 张业务表）
-模拟新订单 CSV  ─ Stream Load → d05_stream（10 笔教学订单）
+WWI 历史 Parquet ─ Stream Load → wwi_*（10 张业务表）
+模拟新订单 CSV  ─ Stream Load → orders_imported（10 笔教学订单）
                                       │
                                       └─ 后续 D09-A 准入、D06 状态变化
 ```
@@ -106,8 +106,8 @@ WWI 客户账款又属于账户层，不能因为出现收款就分摊到某笔�
 SELECT o.OrderDate,
        COUNT(DISTINCT o.OrderID) AS orders,
        SUM(l.Quantity * l.UnitPrice) AS order_amount
-FROM d05_wwi_orders o
-JOIN d05_wwi_order_lines l ON o.OrderID = l.OrderID
+FROM wwi_orders o
+JOIN wwi_order_lines l ON o.OrderID = l.OrderID
 GROUP BY o.OrderDate
 ORDER BY o.OrderDate
 LIMIT 10;
@@ -156,7 +156,7 @@ event_time,paid_amount,refund_amount,region,data_source
 下面是 Lab 请求的结构说明，不是包含真实凭据的可复制请求：
 
 ```text
-PUT <DW_BE_HTTP_URL>/api/<DW_DATABASE>/d05_stream/_stream_load
+PUT <DW_BE_HTTP_URL>/api/<DW_DATABASE>/orders_imported/_stream_load
 label: <本批次唯一标识，重试时保留>
 format: csv
 column_separator: ,
@@ -186,7 +186,7 @@ group_commit: off_mode
 
 ```sql
 SELECT COUNT(*) AS orders, SUM(order_amount) AS amount
-FROM d05_stream;
+FROM orders_imported;
 ```
 
 预期十笔、1400.00。历史数据还要检查主键重复、客户/商品关联和金额，

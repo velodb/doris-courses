@@ -47,17 +47,17 @@
 
 | 表 | 一行表示什么 | 键与作用 |
 | --- | --- | --- |
-| d06_current | 一笔订单的当前状态 | UNIQUE KEY(order_id)，按 event_version 裁决 |
-| d06_history | 一个不同的业务事件 | UNIQUE KEY(event_id)，相同事件重投不增加逻辑历史 |
-| d06_deliveries | 某次尝试中的一次投递 | 记录 attempt_id、delivery_id 和原始内容，保留重投 |
+| orders_current | 一笔订单的当前状态 | UNIQUE KEY(order_id)，按 event_version 裁决 |
+| order_events | 一个不同的业务事件 | UNIQUE KEY(event_id)，相同事件重投不增加逻辑历史 |
+| event_deliveries | 某次尝试中的一次投递 | 记录 attempt_id、delivery_id 和原始内容，保留重投 |
 
 同一个 order_id 可以有多个 event_id，同一个 event_id 又可能被投递多次。
 这里的 delivery_id 是投递编号，不是快递单号。
 
 ### 从合格新订单开始，不改写历史
 
-D09-A 的 `orders_clean_demo` 提供十笔合格模拟订单；D06 将其初始化为
-当前状态与初始历史。来源均为 COURSE_SIMULATION，不更新 `d05_wwi_*` 历史表。
+D09-A 的 `orders_clean` 提供十笔合格模拟订单；D06 将其初始化为
+当前状态与初始历史。来源均为 COURSE_SIMULATION，不更新 `wwi_*` 历史表。
 
 Unique Key 的更新改变同键的逻辑当前值，不意味着旧物理文件马上被回收。
 当前表使用 Merge-on-Write（MoW），在写入侧处理同键版本的可见性，
@@ -90,7 +90,7 @@ Unique Key 的更新改变同键的逻辑当前值，不意味着旧物理文件
 
 ```sql
 SELECT order_id, status, event_version, paid_amount, refund_amount
-FROM d06_current
+FROM orders_current
 WHERE order_id IN (900001, 900003)
 ORDER BY order_id;
 ```
@@ -118,7 +118,7 @@ event_version 是每笔订单单调递增的教学版本，不是 Kafka offset �
 “未提供字段”究竟表示保留旧值，还是按默认/空值等规则形成新行，
 取决于采用的更新方式，不能只看 INSERT 里少写了几列。
 
-Lab 在独立的 `d06_partial` 上演示，不改变主线当前表：
+Lab 在独立的 `orders_partial_update` 上演示，不改变主线当前表：
 
 | 阶段 | status | event_version | order_amount | region |
 | --- | --- | ---: | ---: | --- |
@@ -131,7 +131,7 @@ Notebook 保存会话原来的 `enable_unique_key_partial_update` 设置，
 
 ```sql
 SELECT order_id, status, event_version, order_amount, region
-FROM d06_partial
+FROM orders_partial_update
 ORDER BY order_id;
 ```
 
@@ -154,7 +154,7 @@ Lab 的独立副本开始有两行：900001、900002。
 
 ```sql
 SELECT order_id, is_deleted, status
-FROM d06_delete
+FROM orders_delete_demo
 ORDER BY order_id;
 ```
 
@@ -195,11 +195,11 @@ ORDER BY order_id;
 重复投递应增加投递记录，不应增加不同事件数或改变正确的当前状态。
 
 ```sql
-SELECT 'current' AS record_type, COUNT(*) AS rows_count FROM d06_current
+SELECT 'current' AS record_type, COUNT(*) AS rows_count FROM orders_current
 UNION ALL
-SELECT 'history' AS record_type, COUNT(*) AS rows_count FROM d06_history
+SELECT 'history' AS record_type, COUNT(*) AS rows_count FROM order_events
 UNION ALL
-SELECT 'deliveries' AS record_type, COUNT(*) AS rows_count FROM d06_deliveries
+SELECT 'deliveries' AS record_type, COUNT(*) AS rows_count FROM event_deliveries
 ORDER BY record_type;
 ```
 
@@ -214,7 +214,7 @@ SELECT SUM(order_amount) AS orders_amount,
        SUM(paid_amount) AS paid,
        SUM(refund_amount) AS refunded,
        SUM(paid_amount - refund_amount) AS net_receipts
-FROM d06_current;
+FROM orders_current;
 ```
 
 预期依次为 1510.00、250.00、150.00、100.00。
@@ -226,7 +226,7 @@ FROM d06_current;
 
 ## 动手实验 6：乱序裁决、历史保留和可恢复重放
 
-开始前请先完成 D09-A，并使用同一课程独立实验库；本实验会读取其中的 orders_clean_demo 合格订单表。
+开始前请先完成 D09-A，并使用同一课程独立实验库；本实验会读取其中的 orders_clean 合格订单表。
 
 打开[实验 6](lab6_current_state_and_replay.ipynb)，按顺序完成：
 

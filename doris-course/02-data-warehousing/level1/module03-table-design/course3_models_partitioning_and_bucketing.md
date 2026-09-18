@@ -77,9 +77,9 @@ WWI 订单 1 的金额是 2300.00，订单 2 是 405.00。现在在隔离实验�
 完成 Lab 3 后可以分别核对：
 
 ```sql
-SELECT id, amount FROM d03_dup ORDER BY id, amount;
-SELECT id, amount FROM d03_unique ORDER BY id;
-SELECT id, amount FROM d03_agg ORDER BY id;
+SELECT id, amount FROM orders_duplicate ORDER BY id, amount;
+SELECT id, amount FROM orders_unique ORDER BY id;
+SELECT id, amount FROM orders_aggregate ORDER BY id;
 ```
 
 ### 先问“一行表示什么”，再选模型
@@ -112,7 +112,7 @@ Lab 的分区表是 Duplicate Key 明细表，不负责维护订单当前状态�
 下面是 Lab 创建的物理布局，供阅读；建表和初始化由 Lab 执行：
 
 ```text
-d03_partitioned
+orders_partitioned
 ├── p_day1：2013-01-01 ≤ order_date < 2013-01-02
 │   └── HASH(order_id)，4 个 Tablet
 └── p_day2：2013-01-02 ≤ order_date < 2013-01-03
@@ -124,9 +124,9 @@ d03_partitioned
 完成 Lab 初始化后执行：
 
 ```sql
-EXPLAIN SELECT * FROM d03_partitioned;
-EXPLAIN SELECT * FROM d03_partitioned WHERE order_date = '2013-01-01';
-EXPLAIN SELECT * FROM d03_partitioned
+EXPLAIN SELECT * FROM orders_partitioned;
+EXPLAIN SELECT * FROM orders_partitioned WHERE order_date = '2013-01-01';
+EXPLAIN SELECT * FROM orders_partitioned
 WHERE order_date = '2013-01-01' AND order_id = 1;
 ```
 
@@ -144,7 +144,7 @@ WHERE order_date = '2013-01-01' AND order_id = 1;
 
 ```sql
 SELECT COUNT(*) AS sample_orders, SUM(amount) AS order_amount
-FROM d03_partitioned
+FROM orders_partitioned
 WHERE order_date = '2013-01-01';
 ```
 

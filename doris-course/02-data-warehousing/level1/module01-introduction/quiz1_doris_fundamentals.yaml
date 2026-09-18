@@ -45,7 +45,7 @@ questions:
   explanation: A：FE 管理元数据，但本节中的明细扫描与计算由 BE 执行。 B：客户端提交 SQL，分布式计划的生成与协调由 FE 负责。 C：混淆了元数据与用户表数据；存算一体环境中的内部表数据由 BE 保存。 D：正确。这是本节存算一体环境下的职责划分，不应直接套用于所有部署模式。
 - id: q4
   objective: 连接 Doris，执行建表、写入和分组聚合 SQL。
-  prompt: d01_orders 一行是一笔订单，要按日期输出订单数和金额并稳定排序，应怎样查询？
+  prompt: orders_sample 一行是一笔订单，要按日期输出订单数和金额并稳定排序，应怎样查询？
   options:
   - id: a
     text: A. 按 order_id 分组，计算 COUNT(*) 和 SUM(order_amount)，再按日期排序

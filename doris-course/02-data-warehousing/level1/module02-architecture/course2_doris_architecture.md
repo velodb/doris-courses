@@ -44,7 +44,7 @@
 
 ```sql
 SELECT order_id, order_amount
-FROM d02_batch
+FROM orders_batch
 WHERE order_id = 1;
 ```
 
@@ -75,7 +75,7 @@ FE 决定要执行什么工作，BE 执行分配到的工作。大查询还可�
 
 ```sql
 EXPLAIN SELECT order_id, order_amount
-FROM d02_batch
+FROM orders_batch
 WHERE order_id = 1;
 ```
 
@@ -127,7 +127,7 @@ Compaction 在后台将多个 Rowset 合并，减少读取时需要处理的片�
 
 Lab 使用 D01 的同一批 WWI 历史订单，不改金额或日期。
 
-| 对照项 | d02_batch | d02_small |
+| 对照项 | orders_batch | orders_rowwise |
 | --- | --- | --- |
 | 数据与字段 | 相同十笔订单 | 相同十笔订单 |
 | 分桶与副本 | 一个桶、单副本 | 一个桶、单副本 |
@@ -142,17 +142,17 @@ Lab 使用 D01 的同一批 WWI 历史订单，不改金额或日期。
 
 ```sql
 SELECT 'batch' AS write_mode, COUNT(*) AS orders, SUM(order_amount) AS amount
-FROM d02_batch
+FROM orders_batch
 UNION ALL
 SELECT 'small' AS write_mode, COUNT(*) AS orders, SUM(order_amount) AS amount
-FROM d02_small
+FROM orders_rowwise
 ORDER BY write_mode;
 ```
 
 ```sql
-SHOW PARTITIONS FROM d02_batch;
-SHOW TABLETS FROM d02_batch;
-SHOW TABLETS FROM d02_small;
+SHOW PARTITIONS FROM orders_batch;
+SHOW TABLETS FROM orders_batch;
+SHOW TABLETS FROM orders_rowwise;
 ```
 
 ### 观察结果要怎么解释？

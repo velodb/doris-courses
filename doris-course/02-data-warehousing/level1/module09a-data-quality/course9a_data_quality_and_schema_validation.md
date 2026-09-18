@@ -65,7 +65,7 @@ Schema 变化也要检查下游列映射、类型和业务规则；增加列不�
 
 ### 让每条错误都有来处
 
-原始层 `d09_raw` 把业务字段先保存为字符串，另加稳定的 input_id。
+原始层 `orders_raw` 把业务字段先保存为字符串，另加稳定的 input_id。
 原始值不因转换失败被丢弃，后续可以解释哪一行、哪个字段出了问题。
 
 | input_id | order_id 原始值 | order_amount 原始值 | customer_id | 预期去向 |
@@ -80,12 +80,12 @@ Schema 变化也要检查下游列映射、类型和业务规则；增加列不�
 一行同时有多处问题时，本课记录第一个命中原因，不声称列出了全部错误。
 
 ```text
-13 行原始输入 d09_raw
+13 行原始输入 orders_raw
           │ 与独立客户维度检查
           ▼
-分类视图 d09_classified（带 reject_reason）
-          ├─ 原因为空 → orders_clean_demo：10 行
-          └─ 原因非空 → orders_reject_demo：3 行，保留 input_id
+分类视图 orders_classified（带 reject_reason）
+          ├─ 原因为空 → orders_clean：10 行
+          └─ 原因非空 → orders_rejected：3 行，保留 input_id
 ```
 
 ### 从拒收记录回到原始字段
@@ -94,8 +94,8 @@ Schema 变化也要检查下游列映射、类型和业务规则；增加列不�
 
 ```sql
 SELECT r.input_id, r.order_id, r.order_amount, r.customer_id, x.reason
-FROM orders_reject_demo x
-JOIN d09_raw r ON x.input_id = r.input_id
+FROM orders_rejected x
+JOIN orders_raw r ON x.input_id = r.input_id
 ORDER BY r.input_id;
 ```
 
@@ -111,7 +111,7 @@ ORDER BY r.input_id;
 
 ```sql
 SELECT reject_reason, COUNT(*) AS input_rows
-FROM d09_classified
+FROM orders_classified
 GROUP BY reject_reason
 ORDER BY reject_reason;
 ```
@@ -123,7 +123,7 @@ ORDER BY reject_reason;
 SELECT COUNT(*) AS orders,
        COUNT(DISTINCT order_id) AS unique_orders,
        SUM(order_amount) AS amount
-FROM orders_clean_demo;
+FROM orders_clean;
 ```
 
 预期为 10、10、1400.00。但这个结果仍不是全部证明：

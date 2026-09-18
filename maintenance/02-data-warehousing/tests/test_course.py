@@ -131,9 +131,9 @@ class RuntimeTest(unittest.TestCase):
             expect([(11, Decimal("1400.00"))], [(10, "1400.00")])
 
     def test_model_contract(self):
-        self.assertIn('UNIQUE KEY(order_id)', order_ddl("d06_current", current=True))
-        self.assertIn('"function_column.sequence_col"="event_version"', order_ddl("d06_current", current=True))
-        self.assertIn("UNIQUE KEY(event_id)", order_ddl("d06_history", history=True))
+        self.assertIn('UNIQUE KEY(order_id)', order_ddl("orders_current", current=True))
+        self.assertIn('"function_column.sequence_col"="event_version"', order_ddl("orders_current", current=True))
+        self.assertIn("UNIQUE KEY(event_id)", order_ddl("order_events", history=True))
         with self.assertRaises(ValueError):
             order_ddl("invalid", current=True, history=True)
 
@@ -319,6 +319,37 @@ class MaterialsTest(unittest.TestCase):
                         for letter in "ABCD":
                             self.assertIn(f"{letter}：", feedback.value)
 
+    def test_learner_table_names_and_upstream_references(self):
+        for path in COURSE_ROOT.rglob("*"):
+            if path.suffix not in {".md", ".yaml", ".ipynb", ".py"}:
+                continue
+            if any(part in {".runtime", ".venv", ".ipynb_checkpoints"} for part in path.parts):
+                continue
+            self.assertNotRegex(path.read_text(), r"\bd[0-9]{2}[a-z]?_", path)
+
+        sources = {}
+        for path in (COURSE_ROOT / "level1").glob("*/lab*.ipynb"):
+            notebook = nbformat.read(path, as_version=4)
+            nbformat.validate(notebook)
+            code = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "code")
+            ast.parse(code, filename=str(path))
+            sources[path.parent.name] = code
+
+        self.assertIn("CREATE TABLE orders_sample", sources["module01-introduction"])
+        self.assertIn('target = "wwi_" + name', sources["module05-ingestion"])
+        quality = sources["module09a-data-quality"]
+        replay = sources["module06-state-changes"]
+        self.assertIn("INSERT INTO customers SELECT CustomerID, CustomerName FROM wwi_customers", quality)
+        self.assertIn("CREATE VIEW orders_classified", quality)
+        self.assertIn('order_ddl("orders_clean")', quality)
+        self.assertIn("FROM orders_clean", replay)
+        self.assertIn("INSERT INTO products SELECT StockItemID, StockItemName FROM wwi_products", replay)
+        self.assertIn('("order_items", business["order_lines"])', replay)
+        self.assertIn('("shipment_events", business["shipments"])', replay)
+        self.assertIn("lab.insert(table, columns,", replay)
+        for upstream in ("orders_clean", "customers", "wwi_customers", "wwi_products"):
+            self.assertNotIn(f"DROP TABLE IF EXISTS {upstream}", replay)
+
     def test_local_markdown_links(self):
         paths = [
             *COURSE_ROOT.rglob("*.md"),
@@ -385,7 +416,7 @@ class AlignmentTest(unittest.TestCase):
         create, = [sql for sql in statements if sql.lstrip().startswith("CREATE TABLE")]
         self.assertEqual(
             re.sub(r"\s+", "", create),
-            re.sub(r"\s+", "", history_ddl("d01_orders")),
+            re.sub(r"\s+", "", history_ddl("orders_sample")),
         )
         insert, = [sql for sql in statements if sql.lstrip().startswith("INSERT INTO")]
         header, values = insert.split("VALUES", 1)

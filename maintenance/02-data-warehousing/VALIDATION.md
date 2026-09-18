@@ -1,5 +1,26 @@
 # Validation record
 
+## 2026-09-18：按业务含义与实验用途命名表
+
+- 七份讲义、七个 Lab、相关测验与环境说明统一使用业务表名；目录和标题仍保留单元编号。
+  表名含义见 [Level 1](../../doris-course/02-data-warehousing/level1/README.md#实验表如何命名)。
+- WWI 历史表保留 wwi_ 来源前缀；orders_sample、orders_current、order_events 等名称
+  表达数据用途。orders_batch / orders_rowwise 等对照表及更新、删除练习表仍独立，
+  不因去掉编号而合并实验数据。
+- 同步修改动态目标表名与上游引用：质量实验读取 wwi_customers，
+  状态实验读取 orders_clean、customers 和 wwi_products；不改数据集、模型或金额口径。
+- 32 项离线检查通过，涵盖四选项测验、上游引用、Notebook 语法与本地链接。
+  保留学员已有执行记录，因此未运行要求 Notebook 输出为空的检查。
+  七个 Lab 的非 source 单元字段与修改前逐项相同，未写入执行输出。
+- 通过 scripts/run_labs.py，在新建独立库 dw_course_l1_names_20260918 顺序执行
+  六个核心 Lab 两次，全部通过。库中共有 33 个表或视图对象，保留供复查。
+  六份核心讲义的 24 条 SELECT / EXPLAIN / SHOW 语句执行通过。
+- 验证复用现有 FE 19030 / BE HTTP 18040，没有重启或修改服务配置。
+  FE 构建为 doris-0.0.0-ad8644154c3，BE 构建为 doris-0.0.0-8bafeb1e4c4；
+  不能据此宣称已验证 4.1.3 发布镜像。
+- 本轮没有迁移或删除任何已有学员库、旧版实验表；新版下游需先运行新版上游 Lab。
+  未验证 D04 的真实 Iceberg 接入及浏览器视觉效果。
+
 ## 2026-09-18：七份讲义的教学内容与课程 01 对齐
 
 本轮完善讲义与测验，数据和 Lab 执行代码沿用下方 WWI 集成版本。
