@@ -6,58 +6,68 @@ questions:
   prompt: Parquet、Iceberg 与 External Catalog 的关系是什么？
   options:
   - id: a
-    text: Parquet 是文件格式，Iceberg 管表元数据和文件，Catalog 是外部访问入口
+    text: A. Parquet 是文件格式，Iceberg 管理表元数据与数据文件，Catalog 提供外部访问入口
   - id: b
-    text: 任意 Parquet 目录自动成为 Iceberg 表
+    text: B. 一个目录内全部文件都是 Parquet，就已经构成 Iceberg 表
   - id: c
-    text: 创建 Catalog 会自动复制所有外部文件到内部表
+    text: C. 创建 External Catalog 会将外部数据复制成 Doris 内部表
+  - id: d
+    text: D. 创建 External Catalog 后，外部表的文件组织与事务就由 Doris 接管
   answer: a
-  explanation: 文件、表格式和访问入口处于不同层次。Iceberg 需要表元数据，Catalog 访问成功不代表已经导入内部表。
+  explanation: A：正确。文件格式、湖表格式和访问入口属于不同层次。 B：Iceberg 还需要表元数据，不能只凭数据文件目录判断。 C：Catalog 建立的是访问入口，不代表已导入或自动复制数据。 D：建立访问入口不等于迁移外部表的管理职责，仍需理解外部系统的元数据与事务边界。
 - id: q2
   objective: 根据探索和重复分析的需求选择外部直查或导入内部表。
   prompt: 已有湖上历史订单，第一次探索某个问题，合理的起点是什么？
   options:
   - id: a
-    text: 无论场景都先完整迁移数据湖
+    text: A. 先完整迁移数据湖，再开始第一个分析查询
   - id: b
-    text: 先评估直查，若需要反复分析再评估导入和刷新成本
+    text: B. 先评估外部直查，重复分析时再评估导入与刷新成本
   - id: c
-    text: 先把所有订单与客户拼成不可更新的宽表
+    text: C. 做一次 INSERT INTO SELECT，之后把内部结果视为自动同步的数据
+  - id: d
+    text: D. 先把订单与全部维度物化成宽表，才能进行关联分析
   answer: b
-  explanation: 直查可以降低探索前的搬运工作，但性能仍需实际评估。导入保留本次结果，不会自动变成长期同步。
+  explanation: A：探索不一定需要全量迁移，应先评估现有数据的访问路径。 B：正确。先解决当前问题，再根据性能、新鲜度与成本选择是否物化。 C：一次导入只保存本次结果，持续同步需要另外设计。 D：Doris 可以做多表关联，预先生成宽表不是所有场景的必要条件。
 - id: q3
   objective: 解释 Catalog、Database、Table 如何定位一张外部表。
   prompt: wwi_lake.sales.orders 中三部分分别表示什么？
   options:
   - id: a
-    text: 对象存储桶、文件目录、Parquet 文件
+    text: A. 对象存储桶、文件目录、数据文件
   - id: b
-    text: Doris 节点、Tablet、Segment
+    text: B. Doris 集群、计算节点、数据分片
   - id: c
-    text: Catalog、Database、Table
-  answer: c
-  explanation: 这是 SQL 的完整表名，不是文件路径。Lab 使用 DW_ICEBERG_ORDERS 配置实际表名，不假定示例 Catalog 已存在。
+    text: C. 数据库、Schema、列名
+  - id: d
+    text: D. Catalog、Database、Table
+  answer: d
+  explanation: A：SQL 表名不是对象存储的物理文件路径。 B：SQL 对象层次与节点、分片的物理层次不同。 C：在本课的 Doris 三段式表名中，第一段是 Catalog，最后一段是表而不是列。 D：正确。Lab 需通过 DW_ICEBERG_ORDERS 指定实际预置表名，示例名称不保证存在。
 - id: q4
   objective: 通过关联前后对照发现维表重复或关联缺失。
   prompt: 订单与客户做 JOIN 后行数变多，优先检查什么？
   options:
   - id: a
-    text: 关联键在客户侧是否有多行匹配
+    text: A. 先检查客户表中同一关联键是否有多行匹配
   - id: b
-    text: 是否需要把结果再乘以副本数
+    text: B. 改用 LEFT JOIN，让每笔订单只匹配一条客户记录
   - id: c
-    text: 是否把 SUM 改成 MAX 就能自动修复
+    text: C. 对结果加 DISTINCT，就认为维表和关联口径已经正确
+  - id: d
+    text: D. 把订单金额的 SUM 改成 MAX，恢复总金额后结束检查
   answer: a
-  explanation: 重复维表键会复制匹配的订单行。反过来，内连接缺失客户也可能丢行，所以要检查键、行数和金额，而非用聚合掩盖问题。
+  explanation: A：正确。维表重复键可能使一笔订单匹配多行；也要检查关联缺失造成的丢行。 B：LEFT JOIN 保留左表未匹配行，但不会消除右表的多行匹配。 C：DISTINCT 可能掩盖重复或移除合法行，并没有修复关系；还需核对粒度和字段。 D：换聚合函数改变了指标含义，不能用于掩盖关联放大。
 - id: q5
   objective: 在具备 Iceberg 环境时核对直查、关联和导入后的同一批订单。
   prompt: 怎样证明本 Lab 的直查与导入结果一致？
   options:
   - id: a
-    text: 外部查询无报错即可
+    text: A. 确认外部查询成功且内部表存在，就认为数据一致
   - id: b
-    text: 对同一十单样本检查关联前后数量和金额，并逐字段比较内部结果
+    text: B. 比较相同行数和总金额，不再核对订单标识及其他字段
   - id: c
-    text: 只确认内部表存在
-  answer: b
-  explanation: 预期十单、12220.60，还需核对完整字段，避免错误抵消。必须使用真实预置湖表；没有外部环境时应记录未执行。
+    text: C. 核对同一十单样本的行数、金额、关联结果，并逐字段比较导入前后数据
+  - id: d
+    text: D. 比较外部与内部查询耗时是否接近，用耗时推断结果一致
+  answer: c
+  explanation: A：查询成功和表存在，只证明能访问，不证明内容一致。 B：缺失、重复和错误金额可能相互抵消，总量检查不充分。 C：正确。预期十单、12220.60，还需完整字段对照；未配置真实湖表时应记录实验未执行。 D：耗时反映执行表现，不反映业务结果是否相同。

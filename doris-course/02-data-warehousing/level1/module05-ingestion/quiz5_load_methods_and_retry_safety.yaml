@@ -6,58 +6,68 @@ questions:
   prompt: 一个本地有限 CSV 批次与一个持续产生消息的 Kafka Topic，应分别从哪条路径考虑？
   options:
   - id: a
-    text: 两者都必须先创建 Iceberg Catalog
+    text: A. CSV 用 Routine Load，Kafka 先导出文件再视为已完成持续接入
   - id: b
-    text: CSV 用 Stream Load；Kafka 用 Routine Load
+    text: B. CSV 用 Stream Load，Kafka 用一次 Stream Load 后等待自动消费
   - id: c
-    text: CSV 用 Routine Load；Kafka 用一次 S3 TVF 查询
-  answer: b
-  explanation: 本地文件由客户端推送，Kafka 需要持续任务维护消费进度。对象存储和业务库 CDC 又是其他来源，不应把所有输入套成同一接入流程。
+    text: C. CSV 与 Kafka 都先创建 External Catalog，通过 Catalog 持续导入
+  - id: d
+    text: D. CSV 用 Stream Load，Kafka 用 Routine Load 持续消费
+  answer: d
+  explanation: A：本课的 Routine Load 面向 Kafka；将消息导出成一次文件不等于建立持续消费。 B：一次 Stream Load 是一次推送批次，不会自动创建 Kafka 消费任务。 C：Catalog 是外部访问入口，不是所有来源通用的持续导入任务。 D：正确。本地批次由客户端推送，Kafka 由持续任务维护消费进度。
 - id: q2
   objective: 说明 CSV 列映射、Parquet 字段和默认值各自的作用。
   prompt: 本课无表头 CSV 与 WWI Parquet 的字段解释方式，哪项正确？
   options:
   - id: a
-    text: CSV 显式给出分隔符和 columns；Parquet 按文件字段对齐 DDL
+    text: A. CSV 指定分隔符与 columns 映射，Parquet 按文件字段对齐课程 DDL
   - id: b
-    text: Parquet 也必须按逗号拆分
+    text: B. 无表头 CSV 可以按值猜出字段含义，不需要确认列顺序
   - id: c
-    text: 省略支付状态时一律默认 PAID，避免导入失败
+    text: C. Parquet 与 CSV 一样，需要用逗号拆分每行来解释字段
+  - id: d
+    text: D. 缺少支付状态时默认写为 PAID，以保证字段完整
   answer: a
-  explanation: CSV 的位置需要明确映射，Parquet 使用自身结构。默认值是业务约定，不是填补未知支付事实的手段。
+  explanation: A：正确。课程 CSV 用位置映射，Parquet 携带结构信息，但字段与目标 Schema 仍需匹配。 B：无表头文件的位置不能自动代表业务含义；列顺序错误还可能产生类型合法但语义错误的数据。 C：Parquet 是带 Schema 的列式格式，不按文本分隔符拆行。 D：默认值必须有业务依据，不能凭缺失字段捏造支付事实。
 - id: q3
   objective: 结合导入响应、加载行数、关联和金额判断结果是否正确。
   prompt: 请求 HTTP 200 后，怎样检查导入真正达到预期？
   options:
   - id: a
-    text: 只检查目标表存在
+    text: A. HTTP 200 表示导入成功且全部业务规则通过
   - id: b
-    text: 只看文件大小与请求耗时
+    text: B. 检查 JSON 状态、加载与过滤行数，再核对主键、关联和金额
   - id: c
-    text: 检查 JSON 状态和加载/过滤行数，再核对主键、关联与金额
-  answer: c
-  explanation: 传输成功不等于导入或业务正确。十表导入还需理解一行的粒度、关联是否扩大，以及历史金额和模拟金额是否分开。
+    text: C. 响应为 Success 且行数正确，就可以省略业务字段核对
+  - id: d
+    text: D. 只比较所有表的行数总和，不必分别检查订单、明细和客户
+  answer: b
+  explanation: A：HTTP 状态不等于导入状态，更不等于业务正确。 B：正确。应逐层验证传输、导入结果和业务口径，包括不同表的粒度与关系。 C：成功加载不保证客户引用、金额等业务事实正确，类型合法的数据也可能出错。 D：不同粒度的行数不能互相替代，总量相同也可能掩盖某张表的缺失。
 - id: q4
   objective: 区分导入批次重试、业务事件去重与持续任务恢复。
-  prompt: 相同文件的结果不确定，重试与业务去重应怎样区分？
+  prompt: 本课 off_mode 导入中，同一文件的请求结果不确定。批次重试与业务去重应怎样区分？
   options:
   - id: a
-    text: 每次生成新 label 就一定不会重复
+    text: A. 生成新 label 重发相同文件，避免与原请求冲突就能保证不重复
   - id: b
-    text: 在 label 有效期内保留批次身份并查原结果；业务事件另用稳定键与版本
+    text: B. 使用同一 label 永久提交不同文件，让它自动去重所有业务事件
   - id: c
-    text: 只要 Kafka offset 增加，订单状态就必然最新
-  answer: b
-  explanation: label 识别批次，业务键识别事件，消费或恢复位置识别进度。Publish Timeout 等情景应先确认原事务，不能盲目换 label 追加。
+    text: C. 在 label 有效期内保留批次身份并查询原结果；业务事件另用稳定键与版本
+  - id: d
+    text: D. 看到 Kafka offset 前进，就认为订单当前状态和其他表都已正确更新
+  answer: c
+  explanation: A：新 label 可能让同一批数据再次追加，应先确认原事务状态。 B：label 有保留期限，且标识导入批次，不是不同文件的通用业务去重键。 C：正确。批次身份、业务事件身份与恢复位置各有职责；Publish Timeout 等情况需先确认原结果。 D：消费进度不能代替乱序版本裁决、业务核对或跨表恢复检查。
 - id: q5
   objective: 区分 WWI 历史订单、账户收款与课程模拟新订单的粒度和口径。
   prompt: WWI 订单明细、客户账户收款和本课模拟订单，哪项理解正确？
   options:
   - id: a
-    text: 明细数就是订单数，账户收款都能分摊到每单
+    text: A. 订单明细每行有订单号，因此明细行数可以直接当订单数
   - id: b
-    text: 所有负数收款都等于订单退款
+    text: B. 客户账户收款为负数，因此可以直接按订单退款统计
   - id: c
-    text: 明细需按订单粒度汇总，账户收款不能强行逐单分摊，模拟来源单独标记
-  answer: c
-  explanation: 历史三类金额与粒度不能混用。COURSE_SIMULATION 引用 WWI 客户和商品，但不代表真实历史支付、退款或地区。
+    text: C. 模拟订单使用了 WWI 客户和商品，因此支付也属于真实历史
+  - id: d
+    text: D. 明细按订单汇总，账户收款不能强行逐单分摊，模拟来源单独标记
+  answer: d
+  explanation: A：一单可能有多条商品明细，行数需要按实际粒度解释。 B：在这份数据里，负数收款代表账户收款，不是逐订单退款证据。 C：引用真实样例维度不会使生成的支付、退款和地区变成原始历史事实。 D：正确。分别识别订单、账户账款与 COURSE_SIMULATION 的粒度和来源，才能避免口径混用。

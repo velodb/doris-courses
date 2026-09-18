@@ -279,10 +279,45 @@ class MaterialsTest(unittest.TestCase):
             self.assertEqual(len(ids), len(set(ids)), path)
             for question in data["questions"]:
                 options = [option["id"] for option in question["options"]]
+                self.assertEqual(options, ["a", "b", "c", "d"], (path, question["id"]))
+                texts = [option["text"].strip() for option in question["options"]]
+                self.assertTrue(all(texts), (path, question["id"]))
+                self.assertEqual(len(set(texts)), 4, (path, question["id"]))
                 self.assertEqual(len(options), len(set(options)))
                 self.assertIn(question["answer"], options)
                 self.assertTrue(question["explanation"])
+                for option in question["options"]:
+                    letter = option["id"].upper()
+                    self.assertTrue(option["text"].startswith(f"{letter}. "))
+                    self.assertIn(f"{letter}：", question["explanation"])
             self.assertIsInstance(CourseQuiz.from_yaml(path), CourseQuiz)
+
+    def test_quiz_four_choices_and_feedback_render(self):
+        from dw_course.quiz import CourseQuiz
+
+        for path in (COURSE_ROOT / "level1").glob("*/quiz*.yaml"):
+            quiz = CourseQuiz.from_yaml(path)
+            for index, question in enumerate(quiz.questions):
+                for option in question.options:
+                    with self.subTest(path=path.name, question=question.question_id,
+                                      option=option.option_id):
+                        quiz._current = index
+                        quiz._answers.clear()
+                        quiz._render_question()
+                        _, choices, feedback, controls = quiz._root.children[0].children
+                        self.assertEqual(
+                            list(choices.options),
+                            [(item.text, item.option_id) for item in question.options],
+                        )
+                        self.assertEqual(len(choices.options), 4)
+                        choices.value = option.option_id
+                        controls.children[1].click()
+                        self.assertEqual(quiz._answers[question.question_id], option.option_id)
+                        self.assertEqual(
+                            "Not quite." in feedback.value, option.option_id != question.answer
+                        )
+                        for letter in "ABCD":
+                            self.assertIn(f"{letter}：", feedback.value)
 
     def test_local_markdown_links(self):
         paths = [

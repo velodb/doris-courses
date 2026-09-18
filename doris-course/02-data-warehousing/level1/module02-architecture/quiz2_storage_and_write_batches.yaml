@@ -6,58 +6,68 @@ questions:
   prompt: 一条订单分析 SQL 从客户端进入 Doris，哪条路径正确？
   options:
   - id: a
-    text: 客户端 → FE 规划并分发 → BE 执行 → 返回结果
+    text: A. 客户端提交 SQL → BE 生成分布式计划 → FE 汇总扫描结果
   - id: b
-    text: 客户端 → BE 生成所有计划 → FE 扫描列文件
+    text: B. 客户端生成分布式计划 → FE 转发 → BE 按片段执行
   - id: c
-    text: 客户端 → Compaction → FE 执行聚合
-  answer: a
-  explanation: FE 负责 SQL 规划和协调，BE 执行计划中的扫描与计算。Compaction 是后台存储合并，不是每条查询的必经执行入口。
+    text: C. 客户端提交 SQL → FE 规划 → 等待一次 Compaction → BE 执行
+  - id: d
+    text: D. 客户端提交 SQL → FE 规划并分发 → BE 执行 → 协调返回结果
+  answer: d
+  explanation: A：规划职责在 FE，不是由 BE 统一生成分布式计划。 B：客户端不需要承担 Doris 的分布式计划生成。 C：Compaction 是后台存储整理，不是每条查询执行前的固定关卡。 D：正确。FE 负责规划与协调，BE 执行计划中的扫描和计算。
 - id: q2
   objective: 解释 Table、Partition、Tablet、Rowset 和 Segment 的层次。
-  prompt: 表有两个分区，每个分区四个桶。怎样理解其存储层次？
+  prompt: 本课表仅有基础索引，有两个分区、每个分区四个桶。不计副本，怎样理解其存储层次？
   options:
   - id: a
-    text: 全表四个 Tablet，每个 Tablet 等于一条订单
+    text: A. 共四个 Tablet，由两个分区共享；Tablet 内包含 Rowset
   - id: b
-    text: 共八个 Tablet；Tablet 内有 Rowset，Rowset 内有 Segment
+    text: B. 共八个 Tablet；Tablet 内有 Rowset，Rowset 内有 Segment
   - id: c
-    text: 共八个 Rowset，Rowset 数永远等于桶数
+    text: C. 共两个 Tablet；每个 Tablet 的四个桶表示四份副本
+  - id: d
+    text: D. 共八个 Tablet；每个 Tablet 固定有一个 Rowset 和一个 Segment
   answer: b
-  explanation: 每个分区各有四个 Tablet，共八个。Rowset 随写入和合并变化，Segment 是其内部列式文件，不能把桶数当成固定 Rowset 数。
+  explanation: A：每个分区有各自的分桶，不能把不同分区的桶合并计数。 B：正确。本题限定基础索引并排除副本，Tablet 数为 2×4。 C：桶描述分片，副本描述同一分片的数据副本，两者不是一回事。 D：Rowset 和 Segment 数量会随写入和合并变化，不是固定的一对一关系。
 - id: q3
   objective: 说明写入批次、数据可见性与后台 Compaction 的关系。
   prompt: 写入后 Compaction 尚未完成，是否一定不能查询到新数据？
   options:
   - id: a
-    text: 是，只有合并后的文件才能供查询
+    text: A. 一定不能，新数据必须合并到旧文件后才可查询
   - id: b
-    text: 否，只要 HTTP 返回就一定对所有查询可见
+    text: B. 可以，只要导入请求返回 HTTP 200 就表明已对查询可见
   - id: c
-    text: 否，可见性取决于事务发布和接口语义，不要求等待 Compaction
+    text: C. 可以，可见性取决于事务发布和接口语义，不要求等 Compaction
+  - id: d
+    text: D. 可以，只要 BE 已生成 Segment 文件就表明事务已经可见
   answer: c
-  explanation: 数据可见与后台合并是不同过程。Compaction 改善物理组织但应保持逻辑结果；还要区分写入接口的响应与发布状态。
+  explanation: A：查询可以读取已发布的多个 Rowset，不必先等待后台合并。 B：HTTP 成功只说明请求层面的情况，还需检查导入状态与发布结果。 C：正确。数据可见和物理合并是不同过程。 D：文件生成不等于事务发布完成，不能只凭文件存在判断可见性。
 - id: q4
   objective: 控制表结构和数据，比较批量与逐行写入的结果。
   prompt: 比较一批十行和分十次写入，哪种实验设计合理？
   options:
   - id: a
-    text: 保持数据、Schema、桶数和副本相同，固定 off_mode，先核对两表结果
+    text: A. 使用相同数据、Schema、桶数和副本，固定 off_mode，先核对两表结果
   - id: b
-    text: 同时增加逐行表的桶数，用最短耗时判断优劣
+    text: B. 为逐行写入表增加桶数，再用两张表的耗时比较批次效果
   - id: c
-    text: 一张用历史数据，另一张用模拟订单，只比较 COUNT(*)
+    text: C. 让两张表都写入十行，但分别使用历史订单和模拟订单
+  - id: d
+    text: D. 反复重跑后只取各自最短耗时，不检查两张表最终的数据
   answer: a
-  explanation: 控制无关变量后才能解释差异。本课先确认两表都是十行、12220.60，再记录元数据；off_mode 是本次对照条件，不是所有生产场景的建议。
+  explanation: A：正确。先控制其他条件，再核对十行明细与 12220.60 的总金额，才能解释批次差异。 B：同时改变桶数，会把分布变化与批次变化混在一起。 C：行数相同不代表数据相同，字段与数据分布也会影响结果。 D：重跑可能追加重复数据；只挑最短耗时也不能保证比较可靠。本例不是生产性能基准。
 - id: q5
   objective: 区分查询计划、存储元数据和运行时证据各能说明什么。
   prompt: 怎样组合 EXPLAIN、Tablet 元数据和 Query Profile？
   options:
   - id: a
-    text: EXPLAIN 的计划裁剪数就是实际磁盘读取量
+    text: A. 用 EXPLAIN 中的预计扫描范围，直接计算实际磁盘读取量
   - id: b
-    text: 计划看预期扫描，元数据看采样状态，Profile 看运行时工作量
+    text: B. 用一次 VersionCount 采样，代替 Rowset 和 Segment 明细及运行指标
   - id: c
-    text: VersionCount 可以直接替代全部 Rowset 和 Segment 清单
-  answer: b
-  explanation: 三类证据回答不同问题。后台合并和缓存会影响观测，十行样本或一次 VersionCount 采样不能证明固定性能提升。
+    text: C. 用十行样本的一次 Profile 耗时，预测生产环境的峰值吞吐量
+  - id: d
+    text: D. 用 EXPLAIN 看计划、元数据看采样状态、Profile 看实际执行工作量
+  answer: d
+  explanation: A：计划不等于运行结果，缓存和执行过程都会影响实际读取。 B：版本数量只是一个观测项，不能代替全部物理文件与执行证据。 C：十行、单次查询不具备生产负载的数据规模与并发条件。 D：正确。三类证据互补；采样时还需考虑后台合并、缓存和运行环境。

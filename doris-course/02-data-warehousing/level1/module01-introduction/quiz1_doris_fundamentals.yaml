@@ -6,58 +6,68 @@ questions:
   prompt: 以下哪项主要属于分析工作？
   options:
   - id: a
-    text: 提交一笔订单并扣减对应库存
+    text: A. 提交一笔订单，并在同一业务操作中扣减库存
   - id: b
-    text: 按日期汇总大量订单的数量和金额
+    text: B. 扫描一批订单，按日期统计订单量和总金额
   - id: c
-    text: 按订单号修改一笔订单的地址
+    text: C. 查询一笔订单的当前地址，供用户确认后修改
+  - id: d
+    text: D. 记录一笔支付结果，并更新这笔订单的状态
   answer: b
-  explanation: 分析关注跨记录的扫描和汇总，交易关注一次业务操作。返回的结果只有几行，也可能需要分析很多订单。
+  explanation: A：下单和扣库存完成一次交易，不是跨订单分析。 B：正确。按日期扫描和汇总多笔订单属于分析，即使最终只返回几行。 C：出现 SELECT 不等于分析；这里的点查服务于一笔交易。 D：一次操作涉及多个字段或表，也不等于分析工作。
 - id: q2
   objective: 说明 Doris 在业务数据库与分析用户之间承担什么职责。
   prompt: 本课程中 Doris 与源业务系统如何配合？
   options:
   - id: a
-    text: 源系统提交交易，Doris 接收数据供分析
+    text: A. 源系统负责交易，Doris 接收业务数据并向分析用户提供查询
   - id: b
-    text: 使用 MySQL 协议后，Doris 自动承担所有原业务事务
+    text: B. 采用 MySQL 协议连接后，可以直接沿用源业务库的全部事务设计
   - id: c
-    text: 报表数据必须先写回源业务库才能被查询
+    text: C. Doris 只保存数据，报表计算仍必须回到源业务库执行
+  - id: d
+    text: D. 配置好 Doris 连接后，源业务表的后续变化就会持续同步
   answer: a
-  explanation: 源交易系统继续记录下单、支付等操作，Doris 提供分析层。协议接口相似不代表事务语义和适用工作负载相同。
+  explanation: A：正确。源系统继续处理交易，Doris 在本课程中承担分析职责。 B：协议兼容不代表事务语义、功能和适用负载完全相同。 C：Doris 本身提供分析计算与查询，不只是源业务库的被动数据副本。 D：连接只建立访问通道；持续同步还需接入任务和相应配置。
 - id: q3
   objective: 说明存算一体环境中 Frontend（FE）和 Backend（BE）的分工。
   prompt: 在本课存算一体环境中，哪项分工正确？
   options:
   - id: a
-    text: FE 执行列扫描，BE 只存查询计划
+    text: A. FE 保存元数据并执行明细扫描，BE 只负责持久化文件
   - id: b
-    text: 客户端拆分分布式计划，FE 只保存连接
+    text: B. 客户端拆分分布式执行计划，FE 将各片段转发给 BE
   - id: c
-    text: FE 接收并规划查询，BE 保存内部表数据并执行计划
-  answer: c
-  explanation: 客户端把 SQL 发给 FE，FE 规划和协调执行，BE 执行计划。本节的存储职责以存算一体架构为前提。
+    text: C. FE 保存内部表数据，BE 缓存热点数据并返回查询结果
+  - id: d
+    text: D. FE 接收 SQL、规划和协调查询，BE 保存内部表数据并执行计划
+  answer: d
+  explanation: A：FE 管理元数据，但本节中的明细扫描与计算由 BE 执行。 B：客户端提交 SQL，分布式计划的生成与协调由 FE 负责。 C：混淆了元数据与用户表数据；存算一体环境中的内部表数据由 BE 保存。 D：正确。这是本节存算一体环境下的职责划分，不应直接套用于所有部署模式。
 - id: q4
   objective: 连接 Doris，执行建表、写入和分组聚合 SQL。
   prompt: d01_orders 一行是一笔订单，要按日期输出订单数和金额并稳定排序，应怎样查询？
   options:
   - id: a
-    text: 按 order_id 分组，再按金额排序
+    text: A. 按 order_id 分组，计算 COUNT(*) 和 SUM(order_amount)，再按日期排序
   - id: b
-    text: 按 order_date 分组，计算 COUNT(*) 和 SUM(order_amount)，按日期排序
+    text: B. 按 order_date 分组，计算 COUNT(*) 和 SUM(order_amount)，再按日期排序
   - id: c
-    text: 只按日期排序，不需要 GROUP BY
+    text: C. 直接按 order_date 排序，逐行输出订单号和金额
+  - id: d
+    text: D. 按 order_date 分组，计算 COUNT(*) 和 AVG(order_amount)，再按日期排序
   answer: b
-  explanation: GROUP BY 决定汇总粒度，COUNT 和 SUM 计算组内指标，ORDER BY 决定展示顺序。这一计数方法依赖一行一单；订单明细表不能直接照搬。
+  explanation: A：按订单号分组保留的是订单粒度，不是每日汇总。 B：正确。GROUP BY 确定日期粒度，COUNT 和 SUM 计算指标，ORDER BY 保证展示顺序；计数依赖一行一单。 C：ORDER BY 只排序，不会把同一天的订单汇总成一行。 D：AVG 是平均订单金额，不能替代每日总金额。
 - id: q5
   objective: 用明细、行数和金额核对数据，区分税前订单金额与收款。
   prompt: WWI 十单投影税前金额合计 12220.60，且没有逐订单支付字段。能得出什么结论？
   options:
   - id: a
-    text: 两天全量销售额和收款均为 12220.60
+    text: A. 这十笔订单所在两天的全部订单金额为 12220.60
   - id: b
-    text: 十笔订单都尚未支付
+    text: B. 没有支付字段，说明这十笔订单都尚未支付
   - id: c
-    text: 十笔样本税前金额为 12220.60，不能据此推断收款
+    text: C. 十笔样本的税前订单金额为 12220.60，但不能据此确定收款金额
+  - id: d
+    text: D. 只要总金额等于 12220.60，就能确认每笔订单的字段都正确
   answer: c
-  explanation: 这是子集，不是两天全部订单；缺少支付字段也不等于未支付。还需比对十行明细与字段，不能仅凭金额总数证明数据正确。
+  explanation: A：样本金额不能代表两天全量订单金额。 B：字段缺失表示这份数据没有提供该事实，不能推断未支付。 C：正确。订单金额与收款是不同口径，还需要相应支付或账款证据。 D：错误金额可能相互抵消，总量相同仍需逐行核对。

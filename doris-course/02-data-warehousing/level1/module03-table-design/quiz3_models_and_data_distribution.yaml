@@ -3,61 +3,71 @@ description: 五道单选题；不需要数据库连接，提交后查看解释�
 questions:
 - id: q1
   objective: 预测相同输入在 Duplicate、Unique、Aggregate 模型中的结果。
-  prompt: 按顺序提交 (1,2300)、(1,2250)、(2,405)，三种模型的结果是什么？
+  prompt: 同一键设计下，不设 Sequence 列，依次写入 (1,2300)、(1,2250)、(2,405)，每次成功可见后再写下一次。Aggregate 金额列声明 SUM。哪项结果正确？
   options:
   - id: a
-    text: 都得到订单 1 为 2250、订单 2 为 405
+    text: A. 三种模型都保留订单 1 的最新金额 2250
   - id: b
-    text: Duplicate 三行；Unique 订单 1 为 2250；Aggregate SUM 订单 1 为 4550
+    text: B. Duplicate 保留三行；Unique 中订单 1 为 2250；Aggregate 中订单 1 为 4550
   - id: c
-    text: Duplicate 自动去重；Unique 两行；Aggregate 只保留最后一行
+    text: C. Duplicate 拒绝重复键；Unique 中订单 1 为 2250；Aggregate 中订单 1 为 4550
+  - id: d
+    text: D. Duplicate 保留三行；Unique 中订单 1 为较大的 2300；Aggregate 中订单 1 为 4550
   answer: b
-  explanation: Duplicate 保留明细，Unique 在本例顺序提交且无 Sequence 列时由后写替换，Aggregate 按声明的 SUM 合并。这里的 4550 不是当前订单金额。
+  explanation: A：不同模型的写入语义不同，不能都解释为最新快照覆盖。 B：正确。Duplicate 保留明细，Unique 在本题顺序写入条件下保留后写值，Aggregate 按 SUM 累加。 C：Duplicate Key 的键用于排序，不负责拒绝重复业务键。 D：Unique 不自动选择金额最大值；这里没有把金额声明为版本。4550 也不代表当前订单金额。
 - id: q2
   objective: 按明细、当前状态或汇总指标的用途选择逻辑键和表模型。
   prompt: 当前状态和不同业务事件都要保留，应怎样选键？
   options:
   - id: a
-    text: 当前表和历史表都只用 order_id
+    text: A. 当前表与事件历史都以 order_id 为唯一键
   - id: b
-    text: 当前表只用 event_id，历史表只用投递编号
+    text: B. 当前表以 event_id 为唯一键，事件历史以 order_id 为唯一键
   - id: c
-    text: 当前表用 order_id，事件历史用 event_id
+    text: C. 当前表以 order_id 为唯一键，事件历史以稳定的 event_id 为唯一键
+  - id: d
+    text: D. 当前表以 order_id 为唯一键，事件历史每次重投都生成新 event_id
   answer: c
-  explanation: 当前表一行是一笔订单，历史一行是一个不同事件。同一事件重投应去重，但同一订单的不同事件不能互相覆盖。
+  explanation: A：同一订单的多个事件会互相覆盖，无法完整保留历史。 B：当前表会留下多个事件行，而历史反而丢掉同一订单的旧事件。 C：正确。当前一行一单，历史一行一个不同事件；同一事件重投仍使用原 ID。 D：新 ID 把重复投递伪装成新业务事件，破坏事件去重。
 - id: q3
   objective: 区分分区、分桶、排序键和业务唯一键的职责。
   prompt: 下列关于分区、分桶、排序键和业务唯一键的说法，哪项正确？
   options:
   - id: a
-    text: 分区管理范围，分桶管理分布，排序键管理顺序，业务唯一键识别对象
+    text: A. 分区管理范围，分桶管理分布，排序键管理顺序，业务唯一键识别对象
   - id: b
-    text: 分区键必然就是订单业务唯一键
+    text: B. 按日期分区后，同一订单号在整张表中就自动唯一
   - id: c
-    text: 每桶只能有一个业务订单
+    text: C. 按 order_id 分桶后，相同订单号的重复记录就自动消失
+  - id: d
+    text: D. 将 order_id 声明为 Duplicate Key 后，重复订单会在写入时被拒绝
   answer: a
-  explanation: 这些设计解决不同问题。按日期分区的明细表不能直接当作订单当前表；变更键设计时必须检查是否仍保持需要的逻辑唯一性。
+  explanation: A：正确。四种设计有不同职责，需按业务粒度组合，而不是相互替代。 B：日期分区不等于全局业务唯一约束，键设计仍需单独考虑。 C：Hash 分桶决定数据分布，不提供业务去重语义。 D：Duplicate Key 不约束唯一性；是否覆盖或聚合取决于表模型。
 - id: q4
   objective: 通过 EXPLAIN 比较日期过滤和分桶键过滤的扫描范围。
   prompt: 日期分区、HASH(order_id) 的表中，日期过滤再加 order_id 等值过滤，重点看什么？
   options:
   - id: a
-    text: SQL 最后返回的行数，计划无需检查
+    text: A. 只看最后返回多少行，将返回行数作为扫描量
   - id: b
-    text: 所选分区和 Tablet 范围是否分别缩小
+    text: B. 只看建表时的总桶数，认为每条查询都会扫描全部 Tablet
   - id: c
-    text: 所有查询的计划必须逐字相同
-  answer: b
-  explanation: 日期条件可排除无关分区，Hash 键等值条件可进一步裁剪 Tablet。具体计划文本随版本变化，应检查含义而非逐字匹配。
+    text: C. 只比较计划文本是否逐字相同，不分析过滤条件对应的范围
+  - id: d
+    text: D. 比较选中的分区和 Tablet 范围，区分日期裁剪与分桶裁剪
+  answer: d
+  explanation: A：返回行数不是扫描行数，也不能说明读取了多少分片。 B：满足条件的过滤可以裁剪分区和 Tablet，总桶数不等于每次扫描范围。 C：计划表达可能随版本变化；应理解所选范围，而非逐字比较。 D：正确。日期条件与 order_id 等值条件分别用于观察两类裁剪。
 - id: q5
   objective: 结合明细与金额核对结果，不把计划裁剪等同于性能提升。
-  prompt: Aggregate SUM 得到 4550，且另一个查询的计划扫描更少 Tablet，可以直接宣布什么？
+  prompt: 订单 1 的两次快照经 SUM 得到 4550；另一查询的 EXPLAIN 显示扫描更少 Tablet。怎样评价这两个结果？
   options:
   - id: a
-    text: 当前金额是 4550，查询一定更快
+    text: A. SUM 没报错，说明 4550 就是订单 1 的当前金额
   - id: b
-    text: 模型或优化器至少有一个错误
+    text: B. 扫描 Tablet 更少，说明查询延迟已被证明下降
   - id: c
-    text: 都不能直接宣布；先核对业务口径与结果，性能还需运行时证据
+    text: C. 先核对快照与业务口径，再用可比的运行时观测验证性能
+  - id: d
+    text: D. 只要优化前后总金额相同，就不必比较明细或实际耗时
   answer: c
-  explanation: 两次订单快照相加不是当前金额，即使 SUM 正确执行。扫描范围缩小也不等于已经测得加速；还要控制数据和运行环境。
+  explanation: A：SUM 可以正确执行一个不符合业务意图的计算；两份快照相加不是当前金额。 B：计划裁剪提供优化线索，但不能直接证明实际延迟下降。 C：正确。结果是否符合业务与执行是否更快，是两个需要分别验证的问题。 D：总金额可能掩盖明细错误，也不能说明查询耗时。
