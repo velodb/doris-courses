@@ -100,8 +100,7 @@ UNIQUE KEY(order_id)
 
 第一项识别订单，第二项启用写时合并，第三项指定业务版本列。
 仅把普通字段命名为 event_version 不会启用版本裁决。
-课程工具 `order_ddl(..., current=True)` 生成这些配置；迁移到自己的表时，应核对实际 DDL，
-而不是照搬 Python 参数。下例的版本比较以此配置和完整行写入为前提。
+创建订单当前表时，将这些配置写入建表语句。下例使用该配置，并在每次写入时提供完整订单状态。
 
 Sequence 列是 Doris 比较同一 Key 下记录新旧的依据。
 对订单 900001，已有版本 4 时，后到的版本 2 不会让当前状态退回 PAID。
@@ -187,7 +186,7 @@ FROM orders_delete_demo
 ORDER BY order_id;
 ```
 
-最终预期为 900001、true、CREATED。没有用这个结果推断磁盘空间已释放。
+最终查询结果为 900001、true、CREATED。磁盘空间由后台机制在满足回收条件后释放。
 业务软删除字段、导入删除标记和内部 Delete Bitmap 不是同一层机制；
 本 Lab 只执行软删除和 SQL DELETE。
 
@@ -234,9 +233,8 @@ ORDER BY record_type;
 
 ### 用另一套业务事实核对金额
 
-`business_events.json` 独立列出商品明细、支付、退款和配送事件，
-不是从被测当前表反向生成“预期”。Lab 检查退款关联原支付、配送关联订单，
-并确认客户和商品来自 Module 5 导入的 WWI 维度。
+使用 `business_events.json` 中单独记录的商品明细、支付、退款和配送流水核对订单当前状态。
+退款应关联原支付，配送应关联订单，客户和商品应能在 Module 5 导入的 WWI 维度中找到。
 
 ```sql
 SELECT SUM(order_amount) AS orders_amount,

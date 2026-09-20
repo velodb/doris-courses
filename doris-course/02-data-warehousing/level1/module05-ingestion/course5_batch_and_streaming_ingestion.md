@@ -172,9 +172,8 @@ Stream Load 是通过 HTTP 请求把文件内容发送给 Doris 的导入方式�
 
 ### 看清请求的组成
 
-本课程工具把文件推送到已明确配置的同集群 BE HTTP 地址，
-由 BE 接收字节并参与导入事务。不把 FE 地址填入 `DW_BE_HTTP_URL`；
-课程工具不自动跟随重定向。
+本 Lab 将文件直接发送到课程沙箱的 BE HTTP 地址，由 BE 接收数据并参与导入事务。
+下面的 `DW_BE_HTTP_URL` 表示该地址，`DW_DATABASE` 表示目标数据库。
 
 下面用占位符说明 Lab 请求的结构：
 
@@ -306,7 +305,7 @@ SELECT COUNT(*) AS orders, SUM(order_amount) AS amount FROM orders_s3_demo;
 2. 再执行完整的 INSERT INTO SELECT，把这两列写入内部表；uri 选文件，format 指定解析格式。
 3. 最后一条查询预期得到 2、260.00。不要为“确认成功”再次运行 INSERT，否则明细表会追加同一批记录。
 
-这里的预期来自上述两行演示数据，不是本地 Lab 的实测结果。参数见
+S3 TVF 的参数说明见
 [S3 TVF](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)。
 
 ## 5.6 Kafka 与 Routine Load
@@ -540,7 +539,7 @@ SELECT order_id, status FROM orders_cdc_demo ORDER BY order_id;
 再在 MySQL 中把同一订单改成 PAID，等待同步后查 Doris，预期仍为一行、状态变为 PAID。
 `offset=initial` 决定从快照衔接增量，SELECT 两列决定映射，Unique Key 决定目标行的身份。
 状态和进度在 jobs() 中观察，但必须用最后一条订单查询确认业务变化已经到达。
-这是预期过程，不表示课程已经运行了真实 CDC；版本前提与配置见
+该阅读示例的版本前提与配置见
 [MySQL SQL 映射同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/)。
 观察结束后，可用 `PAUSE JOB WHERE jobName = 'orders_mysql_job'` 暂停，
 继续时用 `RESUME JOB WHERE jobName = 'orders_mysql_job'` 恢复。
