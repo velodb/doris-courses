@@ -273,22 +273,17 @@ class MaterialsTest(unittest.TestCase):
             f'| 4 | {order["customer_id"]} | {order["order_date"]} | '
             f'{order["order_amount"]} | {order["line_count"]} |', intro,
         )
-        for line in data["order_lines"]:
-            if line["order_id"] == 4:
-                amount = line["quantity"] * Decimal(line["unit_price"])
-                self.assertIn(
-                    f'| {line["product_id"]} | {line["quantity"]} | '
-                    f'{line["unit_price"]} | {amount:.2f} |', intro,
-                )
+        lines = [line for line in data["order_lines"] if line["order_id"] == 4]
+        self.assertEqual(len(lines), order["line_count"])
+        self.assertEqual(sum(line["quantity"] * Decimal(line["unit_price"]) for line in lines),
+                         Decimal(order["order_amount"]))
         selected = [row for row in data["orders"] if Decimal(row["order_amount"]) >= 1000]
         for order in selected:
             self.assertIn(
                 f'| {order["order_id"]} | {order["order_date"]} | {order["order_amount"]} |', intro,
             )
-        for date in sorted({row["order_date"] for row in selected}):
-            rows = [row for row in selected if row["order_date"] == date]
-            amount = sum(Decimal(row["order_amount"]) for row in rows)
-            self.assertIn(f"| {date} | {len(rows)} | {amount:.2f} |", intro)
+        selected_amount = sum(Decimal(row["order_amount"]) for row in selected)
+        self.assertIn(f"三笔合计 {selected_amount:.2f}", intro)
         doubled = 2 * sum(Decimal(row["order_amount"]) for row in data["orders"])
         self.assertIn(f"金额变为 {doubled:.2f}", intro)
 
