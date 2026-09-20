@@ -122,11 +122,28 @@ class ExtensionsTest(unittest.TestCase):
             exec(compile(source,"profile-cell","exec"),dict(lab=lab))
         lab.execute.assert_called_with("SET enable_profile = %s", (False,))
 
-    def test_backlog_distinguishes_remaining_integrations(self):
+    def test_backlog_distinguishes_optional_integrations(self):
         text = (REPO / "maintenance/02-data-warehousing/integration-backlog.md").read_text()
         self.assertNotRegex(text,r'\bD0[1-7]\b')
-        for label in ('Module 5.6', 'Module 5.7', 'Module 5.8', 'Module 5.9', '仍未交付'):
+        for label in ('Module 5.6', 'Module 5.7', 'Module 5.8', 'Module 5.9', '不要求交付外部实验环境', '三份扩展 Notebook 选做'):
             self.assertIn(label,text)
+        self.assertNotIn("仍需交付的持续集成实验", text)
+        self.assertNotIn("不能因主线与扩展全部通过而宣布完整 Level 1 已结课验收", text)
+
+    def test_readings_explain_intro_only_scope(self):
+        level = REPO / "doris-course/02-data-warehousing/level1"
+        expectations = {
+            "README.md": ("不要求搭建外部链路", "扩展 Notebook 选做"),
+            "module05-ingestion/course5_batch_and_streaming_ingestion.md": (
+                "5.6～5.9 为介绍型内容", "持续并发验证不作为本单元完成条件"),
+            "module07-state-changes/course7_updates_deletes_and_replay.md": (
+                "不要求搭建真实 CDC", "Lab 使用模拟事件"),
+        }
+        for name, phrases in expectations.items():
+            with self.subTest(reading=name):
+                text = (level / name).read_text()
+                for phrase in phrases:
+                    self.assertIn(phrase, text)
 
 
 if __name__ == "__main__":
