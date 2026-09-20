@@ -1,4 +1,4 @@
-title: D01：连接 Doris，查询第一批订单
+title: Module 1：连接 Doris，查询第一批订单
 description: 五道单选题；不需要数据库连接，提交后查看解释。
 questions:
 - id: q1

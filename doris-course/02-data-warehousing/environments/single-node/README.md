@@ -53,17 +53,17 @@ python3 -m venv .venv
 多人共用同一个沙箱时，可由讲师在启动各自 Jupyter 前设置不同的 DW_DATABASE；
 实验库名须以 dw_course_l1_ 开头。
 
-## 3. 准备 D05 历史数据包
+## 3. 准备 Module 5 历史数据包
 
-D01–D03 的 WWI 小样本和 D06/D07 的模拟事件已在仓库内。
-D05 的完整 Parquet 压缩包也随仓库提供，首次使用时自动解压并校验，见[数据说明](../../datasets/README.md)。
+Module 1–3 的 WWI 小样本和 Module 6/Module 7 的模拟事件已在仓库内。
+Module 5 的完整 Parquet 压缩包也随仓库提供，首次使用时自动解压并校验，见[数据说明](../../datasets/README.md)。
 默认解到课程目录的 `.runtime/wwi/`；已有同版数据文件时，也可以在启动 Jupyter 前设置：
 
 ```bash
 export DW_WWI_DATA_DIR=/absolute/path/to/wwi-parquet
 ```
 
-路径指 Jupyter 内核所在机器。D05 会校验全部文件，不需要 Kaggle 账号、SQL Server 或 S3 密钥。
+路径指 Jupyter 内核所在机器。Module 5 会校验全部文件，不需要 Kaggle 账号、SQL Server 或 S3 密钥。
 
 ## 4. 常见问题
 
@@ -74,7 +74,7 @@ export DW_WWI_DATA_DIR=/absolute/path/to/wwi-parquet
 | Access denied | 核对用户、密码、连接来源以及建库建表权限 |
 | BE 不存活、无法建表或写入 | 查看 SHOW BACKENDS 和 BE 日志 |
 | Docker 端口被占用 | 请讲师协调课程环境；不要停止不属于你的服务 |
-| D01 成功而下一个 Lab 无法连接 | 确认内核在同一台机器、沙箱仍在运行；在当前 Notebook 中执行初始化与连接步骤 |
+| Module 1 成功而下一个 Lab 无法连接 | 确认内核在同一台机器、沙箱仍在运行；在当前 Notebook 中执行初始化与连接步骤 |
 
 排查自己的沙箱时，在课程目录运行：
 
@@ -102,5 +102,5 @@ docker compose --project-name doris-warehousing-course --file environments/singl
 表名按业务含义或实验用途命名，含义见 [Level 1 表名说明](../../level1/README.md#实验表如何命名)。
 继续学习时，确认前置 Lab 的表已准备好；需要重建数据时，按学习顺序重新执行相关 Lab。
 
-每个 Lab 开头都会说明它重建哪些表。D01 只重建 orders_sample；
-D07 读取 D06 的合格订单，并只重建自己的订单状态、事件和业务流水实验表。
+每个 Lab 开头都会说明它重建哪些表。Module 1 只重建 orders_sample；
+Module 7 读取 Module 6 的合格订单，并只重建自己的订单状态、事件和业务流水实验表。

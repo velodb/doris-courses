@@ -1,4 +1,4 @@
-# 单元 D02：Doris 存储架构与写入机制
+# Module 2：Doris 存储架构与写入机制
 
 | 课程信息 | 内容 |
 | --- | --- |
@@ -137,7 +137,7 @@ Compaction 在后台将多个 Rowset 合并，减少读取时需要处理的片�
 
 ### 公平比较一次写十行和分十次写
 
-Lab 使用 D01 的同一批 WWI 历史订单，不改金额或日期。
+Lab 使用 Module 1 的同一批 WWI 历史订单，不改金额或日期。
 
 | 对照项 | orders_batch | orders_rowwise |
 | --- | --- | --- |
@@ -183,7 +183,7 @@ SHOW TABLETS FROM orders_rowwise;
 
 ## 动手实验 2：观察存储和写入批次
 
-开始前请完成 D01，能够连接实验实例并核对订单总量，并使用课程独立实验库。
+开始前请完成 Module 1，能够连接实验实例并核对订单总量，并使用课程独立实验库。
 
 打开[实验 2](lab2_observe_storage.ipynb)，按顺序完成：
 

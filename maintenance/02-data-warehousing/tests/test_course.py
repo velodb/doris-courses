@@ -177,6 +177,26 @@ class RuntimeTest(unittest.TestCase):
 
 
 class MaterialsTest(unittest.TestCase):
+    def test_learner_materials_use_module_labels(self):
+        for path in COURSE_ROOT.rglob("*"):
+            if path.suffix not in {".md", ".yaml", ".ipynb"}:
+                continue
+            if any(part in {".runtime", ".venv", ".ipynb_checkpoints"} for part in path.parts):
+                continue
+            if path.suffix == ".ipynb":
+                notebook = nbformat.read(path, as_version=4)
+                # Executed learner outputs are historical records, not authored text.
+                content = "\n".join(cell.source for cell in notebook.cells)
+            else:
+                content = path.read_text()
+            self.assertNotRegex(content, r"(?<![A-Za-z0-9_])D0?[1-7](?![A-Za-z0-9_])", path)
+        for module in (COURSE_ROOT / "level1").glob("module*"):
+            number = int(re.match(r"module(\d+)", module.name)[1])
+            reading = next(module.glob("course*.md")).read_text()
+            quiz = yaml.safe_load(next(module.glob("quiz*.yaml")).read_text())
+            self.assertTrue(reading.startswith(f"# Module {number}："), module)
+            self.assertTrue(quiz["title"].startswith(f"Module {number}："), module)
+
     def test_reading_schedule_titles_match_sections(self):
         for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
             content = path.read_text()

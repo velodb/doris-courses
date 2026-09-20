@@ -1,4 +1,4 @@
-# 单元 D01：认识 Doris，完成第一批订单分析
+# Module 1：认识 Doris，完成第一批订单分析
 
 | 课程信息 | 内容 |
 | --- | --- |
@@ -62,7 +62,7 @@ Apache Doris 是开源的实时分析数据库，可以用 SQL 查询明细、�
 | Backend（BE） | 保存内部表数据，执行扫描、过滤和聚合 |
 
 可以把一次查询理解为：**客户端提交 SQL → FE 安排工作 → BE 读取和计算 → 返回结果。**
-先记住这个分工即可，更细的查询和存储过程在 D02 学习。
+先记住这个分工即可，更细的查询和存储过程在 Module 2 学习。
 
 ## 1.2 为什么用 Doris 构建订单数仓？
 
@@ -80,7 +80,7 @@ Apache Doris 是开源的实时分析数据库，可以用 SQL 查询明细、�
 - **关联分析**：把订单与客户、商品等数据放在一起查询。
 
 本节只用一张订单表完成前两项。外部数据查询、导入、质量检查和状态更新，
-将在 D04–D07 逐步学习，不需要现在掌握全部功能。
+将在 Module 4–7 逐步学习，不需要现在掌握全部功能。
 
 Doris 支持 MySQL 兼容协议，本课通过 Notebook 中的 Python 工具连接并提交 SQL。
 协议兼容不代表所有功能与 MySQL 相同；建立连接也不会自动同步业务数据，仍需导入或同步任务。
@@ -115,7 +115,7 @@ Lab 会提供并执行完整的 CREATE TABLE 和 INSERT。阅读时先认识这�
 | DUPLICATE KEY(order_id) | 保留每次写入的记录，相同订单号不会自动去重 |
 | BUCKETS 1、replication_num=1 | 使用一个桶、一份副本，适配本课单 BE 沙箱 |
 
-模型、分区和分桶的详细设计留到 D03。完成建表后，可以用下面的命令查看表定义：
+模型、分区和分桶的详细设计留到 Module 3。完成建表后，可以用下面的命令查看表定义：
 
 ```sql
 SHOW CREATE TABLE orders_sample;
@@ -235,7 +235,7 @@ FROM orders_sample;
 五道单选题涵盖交易与分析、Doris 定位、FE/BE 分工、分组查询和金额口径；无需连接 Doris。
 提交后阅读解释，再检查自己能否说明其他选项为什么不合适。
 
-下一单元：[D02：观察存储与写入批次](../module02-architecture/course2_doris_architecture.md)。
+下一单元：[Module 2：观察存储与写入批次](../module02-architecture/course2_doris_architecture.md)。
 
 ## 官方参考资料
 

@@ -3,7 +3,7 @@
 这一阶段从十笔 WWI 历史订单开始，逐步回答三个问题：
 数据如何进入 Doris？错误记录如何识别？订单变化后如何保持分析结果正确？
 
-**第一次学习从 [D01 讲义](module01-introduction/course1_introduction_to_apache_doris.md) 开始。**
+**第一次学习从 [Module 1 讲义](module01-introduction/course1_introduction_to_apache_doris.md) 开始。**
 不需要先运行所有 Notebook，也不需要先学习全部架构概念。
 
 ## 学习顺序
@@ -18,25 +18,25 @@ SQL、API 和产品名称保留原文；课程主题与学习顺序沿用数仓�
 
 | 顺序 | 单元与业务问题 | 动手实验 | 知识测验 |
 | --- | --- | --- | --- |
-| 1 · D01 | [认识 Doris 与基础 SQL](module01-introduction/course1_introduction_to_apache_doris.md) | [Lab 1](module01-introduction/lab1_connect_and_query.ipynb) | [Quiz 1](module01-introduction/quiz1_doris_fundamentals.ipynb) |
-| 2 · D02 | [Doris 存储架构与写入机制](module02-architecture/course2_doris_architecture.md) | [Lab 2](module02-architecture/lab2_observe_storage.ipynb) | [Quiz 2](module02-architecture/quiz2_storage_and_write_batches.ipynb) |
-| 3 · D03 | [Doris 表模型、分区与分桶](module03-table-design/course3_models_partitioning_and_bucketing.md) | [Lab 3](module03-table-design/lab3_models_and_pruning.ipynb) | [Quiz 3](module03-table-design/quiz3_models_and_data_distribution.ipynb) |
-| 4 · D04 | [外部数据查询与湖表关联](module04-external-access/course4_querying_external_data.md) | [Lab 4](module04-external-access/lab4_query_iceberg.ipynb) | [Quiz 4](module04-external-access/quiz4_internal_files_and_lake_tables.ipynb) |
-| 5 · D05 | [批量与持续数据接入](module05-ingestion/course5_batch_and_streaming_ingestion.md) | [Lab 5](module05-ingestion/lab5_stream_load.ipynb) | [Quiz 5](module05-ingestion/quiz5_load_methods_and_retry_safety.ipynb) |
-| 6 · D06 | [数据质量与 Schema 校验](module06-data-quality/course6_data_quality_and_schema_validation.md) | [Lab 6](module06-data-quality/lab6_validate_orders.ipynb) | [Quiz 6](module06-data-quality/quiz6_data_quality_and_rejection.ipynb) |
-| 7 · D07 | [数据更新、删除与事件重放](module07-state-changes/course7_updates_deletes_and_replay.md) | [Lab 7](module07-state-changes/lab7_current_state_and_replay.ipynb) | [Quiz 7](module07-state-changes/quiz7_state_changes_and_replay.ipynb) |
+| Module 1 | [认识 Doris 与基础 SQL](module01-introduction/course1_introduction_to_apache_doris.md) | [Lab 1](module01-introduction/lab1_connect_and_query.ipynb) | [Quiz 1](module01-introduction/quiz1_doris_fundamentals.ipynb) |
+| Module 2 | [Doris 存储架构与写入机制](module02-architecture/course2_doris_architecture.md) | [Lab 2](module02-architecture/lab2_observe_storage.ipynb) | [Quiz 2](module02-architecture/quiz2_storage_and_write_batches.ipynb) |
+| Module 3 | [Doris 表模型、分区与分桶](module03-table-design/course3_models_partitioning_and_bucketing.md) | [Lab 3](module03-table-design/lab3_models_and_pruning.ipynb) | [Quiz 3](module03-table-design/quiz3_models_and_data_distribution.ipynb) |
+| Module 4 | [外部数据查询与湖表关联](module04-external-access/course4_querying_external_data.md) | [Lab 4](module04-external-access/lab4_query_iceberg.ipynb) | [Quiz 4](module04-external-access/quiz4_internal_files_and_lake_tables.ipynb) |
+| Module 5 | [批量与持续数据接入](module05-ingestion/course5_batch_and_streaming_ingestion.md) | [Lab 5](module05-ingestion/lab5_stream_load.ipynb) | [Quiz 5](module05-ingestion/quiz5_load_methods_and_retry_safety.ipynb) |
+| Module 6 | [数据质量与 Schema 校验](module06-data-quality/course6_data_quality_and_schema_validation.md) | [Lab 6](module06-data-quality/lab6_validate_orders.ipynb) | [Quiz 6](module06-data-quality/quiz6_data_quality_and_rejection.ipynb) |
+| Module 7 | [数据更新、删除与事件重放](module07-state-changes/course7_updates_deletes_and_replay.md) | [Lab 7](module07-state-changes/lab7_current_state_and_replay.ipynb) | [Quiz 7](module07-state-changes/quiz7_state_changes_and_replay.ipynb) |
 
-按 Module 1–7 的顺序学习。D06 完成数据质量校验，D07 使用合格订单处理状态变化与事件重放。
+按 Module 1–7 的顺序学习。Module 6 完成数据质量校验，Module 7 使用合格订单处理状态变化与事件重放。
 
 ## 数据怎样贯穿 Level 1？
 
 | 单元 | 数据与业务结果 |
 | --- | --- |
-| D01–D03 | WWI 十单投影，税前金额 12220.60；查询、存储、模型与分区 |
-| D04 | 将同一 WWI 子集准备为真实 Iceberg 表，关联内部客户 |
-| D05 | 先导入 10 笔模拟新订单，再扩展到 10 张 WWI 历史表、701,846 行 |
-| D06 | 13 行模拟输入 → 10 行合格、3 行拒收，验证 WWI 客户引用 |
-| D07 | 11 笔当前订单、18 条逻辑历史、19 次投递；核对商品、支付、退款及配送 |
+| Module 1–3 | WWI 十单投影，税前金额 12220.60；查询、存储、模型与分区 |
+| Module 4 | 将同一 WWI 子集准备为真实 Iceberg 表，关联内部客户 |
+| Module 5 | 先导入 10 笔模拟新订单，再扩展到 10 张 WWI 历史表、701,846 行 |
+| Module 6 | 13 行模拟输入 → 10 行合格、3 行拒收，验证 WWI 客户引用 |
+| Module 7 | 11 笔当前订单、18 条逻辑历史、19 次投递；核对商品、支付、退款及配送 |
 
 历史业务标记为 WWI，模拟新订单标记为 COURSE_SIMULATION；账户收款与逐订单支付分别使用对应的业务数据分析。
 
@@ -68,7 +68,7 @@ customers 和 products 分别是从 WWI 历史表提取的客户、商品维度�
 - 能阅读 SELECT、WHERE、GROUP BY 等基础 SQL。
 - 按[环境准备](../environments/single-node/README.md)安装 Python 依赖。
 - 准备 Docker Desktop / Engine 和 Compose 插件；课程使用单容器 Doris 沙箱。
-- D01 负责启动沙箱，后续 Lab 自动连接同一环境。执行前先阅读各 Lab 的实验表重置范围。
+- Module 1 负责启动沙箱，后续 Lab 自动连接同一环境。执行前先阅读各 Lab 的实验表重置范围。
 - WWI 样本、完整历史压缩包和模拟事件随仓库提供，来源与口径见[数据说明](../datasets/README.md)。
 
 ## 怎样完成一个 Lab？
@@ -84,11 +84,11 @@ customers 和 products 分别是从 WWI 历史表提取的客户、商品维度�
 
 ## 哪些部分需要额外准备？
 
-运行 D04 Lab 时会按需启动两个辅助容器，准备真实 Iceberg 湖表。
+运行 Module 4 Lab 时会按需启动两个辅助容器，准备真实 Iceberg 湖表。
 首次启动需要下载镜像，端口与停止方法见[湖表环境说明](../environments/lakehouse/README.md)。
 
-D05 Lab 使用仓库内的文件练习 Stream Load，首次读取历史包时自动解压并校验。
+Module 5 Lab 使用仓库内的文件练习 Stream Load，首次读取历史包时自动解压并校验。
 讲义中的 Kafka、CDC、对象存储和 Group Commit 小节用于学习接入选择与工作机制。
-D02、D03 使用十笔订单理解存储和模型；性能评估需要另行准备相应的数据规模与负载。
+Module 2、Module 3 使用十笔订单理解存储和模型；性能评估需要另行准备相应的数据规模与负载。
 
 完成 Lab 后连接保持可用，可以继续查询。结束学习时关闭该 Notebook 的内核以释放连接；数据库中的课程数据保留。
