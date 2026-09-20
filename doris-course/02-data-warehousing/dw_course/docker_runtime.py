@@ -19,12 +19,12 @@ CONNECTION = {
     "DW_PASSWORD": "",
 }
 STARTUP_STEPS = {
-    1: "检查 Docker 与 Compose",
-    2: "校验课程单容器配置",
-    3: "准备 Doris 镜像",
-    4: "启动或复用容器、数据卷并等待健康",
-    5: "验证 FE 连接与 BE 计算",
-    6: "查看运行中的课程容器",
+    1: "Check Docker and Compose",
+    2: "Validate the single-container course configuration",
+    3: "Prepare the Doris image",
+    4: "Start or reuse the container and volumes, then wait for health",
+    5: "Verify the FE connection and BE execution",
+    6: "Inspect the running course container",
 }
 
 
@@ -75,7 +75,7 @@ def prepare_environment(*, start=False, streaming=False):
     def command(*arguments):
         return compose_command(*arguments, streaming=True) if streaming else compose_command(*arguments)
 
-    progress = WorkflowProgress("准备 Doris 实验环境", STARTUP_STEPS)
+    progress = WorkflowProgress("Prepare the Doris lab environment", STARTUP_STEPS)
     try:
         progress.advance(1)
         _run(["docker", "info", "--format", "{{.ServerVersion}}"], progress)
@@ -90,7 +90,7 @@ def prepare_environment(*, start=False, streaming=False):
              progress, timeout=1800)
         progress.advance(5)
         _verify_sql()
-        progress.log("SELECT 1 = 1；BE SUM(number) = 45")
+        progress.log("SELECT 1 = 1; BE SUM(number) = 45")
         progress.advance(6)
         _run(command("ps"), progress)
     except Exception as error:

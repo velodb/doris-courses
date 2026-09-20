@@ -1,106 +1,106 @@
-# 实验环境准备
+# Lab Environment Setup
 
-本课程使用官方 All-in-One 镜像，在一个 Docker 容器内运行一个 FE 和一个 BE。
-单节点环境用于学习，不是生产部署方案。
+This course uses the official All-in-One image to run one FE and one BE in a single Docker container.
+The single-node environment is for learning, not a production deployment plan.
 
-## 1. 安装 Python 环境
+## 1. Install the Python Environment
 
-保留完整仓库，在 `doris-course/02-data-warehousing` 目录执行：
+Keep the entire repository and run the following in `doris-course/02-data-warehousing`:
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 ```
 
-显示和测验功能依赖仓库内的共享组件，请勿单独复制本课程目录。
-如果 Jupyter 在远程服务器运行，下文的“本机”指服务器，不是浏览器所在的 Mac。
+Display and quiz functionality depend on shared components in the repository; do not copy this course directory on its own.
+If Jupyter runs on a remote server, “local machine” below refers to the server, not the Mac running your browser.
 
-## 2. 启动课程沙箱
+## 2. Start the Course Sandbox
 
-先启动 Docker Desktop（macOS）或 Docker Engine（Linux），并安装 Compose 插件。
-建议预留 4 CPU、8 GB 内存和 20 GB 可用磁盘。
+Start Docker Desktop (macOS) or Docker Engine (Linux) first, and install the Compose plugin.
+We recommend reserving 4 CPUs, 8 GB of memory, and 20 GB of free disk space.
 
-直接打开 [Lab 1](../../level1/module01-introduction/lab1_connect_and_query.ipynb)：
+Open [Lab 1](../../level1/module01-introduction/lab1_connect_and_query.ipynb) directly:
 
 ```bash
 .venv/bin/jupyter lab level1/module01-introduction/lab1_connect_and_query.ipynb
 ```
 
-先运行“初始化实验工具”，再运行“启动单容器实验环境”中的启动代码。
-启动界面显示进度条和双列六步状态卡片：已完成步骤为绿色，当前步骤为黄色，
-失败步骤为红色，后续步骤保持灰色。失败时展开完整日志；成功日志默认折叠。
-课程工具会校验 [compose.yml](compose.yml)，启动或复用沙箱，等待健康检查，
-验证 FE 连接和 BE 计算，然后连接实验库。首次下载和启动可能需要数分钟。
+Run “Initialize Lab Tools” first, then run the startup code under “Start the Single-Container Lab Environment.”
+The startup interface displays a progress bar and six step-status cards in two columns: completed steps are green, the current step is yellow,
+failed steps are red, and subsequent steps remain gray. Full logs expand on failure; success logs are collapsed by default.
+The course tools validate [compose.yml](compose.yml), start or reuse the sandbox, wait for health checks,
+verify the FE connection and BE computation, and then connect to the lab database. The first download and startup may take several minutes.
 
-后续 Lab 自动连接同一个沙箱，不再创建容器，也不需要手工设置连接环境变量。
-每个 Notebook 都会重新配置同一组连接参数，不依赖其他 Notebook 内核的内存状态。
-开始实验前阅读其重置提示；执行连接与实验代码表示你已确认对应教学表可重建。
+Subsequent Labs automatically connect to the same sandbox without creating more containers or requiring manual connection environment variables.
+Each Notebook configures the same set of connection parameters anew, without depending on the in-memory state of other Notebook kernels.
+Read the reset notice before starting a Lab; running the connection and lab code confirms that you agree to the corresponding teaching tables being rebuilt.
 
-| 项目 | 配置 |
+| Item | Configuration |
 | --- | --- |
-| 镜像 | apache/doris:all-in-one-4.1.3 |
-| Compose 项目 | doris-warehousing-course |
-| 服务数量 | 一个 doris 服务，容器内包含一个 FE 和一个 BE |
-| FE 查询端口 | 宿主机 52030 → 容器 9030 |
-| FE HTTP 端口 | 宿主机 51030 → 容器 8030 |
-| BE HTTP 端口 | 宿主机 51040 → 容器 8040 |
-| 默认实验库 | dw_course_l1_demo |
-| 数据保留 | 项目专属 FE 元数据卷、BE 存储卷 |
-| 网络暴露 | 只绑定宿主机 127.0.0.1 |
+| Image | apache/doris:all-in-one-4.1.3 |
+| Compose project | doris-warehousing-course |
+| Service count | One doris service, containing one FE and one BE in the container |
+| FE query port | Host 52030 → container 9030 |
+| FE HTTP port | Host 51030 → container 8030 |
+| BE HTTP port | Host 51040 → container 8040 |
+| Default lab database | dw_course_l1_demo |
+| Data retention | Project-specific FE metadata volume and BE storage volume |
+| Network exposure | Bound only to host 127.0.0.1 |
 
-无密码 root 仅用于这个本机教学沙箱，不作为远程部署示例。
-本课程使用独立的项目、端口和数据卷，不会复用或停止其他服务的容器。
-多人共用同一个沙箱时，可由讲师在启动各自 Jupyter 前设置不同的 DW_DATABASE；
-实验库名须以 dw_course_l1_ 开头。
+Passwordless root is used only for this local teaching sandbox, not as an example for remote deployment.
+The course uses a separate project, ports, and data volumes, and will not reuse or stop other services' containers.
+When multiple people share the same sandbox, the instructor can set a different DW_DATABASE for each person before starting their Jupyter instance;
+lab database names must start with dw_course_l1_.
 
-## 3. 准备 Module 5 历史数据包
+## 3. Prepare the Module 5 Historical Data Package
 
-Module 1–3 的 WWI 小样本和 Module 6/Module 7 的模拟事件已在仓库内。
-Module 5 的完整 Parquet 压缩包也随仓库提供，首次使用时自动解压并校验，见[数据说明](../../datasets/README.md)。
-默认解到课程目录的 `.runtime/wwi/`；已有同版数据文件时，也可以在启动 Jupyter 前设置：
+The small WWI sample for Modules 1–3 and simulated events for Module 6/Module 7 are already in the repository.
+The complete Module 5 Parquet archive is also included in the repository and is automatically extracted and validated on first use; see [Dataset Documentation](../../datasets/README.md).
+By default, it is extracted to `.runtime/wwi/` in the course directory; if you already have data files from the same version, you can also set the following before starting Jupyter:
 
 ```bash
 export DW_WWI_DATA_DIR=/absolute/path/to/wwi-parquet
 ```
 
-路径指 Jupyter 内核所在机器。Module 5 会校验全部文件，不需要 Kaggle 账号、SQL Server 或 S3 密钥。
+The path refers to the machine running the Jupyter kernel. Module 5 validates all files; no Kaggle account, SQL Server, or S3 keys are required.
 
-## 4. 常见问题
+## 4. Troubleshooting
 
-| 现象 | 检查方法 |
+| Symptom | What to Check |
 | --- | --- |
-| 导入 Python 包失败 | 确认 Notebook 使用安装课程依赖的 Python 内核 |
-| Connection refused | 核对 FE 查询端口，检查服务是否准备好 |
-| Access denied | 核对用户、密码、连接来源以及建库建表权限 |
-| BE 不存活、无法建表或写入 | 查看 SHOW BACKENDS 和 BE 日志 |
-| Docker 端口被占用 | 请讲师协调课程环境；不要停止不属于你的服务 |
-| Module 1 成功而下一个 Lab 无法连接 | 确认内核在同一台机器、沙箱仍在运行；在当前 Notebook 中执行初始化与连接步骤 |
+| Python package import fails | Confirm that the Notebook uses the Python kernel where course dependencies are installed |
+| Connection refused | Verify the FE query port and check whether the service is ready |
+| Access denied | Verify the user, password, connection source, and permissions to create databases and tables |
+| BE is not alive, or tables cannot be created or written to | Check SHOW BACKENDS and the BE logs |
+| Docker port is in use | Ask the instructor to coordinate the course environment; do not stop services you do not own |
+| Module 1 succeeds but the next Lab cannot connect | Confirm that the kernel is on the same machine and the sandbox is still running; run the initialization and connection steps in the current Notebook |
 
-排查自己的沙箱时，在课程目录运行：
+To troubleshoot your own sandbox, run the following in the course directory:
 
 ```bash
 docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml ps
 docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml logs --tail 100 doris
 ```
 
-## 5. 结束学习与继续学习
+## 5. Finish and Resume Learning
 
-暂停自己的沙箱，但保留数据卷：
+Stop your own sandbox while retaining its data volumes:
 
 ```bash
 docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml stop
 ```
 
-恢复已创建的沙箱：
+Restart an already-created sandbox:
 
 ```bash
 docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml start --wait
 ```
 
-不要把删除数据卷当作重试手段，也不要操作不属于本课程的容器。
+Do not delete data volumes as a retry strategy, and do not operate on containers that do not belong to this course.
 
-表名按业务含义或实验用途命名，含义见 [Level 1 表名说明](../../level1/README.md#实验表如何命名)。
-继续学习时，确认前置 Lab 的表已准备好；需要重建数据时，按学习顺序重新执行相关 Lab。
+Tables are named for their business meaning or lab purpose; see [Level 1 Table Naming](../../level1/README.md#how-are-lab-tables-named) for their meanings.
+When resuming, confirm that prerequisite Labs' tables are ready; if data needs to be rebuilt, rerun the relevant Labs in learning order.
 
-每个 Lab 开头都会说明它重建哪些表。Module 1 只重建 orders_sample；
-Module 7 读取 Module 6 的合格订单，并只重建自己的订单状态、事件和业务流水实验表。
+Each Lab states at the beginning which tables it rebuilds. Module 1 rebuilds only orders_sample;
+Module 7 reads the valid orders from Module 6 and rebuilds only its own order state, event, and business transaction lab tables.

@@ -36,17 +36,17 @@ def _wait_http(url, timeout=90):
 def prepare_lakehouse(lab, *, start=False):
     """Start with explicit consent; create a per-lab namespace and reuse matching data."""
     if not start:
-        raise ValueError("阅读 Lab 4 环境说明后，设置 start=True 启动课程湖表服务")
+        raise ValueError("Read the Lab 4 environment guide, then set start=True to start the course lakehouse services")
     namespace = identifier(lab.database)
     catalog = identifier(lab.database + "_lake")
     table = catalog + "." + namespace + ".orders"
-    progress = WorkflowProgress("准备湖表实验", {
-        1: "启动课程专用对象存储和 Iceberg 服务",
-        2: "等待服务就绪",
-        3: "连接 Doris 与湖表网络",
-        4: "准备样本存储空间",
-        5: "创建 Catalog 与湖表",
-        6: "核对湖上十笔订单",
+    progress = WorkflowProgress("Prepare the lakehouse lab", {
+        1: "Start the course object storage and Iceberg services",
+        2: "Wait for services to become ready",
+        3: "Connect Doris to the lakehouse network",
+        4: "Prepare storage for the sample",
+        5: "Create the catalog and lake tables",
+        6: "Verify the ten orders in the lake",
     })
     try:
         progress.advance(1)
@@ -58,7 +58,7 @@ def prepare_lakehouse(lab, *, start=False):
         progress.advance(3)
         container = subprocess.check_output(compose_command("ps", "-q", "doris"), text=True).strip()
         if not container or "\n" in container:
-            raise RuntimeError("请先运行 Lab 1，启动课程单容器 Doris")
+            raise RuntimeError("Run Lab 1 first to start the single-container Doris sandbox")
         networks = json.loads(subprocess.check_output(
             ["docker", "inspect", "--format", "{{json .NetworkSettings.Networks}}", container], text=True))
         if NETWORK not in networks:
@@ -87,7 +87,7 @@ def prepare_lakehouse(lab, *, start=False):
             "warehouse": "s3://course-warehouse/",
         }
         if any(properties.get(key) != value for key, value in expected_properties.items()):
-            raise ValueError("同名 Catalog 指向其他环境；保留现有配置，请使用新的课程实验库")
+            raise ValueError("The existing catalog with this name points to another environment. Keep its configuration and use a new course lab database")
         lab.execute(f"CREATE DATABASE IF NOT EXISTS {catalog}.{namespace}")
         lab.execute(f'''CREATE TABLE IF NOT EXISTS {table} (
             order_id BIGINT, customer_id BIGINT, order_date DATE,

@@ -1,46 +1,46 @@
-# Module 2：Doris 存储架构与写入机制
+# Module 2: Doris Storage Architecture and Write Mechanisms
 
-| 课程信息 | 内容 |
+| Course Information | Details |
 | --- | --- |
-| 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 产品版本 | Apache Doris 4.x |
-| 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 60 分钟，包含讲义阅读、动手实验和测验 |
+| Course | Data Warehousing with Apache Doris · Level 1 |
+| Product Version | Apache Doris 4.x |
+| Lab Version | Apache Doris 4.1.3 |
+| Estimated Time | About 60 minutes, including reading, the hands-on lab, and the quiz |
 
-[课程目录](../README.md) · [打开实验 2](lab2_observe_storage.ipynb) · [打开测验 2](quiz2_storage_and_write_batches.ipynb)
+[Course contents](../README.md) · [Open Lab 2](lab2_observe_storage.ipynb) · [Open Quiz 2](quiz2_storage_and_write_batches.ipynb)
 
-## 单元目标
+## Module Goal
 
-本单元介绍 Doris 的查询路径、存储结构，以及不同写入批次与后台合并的关系。
+This module introduces the Doris query path, storage structure, and the relationship between different write batches and background compaction.
 
-完成本单元后，你将能够比较批量与逐行写入的结果，并观察 Tablet 等存储元数据。
+After completing this module, you will be able to compare batch and row-by-row writes and observe storage metadata such as Tablet information.
 
-## 学习目标
+## Learning Objectives
 
-完成本单元后，你应该能够：
+After completing this module, you should be able to:
 
-1. 沿一条查询说明 FE 规划与 BE 执行的分工。
-2. 解释 Table、Partition、Tablet、Rowset 和 Segment 的层次。
-3. 说明写入批次、数据可见性与后台 Compaction 的关系。
-4. 控制表结构和数据，比较批量与逐行写入的结果。
-5. 区分查询计划、存储元数据和运行时证据各能说明什么。
+1. Trace a query to explain FE planning and BE execution responsibilities.
+2. Explain the hierarchy of Table, Partition, Tablet, Rowset, and Segment.
+3. Explain the relationship between write batches, data visibility, and background Compaction.
+4. Keep table structure and data constant while comparing batch and row-by-row writes.
+5. Distinguish what query plans, storage metadata, and runtime evidence can each tell you.
 
-## 单元安排
+## Module Schedule
 
-| 环节 | 学习形式 | 建议时间 | 学习成果 |
+| Section | Learning Format | Suggested Time | Learning Outcome |
 | --- | --- | --- | --- |
-| 2.1 列式存储与查询路径 | 查询流程图 | 5 分钟 | 沿订单查询解释 FE、BE 和列式读取 |
-| 2.2 Tablet、Rowset、Segment 与 Compaction | 层次图与例子 | 8 分钟 | 区分分片、写入版本和列式文件 |
-| 2.3 写入批次与可见性 | 对照分析与状态读取 | 12 分钟 | 说明事务次数不同但业务结果相同 |
-| 实验 2 | 动手操作 | 30 分钟 | 完成两种写入并核对十行、12220.60 |
-| 测验 2 | 交互测验 | 5 分钟 | 检查查询路径、存储层次和观测方法 |
+| 2.1 Columnar Storage and the Query Path | Query flow diagram | 5 minutes | Trace an order query to explain FE, BE, and columnar reads |
+| 2.2 Tablet, Rowset, Segment, and Compaction | Hierarchy diagram and examples | 8 minutes | Distinguish shards, write versions, and columnar files |
+| 2.3 Write Batches and Visibility | Comparative analysis and status inspection | 12 minutes | Explain why different transaction counts produce the same business results |
+| Lab 2 | Hands-on practice | 30 minutes | Complete both write methods and verify ten rows and 12220.60 |
+| Quiz 2 | Interactive quiz | 5 minutes | Check the query path, storage hierarchy, and observation methods |
 
-## 2.1 列式存储与查询路径
+## 2.1 Columnar Storage and the Query Path
 
-### 从一条查询看组件分工
+### Trace a Query to Understand Component Responsibilities
 
-假设分析师只想看订单 1 的金额，而不是取回整张订单表。完成 Lab 2 后，
-下面的只读示例可以直接在同一实验库执行：
+Suppose an analyst wants only the amount for order 1, rather than the entire order table. After completing Lab 2,
+you can run the following read-only example directly in the same lab database:
 
 ```sql
 SELECT order_id, order_amount
@@ -48,30 +48,30 @@ FROM orders_batch
 WHERE order_id = 1;
 ```
 
-预期为一行：订单 1，税前金额 2300.00。客户端看到的是一条 SQL，
-系统内部却要完成解析、规划、读取和计算。
+Expect one row: order 1, with a pre-tax amount of 2300.00. The client sees one SQL statement,
+but internally the system must parse, plan, read, and compute.
 
 ```text
-Notebook / SQL 客户端
+Notebook / SQL client
         │ SQL
         ▼
-FE：解析字段 → 优化查询 → 生成并分发执行计划
-        │ 计划片段
+FE: Resolve fields → Optimize query → Generate and distribute execution plan
+        │ Plan fragments
         ▼
-BE：扫描需要的列 → 过滤订单号 → 返回金额
+BE: Scan required columns → Filter order ID → Return amount
         │
         ▼
-客户端：展示结果
+Client: Display results
 ```
 
-FE 决定要执行什么工作，BE 执行分配到的工作。大查询还可能在多个 BE 上
-分别扫描和聚合，再合并结果；单节点实验只帮助理解分工，不演示多节点扩展。
+FE decides what work to perform, and BE carries out its assigned work. Large queries may also scan and aggregate
+across several BEs before combining results. The single-node lab helps explain responsibilities but does not demonstrate multi-node scaling.
 
-### 为什么分析通常只读部分列？
+### Why Does Analytics Usually Read Only Some Columns?
 
-订单表还包含客户、日期、明细数和来源，但这条查询只需要订单号和金额。
-列式存储把同一列的值组织在一起，便于只读取查询所需的列。
-列裁剪回答“读哪些列”，过滤和数据跳过回答“处理哪些行或数据块”，两者不同。
+The order table also contains the customer, date, line count, and source, but this query needs only the order ID and amount.
+Columnar storage organizes values from the same column together, making it easier to read only the columns a query needs.
+Column pruning answers "which columns to read," while filtering and data skipping answer "which rows or data blocks to process." They are different.
 
 ```sql
 EXPLAIN SELECT order_id, order_amount
@@ -79,78 +79,78 @@ FROM orders_batch
 WHERE order_id = 1;
 ```
 
-在计划中找扫描表、输出列和过滤条件。EXPLAIN 展示计划，不等于执行过查询，
-也不提供这次查询实际读取的字节数。运行时工作量要结合 Query Profile。
+Find the scanned table, output columns, and filter conditions in the plan. EXPLAIN shows a plan; it does not mean the query has run,
+nor does it provide the actual number of bytes read by this query. Use Query Profile to understand runtime work.
 
-## 2.2 Tablet、Rowset、Segment 与 Compaction
+## 2.2 Tablet, Rowset, Segment, and Compaction
 
-订单到达 Doris 后，先按分区、分桶规则找到负责保存它的分片，再写成列式文件。
-阅读存储术语时，可以沿着这个过程理解：Tablet 回答“归哪个分片”，Rowset 回答
-“这一批写入形成了哪组数据”，Segment 回答“数据最终存在哪些文件里”。
+When an order reaches Doris, partitioning and bucketing rules first locate the shard responsible for storing it, and then it is written to columnar files.
+Follow this process to understand the storage terms: Tablet answers "which shard," Rowset answers
+"which data set this write batch created," and Segment answers "which files ultimately hold the data."
 
-### 先看每一层负责什么
-
-```text
-Table：SQL 中的一张表
-└── Partition：按范围等规则组织数据
-    └── Bucket / Tablet：分桶规则对应的数据分片
-        └── Rowset：一次写入或合并形成的版本化数据集合
-            └── Segment：不可变的列式数据文件
-```
-
-| 层次 | 用订单表理解 | 不应混淆的概念 |
-| --- | --- | --- |
-| Partition | 按订单日期划分数据范围；未显式分区也有默认分区 | 不是某个 BE 节点 |
-| Bucket / Tablet | 分桶把分区内数据分到多个分片，Tablet 是对应的物理分片 | 桶数不是副本数 |
-| Rowset | 写入涉及某个 Tablet 时，在该 Tablet 内形成版本化的数据集合 | 不是全表共享的一个文件 |
-| Segment | Rowset 中保存列数据的文件，一个 Rowset 可以有多个 Segment | 不是一笔业务订单 |
-
-例如，两天各一个分区，每个分区四个桶，得到八个 Tablet；
-若再配置副本，会增加物理副本，不会把逻辑订单复制成多笔。
-本课程沙箱使用单副本，便于观察一份数据的写入过程。
-
-以 Lab 的单桶订单表为例：一次提交十笔订单，这些数据都写入同一个 Tablet；
-分十次提交时，同一个 Tablet 会陆续接收十批数据。每批写入形成自己的 Rowset，
-其中的列数据存放在 Segment 中。一个大批次可以生成多个 Segment，
-因此业务行数、提交次数和文件数需要分别理解。
-
-### 写入后为什么还要合并？
-
-连续小批写入会形成多个数据片段。读取同一 Tablet 时，需要处理这些片段；
-Compaction 在后台将多个 Rowset 合并，减少读取时需要处理的片段数量。
-**合并改变物理组织，不应改变逻辑查询结果。**
+### First, Understand Each Layer's Role
 
 ```text
-一个 Tablet 内：
-写入 A → Rowset A ┐
-写入 B → Rowset B ├─ Compaction → 合并后的 Rowset
-写入 C → Rowset C ┘
+Table: A table in SQL
+└── Partition: Organizes data by rules such as ranges
+    └── Bucket / Tablet: The data shard corresponding to the bucketing rules
+        └── Rowset: A versioned data set created by a write or compaction
+            └── Segment: An immutable columnar data file
 ```
 
-写入事务发布为可见版本后，查询就能读取新数据。后台合并在此后整理文件：
-即使三批数据仍分散在三个 Rowset 中，查询也能得到完整的订单汇总。
-所以“业务结果何时可见”和“文件何时合并”是两个独立问题。
-这也是排查写入问题时先检查事务结果、再检查 Compaction 的原因。
-存储层的合并过程见[Compaction 原理](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/)。
-
-## 2.3 写入批次与可见性
-
-### 公平比较一次写十行和分十次写
-
-Lab 使用 Module 1 的同一批 WWI 历史订单，不改金额或日期。
-
-| 对照项 | orders_batch | orders_rowwise |
+| Layer | Understanding it through the order table | Do not confuse it with |
 | --- | --- | --- |
-| 数据与字段 | 相同十笔订单 | 相同十笔订单 |
-| 分桶与副本 | 一个桶、单副本 | 一个桶、单副本 |
-| 写入方式 | 一批十行 | 每次一行，共十次 |
+| Partition | Divides data ranges by order date; a default partition exists even without explicit partitioning | Not a BE node |
+| Bucket / Tablet | Bucketing divides data within a partition into shards; a Tablet is the corresponding physical shard | Bucket count is not replica count |
+| Rowset | A write involving a Tablet creates a versioned data set within that Tablet | Not a single file shared by the entire table |
+| Segment | A file that stores column data in a Rowset; a Rowset can have multiple Segments | Not a business order |
+
+For example, one partition for each of two days, with four buckets per partition, gives eight Tablets;
+configuring replicas adds physical copies, not additional logical orders.
+The course sandbox uses a single replica to make it easier to observe writes to one copy of the data.
+
+For the lab's single-bucket order table, submitting ten orders at once writes all of them to the same Tablet;
+submitting them in ten separate requests sends ten successive batches to that same Tablet. Each write batch creates its own Rowset,
+whose column data is stored in Segments. A large batch can generate multiple Segments,
+so business row counts, submission counts, and file counts must be understood separately.
+
+### Why Compact After Writing?
+
+Continuous small-batch writes create multiple data fragments. Reading the same Tablet requires processing these fragments;
+Compaction merges multiple Rowsets in the background, reducing the number of fragments that reads must process.
+**Compaction changes physical organization and should not change logical query results.**
+
+```text
+Within one Tablet:
+Write A → Rowset A ┐
+Write B → Rowset B ├─ Compaction → Compacted Rowset
+Write C → Rowset C ┘
+```
+
+Once a write transaction is published as a visible version, queries can read the new data. Background compaction organizes the files afterward:
+even if the three batches remain in three separate Rowsets, a query can still return the complete order summary.
+Thus, "when business results become visible" and "when files are compacted" are two separate questions.
+This is also why write troubleshooting starts with transaction results before checking Compaction.
+See [Compaction principles](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/) for the storage-layer compaction process.
+
+## 2.3 Write Batches and Visibility
+
+### Fairly Compare One Ten-Row Write with Ten Separate Writes
+
+The lab uses the same WWI historical orders as Module 1, without changing amounts or dates.
+
+| Comparison item | orders_batch | orders_rowwise |
+| --- | --- | --- |
+| Data and fields | The same ten orders | The same ten orders |
+| Buckets and replicas | One bucket, one replica | One bucket, one replica |
+| Write method | One batch of ten rows | One row at a time, ten times |
 | Group Commit | off_mode | off_mode |
-| 最终业务结果 | 十行，12220.60 | 十行，12220.60 |
+| Final business result | Ten rows, 12220.60 | Ten rows, 12220.60 |
 
-关闭 Group Commit 是为了不让服务端攒批掩盖写入方式的差异。
-它不是所有生产导入的推荐设置。
+Group Commit is disabled so that server-side batching does not mask differences between the write methods.
+This is not a recommended setting for every production load.
 
-完成两种写入后，先检查业务结果，再看元数据：
+After completing both write methods, check business results before inspecting metadata:
 
 ```sql
 SELECT 'batch' AS write_mode, COUNT(*) AS orders, SUM(order_amount) AS amount
@@ -167,39 +167,39 @@ SHOW TABLETS FROM orders_batch;
 SHOW TABLETS FROM orders_rowwise;
 ```
 
-### 从 Tablet 信息读到 Rowset
+### From Tablet Information to Rowsets
 
-先执行上面的 SHOW TABLETS，找到每张表的 TabletId、Version 和 VersionCount：
+First run SHOW TABLETS above and find each table's TabletId, Version, and VersionCount:
 
-| 字段 | 怎么读 | 不代表什么 |
+| Field | How to read it | What it does not mean |
 | --- | --- | --- |
-| TabletId | 用它继续定位这个分片 | 不是业务订单号 |
-| Version | 该副本报告的数据版本位置 | 不是当前文件个数，Compaction 不会把它重置为 1 |
-| VersionCount | 采样时报告的版本数量，与合并状态有关 | 不等于提交次数，也不是 Segment 文件数 |
+| TabletId | Use it to locate this shard for further inspection | Not a business order ID |
+| Version | The data version position reported by this replica | Not the current file count; Compaction does not reset it to 1 |
+| VersionCount | The number of versions reported at sampling time, related to compaction state | Not the submission count or Segment file count |
 
-例如，某次采样中逐行表的 VersionCount 比批量表大，可以继续查看它是否保留了更多
-未合并的 Rowset；不能仅凭这个数字断言查询慢了多少。元数据上报和后台合并都有时序，
-记录采样时间，不要求每次运行得到相同的数量。
+For example, if one sample shows a higher VersionCount for the row-by-row table than for the batch table, investigate whether it retains more
+uncompacted Rowsets. This number alone cannot tell you how much slower a query is. Metadata reporting and background compaction have their own timing;
+record the sampling time, and do not expect identical counts on every run.
 
-以下是命令形状，尖括号必须替换为本次返回值：
+The following shows the command format; replace the angle-bracketed placeholder with the value returned in this run:
 
 ```text
 SHOW TABLET <TabletId>;
-执行返回的 DetailCmd（SHOW PROC ...）
-读取返回的 CompactionStatus 地址，查看 rowsets
+Execute the returned DetailCmd (SHOW PROC ...)
+Read the returned CompactionStatus URL to inspect rowsets
 ```
 
-Rowset 清单中的版本范围用于理解哪些批次已经合并，例如 `[2-4]` 表示覆盖这段版本，
-不是三笔订单。这只是读法示意，不是本实验固定输出。
-课程容器返回的地址可能使用容器内网 IP；在宿主机查看时，只将本课程 BE 的地址换成
-`http://127.0.0.1:51040`，保留 `/api/compaction/show?tablet_id=...` 路径。
-这里只读取状态，不触发 Compaction，也不修改存储文件。
-[Tablet 状态入口](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/tablet-local-debug/)
+Version ranges in the Rowset list help you understand which batches have been compacted. For example, `[2-4]` covers that range of versions,
+not three orders. This is only an illustration of how to read the list, not a fixed output for this lab.
+URLs returned by the course container may use an internal container IP. When viewing them from the host, replace only this course BE's address with
+`http://127.0.0.1:51040`, keeping the `/api/compaction/show?tablet_id=...` path.
+Only read status here; do not trigger Compaction or modify storage files.
+[Tablet status access](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/tablet-local-debug/)
 
-### 怎么取得一次真实查询的 Profile？
+### How Can You Obtain a Profile for a Real Query?
 
-完成 Lab 2 后，在同一个 Notebook 的临时代码格执行以下观察代码。
-它只打开本会话的 Profile 采集，不重建表，结束后恢复原设置：
+After completing Lab 2, run the following observation code in a temporary code cell in the same Notebook.
+It enables Profile collection only for this session, does not rebuild tables, and restores the original setting afterward:
 
 ```python
 previous_profile = lab.query("SELECT @@enable_profile")[0][0]
@@ -211,62 +211,62 @@ finally:
     lab.execute("SET enable_profile = %s", (previous_profile,))
 ```
 
-按数据库名、SQL 和开始时间找到刚才的查询，不要拿别人的查询做对照。
-Profile 可能稍后收集完成；再查看列表，或在本课 FE Web UI 的 QueryProfile 页面打开详情。
-先找扫描算子的行数、读取字节和耗时，再看过滤后输出：本查询最终返回一行，
-不意味着底层只读了一行。比较列裁剪时，使用相同过滤条件，只改变 SELECT 的列。
-本节不要求调优；完整慢查询分析放在 Level 2 的 Module 10。
-[Profile 配置与查看](https://doris.apache.org/docs/4.x/query-acceleration/query-profile/)
+Find the query you just ran by database name, SQL, and start time; do not use someone else's query for comparison.
+Profile collection may finish slightly later. Check the list again, or open the details on the QueryProfile page of the course FE Web UI.
+First find the scan operator's row count, bytes read, and elapsed time, then inspect the output after filtering: this query returns one row,
+but that does not mean it read only one row underneath. When comparing column pruning, keep the filter conditions the same and change only the SELECT columns.
+This section does not require tuning; full slow-query analysis is covered in Level 2, Module 10.
+[Configuring and viewing Profiles](https://doris.apache.org/docs/4.x/query-acceleration/query-profile/)
 
-### 观察结果要怎么解释？
+### How Should You Interpret Observations?
 
-| 观察项 | 主要用途 | 使用时关注 |
+| Observation | Main purpose | What to keep in mind |
 | --- | --- | --- |
-| 行数、明细、金额 | 核对两种写法保存的业务数据 | 先确认结果一致，再比较写入吞吐 |
-| EXPLAIN | 查看计划扫描范围与过滤条件 | 查询耗时和磁盘 IO 需要结合运行时统计 |
-| Tablet 元数据中的版本相关信息 | 查看采样时的存储状态 | Rowset/Segment 的完整清单需要进一步查看存储信息 |
-| Query Profile | 查看实际执行中的算子耗时、扫描统计等 | 比较性能时保持机器、缓存与数据规模等条件一致 |
+| Row counts, details, amounts | Check the business data saved by both write methods | Confirm matching results before comparing write throughput |
+| EXPLAIN | Inspect planned scan scope and filter conditions | Query duration and disk IO require runtime statistics |
+| Version-related Tablet metadata | Inspect storage state at sampling time | Complete Rowset/Segment lists require further storage inspection |
+| Query Profile | Inspect actual operator durations, scan statistics, and other execution metrics | Keep machine, cache, data size, and other conditions consistent when comparing performance |
 
-后台合并可能在采样前完成。如果两张表的版本相关信息相近，先确认写入方式，
-再结合采样时刻理解结果；一次采样反映的是当时的存储状态。
-本节用十行数据理解写入机制。评估生产吞吐时，还需要固定数据规模、并发和机器资源，
-持续观察写入延迟、版本积累及合并是否跟得上写入速度。
+Background compaction may finish before sampling. If the two tables have similar version-related information, first confirm the write methods,
+then interpret the result in light of the sampling time; one sample reflects storage state at that moment.
+This section uses ten rows to understand write mechanisms. Evaluating production throughput also requires fixed data size, concurrency, and machine resources,
+with sustained observation of write latency, version accumulation, and whether compaction keeps up with writes.
 
-## 动手实验 2：观察存储和写入批次
+## Hands-on Lab 2: Observe Storage and Write Batches
 
-开始前请完成 Module 1，能够连接实验实例并核对订单总量，并使用课程独立实验库。
+Before starting, complete Module 1, be able to connect to the lab instance and verify order totals, and use the course's dedicated lab database.
 
-打开[实验 2](lab2_observe_storage.ipynb)，按顺序完成：
+Open [Lab 2](lab2_observe_storage.ipynb) and complete these steps in order:
 
-1. 创建相同结构的批量写入表和逐行写入表。
-2. 用相同订单样本执行两种写入方式，观察 Tablet 元数据。
-3. 核对两表均为十行、12220.60，记录采样时刻和后台合并的影响。
+1. Create identically structured tables for batch and row-by-row writes.
+2. Apply both write methods to the same order sample and observe Tablet metadata.
+3. Verify that both tables contain ten rows and 12220.60, and record sampling times and the effects of background compaction.
 
-### 数据来源与说明
+### Data Source and Notes
 
-实验使用 Microsoft WWI 官方模拟批发业务的历史子集，保留原始客户与商品标识。
-字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
+The lab uses a historical subset of Microsoft's official WWI simulated wholesale business, retaining the original customer and product identifiers.
+See the [data notes](../../datasets/README.md) for fields, business definitions, and expected results.
 
-补充操作见 [Level 1 扩展实验](../extensions/README.md)，在独立 `ext_*` 表执行，不重复改写本 Lab 的业务结果。
+See the [Level 1 extension labs](../extensions/README.md) for additional operations. They use separate `ext_*` tables rather than repeatedly rewriting this lab's business results.
 
-## 单元总结
+## Module Summary
 
-- 客户端提交 SQL，FE 规划并分发任务，BE 读取列数据并执行过滤、聚合等运算。
-- Table、Partition、Tablet、Rowset、Segment 是不同层次：表、范围、分片、版本集合和列式文件。
-- 写入可见性取决于事务发布和接口语义；Compaction 在后台改善物理组织，不应改变业务结果。
-- 比较批次时保持数据、表结构和配置一致；本实验两张表都必须是十行、12220.60。
-- 计划、元数据和运行时统计各有用途；小样本和一次采样不能证明固定性能收益。
+- The client submits SQL, FE plans and distributes tasks, and BE reads column data and performs filtering, aggregation, and other computation.
+- Table, Partition, Tablet, Rowset, and Segment represent different levels: table, range, shard, versioned data set, and columnar file.
+- Write visibility depends on transaction publication and interface semantics. Compaction improves physical organization in the background and should not change business results.
+- Keep data, table structure, and configuration consistent when comparing batches. Both tables in this lab must contain ten rows and 12220.60.
+- Plans, metadata, and runtime statistics serve different purposes; small samples and a single observation cannot prove a fixed performance gain.
 
-## 知识测验 2：观察存储和写入批次
+## Knowledge Quiz 2: Observe Storage and Write Batches
 
-完成讲义和实验后，打开[测验 2](quiz2_storage_and_write_batches.ipynb)。
-测验包含五道单选题，不依赖 Doris 或外部服务；提交后阅读答案解释。
+After completing the notes and lab, open [Quiz 2](quiz2_storage_and_write_batches.ipynb).
+The quiz contains five single-choice questions and does not depend on Doris or external services. Read the answer explanations after submitting.
 
-## 官方参考资料
+## Official References
 
-- [系统架构](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)
-- [分区与分桶基础](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)
-- [Compaction 原理](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/)
+- [System architecture](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)
+- [Partitioning and bucketing basics](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)
+- [Compaction principles](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/)
 - [EXPLAIN](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/EXPLAIN/)
 - [Query Profile](https://doris.apache.org/docs/4.x/query-acceleration/query-profile/)
 - [Group Commit](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)

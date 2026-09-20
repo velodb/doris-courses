@@ -1,130 +1,130 @@
-# Module 1：认识 Doris，完成第一批订单分析
+# Module 1: Meet Doris and Analyze Your First Orders
 
-| 课程信息 | 内容 |
+| Course Information | Details |
 | --- | --- |
-| 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 产品版本 | Apache Doris 4.x |
-| 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 50 分钟，包含讲义阅读、动手实验和测验 |
+| Course | Data Warehousing with Apache Doris · Level 1 |
+| Product Version | Apache Doris 4.x |
+| Lab Version | Apache Doris 4.1.3 |
+| Estimated Time | About 50 minutes, including reading, the hands-on lab, and the quiz |
 
-[课程目录](../README.md) · [打开实验 1](lab1_connect_and_query.ipynb) · [打开测验 1](quiz1_doris_fundamentals.ipynb)
+[Course contents](../README.md) · [Open Lab 1](lab1_connect_and_query.ipynb) · [Open Quiz 1](quiz1_doris_fundamentals.ipynb)
 
-## 单元目标
+## Module Goal
 
-认识 Apache Doris，并用十笔订单完成第一次分析：查看订单、筛选金额、按天汇总。
-本节先学会使用，存储原理和表设计在后续单元展开。
+Get to know Apache Doris and perform your first analysis with ten orders: view orders, filter by amount, and summarize by day.
+Start by learning to use it; storage principles and table design are covered in later modules.
 
-## 学习目标
+## Learning Objectives
 
-完成本单元后，你应该能够：
+After completing this module, you should be able to:
 
-1. 区分“完成一笔交易”和“分析一批订单”这两类工作。
-2. 说明 Doris 在业务数据库与分析用户之间承担什么职责。
-3. 说明存算一体环境中 Frontend（FE）和 Backend（BE）的分工。
-4. 连接 Doris，执行建表、写入和分组聚合 SQL。
-5. 用明细、行数和金额核对数据，区分税前订单金额与收款。
+1. Distinguish between completing a transaction and analyzing a batch of orders.
+2. Explain Doris's role between business databases and analytics users.
+3. Explain the responsibilities of Frontend (FE) and Backend (BE) in a storage-compute integrated environment.
+4. Connect to Doris and execute SQL to create tables, insert data, and aggregate by group.
+5. Validate data using details, row counts, and amounts, and distinguish pre-tax order amounts from payments received.
 
-## 单元安排
+## Module Schedule
 
-| 环节 | 学习形式 | 建议时间 | 学习成果 |
+| Section | Learning Format | Suggested Time | Learning Outcome |
 | --- | --- | --- | --- |
-| 1.1 什么是 Apache Doris？ | 场景与查询流程 | 5 分钟 | 区分交易与分析，说明 FE/BE 分工 |
-| 1.2 为什么用 Doris 构建订单数仓？ | 业务需求与能力 | 5 分钟 | 说明 Doris 如何支持订单分析 |
-| 1.3 基础 SQL 与订单分析 | SQL 示例与结果 | 10 分钟 | 看懂订单表，完成筛选和每日汇总 |
-| 实验 1 | 动手操作 | 25 分钟 | 写入十笔订单样本并查询每日汇总结果 |
-| 测验 1 | 交互测验 | 5 分钟 | 检查产品定位、组件分工和第一条分析 SQL |
+| 1.1 What Is Apache Doris? | Scenario and query flow | 5 minutes | Distinguish transactions from analytics and explain FE/BE responsibilities |
+| 1.2 Why Use Doris for an Order Data Warehouse? | Business needs and capabilities | 5 minutes | Explain how Doris supports order analytics |
+| 1.3 Basic SQL and Order Analytics | SQL examples and results | 10 minutes | Understand the order table, filter orders, and summarize by day |
+| Lab 1 | Hands-on practice | 25 minutes | Insert ten sample orders and query daily summaries |
+| Quiz 1 | Interactive quiz | 5 minutes | Check product positioning, component responsibilities, and your first analytical SQL query |
 
-前三项为讲义阅读与推演时间。首次下载实验镜像所需时间另计。
+The first three sections cover reading and working through examples. The initial lab image download takes additional time.
 
-## 1.1 什么是 Apache Doris？
+## 1.1 What Is Apache Doris?
 
-Apache Doris 是开源的实时分析数据库，可以用 SQL 查询明细、关联数据和计算汇总。
-本课程用它回答一个简单的问题：**每天有多少笔订单，订单金额是多少？**
-[产品介绍](https://doris.apache.org/docs/4.x/getting-started/what-is-apache-doris/)
+Apache Doris is an open-source real-time analytical database. You can use SQL to query details, join data, and calculate summaries.
+In this course, we use it to answer a simple question: **How many orders are there each day, and what is their total amount?**
+[Product introduction](https://doris.apache.org/docs/4.x/getting-started/what-is-apache-doris/)
 
-### 交易与分析有什么不同？
+### How Do Transactions Differ from Analytics?
 
-| 工作 | 例子 | 关注点 |
+| Work | Example | Focus |
 | --- | --- | --- |
-| 交易处理（OLTP） | 客户提交一笔订单 | 这笔订单是否正确保存 |
-| 分析处理（OLAP） | 统计每天的订单数和金额 | 一批订单的整体情况 |
+| Transaction processing (OLTP) | A customer submits an order | Whether that order is saved correctly |
+| Analytical processing (OLAP) | Count orders and total their amounts by day | The overall picture across a set of orders |
 
-两类工作都可能使用 SELECT。查询订单地址供客户修改，是服务一笔交易；
-按日期统计订单金额，才是这里要做的分析。
+Both kinds of work may use SELECT. Looking up an order's address so a customer can change it serves a transaction;
+summarizing order amounts by date is the analysis we want here.
 
-### FE 和 BE 各做什么？
+### What Do FE and BE Do?
 
-本课的单容器沙箱中有一个 FE 和一个 BE，采用存算一体方式：BE 既存数据，也做计算。
+The single-container sandbox in this course has one FE and one BE, with integrated storage and compute: BE both stores data and performs computation.
 
-| 组件 | 主要职责 |
+| Component | Main responsibilities |
 | --- | --- |
-| Frontend（FE） | 接收 SQL，管理表定义等元数据，规划和协调查询 |
-| Backend（BE） | 保存内部表数据，执行扫描、过滤和聚合 |
+| Frontend (FE) | Receive SQL, manage metadata such as table definitions, and plan and coordinate queries |
+| Backend (BE) | Store internal table data and perform scans, filtering, and aggregation |
 
-可以把一次查询理解为：**客户端提交 SQL → FE 安排工作 → BE 读取和计算 → 返回结果。**
-先记住这个分工即可，更细的查询和存储过程在 Module 2 学习。
+Think of a query as: **Client submits SQL → FE arranges the work → BE reads and computes → Results are returned.**
+Remember this division of responsibilities for now. Module 2 covers query and storage processes in more detail.
 
-## 1.2 为什么用 Doris 构建订单数仓？
+## 1.2 Why Use Doris for an Order Data Warehouse?
 
-在本课程中，业务系统负责处理下单等交易，Doris 接收订单数据，供分析师和报表查询。
-“订单数仓”就是把分析需要的订单等数据整理到一起，方便持续查询和统计。
+In this course, the business system handles transactions such as placing orders, while Doris receives order data for analysts and reports to query.
+An "order data warehouse" brings together orders and other data needed for analysis, making ongoing queries and summaries easier.
 
 ```text
-业务系统中的订单 → 数据导入 → Doris → SQL 分析 / 业务报表
+Orders in the business system → Data loading → Doris → SQL analytics / Business reports
 ```
 
-以订单分析为例，Doris 可以帮助你完成：
+For order analytics, Doris can help you:
 
-- **查询明细**：找到某一笔订单，查看客户、日期和金额。
-- **汇总数据**：按日期或客户统计订单数量、总金额。
-- **关联分析**：把订单与客户、商品等数据放在一起查询。
+- **Query details**: Find an order and view its customer, date, and amount.
+- **Summarize data**: Count orders and total their amounts by date or customer.
+- **Analyze joined data**: Query orders together with customer, product, and other data.
 
-本节只用一张订单表完成前两项。外部数据查询、导入、质量检查和状态更新，
-将在 Module 4–7 逐步学习，不需要现在掌握全部功能。
+This section uses just one order table for the first two tasks. External data queries, loading, quality checks, and status updates
+are introduced gradually in Modules 4–7; you do not need to master every feature now.
 
-Doris 支持 MySQL 兼容协议，本课通过 Notebook 中的 Python 工具连接并提交 SQL。
-协议兼容不代表所有功能与 MySQL 相同；建立连接也不会自动同步业务数据，仍需导入或同步任务。
+Doris supports the MySQL-compatible protocol. In this course, Python tools in the Notebook connect and submit SQL.
+Protocol compatibility does not mean that all features are identical to MySQL's. Connecting also does not automatically synchronize business data; loading or synchronization tasks are still required.
 
-## 1.3 基础 SQL 与订单分析
+## 1.3 Basic SQL and Order Analytics
 
-### 先认识订单表
+### Get to Know the Order Table
 
-本课使用 Microsoft Wide World Importers（WWI）模拟批发业务中的十笔历史订单。
-样本已经整理成 `orders_sample`，**一行代表一笔订单**，字段如下：
+This course uses ten historical orders from the simulated wholesale business in Microsoft Wide World Importers (WWI).
+The sample is organized as `orders_sample`, with **one row per order** and the following fields:
 
-| 字段 | 含义 |
+| Field | Meaning |
 | --- | --- |
-| order_id | 订单号 |
-| customer_id | 客户号 |
-| order_date | 订单日期 |
-| order_amount | 订单中各商品的数量 × 单价合计，即税前订单金额 |
-| line_count | 这笔订单包含的商品明细行数 |
-| data_source | 数据来源，本节为 WWI |
+| order_id | Order ID |
+| customer_id | Customer ID |
+| order_date | Order date |
+| order_amount | Sum of quantity × unit price for each item in the order: the pre-tax order amount |
+| line_count | Number of item detail lines in the order |
+| data_source | Data source, WWI in this section |
 
-一笔订单可以包含多条商品明细，但在这张表中只占一行。
-这里的金额不等于已经收到的款项；是否付款，需要另外查看支付或账款数据。
+An order can contain several item detail lines but occupies only one row in this table.
+The amount here is not the same as money received; determining whether it has been paid requires separate payment or account data.
 
-### 看懂 Lab 中的建表语句
+### Understand the Table Creation Statement in the Lab
 
-Lab 会提供并执行完整的 CREATE TABLE 和 INSERT。阅读时先认识这几项：
+The lab provides and executes the complete CREATE TABLE and INSERT statements. Start by recognizing these parts:
 
-| 写法 | 在本实验中的含义 |
+| Syntax | Meaning in this lab |
 | --- | --- |
-| BIGINT、DATE、DECIMAL(18,2) | 分别保存整数、日期和保留两位小数的金额 |
-| NOT NULL | 该字段不允许为空 |
-| DUPLICATE KEY(order_id) | 保留每次写入的记录，相同订单号不会自动去重 |
-| BUCKETS 1、replication_num=1 | 使用一个桶、一份副本，适配本课单 BE 沙箱 |
+| BIGINT, DATE, DECIMAL(18,2) | Store integers, dates, and amounts with two decimal places, respectively |
+| NOT NULL | The field cannot be null |
+| DUPLICATE KEY(order_id) | Retain every inserted record; identical order IDs are not automatically deduplicated |
+| BUCKETS 1, replication_num=1 | Use one bucket and one replica to fit this course's single-BE sandbox |
 
-模型、分区和分桶的详细设计留到 Module 3。完成建表后，可以用下面的命令查看表定义：
+Detailed design of models, partitions, and buckets is covered in Module 3. After creating the table, you can view its definition with:
 
 ```sql
 SHOW CREATE TABLE orders_sample;
 ```
 
-**以下查询都在 Lab 完成建表和十行写入后执行。** 阅读讲义时先理解 SQL 和预期结果，
-动手时使用 Lab 的同一个实验库。
+**Run the following queries after creating the table and inserting ten rows in the lab.** While reading, focus on the SQL and expected results;
+when practicing, use the same lab database.
 
-### 第一步：查看一笔订单
+### Step One: View One Order
 
 ```sql
 SELECT order_id, customer_id, order_date, order_amount, line_count
@@ -132,17 +132,17 @@ FROM orders_sample
 WHERE order_id = 4;
 ```
 
-FROM 指定表，WHERE 选择订单 4，SELECT 指定要看的字段。预期返回一行：
+FROM specifies the table, WHERE selects order 4, and SELECT specifies the fields to display. Expect one row:
 
 | order_id | customer_id | order_date | order_amount | line_count |
 | --- | --- | --- | --- | --- |
 | 4 | 57 | 2013-01-01 | 445.20 | 3 |
 
-意思是：客户 57 在 2013-01-01 下了这笔订单，包含三条商品明细，税前金额为 445.20。
+This means customer 57 placed this order on 2013-01-01, with three item detail lines and a pre-tax amount of 445.20.
 
-### 第二步：筛选金额较大的订单
+### Step Two: Filter Higher-Value Orders
 
-找出金额至少为 1000 的订单：
+Find orders with an amount of at least 1000:
 
 ```sql
 SELECT order_id, order_date, order_amount
@@ -151,7 +151,7 @@ WHERE order_amount >= 1000.00
 ORDER BY order_id;
 ```
 
-`>=` 表示大于或等于，ORDER BY 按订单号排列结果。预期有三笔：
+`>=` means greater than or equal to, and ORDER BY sorts the results by order ID. Expect three orders:
 
 | order_id | order_date | order_amount |
 | --- | --- | --- |
@@ -159,9 +159,9 @@ ORDER BY order_id;
 | 80 | 2013-01-02 | 1138.00 |
 | 83 | 2013-01-02 | 6220.40 |
 
-三笔合计 9658.40。Lab 的独立练习会让你自己完成这个筛选。
+The three orders total 9658.40. The lab's independent exercise asks you to perform this filtering yourself.
 
-### 第三步：按天统计订单数和金额
+### Step Three: Count Orders and Total Amounts by Day
 
 ```sql
 SELECT order_date,
@@ -172,22 +172,22 @@ GROUP BY order_date
 ORDER BY order_date;
 ```
 
-这次结果从“一行一笔订单”变成“一行一个日期”：
+The result now changes from "one row per order" to "one row per date":
 
-- GROUP BY 把同一天的订单放在一组。
-- COUNT(*) 数这一组有几行；本表一行一单，因此得到订单数。
-- SUM 将这一组的订单金额相加，AS 为结果列起名。
-- ORDER BY 将日期排好顺序；它只负责排序，不负责汇总。
+- GROUP BY puts orders from the same day into a group.
+- COUNT(*) counts the rows in that group. Because this table has one row per order, this gives the order count.
+- SUM adds the group's order amounts, and AS names the result column.
+- ORDER BY sorts the dates; it only sorts and does not aggregate.
 
-| 日期 | 样本订单数 | 税前订单金额 |
+| Date | Sample order count | Pre-tax order amount |
 | --- | ---: | ---: |
 | 2013-01-01 | 5 | 3944.20 |
 | 2013-01-02 | 5 | 8276.40 |
-| 合计 | 10 | 12220.60 |
+| Total | 10 | 12220.60 |
 
-SQL 返回两行日期汇总，“合计”行是人工核对用的。到这里，就回答了本节开头的问题。
+The SQL returns two daily summary rows; the "Total" row is for manual checking. This answers the question at the beginning of this section.
 
-### 最后：核对结果
+### Finally: Check the Results
 
 ```sql
 SELECT COUNT(*) AS order_count,
@@ -195,51 +195,51 @@ SELECT COUNT(*) AS order_count,
 FROM orders_sample;
 ```
 
-正常初始化后，应为 **10 行、12220.60**。再对照样本检查订单明细：
-总额相同不代表每笔都正确，例如两笔金额一增一减就可能互相抵消。Lab 会同时检查总量和完整记录。
+After normal initialization, expect **10 rows and 12220.60**. Then check order details against the sample:
+a matching total does not mean every order is correct. For example, an increase in one amount and a decrease in another may cancel out. The lab checks both totals and complete records.
 
-注意：不要单独重复执行十行 INSERT。本表会继续追加，变成二十行，金额变为 24441.20。
-需要重做时，先确认只有可重建的教学数据，再按 Lab 的“建表 → 写入 → 查询”顺序运行；
-建表步骤会重置 orders_sample。重试与去重在后续单元学习。
+Note: Do not rerun the ten-row INSERT on its own. This table keeps appending, resulting in twenty rows and an amount of 24441.20.
+To start over, first confirm that the table contains only teaching data that can be recreated, then follow the lab's "create table → insert → query" sequence;
+the table creation step resets orders_sample. Retries and deduplication are covered in later modules.
 
-## 动手实验 1：连接 Doris，查询第一批订单
+## Hands-on Lab 1: Connect to Doris and Query Your First Orders
 
-打开[实验 1](lab1_connect_and_query.ipynb)，依次完成：
+Open [Lab 1](lab1_connect_and_query.ipynb) and complete these steps in order:
 
-1. 加载实验工具，看到“实验工具加载完成”的提示。
-2. 启动课程单容器沙箱并连接实验库，确认本节只重建 orders_sample。
-3. 检查 FE/BE，确认当前实验数据库。
-4. 阅读并执行完整建表 SQL 和十行 INSERT。
-5. 核对明细和日期汇总，独立完成金额筛选练习。
+1. Load the lab tools and look for the "Lab tools loaded" message.
+2. Start the course's single-container sandbox and connect to the lab database, confirming that this section rebuilds only orders_sample.
+3. Check FE/BE and confirm the current lab database.
+4. Read and execute the full table creation SQL and ten-row INSERT.
+5. Check details and daily summaries, and complete the amount-filtering exercise independently.
 
-讲义中的查询可用于解释和复习；建表、写入和重置操作集中在 Lab 中完成。
+The queries in these notes support explanation and review; table creation, insertion, and reset operations are all performed in the lab.
 
-### 数据来源与说明
+### Data Source and Notes
 
-实验使用随课程提供的 WWI 十笔订单样本，来自[微软官方发布](https://github.com/microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0)，保留 MIT 许可。
-字段、业务口径与后续变更样本见[数据说明](../../datasets/README.md)。
+The lab uses the ten-order WWI sample bundled with the course, from the [official Microsoft release](https://github.com/microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0), retaining its MIT license.
+See the [data notes](../../datasets/README.md) for fields, business definitions, and subsequent change samples.
 
-## 单元总结
+## Module Summary
 
-- 交易处理完成一笔业务操作，分析处理统计一批数据。
-- 本课程中，业务系统负责交易，Doris 接收数据并提供分析查询。
-- FE 规划和协调查询，BE 保存数据并执行计算。
-- 从建表、写入开始，用 WHERE 筛选、GROUP BY 汇总、ORDER BY 排序。
-- 十笔样本的税前金额为 12220.60；核对总量后还要检查明细，不能把订单金额当作收款。
+- Transaction processing completes a business operation; analytical processing summarizes a set of data.
+- In this course, the business system handles transactions, while Doris receives data and provides analytical queries.
+- FE plans and coordinates queries; BE stores data and performs computation.
+- Start by creating a table and inserting data, then use WHERE to filter, GROUP BY to aggregate, and ORDER BY to sort.
+- The ten sample orders have a pre-tax total of 12220.60. Check details as well as totals, and do not treat order amounts as payments received.
 
-## 知识测验 1：Doris 基础与第一批订单
+## Knowledge Quiz 1: Doris Fundamentals and Your First Orders
 
-完成讲义和实验后，打开[测验 1](quiz1_doris_fundamentals.ipynb)。
-五道单选题涵盖交易与分析、Doris 定位、FE/BE 分工、分组查询和金额口径；无需连接 Doris。
-提交后阅读解释，再检查自己能否说明其他选项为什么不合适。
+After completing the notes and lab, open [Quiz 1](quiz1_doris_fundamentals.ipynb).
+Five single-choice questions cover transactions versus analytics, Doris's role, FE/BE responsibilities, grouped queries, and amount definitions; no Doris connection is required.
+Read the explanations after submitting, then check whether you can explain why the other options are unsuitable.
 
-下一单元：[Module 2：观察存储与写入批次](../module02-architecture/course2_doris_architecture.md)。
+Next module: [Module 2: Observe Storage and Write Batches](../module02-architecture/course2_doris_architecture.md).
 
-## 官方参考资料
+## Official References
 
-- [Apache Doris 产品介绍](https://doris.apache.org/docs/4.x/getting-started/what-is-apache-doris/)
-- [系统架构：FE、BE 与两种部署方式](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)
-- [SELECT 查询](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/SELECT/)
-- [Duplicate Key 明细模型](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/)
-- [Doris 数据类型](https://doris.apache.org/docs/4.x/table-design/data-type/)
-- [All-in-One 教学镜像](https://doris.apache.org/community/developer-guide/all-in-one-image/)
+- [Apache Doris product introduction](https://doris.apache.org/docs/4.x/getting-started/what-is-apache-doris/)
+- [System architecture: FE, BE, and two deployment modes](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)
+- [SELECT queries](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/SELECT/)
+- [Duplicate Key detail model](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/)
+- [Doris data types](https://doris.apache.org/docs/4.x/table-design/data-type/)
+- [All-in-One teaching image](https://doris.apache.org/community/developer-guide/all-in-one-image/)

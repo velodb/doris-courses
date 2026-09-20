@@ -1,73 +1,73 @@
-title: Module 1：连接 Doris，查询第一批订单
-description: 五道单选题；不需要数据库连接，提交后查看解释。
+title: "Module 1: Connect to Doris and Query Your First Orders"
+description: "Five single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: q1
-  objective: 区分“完成一笔交易”和“分析一批订单”这两类工作。
-  prompt: 以下哪项主要属于分析工作？
+  objective: "Distinguish between completing a transaction and analyzing a batch of orders."
+  prompt: "Which of the following is primarily analytical work?"
   options:
   - id: a
-    text: A. 提交一笔订单，并在同一业务操作中扣减库存
+    text: "A. Submit an order and deduct inventory in the same business operation"
   - id: b
-    text: B. 扫描一批订单，按日期统计订单量和总金额
+    text: "B. Scan a batch of orders and calculate order counts and total amounts by date"
   - id: c
-    text: C. 查询一笔订单的当前地址，供用户确认后修改
+    text: "C. Look up an order's current address for a user to confirm and change"
   - id: d
-    text: D. 记录一笔支付结果，并更新这笔订单的状态
+    text: "D. Record a payment result and update that order's status"
   answer: b
-  explanation: A：下单和扣库存完成一次交易，不是跨订单分析。 B：正确。按日期扫描和汇总多笔订单属于分析，即使最终只返回几行。 C：出现 SELECT 不等于分析；这里的点查服务于一笔交易。 D：一次操作涉及多个字段或表，也不等于分析工作。
+  explanation: "A: Placing an order and deducting inventory completes a transaction, not cross-order analysis. B: Correct. Scanning and summarizing multiple orders by date is analytics, even if only a few rows are returned. C: Using SELECT does not necessarily mean analytics; this point lookup serves a transaction. D: An operation involving multiple fields or tables does not necessarily constitute analytical work either."
 - id: q2
-  objective: 说明 Doris 在业务数据库与分析用户之间承担什么职责。
-  prompt: 本课程中 Doris 与源业务系统如何配合？
+  objective: "Explain Doris's role between business databases and analytics users."
+  prompt: "How do Doris and the source business system work together in this course?"
   options:
   - id: a
-    text: A. 源系统负责交易，Doris 接收业务数据并向分析用户提供查询
+    text: "A. The source system handles transactions, while Doris receives business data and provides queries for analytics users"
   - id: b
-    text: B. 采用 MySQL 协议连接后，可以直接沿用源业务库的全部事务设计
+    text: "B. After connecting with the MySQL protocol, all transaction designs from the source business database can be reused directly"
   - id: c
-    text: C. Doris 只保存数据，报表计算仍必须回到源业务库执行
+    text: "C. Doris only stores data; report computations must still run in the source business database"
   - id: d
-    text: D. 配置好 Doris 连接后，源业务表的后续变化就会持续同步
+    text: "D. Once the Doris connection is configured, subsequent changes to source business tables synchronize continuously"
   answer: a
-  explanation: A：正确。源系统继续处理交易，Doris 在本课程中承担分析职责。 B：协议兼容不代表事务语义、功能和适用负载完全相同。 C：Doris 本身提供分析计算与查询，不只是源业务库的被动数据副本。 D：连接只建立访问通道；持续同步还需接入任务和相应配置。
+  explanation: "A: Correct. The source system continues to process transactions, while Doris handles analytics in this course. B: Protocol compatibility does not imply identical transaction semantics, features, or suitable workloads. C: Doris itself provides analytical computation and queries; it is not merely a passive copy of the source business database. D: A connection only establishes access; continuous synchronization still requires ingestion tasks and the corresponding configuration."
 - id: q3
-  objective: 说明存算一体环境中 Frontend（FE）和 Backend（BE）的分工。
-  prompt: 在本课存算一体环境中，哪项分工正确？
+  objective: "Explain the responsibilities of Frontend (FE) and Backend (BE) in a storage-compute integrated environment."
+  prompt: "Which division of responsibilities is correct in this course's storage-compute integrated environment?"
   options:
   - id: a
-    text: A. FE 保存元数据并执行明细扫描，BE 只负责持久化文件
+    text: "A. FE stores metadata and performs detail scans, while BE only persists files"
   - id: b
-    text: B. 客户端拆分分布式执行计划，FE 将各片段转发给 BE
+    text: "B. The client splits the distributed execution plan, and FE forwards each fragment to BE"
   - id: c
-    text: C. FE 保存内部表数据，BE 缓存热点数据并返回查询结果
+    text: "C. FE stores internal table data, while BE caches hot data and returns query results"
   - id: d
-    text: D. FE 接收 SQL、规划和协调查询，BE 保存内部表数据并执行计划
+    text: "D. FE receives SQL and plans and coordinates queries, while BE stores internal table data and executes the plan"
   answer: d
-  explanation: A：FE 管理元数据，但本节中的明细扫描与计算由 BE 执行。 B：客户端提交 SQL，分布式计划的生成与协调由 FE 负责。 C：混淆了元数据与用户表数据；存算一体环境中的内部表数据由 BE 保存。 D：正确。这是本节存算一体环境下的职责划分，不应直接套用于所有部署模式。
+  explanation: "A: FE manages metadata, but BE performs detail scans and computation in this section. B: The client submits SQL; FE generates and coordinates the distributed plan. C: This confuses metadata with user table data; BE stores internal table data in a storage-compute integrated environment. D: Correct. This is the division of responsibilities in this section's storage-compute integrated environment and should not be applied directly to every deployment mode."
 - id: q4
-  objective: 连接 Doris，执行建表、写入和分组聚合 SQL。
-  prompt: orders_sample 一行是一笔订单，要按日期输出订单数和金额并稳定排序，应怎样查询？
+  objective: "Connect to Doris and execute SQL to create tables, insert data, and aggregate by group."
+  prompt: "Each row in orders_sample represents one order. How should you query order counts and amounts by date with a consistent sort order?"
   options:
   - id: a
-    text: A. 按 order_id 分组，计算 COUNT(*) 和 SUM(order_amount)，再按日期排序
+    text: "A. Group by order_id, calculate COUNT(*) and SUM(order_amount), then sort by date"
   - id: b
-    text: B. 按 order_date 分组，计算 COUNT(*) 和 SUM(order_amount)，再按日期排序
+    text: "B. Group by order_date, calculate COUNT(*) and SUM(order_amount), then sort by date"
   - id: c
-    text: C. 直接按 order_date 排序，逐行输出订单号和金额
+    text: "C. Sort directly by order_date and output each order ID and amount row by row"
   - id: d
-    text: D. 按 order_date 分组，计算 COUNT(*) 和 AVG(order_amount)，再按日期排序
+    text: "D. Group by order_date, calculate COUNT(*) and AVG(order_amount), then sort by date"
   answer: b
-  explanation: A：按订单号分组保留的是订单粒度，不是每日汇总。 B：正确。GROUP BY 确定日期粒度，COUNT 和 SUM 计算指标，ORDER BY 保证展示顺序；计数依赖一行一单。 C：ORDER BY 只排序，不会把同一天的订单汇总成一行。 D：AVG 是平均订单金额，不能替代每日总金额。
+  explanation: "A: Grouping by order ID retains order-level granularity rather than producing daily summaries. B: Correct. GROUP BY sets date-level granularity, COUNT and SUM calculate the metrics, and ORDER BY ensures display order; the count relies on one row per order. C: ORDER BY only sorts; it does not combine orders from the same day into one row. D: AVG gives the average order amount and cannot replace the daily total."
 - id: q5
-  objective: 用明细、行数和金额核对数据，区分税前订单金额与收款。
-  prompt: 某门店导出 20 笔样本订单，税前金额合计 8600 元，导出字段没有支付信息。哪项结论有数据依据？
+  objective: "Validate data using details, row counts, and amounts, and distinguish pre-tax order amounts from payments received."
+  prompt: "A store exports 20 sample orders with a pre-tax total of 8600 yuan. The exported fields contain no payment information. Which conclusion is supported by the data?"
   options:
   - id: a
-    text: A. 这家门店当天全部订单金额为 8600 元
+    text: "A. All orders at this store that day total 8600 yuan"
   - id: b
-    text: B. 这 20 笔订单都未付款，收款金额为零
+    text: "B. All 20 orders are unpaid, and payments received total zero"
   - id: c
-    text: C. 这份样本的税前订单金额为 8600 元
+    text: "C. This sample's pre-tax order amount is 8600 yuan"
   - id: d
-    text: D. 这份样本每笔金额都正确，因为总额为 8600 元
+    text: "D. Every amount in this sample is correct because the total is 8600 yuan"
   answer: c
-  explanation: A：样本范围不能代表全天全部交易。 B：没有支付字段不能推断未支付。 C：正确。结论限定了样本范围和税前订单金额口径。 D：总额相同仍可能有相互抵消的明细错误。
+  explanation: "A: The sample does not represent all transactions for the entire day. B: The absence of payment fields does not imply nonpayment. C: Correct. The conclusion is limited to the sample and its pre-tax order amount. D: Matching totals can still hide offsetting errors in individual records."

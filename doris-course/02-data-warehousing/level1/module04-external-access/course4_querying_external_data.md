@@ -1,90 +1,90 @@
-# Module 4：湖表与内部表关联
+# Module 4: Joining lake tables and internal tables
 
-| 课程信息 | 内容 |
+| Course Information | Details |
 | --- | --- |
-| 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 产品版本 | Apache Doris 4.x |
-| 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 50 分钟，包含讲义阅读、动手实验和测验 |
+| Course | Data Warehousing with Apache Doris · Level 1 |
+| Product Version | Apache Doris 4.x |
+| Lab Version | Apache Doris 4.1.3 |
+| Estimated Time | About 50 minutes, including reading, the hands-on lab, and quiz |
 
-[课程目录](../README.md) · [打开实验 4](lab4_query_iceberg.ipynb) · [打开测验 4](quiz4_internal_files_and_lake_tables.ipynb)
+[Course contents](../README.md) · [Open Lab 4](lab4_query_iceberg.ipynb) · [Open Quiz 4](quiz4_internal_files_and_lake_tables.ipynb)
 
-## 单元目标
+## Module Goal
 
-本单元介绍内部表、外部文件和湖表的区别，以及通过 Doris 访问已有湖表的方式。
+This module introduces the differences between internal tables, external files, and lake tables, and how to access existing lake tables through Doris.
 
-在准备好 Iceberg 环境后，你将能够查询湖上订单、关联内部表，并核对导入前后的结果。
+Once the Iceberg environment is ready, you will be able to query orders in the lake, join internal tables, and verify results before and after loading.
 
-## 学习目标
+## Learning Objectives
 
-完成本单元后，你应该能够：
+After completing this module, you should be able to:
 
-1. 区分 Doris 内部表、Parquet 文件、Iceberg 表与 External Catalog。
-2. 根据探索和重复分析的需求选择外部直查或导入内部表。
-3. 解释 Catalog、Database、Table 如何定位一张外部表。
-4. 通过关联前后对照发现维表重复或关联缺失。
-5. 在具备 Iceberg 环境时核对直查、关联和导入后的同一批订单。
+1. Distinguish Doris internal tables, Parquet files, Iceberg tables, and External Catalogs.
+2. Choose between direct external queries and loading into internal tables based on exploration and repeated-analysis needs.
+3. Explain how Catalog, Database, and Table identify an external table.
+4. Identify duplicate dimension records or missing matches by comparing results before and after a join.
+5. With an Iceberg environment available, verify the same batch of orders through direct queries, joins, and after loading.
 
-## 单元安排
+## Module Schedule
 
-| 环节 | 学习形式 | 建议时间 | 学习成果 |
+| Section | Learning Format | Suggested Time | Learning Outcome |
 | --- | --- | --- | --- |
-| 4.1 内部表、外部文件与湖表查询 | 对象、配置与 SQL | 15 分钟 | 区分访问路径，解释 JOIN 和导入边界 |
-| 实验 4 | 动手操作（需 Iceberg） | 30 分钟 | 核对直查、关联、导入均为十单、12220.60 |
-| 测验 4 | 交互测验 | 5 分钟 | 检查对象、访问选择、表定位与关联结果 |
+| 4.1 Querying internal tables, external files, and lake tables | Objects, configuration, and SQL | 15 minutes | Distinguish access paths and explain the boundaries of JOIN and loading |
+| Lab 4 | Hands-on practice (requires Iceberg) | 30 minutes | Verify that direct queries, joins, and loading all yield ten orders and 12220.60 |
+| Quiz 4 | Interactive quiz | 5 minutes | Check objects, access choices, table identification, and join results |
 
-## 4.1 内部表、外部文件与湖表查询
+## 4.1 Querying internal tables, external files, and lake tables
 
-### 先分清文件、表和访问入口
+### First distinguish files, tables, and access entry points
 
-假设历史订单已经存放在数据湖，近期客户资料在 Doris 中。
-分析师希望一起查询它们，不希望为了探索一个问题先迁移所有历史。
-先分清下面四种对象：
+Suppose historical orders are already stored in a data lake, while recent customer information is in Doris.
+Analysts want to query them together without migrating all historical data just to explore one question.
+First distinguish these four types of objects:
 
-| 对象 | 管理什么 | 与其他对象的关系 |
+| Object | What it manages | Relationship to other objects |
 | --- | --- | --- |
-| Doris 内部表 | Doris 管理的表结构和数据 | 可以作为导入后的分析表 |
-| Parquet 文件 | 按列编码的数据文件 | 可以单独读取，也可以是湖表的数据文件 |
-| Iceberg 表 | 表元数据、快照以及所引用的数据文件 | 通过表元数据确定一次查询使用哪些文件 |
-| External Catalog | Doris 访问外部系统元数据和表的入口 | 让外部表可以通过 Doris SQL 查询 |
+| Doris internal table | Table schemas and data managed by Doris | Can serve as an analytical table after loading |
+| Parquet file | A column-encoded data file | Can be read independently or serve as a lake table's data file |
+| Iceberg table | Table metadata, snapshots, and referenced data files | Uses table metadata to determine which files a query reads |
+| External Catalog | An entry point for Doris to access external system metadata and tables | Makes external tables queryable through Doris SQL |
 
-Parquet 描述一个文件内的列和数据；Iceberg 把多个文件组织成可管理的表。
-其中，快照记录表在某个版本所引用的数据文件。表发生变化时，元数据负责描述新的表状态，
-读取方据此选择文件。因此，查询一张 Iceberg 表需要同时访问它的元数据与数据文件。
+Parquet describes the columns and data within a file; Iceberg organizes multiple files into a manageable table.
+A snapshot records the data files referenced by a particular version of a table. When the table changes, metadata describes the new table state,
+which readers use to select files. Querying an Iceberg table therefore requires access to both its metadata and data files.
 
-External Catalog 则解决 Doris 从哪里找到这张表的问题：配置元数据服务的连接与权限后，
-Doris 可以取得表结构、规划读取，再访问对应文件并执行过滤、关联与聚合。
-配置 Catalog 时应同时检查元数据服务和文件存储的访问权限。
-具体接入类型见[Iceberg Catalog](https://doris.apache.org/docs/4.x/lakehouse/catalogs/iceberg-catalog/)。
+An External Catalog tells Doris where to find the table: after the metadata service connection and permissions are configured,
+Doris can retrieve the schema, plan reads, access the corresponding files, and perform filtering, joins, and aggregation.
+When configuring a Catalog, check access permissions for both the metadata service and file storage.
+For specific connection types, see [Iceberg Catalog](https://doris.apache.org/docs/4.x/lakehouse/catalogs/iceberg-catalog/).
 
 ```text
-独立 Parquet ── 文件 TVF ──────────┐
-                                 ├─ SQL 查询结果
-Iceberg 元数据与数据文件 ─ Catalog ┘      │
+Standalone Parquet ── File TVF ──────────┐
+                                 ├─ SQL query results
+Iceberg metadata and data files ─ Catalog ┘      │
                                        └─ INSERT INTO ... SELECT
                                                   │
                                                   ▼
-                                             Doris 内部表
+                                             Doris internal table
 ```
 
-### 什么时候直查，什么时候导入？
+### When should you query directly, and when should you load?
 
-| 场景 | 可以先选择 | 还要考虑什么 |
+| Scenario | Initial choice | Other considerations |
 | --- | --- | --- |
-| 第一次探索历史数据 | 通过 Catalog 直查 | 外部服务、网络、权限与元数据是否可用 |
-| 将湖上历史与内部客户关联 | 跨 Catalog JOIN | 关联键是否唯一，是否有缺失客户 |
-| 反复查询同一份业务快照 | 导入内部表后分析 | 同步频率、存储成本和变更更新方式 |
-| 只检查一个独立文件 | 文件 TVF | 文件格式、字段和访问参数 |
+| First exploration of historical data | Query directly through a Catalog | Availability of external services, network, permissions, and metadata |
+| Join historical lake data with internal customers | Cross-Catalog JOIN | Whether join keys are unique and any customers are missing |
+| Repeatedly query the same business snapshot | Load into an internal table for analysis | Synchronization frequency, storage cost, and how changes are applied |
+| Inspect a single standalone file | File TVF | File format, fields, and access parameters |
 
-“先直查”是一种接入选择，不保证所有外部查询都同样快；
-“导入”保存的是此次查询得到的结果，不会自动建立长期同步任务。
-文件 TVF 的对象存储接入在 Module 5 介绍，本 Lab 不运行独立文件实验。
+"Query directly first" is an access choice, not a guarantee that all external queries are equally fast;
+"loading" saves the results of this query; it does not automatically create an ongoing synchronization task.
+Object-storage access through a file TVF is introduced in Module 5; this lab does not include a standalone-file experiment.
 
-### 连接湖表要配置哪两类地址？
+### Which two types of addresses must be configured to connect to lake tables?
 
-Lab 的准备工具自动创建 Catalog。下面展开同一种 REST 接入配置，便于看懂工具做了什么。
-**外部环境示例，不随 Lab 重复执行。** 名称和连接参数均为占位符；Lab 实际按实验库名
-生成独立 Catalog，返回的 source 才是本次查询入口。不要另建一套入口后混用表名。
+The lab setup tool creates the Catalog automatically. The same REST connection configuration is shown below to explain what the tool does.
+**External environment example; do not rerun it alongside the lab.** Names and connection parameters are placeholders; the lab actually uses the lab database name
+to generate a separate Catalog, and the returned source is the entry point for this query. Do not create another entry point and mix up table names.
 
 <!-- external-service-example -->
 ```sql
@@ -98,28 +98,28 @@ CREATE CATALOG <catalog_name> PROPERTIES (
 );
 ```
 
-| 配置 | 在本课程中的用途 |
+| Configuration | Purpose in this course |
 | --- | --- |
-| type、iceberg.catalog.type | 选择 Iceberg 表格式及 REST 元数据服务 |
-| iceberg.rest.uri | 从元数据服务找表、快照和文件清单 |
-| warehouse | 本课程样本使用的对象存储位置，需与 REST 服务配置一致 |
-| s3.endpoint、region、访问凭据 | 让 Doris 节点读取实际数据文件 |
-| use_path_style | 匹配课程 MinIO 的路径访问方式 |
-| iceberg.rest.view-enabled | 本实验只用湖表，关闭外部视图支持 |
+| type, iceberg.catalog.type | Select the Iceberg table format and REST metadata service |
+| iceberg.rest.uri | Find tables, snapshots, and file lists through the metadata service |
+| warehouse | Object-storage location used by the course sample; must match the REST service configuration |
+| s3.endpoint, region, access credentials | Allow Doris nodes to read the actual data files |
+| use_path_style | Match the course MinIO path-style access |
+| iceberg.rest.view-enabled | Disable external view support because this lab uses only lake tables |
 
-本课容器网络中的服务地址是 `http://course-lake-rest:8181` 与
-`http://course-lake-minio:9000`，不是 Notebook 所在宿主机的 localhost。
-能取得表定义却读不到订单时，应分别检查元数据入口和文件入口。
-凭据只在实验环境中配置，不把真实密钥写入讲义。
+The service addresses on the course container network are `http://course-lake-rest:8181` and
+`http://course-lake-minio:9000`, not localhost on the host running the notebook.
+If you can retrieve the table definition but cannot read orders, check the metadata and file entry points separately.
+Configure credentials only in the lab environment; do not put real secrets in the course notes.
 
-### Catalog 如何定位外部表？
+### How does a Catalog identify an external table?
 
-完整表名是 `catalog.database.table`。例如，可以把湖表注册为
-`wwi_lake.sales.orders`：wwi_lake 是 Doris 中的 Catalog 名，sales 是外部数据库，
-orders 是湖表。它不是 Parquet 的文件路径。
+The fully qualified table name is `catalog.database.table`. For example, a lake table can be registered as
+`wwi_lake.sales.orders`: wwi_lake is the Catalog name in Doris, sales is the external database,
+and orders is the lake table. This is not a Parquet file path.
 
-以下是查询形状示例；运行时应使用实际的完整表名。
-课程 Notebook 在准备湖表后把完整表名保存在 `source` 变量中，后续查询直接引用。
+The following illustrates the query structure; use the actual fully qualified table name when running it.
+After preparing the lake table, the course notebook saves its fully qualified name in the `source` variable for subsequent queries to reference directly.
 
 ```sql
 SELECT order_date, COUNT(*) AS sample_orders, SUM(order_amount) AS amount
@@ -128,30 +128,30 @@ GROUP BY order_date
 ORDER BY order_date;
 ```
 
-若外部表装入的是本课程十单投影，预期为第一天五单、3944.20，
-第二天五单、8276.40。这里是查询外部表，尚未写入 Doris 内部表。
+If the external table contains this course's ten-order projection, expect five orders and 3944.20 on the first day,
+and five orders and 8276.40 on the second day. This queries the external table; no data has been written to a Doris internal table yet.
 
-### JOIN 之后为什么还要数行？
+### Why count rows after a JOIN?
 
-假设一个客户有两行维表记录，一笔 100.00 的订单就可能关联成两行，
-汇总后变成 200.00。JOIN 语法正确，不意味着业务金额正确。
-反过来，内连接时缺少客户也会让订单消失。
+If a customer has two dimension-table records, an order for 100.00 may produce two joined rows,
+totaling 200.00 after aggregation. Correct JOIN syntax does not guarantee correct business amounts.
+Conversely, a missing customer can cause an order to disappear in an inner join.
 
 ```text
-订单：order_id=1，customer_id=832，amount=2300.00
-          │ 按 customer_id 关联
-          ├─ 客户行 A → 一条订单结果
-          └─ 客户行 B → 又一条订单结果（重复）
+Order: order_id=1, customer_id=832, amount=2300.00
+          │ Join on customer_id
+          ├─ Customer row A → One order result
+          └─ Customer row B → Another order result (duplicate)
 ```
 
-图中用重复客户演示关联放大。Lab 使用唯一键客户表，让每笔订单最多匹配一条客户记录；
-再检查关联前后行数、金额以及导入后的逐字段结果。
+The diagram uses duplicate customers to illustrate join fanout. The lab uses a unique-key customer table so each order matches at most one customer record;
+then it checks row counts and amounts before and after the join, and compares results field by field after loading.
 
-LEFT JOIN 会保留左侧订单，缺少客户的订单仍会出现，客户字段为 NULL；
-INNER JOIN 只保留匹配成功的订单。做完整订单对账时，先用 LEFT JOIN 找出缺失客户，
-可以避免把“关联后少了订单”误读为业务量下降。
+LEFT JOIN retains the orders on the left; orders with no matching customer still appear, with NULL customer fields;
+INNER JOIN retains only matched orders. When reconciling all orders, first use LEFT JOIN to identify missing customers
+to avoid misinterpreting "fewer orders after the join" as a decline in business volume.
 
-完成外部实验后，以下查询可在课程内部实验库再次检查关联缺失：
+After completing the external lab, run the following query in the course's internal lab database to check again for missing join matches:
 
 ```sql
 SELECT COUNT(*) AS missing_customers
@@ -160,12 +160,12 @@ LEFT JOIN customers_sample c ON o.customer_id = c.customer_id
 WHERE c.customer_id IS NULL;
 ```
 
-预期为 0；若不是，先核对客户键和数据范围，不要把缺失订单的汇总当作完整答案。
+The expected result is 0; otherwise, check customer keys and the data scope first rather than treating an aggregate with missing orders as a complete answer.
 
-### 导入后检查什么？
+### What should you check after loading?
 
-Lab 显式选择六个字段写入 `orders_from_lake`，不依赖外部字段的隐含顺序。
-查询结果落入内部表后，再执行：
+The lab explicitly selects six fields to write into `orders_from_lake`, rather than relying on the implicit order of external fields.
+After the query results have been loaded into the internal table, run:
 
 ```sql
 SELECT order_date, COUNT(*) AS sample_orders, SUM(order_amount) AS amount
@@ -174,46 +174,46 @@ GROUP BY order_date
 ORDER BY order_date;
 ```
 
-此结果应与直查湖表一致；再比对订单号、客户、日期、金额、明细数和来源，
-避免不同错误在汇总中抵消。
+This result should match a direct query of the lake table; also compare order IDs, customers, dates, amounts, line counts, and sources
+to avoid different errors canceling each other out in the aggregate.
 
-**实验条件：** 课程 Doris 已启动，Docker 可用。Lab 会启动 MinIO 和 Iceberg REST Catalog
-两个辅助容器并准备样本；端口和数据保留方式见[湖表环境说明](../../environments/lakehouse/README.md)。
+**Lab requirements:** The course Doris instance is running, and Docker is available. The lab starts MinIO and Iceberg REST Catalog
+as two auxiliary containers and prepares the sample; see the [lake table environment notes](../../environments/lakehouse/README.md) for ports and data retention.
 
-## 动手实验 4：湖表与内部表关联
+## Hands-on Lab 4: Joining lake tables and internal tables
 
-开始前请完成 Module 1–3，继续使用课程独立实验库。
+Before starting, complete Module 1–3 and continue using the course's isolated lab database.
 
-打开[实验 4](lab4_query_iceberg.ipynb)，按顺序完成：
+Open [Lab 4](lab4_query_iceberg.ipynb) and complete these steps in order:
 
-1. 运行准备步骤，启动湖表服务并取得真实 Iceberg 表名。
-2. 直接查询湖上十笔订单，核对金额 12220.60。
-3. 关联内部客户表并检查行数，再导入内部订单表进行对账。
+1. Run the setup step to start the lake table services and obtain the actual Iceberg table name.
+2. Query the ten orders in the lake directly and verify the amount of 12220.60.
+3. Join the internal customer table and check the row count, then load into an internal orders table for reconciliation.
 
-### 数据来源与说明
+### Data sources and notes
 
-实验使用 Microsoft WWI 官方模拟批发业务的历史子集，保留原始客户与商品标识。
-字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
-准备步骤把 datasets/wwi/sample.json 中 orders 的六个字段和十行数据写入 Iceberg 表，数据文件保存在课程对象存储中。
+The lab uses a historical subset of Microsoft's official WWI simulated wholesale business, retaining the original customer and product identifiers.
+See the [data notes](../../datasets/README.md) for fields, business definitions, and expected results.
+The setup step writes the six fields and ten rows from orders in datasets/wwi/sample.json into an Iceberg table; the data files are stored in the course object storage.
 
-补充操作见 [Level 1 扩展实验](../extensions/README.md)，在独立 `ext_*` 表执行，不重复改写本 Lab 的业务结果。
+See the [Level 1 extension labs](../extensions/README.md) for additional exercises, run in separate `ext_*` tables without rewriting this lab's business results.
 
-## 单元总结
+## Module Summary
 
-- Parquet 是文件格式，Iceberg 是管理快照和文件的表格式；External Catalog 是访问入口，不是数据复制。
-- 探索数据可以先直查，重复分析可以评估导入；导入后的刷新与变更处理仍需明确设计。
-- catalog.database.table 定位外部表；Notebook 使用准备步骤返回的完整表名。
-- 重复维表键会放大 JOIN 结果，缺失键会丢失内连接结果；同时核对行数、金额和明细。
-- 分别核对湖表直查、关联结果和导入后的内部表；本样本的订单数均为十笔，税前金额均为 12220.60。
+- Parquet is a file format, Iceberg is a table format that manages snapshots and files, and an External Catalog is an access entry point, not data replication.
+- Start with direct queries for exploration and consider loading for repeated analysis; refreshing and handling changes after loading still require an explicit design.
+- catalog.database.table identifies an external table; the notebook uses the fully qualified name returned by the setup step.
+- Duplicate dimension keys multiply JOIN results, while missing keys drop rows from inner joins; check row counts, amounts, and detail records together.
+- Verify direct lake-table queries, join results, and the internal table after loading separately; this sample has ten orders and a pre-tax amount of 12220.60 in each case.
 
-## 知识测验 4：湖表与内部表关联
+## Knowledge Quiz 4: Joining lake tables and internal tables
 
-完成讲义和实验后，打开[测验 4](quiz4_internal_files_and_lake_tables.ipynb)。
-测验包含五道单选题，不依赖 Doris 或外部服务；提交后阅读答案解释。
+After completing the reading and lab, open [Quiz 4](quiz4_internal_files_and_lake_tables.ipynb).
+The quiz contains five single-choice questions and does not require Doris or external services; read the answer explanations after submitting.
 
-## 官方参考资料
+## Official References
 
-- [数据目录概览](https://doris.apache.org/docs/4.x/lakehouse/catalog-overview/)
+- [Data catalog overview](https://doris.apache.org/docs/4.x/lakehouse/catalog-overview/)
 - [Iceberg Catalog](https://doris.apache.org/docs/4.x/lakehouse/catalogs/iceberg-catalog/)
-- [S3 文件表值函数](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)
+- [S3 file table-valued function](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)
 - [INSERT INTO SELECT](https://doris.apache.org/docs/4.x/data-operate/import/import-way/insert-into-manual/)

@@ -1,113 +1,113 @@
-# Level 1：数据接入、清洗与更新
+# Level 1: Data Ingestion, Cleaning, and Updates
 
-这一阶段从十笔 WWI 历史订单开始，逐步回答三个问题：
-数据如何进入 Doris？错误记录如何识别？订单变化后如何保持分析结果正确？
+This stage starts with ten historical WWI orders and gradually answers three questions:
+How does data enter Doris? How are invalid records identified? How do you keep analytical results correct when orders change?
 
-**第一次学习从 [Module 1 讲义](module01-introduction/course1_introduction_to_apache_doris.md) 开始。**
-不需要先运行所有 Notebook，也不需要先学习全部架构概念。
+**For your first pass, start with the [Module 1 lesson](module01-introduction/course1_introduction_to_apache_doris.md).**
+You do not need to run all Notebooks or learn every architectural concept first.
 
-## 学习顺序
+## Learning Order
 
-每个单元先读讲义，再执行 Lab，最后完成五道交互测验。
-点击下表中的“Lab”或“Quiz”即可打开 Notebook。
+For each module, read the lesson first, then run the Lab, and finally complete the five interactive quiz questions.
+Click “Lab” or “Quiz” in the table below to open its Notebook.
 
-本课程先提供中文版本，讲义按以下顺序组织：
-课程信息 → 单元目标 → 学习目标 → 单元安排 → 分节讲解 →
-动手实验 → 单元总结 → 知识测验 → 官方参考资料。
-SQL、API 和产品名称保留原文；课程主题与学习顺序沿用数仓总纲。
+This course initially provides an English edition, with lessons organized in the following order:
+Course Information → Module Goals → Learning Objectives → Module Plan → Section-by-Section Explanations →
+Hands-on Lab → Module Summary → Knowledge Quiz → Official References.
+SQL, APIs, and product names remain unchanged; the course topics and learning order follow the overall data warehousing outline.
 
-| 顺序 | 单元与业务问题 | 动手实验 | 知识测验 |
+| Order | Module and Business Questions | Hands-on Lab | Knowledge Quiz |
 | --- | --- | --- | --- |
-| Module 1 | [认识 Doris 与基础 SQL](module01-introduction/course1_introduction_to_apache_doris.md) | [Lab 1](module01-introduction/lab1_connect_and_query.ipynb) | [Quiz 1](module01-introduction/quiz1_doris_fundamentals.ipynb) |
-| Module 2 | [Doris 存储架构与写入机制](module02-architecture/course2_doris_architecture.md) | [Lab 2](module02-architecture/lab2_observe_storage.ipynb) | [Quiz 2](module02-architecture/quiz2_storage_and_write_batches.ipynb) |
-| Module 3 | [Doris 表模型、分区与分桶](module03-table-design/course3_models_partitioning_and_bucketing.md) | [Lab 3](module03-table-design/lab3_models_and_pruning.ipynb) | [Quiz 3](module03-table-design/quiz3_models_and_data_distribution.ipynb) |
-| Module 4 | [外部数据查询与湖表关联](module04-external-access/course4_querying_external_data.md) | [Lab 4](module04-external-access/lab4_query_iceberg.ipynb) | [Quiz 4](module04-external-access/quiz4_internal_files_and_lake_tables.ipynb) |
-| Module 5 | [批量与持续数据接入](module05-ingestion/course5_batch_and_streaming_ingestion.md) | [Lab 5](module05-ingestion/lab5_stream_load.ipynb) | [Quiz 5](module05-ingestion/quiz5_load_methods_and_retry_safety.ipynb) |
-| Module 6 | [数据质量与 Schema 校验](module06-data-quality/course6_data_quality_and_schema_validation.md) | [Lab 6](module06-data-quality/lab6_validate_orders.ipynb) | [Quiz 6](module06-data-quality/quiz6_data_quality_and_rejection.ipynb) |
-| Module 7 | [数据更新、删除与事件重放](module07-state-changes/course7_updates_deletes_and_replay.md) | [Lab 7](module07-state-changes/lab7_current_state_and_replay.ipynb) | [Quiz 7](module07-state-changes/quiz7_state_changes_and_replay.ipynb) |
+| Module 1 | [Introduction to Doris and Basic SQL](module01-introduction/course1_introduction_to_apache_doris.md) | [Lab 1](module01-introduction/lab1_connect_and_query.ipynb) | [Quiz 1](module01-introduction/quiz1_doris_fundamentals.ipynb) |
+| Module 2 | [Doris Storage Architecture and Write Mechanisms](module02-architecture/course2_doris_architecture.md) | [Lab 2](module02-architecture/lab2_observe_storage.ipynb) | [Quiz 2](module02-architecture/quiz2_storage_and_write_batches.ipynb) |
+| Module 3 | [Doris Table Models, Partitioning, and Bucketing](module03-table-design/course3_models_partitioning_and_bucketing.md) | [Lab 3](module03-table-design/lab3_models_and_pruning.ipynb) | [Quiz 3](module03-table-design/quiz3_models_and_data_distribution.ipynb) |
+| Module 4 | [Querying External Data and Joining Lake Tables](module04-external-access/course4_querying_external_data.md) | [Lab 4](module04-external-access/lab4_query_iceberg.ipynb) | [Quiz 4](module04-external-access/quiz4_internal_files_and_lake_tables.ipynb) |
+| Module 5 | [Batch and Continuous Data Ingestion](module05-ingestion/course5_batch_and_streaming_ingestion.md) | [Lab 5](module05-ingestion/lab5_stream_load.ipynb) | [Quiz 5](module05-ingestion/quiz5_load_methods_and_retry_safety.ipynb) |
+| Module 6 | [Data Quality and Schema Validation](module06-data-quality/course6_data_quality_and_schema_validation.md) | [Lab 6](module06-data-quality/lab6_validate_orders.ipynb) | [Quiz 6](module06-data-quality/quiz6_data_quality_and_rejection.ipynb) |
+| Module 7 | [Data Updates, Deletes, and Event Replay](module07-state-changes/course7_updates_deletes_and_replay.md) | [Lab 7](module07-state-changes/lab7_current_state_and_replay.ipynb) | [Quiz 7](module07-state-changes/quiz7_state_changes_and_replay.ipynb) |
 
-按 Module 1–7 的顺序学习。Module 6 完成数据质量校验，Module 7 使用合格订单处理状态变化与事件重放。
+Follow Modules 1–7 in order. Module 6 completes data quality validation, and Module 7 uses the valid orders to handle state changes and event replay.
 
-## 学习完成条件
+## Completion Requirements
 
-完成七个主线 Lab、独立练习和 Quiz。Kafka、Flink CDC、CDC_STREAM、持续文件与真实位点恢复只需理解场景、架构、配置流程和注意事项，不要求搭建外部链路。已有三份基础扩展 Notebook 与新增两个持续接入 Lab 均选做；持续并发验证属于进阶内容。讲义中的配置阅读示例与选做 Lab 的固定环境分别管理。
+Complete the seven main Labs, independent exercises, and Quizzes. For Kafka, Flink CDC, CDC_STREAM, continuous file ingestion, and recovery from real source positions, you only need to understand the scenarios, architecture, configuration process, and caveats; you are not required to set up external pipelines. The three existing basic extension Notebooks and the two newly added continuous ingestion Labs are all optional; continuous concurrency validation is advanced material. Configuration-reading examples in the lessons and the fixed environments of the optional Labs are managed separately.
 
-## 选做：真实持续接入
+## Optional: Real Continuous Ingestion
 
-完成主线后，可另外启动[持续接入环境](../environments/streaming/README.md)：
+After completing the main sequence, you can separately start the [Continuous Ingestion Environment](../environments/streaming/README.md):
 
-| 实验 | 内容 | 建议时间 |
+| Lab | Content | Suggested Time |
 |---|---|---|
-| [Lab 5A：Kafka 与 Routine Load](module05-ingestion/optional5_kafka_routine_load.ipynb) | 发送订单、查看进度、暂停积压、恢复与更新 | 25–40 分钟 |
-| [Lab 5B：MySQL 与 Flink CDC](module05-ingestion/optional5_flink_mysql_cdc.ipynb) | 单表快照、增删改、Checkpoint 与 Savepoint 恢复；Module 7 可复用 | 35–50 分钟 |
+| [Lab 5A: Kafka and Routine Load](module05-ingestion/optional5_kafka_routine_load.ipynb) | Send orders, inspect progress, pause to build a backlog, resume, and update | 25–40 minutes |
+| [Lab 5B: MySQL and Flink CDC](module05-ingestion/optional5_flink_mysql_cdc.ipynb) | Single-table snapshot, inserts/deletes/updates, Checkpoint and Savepoint recovery; reusable in Module 7 | 35–50 minutes |
 
-这两个 Lab 使用独立演示库，不改变主线数据基线，不增加视频数。CDC_STREAM 和持续文件仍只作介绍。
+These two Labs use separate demonstration databases, do not change the main sequence's data baseline, and do not increase the video count. CDC_STREAM and continuous file ingestion remain introductory topics only.
 
-## 数据怎样贯穿 Level 1？
+## How Does Data Carry Through Level 1?
 
-| 单元 | 数据与业务结果 |
+| Module | Data and Business Results |
 | --- | --- |
-| Module 1–3 | WWI 十单投影，税前金额 12220.60；查询、存储、模型与分区 |
-| Module 4 | 将同一 WWI 子集准备为真实 Iceberg 表，关联内部客户 |
-| Module 5 | 先导入 10 笔模拟新订单，再扩展到 10 张 WWI 历史表、701,846 行 |
-| Module 6 | 13 行模拟输入 → 10 行合格、3 行拒收，验证 WWI 客户引用 |
-| Module 7 | 11 笔当前订单、18 条逻辑历史、19 次投递；核对商品、支付、退款及配送 |
+| Modules 1–3 | Ten-order WWI projection, pre-tax amount 12220.60; querying, storage, models, and partitioning |
+| Module 4 | Prepare the same WWI subset as a real Iceberg table and join it with internal customers |
+| Module 5 | Import 10 simulated new orders first, then expand to 10 historical WWI tables with 701,846 rows |
+| Module 6 | 13 simulated input rows → 10 valid, 3 rejected; validate WWI customer references |
+| Module 7 | 11 current orders, 18 logical history records, 19 deliveries; reconcile products, payments, refunds, and shipping |
 
-历史业务标记为 WWI，模拟新订单标记为 COURSE_SIMULATION；账户收款与逐订单支付分别使用对应的业务数据分析。
+Historical business data is labeled WWI, and simulated new orders are labeled COURSE_SIMULATION; account receipts and per-order payments are each analyzed using their corresponding business data.
 
-## 实验表如何命名？
+## How Are Lab Tables Named?
 
-表名说明数据的业务含义或实验用途；单元编号仅用于课程导航。
-例如，sample 表示小样本，current 表示当前状态，raw 表示保留原始输入。
+Table names describe the data's business meaning or lab purpose; module numbers are used only for course navigation.
+For example, sample means a small sample, current means current state, and raw means the original input is retained.
 
-| 表名 | 含义 |
+| Table Name | Meaning |
 | --- | --- |
-| orders_sample | 入门查询使用的十笔历史订单样本 |
-| orders_batch、orders_rowwise | 相同订单分别批量、逐行写入的对照表 |
-| orders_duplicate、orders_unique、orders_aggregate | 对比三种表模型的实验表 |
-| orders_partitioned | 观察日期分区和分桶裁剪的订单表 |
-| orders_from_lake、customers_sample | 湖表导入结果与关联用的客户样本 |
-| wwi_orders、wwi_customers 等 wwi_ 表 | 保留 WWI 来源的十张完整历史业务表 |
-| orders_imported | Stream Load 导入的模拟新订单 |
-| orders_raw、orders_classified | 原始订单输入与带校验结果的分类视图 |
-| orders_clean、orders_rejected | 合格订单与拒收记录 |
-| orders_current、order_events、event_deliveries | 当前订单、业务事件历史与消息投递记录 |
-| order_items、payments、refunds、shipment_events | 商品明细、支付、退款与配送事件 |
+| orders_sample | Sample of ten historical orders for introductory queries |
+| orders_batch, orders_rowwise | Comparison tables holding the same orders written in batches and row by row, respectively |
+| orders_duplicate, orders_unique, orders_aggregate | Lab tables for comparing the three table models |
+| orders_partitioned | Order table for observing date partitioning and bucket pruning |
+| orders_from_lake, customers_sample | Lake table import results and customer sample for joins |
+| wwi_orders, wwi_customers, and other wwi_ tables | Ten complete historical business tables retaining their WWI provenance |
+| orders_imported | Simulated new orders imported through Stream Load |
+| orders_raw, orders_classified | Raw order inputs and a classification view with validation results |
+| orders_clean, orders_rejected | Valid orders and rejected records |
+| orders_current, order_events, event_deliveries | Current orders, business event history, and message delivery records |
+| order_items, payments, refunds, shipment_events | Item details, payments, refunds, and shipment events |
 
-customers 和 products 分别是从 WWI 历史表提取的客户、商品维度。
-部分更新和删除练习使用 orders_partial_update、orders_delete_demo，
-不修改订单当前表。每个 Lab 只重建自己拥有的表，跨单元依赖的表仅供读取。
+customers and products are the customer and product dimensions extracted from historical WWI tables, respectively.
+Partial update and delete exercises use orders_partial_update and orders_delete_demo,
+without modifying the current orders table. Each Lab rebuilds only the tables it owns; tables depended on across modules are read-only.
 
-## 开始前准备什么？
+## What Should You Prepare Before Starting?
 
-- 能阅读 SELECT、WHERE、GROUP BY 等基础 SQL。
-- 按[环境准备](../environments/single-node/README.md)安装 Python 依赖。
-- 准备 Docker Desktop / Engine 和 Compose 插件；课程使用单容器 Doris 沙箱。
-- Module 1 负责启动沙箱，后续 Lab 自动连接同一环境。执行前先阅读各 Lab 的实验表重置范围。
-- WWI 样本、完整历史压缩包和模拟事件随仓库提供，来源与口径见[数据说明](../datasets/README.md)。
+- Be able to read basic SQL such as SELECT, WHERE, and GROUP BY.
+- Install Python dependencies following [Environment Setup](../environments/single-node/README.md).
+- Prepare Docker Desktop / Engine and the Compose plugin; the course uses a single-container Doris sandbox.
+- Module 1 starts the sandbox; subsequent Labs automatically connect to the same environment. Read each Lab's table reset scope before running it.
+- The WWI sample, complete historical archive, and simulated events are included in the repository; see [Dataset Documentation](../datasets/README.md) for sources and business definitions.
 
-## 怎样完成一个 Lab？
+## How Do You Complete a Lab?
 
-1. 阅读每步的目的与预期结果，再运行紧接着的代码。
-2. 比较实际结果，说明金额、状态与行数分别代表什么。
-3. 遇到差异，先查看明细和执行顺序，不要直接修改预期值。
-4. 在“独立练习”的空白代码格完成任务，再展开参考解答核对。运行全部代码不会替你完成独立练习。
-5. 完成五道测验，检查概念理解和实际选择。
+1. Read each step's purpose and expected results, then run the code immediately following it.
+2. Compare the actual results and explain what the amounts, states, and row counts each represent.
+3. If results differ, inspect the details and execution order first; do not directly change the expected values.
+4. Complete the tasks in the blank code cells under “Independent Exercise,” then expand the reference answers to check your work. Running all code does not complete the independent exercises for you.
+5. Complete the five quiz questions to check your conceptual understanding and practical choices.
 
-重启内核后，重新执行该 Notebook 的初始化与连接单元。
-课程实验只重建各自拥有的表，具体范围在每个 Lab 开头说明。
+After restarting the kernel, rerun that Notebook's initialization and connection cells.
+Course Labs rebuild only their own tables; the exact scope is stated at the beginning of each Lab.
 
-## 哪些部分需要额外准备？
+## Which Parts Require Extra Preparation?
 
-运行 Module 4 Lab 时会按需启动两个辅助容器，准备真实 Iceberg 湖表。
-首次启动需要下载镜像，端口与停止方法见[湖表环境说明](../environments/lakehouse/README.md)。
+Running the Module 4 Lab starts two helper containers on demand to prepare real Iceberg lake tables.
+The first start requires image downloads; see [Lake Table Environment](../environments/lakehouse/README.md) for ports and shutdown instructions.
 
-Module 5 Lab 使用仓库内的文件练习 Stream Load，首次读取历史包时自动解压并校验。
-讲义中的 Kafka、CDC、对象存储和 Group Commit 小节用于学习接入选择与工作机制。
-Module 2、Module 3 使用十笔订单理解存储和模型；性能评估需要另行准备相应的数据规模与负载。
+The Module 5 Lab practices Stream Load using files in the repository; the historical package is automatically extracted and validated on first read.
+The Kafka, CDC, object storage, and Group Commit sections in the lesson teach ingestion choices and operating mechanisms.
+Modules 2 and 3 use ten orders to explain storage and models; performance evaluation requires separately prepared data volumes and workloads appropriate to the evaluation.
 
-完成 Lab 后连接保持可用，可以继续查询。结束学习时关闭该 Notebook 的内核以释放连接；数据库中的课程数据保留。
+Connections remain available after you finish a Lab, so you can continue querying. When you finish studying, shut down that Notebook's kernel to release the connections; course data in the database is retained.
 
-## 补充操作
+## Supplementary Activities
 
-完成主线后可继续[Level 1 扩展实验](extensions/README.md)：放大数据与 Profile、文件批量接入、默认值/生成列、合批确认、Schema 变化与导入删除。扩展不增加视频数量，依赖和重置范围单独说明。
+After completing the main sequence, you can continue with the [Level 1 Extension Labs](extensions/README.md): scaling up data and Profile, batch file ingestion, defaults/generated columns, batch commit acknowledgment, schema changes, and deletes through ingestion. Extensions do not increase the video count; their dependencies and reset scopes are documented separately.

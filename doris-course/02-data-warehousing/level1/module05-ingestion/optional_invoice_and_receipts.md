@@ -1,19 +1,19 @@
-# 扩展阅读：WWI 发票与账户收款（可选）
+# Further reading: WWI invoices and account receipts (optional)
 
-[返回 Module 5](course5_batch_and_streaming_ingestion.md)
+[Return to Module 5](course5_batch_and_streaming_ingestion.md)
 
-先完成 Lab 5 的十张历史表导入。本页只查询已有表，不修改数据；
-它帮助理解不同金额的口径，不属于批量导入主线的必做步骤。
+First complete the ten historical table loads in Lab 5. This page only queries existing tables and does not modify data;
+it helps explain different amount definitions and is not a required step in the main batch-loading path.
 
-## 三种金额不要混在一起
+## Do not mix three kinds of amounts
 
-| 数据 | 表达什么 | 本课程怎样使用 |
+| Data | What it represents | How this course uses it |
 | --- | --- | --- |
-| 订单与商品明细 | 下单的数量和单价 | Quantity × UnitPrice 汇总税前订单金额 |
-| 发票与发票明细 | 开票记录 | 按发票字段解释，不当成已经收款 |
-| 客户账户交易 | 按交易类型记录的账户金额 | 保留原始记账正负方向，不强行逐单分摊 |
+| Orders and product lines | Ordered quantities and unit prices | Sum Quantity × UnitPrice for pre-tax order amounts |
+| Invoices and invoice lines | Invoicing records | Interpret invoice fields without treating them as received payments |
+| Customer account transactions | Account amounts recorded by transaction type | Retain original ledger signs without forcing per-order allocation |
 
-## 按交易类型看账户记录
+## Inspect account records by transaction type
 
 ```sql
 SELECT t.TransactionTypeName, COUNT(*) AS rows_count,
@@ -24,9 +24,9 @@ JOIN wwi_transaction_types t ON c.TransactionTypeID=t.TransactionTypeID
 GROUP BY t.TransactionTypeName ORDER BY t.TransactionTypeName;
 ```
 
-这里 CASE 的含义是：没有关联发票时记 1，否则记 0，再用 SUM 统计数量。
-观察收款类型的正负方向，以及 no_invoice_link：本样本中的负数账户收款不能直接当作订单退款，
-没有逐单支付关联的数据也不能凭金额强行分摊。模块 6 会进一步练习 CASE 分类。
+Here CASE assigns 1 when there is no linked invoice and 0 otherwise; SUM then counts these records.
+Observe the signs of receipt types and no_invoice_link: negative account receipts in this sample cannot be treated directly as order refunds,
+and amounts cannot justify forced allocation when per-order payment links are absent. Module 6 further practices classification with CASE.
 
 ```sql
 SELECT SUM(TransactionAmount) AS ledger_balance,
@@ -36,8 +36,8 @@ SELECT COUNT(*) AS delivered_invoices
 FROM wwi_invoices WHERE ConfirmedDeliveryTime IS NOT NULL;
 ```
 
-本课程固定 WWI 包中，第一条查询两列均为 267011.44，第二条为 70426。
-这些只是该样本的核对值，不是所有企业都成立的账务等式；账户余额、交付发票数也不是订单支付金额。
-模拟新订单的支付和退款使用 Module 7 中独立的业务流水，与这里的 WWI 历史分开。
+In the course's fixed WWI package, both columns of the first query are 267011.44, and the second query returns 70426.
+These are verification values for this sample, not accounting identities true for all companies; account balances and delivered-invoice counts are not order payment amounts.
+Payments and refunds for simulated new orders use separate business transactions in Module 7, distinct from this WWI history.
 
-数据来源、MIT 许可与字段说明见[课程数据说明](../../datasets/README.md)。
+See the [Course data guide](../../datasets/README.md) for data sources, the MIT license, and field descriptions.

@@ -1,32 +1,32 @@
-# 湖表实验环境
+# Lake Table Lab Environment
 
-Lab 4 使用课程 Doris 查询真实 Iceberg 表。运行准备单元格会启动两个辅助容器：
+Lab 4 uses the course Doris instance to query real Iceberg tables. Running the preparation cell starts two helper containers:
 
-| 服务 | 固定镜像 | 本机端口 | 保存内容 |
+| Service | Pinned Image | Local Port | Stored Content |
 | --- | --- | --- | --- |
-| MinIO | minio/minio:RELEASE.2025-01-20T14-49-07Z | 51900 | Iceberg 元数据文件和 Parquet 数据 |
-| Iceberg REST Catalog | apache/iceberg-rest-fixture:1.10.0 | 51818 | SQLite 表目录 |
+| MinIO | minio/minio:RELEASE.2025-01-20T14-49-07Z | 51900 | Iceberg metadata files and Parquet data |
+| Iceberg REST Catalog | apache/iceberg-rest-fixture:1.10.0 | 51818 | SQLite table catalog |
 
-先完成 Lab 1，安装课程 requirements.txt 中的依赖，确认两个端口空闲。
-在 Lab 4 中依次运行代码即可；准备过程会展示进度并核对十笔订单。
-首次运行需要网络下载镜像。之后复用命名卷中的数据，并检查样本是否符合课程清单。
+Complete Lab 1 first, install the dependencies in the course requirements.txt, and confirm that both ports are free.
+Then run the code in Lab 4 in order; preparation displays progress and verifies the ten orders.
+The first run requires network access to download images. Later runs reuse data in the named volumes and check that the sample matches the course manifest.
 
-辅助容器与课程 Doris 加入同一 Docker 网络。每个实验库使用独立的 Catalog 和湖表命名空间，
-准备步骤保留已有表；样本内容不一致时停止并报告差异。
+The helper containers join the same Docker network as the course Doris instance. Each lab database uses a separate Catalog and lake table namespace;
+the preparation step preserves existing tables and stops to report differences if the sample contents do not match.
 
-这些服务用于本地教学：端口仅绑定 127.0.0.1，凭据公开写在 compose.yml 中。
-REST fixture 以 root 身份运行，以便写入 Docker 命名卷中的 SQLite；生产环境需要另外设计身份和访问管理。
+These services are for local teaching: ports bind only to 127.0.0.1, and credentials are openly specified in compose.yml.
+The REST fixture runs as root so it can write to SQLite in the Docker named volume; production requires separately designed identity and access management.
 
-## 停止与再次使用
+## Stop and Reuse
 
-从本课程目录运行以下命令停止辅助服务，命名卷中的数据保留：
+Run the following command from this course directory to stop the helper services while retaining data in the named volumes:
 
 ```bash
 docker compose -f environments/lakehouse/compose.yml stop
 ```
 
-下次运行 Lab 4 的准备单元格会重新启动。此命令不停止 Doris。
-连接错误时先检查 Docker 状态、端口占用，再查看课程辅助服务日志：
+Running the Lab 4 preparation cell next time will restart them. This command does not stop Doris.
+For connection errors, first check Docker's status and port usage, then inspect the course helper service logs:
 
 ```bash
 docker compose -f environments/lakehouse/compose.yml ps

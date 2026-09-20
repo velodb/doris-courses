@@ -1,96 +1,96 @@
-# Module 7：数据更新、删除与事件重放
+# Module 7: Data Updates, Deletion, and Event Replay
 
-| 课程信息 | 内容 |
+| Course Information | Details |
 | --- | --- |
-| 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 产品版本 | Apache Doris 4.x |
-| 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 75 分钟，包含讲义阅读、动手实验和测验 |
+| Course | Data Warehousing with Apache Doris · Level 1 |
+| Product Version | Apache Doris 4.x |
+| Lab Version | Apache Doris 4.1.3 |
+| Estimated Time | About 75 minutes, including course notes, hands-on lab, and quiz |
 
-[课程目录](../README.md) · [打开实验 7](lab7_current_state_and_replay.ipynb) · [打开测验 7](quiz7_state_changes_and_replay.ipynb)
+[Course contents](../README.md) · [Open Lab 7](lab7_current_state_and_replay.ipynb) · [Open Quiz 7](quiz7_state_changes_and_replay.ipynb)
 
-## 单元目标
+## Module Goal
 
-本单元介绍订单状态更新、重复与乱序事件处理，以及历史保留和重放的方法。
+This module introduces order state updates, duplicate and out-of-order event handling, and methods for retaining history and replaying events.
 
-完成本单元后，你将能够通过模拟事件维护订单当前状态与历史，并核对中断后重放的结果。
+After completing this module, you will be able to maintain current order state and history using simulated events and verify replay results after an interruption.
 
-## 学习目标
+## Learning Objectives
 
-完成本单元后，你应该能够：
+After completing this module, you should be able to:
 
-1. 区分订单当前状态、事件历史和原始投递的键与用途。
-2. 使用业务版本解释重复与乱序事件的处理结果。
-3. 区分部分列更新与省略字段的整行写入。
-4. 区分软删除、SQL 删除与物理文件回收。
-5. 通过重复重放、逐行比较和独立业务流水核对恢复结果。
+1. Distinguish the keys and purposes of current order state, event history, and raw deliveries.
+2. Use business versions to explain the handling of duplicate and out-of-order events.
+3. Distinguish partial column updates from full-row writes that omit fields.
+4. Distinguish soft deletion, SQL deletion, and physical file reclamation.
+5. Verify recovery through repeated replay, row-by-row comparison, and independent business transaction records.
 
-## 单元安排
+## Module Schedule
 
-| 环节 | 学习形式 | 建议时间 | 学习成果 |
+| Section | Learning Format | Suggested Time | Learning Outcome |
 | --- | --- | --- | --- |
-| 7.1 当前状态与更新 | 表粒度对照 | 5 分钟 | 选择当前、历史和投递的键 |
-| 7.2 幂等与乱序 | 事件时间线 | 10 分钟 | 解释晚到旧事件为何不覆盖新状态 |
-| 7.3 Merge-on-Write 与部分列更新 | 更新前后对照 | 10 分钟 | 检查未提供的业务字段是否保留 |
-| 7.4 软删除、SQL 删除与回收 | 可见性对照 | 5 分钟 | 区分隐藏、删除与物理回收 |
-| 7.5 历史、重放与恢复 | 中断案例与对账 | 10 分钟 | 解释跨步骤中断后的恢复方法 |
-| 实验 7 | 动手操作 | 30 分钟 | 核对 11 笔当前订单、18 条历史、19 次投递 |
-| 测验 7 | 交互测验 | 5 分钟 | 检查状态、版本、部分更新、删除和恢复 |
+| 7.1 Current State and Updates | Compare table granularities | 5 minutes | Choose keys for current state, history, and deliveries |
+| 7.2 Idempotency and Out-of-Order Events | Event timeline | 10 minutes | Explain why late old events do not overwrite newer states |
+| 7.3 Merge-on-Write and Partial Column Updates | Compare before and after updates | 10 minutes | Check whether omitted business fields are preserved |
+| 7.4 Soft Deletion, SQL Deletion, and Reclamation | Compare visibility | 5 minutes | Distinguish hiding, deletion, and physical reclamation |
+| 7.5 History, Replay, and Recovery | Interruption examples and reconciliation | 10 minutes | Explain recovery after an interruption between steps |
+| Lab 7 | Hands-on practice | 30 minutes | Verify 11 current orders, 18 history records, and 19 deliveries |
+| Quiz 7 | Interactive quiz | 5 minutes | Check states, versions, partial updates, deletion, and recovery |
 
-## 7.1 当前状态与更新
+## 7.1 Current State and Updates
 
-### 业务想同时知道“现在怎样”和“发生过什么”
+### Business Users Need Both "What Is True Now" and "What Happened"
 
-运营看板需要当前状态，排查退款则需要历史过程。
-只保留当前状态会丢失过程，只保留历史又需要每次查询挑选正确版本。
-本 Lab 把这两类需求分开：
+Operational dashboards need current state, while refund investigations need the historical process.
+Keeping only current state loses that process; keeping only history requires selecting the correct version on every query.
+This lab separates these two needs:
 
-| 表 | 一行表示什么 | 键与作用 |
+| Table | What one row represents | Key and purpose |
 | --- | --- | --- |
-| orders_current | 一笔订单的当前状态 | UNIQUE KEY(order_id)，按 event_version 裁决 |
-| order_events | 一个不同的业务事件 | UNIQUE KEY(event_id)，相同事件重投不增加逻辑历史 |
-| event_deliveries | 某次尝试中的一次投递 | 记录 attempt_id、delivery_id 和原始内容，保留重投 |
+| orders_current | The current state of one order | UNIQUE KEY(order_id), resolved by event_version |
+| order_events | One distinct business event | UNIQUE KEY(event_id); redelivering the same event does not add logical history |
+| event_deliveries | One delivery within an attempt | Records attempt_id, delivery_id, and raw content, preserving redeliveries |
 
-同一个 order_id 可以有多个 event_id，同一个 event_id 又可能被投递多次。
-这里的 delivery_id 是投递编号，不是快递单号。
+One order_id can have multiple event_id values, and one event_id may be delivered multiple times.
+Here, delivery_id is a delivery identifier, not a shipment tracking number.
 
-### 从合格新订单建立当前表和历史表
+### Build Current-State and History Tables from Accepted New Orders
 
-Module 6 的 `orders_clean` 提供十笔合格模拟订单；Module 7 将其初始化为
-当前状态与初始历史。来源均为 COURSE_SIMULATION，不更新 `wwi_*` 历史表。
+Module 6's `orders_clean` provides ten accepted simulated orders; Module 7 initializes them as
+current state and initial history. All have source COURSE_SIMULATION, and the `wwi_*` history tables are not updated.
 
-Unique Key 的更新改变同键的逻辑当前值，不意味着旧物理文件马上被回收。
-当前表使用 Merge-on-Write（MoW），在写入侧处理同键版本的可见性，
-便于业务查询读取当前结果。
+A Unique Key update changes the logical current value for the same key; it does not mean old physical files are immediately reclaimed.
+The current table uses Merge-on-Write (MoW) to handle visibility among versions of the same key on the write side,
+making current results easy to read in business queries.
 
-## 7.2 幂等与乱序
+## 7.2 Idempotency and Out-of-Order Events
 
-### 业务顺序不等于到达顺序
+### Business Order Is Not Arrival Order
 
-订单 900001 的业务流程是：
+The business flow for order 900001 is:
 
 ```text
-版本 1 CREATED → 版本 2 PAID → 版本 3 SHIPPED → 版本 4 DELIVERED
+Version 1 CREATED → Version 2 PAID → Version 3 SHIPPED → Version 4 DELIVERED
 ```
 
-但本 Lab 中，版本 1 已初始化，后续事件的到达顺序故意打乱：
+In this lab, however, version 1 is already initialized and subsequent events deliberately arrive out of order:
 
-| 首轮投递位置 | event_id | event_version | 事件状态 | 处理后当前状态 |
+| Position in first delivery round | event_id | event_version | Event status | Current status after processing |
 | --- | --- | ---: | --- | --- |
-| 1 | E08 | 4 | DELIVERED | DELIVERED，版本 4 |
-| 2 | E02 | 3 | SHIPPED | 仍是 DELIVERED，版本 4 |
-| 3 | E01 | 2 | PAID | 仍是 DELIVERED，版本 4 |
-| 9 | E02 | 3 | SHIPPED，重复投递 | 仍是 DELIVERED，版本 4 |
+| 1 | E08 | 4 | DELIVERED | DELIVERED, version 4 |
+| 2 | E02 | 3 | SHIPPED | Still DELIVERED, version 4 |
+| 3 | E01 | 2 | PAID | Still DELIVERED, version 4 |
+| 9 | E02 | 3 | SHIPPED, duplicate delivery | Still DELIVERED, version 4 |
 
-这些事件携带完整的更新后状态（after-image），不是只包含变化字段的补丁。
-当前表将 `event_version` 配置为 Sequence 列，按同订单的业务版本比较，
-不是按最后到达的消息覆盖。历史表则仍保留三个不同的事件。
+These events carry complete updated states (after-images), not patches containing only changed fields.
+The current table configures `event_version` as the Sequence column, comparing business versions for the same order
+rather than overwriting with the last message to arrive. The history table still retains all three distinct events.
 
-完整的更新后状态意味着：版本 4 除了 DELIVERED，还携带当时的金额、客户、支付等字段。
-即使版本 2、3 尚未到达，版本 4 也足以建立当前行。若消息只包含某个变化字段，
-则需要按部分更新的语义处理，不能直接套用整行状态的写入方式。
+A complete updated state means version 4 carries not just DELIVERED, but also the amount, customer, payment, and other fields at that time.
+Even before versions 2 and 3 arrive, version 4 is sufficient to build the current row. If a message contains only a changed field,
+it must be handled with partial-update semantics rather than directly applying the full-row state write method.
 
-Lab 在第一次写入之前展示实际 DDL。先找到下面的键与属性片段：
+The lab displays the actual DDL before the first write. First locate the following key and property fragments:
 
 ```text
 UNIQUE KEY(order_id)
@@ -98,16 +98,16 @@ UNIQUE KEY(order_id)
 "function_column.sequence_col"="event_version"
 ```
 
-第一项识别订单，第二项启用写时合并，第三项指定业务版本列。
-仅把普通字段命名为 event_version 不会启用版本裁决。
-创建订单当前表时，将这些配置写入建表语句。下例使用该配置，并在每次写入时提供完整订单状态。
+The first identifies the order, the second enables merge-on-write, and the third specifies the business version column.
+Merely naming an ordinary field event_version does not enable version resolution.
+Include these settings in the table creation statement for the current order table. The following example uses this configuration and provides the complete order state on each write.
 
-Sequence 列是 Doris 比较同一 Key 下记录新旧的依据。
-对订单 900001，已有版本 4 时，后到的版本 2 不会让当前状态退回 PAID。
-这要求上游为同一订单提供可比较、能表达业务先后的版本；
-不同订单之间无需比较版本大小，同版本冲突则需要额外约定处理规则。
+The Sequence column is how Doris compares which record is newer under the same Key.
+For order 900001, if version 4 already exists, a late version 2 will not revert the current status to PAID.
+This requires upstream to provide comparable versions that express business order for each order;
+versions need not be compared across different orders, while same-version conflicts need additional handling rules.
 
-完成 Lab 后，在同一实验库核对：
+After completing the lab, verify in the same lab database:
 
 ```sql
 SELECT order_id, status, event_version, paid_amount, refund_amount
@@ -121,44 +121,44 @@ ORDER BY order_id;
 | 900001 | DELIVERED | 4 | 100.00 | 0.00 |
 | 900003 | REFUNDED | 4 | 150.00 | 150.00 |
 
-### 什么才是安全的重复？
+### What Counts as a Safe Duplicate?
 
-幂等的意思是重复处理同一件事，不改变已经正确的业务结果。
-本课要求同 event_id 的重投携带相同业务内容；同 ID 不同内容是冲突，
-不能用“重复了就覆盖”解释。
+Idempotency means processing the same thing repeatedly does not change an already correct business result.
+This course requires redeliveries with the same event_id to carry identical business content; the same ID with different content is a conflict
+and cannot be explained as "overwrite duplicates."
 
-event_version 是每笔订单单调递增的教学版本，不是 Kafka offset 或 Binlog 位点。
-同版本不同内容需要源端定义冲突规则，本 Lab 不验证这种冲突的自动解决。
-具体 Sequence 列行为见[并发更新控制](https://doris.apache.org/docs/4.x/data-operate/update/unique-update-concurrent-control/)。
+event_version is a teaching version that increases monotonically for each order, not a Kafka offset or Binlog position.
+Different content at the same version requires source-defined conflict rules; this lab does not verify automatic resolution of such conflicts.
+For specific Sequence column behavior, see [Concurrent update control](https://doris.apache.org/docs/4.x/data-operate/update/unique-update-concurrent-control/).
 
-## 7.3 Merge-on-Write 与部分列更新
+## 7.3 Merge-on-Write and Partial Column Updates
 
-Merge-on-Write（写时合并）在写入阶段处理同键新旧版本的可见性。
-例如订单从 CREATED 更新为 PAID，新状态可见后，普通查询直接读取新的逻辑行；
-旧版本的数据文件由后台合并逐步整理。查询订单当前状态时，应用可以直接按订单号查询。
+Merge-on-Write handles visibility between old and new versions of the same key during writes.
+For example, when an order changes from CREATED to PAID, ordinary queries read the new logical row directly once the new state is visible;
+background compaction gradually consolidates the old versions' data files. Applications can query the current state directly by order ID.
 
-部分列更新解决的是另一件事：一次修改只提供部分字段时，
-Doris 在符合条件的 Unique Key 表上保留未修改字段，将本次提供的值合入当前行。
+Partial column updates address a different issue: when a change provides only some fields,
+Doris preserves unmodified fields on eligible Unique Key tables and merges the supplied values into the current row.
 
-### 只给三个字段，其他字段应该怎样？
+### If Only Three Fields Are Supplied, What Happens to the Others?
 
-假设只需要取消订单 900001，不希望重发整条订单。
-“未提供字段”究竟表示保留旧值，还是按默认/空值等规则形成新行，
-取决于采用的更新方式，不能只看 INSERT 里少写了几列。
+Suppose you only need to cancel order 900001 and do not want to resend the entire order.
+Whether "omitted fields" means preserving old values or forming a new row using defaults/NULLs and other rules
+depends on the update method, not just on leaving a few columns out of INSERT.
 
-Lab 在独立的 `orders_partial_update` 上演示，不改变主线当前表：
+The lab demonstrates this on the independent `orders_partial_update` table without changing the main current table:
 
-| 阶段 | status | event_version | order_amount | region |
+| Stage | status | event_version | order_amount | region |
 | --- | --- | ---: | ---: | --- |
-| 初始行 | CREATED | 1 | 100.00 | EAST |
-| 部分更新只提交状态与版本 | CANCELLED | 2 | 100.00 | EAST |
+| Initial row | CREATED | 1 | 100.00 | EAST |
+| Partial update submits only status and version | CANCELLED | 2 | 100.00 | EAST |
 
-本步骤临时开启 `enable_unique_key_partial_update`，写入订单号、状态和新版本，
-完成后恢复会话设置。订单号定位当前行，新版本参与新旧裁决，状态是本次要修改的内容；
-金额与地区由已有行保留。使用这种方式前，应明确启用部分更新以及目标表的支持条件。
+This step temporarily enables `enable_unique_key_partial_update`, writes the order ID, status, and new version,
+then restores session settings. The order ID locates the current row, the new version participates in version resolution, and the status is the field to change;
+the amount and region are preserved from the existing row. Before using this method, explicitly enable partial updates and understand the target table's support requirements.
 
-**SQL 阅读示例：对应 Lab 7 的部分更新步骤，不要在已完成的 Lab 上重复执行。**
-Lab 先在独立表写入上面的初始行，再在同一连接中执行：
+**SQL reading example: corresponds to the partial-update step in Lab 7. Do not rerun it on a completed lab.**
+The lab first writes the initial row above to the independent table, then runs the following in the same connection:
 
 <!-- reading-only-example -->
 ```sql
@@ -167,9 +167,9 @@ INSERT INTO orders_partial_update (order_id, status, event_version)
 VALUES (900001, 'CANCELLED', 2);
 ```
 
-SET 开启本会话的部分更新语义，INSERT 提供主键和要改变的两列。
-Lab 在执行前保存原开关值，用 Python 的 try/finally 在成功或失败后恢复；
-不要在另一个连接中开开关，也不要省略恢复步骤。
+SET enables partial-update semantics for this session; INSERT supplies the primary key and the two columns to change.
+The lab saves the original setting before execution and uses Python's try/finally to restore it after success or failure;
+do not enable the setting in another connection or omit the restoration step.
 
 ```sql
 SELECT order_id, status, event_version, order_amount, region
@@ -177,39 +177,39 @@ FROM orders_partial_update
 ORDER BY order_id;
 ```
 
-结果应与表中第二行一致。只看到 CANCELLED 还不够，金额和地区必须未被清空。
-适用表模型和配置条件见[部分列更新](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/)。
+The result should match the second row in the table. Seeing CANCELLED alone is insufficient; the amount and region must not be cleared.
+For applicable table models and configuration requirements, see [Partial column updates](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/).
 
-## 7.4 软删除、SQL 删除与回收
+## 7.4 Soft Deletion, SQL Deletion, and Reclamation
 
-### 先区分业务标记、导入标记和内部位图
+### Distinguish Business Markers, Load Markers, and Internal Bitmaps First
 
-| 名称 | 由谁使用 | 含义 |
+| Name | Used by | Meaning |
 | --- | --- | --- |
-| is_deleted | 业务表与查询 SQL | 自定义软删除字段，需要查询主动过滤 |
-| __DORIS_DELETE_SIGN__ | Unique Key 的导入删除路径 | 为某个键表达删除；需要按导入方式提供标记，不能只传一个同名普通业务列就算完成配置 |
-| Delete Bitmap | MoW 引擎内部 | 标记不再对查询可见的物理行；普通 Upsert 覆盖旧行时也会涉及，并不只用于业务删除 |
+| is_deleted | Business tables and query SQL | Custom soft-delete field that queries must explicitly filter |
+| __DORIS_DELETE_SIGN__ | Unique Key load-based deletion path | Expresses deletion for a key; supply the marker according to the load method, rather than assuming that an ordinary business column with the same name completes the configuration |
+| Delete Bitmap | Internal MoW engine | Marks physical rows that are no longer visible to queries; also involved when ordinary Upsert overwrites old rows, not only in business deletion |
 
-例如源库删除订单 900002，同步链路需要传递删除语义，而不是普通地再写一遍订单。
-导入删除标记用于表达这件事；业务 is_deleted 则是“仍保留记录，但应用不展示”。
-无论哪种方式，都不能仅凭普通查询不返回旧行，就判断底层文件已回收。
-本 Lab 执行下面的软删除与 SQL DELETE 对照，不执行导入删除标记实验。
-[更新与删除机制](https://doris.apache.org/docs/4.x/data-operate/update/update-overview/)
+For example, if the source database deletes order 900002, the synchronization pipeline must convey deletion semantics rather than simply write the order again.
+The load deletion marker expresses this operation; the business is_deleted field means "retain the record, but do not display it in the application."
+With either method, an ordinary query no longer returning an old row does not prove that the underlying files have been reclaimed.
+This lab compares soft deletion and SQL DELETE below; it does not run a load deletion marker experiment.
+[Update and deletion mechanisms](https://doris.apache.org/docs/4.x/data-operate/update/update-overview/)
 
-### 三种操作回答不同的问题
+### Three Operations Answer Different Questions
 
-| 操作 | 查询结果 | 数据含义 |
+| Operation | Query result | Data meaning |
 | --- | --- | --- |
-| 设置业务字段 is_deleted=true | 普通 SELECT 仍能看到，需要显式过滤 | 应用决定不再展示 |
-| SQL DELETE | 普通查询不再返回被删除的行 | 数据库层改变逻辑可见性 |
-| 后台物理回收 | 不是业务查询条件 | 存储文件在符合回收条件后释放 |
+| Set business field is_deleted=true | Ordinary SELECT still sees it; explicit filtering is required | The application decides not to display it anymore |
+| SQL DELETE | Ordinary queries no longer return deleted rows | The database changes logical visibility |
+| Background physical reclamation | Not a business query condition | Storage files are released when reclamation conditions are met |
 
-Lab 的独立副本开始有两行：900001、900002。
-先软删除 900001，表里仍有两行，但 `WHERE is_deleted=false` 只返回 900002。
-再用 SQL DELETE 删除 900002，普通查询只剩软删除标记为真的 900001。
+The lab's independent copy starts with two rows: 900001 and 900002.
+First soft-delete 900001. The table still has two rows, but `WHERE is_deleted=false` returns only 900002.
+Then use SQL DELETE to delete 900002; ordinary queries return only 900001 with its soft-delete marker set to true.
 
-**SQL 阅读示例：对应 Lab 7 的删除步骤，不要在已完成的 Lab 上重复执行。**
-先由 Lab 重建只有 900001、900002 的独立副本，再按顺序观察：
+**SQL reading example: corresponds to the deletion step in Lab 7. Do not rerun it on a completed lab.**
+First let the lab rebuild the independent copy containing only 900001 and 900002, then observe in order:
 
 <!-- reading-only-example -->
 ```sql
@@ -218,8 +218,8 @@ SELECT order_id FROM orders_delete_demo WHERE is_deleted=false ORDER BY order_id
 DELETE FROM orders_delete_demo WHERE order_id=900002;
 ```
 
-UPDATE 只改变业务标记，第二条查询需显式过滤才能只看到 900002；
-DELETE 则删除另一笔订单，后续普通查询不再返回 900002。
+UPDATE changes only the business marker; the second query needs an explicit filter to see only 900002.
+DELETE removes the other order, so subsequent ordinary queries no longer return 900002.
 
 ```sql
 SELECT order_id, is_deleted, status
@@ -227,41 +227,41 @@ FROM orders_delete_demo
 ORDER BY order_id;
 ```
 
-最终查询结果为 900001、true、CREATED。磁盘空间由后台机制在满足回收条件后释放。
-业务软删除字段、导入删除标记和内部 Delete Bitmap 不是同一层机制；
-本 Lab 只执行软删除和 SQL DELETE。
+The final query result is 900001, true, CREATED. Background mechanisms release disk space when reclamation conditions are met.
+Business soft-delete fields, load deletion markers, and the internal Delete Bitmap operate at different levels;
+this lab runs only soft deletion and SQL DELETE.
 
-退款不是删除：主线中的 900003 应保留支付与退款金额，状态为 REFUNDED，
-不能为了让净收款变成零就删除支付事实。
+A refund is not a deletion: order 900003 in the main workflow should retain its payment and refund amounts with status REFUNDED;
+do not delete payment facts simply to make net receipts zero.
 
-## 7.5 历史、重放与恢复
+## 7.5 History, Replay, and Recovery
 
-### 中断可能发生在两个写入之间
+### An Interruption Can Occur Between Two Writes
 
-本 Lab 通过停止一个课程步骤模拟中断，不终止数据库进程：
+This lab simulates an interruption by stopping a course step, not the database process:
 
 ```text
-记录首次投递 → 写入历史 → [模拟中断] → 尚未写入当前表
+Record first delivery → Write history → [Simulated interruption] → Current table not yet written
                                           │
-                 重新投递整批事件 ←────────┘
+                 Redeliver the entire event batch ←────────┘
                       │
-                      ├─ 原始投递继续记录
-                      ├─ 历史按 event_id 去重
-                      └─ 当前状态按 order_id + 版本裁决
+                      ├─ Continue recording raw deliveries
+                      ├─ Deduplicate history by event_id
+                      └─ Resolve current state by order_id + version
 ```
 
-这些表由代码分步维护，不假设三张表自动原子提交。
-恢复不能只检查“历史里已经有 event_id”，否则可能跳过尚未完成的当前状态写入。
+Code maintains these tables in separate steps; it does not assume automatic atomic commits across all three.
+Recovery must not check only whether "event_id already exists in history," or it could skip an unfinished current-state write.
 
-### 为什么三个行数不同？
+### Why Are the Three Row Counts Different?
 
-| 检查对象 | 预期数量 | 推导 |
+| Check target | Expected count | Derivation |
 | --- | ---: | --- |
-| 当前订单 | 11 | 十笔初始订单＋一笔新订单 |
-| 逻辑历史 | 18 | 十条初始快照＋八个不同事件 |
-| 原始投递 | 19 | 中断前一次＋两轮各九次投递 |
+| Current orders | 11 | Ten initial orders＋one new order |
+| Logical history | 18 | Ten initial snapshots＋eight distinct events |
+| Raw deliveries | 19 | One before interruption＋two rounds of nine deliveries each |
 
-重复投递应增加投递记录，不应增加不同事件数或改变正确的当前状态。
+Duplicate deliveries should add delivery records, not distinct events or changes to the correct current state.
 
 ```sql
 SELECT 'current' AS record_type, COUNT(*) AS rows_count FROM orders_current
@@ -272,10 +272,10 @@ SELECT 'deliveries' AS record_type, COUNT(*) AS rows_count FROM event_deliveries
 ORDER BY record_type;
 ```
 
-### 用另一套业务事实核对金额
+### Verify Amounts with an Independent Set of Business Facts
 
-使用 `business_events.json` 中单独记录的商品明细、支付、退款和配送流水核对订单当前状态。
-退款应关联原支付，配送应关联订单，客户和商品应能在 Module 5 导入的 WWI 维度中找到。
+Use the separately recorded items, payments, refunds, and shipment records in `business_events.json` to verify current order state.
+Refunds should link to original payments, shipments to orders, and customers and products should exist in the WWI dimensions loaded in Module 5.
 
 ```sql
 SELECT SUM(order_amount) AS orders_amount,
@@ -285,50 +285,50 @@ SELECT SUM(order_amount) AS orders_amount,
 FROM orders_current;
 ```
 
-预期依次为 1510.00、250.00、150.00、100.00。
-订单 900003 累计支付仍是 150.00，累计退款也是 150.00，净收款才是零。
-这些是教学模拟业务，与 WWI 原始账户收款分开。
+The expected results, in order, are 1510.00, 250.00, 150.00, and 100.00.
+Order 900003 still has cumulative payments of 150.00 and cumulative refunds of 150.00; only net receipts are zero.
+These are simulated business transactions for teaching, separate from WWI's original account receipts.
 
-本实验通过文件中的模拟事件练习应用步骤中断后的重放。
-将这种做法用于 CDC 管道时，还需要结合源端日志位置、快照切换和连接器恢复机制，
-确保恢复时能重新取得所需事件。主线仅介绍这些真实位点恢复的前提；Lab 7 使用模拟事件验证应用步骤中断后的重放，不要求搭建真实 CDC 或执行源端故障恢复。选做 [Lab 5B](../module05-ingestion/optional5_flink_mysql_cdc.ipynb) 则使用真实 MySQL Binlog，演练受控 Savepoint 停止与恢复；不涉及源库故障、Binlog 丢失后的恢复或业务历史保留。
+This lab uses simulated events from files to practice replay after an interruption in application steps.
+Applying this approach to a CDC pipeline also requires source log positions, snapshot transitions, and connector recovery mechanisms
+to ensure the required events can be retrieved during recovery. The main course only introduces these prerequisites for real log-position recovery; Lab 7 uses simulated events to verify replay after interrupted application steps and does not require real CDC setup or source-side failure recovery. Optional [Lab 5B](../module05-ingestion/optional5_flink_mysql_cdc.ipynb) uses a real MySQL Binlog to practice controlled Savepoint stop and recovery; it does not cover source database failures, recovery after Binlog loss, or business history retention.
 
-## 动手实验 7：乱序裁决、历史保留和可恢复重放
+## Hands-on Lab 7: Resolve Out-of-Order Events, Preserve History, and Replay Recoverably
 
-开始前请先完成 Module 6，并使用同一课程独立实验库；本实验会读取其中的 orders_clean 合格订单表。
+Before starting, complete Module 6 and use the same dedicated course lab database; this lab reads its orders_clean accepted-orders table.
 
-打开[实验 7](lab7_current_state_and_replay.ipynb)，先在独立表观察正常更新、相同事件重复和旧版本迟到，再进入完整订单流程：
+Open [Lab 7](lab7_current_state_and_replay.ipynb). First observe normal updates, duplicates of the same event, and late old versions in an independent table, then proceed to the complete order workflow:
 
-1. 从 Module 6 的合格订单初始化当前表、历史表和投递表。
-2. 模拟一次步骤中断，再按指定顺序重投事件并完整重放。
-3. 核对当前订单 11 行、逻辑历史 18 行，以及订单状态和金额。
-4. 用独立业务流水核对金额和客户、商品、事件关联。
-5. 在独立副本中执行部分列更新、软删除和 SQL DELETE，再检查主线数据。
+1. Initialize current-state, history, and delivery tables from Module 6's accepted orders.
+2. Simulate one interrupted step, then redeliver events in the specified order and replay the entire batch.
+3. Verify 11 current order rows, 18 logical history rows, and order statuses and amounts.
+4. Use independent business transaction records to verify amounts and customer, product, and event relationships.
+5. Perform partial column updates, soft deletion, and SQL DELETE on independent copies, then check the main data.
 
-### 数据来源与说明
+### Data Sources and Notes
 
-历史部分采用 Microsoft WWI；新订单及变更标为 COURSE_SIMULATION，引用 WWI 客户和商品，但不回填历史。
-字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
+The historical portion uses Microsoft WWI; new orders and changes are marked COURSE_SIMULATION and reference WWI customers and products without backfilling history.
+See [Data notes](../../datasets/README.md) for fields, business definitions, and expected results.
 
-补充操作见 [Level 1 扩展实验](../extensions/README.md)，在独立 `ext_*` 表执行，不重复改写本 Lab 的业务结果。
+For additional operations, see [Level 1 Extension Labs](../extensions/README.md). They run on separate `ext_*` tables without repeatedly rewriting this lab's business results.
 
-## 单元总结
+## Module Summary
 
-- 当前表按 order_id，事件历史按 event_id，投递记录按每次尝试保存；三个粒度不能混用。
-- Sequence 列用业务版本裁决乱序，重投要求内容一致；到达顺序不能替代业务版本，日志位点用于定位消费进度。
-- 部分列更新需要相应模型与配置，既检查新状态，也检查未提供字段；实验结束恢复会话设置。
-- 软删除、SQL DELETE 和物理回收不同；退款要保留业务事实，不用删除订单代替退款。
-- 恢复后核对 11/18/19 三种行数、完整记录和独立业务流水；支付 250.00、退款 150.00、净收款 100.00。
+- Store current state by order_id, event history by event_id, and delivery records per attempt; do not mix these three granularities.
+- The Sequence column resolves out-of-order events by business version, and redeliveries require identical content; arrival order cannot replace business versions, while log positions locate consumption progress.
+- Partial column updates require the appropriate model and configuration. Check both new state and omitted fields, and restore session settings after the lab.
+- Soft deletion, SQL DELETE, and physical reclamation differ; retain business facts for refunds rather than deleting orders as a substitute.
+- After recovery, verify the 11/18/19 row counts, complete records, and independent business transactions: payments 250.00, refunds 150.00, and net receipts 100.00.
 
-## 知识测验 7：乱序裁决、历史保留和可恢复重放
+## Knowledge Quiz 7: Resolve Out-of-Order Events, Preserve History, and Replay Recoverably
 
-完成讲义和实验后，打开[测验 7](quiz7_state_changes_and_replay.ipynb)。
-测验包含五道单选题，不依赖 Doris 或外部服务；提交后阅读答案解释。
+After completing the course notes and lab, open [Quiz 7](quiz7_state_changes_and_replay.ipynb).
+The quiz contains five single-choice questions and requires no Doris or external services; read the explanations after submitting.
 
-## 官方参考资料
+## Official References
 
-- [Unique Key 主键模型](https://doris.apache.org/docs/4.x/table-design/data-model/unique/)
-- [Sequence 列与并发更新控制](https://doris.apache.org/docs/4.x/data-operate/update/unique-update-concurrent-control/)
-- [部分列更新](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/)
+- [Unique Key primary key model](https://doris.apache.org/docs/4.x/table-design/data-model/unique/)
+- [Sequence columns and concurrent update control](https://doris.apache.org/docs/4.x/data-operate/update/unique-update-concurrent-control/)
+- [Partial column updates](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/)
 - [DELETE](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-modification/DML/DELETE/)
-- [Compaction 原理](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/)
+- [Compaction principles](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/)

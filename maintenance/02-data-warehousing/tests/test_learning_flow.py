@@ -60,11 +60,11 @@ class LearningFlowTest(unittest.TestCase):
                          '"use_path_style"="true"', '"iceberg.rest.view-enabled"="false"'):
             self.assertIn(fragment, reading)
             self.assertIn(fragment, fixture_source)
-        self.assertIn("外部环境示例，不随 Lab 重复执行", reading)
+        self.assertIn("External environment example; do not rerun it alongside the lab", reading)
 
     def test_ingestion_keeps_cdc_boundary_and_optional_accounting(self):
         reading = self.reading("module05-ingestion")
-        cdc = reading.split("## 5.8 Streaming Job 与 CDC_STREAM", 1)[1].split("## 5.9", 1)[0]
+        cdc = reading.split("## 5.8 Streaming Job and CDC_STREAM", 1)[1].split("## 5.9", 1)[0]
         self.assertIn("Experimental", cdc.split("###", 1)[0])
         self.assertIn('DEFAULT "CREATED"', reading)
         self.assertIn("optional_invoice_and_receipts.md", reading)
@@ -82,7 +82,7 @@ class LearningFlowTest(unittest.TestCase):
         reading = self.reading("module07-state-changes")
         for fragment in ("INSERT INTO orders_partial_update", "UPDATE orders_delete_demo",
                          "DELETE FROM orders_delete_demo", "__DORIS_DELETE_SIGN__", "Delete Bitmap",
-                         "try/finally", "不执行导入删除标记实验"):
+                         "try/finally", "does not run a load deletion marker experiment"):
             self.assertIn(fragment, reading)
 
     def test_first_load_teaches_http_before_independent_work(self):
@@ -158,13 +158,13 @@ class LearningFlowTest(unittest.TestCase):
     def test_external_examples_have_explicit_scope_and_observation(self):
         path = next((ROOT / "level1/module05-ingestion").glob("course*.md"))
         content = path.read_text()
-        examples = re.findall(r"### 阅读示例：(.*?)(?=\n## |\Z)", content, re.DOTALL)
+        examples = re.findall(r"### Reading example:(.*?)(?=\n## |\Z)", content, re.DOTALL)
         self.assertEqual(len(examples), 4)
         for example in examples:
-            self.assertIn("外部环境示例，不随 Lab 执行", example)
+            self.assertIn("External-environment example; not executed in the lab", example)
             self.assertIn("<!-- external-service-example -->\n```sql", example)
             self.assertIn("SELECT", example)
-            self.assertRegex(example, "预期|应变成")
+            self.assertRegex(example, "[Ee]xpect|should (?:become|contain|show)")
         self.assertIn("SHOW ROUTINE LOAD FOR orders_kafka_job", content)
         self.assertIn("Name = 'orders_mysql_job'", content)
         self.assertIn("Name = 'orders_files_job'", content)

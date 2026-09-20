@@ -57,7 +57,7 @@ def expected_failure(title, message):
     finally:
         _expected_failure.reset(token)
     if not detected:
-        expect("未检测到预期错误", "检测到预期错误")
+        expect("Expected error not detected", "Expected error detected")
     if in_notebook():
         card(message, "ok", title)
     else:
@@ -68,11 +68,11 @@ def expect(actual, expected, *, title=None):
     """Raise on mismatch even when Python runs with optimization enabled."""
     if normalized(actual) != normalized(expected):
         if in_notebook() and not _expected_failure.get():
-            card("实际结果与预期不一致；请查看下方异常详情。", "fail", "验收未通过")
+            card("The actual result differs from the expected result. See the exception details below.", "fail", "Validation failed")
         raise CourseCheckError(f"Expected {expected!r}, got {actual!r}")
     if in_notebook():
         if title is not None:
-            card("结果符合预期。", "ok", title)
+            card("The result matches the expectation.", "ok", title)
     else:
         print("PASS", normalized(expected))
 
@@ -103,7 +103,7 @@ class WarehouseLab:
         self.execute("SET group_commit = 'off_mode'")
         if in_notebook():
             install_styles()
-            card(self.database, "ok", "实验库已连接")
+            card(self.database, "ok", "Connected to the lab database")
 
     def query(self, sql, params=None):
         with self.connection.cursor() as cursor:

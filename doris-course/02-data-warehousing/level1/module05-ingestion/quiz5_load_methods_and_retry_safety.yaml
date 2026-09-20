@@ -1,73 +1,73 @@
-title: Module 5：批量导入、失败与重试
-description: 五道单选题；不需要数据库连接，提交后查看解释。
+title: "Module 5: Batch loading, failures, and retries"
+description: "Five single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: q1
-  objective: 按本地文件、对象存储、消息流和数据库变更选择接入路径。
-  prompt: 一个本地有限 CSV 批次与一个持续产生消息的 Kafka Topic，应分别从哪条路径考虑？
+  objective: "Choose ingestion paths for local files, object storage, message streams, and database changes."
+  prompt: "Which paths should you consider for a finite local CSV batch and a Kafka Topic that continuously produces messages, respectively?"
   options:
   - id: a
-    text: A. CSV 用 Routine Load，Kafka 先导出文件再视为已完成持续接入
+    text: "A. Use Routine Load for CSV; export Kafka messages to files and consider continuous ingestion complete"
   - id: b
-    text: B. CSV 用 Stream Load，Kafka 用一次 Stream Load 后等待自动消费
+    text: "B. Use Stream Load for CSV; use Stream Load once for Kafka and wait for automatic consumption"
   - id: c
-    text: C. CSV 与 Kafka 都先创建 External Catalog，通过 Catalog 持续导入
+    text: "C. Create an External Catalog for both CSV and Kafka and continuously load through the Catalog"
   - id: d
-    text: D. CSV 用 Stream Load，Kafka 用 Routine Load 持续消费
+    text: "D. Use Stream Load for CSV and Routine Load for continuous Kafka consumption"
   answer: d
-  explanation: A：本课的 Routine Load 面向 Kafka；将消息导出成一次文件不等于建立持续消费。 B：一次 Stream Load 是一次推送批次，不会自动创建 Kafka 消费任务。 C：Catalog 是外部访问入口，不是所有来源通用的持续导入任务。 D：正确。本地批次由客户端推送，Kafka 由持续任务维护消费进度。
+  explanation: "A: Routine Load in this course targets Kafka; exporting messages to a one-off file does not establish continuous consumption. B: One Stream Load is one pushed batch, not an automatically created Kafka consumption job. C: A Catalog provides external access, not a universal continuous load job for every source. D: Correct. The client pushes local batches, while a continuous job maintains Kafka consumption progress."
 - id: q2
-  objective: 说明 CSV 列映射、Parquet 字段和默认值各自的作用。
-  prompt: 本课无表头 CSV 与 WWI Parquet 的字段解释方式，哪项正确？
+  objective: "Explain the roles of CSV column mappings, Parquet fields, and default values."
+  prompt: "Which statement correctly describes field interpretation for this course's headerless CSV and WWI Parquet files?"
   options:
   - id: a
-    text: A. CSV 指定分隔符与 columns 映射，Parquet 按文件字段对齐课程 DDL
+    text: "A. CSV specifies a separator and columns mapping; Parquet aligns file fields with course DDL"
   - id: b
-    text: B. 无表头 CSV 可以按值猜出字段含义，不需要确认列顺序
+    text: "B. A headerless CSV can infer field meanings from values without checking column order"
   - id: c
-    text: C. Parquet 与 CSV 一样，需要用逗号拆分每行来解释字段
+    text: "C. Like CSV, Parquet requires splitting each row by commas to interpret fields"
   - id: d
-    text: D. 缺少支付状态时默认写为 PAID，以保证字段完整
+    text: "D. Default a missing payment state to PAID to ensure field completeness"
   answer: a
-  explanation: A：正确。课程 CSV 用位置映射，Parquet 携带结构信息，但字段与目标 Schema 仍需匹配。 B：无表头文件的位置不能自动代表业务含义；列顺序错误还可能产生类型合法但语义错误的数据。 C：Parquet 是带 Schema 的列式格式，不按文本分隔符拆行。 D：默认值必须有业务依据，不能凭缺失字段捏造支付事实。
+  explanation: "A: Correct. The course CSV uses positional mappings. Parquet carries structural information, but fields must still match the target schema. B: Positions in a headerless file do not automatically convey business meaning; an incorrect column order can yield type-valid but semantically wrong data. C: Parquet is a schema-bearing columnar format, not text rows split by separators. D: Defaults need a business basis and cannot invent payment facts from missing fields."
 - id: q3
-  objective: 结合导入响应、加载行数、关联和金额判断结果是否正确。
-  prompt: 导入 100 行收到 HTTP 200，JSON 的 Status 为 Success、NumberLoadedRows 为 98、NumberFilteredRows 为 2。任务要求全部订单保留，应该怎样处理？
+  objective: "Judge correctness using load responses, loaded row counts, relationships, and amounts."
+  prompt: "A 100-row load returns HTTP 200, with JSON Status=Success, NumberLoadedRows=98, and NumberFilteredRows=2. The task requires retaining all orders. What should you do?"
   options:
   - id: a
-    text: A. 按 Success 交付报表，两行过滤已由数据库处理
+    text: "A. Deliver the report based on Success; the database has handled the two filtered rows"
   - id: b
-    text: B. 检查过滤原因并核对缺失订单，按重试策略修复后验收
+    text: "B. Investigate filtering and missing orders, repair according to the retry strategy, then verify"
   - id: c
-    text: C. 立即换新 label 重发全文件，忽略已经写入的 98 行
+    text: "C. Immediately resend the entire file with a new label, ignoring the 98 rows already written"
   - id: d
-    text: D. 只要现有 98 行的金额能汇总，就完成业务验收
+    text: "D. Complete business verification as long as amounts from the existing 98 rows can be aggregated"
   answer: b
-  explanation: A：导入任务成功不代表达到业务完整性要求。 B：正确。定位过滤行并核对目标结果，再选择补写或重建等恢复方式。 C：新 label 会形成新批次，在明细表中可能重复追加已写入数据。 D：可聚合不证明订单完整或客户引用正确。
+  explanation: "A: A successful load job does not establish business completeness. B: Correct. Locate filtered rows and verify target results, then choose recovery through backfilling, rebuilding, or another appropriate method. C: A new label creates a new batch and may append already-written data again in a detail table. D: Aggregation does not prove order completeness or correct customer references."
 - id: q4
-  objective: 区分导入批次重试、业务事件去重与持续任务恢复。
-  prompt: 本课 off_mode 导入中，同一文件的请求结果不确定。批次重试与业务去重应怎样区分？
+  objective: "Distinguish load-batch retries, business-event deduplication, and continuous-job recovery."
+  prompt: "In this course's off_mode loading, the result of a file request is uncertain. How should batch retries differ from business deduplication?"
   options:
   - id: a
-    text: A. 生成新 label 重发相同文件，避免与原请求冲突就能保证不重复
+    text: "A. Generate a new label and resend the same file; avoiding conflicts with the original request guarantees no duplicates"
   - id: b
-    text: B. 使用同一 label 永久提交不同文件，让它自动去重所有业务事件
+    text: "B. Permanently submit different files with the same label so it automatically deduplicates all business events"
   - id: c
-    text: C. 在 label 有效期内保留批次身份并查询原结果；业务事件另用稳定键与版本
+    text: "C. Retain batch identity within the label's retention period and check the original result; use separate stable keys and versions for business events"
   - id: d
-    text: D. 看到 Kafka offset 前进，就认为订单当前状态和其他表都已正确更新
+    text: "D. Once Kafka offsets advance, assume the current order state and other tables are all correctly updated"
   answer: c
-  explanation: A：新 label 可能让同一批数据再次追加，应先确认原事务状态。 B：label 有保留期限，且标识导入批次，不是不同文件的通用业务去重键。 C：正确。批次身份、业务事件身份与恢复位置各有职责；Publish Timeout 等情况需先确认原结果。 D：消费进度不能代替乱序版本裁决、业务核对或跨表恢复检查。
+  explanation: "A: A new label may append the same batch again; confirm the original transaction state first. B: Labels have a retention period and identify load batches, not universal business deduplication keys for different files. C: Correct. Batch identity, business-event identity, and recovery position have distinct roles; cases such as Publish Timeout require checking the original result first. D: Consumption progress cannot replace out-of-order version resolution, business verification, or cross-table recovery checks."
 - id: q5
-  objective: 区分 WWI 历史订单、账户收款与课程模拟新订单的粒度和口径。
-  prompt: WWI 订单明细、客户账户收款和本课模拟订单，哪项理解正确？
+  objective: "Distinguish the grain and measurement definitions of WWI historical orders, account receipts, and new orders simulated for the course."
+  prompt: "Which statement correctly describes WWI order lines, customer account receipts, and this course's simulated orders?"
   options:
   - id: a
-    text: A. 订单明细每行有订单号，因此明细行数可以直接当订单数
+    text: "A. Every order line has an order ID, so line counts can directly serve as order counts"
   - id: b
-    text: B. 客户账户收款为负数，因此可以直接按订单退款统计
+    text: "B. Customer account receipts are negative, so they can be counted directly as order refunds"
   - id: c
-    text: C. 模拟订单使用了 WWI 客户和商品，因此支付也属于真实历史
+    text: "C. Simulated orders use WWI customers and products, so their payments are also real history"
   - id: d
-    text: D. 明细按订单汇总，账户收款不能强行逐单分摊，模拟来源单独标记
+    text: "D. Aggregate lines by order, do not force account receipts into per-order allocations, and mark simulated sources separately"
   answer: d
-  explanation: A：一单可能有多条商品明细，行数需要按实际粒度解释。 B：在这份数据里，负数收款代表账户收款，不是逐订单退款证据。 C：引用真实样例维度不会使生成的支付、退款和地区变成原始历史事实。 D：正确。分别识别订单、账户账款与 COURSE_SIMULATION 的粒度和来源，才能避免口径混用。
+  explanation: "A: An order may have multiple product lines, so row counts must be interpreted at their actual grain. B: Negative receipts in this dataset represent account receipts, not evidence of per-order refunds. C: Referencing real sample dimensions does not turn generated payments, refunds, and regions into original historical facts. D: Correct. Identify the grain and source of orders, account transactions, and COURSE_SIMULATION separately to avoid mixing measurement definitions."

@@ -1,73 +1,73 @@
-title: Module 6：保留输入、分流拒收、自动验收
-description: 五道单选题；不需要数据库连接，提交后查看解释。
+title: 'Module 6: Preserve Input, Route Rejections, and Automate Validation'
+description: Five single-choice questions; no database connection required. View explanations after submitting.
 questions:
 - id: q1
-  objective: 区分字段类型校验与业务质量规则。
-  prompt: 客户号 999999 能转成整数，但不在 WWI 客户表中，应怎样处理？
+  objective: Distinguish field type validation from business quality rules.
+  prompt: Customer ID 999999 can be converted to an integer but is not in the WWI customer table. How should it be handled?
   options:
   - id: a
-    text: A. 客户号能转成整数，直接接受该订单
+    text: A. Accept the order directly because the customer ID can be converted to an integer
   - id: b
-    text: B. 按客户引用规则拒收，并保留原始输入和原因
+    text: B. Reject it under the customer reference rule and preserve the raw input and reason
   - id: c
-    text: C. 先为 999999 自动补建客户维度，再接受订单
+    text: C. Automatically add customer 999999 to the customer dimension first, then accept the order
   - id: d
-    text: D. 替换成已有客户号，让关联校验通过后入仓
+    text: D. Replace it with an existing customer ID so reference validation passes before loading it into the warehouse
   answer: b
-  explanation: A：类型合法只说明值可表示，不证明客户实际存在。 B：正确。该输入未通过独立客户维度的引用校验，应可追踪地拒收。 C：用待校验输入补造维度，会使引用检查失去独立依据。 D：随意换客户会伪造订单归属，不能把校验通过当成修复成功。
+  explanation: "A: A valid type only means the value can be represented, not that the customer exists. B: Correct. This input fails the reference check against the independent customer dimension and should be rejected with traceability. C: Creating dimension entries from the input being checked removes the independent basis for reference validation. D: Arbitrarily replacing the customer falsifies order ownership; passing validation does not mean the repair is correct."
 - id: q2
-  objective: 保留输入标识和原始字段，追踪每条拒收记录。
-  prompt: 怎样长期解释每条拒收记录？
+  objective: Preserve input identifiers and raw fields to trace every rejected record.
+  prompt: How can you explain each rejected record over the long term?
   options:
   - id: a
-    text: A. 只保留导入错误 URL，需要时再查临时错误详情
+    text: A. Keep only the load error URL and consult temporary error details when needed
   - id: b
-    text: B. 只统计每次拒收总数，删除明细以节省空间
+    text: B. Count only the total rejections each time and delete the details to save space
   - id: c
-    text: C. 保留 input_id、原始字段与拒收原因，能够关联回原始行
+    text: C. Preserve input_id, raw fields, and rejection reasons so each record can be linked back to the original row
   - id: d
-    text: D. 只保留清洗后的字段和错误类型，丢弃原始值
+    text: D. Keep only cleaned fields and error types, discarding the original values
   answer: c
-  explanation: A：临时错误详情有助排查，但不能替代长期、完整的业务拒收记录。 B：总数无法回答哪条输入为何被拒收。 C：正确。稳定输入标识与原始证据一起支持追踪、修复和重新处理。 D：清洗会改变原始信息，只保存修改后的值可能无法解释当时为何失败。
+  explanation: "A: Temporary error details help troubleshooting but cannot replace long-term, complete business rejection records. B: A count cannot explain which input was rejected or why. C: Correct. Stable input identifiers and original evidence support tracing, repair, and reprocessing. D: Cleaning changes the original information; keeping only modified values may leave the original failure unexplained."
 - id: q3
-  objective: 利用独立客户维度和明确规则分流合格与拒收数据。
-  prompt: 收到 50 行订单，其中 2 行客户号不存在于独立客户维表，其余均符合规则。客户引用必须有效，应怎样分流？
+  objective: Use an independent customer dimension and explicit rules to route accepted and rejected data.
+  prompt: You receive 50 order rows. Customer IDs in 2 rows do not exist in the independent customer dimension; all others meet the rules. Customer references must be valid. How should the rows be routed?
   options:
   - id: a
-    text: A. 保留原始 50 行，写入 48 行合格记录和 2 行带原因的拒收记录
+    text: A. Preserve all 50 raw rows, write 48 accepted records, and write 2 rejected records with reasons
   - id: b
-    text: B. 从这 50 行提取客户号补齐维表，再把全部输入判为合格
+    text: B. Extract customer IDs from these 50 rows to fill the dimension, then classify all inputs as accepted
   - id: c
-    text: C. 只检查客户号可转换为整数，把 50 行全部写入合格表
+    text: C. Check only that customer IDs can be converted to integers and write all 50 rows to the accepted table
   - id: d
-    text: D. 把 50 行写入合格表，同时把可疑 2 行复制到拒收表
+    text: D. Write all 50 rows to the accepted table and also copy the 2 suspicious rows to the rejected table
   answer: a
-  explanation: A：正确。独立维度验证引用，合格与拒收互斥并覆盖输入。 B：用被校验数据证明自身合法性会绕过规则。 C：类型正确不等于引用有效。 D：拒收数据仍进入合格表，会污染下游指标。
+  explanation: "A: Correct. An independent dimension validates references, and accepted and rejected groups are mutually exclusive and cover all inputs. B: Using the data being checked to prove its own validity bypasses the rule. C: A correct type does not mean a valid reference. D: Rejected data still enters the accepted table and contaminates downstream metrics."
 - id: q4
-  objective: 同时核对输入覆盖、业务唯一性、金额和逐行结果。
-  prompt: 只看到 10 行、金额 1400.00，为什么还要逐字段比较？
+  objective: Check input coverage, business uniqueness, amounts, and row-by-row results together.
+  prompt: If you see 10 rows totaling 1400.00, why is field-by-field comparison still necessary?
   options:
   - id: a
-    text: A. 总金额正确就能保证每行金额正确，逐字段比较只是检查排序
+    text: A. A correct total guarantees that every row amount is correct; field-by-field comparison only checks sorting
   - id: b
-    text: B. order_id 排序后缺失和重复会被自动修复，不必再核对键
+    text: B. Sorting by order_id automatically repairs missing and duplicate records, so keys need no further checking
   - id: c
-    text: C. 只要订单号唯一，就能证明金额、客户引用与状态都正确
+    text: C. Unique order IDs prove that amounts, customer references, and statuses are all correct
   - id: d
-    text: D. 金额错误可能抵消，缺失与重复也可能抵消，还要核对唯一性、关系与完整字段
+    text: D. Amount errors can cancel out, as can missing and duplicate records; uniqueness, relationships, and all fields must also be checked
   answer: d
-  explanation: A：不同订单的金额错误可能一增一减抵消，总数正确并不证明明细正确。 B：排序只改变展示顺序，不会补回缺失或删除重复。 C：键唯一只验证一个维度，不验证金额、关系和状态。 D：正确。输入覆盖、唯一性、字段与关系需共同核对，预期结果不能直接照抄被测输出。
+  explanation: "A: Amount errors in different orders can offset each other; correct totals do not prove correct details. B: Sorting changes only display order; it does not restore missing records or remove duplicates. C: Key uniqueness checks only one aspect, not amounts, relationships, or statuses. D: Correct. Input coverage, uniqueness, fields, and relationships must be checked together; expected results must not simply copy the output under test."
 - id: q5
-  objective: 用已知错误验证检查会失败，并区分离线时间口径与实际新鲜度。
-  prompt: 哪种做法真正检验质量检查有效性？
+  objective: Use known errors to verify that checks fail, and distinguish offline time criteria from actual freshness.
+  prompt: Which approach genuinely tests whether quality checks work?
   options:
   - id: a
-    text: A. 重复数据加入后修改预期行数，使检查继续通过
+    text: A. After adding duplicates, change the expected row count so the check continues to pass
   - id: b
-    text: B. 固定截止时间检查通过，就认为当前接入延迟为零
+    text: B. Treat a successful fixed-cutoff check as proof that current ingestion latency is zero
   - id: c
-    text: C. 加入已知重复应失败，恢复后应通过；固定时间检查不代表实时新鲜度
+    text: C. Adding a known duplicate should fail and restoring the data should pass; a fixed-time check does not represent real-time freshness
   - id: d
-    text: D. 只运行正常输入，通过后就认为所有异常都能被检查发现
+    text: D. Run only normal inputs and assume that all anomalies can be detected once they pass
   answer: c
-  explanation: A：迁就错误输出修改预期，会让检查失去发现问题的能力。 B：固定样本时间与当前端到端接入延迟不是同一指标。 C：正确。已知错误检验规则能否发现约定问题；实际新鲜度还需事件、接入和观测时间。 D：正常样本通过不能证明异常分支有效，应有针对性地注入错误。
+  explanation: "A: Adjusting expectations to accommodate incorrect output prevents checks from detecting problems. B: A fixed sample time and current end-to-end ingestion latency are different metrics. C: Correct. Known errors test whether rules detect the specified problems; actual freshness also requires event, ingestion, and observation times. D: Passing normal samples does not prove that error paths work; inject targeted errors."

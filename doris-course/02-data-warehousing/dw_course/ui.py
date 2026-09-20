@@ -3,7 +3,7 @@
 import json
 
 from IPython import get_ipython
-from IPython.display import HTML, display
+from IPython.display import display
 
 from ._shared import load_component
 
@@ -33,14 +33,6 @@ class WorkflowProgress:
 
     def _render(self, state, detail=""):
         panel = workflow_html(self.title, self.steps, self.current, state, detail)
-        headline = {
-            "success": ("Completed", "已完成"),
-            "failure": ("Failed", "失败"),
-            "running": (f"Step {self.current} of {len(self.steps)}",
-                        f"第 {self.current} / {len(self.steps)} 步"),
-        }[state]
-        panel = HTML(panel.data.replace(f"<span>{headline[0]}</span>",
-                                       f"<span>{headline[1]}</span>"))
         if self.handle is None:
             self.handle = display(panel, display_id=True)
         else:
@@ -60,15 +52,15 @@ class WorkflowProgress:
     def finish(self):
         if self.notebook:
             self._render("success")
-            show_log("查看完整启动日志", "\n".join(self.logs))
+            show_log("View complete startup logs", "\n".join(self.logs))
         else:
-            print(f"已完成：{self.title}", flush=True)
+            print(f"Completed: {self.title}", flush=True)
 
     def fail(self, detail):
         self.log(detail)
         if self.notebook:
             self._render("failure", detail)
-            show_log("查看失败原因与完整日志", "\n".join(self.logs), opened=True)
+            show_log("View the failure reason and complete logs", "\n".join(self.logs), opened=True)
         else:
             print("\n".join(self.logs), flush=True)
 

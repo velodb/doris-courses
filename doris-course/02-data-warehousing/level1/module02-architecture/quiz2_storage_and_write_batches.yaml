@@ -1,73 +1,73 @@
-title: Module 2：观察存储和写入批次
-description: 五道单选题；不需要数据库连接，提交后查看解释。
+title: "Module 2: Observe Storage and Write Batches"
+description: "Five single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: q1
-  objective: 沿一条查询说明 FE 规划与 BE 执行的分工。
-  prompt: 一条订单分析 SQL 从客户端进入 Doris，哪条路径正确？
+  objective: "Trace a query to explain FE planning and BE execution responsibilities."
+  prompt: "An order-analysis SQL statement enters Doris from a client. Which path is correct?"
   options:
   - id: a
-    text: A. 客户端提交 SQL → BE 生成分布式计划 → FE 汇总扫描结果
+    text: "A. Client submits SQL → BE generates a distributed plan → FE summarizes scan results"
   - id: b
-    text: B. 客户端生成分布式计划 → FE 转发 → BE 按片段执行
+    text: "B. Client generates a distributed plan → FE forwards it → BE executes fragments"
   - id: c
-    text: C. 客户端提交 SQL → FE 规划 → 等待一次 Compaction → BE 执行
+    text: "C. Client submits SQL → FE plans → Wait for Compaction → BE executes"
   - id: d
-    text: D. 客户端提交 SQL → FE 规划并分发 → BE 执行 → 协调返回结果
+    text: "D. Client submits SQL → FE plans and distributes → BE executes → Results are coordinated and returned"
   answer: d
-  explanation: A：规划职责在 FE，不是由 BE 统一生成分布式计划。 B：客户端不需要承担 Doris 的分布式计划生成。 C：Compaction 是后台存储整理，不是每条查询执行前的固定关卡。 D：正确。FE 负责规划与协调，BE 执行计划中的扫描和计算。
+  explanation: "A: Planning is FE's responsibility; BE does not centrally generate the distributed plan. B: The client does not need to generate Doris's distributed plan. C: Compaction reorganizes storage in the background; it is not a mandatory step before each query. D: Correct. FE handles planning and coordination, while BE performs the scans and computation in the plan."
 - id: q2
-  objective: 解释 Table、Partition、Tablet、Rowset 和 Segment 的层次。
-  prompt: 本课表仅有基础索引，有两个分区、每个分区四个桶。不计副本，怎样理解其存储层次？
+  objective: "Explain the hierarchy of Table, Partition, Tablet, Rowset, and Segment."
+  prompt: "The table in this course has only a base index, two partitions, and four buckets per partition. Excluding replicas, how should you understand its storage hierarchy?"
   options:
   - id: a
-    text: A. 共四个 Tablet，由两个分区共享；Tablet 内包含 Rowset
+    text: "A. Four Tablets in total, shared by both partitions; Tablets contain Rowsets"
   - id: b
-    text: B. 共八个 Tablet；Tablet 内有 Rowset，Rowset 内有 Segment
+    text: "B. Eight Tablets in total; Tablets contain Rowsets, and Rowsets contain Segments"
   - id: c
-    text: C. 共两个 Tablet；每个 Tablet 的四个桶表示四份副本
+    text: "C. Two Tablets in total; each Tablet's four buckets represent four replicas"
   - id: d
-    text: D. 共八个 Tablet；每个 Tablet 固定有一个 Rowset 和一个 Segment
+    text: "D. Eight Tablets in total; each Tablet always has exactly one Rowset and one Segment"
   answer: b
-  explanation: A：每个分区有各自的分桶，不能把不同分区的桶合并计数。 B：正确。本题限定基础索引并排除副本，Tablet 数为 2×4。 C：桶描述分片，副本描述同一分片的数据副本，两者不是一回事。 D：Rowset 和 Segment 数量会随写入和合并变化，不是固定的一对一关系。
+  explanation: "A: Each partition has its own buckets; buckets in different partitions cannot be counted as shared. B: Correct. With only a base index and excluding replicas, the Tablet count is 2×4. C: Buckets describe shards, while replicas describe copies of the same shard; these are different concepts. D: Rowset and Segment counts change with writes and compaction; they do not have a fixed one-to-one relationship."
 - id: q3
-  objective: 说明写入批次、数据可见性与后台 Compaction 的关系。
-  prompt: 写入后 Compaction 尚未完成，是否一定不能查询到新数据？
+  objective: "Explain the relationship between write batches, data visibility, and background Compaction."
+  prompt: "If Compaction has not finished after a write, does that necessarily mean the new data cannot be queried?"
   options:
   - id: a
-    text: A. 一定不能，新数据必须合并到旧文件后才可查询
+    text: "A. It cannot be queried; new data must be merged into old files first"
   - id: b
-    text: B. 可以，只要导入请求返回 HTTP 200 就表明已对查询可见
+    text: "B. It can be queried; an HTTP 200 response to a load request means the data is visible to queries"
   - id: c
-    text: C. 可以，可见性取决于事务发布和接口语义，不要求等 Compaction
+    text: "C. It can be queried; visibility depends on transaction publication and interface semantics, not on waiting for Compaction"
   - id: d
-    text: D. 可以，只要 BE 已生成 Segment 文件就表明事务已经可见
+    text: "D. It can be queried; once BE generates a Segment file, the transaction is visible"
   answer: c
-  explanation: A：查询可以读取已发布的多个 Rowset，不必先等待后台合并。 B：HTTP 成功只说明请求层面的情况，还需检查导入状态与发布结果。 C：正确。数据可见和物理合并是不同过程。 D：文件生成不等于事务发布完成，不能只凭文件存在判断可见性。
+  explanation: "A: Queries can read multiple published Rowsets without waiting for background compaction. B: HTTP success only describes the request-level outcome; load status and publication results still need checking. C: Correct. Data visibility and physical compaction are different processes. D: File generation does not mean transaction publication is complete; file existence alone cannot establish visibility."
 - id: q4
-  objective: 控制表结构和数据，比较批量与逐行写入的结果。
-  prompt: 团队比较每批 100 行与每批 10000 行的写入效果，两次运行结果一致，但第二次同时增加了桶数。应怎样解释结果？
+  objective: "Keep table structure and data constant while comparing batch and row-by-row writes."
+  prompt: "A team compares writes in batches of 100 rows and 10000 rows. Both runs produce identical results, but the second run also increases the bucket count. How should the results be interpreted?"
   options:
   - id: a
-    text: A. 先固定桶数、数据和写入模式，再重复比较两种批次
+    text: "A. First fix the bucket count, data, and write mode, then repeat the comparison of the two batch sizes"
   - id: b
-    text: B. 结果一致，说明观测到的耗时差异都来自批次大小
+    text: "B. Matching results mean all observed timing differences come from batch size"
   - id: c
-    text: C. 使用各自最短耗时，即可消除桶数变化的影响
+    text: "C. Using the shortest time from each run eliminates the effect of changing the bucket count"
   - id: d
-    text: D. 保留不同桶数，只比较最终 Rowset 数量即可
+    text: "D. Keep the different bucket counts and compare only the final Rowset counts"
   answer: a
-  explanation: A：正确。多个变量同时变化无法归因，先控制条件再对比。 B：数据正确是前提，但不能排除桶数的影响。 C：挑最短耗时不能修复实验设计。 D：桶数会改变数据分布，Rowset 数量也不能单独说明批次效果。
+  explanation: "A: Correct. Changing multiple variables at once prevents attribution; control conditions before comparing. B: Correct data is a prerequisite but does not rule out the bucket count's effect. C: Choosing the shortest time cannot fix the experimental design. D: Bucket count changes data distribution, and Rowset count alone cannot explain the effect of batching."
 - id: q5
-  objective: 区分查询计划、存储元数据和运行时证据各能说明什么。
-  prompt: 怎样组合 EXPLAIN、Tablet 元数据和 Query Profile？
+  objective: "Distinguish what query plans, storage metadata, and runtime evidence can each tell you."
+  prompt: "How should EXPLAIN, Tablet metadata, and Query Profile be combined?"
   options:
   - id: a
-    text: A. 用 EXPLAIN 中的预计扫描范围，直接计算实际磁盘读取量
+    text: "A. Use EXPLAIN's estimated scan scope to calculate actual disk reads directly"
   - id: b
-    text: B. 用一次 VersionCount 采样，代替 Rowset 和 Segment 明细及运行指标
+    text: "B. Replace Rowset and Segment details and runtime metrics with one VersionCount sample"
   - id: c
-    text: C. 用十行样本的一次 Profile 耗时，预测生产环境的峰值吞吐量
+    text: "C. Predict peak production throughput from one Profile's elapsed time on a ten-row sample"
   - id: d
-    text: D. 用 EXPLAIN 看计划、元数据看采样状态、Profile 看实际执行工作量
+    text: "D. Use EXPLAIN for the plan, metadata for the sampled state, and Profile for actual execution work"
   answer: d
-  explanation: A：计划不等于运行结果，缓存和执行过程都会影响实际读取。 B：版本数量只是一个观测项，不能代替全部物理文件与执行证据。 C：十行、单次查询不具备生产负载的数据规模与并发条件。 D：正确。三类证据互补；采样时还需考虑后台合并、缓存和运行环境。
+  explanation: "A: A plan is not an execution result; caching and execution behavior affect actual reads. B: Version count is just one observation and cannot replace all physical-file and execution evidence. C: Ten rows and a single query do not provide the data scale or concurrency of a production workload. D: Correct. The three types of evidence complement one another; background compaction, caching, and the runtime environment must also be considered when sampling."

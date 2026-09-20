@@ -1,29 +1,29 @@
-# Level 1 扩展实验
+# Level 1 Extension Labs
 
-这些 Notebook 补充主线里的独立操作，不新增 Module 或视频，也不代替七个主线 Lab。
-按主线顺序先完成 Lab 1、4、5、6、7，再执行扩展；均使用课程单容器沙箱。
+These notebooks supplement independent operations in the main course without adding modules or videos or replacing the seven main labs.
+Complete Labs 1, 4, 5, 6, and 7 in main-course order before running the extensions; all use the course's single-container sandbox.
 
-| 实验 | 对应单元 | 验收内容 |
+| Lab | Related modules | Validation |
 |---|---|---|
-| [物理设计](extension23_physical_design.ipynb) | Module 2–3 | 100,000 行确定性数据；批次、分区、执行计划和 Profile，结果逐行一致 |
-| [文件与合批](extension45_files_and_group_commit.ipynb) | Module 4–5 | 独立 Parquet TVF、INSERT SELECT、Broker Load；默认值与生成列；Group Commit 确认和可见性 |
-| [Schema 与删除](extension67_schema_and_delete.ipynb) | Module 6–7 | 加列与类型变更、导入删除后的版本裁决、相同事件 ID 内容冲突检测 |
+| [Physical design](extension23_physical_design.ipynb) | Module 2–3 | 100,000 deterministic rows; batches, partitions, execution plans, and Profile, with row-by-row matching results |
+| [Files and Group Commit](extension45_files_and_group_commit.ipynb) | Module 4–5 | Standalone Parquet TVF, INSERT SELECT, Broker Load; defaults and generated columns; Group Commit acknowledgment and visibility |
+| [Schema and deletion](extension67_schema_and_delete.ipynb) | Module 6–7 | Column additions and type changes, version resolution after load-based deletion, and detection of conflicting content for the same event ID |
 
-## 准备与执行
+## Preparation and Execution
 
-扩展的 Parquet 文件生成需要 PyArrow。从本课程目录安装：
+Generating Parquet files for the extensions requires PyArrow. Install it from this course directory:
 
 ```bash
 .venv/bin/python -m pip install -e '.[extensions]'
 .venv/bin/jupyter lab level1/extensions/
 ```
 
-在同一个实验库内一次只运行一个 Notebook。各扩展开头列明会重建的 `ext_*` 表；
-不会修改主线业务表，不删除对象存储中的历史文件，也不重启其他集群。
-对象存储实验复用课程 MinIO，每次写入独立随机路径。失败后保留任务状态与输出再排查。
-建议总计 80–115 分钟，属于补充实验时间，不是视频时长。
+Run only one notebook at a time in the same lab database. Each extension lists the `ext_*` tables it rebuilds at the beginning;
+it does not modify main-course business tables, delete historical files from object storage, or restart other clusters.
+Object storage experiments reuse the course MinIO and write to an independent random path each time. On failure, preserve job status and output before troubleshooting.
+Allow 80–115 minutes in total; this is additional lab time, not video duration.
 
-维护者可在仓库根目录，用已安装上述依赖的 Python 执行完整回归：
+Maintainers can run the full regression from the repository root using Python with the above dependencies installed:
 
 ```bash
 DW_ALLOW_WRITES=yes DW_DATABASE=dw_course_l1_extensions_check \
@@ -31,12 +31,12 @@ DW_ALLOW_WRITES=yes DW_DATABASE=dw_course_l1_extensions_check \
   --iceberg --solutions --extensions
 ```
 
-已有主线结果时可改用 `--extensions-only`。脚本不保存 Notebook 执行输出。
+If main-course results already exist, use `--extensions-only` instead. The script does not save notebook execution outputs.
 
-## 边界
+## Boundaries
 
-- 100,000 行与单节点只能提供本地观察，不能证明生产并发、故障恢复或固定性能提升。
-- Group Commit 扩展对比单请求确认与查询可见性，不验证多请求共享事务或持续吞吐。
-- Schema 变更只覆盖本实验的加列与类型变更，不代表所有模型和变更组合。
-- 冲突检测在独立暂存表执行，不是多消费者并发下原子性的拒收服务。
-- Kafka 和 MySQL/Flink CDC 已另设 [Lab 5A / 5B 选做环境](../../environments/streaming/README.md)，不包含在本目录的三份基础扩展或 `--extensions` 执行范围中。CDC_STREAM 与对象存储持续文件仍仅介绍。
+- 100,000 rows and a single node provide only local observations, not proof of production concurrency, failure recovery, or a fixed performance gain.
+- The Group Commit extension compares acknowledgment and query visibility for individual requests; it does not verify shared transactions across requests or sustained throughput.
+- Schema changes cover only this lab's column additions and type changes, not every model and change combination.
+- Conflict detection runs in an independent staging table; it is not an atomic rejection service for concurrent consumers.
+- Kafka and MySQL/Flink CDC have separate [Lab 5A / 5B optional environments](../../environments/streaming/README.md) and are not included in this directory's three basic extensions or the `--extensions` execution scope. CDC_STREAM and continuous files in object storage are still only introduced.

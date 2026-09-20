@@ -56,13 +56,13 @@ def parquet_paths(directory=None):
     for name, entry in manifest()["tables"].items():
         path = root / f"{name}.parquet"
         if not path.is_file():
-            raise FileNotFoundError(f"缺少 {path}；请按 datasets/README.md 准备本地 WWI 数据包。")
+            raise FileNotFoundError(f"Missing {path}; prepare the local WWI data package as described in datasets/README.md.")
         digest = hashlib.sha256()
         with path.open("rb") as stream:
             for block in iter(lambda: stream.read(1024 * 1024), b""):
                 digest.update(block)
         if path.stat().st_size != entry["bytes"] or digest.hexdigest() != entry["sha256"]:
-            raise ValueError(f"WWI 数据文件与课程 manifest 不一致：{path}")
+            raise ValueError(f"WWI data file does not match the course manifest: {path}")
         paths[name] = path
     return paths
 
@@ -77,10 +77,10 @@ def _unpack_bundle(root):
         with tarfile.open(COURSE_ROOT / "datasets/wwi/wwi-core.tar.gz", "r:gz") as archive:
             members = archive.getmembers()
             if len(members) != len(entries) or {m.name for m in members} != set(entries):
-                raise ValueError("WWI 数据包文件清单与 manifest 不一致")
+                raise ValueError("The WWI archive file list does not match the manifest")
             for member in members:
                 if not member.isfile() or member.size != entries[member.name]["bytes"]:
-                    raise ValueError("WWI 数据包包含不符合 manifest 的文件")
+                    raise ValueError("The WWI archive contains a file that does not match the manifest")
                 with archive.extractfile(member) as source, (unpacked / member.name).open("xb") as target:
                     for block in iter(lambda: source.read(1024 * 1024), b""):
                         target.write(block)

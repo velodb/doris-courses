@@ -1,5 +1,14 @@
 # Validation record
 
+## English translation of the complete course 02 learner materials
+
+- Translated all authored Chinese under `doris-course/02-data-warehousing`: seven lessons, seven main Labs and their reference solutions, seven Quiz notebooks and YAML question sets, three extension notebooks, course/environment/dataset guides, and runtime UI messages. The two streaming labs were already English.
+- Preserved lesson structure, SQL, data fixtures, numeric baselines, quiz answer keys, notebook cell IDs, and execution logic. Removed only the UI wrapper that replaced the shared renderer's English status labels with Chinese.
+- Updated language-dependent assertions and added checks for Chinese in authored sources and broken translated Markdown heading fragments. Historical notebook outputs and ignored checkpoints are excluded from the language scan.
+- Validation: **103 offline tests passed** on a clean HEAD export overlaid with translated sources. Tests exercise all Quiz choices and feedback, notebook syntax, examples, objectives/schedules, links, and runtime behavior. A separate AST/SQL comparison confirmed unchanged notebook/reference-solution code structure and executable reading examples; original ASCII literals and quiz answer keys were preserved.
+- Existing user outputs, execution counts, metadata, and added blank cells remain in the working tree. The commit contains only translated sources applied to the committed notebook structure, without those pre-existing changes.
+- This is a language-only change. Live database labs and browser rendering were not rerun for this translation; previous integration results remain historical evidence, not new runs. Test log: `/tmp/dw-english-tests.log`.
+
 ## 2026-09-20: Streaming review fixes and English optional-lab text
 
 This follow-up fixes the first two review findings. Startup output buffering remains unchanged.
@@ -324,7 +333,7 @@ Kafka、Flink CDC、CDC_STREAM、持续文件、真实位点恢复及持续并�
 ## 2026-09-18：按业务含义与实验用途命名表
 
 - 七份讲义、七个 Lab、相关测验与环境说明统一使用业务表名；目录和标题仍保留单元编号。
-  表名含义见 [Level 1](../../doris-course/02-data-warehousing/level1/README.md#实验表如何命名)。
+  表名含义见 [Level 1](../../doris-course/02-data-warehousing/level1/README.md#how-are-lab-tables-named)。
 - WWI 历史表保留 wwi_ 来源前缀；orders_sample、orders_current、order_events 等名称
   表达数据用途。orders_batch / orders_rowwise 等对照表及更新、删除练习表仍独立，
   不因去掉编号而合并实验数据。

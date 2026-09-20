@@ -1,37 +1,37 @@
 # Data Warehousing with Apache Doris
 
-从订单数据到可信的业务分析：学习如何接入数据、处理错误记录与状态变化，
-再逐步完成数仓建模、分析服务和运行治理。
+From order data to trustworthy business analysis: learn how to ingest data, handle invalid records and state changes,
+then progress through data warehouse modeling, analytics services, and operational governance.
 
-本课程适合准备使用 Doris 搭建数仓的数据工程师和分析工程师。
-你需要能阅读基础 SQL；第一单元会带你完成环境连接和第一张订单表。
+This course is for data engineers and analytics engineers preparing to build a data warehouse with Doris.
+You need to be able to read basic SQL; the first module walks you through connecting to the environment and creating your first order table.
 
-## 从这里开始
+## Start Here
 
-1. 阅读[环境准备](environments/single-node/README.md)，准备 Python 环境。
-2. 打开 [Level 1 学习目录](level1/README.md)，从 Module 1 讲义开始。
-3. 在每个单元中依次完成讲义、Lab 和 Quiz。Lab 按单元顺序执行，Quiz 无需数据库。
+1. Read [Environment Setup](environments/single-node/README.md) to prepare your Python environment.
+2. Open the [Level 1 Learning Guide](level1/README.md) and start with the Module 1 lesson.
+3. In each module, complete the lesson, Lab, and Quiz in that order. Run the Labs in module order; Quizzes do not require a database.
 
-材料以中文讲解，SQL 和产品名称保留原文。
-讲义负责解释“为什么”，Lab 展示“怎么做”，Quiz 帮你检查理解。
+The materials explain the content in English, keeping SQL and product names unchanged.
+Lessons explain “why,” Labs show “how,” and Quizzes help you check your understanding.
 
-## 学习路线
+## Learning Path
 
-| 阶段 | 你要解决的问题 | 学习成果 |
+| Stage | Questions You Will Address | Learning Outcomes |
 | --- | --- | --- |
-| [Level 1：接入、清洗与更新](level1/README.md) | 数据怎样进入数仓，错误与变化怎样处理？ | 能解释订单输入、质量结果、当前状态和历史 |
-| Level 2：建模、分析与服务交付（后续） | 数据怎样组织并交付给业务？ | 分层建模、JOIN、指标加工与看板 |
-| Level 3：权限、资源与运行维护（后续） | 多人使用和持续运行怎样管理？ | 访问治理、资源控制和运行维护 |
+| [Level 1: Ingestion, Cleaning, and Updates](level1/README.md) | How does data enter the warehouse, and how are errors and changes handled? | Explain order inputs, quality results, current state, and history |
+| Level 2: Modeling, Analytics, and Service Delivery (upcoming) | How is data organized and delivered to the business? | Layered modeling, JOINs, metric processing, and dashboards |
+| Level 3: Permissions, Resources, and Operations (upcoming) | How do you manage multiple users and ongoing operation? | Access governance, resource control, and operations and maintenance |
 
-课程采用 WWI 历史业务数据与独立的模拟新订单，不需要购买数据服务。
-Module 1 从仓库内的十笔 WWI 历史订单开始；Module 5 导入完整的 10 表 Parquet 包；
-Module 6、Module 7 处理引用同一批客户、商品的新订单，覆盖质量、支付退款和重复乱序。
-历史账户收款与模拟订单支付按各自的业务粒度分析。来源、许可与本地数据准备见[数据说明](datasets/README.md)。
+The course uses historical WWI business data and separate simulated new orders; no paid data services are required.
+Module 1 starts with ten historical WWI orders included in the repository; Module 5 imports the complete 10-table Parquet package;
+Modules 6 and 7 handle new orders referencing the same customers and products, covering quality, payments and refunds, and duplicate and out-of-order delivery.
+Historical account receipts and simulated order payments are analyzed at their respective business grains. See [Dataset Documentation](datasets/README.md) for sources, licensing, and local data preparation.
 
-## 安装并打开课程
+## Install and Open the Course
 
-请保留完整仓库，显示和测验功能依赖仓库内的共享组件。
-下面从本课程目录执行：
+Keep the entire repository; display and quiz functionality depend on shared components within it.
+Run the following from this course directory:
 
 ```bash
 python3 -m venv .venv
@@ -39,28 +39,28 @@ python3 -m venv .venv
 .venv/bin/jupyter lab level1/module01-introduction/lab1_connect_and_query.ipynb
 ```
 
-先启动 Docker，再在 Lab 1 中初始化工具、启动课程单容器沙箱；执行前阅读实验表重置提示。
-后续 Lab 自动连接同一个沙箱，不需要重新选择环境或填写连接地址。
-密码不要写进 Notebook，具体说明见[环境准备](environments/single-node/README.md)。
+Start Docker first, then initialize the tools and start the course's single-container sandbox in Lab 1; read the lab table reset notice before running it.
+Subsequent Labs automatically connect to the same sandbox, without requiring you to select the environment again or enter a connection address.
+Do not put passwords in Notebooks; see [Environment Setup](environments/single-node/README.md) for details.
 
-## 课程与实验安排
+## Course and Lab Plan
 
-Level 1 提供七个单元，每个单元包含讲义、Lab 和五道交互测验。
+Level 1 provides seven modules, each containing a lesson, a Lab, and five interactive quiz questions.
 
-| 实验 | 所需环境与数据 |
+| Lab | Required Environment and Data |
 | --- | --- |
-| Module 1–3 | 课程单容器沙箱、仓库内的十单样本 |
-| Module 4 | 沙箱；Lab 自动准备的本地 Iceberg 湖表环境 |
-| Module 5 | 沙箱、仓库内的历史 Parquet 压缩包与模拟 CSV |
-| Module 6–7 | 沙箱及前一单元产出的表、仓库内的模拟事件 |
+| Modules 1–3 | Course single-container sandbox and the ten-order sample in the repository |
+| Module 4 | Sandbox; local Iceberg lake table environment automatically prepared by the Lab |
+| Module 5 | Sandbox, historical Parquet archive and simulated CSV in the repository |
+| Modules 6–7 | Sandbox and tables produced by the previous module, simulated events in the repository |
 
-课程镜像为 apache/doris:all-in-one-4.1.3。Module 5 的 Lab 练习 Stream Load，
-讲义同时介绍 Kafka、CDC 与对象存储持续接入的适用场景和工作方式。
-选做 [Lab 5A：Kafka / Routine Load](level1/module05-ingestion/optional5_kafka_routine_load.ipynb) 和
-[Lab 5B：MySQL / Flink CDC](level1/module05-ingestion/optional5_flink_mysql_cdc.ipynb) 提供可启动的真实链路；
-前置条件、独立数据及停止方式见[持续接入环境](environments/streaming/README.md)。它们不改变七个主线 Lab 的完成条件。
-Module 4 按需启动两个湖表辅助容器，准备方式见[湖表环境说明](environments/lakehouse/README.md)。
+The course image is apache/doris:all-in-one-4.1.3. The Module 5 Lab practices Stream Load,
+while the lesson also introduces the use cases and workings of continuous ingestion with Kafka, CDC, and object storage.
+The optional [Lab 5A: Kafka / Routine Load](level1/module05-ingestion/optional5_kafka_routine_load.ipynb) and
+[Lab 5B: MySQL / Flink CDC](level1/module05-ingestion/optional5_flink_mysql_cdc.ipynb) provide real pipelines you can start;
+see [Continuous Ingestion Environment](environments/streaming/README.md) for prerequisites, separate data, and shutdown instructions. They do not change the completion requirements for the seven main Labs.
+Module 4 starts two lake table helper containers on demand; see [Lake Table Environment](environments/lakehouse/README.md) for setup instructions.
 
-## 维护者资料
+## Maintainer Resources
 
-[课程维护资料](../../maintenance/02-data-warehousing/README.md)记录环境验证、测试方式与集成实验准备情况。
+[Course Maintenance Resources](../../maintenance/02-data-warehousing/README.md) document environment validation, testing methods, and integration lab preparation status.

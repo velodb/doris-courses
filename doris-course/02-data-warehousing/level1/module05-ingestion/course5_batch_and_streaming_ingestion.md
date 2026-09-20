@@ -1,124 +1,124 @@
-# Module 5：批量与持续数据接入
+# Module 5: Batch and Continuous Data Ingestion
 
-| 课程信息 | 内容 |
+| Course Information | Details |
 | --- | --- |
-| 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 产品版本 | Apache Doris 4.x |
-| 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 110 分钟，包含讲义阅读、动手实验和测验 |
+| Course | Data Warehousing with Apache Doris · Level 1 |
+| Product Version | Apache Doris 4.x |
+| Lab Version | Apache Doris 4.1.3 |
+| Estimated Time | About 110 minutes, including reading, hands-on work, and the quiz |
 
-[课程目录](../README.md) · [打开实验 5](lab5_stream_load.ipynb) · [打开测验 5](quiz5_load_methods_and_retry_safety.ipynb)
+[Course contents](../README.md) · [Open Lab 5](lab5_stream_load.ipynb) · [Open Quiz 5](quiz5_load_methods_and_retry_safety.ipynb)
 
-## 单元目标
+## Module Goal
 
-本单元介绍常见的数据接入方式，以及导入结果检查和重试的基本方法。
+This module introduces common data ingestion methods and the basics of checking load results and retrying loads.
 
-完成本单元后，你将能够使用 Stream Load 导入订单文件，核对结果，并验证失败和重试时的数据变化。
+After completing this module, you will be able to load order files with Stream Load, verify the results, and check how data changes after failures and retries.
 
-**教学范围：** 5.6～5.9 为介绍型内容，通过架构图、配置阅读和 Quiz 学习，不要求搭建 Kafka、Flink 或真实 CDC/持续文件链路。主线动手实验是 Stream Load；已有对象存储批量和 Group Commit 扩展保持选做。真实位点恢复的主线要求是理解原理，持续并发验证不作为本单元完成条件。讲义中的外部配置阅读示例不等于可直接运行的 Lab。
+**Scope:** Sections 5.6–5.9 are introductions taught through architecture diagrams, configuration examples, and the quiz. You do not need to set up Kafka, Flink, or real CDC/continuous-file pipelines. The main hands-on lab uses Stream Load; the existing object-storage batch and Group Commit extensions remain optional. Understanding the principles of recovery from actual source positions is required, but continuous concurrency validation is not a completion requirement. External configuration examples in the reading are not directly runnable labs.
 
-**选做实验：** [Lab 5A：Kafka / Routine Load](optional5_kafka_routine_load.ipynb) 与 [Lab 5B：MySQL / Flink CDC](optional5_flink_mysql_cdc.ipynb) 提供独立 Docker 环境和结果验收。后者演练固定 Schema 单表的快照、增删改及受控 Savepoint 恢复，不等同于整库同步、Schema 自动演进或崩溃故障恢复。准备条件见[持续接入环境](../../environments/streaming/README.md)。
+**Optional labs:** [Lab 5A: Kafka / Routine Load](optional5_kafka_routine_load.ipynb) and [Lab 5B: MySQL / Flink CDC](optional5_flink_mysql_cdc.ipynb) provide isolated Docker environments and result checks. The latter practices snapshots, inserts, updates, deletes, and controlled savepoint restoration for a single table with a fixed schema; it is not whole-database synchronization, automatic schema evolution, or crash recovery. See the [continuous ingestion environment](../../environments/streaming/README.md) for prerequisites.
 
-## 学习目标
+## Learning Objectives
 
-完成本单元后，你应该能够：
+After completing this module, you should be able to:
 
-1. 按本地文件、对象存储、消息流和数据库变更选择接入路径。
-2. 说明 CSV 列映射、Parquet 字段和默认值各自的作用。
-3. 结合导入响应、加载行数、关联和金额判断结果是否正确。
-4. 区分导入批次重试、业务事件去重与持续任务恢复。
-5. 区分 WWI 历史订单、账户收款与课程模拟新订单的粒度和口径。
+1. Choose ingestion paths for local files, object storage, message streams, and database changes.
+2. Explain the roles of CSV column mappings, Parquet fields, and default values.
+3. Judge correctness using load responses, loaded row counts, relationships, and amounts.
+4. Distinguish load-batch retries, business-event deduplication, and continuous-job recovery.
+5. Distinguish the grain and measurement definitions of WWI historical orders, account receipts, and new orders simulated for the course.
 
-## 单元安排
+## Module Schedule
 
-| 环节 | 学习形式 | 建议时间 | 学习成果 |
+| Section | Learning Format | Suggested Time | Learning Outcome |
 | --- | --- | --- | --- |
-| 5.1 先决定访问还是导入 | 接入选择表 | 5 分钟 | 按来源与完成方式选择接入路径 |
-| 5.2 数据类型与 Schema | 字段对照 | 5 分钟 | 区分可解析的数据与合格业务记录 |
-| 5.3 默认值与列映射 | 映射与默认值示例 | 8 分钟 | 确定字段顺序与省略字段的含义 |
-| 5.4 Stream Load、结果检查与重试 | 请求与响应 | 5 分钟 | 判断成功、拒绝和不确定状态 |
-| 5.5 对象存储批量与 INSERT SELECT | SQL 与流程对照 | 8 分钟 | 区分查询、持久化和异步导入 |
-| 5.6 Kafka 与 Routine Load | SQL 与任务流程 | 10 分钟 | 解释消费进度与业务状态的区别 |
-| 5.7 Flink CDC 与 Doris Connector | 变更流程图 | 5 分钟 | 解释快照、增量和恢复 |
-| 5.8 Streaming Job 与 CDC_STREAM | 同步 SQL 与模式选择 | 8 分钟 | 解释 Streaming Job、CDC_STREAM 与目标表如何配合 |
-| 5.9 对象存储增量文件 | 任务 SQL 与文件进度 | 6 分钟 | 识别重复文件与迟到数据问题 |
-| 实验 5 | 动手操作 | 45 分钟 | 导入 WWI 十表，检查模拟 CSV 重试与拒绝 |
-| 测验 5 | 交互测验 | 5 分钟 | 检查路径选择、映射、结果、重试和金额口径 |
+| 5.1 Decide whether to access or load | Ingestion selection table | 5 minutes | Choose an ingestion path by source and completion method |
+| 5.2 Data types and schema | Field comparison | 5 minutes | Distinguish parseable data from valid business records |
+| 5.3 Defaults and column mappings | Mapping and default examples | 8 minutes | Determine field order and the meaning of omitted fields |
+| 5.4 Stream Load, result checks, and retries | Requests and responses | 5 minutes | Identify success, rejection, and uncertain states |
+| 5.5 Object-storage batches and INSERT SELECT | SQL and workflow comparison | 8 minutes | Distinguish querying, persistence, and asynchronous loading |
+| 5.6 Kafka and Routine Load | SQL and job workflow | 10 minutes | Explain consumption progress versus business state |
+| 5.7 Flink CDC and Doris Connector | Change-flow diagram | 5 minutes | Explain snapshots, incremental changes, and recovery |
+| 5.8 Streaming Job and CDC_STREAM | Synchronization SQL and mode selection | 8 minutes | Explain how Streaming Job, CDC_STREAM, and target tables work together |
+| 5.9 Incremental files in object storage | Job SQL and file progress | 6 minutes | Identify duplicate-file and late-data issues |
+| Lab 5 | Hands-on work | 45 minutes | Load ten WWI tables and check retries and rejection of simulated CSV data |
+| Quiz 5 | Interactive quiz | 5 minutes | Check path selection, mappings, results, retries, and amount definitions |
 
-## 5.1 先决定访问还是导入
+## 5.1 Decide whether to access or load
 
-### 从数据来源选择入口
+### Choose an entry point by data source
 
-建设数仓通常先接历史存量，再持续接收变化。文件后缀不能决定全部方案：
-同样是 Parquet，本地文件、对象存储上的固定文件集和不断增加的目录，
-需要不同的传输方式与进度管理。
+Building a warehouse usually starts with historical data, followed by continuous changes. The file extension alone cannot determine the solution:
+even for Parquet, local files, fixed file sets in object storage, and continually growing directories
+require different transfer methods and progress management.
 
-| 数据在哪里、怎样产生 | 接入选择 | 主要检查 |
+| Where data resides and how it is produced | Ingestion choice | Main checks |
 | --- | --- | --- |
-| 本地 CSV、JSON 或 Parquet，一次有限批次 | Stream Load | 请求结果、加载行数和目标表 |
-| 对象存储上的固定文件集，希望先用 SQL 检查 | S3 TVF；需要落表时配合 INSERT INTO SELECT | 查询与写入是否分别完成 |
-| 对象存储上的大批量文件，使用异步导入任务 | Broker Load | 导入任务最终状态和目标数据 |
-| Kafka 持续产生消息 | Routine Load | 任务状态、提交进度和目标数据 |
-| 业务数据库不断增删改 | CDC 路径，例如 Flink CDC + Doris Connector | 初始快照、增量和故障恢复位置 |
-| 许多很小的写入请求 | 在兼容写入方式上评估 Group Commit | 确认模式、响应与可见性 |
+| Local CSV, JSON, or Parquet; one finite batch | Stream Load | Request results, loaded row counts, and target table |
+| Fixed file set in object storage to inspect with SQL first | S3 TVF; combine with INSERT INTO SELECT when persisting to a table | Whether querying and writing each completed |
+| Large file batches in object storage using asynchronous load jobs | Broker Load | Final load-job state and target data |
+| Kafka continuously produces messages | Routine Load | Job state, committed progress, and target data |
+| Business database with ongoing inserts, updates, and deletes | CDC path, such as Flink CDC + Doris Connector | Initial snapshot, incremental changes, and recovery position |
+| Many very small write requests | Evaluate Group Commit for compatible write methods | Acknowledgment mode, response, and visibility |
 
-这些是按需求选择的路径，不是必须顺序经过的六道工序。
-Module 4 的直查也可以不落表；落表后是否持续刷新，要另作决定。
+These are paths to choose by need, not six steps that must run in sequence.
+Direct queries in Module 4 can also avoid persisting data; whether to refresh a persisted table continuously is a separate decision.
 
-### 历史业务与新订单
+### Historical business data and new orders
 
 ```text
-WWI 历史 Parquet ─ Stream Load → wwi_*（10 张业务表）
-模拟新订单 CSV  ─ Stream Load → orders_imported（10 笔教学订单）
+WWI historical Parquet ─ Stream Load → wwi_* (10 business tables)
+Simulated new-order CSV ─ Stream Load → orders_imported (10 teaching orders)
                                       │
-                                      └─ 后续 Module 6 准入、Module 7 状态变化
+                                      └─ Later: Module 6 admission checks, Module 7 state changes
 ```
 
-历史包保留订单、明细、客户、商品、发票、账款及字典，共 701,846 行。
-“总行数”是十张表的行数之和，不是订单数。
-模拟订单号 900001–900010，引用 WWI 客户和商品，但价格、地区和事件时间由课程定义。
+The historical package retains orders, lines, customers, products, invoices, account transactions, and lookup tables, totaling 701,846 rows.
+The “total row count” is the sum across ten tables, not the number of orders.
+Simulated order IDs 900001–900010 reference WWI customers and products, but the course defines their prices, regions, and event times.
 
-**学习安排：** 先学习文件导入、字段映射与重试，再学习持续任务及其进度。
-本节讲解文件、消息和数据库变更三类接入路径；
-Lab 先用一个 CSV 练习 Stream Load、导入核对与重试，再扩展到十张历史 Parquet 表。
-Kafka、Flink 和对象存储相关小节用于理解持续接入的选择与工作过程。
+**Learning sequence:** Learn file loading, field mappings, and retries first, then continuous jobs and their progress.
+This section explains three ingestion paths: files, messages, and database changes.
+The lab starts with one CSV to practice Stream Load, load verification, and retries, then extends to ten historical Parquet tables.
+The Kafka, Flink, and object-storage sections explain continuous ingestion choices and workflows.
 
-## 5.2 数据类型与 Schema
+## 5.2 Data types and schema
 
-Schema 是表的结构约定，包括列名、类型和是否允许为空。
-导入前要把文件字段与这份约定对齐：订单号用于标识订单，金额用于计算，
-日期用于按天汇总。一个字段选什么类型，取决于后续怎样使用它。
+A schema defines a table's structure, including column names, types, and nullability.
+Before loading, align file fields with this definition: order IDs identify orders, amounts support calculations,
+and dates support daily summaries. Choose a field's type according to how it will be used.
 
-例如税前金额需要保留两位小数，可以使用 `DECIMAL(18, 2)`：18 表示总位数，
-2 表示小数位数。金额范围和精度都应满足业务要求。订单号可使用整数，
-只需要统计日期的字段可使用 DATE，需要记录发生时刻的字段则使用 DATETIME。
-允许为空的字段还需要约定 NULL 的含义，例如“支付时间未知”，避免与零值混用。
-类型范围与精度规则见[数据类型](https://doris.apache.org/docs/4.x/table-design/data-type/)。
+For example, a pre-tax amount requiring two decimal places can use `DECIMAL(18, 2)`: 18 is the total number of digits,
+and 2 is the number of decimal places. Both amount range and precision must meet business requirements. Order IDs can use integers;
+fields that only need a calendar date can use DATE, while fields recording when an event occurred use DATETIME.
+For nullable fields, define what NULL means, such as “payment time unknown,” to avoid confusing it with zero.
+See [Data types](https://doris.apache.org/docs/4.x/table-design/data-type/) for range and precision rules.
 
-### 可以转换，不一定符合业务规则
+### Convertible does not necessarily mean business-valid
 
-| 字段 | 技术要求 | 业务要求 |
+| Field | Technical requirement | Business requirement |
 | --- | --- | --- |
-| order_id | 可表示为整数 | 必须存在，且粒度是一笔订单 |
-| order_amount | 可表示为明确精度的小数 | 金额符号与业务口径合理 |
-| customer_id | 可表示为整数 | 客户在客户维表中存在 |
-| event_time | 可表示为日期时间 | 表示业务发生时间，不冒充接入时间 |
-| data_source | 可表示为字符串 | 区分 WWI 与 COURSE_SIMULATION |
+| order_id | Representable as an integer | Must exist, with one order as the grain |
+| order_amount | Representable as a decimal with defined precision | Sign and business definition must be appropriate |
+| customer_id | Representable as an integer | Customer must exist in the customer dimension table |
+| event_time | Representable as a datetime | Represents business event time, not ingestion time |
+| data_source | Representable as a string | Distinguishes WWI from COURSE_SIMULATION |
 
-`not-a-number` 无法作为金额导入；客户号 `999999` 却可以转换成整数，
-仍可能找不到对应客户。前者是类型问题，后者需要业务关联校验。
-Module 6 会保留原始文本，再将不合格记录单独分流。
+`not-a-number` cannot be loaded as an amount; customer ID `999999` can be converted to an integer,
+yet may have no matching customer. The former is a type issue; the latter requires business relationship validation.
+Module 6 retains the raw text and routes invalid records separately.
 
-### 导入多表时，先核对订单与明细
+### When loading multiple tables, check orders and lines first
 
-Orders 一行是一笔订单，OrderLines 一行是商品明细。
-JOIN 后如果直接 COUNT(*)，数到的是明细，不是订单。
-本单元主线只检查订单、明细、客户和商品的行数、关系与金额。
-十张表仍全部导入，供后续使用；不要求在这里掌握完整账务模型。
-WWI 客户账款属于账户层，不能直接分摊为逐单支付；
-详细 SQL 放在[扩展阅读：发票与账户收款](optional_invoice_and_receipts.md)，不作为本节必做实验。
+Each Orders row is an order; each OrderLines row is a product line.
+Using COUNT(*) directly after a JOIN counts lines, not orders.
+The main path in this module checks only the row counts, relationships, and amounts for orders, lines, customers, and products.
+All ten tables are still loaded for later use; mastering the complete accounting model is not required here.
+WWI customer transactions are at account level and cannot be directly allocated as per-order payments;
+detailed SQL is in [Further reading: Invoices and account receipts](optional_invoice_and_receipts.md), which is not a required lab in this section.
 
-完成历史表导入后，可以运行 Lab 中的日期分析：
+After loading the historical tables, you can run the lab's date analysis:
 
 ```sql
 SELECT o.OrderDate,
@@ -131,42 +131,42 @@ ORDER BY o.OrderDate
 LIMIT 10;
 ```
 
-COUNT(DISTINCT) 按订单计数，SUM 按明细计算税前金额。
-这张历史日报与 Module 1 的十单子集不是同一个统计范围。
+COUNT(DISTINCT) counts orders, while SUM calculates pre-tax amounts from lines.
+This historical daily report does not cover the same scope as the ten-order subset in Module 1.
 
-## 5.3 默认值与列映射
+## 5.3 Defaults and column mappings
 
-一份 CSV 可能把客户号放在订单号前面，而 Doris 表按另一种顺序定义字段。
-列映射就是明确告诉导入过程“第几个值是什么、应该写到哪一列”。
-数值都能转换成功时，列顺序错误也可能悄悄造成订单号和客户号互换，
-所以导入后还要抽查具体订单的字段。
+A CSV may put the customer ID before the order ID, while the Doris table defines fields in a different order.
+Column mapping explicitly tells the load process what each input position means and which column receives it.
+When all values convert successfully, an incorrect column order can silently swap order and customer IDs,
+so also spot-check fields of individual orders after loading.
 
-### CSV 要明确顺序，Parquet 要对齐字段
+### Specify CSV order and align Parquet fields
 
-模拟 CSV 没有表头。Lab 显式传入以下列顺序：
+The simulated CSV has no header. The lab explicitly supplies this column order:
 
 ```text
 order_id,customer_id,order_amount,status,event_version,event_id,
 event_time,paid_amount,refund_amount,region,data_source
 ```
 
-`columns` 描述输入值如何对应目标列；它不是让 Doris 猜测每个值的业务含义。
-本课 Parquet 按 manifest 中的字段定义创建目标表，不使用 CSV 的逗号分隔设置。
+`columns` describes how input values map to target columns; it does not ask Doris to guess each value's business meaning.
+For this course's Parquet files, target tables use the field definitions in the manifest, not CSV comma-separator settings.
 
-| 输入 | 格式设置 | 列解释方式 |
+| Input | Format settings | Field interpretation |
 | --- | --- | --- |
-| 模拟 orders.csv | format=csv，column_separator=逗号 | 显式 columns，与文件顺序一致 |
-| WWI orders.parquet 等 | format=parquet | 文件字段与课程 DDL 对齐 |
+| Simulated orders.csv | format=csv, column_separator=comma | Explicit columns matching file order |
+| WWI orders.parquet and others | format=parquet | File fields aligned with course DDL |
 
-### 为省略字段约定默认值
+### Define defaults for omitted fields
 
-默认值规定写入省略某列时填入什么。例如，专门接收新建订单的入口可以约定
-初始状态为 CREATED；接收多种订单状态的入口则应保留源数据中的状态。
-数据来源字段也可以使用该接入任务约定的来源标识。
-支付是否成功、实际支付金额等业务事实，应由源系统提供。
+A default specifies what to fill in when a write omits a column. For example, an entry point dedicated to new orders can define
+CREATED as the initial state; an entry point receiving multiple order states should retain the source state.
+A data-source field can also use the source identifier defined for that ingestion job.
+Business facts such as payment success and actual payment amount must come from the source system.
 
-**SQL 阅读示例：不随 Lab 执行。** 如需动手，使用独立实验库中尚不存在的
-orders_defaults_reading 表，只运行一次；不要把示例写入 orders_imported。
+**SQL reading example: not executed in the lab.** To try it, use an orders_defaults_reading table that does not yet exist
+in an isolated lab database, and run it only once; do not write this example into orders_imported.
 
 <!-- reading-only-example -->
 ```sql
@@ -181,55 +181,55 @@ INSERT INTO orders_defaults_reading (order_id, status) VALUES (901002, 'PAID');
 SELECT order_id, status FROM orders_defaults_reading ORDER BY order_id;
 ```
 
-第一行省略 status，得到 `(901001, CREATED)`；第二行明确提供状态，得到 `(901002, PAID)`。
-默认值处理的是“没有提供该列”，不是把任意错误值修正成 CREATED。
-此表只说明默认值，不代表已经验证付款。
+The first row omits status and produces `(901001, CREATED)`; the second explicitly supplies it and produces `(901002, PAID)`.
+A default handles “this column was not supplied”; it does not correct arbitrary invalid values to CREATED.
+This table only illustrates defaults and does not indicate that payment has been verified.
 
-列映射还可以通过表达式完成转换，例如把源字段整理成目标列需要的格式；
-生成列把计算表达式放在表定义里，由表负责计算，适用表达式受目标版本限制。
-选择时看规则属于哪个层次：某个来源专用的格式转换放在导入映射中，
-需要随表统一维护的派生字段再考虑生成列。例如源文件的金额以分记录，
-导入映射可使用 `order_amount=amount_cents/100.0`；18000 分应得到 180.00 元，
-需同时设置目标小数类型。与此不同，生成列是表定义中的表达式，不依赖某个 CSV 的列顺序。
-本 Lab 练习显式字段映射，生成列不作为本 Lab 操作。
-具体配置和限制参见 [Stream Load 文档](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)。
+Column mappings can also transform values through expressions, for example by formatting source fields for target columns;
+generated columns place calculation expressions in the table definition for the table to compute, with supported expressions depending on the target version.
+Choose according to where the rule belongs: source-specific format conversion belongs in load mappings,
+while derived fields maintained consistently with the table may suit generated columns. For example, if a source file records amounts in cents,
+the load mapping can use `order_amount=amount_cents/100.0`; 18000 cents should produce 180.00 yuan,
+with the target decimal type also configured. In contrast, a generated column is an expression in the table definition, independent of a particular CSV's column order.
+This lab practices explicit field mappings; generated columns are not part of the lab operations.
+See the [Stream Load documentation](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/) for configuration details and limits.
 
-## 5.4 Stream Load、结果检查与重试
+## 5.4 Stream Load, result checks, and retries
 
-Stream Load 是通过 HTTP 请求把文件内容发送给 Doris 的导入方式。
-你准备目标表和文件，发送请求，再根据返回的导入状态检查结果。
-它适合本节的本地文件：数据由客户端推送，Doris 接收后解析字段、检查数据并提交导入事务。
+Stream Load sends file contents to Doris through an HTTP request.
+Prepare the target table and file, send the request, and check the results using the returned load status.
+It suits the local files in this section: the client pushes data, and Doris parses fields, checks data, and commits the load transaction.
 
-### 看清请求的组成
+### Understand the request components
 
-本 Lab 将文件直接发送到课程沙箱的 BE HTTP 地址，由 BE 接收数据并参与导入事务。
-下面的 `DW_BE_HTTP_URL` 表示该地址，`DW_DATABASE` 表示目标数据库。
+This lab sends files directly to the course sandbox's BE HTTP address, where the BE receives data and participates in the load transaction.
+Below, `DW_BE_HTTP_URL` is that address and `DW_DATABASE` is the target database.
 
-下面用占位符说明 Lab 请求的结构：
+The following placeholders illustrate the lab request structure:
 
 ```text
 PUT <DW_BE_HTTP_URL>/api/<DW_DATABASE>/orders_imported/_stream_load
-label: <本批次唯一标识，重试时保留>
+label: <unique identifier for this batch, retained for retries>
 format: csv
 column_separator: ,
-columns: <上节列顺序>
+columns: <column order from the previous section>
 strict_mode: true
 max_filter_ratio: 0
 group_commit: off_mode
-请求体：orders.csv 原始字节
+Request body: raw bytes of orders.csv
 ```
 
-历史 Parquet 使用 format=parquet，不附 CSV 分隔符。
-参数决定解析和质量处理方式；所有请求都要检查返回的 JSON，而不只看 HTTP 状态。
+Historical Parquet uses format=parquet without a CSV separator.
+Parameters determine parsing and data-quality handling; check the returned JSON for every request, not just the HTTP status.
 
-Lab 的第一次导入会展开完整的 Python HTTP 请求：URL 选择目标表，headers 对应上面的参数，
-`requests.put(..., data=payload)` 发送文件字节，`response.json()` 取得导入结果。
-之后再使用 `lab.stream_load()` 封装重复操作。独立练习沿用同一请求结构，
-只替换文件、目标表、批次 label 和列映射，不需要从零猜测 HTTP 写法。
+The lab's first load shows the complete Python HTTP request: the URL selects the target table, headers correspond to the parameters above,
+`requests.put(..., data=payload)` sends file bytes, and `response.json()` obtains the load result.
+Later, `lab.stream_load()` wraps the repeated operations. The independent exercise uses the same request structure,
+changing only the file, target table, batch label, and column mapping, without having to work out the HTTP request from scratch.
 
-### 响应与表内结果要一起看
+### Check both the response and table contents
 
-以下是成功导入模拟十单时需要核对的字段示意，并非完整响应：
+The following illustrates fields to verify after successfully loading the ten simulated orders; it is not a complete response:
 
 ```json
 {
@@ -239,77 +239,77 @@ Lab 的第一次导入会展开完整的 Python HTTP 请求：URL 选择目标�
 }
 ```
 
-再核对业务结果：
+Then verify the business results:
 
 ```sql
 SELECT COUNT(*) AS orders, SUM(order_amount) AS amount
 FROM orders_imported;
 ```
 
-预期十笔、1400.00。历史数据还要检查主键重复、客户/商品关联和金额，
-因为十表全部导入成功仍可能包含错误的关联口径。
+Expect ten orders and 1400.00. For historical data, also check duplicate primary keys, customer/product relationships, and amounts,
+because successful loads of all ten tables may still involve incorrect relationship definitions.
 
-| 响应情景 | 判断与下一步 |
+| Response scenario | Interpretation and next step |
 | --- | --- |
-| Success | 检查加载/过滤行数，再核对目标表 |
-| Label Already Exists | 检查原批次状态；不是“本次又成功写入一批” |
-| Fail | 保留错误信息，查明拒绝原因，不把失败批次算入业务数据 |
-| Publish Timeout 或请求结果不确定 | 保留 label 与事务信息，确认原事务结果；不要换新 label 盲目追加 |
+| Success | Check loaded/filtered row counts, then verify the target table |
+| Label Already Exists | Check the original batch's state; this does not mean another batch was successfully written |
+| Fail | Retain error details, determine the rejection cause, and do not count the failed batch as business data |
+| Publish Timeout or uncertain request result | Retain the label and transaction details and confirm the original transaction's outcome; do not blindly append with a new label |
 
-### 重试保护不等于永久去重
+### Retry protection is not permanent deduplication
 
-Lab 在 label 有效期内重发相同文件和相同 label，预期不再追加十行。
-若换成新 label，对 Duplicate Key 表就是另一批追加；业务去重还要依赖稳定键和版本。
+The lab resends the same file with the same label within the label's retention period, expecting no additional ten rows.
+A new label appends another batch to a Duplicate Key table; business deduplication still requires stable keys and versions.
 
-坏数据实验使用新 label、两行输入，其中一行金额无法转换。
-在本课 strict_mode=true、max_filter_ratio=0 的设置下，预期整批拒绝，
-原有十行和 1400.00 保持不变。ErrorURL 是排错线索，不是长期拒收表。
+The bad-data experiment uses a new label and two input rows, one with an amount that cannot be converted.
+With this course's strict_mode=true and max_filter_ratio=0 settings, the entire batch should be rejected,
+leaving the original ten rows and 1400.00 unchanged. ErrorURL is a troubleshooting clue, not a long-term rejection table.
 
-如果应用每次只写几行，频繁提交会增加事务和存储版本的开销。
-Group Commit 可以把兼容的小写入合成较大的批次，减少每批固定开销。
-选择模式时，重点看应用何时收到确认：`sync_mode` 等待合批导入完成后返回，
-`async_mode` 在数据写入 WAL（预写日志）后返回，查询可见性还要等待后续提交。
-本 Lab 使用 `off_mode`，便于逐批观察事务结果和 label 重试行为。
-启用合批前应按所用接口检查参数与 label 支持条件，见[Group Commit 文档](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)。
+If an application writes only a few rows at a time, frequent commits increase transaction and storage-version overhead.
+Group Commit can combine compatible small writes into larger batches to reduce fixed per-batch overhead.
+When choosing a mode, focus on when the application receives acknowledgment: `sync_mode` returns after the grouped load completes,
+while `async_mode` returns after data is written to the WAL (write-ahead log); query visibility still waits for a subsequent commit.
+This lab uses `off_mode` to make per-batch transaction results and label retry behavior easier to observe.
+Before enabling grouped commits, check the parameters and label-support conditions for the interface used; see the [Group Commit documentation](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/).
 
-## 5.5 对象存储批量与 INSERT SELECT
+## 5.5 Object-storage batches and INSERT SELECT
 
-如果历史订单已经放在 S3 或兼容对象存储中，可以让 Doris 直接读取这些文件。
-这时需要准备文件路径、格式和读取权限，并决定先查询检查，还是提交批量导入任务。
+If historical orders are already in S3 or compatible object storage, Doris can read the files directly.
+Prepare file paths, formats, and read permissions, then decide whether to query and inspect first or submit a batch load job.
 
-### 查询文件与保存结果是两个动作
+### Querying files and saving results are separate actions
 
 ```text
-对象存储固定文件集 → S3 TVF → SELECT 结果
+Fixed file set in object storage → S3 TVF → SELECT results
                                   │
-                                  └─ INSERT INTO SELECT → 内部表
-对象存储固定文件集 → Broker Load 任务 ── 完成后核对 → 内部表
+                                  └─ INSERT INTO SELECT → Internal table
+Fixed file set in object storage → Broker Load job ── Verify after completion → Internal table
 ```
 
-TVF（表值函数）把文件暴露成 SQL 可以读取的关系。
-单独 SELECT 不会建立长期内部表；INSERT INTO SELECT 才把选定结果写入目标表。
-Broker Load 是异步导入路径，提交被接受不等于任务已完成。
+A TVF (table-valued function) exposes files as a relation readable by SQL.
+SELECT alone does not create a persistent internal table; INSERT INTO SELECT writes selected results into the target table.
+Broker Load is asynchronous: acceptance of a submission does not mean the job has completed.
 
-以一个月的订单文件为例，可以先通过 TVF 查询字段、日期范围和总金额，
-再用 INSERT INTO SELECT 选择目标列写入内部表。这条 SQL 同时表达了读取、转换和落表过程。
-如果选择 Broker Load，则提交包含路径、格式和目标表的任务，之后检查任务是否到达 FINISHED，
-再核对目标数据。前者便于用 SQL 描述加工，后者以异步导入任务组织批量装载。
+For example, with a month's order files, first use a TVF to inspect fields, date ranges, and total amounts,
+then use INSERT INTO SELECT to select target columns and write them to an internal table. This SQL expresses reading, transformation, and persistence together.
+With Broker Load, submit a job specifying paths, format, and target table, check that it reaches FINISHED,
+then verify target data. The former expresses processing conveniently in SQL; the latter organizes batch loading as asynchronous jobs.
 
-重复执行前，要明确这批数据是追加、按键更新，还是重建指定范围。
-例如向明细表再次追加同一个月的文件，会重复计入销售额；
-重试策略需要同时考虑导入任务和目标表模型。
-操作入口见[Broker Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/broker-load-manual/)。
+Before repeating an operation, determine whether the batch should be appended, updated by key, or used to rebuild a specified range.
+For example, appending the same month's files to a detail table again double-counts sales;
+the retry strategy must consider both the load job and the target table model.
+See [Broker Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/broker-load-manual/) for operations.
 
-### 阅读示例：先检查文件，再落表
+### Reading example: inspect files, then persist to a table
 
-**外部环境示例，不随 Lab 执行。** 本节及后面的 Kafka、CDC 示例使用独立演示表，
-不向主线的 orders_imported 写入。实际运行前，先切换到独立实验库，准备外部服务，
-替换尖括号占位符；地址必须能被 Doris 节点访问，不能照搬 Notebook 所在机器的 localhost。
-凭据由实验环境提供，不把真实密钥保存到讲义或 Notebook。
+**External-environment example; not executed in the lab.** This section and the later Kafka and CDC examples use separate demonstration tables,
+not the main orders_imported table. Before running them, switch to an isolated lab database, prepare external services,
+and replace angle-bracket placeholders. Addresses must be reachable by Doris nodes; do not simply copy localhost from the notebook's machine.
+Use credentials supplied by the lab environment; do not save real secrets in the reading or notebooks.
 
-假设自行准备的 Parquet 文件只有 order_id、order_amount 两列，内容为
-`(901001, 180.00)`、`(901002, 80.00)`。它不是仓库中的完整 WWI 文件。
-下面先创建空的明细表，再从文件写入：
+Assume a Parquet file you prepare has only order_id and order_amount, containing
+`(901001, 180.00)` and `(901002, 80.00)`. This is not the complete WWI file in the repository.
+First create an empty detail table, then write from the file:
 
 <!-- external-service-example -->
 ```sql
@@ -329,50 +329,50 @@ SELECT order_id, order_amount FROM S3(
 SELECT COUNT(*) AS orders, SUM(order_amount) AS amount FROM orders_s3_demo;
 ```
 
-阅读和操作时分三步：
+Read and perform this in three steps:
 
-1. 先单独取出 `SELECT ... FROM S3(...)` 执行，预期看到两条文件记录，内部表仍为空。
-2. 再执行完整的 INSERT INTO SELECT，把这两列写入内部表；uri 选文件，format 指定解析格式。
-3. 最后一条查询预期得到 2、260.00。不要为“确认成功”再次运行 INSERT，否则明细表会追加同一批记录。
+1. First run `SELECT ... FROM S3(...)` alone. Expect two file records, while the internal table remains empty.
+2. Then run the complete INSERT INTO SELECT to write these two columns into the internal table; uri selects the file and format specifies how to parse it.
+3. Expect 2 and 260.00 from the final query. Do not run INSERT again to “confirm success,” or the detail table will append the same records again.
 
-S3 TVF 的参数说明见
+For S3 TVF parameters, see
 [S3 TVF](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)。
 
-## 5.6 Kafka 与 Routine Load
+## 5.6 Kafka and Routine Load
 
-当上游不断产生订单消息时，无法等“整个文件准备好”再导入。
-Kafka 负责保存持续到达的消息，Routine Load 则是在 Doris 中创建的持续消费任务：
-它从指定 Topic 读取消息，按批次写入目标表，并维护消费进度。
+When upstream systems continually produce order messages, you cannot wait for “the entire file to be ready” before loading.
+Kafka stores continuously arriving messages; Routine Load is a continuous consumption job created in Doris:
+it reads from a specified Topic, writes batches into the target table, and maintains consumption progress.
 
-### 持续任务要保存进度
+### Continuous jobs must save progress
 
 ```text
-业务生产者 → Kafka Topic / Partition
-                         │ 持续消费
+Business producer → Kafka Topic / Partition
+                         │ Continuous consumption
                          ▼
                   Routine Load Job
-                         │ 分批写入并推进消费进度
+                         │ Write batches and advance consumption progress
                          ▼
-                    Doris 目标表
+                    Doris target table
 ```
 
-Topic 是消息集合，Partition 将其分片，offset 标识分区内的位置。
-例如某分区中已有位置 100、101 的两条订单消息，任务完成这批写入并提交进度后，
-会继续消费后面的消息。下次检查时，如果 Kafka 已产生很多新消息，而任务进度长期停留，
-就需要检查暂停原因、错误记录或处理能力。
-不同 Partition 各自有位置编号，不能用一个分区的 offset 与另一个分区比较业务先后。
-任务负责持续消费；观察时既看任务状态和暂停原因，也看提交进度、错误行与目标数据。
-暂停、恢复、停止任务是任务生命周期，不是启动或停止 Doris 集群。
+A Topic is a collection of messages; Partitions divide it, and offsets identify positions within each partition.
+For example, if a partition has order messages at positions 100 and 101, after the job writes this batch and commits progress,
+it continues with subsequent messages. If Kafka has produced many new messages at the next check but job progress has stalled for a long time,
+inspect pause reasons, error records, or processing capacity.
+Each Partition has its own position numbering; offsets from different partitions cannot establish business-event order.
+The job consumes continuously; monitor job state and pause reasons along with committed progress, error rows, and target data.
+Pausing, resuming, and stopping a job concern its lifecycle, not starting or stopping the Doris cluster.
 
-offset 回答“读到了哪里”，业务 event_version 回答“同一订单哪个版本更新”。
-例如先消费签收、后消费迟到的支付事件，消费进度向前不代表应把订单状态倒退。
-Module 7 会用订单事件进一步说明版本裁决。任务参数与管理方式见
+offset answers “how far has consumption reached,” while business event_version answers “which version of the same order is newer.”
+For example, consuming a delivery-confirmation event before a late payment event advances consumption progress but should not roll back the order state.
+Module 7 further explains version resolution using order events. For job parameters and management, see
 [Routine Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/routine-load-manual/)。
 
-### 阅读示例：创建任务后，还要看消费结果
+### Reading example: after creating a job, check consumption results
 
-**外部环境示例，不随 Lab 执行。** 准备一个独立 Kafka Topic，仅发送两条无表头 CSV 消息：
-`901001,180.00` 和 `901002,80.00`。下面将消息的第一、二列映射为订单号、金额：
+**External-environment example; not executed in the lab.** Prepare a dedicated Kafka Topic and send only two headerless CSV messages:
+`901001,180.00` and `901002,80.00`. The following maps the first and second columns to order ID and amount:
 
 <!-- external-service-example -->
 ```sql
@@ -395,93 +395,93 @@ SHOW ROUTINE LOAD FOR orders_kafka_job;
 SELECT COUNT(*) AS orders, SUM(order_amount) AS amount FROM orders_kafka_demo;
 ```
 
-`OFFSET_BEGINNING` 指定新任务从分区开头消费，不是每一批都回到开头。
-等待这两条消息提交后，空表应变成 2 行、260.00；任务仍会等待新消息，不会因当前 Topic 读完而结束。
-在 SHOW 结果中查看 State、Progress、Statistic；若暂停，检查 ReasonOfStateChanged 和 ErrorLogUrls。
-不要重新创建任务来代替正常恢复，以免重新消费旧消息。操作字段见上面的 Routine Load 官方说明。
-观察结束后，可用 `PAUSE ROUTINE LOAD FOR orders_kafka_job` 暂停，
-继续观察时用 `RESUME ROUTINE LOAD FOR orders_kafka_job` 恢复。
+`OFFSET_BEGINNING` makes a new job start at the beginning of each partition; it does not restart every batch from the beginning.
+After both messages are committed, the empty table should contain 2 rows totaling 260.00; the job continues waiting for new messages rather than ending when the current Topic is exhausted.
+Inspect State, Progress, and Statistic in SHOW results; if paused, check ReasonOfStateChanged and ErrorLogUrls.
+Do not recreate the job instead of resuming normally, as that may consume old messages again. See the official Routine Load documentation above for operational fields.
+After observing, pause with `PAUSE ROUTINE LOAD FOR orders_kafka_job`,
+and resume with `RESUME ROUTINE LOAD FOR orders_kafka_job` when continuing.
 
-## 5.7 Flink CDC 与 Doris Connector
+## 5.7 Flink CDC and Doris Connector
 
-### 从业务库日志走到数仓
+### From business database logs to the warehouse
 
-CDC（Change Data Capture，变更数据捕获）读取业务库已经提交的新增、更新和删除。
-例如订单从 CREATED 更新为 PAID，CDC 把这次变化传给下游，数仓就能更新对应订单。
-Flink CDC 负责读取源端数据和变更，Flink 作业可以继续处理这些数据，
-Doris Connector 则负责把处理结果写入 Doris。
+CDC (Change Data Capture) reads committed inserts, updates, and deletes from a business database.
+For example, when an order changes from CREATED to PAID, CDC sends the change downstream so the warehouse can update that order.
+Flink CDC reads source data and changes, which a Flink job can further process;
+Doris Connector writes the processed results into Doris.
 
 ```text
-源业务库：初始快照 + 后续变更日志
+Source business database: initial snapshot + subsequent change logs
                  │
                  ▼
             Flink CDC
-       处理变更、维护恢复状态
+       Process changes and maintain recovery state
                  │ Doris Connector
                  ▼
-              Doris 表
+              Doris table
 ```
 
-接入已有订单库时，通常先读取初始快照，建立一份已有订单状态，再衔接后续变更日志。
-任务运行中会记录检查点（Checkpoint），保存可用于恢复的读取位置与处理状态。
-发生故障后，任务根据检查点恢复；源端日志也需要保留到恢复所需的位置。
+When connecting an existing order database, typically read an initial snapshot to establish existing order states, then transition to subsequent change logs.
+During execution, the job records checkpoints that save read positions and processing state for recovery.
+After a failure, the job recovers from a checkpoint; source logs must also be retained back to the position needed for recovery.
 
-源库中的一条 UPDATE，到了 Doris 端通常体现为同一主键的新状态；
-DELETE 也需要由连接器按删除语义传递，目标表才能正确移除对应逻辑行。
-因此，要一起确认源表主键、目标 Unique Key 和连接器的更新删除配置，
-并用同一订单的新增、支付、取消等变化检查同步结果。
+An UPDATE in the source usually becomes a new state for the same primary key in Doris;
+the connector must also convey DELETE semantics so the target table correctly removes the corresponding logical row.
+Therefore, verify the source primary key, target Unique Key, and connector update/delete configuration together,
+and check synchronization using changes to the same order, such as creation, payment, and cancellation.
 
-选择该路径时一起核对 Flink、CDC、Connector 和数据库版本，
-再测试新增、更新、删除以及中断恢复。
-配置入口见 [Flink Doris Connector](https://doris.apache.org/docs/4.x/connection-integration/data-integration/flink-doris-connector/)。
+When choosing this path, check Flink, CDC, Connector, and database versions together,
+then test inserts, updates, deletes, and recovery after interruption.
+For configuration, see [Flink Doris Connector](https://doris.apache.org/docs/4.x/connection-integration/data-integration/flink-doris-connector/).
 
-## 5.8 Streaming Job 与 CDC_STREAM
+## 5.8 Streaming Job and CDC_STREAM
 
-**版本与范围：** 本节介绍 Doris 4.1 起的持续同步路径；官方将 MySQL、PostgreSQL
-相关能力标为 Experimental（实验性）。以下以 MySQL 单表为例，不随 Lab 执行，
-运行前需按目标补丁版本准备源库、驱动与同步权限。
-[MySQL SQL 映射同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/)
+**Version and scope:** This section introduces continuous synchronization available from Doris 4.1; the official documentation marks MySQL and PostgreSQL
+capabilities as Experimental. The following single-table MySQL example is not executed in the lab;
+before running it, prepare the source database, driver, and synchronization permissions for the target patch version.
+[MySQL SQL-mapped synchronization](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/)
 
-### 与 Flink 路径有什么不同？
+### How does this differ from the Flink path?
 
-两条路径都要处理上一节的“快照 → 增量 → 恢复”。区别在于谁组织同步任务：
-Flink 路径由外部 Flink 作业运行；本节在 Doris 中创建 Streaming Job，
-通过 CDC_STREAM 表值函数读取源库，再按 SQL 映射写入目标表。
+Both paths handle the previous section's “snapshot → incremental changes → recovery.” The difference is what orchestrates synchronization:
+the Flink path runs as an external Flink job; here, a Streaming Job is created in Doris,
+reading the source through the CDC_STREAM table-valued function and writing to the target through SQL mappings.
 
 ```text
-MySQL 已有订单与 Binlog → CDC_STREAM → SELECT 字段映射 → Doris Unique Key 表
-                         └──── Streaming Job 持续组织执行并记录进度 ────┘
+MySQL existing orders and Binlog → CDC_STREAM → SELECT field mappings → Doris Unique Key table
+                         └──── Streaming Job orchestrates continuous execution and records progress ────┘
 ```
 
-| 部分 | 负责什么 | 本例中要填写什么 |
+| Component | Responsibility | What to provide in this example |
 | --- | --- | --- |
-| CDC_STREAM | 读取源库数据与变更 | JDBC 地址、驱动、账号、源库和源表 |
-| SELECT / INSERT INTO | 映射字段并选择目标 | order_id、status，以及已创建的目标表 |
-| Streaming Job | 组织持续运行并保存进度 | 任务名、启动位置和运行配置 |
+| CDC_STREAM | Read source data and changes | JDBC URL, driver, account, source database, and source table |
+| SELECT / INSERT INTO | Map fields and select the target | order_id, status, and the pre-created target table |
+| Streaming Job | Orchestrate continuous execution and save progress | Job name, starting position, and runtime configuration |
 
-`CREATE JOB ... ON STREAMING` 创建持续任务，
-`INSERT INTO ... SELECT ... FROM CDC_STREAM(...)` 描述读取结果怎么落表。
-SQL 映射模式需要预先创建 Unique Key 目标表；源端删除如何传递、主键怎样映射也需验证。
+`CREATE JOB ... ON STREAMING` creates a continuous job;
+`INSERT INTO ... SELECT ... FROM CDC_STREAM(...)` describes how read results are persisted.
+SQL mapping mode requires a pre-created Unique Key target table; verify source-delete propagation and primary-key mappings as well.
 [CDC_STREAM](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/cdc-stream/)
 
-### 启动位置与同步范围怎么选？
+### How should you choose the starting position and synchronization scope?
 
-- `offset="initial"`：先读取已有订单，再衔接增量变化。
-- `offset="latest"`：只接收启动后的增量，不会补齐启动前的订单。
-- 单表需要选择列、改名或转换类型时，使用本例的 SQL 映射模式。
-- 一组表按源结构接入时，可以评估 `FROM MYSQL (...) TO DATABASE ...` 自动建表同步。
-  初次建表与后续 Schema 变化是两件事，不能假定所有变更都会自动兼容。
-  [自动建表同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-database/)
+- `offset="initial"`: read existing orders first, then transition to incremental changes.
+- `offset="latest"`: receive only changes after startup, without backfilling earlier orders.
+- Use this example's SQL mapping mode when a single table requires column selection, renaming, or type conversion.
+- For a group of tables following the source structure, evaluate automatic table-creation synchronization with `FROM MYSQL (...) TO DATABASE ...`.
+  Initial table creation and subsequent schema changes are separate concerns; do not assume every change is automatically compatible.
+  [Automatic table-creation synchronization](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-database/)
 
-开始前确认 MySQL 行模式 Binlog、同步账号、JDBC 驱动、源表及目标主键；
-源日志必须保留到故障恢复需要的位置。任务进度回答“同步到哪里”，
-Module 7 的业务版本规则回答“同一订单哪个状态更新”，两者都要与目标数据核对。
+Before starting, verify MySQL row-based Binlog, the synchronization account, JDBC driver, source table, and target primary key;
+source logs must be retained back to the position needed for recovery. Job progress answers “how far synchronization has reached,”
+while Module 7's business-version rules answer “which state of the same order is newer.” Check both against target data.
 
-### 阅读示例：把配置对应到一笔订单
+### Reading example: relate the configuration to one order
 
-**外部环境示例，不随 Lab 执行。** 按上述条件准备 MySQL 与驱动；源表 demo.orders
-包含主键 order_id 和 status，初始只有 `(901001, 'CREATED')`。
-下面在 Doris 中预先创建同粒度的目标表，再创建同步任务：
+**External-environment example; not executed in the lab.** Prepare MySQL and the driver as described above; source table demo.orders
+contains primary key order_id and status, initially holding only `(901001, 'CREATED')`.
+First create a target table at the same grain in Doris, then create the synchronization job:
 
 <!-- external-service-example -->
 ```sql
@@ -504,43 +504,43 @@ WHERE ExecuteType = 'STREAMING' AND Name = 'orders_mysql_job';
 SELECT order_id, status FROM orders_cdc_demo ORDER BY order_id;
 ```
 
-按“初始化 → 产生变化 → 核对结果”观察：先等目标表出现 CREATED，
-再在 MySQL 中把同一订单改成 PAID，等待同步后查 Doris，预期仍为一行、状态变为 PAID。
-`offset=initial` 决定从快照衔接增量，SELECT 两列决定映射，Unique Key 决定目标行的身份。
-状态和进度在 jobs() 中观察，但必须用最后一条订单查询确认业务变化已经到达。
-该阅读示例的版本前提与配置见
-[MySQL SQL 映射同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/)。
-观察结束后，可用 `PAUSE JOB WHERE jobName = 'orders_mysql_job'` 暂停，
-继续时用 `RESUME JOB WHERE jobName = 'orders_mysql_job'` 恢复。
-操作语法见[持续导入任务管理](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-overview/)。
+Observe “initialize → generate changes → verify results”: first wait for CREATED to appear in the target table,
+then change the same order to PAID in MySQL, wait for synchronization, and query Doris. Expect one row still, now with status PAID.
+`offset=initial` determines the snapshot-to-incremental transition, the two SELECT columns determine the mapping, and Unique Key determines target-row identity.
+Observe state and progress in jobs(), but use the final order query to confirm that the business change has arrived.
+For this reading example's version prerequisites and configuration, see
+[MySQL SQL-mapped synchronization](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/).
+After observing, pause with `PAUSE JOB WHERE jobName = 'orders_mysql_job'`,
+and resume with `RESUME JOB WHERE jobName = 'orders_mysql_job'` when continuing.
+For operation syntax, see [Continuous load job management](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-overview/).
 
-## 5.9 对象存储增量文件
+## 5.9 Incremental files in object storage
 
-### 新文件发现也是一种进度问题
+### Discovering new files is also a progress problem
 
-固定文件集导完即可结束，持续目录会不断新增文件。
-官方 Streaming Job + S3 TVF 路径面向后一类需求；
-一次普通 S3 查询本身不是持续任务。
+A fixed file set is finished once loaded; a continuous directory keeps gaining files.
+The official Streaming Job + S3 TVF path addresses the latter need;
+a regular S3 query alone is not a continuous job.
 
-| 情景 | 处理方式 |
+| Scenario | Handling |
 | --- | --- |
-| 09:00 出现 orders-001.parquet | 读取文件并记录文件处理进度 |
-| 09:05 出现 orders-002.parquet | 文件名大于已处理进度，作为新文件读取 |
-| 09:10 才出现 orders-000.parquet | 文件名小于已处理进度，需要安排单独补数 |
+| orders-001.parquet appears at 09:00 | Read the file and record file-processing progress |
+| orders-002.parquet appears at 09:05 | Its filename is greater than the processed position; read it as a new file |
+| orders-000.parquet appears only at 09:10 | Its filename is less than the processed position; arrange a separate backfill |
 
-这条路径按文件名的字典序判断新文件：新文件名必须大于最后已加载的文件名。
-上游可以采用固定宽度、递增的批次编号，保持发布顺序与文件名顺序一致。
-迟到订单的业务日期可以是昨天，但承载它的新文件仍应使用向前递增的发布编号。
+This path identifies new files by lexicographic filename order: a new filename must be greater than the last loaded filename.
+Upstream systems can use fixed-width, increasing batch numbers to keep publication order aligned with filename order.
+A late order's business date may be yesterday, but its new file should still use an increasing publication number.
 
-任务的 `CurrentOffset` 表示已经处理到哪个文件，`EndOffset` 表示本批结束位置。
-排查“文件到了但表里没有”时，先比较文件名与这两个进度，再检查路径匹配、任务错误和目标订单。
-同名覆盖文件不应当作新的发布批次。规则与参数见
-[对象存储持续导入](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-s3/)。
+The job's `CurrentOffset` indicates the file processed so far, and `EndOffset` indicates the end position of this batch.
+When investigating “the file arrived but is not in the table,” first compare its filename with these two positions, then check path matching, job errors, and target orders.
+Overwriting a file with the same name should not be treated as a new publication batch. For rules and parameters, see
+[Continuous loading from object storage](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-s3/).
 
-### 阅读示例：给文件查询加上持续任务
+### Reading example: add a continuous job to a file query
 
-**外部环境示例，不随 Lab 执行。** 沿用 5.5 的两列文件结构，另建空表，
-并使用只包含增量文件的独立目录；不要指向已批量导入过的历史目录。
+**External-environment example; not executed in the lab.** Reuse the two-column file structure from 5.5, create another empty table,
+and use a dedicated directory containing only incremental files; do not point to a historical directory already batch-loaded.
 
 <!-- external-service-example -->
 ```sql
@@ -558,56 +558,56 @@ WHERE ExecuteType = 'STREAMING' AND Name = 'orders_files_job';
 SELECT order_id, order_amount FROM orders_files_demo ORDER BY order_id;
 ```
 
-先发布仅含 `(901001, 180.00)` 的 orders-001.parquet，等 CurrentOffset 推进且表内出现该行；
-再发布仅含 `(901002, 80.00)` 的 orders-002.parquet，预期最终两行、合计 260.00。
-与 5.5 不同，CREATE JOB 让文件查询持续运行；无需手工重复 INSERT。
-若此后发布 orders-000.parquet，按本节规则不会作为新文件被读取，应另行安排补数。
-任务语法与进度字段见上面的对象存储持续导入说明。
-观察结束后同样暂停任务，使用 `PAUSE JOB WHERE jobName = 'orders_files_job'`，避免继续消费后续文件。
+First publish orders-001.parquet containing only `(901001, 180.00)`, then wait for CurrentOffset to advance and the row to appear;
+next publish orders-002.parquet containing only `(901002, 80.00)`. Expect two rows totaling 260.00.
+Unlike 5.5, CREATE JOB keeps the file query running continuously; there is no need to repeat INSERT manually.
+If orders-000.parquet is published afterward, it will not be read as a new file under this section's rules; arrange a separate backfill.
+See the object-storage continuous-loading documentation above for job syntax and progress fields.
+After observing, also pause this job with `PAUSE JOB WHERE jobName = 'orders_files_job'` to avoid consuming subsequent files.
 
-## 动手实验 5：批量导入、失败与重试
+## Hands-on Lab 5: Batch loading, failures, and retries
 
-开始前请完成 Module 1–4 的相关概念，并保持课程沙箱运行；工具会自动配置同一容器的 BE HTTP 接入地址，继续使用课程独立实验库。
+Before starting, complete the relevant concepts from Modules 1–4 and keep the course sandbox running; the tools automatically configure the BE HTTP address in the same container, continuing to use the isolated course lab database.
 
-打开[实验 5](lab5_stream_load.ipynb)，按顺序完成：
+Open [Lab 5](lab5_stream_load.ipynb) and complete these steps in order:
 
-1. 导入模拟新订单 CSV，查看响应并核对十行、1400.00。
-2. 在 label 有效期内重试同一批次，再观察错误批次的拒绝结果。
-3. 将同样的接入方式扩展到十张 WWI 历史 Parquet 表，检查主键、关联和金额。
-4. 独立完成新 CSV 的列映射，核对订单号、客户号和金额。
+1. Load the simulated new-order CSV, inspect the response, and verify ten rows and 1400.00.
+2. Retry the same batch within the label's retention period, then observe rejection of the invalid batch.
+3. Extend the same ingestion method to ten WWI historical Parquet tables, checking primary keys, relationships, and amounts.
+4. Independently map columns for a new CSV and verify order IDs, customer IDs, and amounts.
 
-### 数据来源与说明
+### Data sources and notes
 
-历史部分采用 Microsoft WWI；新订单及变更标为 COURSE_SIMULATION，引用 WWI 客户和商品，但不回填历史。
-字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
+Historical data comes from Microsoft WWI; new orders and changes are marked COURSE_SIMULATION, referencing WWI customers and products without backfilling history.
+See the [Data guide](../../datasets/README.md) for fields, business definitions, and expected results.
 
-补充操作见 [Level 1 扩展实验](../extensions/README.md)，在独立 `ext_*` 表执行，不重复改写本 Lab 的业务结果。
+See [Level 1 extension labs](../extensions/README.md) for additional operations, performed in separate `ext_*` tables without repeatedly modifying this lab's business results.
 
-## 单元总结
+## Module Summary
 
-- 从来源、批次或持续性、完成方式选择接入路径；Stream Load、S3 TVF、Routine Load 和 CDC 不是一条固定流水线。
-- CSV 需要明确列顺序和分隔符，Parquet 需要字段与 DDL 对齐；默认值不能补造支付等业务事实。
-- 先看导入事务和加载/过滤行数，再查目标表的明细、关联和金额；HTTP 成功不够。
-- 相同 label 识别有限期内的同批请求，业务键识别事件，任务进度用于恢复；三者不能互相替代。
-- 历史订单明细、账户收款和模拟订单属于不同粒度和来源；保留 WWI 历史，不把账户收款强行分摊到订单。
+- Choose ingestion paths by source, batch versus continuous operation, and completion method; Stream Load, S3 TVF, Routine Load, and CDC are not a fixed pipeline.
+- CSV requires explicit column order and separators; Parquet requires fields aligned with DDL. Defaults cannot invent business facts such as payments.
+- Check load transactions and loaded/filtered row counts first, then query target details, relationships, and amounts; HTTP success is insufficient.
+- The same label identifies same-batch requests within a limited period, business keys identify events, and job progress supports recovery; none replaces the others.
+- Historical order lines, account receipts, and simulated orders have different grains and sources; preserve WWI history rather than forcing account receipts onto individual orders.
 
-## 知识测验 5：批量导入、失败与重试
+## Knowledge Quiz 5: Batch loading, failures, and retries
 
-完成讲义和实验后，打开[测验 5](quiz5_load_methods_and_retry_safety.ipynb)。
-测验包含五道单选题，不依赖 Doris 或外部服务；提交后阅读答案解释。
+After completing the reading and lab, open [Quiz 5](quiz5_load_methods_and_retry_safety.ipynb).
+The quiz has five single-choice questions and requires neither Doris nor external services; read the explanations after submitting.
 
-## 官方参考资料
+## Official References
 
-- [数据导入概览](https://doris.apache.org/docs/4.x/data-operate/import/load-manual/)
+- [Data loading overview](https://doris.apache.org/docs/4.x/data-operate/import/load-manual/)
 - [Stream Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)
-- [S3 文件表值函数](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)
+- [S3 file table-valued function](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)
 - [INSERT INTO SELECT](https://doris.apache.org/docs/4.x/data-operate/import/import-way/insert-into-manual/)
 - [Broker Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/broker-load-manual/)
 - [Routine Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/routine-load-manual/)
 - [Group Commit](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)
 - [Flink Doris Connector](https://doris.apache.org/docs/4.x/connection-integration/data-integration/flink-doris-connector/)
 - [CREATE STREAMING JOB](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/job/CREATE-STREAMING-JOB/)
-- [CDC_STREAM 表值函数](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/cdc-stream/)
-- [MySQL 单表 SQL 映射同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/)
-- [MySQL 自动建表同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-database/)
-- [对象存储持续导入](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-s3/)
+- [CDC_STREAM table-valued function](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/cdc-stream/)
+- [MySQL single-table SQL-mapped synchronization](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/)
+- [MySQL automatic table-creation synchronization](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-database/)
+- [Continuous loading from object storage](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-s3/)

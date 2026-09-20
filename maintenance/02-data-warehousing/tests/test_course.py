@@ -194,13 +194,13 @@ class MaterialsTest(unittest.TestCase):
             number = int(re.match(r"module(\d+)", module.name)[1])
             reading = next(module.glob("course*.md")).read_text()
             quiz = yaml.safe_load(next(module.glob("quiz*.yaml")).read_text())
-            self.assertTrue(reading.startswith(f"# Module {number}："), module)
-            self.assertTrue(quiz["title"].startswith(f"Module {number}："), module)
+            self.assertTrue(reading.startswith(f"# Module {number}:"), module)
+            self.assertTrue(quiz["title"].startswith(f"Module {number}:"), module)
 
     def test_reading_schedule_titles_match_sections(self):
         for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
             content = path.read_text()
-            schedule = content.split("## 单元安排\n\n", 1)[1].split("\n## ", 1)[0]
+            schedule = content.split("## Module Schedule\n\n", 1)[1].split("\n## ", 1)[0]
             listed = re.findall(r"^\| (\d+\.\d+ [^|]+) \|", schedule, re.MULTILINE)
             sections = re.findall(r"^## (\d+\.\d+ .+)$", content, re.MULTILINE)
             self.assertTrue(sections, path)
@@ -218,34 +218,34 @@ class MaterialsTest(unittest.TestCase):
             if path.suffix == ".ipynb":
                 notebook = nbformat.read(path, as_version=4)
                 content = "\n".join(c.source for c in notebook.cells if c.cell_type == "markdown")
-            self.assertNotRegex(content, r"候选实验|候选 Lab|尚未实测|实验初稿|验收证据|未执行的步骤不要标记为完成|maintenance/.*/VALIDATION\.md", path)
+            self.assertNotRegex(content, r"(?i)candidate experiment|candidate lab|not yet tested|initial lab draft|acceptance evidence|do not mark unexecuted steps as complete|maintenance/.*/VALIDATION\.md", path)
         for path in (COURSE_ROOT / "level1").glob("*/quiz*.ipynb"):
             notebook = nbformat.read(path, as_version=4)
             content = "\n".join(c.source for c in notebook.cells if c.cell_type == "markdown")
-            self.assertIn("### 加载测验", content, path)
-            self.assertIn("## 开始答题", content, path)
+            self.assertIn("### Load the Quiz", content, path)
+            self.assertIn("## Start the Quiz", content, path)
 
     def test_reading_information_and_schedules_are_consistent(self):
         for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
             content = path.read_text()
-            opening = content.split("## 单元目标", 1)[0]
+            opening = content.split("## Module Goal", 1)[0]
             fields = re.findall(r"^\| ([^|]+) \|", opening, re.MULTILINE)
-            self.assertEqual(fields, ["课程信息", "---", "所属课程", "产品版本", "实验版本", "预计时间"], path)
-            schedule = content.split("## 单元安排\n\n", 1)[1].split("\n## ", 1)[0]
-            self.assertIn("| 环节 | 学习形式 | 建议时间 | 学习成果 |", schedule, path)
-            minutes = [int(value) for value in re.findall(r"\| (\d+) 分钟 \|", schedule)]
-            total = int(re.search(r"\| 预计时间 \| 约 (\d+) 分钟", opening)[1])
+            self.assertEqual(fields, ["Course Information", "---", "Course", "Product Version", "Lab Version", "Estimated Time"], path)
+            schedule = content.split("## Module Schedule\n\n", 1)[1].split("\n## ", 1)[0]
+            self.assertIn("| Section | Learning Format | Suggested Time | Learning Outcome |", schedule, path)
+            minutes = [int(value) for value in re.findall(r"\| (\d+) minutes \|", schedule)]
+            total = int(re.search(r"\| Estimated Time \| About (\d+) minutes", opening)[1])
             self.assertEqual(sum(minutes), total, path)
-            self.assertNotIn("完成下方实验并核对结果", schedule, path)
+            self.assertNotIn("Complete the lab below and check the results", schedule, path)
 
     def test_quiz_objectives_cover_each_reading_goal(self):
         for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
             content = path.read_text()
-            goals = content.split("## 学习目标\n\n", 1)[1].split("\n## ", 1)[0]
+            goals = content.split("## Learning Objectives\n\n", 1)[1].split("\n## ", 1)[0]
             objectives = re.findall(r"^\d+\. (.+)$", goals, re.MULTILINE)
             quiz = yaml.safe_load(next(path.parent.glob("quiz*.yaml")).read_text())
             self.assertEqual([q["objective"] for q in quiz["questions"]], objectives, path)
-            summary = content.split("## 单元总结\n\n", 1)[1].split("\n## ", 1)[0]
+            summary = content.split("## Module Summary\n\n", 1)[1].split("\n## ", 1)[0]
             self.assertEqual(len(re.findall(r"^- ", summary, re.MULTILINE)), len(objectives), path)
 
     def test_readings_keep_examples_separate_from_lab_writes(self):
@@ -258,7 +258,7 @@ class MaterialsTest(unittest.TestCase):
             self.assertTrue(blocks, path)
             for marker, block in blocks:
                 if "reading-only-example" in marker:
-                    self.assertIn("SQL 阅读示例：", content)
+                    self.assertIn("SQL reading example:", content)
                     allowed_targets = {
                         "module03-table-design": {"orders_partitioned"},
                         "module05-ingestion": {"orders_defaults_reading"},
@@ -323,25 +323,25 @@ class MaterialsTest(unittest.TestCase):
                 f'| {order["order_id"]} | {order["order_date"]} | {order["order_amount"]} |', intro,
             )
         selected_amount = sum(Decimal(row["order_amount"]) for row in selected)
-        self.assertIn(f"三笔合计 {selected_amount:.2f}", intro)
+        self.assertIn(f"three orders total {selected_amount:.2f}", intro)
         doubled = 2 * sum(Decimal(row["order_amount"]) for row in data["orders"])
-        self.assertIn(f"金额变为 {doubled:.2f}", intro)
+        self.assertIn(f"twenty rows and an amount of {doubled:.2f}", intro)
 
-    def test_readings_follow_chinese_course_structure(self):
+    def test_readings_follow_english_course_structure(self):
         readings = list((COURSE_ROOT / "level1").glob("*/course*.md"))
         self.assertEqual(len(readings), 7)
         for path in readings:
             content = path.read_text()
             headings = re.findall(r"^## (.+)$", content, re.MULTILINE)
-            self.assertEqual(headings[:3], ["单元目标", "学习目标", "单元安排"], path)
+            self.assertEqual(headings[:3], ["Module Goal", "Learning Objectives", "Module Schedule"], path)
             self.assertRegex(headings[3], r"^\d+\.1 ")
-            self.assertTrue(headings[-4].startswith("动手实验 "), path)
-            self.assertEqual(headings[-3], "单元总结", path)
-            self.assertTrue(headings[-2].startswith("知识测验 "), path)
-            self.assertEqual(headings[-1], "官方参考资料", path)
-            self.assertIn("| 课程信息 | 内容 |", content, path)
+            self.assertTrue(headings[-4].startswith("Hands-on Lab "), path)
+            self.assertEqual(headings[-3], "Module Summary", path)
+            self.assertTrue(headings[-2].startswith("Knowledge Quiz "), path)
+            self.assertEqual(headings[-1], "Official References", path)
+            self.assertIn("| Course Information | Details |", content, path)
             self.assertNotRegex(content, r"\]\(quiz[^)]+\.yaml\)")
-            references = content.split("## 官方参考资料", 1)[1]
+            references = content.split("## Official References", 1)[1]
             self.assertGreaterEqual(len(re.findall(r"https://doris\.apache\.org/", references)), 2, path)
 
     def test_numbered_material_names(self):
@@ -403,7 +403,7 @@ class MaterialsTest(unittest.TestCase):
                 for option in question["options"]:
                     letter = option["id"].upper()
                     self.assertTrue(option["text"].startswith(f"{letter}. "))
-                    self.assertIn(f"{letter}：", question["explanation"])
+                    self.assertIn(f"{letter}:", question["explanation"])
             self.assertIsInstance(CourseQuiz.from_yaml(path), CourseQuiz)
 
     def test_quiz_four_choices_and_feedback_render(self):
@@ -431,7 +431,7 @@ class MaterialsTest(unittest.TestCase):
                             "Not quite." in feedback.value, option.option_id != question.answer
                         )
                         for letter in "ABCD":
-                            self.assertIn(f"{letter}：", feedback.value)
+                            self.assertIn(f"{letter}:", feedback.value)
 
     def test_learner_table_names_and_upstream_references(self):
         for path in COURSE_ROOT.rglob("*"):
@@ -560,7 +560,7 @@ class AlignmentTest(unittest.TestCase):
         source = "\n".join(cell.source for cell in notebook.cells)
         self.assertNotIn("10 million", source)
         self.assertNotIn("order_ddl(", source)
-        self.assertIn("自己动手", source)
+        self.assertIn("Your turn", source)
         self.assertIn("3944.20", source)
         self.assertIn("8276.40", source)
 
@@ -700,18 +700,18 @@ class AlignmentTest(unittest.TestCase):
         with patch("dw_course.ui.in_notebook", return_value=True), patch(
             "dw_course.ui.display"
         ) as display, patch("dw_course.ui.show_log") as log:
-            progress = WorkflowProgress("准备 Doris 实验环境", STARTUP_STEPS)
+            progress = WorkflowProgress("Prepare the Doris lab environment", STARTUP_STEPS)
             for step in STARTUP_STEPS:
                 progress.advance(step)
             progress.finish()
             display.assert_called_once()
             panel = display.return_value.update.call_args.args[0].data
             self.assertEqual(panel.count('doris-workflow-item success'), 6)
-            self.assertIn("<span>已完成</span>", panel)
+            self.assertIn("<span>Completed</span>", panel)
             self.assertIn("width:100%", panel)
             self.assertNotIn("failure", panel)
             log.assert_called_once()
-            self.assertEqual(log.call_args.args[0], "查看完整启动日志")
+            self.assertEqual(log.call_args.args[0], "View complete startup logs")
 
     def test_successful_subprocess_stderr_is_kept_in_folded_log(self):
         from dw_course.docker_runtime import _run, STARTUP_STEPS
@@ -719,7 +719,7 @@ class AlignmentTest(unittest.TestCase):
         with patch("dw_course.ui.in_notebook", return_value=True), patch(
             "dw_course.ui.display"
         ), patch("dw_course.ui.show_log") as log:
-            progress = WorkflowProgress("准备 Doris 实验环境", STARTUP_STEPS)
+            progress = WorkflowProgress("Prepare the Doris lab environment", STARTUP_STEPS)
             _run([
                 sys.executable, "-c",
                 "import sys; print('Container Healthy', file=sys.stderr)",
@@ -746,7 +746,7 @@ class AlignmentTest(unittest.TestCase):
             self.assertEqual(panel.count("doris-workflow-item success"), 3)
             self.assertEqual(panel.count("doris-workflow-item failure"), 1)
             self.assertEqual(panel.count("doris-workflow-item pending"), 2)
-            self.assertIn("<span>失败</span>", panel)
+            self.assertIn("<span>Failed</span>", panel)
             self.assertIn("width:50%", panel)
             self.assertIn("address already in use", panel)
             self.assertNotIn("<script>", panel)

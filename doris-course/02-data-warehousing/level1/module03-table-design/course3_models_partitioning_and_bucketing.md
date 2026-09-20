@@ -1,59 +1,59 @@
-# Module 3：Doris 表模型、分区与分桶
+# Module 3: Doris table models, partitioning, and bucketing
 
-| 课程信息 | 内容 |
+| Course Information | Details |
 | --- | --- |
-| 所属课程 | Data Warehousing with Apache Doris · Level 1 |
-| 产品版本 | Apache Doris 4.x |
-| 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 55 分钟，包含讲义阅读、动手实验和测验 |
+| Course | Data Warehousing with Apache Doris · Level 1 |
+| Product Version | Apache Doris 4.x |
+| Lab Version | Apache Doris 4.1.3 |
+| Estimated Time | About 55 minutes, including reading, the hands-on lab, and quiz |
 
-[课程目录](../README.md) · [打开实验 3](lab3_models_and_pruning.ipynb) · [打开测验 3](quiz3_models_and_data_distribution.ipynb)
+[Course contents](../README.md) · [Open Lab 3](lab3_models_and_pruning.ipynb) · [Open Quiz 3](quiz3_models_and_data_distribution.ipynb)
 
-## 单元目标
+## Module Goal
 
-本单元介绍 Doris 的三种表模型，以及分区和分桶的作用。
+This module introduces the three Doris table models and the roles of partitioning and bucketing.
 
-完成本单元后，你将能够比较重复键在不同模型中的处理结果，并通过 EXPLAIN 观察查询的扫描范围。
+After completing this module, you will be able to compare how different models handle duplicate keys and use EXPLAIN to inspect query scan ranges.
 
-## 学习目标
+## Learning Objectives
 
-完成本单元后，你应该能够：
+After completing this module, you should be able to:
 
-1. 预测相同输入在 Duplicate、Unique、Aggregate 模型中的结果。
-2. 按明细、当前状态或汇总指标的用途选择逻辑键和表模型。
-3. 区分分区、分桶、排序键和业务唯一键的职责。
-4. 通过 EXPLAIN 比较日期过滤和分桶键过滤的扫描范围。
-5. 结合明细与金额核对结果，不把计划裁剪等同于性能提升。
+1. Predict the results of the same input in the Duplicate, Unique, and Aggregate models.
+2. Choose logical keys and table models for detail records, current state, or aggregate metrics.
+3. Distinguish the roles of partitions, buckets, sort keys, and business unique keys.
+4. Use EXPLAIN to compare scan ranges with date filters and bucket-key filters.
+5. Verify results using both detail records and amounts, without equating plan pruning with performance gains.
 
-## 单元安排
+## Module Schedule
 
-| 环节 | 学习形式 | 建议时间 | 学习成果 |
+| Section | Learning Format | Suggested Time | Learning Outcome |
 | --- | --- | --- | --- |
-| 3.1 Doris Key Model | 输入与结果对照 | 10 分钟 | 为明细、当前状态和汇总选择模型 |
-| 3.2 分区、分桶与数据分布 | DDL 与查询计划 | 15 分钟 | 区分物理组织和逻辑唯一性 |
-| 实验 3 | 动手操作 | 25 分钟 | 验证三种模型结果，比较三个过滤计划 |
-| 测验 3 | 交互测验 | 5 分钟 | 检查模型选择、键和计划证据 |
+| 3.1 Doris Key Model | Compare input and results | 10 minutes | Choose models for detail records, current state, and aggregates |
+| 3.2 Partitioning, bucketing, and data distribution | DDL and query plans | 15 minutes | Distinguish physical organization from logical uniqueness |
+| Lab 3 | Hands-on practice | 25 minutes | Verify results for three models and compare three filter plans |
+| Quiz 3 | Interactive quiz | 5 minutes | Check model selection, keys, and plan evidence |
 
 ## 3.1 Doris Key Model
 
-建表时选择的 Key Model（表模型），决定键相同的数据如何处理。
-原始接入表需要留下每次输入，订单当前表需要反映最新金额，销售汇总表需要累计指标。
-这三种需求分别对应保留明细、按键更新和按函数聚合。先确定一行的业务含义，
-再选模型，才能让写入行为与报表口径一致。
+The Key Model selected when creating a table determines how data with identical keys is handled.
+A raw ingestion table needs to retain every input, a current-order table needs to reflect the latest amounts, and a sales summary table needs to accumulate metrics.
+These three needs correspond to retaining detail records, updating by key, and aggregating by function. First determine the business meaning of a row,
+then choose a model so that write behavior matches the report's metric definitions.
 
-### 同样的输入，为什么结果不同？
+### Why does the same input produce different results?
 
-WWI 订单 1 的金额是 2300.00，订单 2 是 405.00。现在在隔离实验表里，
-把订单 1 的金额模拟修正为 2250.00。
-按下表顺序分三次提交，并等每次写入完成：
+WWI order 1 has an amount of 2300.00, and order 2 has an amount of 405.00. Now, in isolated lab tables,
+simulate correcting the amount of order 1 to 2250.00.
+Submit three writes in the order below, waiting for each write to complete:
 
-| 写入顺序 | id | amount | 含义 |
+| Write order | id | amount | Meaning |
 | --- | ---: | ---: | --- |
-| 1 | 1 | 2300.00 | 订单 1 的原金额 |
-| 2 | 1 | 2250.00 | 订单 1 的修正金额 |
-| 3 | 2 | 405.00 | 订单 2 的金额 |
+| 1 | 1 | 2300.00 | Original amount of order 1 |
+| 2 | 1 | 2250.00 | Corrected amount of order 1 |
+| 3 | 2 | 405.00 | Amount of order 2 |
 
-**Duplicate Key：保留每条明细。** 键决定排序，不是唯一性约束。
+**Duplicate Key: retain every detail record.** The key determines sorting; it is not a uniqueness constraint.
 
 | id | amount |
 | ---: | ---: |
@@ -61,25 +61,25 @@ WWI 订单 1 的金额是 2300.00，订单 2 是 405.00。现在在隔离实验�
 | 1 | 2300.00 |
 | 2 | 405.00 |
 
-**Unique Key：保留每个键的当前值。** 在本例顺序提交、未设置 Sequence 列的条件下，
-后一次写入替换同键的先前值；处理乱序业务版本时还要使用 Module 7 的版本规则。
+**Unique Key: retain the current value for each key.** With sequential submissions and no Sequence column in this example,
+a later write replaces the earlier value with the same key; handling out-of-order business versions also requires the version rules in Module 7.
 
 | id | amount |
 | ---: | ---: |
 | 1 | 2250.00 |
 | 2 | 405.00 |
 
-**Aggregate Key：按声明的函数合并值。** 本例 amount 声明为 SUM：
+**Aggregate Key: merge values using the declared function.** In this example, amount is declared as SUM:
 
 | id | amount |
 | ---: | ---: |
 | 1 | 4550.00 |
 | 2 | 405.00 |
 
-4550.00 是 2300.00 + 2250.00。引擎正确执行了 SUM，
-但它不是订单 1 的当前金额：两个快照不能当成两笔销售累加。
+4550.00 is 2300.00 + 2250.00. The engine performed SUM correctly,
+but this is not the current amount of order 1: two snapshots cannot be added together as two sales.
 
-完成 Lab 3 后可以分别核对：
+After completing Lab 3, you can verify each result:
 
 ```sql
 SELECT id, amount FROM orders_duplicate ORDER BY id, amount;
@@ -87,42 +87,42 @@ SELECT id, amount FROM orders_unique ORDER BY id;
 SELECT id, amount FROM orders_aggregate ORDER BY id;
 ```
 
-### 先问“一行表示什么”，再选模型
+### Ask "what does one row represent?" before choosing a model
 
-| 要保留的内容 | 逻辑标识 | 本课程采用的模型 |
+| What to retain | Logical identifier | Model used in this course |
 | --- | --- | --- |
-| 每次原始投递 | 投递编号 | Duplicate Key 保留每次记录 |
-| 一笔订单的当前状态 | order_id | Unique Key，并在 Module 7 加业务版本 |
-| 每个不同业务事件 | event_id | Unique Key，对相同内容的重投去重 |
-| 按维度累计的可加指标 | 日期、商品等维度组合 | Aggregate Key，明确 SUM 等函数 |
+| Every raw delivery | Delivery ID | Duplicate Key retains every record |
+| The current state of an order | order_id | Unique Key, with business versions added in Module 7 |
+| Each distinct business event | event_id | Unique Key deduplicates redeliveries of identical content |
+| Additive metrics accumulated by dimension | A combination of dimensions such as date and product | Aggregate Key, with explicit functions such as SUM |
 
-当前表与历史表可以都用 Unique Key，但键不同、用途不同。
-历史表用 order_id 会把同一订单的不同事件覆盖掉。
-模型的具体语义见文末三种模型的官方资料。
+Both current-state and history tables can use Unique Key, but their keys and purposes differ.
+Using order_id in a history table would overwrite distinct events for the same order.
+See the official references for the three models at the end for their precise semantics.
 
-## 3.2 分区、分桶与数据分布
+## 3.2 Partitioning, bucketing, and data distribution
 
-### 四种设计不要混在一起
+### Do not confuse these four design choices
 
-选好“相同订单如何处理”之后，还要决定“数据放在哪里”。例如每天都要查询订单日报，
-可以先按日期分区，让昨天的查询集中读取昨天的数据；一天的数据再按订单号分桶，
-分散到多个 Tablet，为并行处理提供分片。
+After deciding "how to handle the same order," you also need to decide "where to store the data." For example, for daily order reports,
+partition by date so that a query for yesterday focuses on yesterday's data; then bucket each day's data by order ID,
+distributing it across multiple Tablets to provide shards for parallel processing.
 
-| 设计 | 回答的问题 | 本节例子 |
+| Design | Question answered | Example in this section |
 | --- | --- | --- |
-| 分区 | 哪些数据属于同一范围，哪些范围可以不读？ | 按 order_date 分两天 |
-| 分桶 | 分区内数据如何分到 Tablet？ | HASH(order_id)，每个分区四桶 |
-| 排序键 | 数据在存储中如何排序？ | order_date、order_id |
-| 业务唯一键 | 什么标识同一个业务对象？ | 订单当前状态以 order_id 标识 |
+| Partitioning | Which data belongs to the same range, and which ranges can be skipped? | Two days partitioned by order_date |
+| Bucketing | How is data within a partition distributed across Tablets? | HASH(order_id), four buckets per partition |
+| Sort key | How is data sorted in storage? | order_date, order_id |
+| Business unique key | What identifies the same business object? | The current state of an order is identified by order_id |
 
-Lab 的分区表使用 Duplicate Key 保留历史明细，日期和订单号用于排序。
-另建订单当前表时，应重新核对业务唯一键：如果同一订单的日期可能被修正，
-把日期也作为唯一键的一部分，就会把修正前后识别为两个不同的键。
+The lab's partitioned table uses Duplicate Key to retain historical detail records, with date and order ID used for sorting.
+When creating a separate current-order table, recheck the business unique key: if an order's date can be corrected,
+including the date in the unique key would identify the records before and after correction as two different keys.
 
-### 把分区和分桶写进建表语句
+### Specify partitioning and bucketing in the CREATE TABLE statement
 
-**SQL 阅读示例：对应 Lab 3 的建表步骤，不要在已完成的 Lab 上重复执行。**
-初始化与重置仍在 Lab 中完成。先对照下面的语句理解布局：
+**SQL reading example: corresponds to the table creation step in Lab 3. Do not rerun it after completing the lab.**
+Initialization and resets are still performed in the lab. First read the statement below to understand the layout:
 
 <!-- reading-only-example -->
 ```sql
@@ -137,31 +137,31 @@ DISTRIBUTED BY HASH(order_id) BUCKETS 4
 PROPERTIES("replication_num"="1");
 ```
 
-- DUPLICATE KEY 中的日期、订单号组织排序，不保证订单号唯一。
-- PARTITION BY RANGE 按日期分区；每个范围包含左端、不包含右端。
-- DISTRIBUTED BY HASH 按订单号分桶；BUCKETS 4 是每个分区四桶，不是四个 BE。
-- replication_num=1 是教学沙箱的单副本设置，不是生产容灾方案。
+- The date and order ID in DUPLICATE KEY organize sorting; they do not guarantee unique order IDs.
+- PARTITION BY RANGE partitions by date; each range includes its left endpoint and excludes its right endpoint.
+- DISTRIBUTED BY HASH buckets by order ID; BUCKETS 4 means four buckets per partition, not four BEs.
+- replication_num=1 is a single-replica setting for the teaching sandbox, not a production disaster recovery solution.
 
-因此，2013-01-02 的订单属于 p_day2；分区内再由订单号计算目标桶。
-本例只有基础索引，物理布局为：
+Therefore, orders dated 2013-01-02 belong to p_day2; the target bucket within the partition is then calculated from the order ID.
+This example has only a base index, with the following physical layout:
 
 ```text
 orders_partitioned
-├── p_day1：2013-01-01 ≤ order_date < 2013-01-02
-│   └── HASH(order_id)，4 个 Tablet
-└── p_day2：2013-01-02 ≤ order_date < 2013-01-03
-    └── HASH(order_id)，4 个 Tablet
+├── p_day1: 2013-01-01 ≤ order_date < 2013-01-02
+│   └── HASH(order_id), 4 Tablets
+└── p_day2: 2013-01-02 ≤ order_date < 2013-01-03
+    └── HASH(order_id), 4 Tablets
 ```
 
-### 比较三个查询计划
+### Compare three query plans
 
-Hash 分桶根据分桶列的值计算目标桶。同一分区内，相同订单号会落入同一个桶；
-具体桶号由 Hash 计算，不能把订单号直接当桶号。查询同时给出日期和订单号等值条件时，
-Doris 就有机会先锁定一天，再锁定该订单所在的桶。
-分桶数决定分片数量，增加分桶也会增加管理开销，需要结合数据量选择。
-相关规则见[分区与分桶](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)。
+Hash bucketing calculates the target bucket from the bucket column's value. Within a partition, identical order IDs go into the same bucket;
+the bucket number is calculated by Hash, so the order ID itself is not the bucket number. When a query specifies equality conditions on both date and order ID,
+Doris can potentially narrow the scan to one day and then to the bucket containing that order.
+The bucket count determines the number of shards. More buckets also mean more management overhead, so choose the count based on data volume.
+For the relevant rules, see [Partitioning and bucketing](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/).
 
-完成 Lab 初始化后执行：
+Run after initializing the lab:
 
 ```sql
 EXPLAIN SELECT * FROM orders_partitioned;
@@ -170,17 +170,17 @@ EXPLAIN SELECT * FROM orders_partitioned
 WHERE order_date = '2013-01-01' AND order_id = 1;
 ```
 
-| 查询 | 关注的变化 | 原因 |
+| Query | Changes to observe | Reason |
 | --- | --- | --- |
-| 无过滤 | 两个分区及其 Tablet | 没有排除任何日期或订单 |
-| 日期过滤 | 只需第一天的分区 | 第二天的数据不满足日期条件 |
-| 日期＋订单号 | 第一天下进一步缩小 Tablet 范围 | Hash 键等值条件可用于分桶裁剪 |
+| No filter | Both partitions and their Tablets | No dates or orders are excluded |
+| Date filter | Only the first day's partition is needed | The second day's data does not meet the date condition |
+| Date + order ID | Further narrows the Tablet range within the first day | A Hash-key equality condition can be used for bucket pruning |
 
-在扫描节点中找所选分区和 Tablet 数量；具体字段名称随版本而变。
-EXPLAIN 展示计划中的扫描范围。查询的实际耗时还受扫描量、缓存和计算开销影响，
-可以结合运行结果和 Query Profile 分析。
+Find the selected partition and Tablet counts in the scan node; exact field names vary by version.
+EXPLAIN shows the planned scan range. Actual query duration also depends on scan volume, caching, and computation overhead;
+analyze it alongside execution results and the Query Profile.
 
-### 裁剪不能改变答案
+### Pruning must not change the answer
 
 ```sql
 SELECT COUNT(*) AS sample_orders, SUM(amount) AS order_amount
@@ -188,45 +188,45 @@ FROM orders_partitioned
 WHERE order_date = '2013-01-01';
 ```
 
-结果应为五笔、3944.20。再加 order_id=1 时应回到订单 1 的 2300.00，
-不是隔离模型实验中的修正值 2250.00；这两组表的数据用途不同。
-本节只验证模型语义和计划裁剪，不用十笔样本比较生产性能。
+The result should be five orders and 3944.20. Adding order_id=1 should return the original amount of 2300.00 for order 1,
+not the corrected value of 2250.00 in the isolated model experiment; the data in these two sets of tables serves different purposes.
+This section only verifies model semantics and plan pruning; it does not use a ten-order sample to compare production performance.
 
-## 动手实验 3：模型语义与分区分桶
+## Hands-on Lab 3: Model semantics, partitioning, and bucketing
 
-开始前请完成 Module 1、Module 2，了解订单字段和基本存储结构，并使用课程独立实验库。
+Before starting, complete Module 1 and Module 2 to understand the order fields and basic storage structure, and use the course's isolated lab database.
 
-打开[实验 3](lab3_models_and_pruning.ipynb)，按顺序完成：
+Open [Lab 3](lab3_models_and_pruning.ipynb) and complete these steps in order:
 
-1. 向三种模型写入相同键的不同金额，核对逐行结果。
-2. 创建独立的日期分区明细表，准备相同查询的不同过滤条件。
-3. 比较无过滤、日期过滤、日期加订单号过滤的计划和结果。
+1. Write different amounts with the same key to the three models and verify the results row by row.
+2. Create a separate date-partitioned detail table and prepare different filters for the same query.
+3. Compare plans and results with no filter, a date filter, and a date plus order ID filter.
 
-### 数据来源与说明
+### Data sources and notes
 
-实验使用 Microsoft WWI 官方模拟批发业务的历史子集，保留原始客户与商品标识。
-字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
+The lab uses a historical subset of Microsoft's official WWI simulated wholesale business, retaining the original customer and product identifiers.
+See the [data notes](../../datasets/README.md) for fields, business definitions, and expected results.
 
-补充操作见 [Level 1 扩展实验](../extensions/README.md)，在独立 `ext_*` 表执行，不重复改写本 Lab 的业务结果。
+See the [Level 1 extension labs](../extensions/README.md) for additional exercises, run in separate `ext_*` tables without rewriting this lab's business results.
 
-## 单元总结
+## Module Summary
 
-- Duplicate 保留三行，Unique 保留两笔当前值，Aggregate SUM 得到订单 1 的 4550.00；相同输入不代表相同业务语义。
-- 先确定一行的粒度和逻辑键，再选模型；order_id 维护当前状态，event_id 保留不同事件。
-- 分区管范围，分桶管分布，排序键管顺序；这些物理设计不能悄悄改变业务唯一性。
-- 日期条件与 Hash 键条件可以在不同层次裁剪；用 EXPLAIN 检查实际选择的分区和 Tablet。
-- 核对明细与金额后再讨论效率；SUM 正确执行不代表指标口径正确，计划缩小也不等于已测得加速。
+- Duplicate retains three rows, Unique retains the current values for two orders, and Aggregate SUM produces 4550.00 for order 1; identical input does not imply identical business semantics.
+- Determine the row grain and logical key before choosing a model; order_id maintains current state, while event_id preserves distinct events.
+- Partitions manage ranges, buckets manage distribution, and sort keys manage ordering; these physical design choices must not silently change business uniqueness.
+- Date conditions and Hash-key conditions can prune at different levels; use EXPLAIN to inspect the partitions and Tablets actually selected.
+- Verify detail records and amounts before discussing efficiency; a correctly executed SUM does not mean the metric definition is correct, and a smaller plan does not mean a speedup has been measured.
 
-## 知识测验 3：模型语义与分区分桶
+## Knowledge Quiz 3: Model semantics, partitioning, and bucketing
 
-完成讲义和实验后，打开[测验 3](quiz3_models_and_data_distribution.ipynb)。
-测验包含五道单选题，不依赖 Doris 或外部服务；提交后阅读答案解释。
+After completing the reading and lab, open [Quiz 3](quiz3_models_and_data_distribution.ipynb).
+The quiz contains five single-choice questions and does not require Doris or external services; read the answer explanations after submitting.
 
-## 官方参考资料
+## Official References
 
-- [Duplicate Key 明细模型](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/)
-- [Unique Key 主键模型](https://doris.apache.org/docs/4.x/table-design/data-model/unique/)
-- [Aggregate Key 聚合模型](https://doris.apache.org/docs/4.x/table-design/data-model/aggregate/)
-- [分区与分桶基础](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)
-- [数据分桶](https://doris.apache.org/docs/4.x/table-design/data-partitioning/data-bucketing/)
+- [Duplicate Key detail model](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/)
+- [Unique Key primary key model](https://doris.apache.org/docs/4.x/table-design/data-model/unique/)
+- [Aggregate Key aggregate model](https://doris.apache.org/docs/4.x/table-design/data-model/aggregate/)
+- [Partitioning and bucketing basics](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/)
+- [Data bucketing](https://doris.apache.org/docs/4.x/table-design/data-partitioning/data-bucketing/)
 - [EXPLAIN](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/EXPLAIN/)

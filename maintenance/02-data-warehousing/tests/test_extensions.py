@@ -133,11 +133,11 @@ class ExtensionsTest(unittest.TestCase):
     def test_readings_separate_main_scope_and_optional_integrations(self):
         level = REPO / "doris-course/02-data-warehousing/level1"
         expectations = {
-            "README.md": ("不要求搭建外部链路", "持续接入 Lab 均选做", "optional5_kafka_routine_load.ipynb", "optional5_flink_mysql_cdc.ipynb"),
+            "README.md": ("not required to set up external pipelines", "continuous ingestion Labs are all optional", "optional5_kafka_routine_load.ipynb", "optional5_flink_mysql_cdc.ipynb"),
             "module05-ingestion/course5_batch_and_streaming_ingestion.md": (
-                "5.6～5.9 为介绍型内容", "持续并发验证不作为本单元完成条件"),
+                "Sections 5.6–5.9 are introductions", "continuous concurrency validation is not a completion requirement"),
             "module07-state-changes/course7_updates_deletes_and_replay.md": (
-                "不要求搭建真实 CDC", "Lab 7 使用模拟事件", "受控 Savepoint"),
+                "does not require real CDC setup", "Lab 7 uses simulated events", "controlled Savepoint"),
         }
         for name, phrases in expectations.items():
             with self.subTest(reading=name):

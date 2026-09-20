@@ -1,73 +1,73 @@
-title: Module 3：模型语义与分区分桶
-description: 五道单选题；不需要数据库连接，提交后查看解释。
+title: "Module 3: Model semantics, partitioning, and bucketing"
+description: "Five single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: q1
-  objective: 预测相同输入在 Duplicate、Unique、Aggregate 模型中的结果。
-  prompt: 同一键设计下，不设 Sequence 列，依次写入 (1,2300)、(1,2250)、(2,405)，每次成功可见后再写下一次。Aggregate 金额列声明 SUM。哪项结果正确？
+  objective: "Predict the results of the same input in the Duplicate, Unique, and Aggregate models."
+  prompt: "With the same key design and no Sequence column, write (1,2300), (1,2250), and (2,405) in order, waiting for each write to succeed and become visible before the next. The Aggregate amount column declares SUM. Which result is correct?"
   options:
   - id: a
-    text: A. 三种模型都保留订单 1 的最新金额 2250
+    text: "A. All three models retain the latest amount of 2250 for order 1"
   - id: b
-    text: B. Duplicate 保留三行；Unique 中订单 1 为 2250；Aggregate 中订单 1 为 4550
+    text: "B. Duplicate retains three rows; order 1 is 2250 in Unique and 4550 in Aggregate"
   - id: c
-    text: C. Duplicate 拒绝重复键；Unique 中订单 1 为 2250；Aggregate 中订单 1 为 4550
+    text: "C. Duplicate rejects duplicate keys; order 1 is 2250 in Unique and 4550 in Aggregate"
   - id: d
-    text: D. Duplicate 保留三行；Unique 中订单 1 为较大的 2300；Aggregate 中订单 1 为 4550
+    text: "D. Duplicate retains three rows; order 1 has the larger amount of 2300 in Unique and 4550 in Aggregate"
   answer: b
-  explanation: A：不同模型的写入语义不同，不能都解释为最新快照覆盖。 B：正确。Duplicate 保留明细，Unique 在本题顺序写入条件下保留后写值，Aggregate 按 SUM 累加。 C：Duplicate Key 的键用于排序，不负责拒绝重复业务键。 D：Unique 不自动选择金额最大值；这里没有把金额声明为版本。4550 也不代表当前订单金额。
+  explanation: "A: Different models have different write semantics; they cannot all be interpreted as replacing data with the latest snapshot. B: Correct. Duplicate retains detail records, Unique retains the later value under the sequential-write conditions in this question, and Aggregate accumulates values using SUM. C: Duplicate Key uses keys for sorting, not for rejecting duplicate business keys. D: Unique does not automatically select the largest amount; the amount is not declared as a version here. Nor does 4550 represent the current order amount."
 - id: q2
-  objective: 按明细、当前状态或汇总指标的用途选择逻辑键和表模型。
-  prompt: 当前状态和不同业务事件都要保留，应怎样选键？
+  objective: "Choose logical keys and table models for detail records, current state, or aggregate metrics."
+  prompt: "How should you choose keys when both current state and distinct business events must be retained?"
   options:
   - id: a
-    text: A. 当前表与事件历史都以 order_id 为唯一键
+    text: "A. Use order_id as the unique key for both the current-state table and event history"
   - id: b
-    text: B. 当前表以 event_id 为唯一键，事件历史以 order_id 为唯一键
+    text: "B. Use event_id as the unique key for the current-state table and order_id for event history"
   - id: c
-    text: C. 当前表以 order_id 为唯一键，事件历史以稳定的 event_id 为唯一键
+    text: "C. Use order_id as the unique key for the current-state table and a stable event_id for event history"
   - id: d
-    text: D. 当前表以 order_id 为唯一键，事件历史每次重投都生成新 event_id
+    text: "D. Use order_id as the unique key for the current-state table and generate a new event_id for every redelivery in event history"
   answer: c
-  explanation: A：同一订单的多个事件会互相覆盖，无法完整保留历史。 B：当前表会留下多个事件行，而历史反而丢掉同一订单的旧事件。 C：正确。当前一行一单，历史一行一个不同事件；同一事件重投仍使用原 ID。 D：新 ID 把重复投递伪装成新业务事件，破坏事件去重。
+  explanation: "A: Multiple events for the same order overwrite each other, preventing complete history retention. B: The current-state table retains multiple event rows, while history loses earlier events for the same order. C: Correct. Current state has one row per order, and history has one row per distinct event; redeliveries of the same event still use the original ID. D: A new ID disguises a duplicate delivery as a new business event, breaking event deduplication."
 - id: q3
-  objective: 区分分区、分桶、排序键和业务唯一键的职责。
-  prompt: 下列关于分区、分桶、排序键和业务唯一键的说法，哪项正确？
+  objective: "Distinguish the roles of partitions, buckets, sort keys, and business unique keys."
+  prompt: "Which statement about partitions, buckets, sort keys, and business unique keys is correct?"
   options:
   - id: a
-    text: A. 分区管理范围，分桶管理分布，排序键管理顺序，业务唯一键识别对象
+    text: "A. Partitions manage ranges, buckets manage distribution, sort keys manage ordering, and business unique keys identify objects"
   - id: b
-    text: B. 按日期分区后，同一订单号在整张表中就自动唯一
+    text: "B. Partitioning by date automatically makes the same order ID unique across the entire table"
   - id: c
-    text: C. 按 order_id 分桶后，相同订单号的重复记录就自动消失
+    text: "C. Bucketing by order_id automatically removes duplicate records with the same order ID"
   - id: d
-    text: D. 将 order_id 声明为 Duplicate Key 后，重复订单会在写入时被拒绝
+    text: "D. Declaring order_id as a Duplicate Key causes duplicate orders to be rejected on write"
   answer: a
-  explanation: A：正确。四种设计有不同职责，需按业务粒度组合，而不是相互替代。 B：日期分区不等于全局业务唯一约束，键设计仍需单独考虑。 C：Hash 分桶决定数据分布，不提供业务去重语义。 D：Duplicate Key 不约束唯一性；是否覆盖或聚合取决于表模型。
+  explanation: "A: Correct. The four design choices have different roles and must be combined according to the business grain, not substituted for each other. B: Date partitioning is not a global business uniqueness constraint; key design still requires separate consideration. C: Hash bucketing determines data distribution, not business deduplication semantics. D: Duplicate Key does not enforce uniqueness; replacement or aggregation depends on the table model."
 - id: q4
-  objective: 通过 EXPLAIN 比较日期过滤和分桶键过滤的扫描范围。
-  prompt: 日期分区、HASH(order_id) 的表中，日期过滤再加 order_id 等值过滤，重点看什么？
+  objective: "Use EXPLAIN to compare scan ranges with date filters and bucket-key filters."
+  prompt: "In a date-partitioned table with HASH(order_id), what should you focus on when adding an order_id equality filter to a date filter?"
   options:
   - id: a
-    text: A. 只看最后返回多少行，将返回行数作为扫描量
+    text: "A. Look only at the final number of returned rows and treat it as the scan volume"
   - id: b
-    text: B. 只看建表时的总桶数，认为每条查询都会扫描全部 Tablet
+    text: "B. Look only at the total bucket count specified at table creation and assume every query scans all Tablets"
   - id: c
-    text: C. 只比较计划文本是否逐字相同，不分析过滤条件对应的范围
+    text: "C. Compare only whether the plan text is identical word for word, without analyzing the ranges corresponding to the filters"
   - id: d
-    text: D. 比较选中的分区和 Tablet 范围，区分日期裁剪与分桶裁剪
+    text: "D. Compare the selected partitions and Tablet ranges, distinguishing date pruning from bucket pruning"
   answer: d
-  explanation: A：返回行数不是扫描行数，也不能说明读取了多少分片。 B：满足条件的过滤可以裁剪分区和 Tablet，总桶数不等于每次扫描范围。 C：计划表达可能随版本变化；应理解所选范围，而非逐字比较。 D：正确。日期条件与 order_id 等值条件分别用于观察两类裁剪。
+  explanation: "A: Returned rows are not scanned rows, nor do they indicate how many shards were read. B: Applicable filters can prune partitions and Tablets; the total bucket count does not equal the scan range for every query. C: Plan representations may change across versions; understand the selected ranges rather than comparing word for word. D: Correct. Date conditions and order_id equality conditions let you observe the two types of pruning separately."
 - id: q5
-  objective: 结合明细与金额核对结果，不把计划裁剪等同于性能提升。
-  prompt: 订单 701 两次完整快照金额为 800 和 760。SUM 模型得到 1560，且新计划扫描的 Tablet 更少。怎样评价？
+  objective: "Verify results using both detail records and amounts, without equating plan pruning with performance gains."
+  prompt: "Two full snapshots of order 701 have amounts of 800 and 760. The SUM model produces 1560, and the new plan scans fewer Tablets. How should you evaluate this?"
   options:
   - id: a
-    text: A. 1560 是当前订单金额，因为 SUM 计算没有报错
+    text: "A. 1560 is the current order amount because the SUM calculation reported no error"
   - id: b
-    text: B. Tablet 更少已证明新查询的实际响应时间更短
+    text: "B. Fewer Tablets already prove that the new query has a shorter actual response time"
   - id: c
-    text: C. 先核对快照语义，再用相同负载验证实际性能
+    text: "C. Verify the snapshot semantics first, then test actual performance under the same workload"
   - id: d
-    text: D. 总金额稳定即可上线，快照与查询耗时可后续检查
+    text: "D. A stable total amount is enough to go live; snapshots and query duration can be checked later"
   answer: c
-  explanation: A：完整快照应按版本取当前值，相加改变了口径。 B：裁剪是计划证据，实际耗时还需运行验证。 C：正确。业务正确性与性能分别验收。 D：错误口径的稳定结果不能作为上线依据。
+  explanation: "A: Full snapshots should use versions to determine the current value; adding them changes the metric definition. B: Pruning is plan evidence; actual duration still requires execution testing. C: Correct. Business correctness and performance must be validated separately. D: A stable result with an incorrect metric definition is not a basis for going live."
