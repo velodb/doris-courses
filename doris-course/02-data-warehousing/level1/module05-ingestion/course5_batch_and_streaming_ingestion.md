@@ -29,19 +29,19 @@
 
 | 环节 | 学习形式 | 建议时间 | 学习成果 |
 | --- | --- | --- | --- |
-| D05-01：先决定访问还是导入 | 接入选择表 | 5 分钟 | 按来源与完成方式选择接入路径 |
-| D05-02：数据类型与 Schema | 字段对照 | 5 分钟 | 区分可解析的数据与合格业务记录 |
-| D05-03：默认值与列映射 | 映射示例 | 5 分钟 | 确定字段顺序与省略字段的含义 |
-| D05-04：Stream Load、结果检查与重试 | 请求与响应 | 5 分钟 | 判断成功、拒绝和不确定状态 |
-| D05-05：对象存储批量与 INSERT SELECT | SQL 与流程对照 | 10 分钟 | 区分查询、持久化和异步导入 |
-| D05-06：Kafka 与 Routine Load | SQL 与任务流程 | 10 分钟 | 解释消费进度与业务状态的区别 |
-| D05-07：Flink CDC 与 Doris Connector | 变更流程图 | 5 分钟 | 解释快照、增量和恢复 |
-| D05-08：Streaming Job 与 CDC_STREAM | 同步 SQL 与模式选择 | 15 分钟 | 解释 Streaming Job、CDC_STREAM 与目标表如何配合 |
-| D05-09：对象存储增量文件 | 任务 SQL 与文件进度 | 10 分钟 | 识别重复文件与迟到数据问题 |
+| 5.1 先决定访问还是导入 | 接入选择表 | 5 分钟 | 按来源与完成方式选择接入路径 |
+| 5.2 数据类型与 Schema | 字段对照 | 5 分钟 | 区分可解析的数据与合格业务记录 |
+| 5.3 默认值与列映射 | 映射示例 | 5 分钟 | 确定字段顺序与省略字段的含义 |
+| 5.4 Stream Load、结果检查与重试 | 请求与响应 | 5 分钟 | 判断成功、拒绝和不确定状态 |
+| 5.5 对象存储批量与 INSERT SELECT | SQL 与流程对照 | 10 分钟 | 区分查询、持久化和异步导入 |
+| 5.6 Kafka 与 Routine Load | SQL 与任务流程 | 10 分钟 | 解释消费进度与业务状态的区别 |
+| 5.7 Flink CDC 与 Doris Connector | 变更流程图 | 5 分钟 | 解释快照、增量和恢复 |
+| 5.8 Streaming Job 与 CDC_STREAM | 同步 SQL 与模式选择 | 15 分钟 | 解释 Streaming Job、CDC_STREAM 与目标表如何配合 |
+| 5.9 对象存储增量文件 | 任务 SQL 与文件进度 | 10 分钟 | 识别重复文件与迟到数据问题 |
 | 实验 5 | 动手操作 | 45 分钟 | 导入 WWI 十表，检查模拟 CSV 重试与拒绝 |
 | 测验 5 | 交互测验 | 5 分钟 | 检查路径选择、映射、结果、重试和金额口径 |
 
-## D05-01：先决定访问还是导入
+## 5.1 先决定访问还是导入
 
 ### 从数据来源选择入口
 
@@ -79,7 +79,7 @@ WWI 历史 Parquet ─ Stream Load → wwi_*（10 张业务表）
 Lab 先用一个 CSV 练习 Stream Load、导入核对与重试，再扩展到十张历史 Parquet 表。
 Kafka、Flink 和对象存储相关小节用于理解持续接入的选择与工作过程。
 
-## D05-02：数据类型与 Schema
+## 5.2 数据类型与 Schema
 
 Schema 是表的结构约定，包括列名、类型和是否允许为空。
 导入前要把文件字段与这份约定对齐：订单号用于标识订单，金额用于计算，
@@ -127,7 +127,7 @@ LIMIT 10;
 COUNT(DISTINCT) 按订单计数，SUM 按明细计算税前金额。
 这张历史日报与 D01 的十单子集不是同一个统计范围。
 
-## D05-03：默认值与列映射
+## 5.3 默认值与列映射
 
 一份 CSV 可能把客户号放在订单号前面，而 Doris 表按另一种顺序定义字段。
 列映射就是明确告诉导入过程“第几个值是什么、应该写到哪一列”。
@@ -164,7 +164,7 @@ event_time,paid_amount,refund_amount,region,data_source
 需要随表统一维护的派生字段再考虑生成列。本 Lab 练习显式字段映射。
 具体配置和限制参见 [Stream Load 文档](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)。
 
-## D05-04：Stream Load、结果检查与重试
+## 5.4 Stream Load、结果检查与重试
 
 Stream Load 是通过 HTTP 请求把文件内容发送给 Doris 的导入方式。
 你准备目标表和文件，发送请求，再根据返回的导入状态检查结果。
@@ -243,7 +243,7 @@ Group Commit 可以把兼容的小写入合成较大的批次，减少每批固�
 本 Lab 使用 `off_mode`，便于逐批观察事务结果和 label 重试行为。
 启用合批前应按所用接口检查参数与 label 支持条件，见[Group Commit 文档](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)。
 
-## D05-05：对象存储批量与 INSERT SELECT
+## 5.5 对象存储批量与 INSERT SELECT
 
 如果历史订单已经放在 S3 或兼容对象存储中，可以让 Doris 直接读取这些文件。
 这时需要准备文件路径、格式和读取权限，并决定先查询检查，还是提交批量导入任务。
@@ -309,7 +309,7 @@ SELECT COUNT(*) AS orders, SUM(order_amount) AS amount FROM orders_s3_demo;
 这里的预期来自上述两行演示数据，不是本地 Lab 的实测结果。参数见
 [S3 TVF](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)。
 
-## D05-06：Kafka 与 Routine Load
+## 5.6 Kafka 与 Routine Load
 
 当上游不断产生订单消息时，无法等“整个文件准备好”再导入。
 Kafka 负责保存持续到达的消息，Routine Load 则是在 Doris 中创建的持续消费任务：
@@ -373,7 +373,7 @@ SELECT COUNT(*) AS orders, SUM(order_amount) AS amount FROM orders_kafka_demo;
 观察结束后，可用 `PAUSE ROUTINE LOAD FOR orders_kafka_job` 暂停，
 继续观察时用 `RESUME ROUTINE LOAD FOR orders_kafka_job` 恢复。
 
-## D05-07：Flink CDC 与 Doris Connector
+## 5.7 Flink CDC 与 Doris Connector
 
 ### 从业务库日志走到数仓
 
@@ -406,7 +406,7 @@ DELETE 也需要由连接器按删除语义传递，目标表才能正确移除�
 再测试新增、更新、删除以及中断恢复。
 配置入口见 [Flink Doris Connector](https://doris.apache.org/docs/4.x/connection-integration/data-integration/flink-doris-connector/)。
 
-## D05-08：Streaming Job 与 CDC_STREAM
+## 5.8 Streaming Job 与 CDC_STREAM
 
 ### 从“导入一次”到“持续同步”
 
@@ -546,7 +546,7 @@ SELECT order_id, status FROM orders_cdc_demo ORDER BY order_id;
 继续时用 `RESUME JOB WHERE jobName = 'orders_mysql_job'` 恢复。
 操作语法见[持续导入任务管理](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-overview/)。
 
-## D05-09：对象存储增量文件
+## 5.9 对象存储增量文件
 
 ### 新文件发现也是一种进度问题
 
@@ -571,7 +571,7 @@ SELECT order_id, status FROM orders_cdc_demo ORDER BY order_id;
 
 ### 阅读示例：给文件查询加上持续任务
 
-**外部环境示例，不随 Lab 执行。** 沿用 D05-05 的两列文件结构，另建空表，
+**外部环境示例，不随 Lab 执行。** 沿用 5.5 的两列文件结构，另建空表，
 并使用只包含增量文件的独立目录；不要指向已批量导入过的历史目录。
 
 <!-- external-service-example -->
@@ -592,7 +592,7 @@ SELECT order_id, order_amount FROM orders_files_demo ORDER BY order_id;
 
 先发布仅含 `(901001, 180.00)` 的 orders-001.parquet，等 CurrentOffset 推进且表内出现该行；
 再发布仅含 `(901002, 80.00)` 的 orders-002.parquet，预期最终两行、合计 260.00。
-与 D05-05 不同，CREATE JOB 让文件查询持续运行；无需手工重复 INSERT。
+与 5.5 不同，CREATE JOB 让文件查询持续运行；无需手工重复 INSERT。
 若此后发布 orders-000.parquet，按本节规则不会作为新文件被读取，应另行安排补数。
 任务语法与进度字段见上面的对象存储持续导入说明。
 观察结束后同样暂停任务，使用 `PAUSE JOB WHERE jobName = 'orders_files_job'`，避免继续消费后续文件。

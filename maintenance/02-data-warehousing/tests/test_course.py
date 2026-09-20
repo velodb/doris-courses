@@ -181,9 +181,14 @@ class MaterialsTest(unittest.TestCase):
         for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
             content = path.read_text()
             schedule = content.split("## 单元安排\n\n", 1)[1].split("\n## ", 1)[0]
-            listed = re.findall(r"^\| (D\d+-\d+：[^|]+) \|", schedule, re.MULTILINE)
-            sections = re.findall(r"^## (D\d+-\d+：.+)$", content, re.MULTILINE)
+            listed = re.findall(r"^\| (\d+\.\d+ [^|]+) \|", schedule, re.MULTILINE)
+            sections = re.findall(r"^## (\d+\.\d+ .+)$", content, re.MULTILINE)
+            self.assertTrue(sections, path)
             self.assertEqual(listed, sections, path)
+            module = int(re.match(r"module(\d+)", path.parent.name)[1])
+            self.assertEqual([section.split(" ", 1)[0] for section in sections],
+                             [f"{module}.{i}" for i in range(1, len(sections) + 1)], path)
+            self.assertNotRegex(content, r"D\d+-\d+")
 
     def test_learner_prose_excludes_author_status_notes(self):
         paths = list((COURSE_ROOT / "level1").glob("*/course*.md"))
@@ -294,7 +299,7 @@ class MaterialsTest(unittest.TestCase):
             content = path.read_text()
             headings = re.findall(r"^## (.+)$", content, re.MULTILINE)
             self.assertEqual(headings[:3], ["单元目标", "学习目标", "单元安排"], path)
-            self.assertRegex(headings[3], r"^D\d")
+            self.assertRegex(headings[3], r"^\d+\.1 ")
             self.assertTrue(headings[-4].startswith("动手实验 "), path)
             self.assertEqual(headings[-3], "单元总结", path)
             self.assertTrue(headings[-2].startswith("知识测验 "), path)
