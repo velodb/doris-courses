@@ -1,5 +1,48 @@
 # Validation record
 
+## 2026-09-20：新增 Kafka 与 MySQL/Flink CDC 选做 Lab
+
+在同日“主线仅要求理解持续接入”的范围上，补充两个**选做**实验；主线七个 Lab 的完成条件不变。
+CDC_STREAM、对象存储持续文件和生产并发仍未实测。
+
+### 交付与实测环境
+
+- `optional5_kafka_routine_load.ipynb`：Kafka JSON → Routine Load → 独立 MoW 表。
+- `optional5_flink_mysql_cdc.ipynb`：真实 MySQL Binlog → Flink SQL CDC → Doris Connector；Module 7 可复用。
+- `environments/streaming` 提供 Compose profiles、固定 JAR 版本的 Dockerfile、MySQL 初始化及启动/停止/排查说明；无 JAR 二进制入库。
+- 共用原单 FE/BE 沙箱，实际 BE 版本 `doris-4.1.3-rc02-7126cf65d96`，BackendId `1789708590884`，注册地址仍为 `127.0.0.1`。连接器显式使用 `benodes=doris:8040`，不修改 BE 注册身份。
+- Kafka 3.9.0；MySQL 8.0.33（ROW/FULL、+08:00）；Flink 1.20.1 / Java 11；CDC SQL JAR 3.4.0；Doris Connector 25.0.0；MySQL JDBC 8.0.27。
+- 所有写入限定在 `dw_course_l1_streaming.ext_kafka_orders` / `ext_cdc_orders` 和新建 MySQL 服务的 `course_cdc.orders`。没有修改既有主线 Notebook 或其未提交的学员输出。
+
+### 验证结果
+
+- 在干净 HEAD 导出副本叠加任务文件后，**90 项离线测试通过**。覆盖既有材料、19 个 Notebook、新增 profile/显式启动、超时、命令与 SQL Client 失败、终态错误、Savepoint 响应、时区对齐和本地端口范围。
+- 两个 Notebook 均通过专用脚本执行；随后用独立 Jupyter 内核重跑并导出 HTML，两个 Notebook 都无错误输出。再停止四个依赖容器，从停止状态用 `run_streaming_labs.py all` 重新启动并完整通过两项实验。没有声称浏览器交互截图已验收。
+- Kafka：初始两笔；PAUSED 时追加第三笔仍保持两笔；恢复并重复发送、更新后为三笔 / 350.00，910001=PAID。一次脚本运行的最终 Progress 为 partition 0 offset 4、Lag=0、loadedRows=5；结束时 STOP 本次任务并删除本次随机 Topic。
+- CDC：快照三笔 / 350.00；源端 UPDATE/DELETE/INSERT 后三笔 / 225.00；停止后源端再次增删改，目标保持原结果；从 Savepoint 恢复后为三笔 / 240.00，逐行匹配固定预期和源端展示结果。
+- 独立内核运行：初始 Job `e4eaa6b93d8632d171a99c16c1ecf353`；恢复 Job `51a6452dff10704e3820b7bc407b0351`。
+  REST 的 `latest.restored.is_savepoint=true`、`external_path=file:/opt/flink/state/savepoints/savepoint-e4eaa6-631acac11de6`；该路径与停止返回值一致。结束时再次保存状态并停止恢复后的作业。
+- 验证后无活动 Routine Load；Flink 成功运行的作业均 FINISHED（早期时区失败的作业已定向 CANCELED）。Doris `Alive=true`，BE 计算 `SUM(numbers(10))=45`。
+- 验证后已停止本次新增的 Kafka、MySQL 和 Flink 容器，保留其卷；Notebook 的启动单元可再次拉起。原 Doris 沙箱保持运行并通过 BE 查询复检。
+- 本机日志：`/tmp/dw-kafka-test2.log`、`/tmp/dw-cdc-test2.log`、`/tmp/dw-stream-kernel-final.log`、`/tmp/dw-stream-all-unit-final.log`、`/tmp/dw-stream-index-tests.log`、`/tmp/dw-stream-restart-test.log`。执行产物保存在 `/tmp/optional5_*-executed.ipynb` 及同名 HTML，不回写学员源文件。
+
+### 调试记录与运行边界
+
+- 首次 Routine Load 被共享宿主机低可用内存水位拒绝，未将 RUNNING 当作导入成功。为**本机课程容器**设置 12 GiB memory / memory-swap 上限后重启原容器，保留 FE 元数据、BE 存储和注册身份，再通过查询验证。该本机限制保留，未写入通用单节点 Compose；其他容器未调整，未关闭内存保护。
+- 首次 CDC 因 MySQL UTC 与 CDC Asia/Shanghai 不一致重启；最终 Compose 固定 `--default-time-zone=+08:00`，重建该课程 MySQL 容器（保留卷）后重跑及独立内核验证通过。健康检查使用 TCP，避免在初始化临时 socket 服务就绪时提前运行。
+- 新实验前检查活动任务，避免运行中重建表。演示限定一人顺序执行，不提供跨 Notebook 的并发锁；失败时保留作业供排查，README 给出定向停止方法。共享卷保留 Checkpoint / Savepoint，服务重启不会自动提交已停止的作业。
+- 本次只验证固定 Schema 单表、受控停止与恢复；不宣称整库同步、自动 Schema 演进、任意故障 exactly-once、源库故障恢复或生产 SLA。
+
+### 自检
+
+- 目标/证据：两条可操作链路与结果、恢复信息均有实测；测试结果没有预写成功输出。
+- 范围/复用：复用 `connect_sandbox`、`expect` 和既有 Notebook 执行器；新增辅助代码仅处理课程服务编排和轮询，教学 SQL 留在 Notebook。
+- 并发/生命周期/写入：异步任务等待明确状态或结果；重置前检查活动任务，正常结束定向停止，保留结果与持久卷；多用户并发与崩溃原子性不在验收范围。
+- 配置/兼容：新环境固定镜像、连接器和端口；配置变更需按 Compose 重建相应服务，不宣称动态生效；既有主线接口与数据格式不变。
+- 分支/失败路径：Kafka 与 CDC 独立 profile；已同步讲义、目录、维护清单；命令非零、SQL Client ERROR、终态失败及等待超时均抛错，有负例测试。
+- 可观测性/性能：展示 Routine Load Progress、Flink Job ID、Checkpoint 和恢复路径；固定三笔小样本仅验证正确性，不作为性能结论。
+- 内核相关项：未修改 FE/BE、EditLog、版本发布、Delete Bitmap、跨端变量、C++ 初始化或内存追踪逻辑；不涉及滚动升级兼容变更。
+
 ## 2026-09-20：持续接入调整为介绍型教学
 
 按课程范围决定，Kafka、Flink CDC、CDC_STREAM、持续文件与真实位点恢复仅作介绍，

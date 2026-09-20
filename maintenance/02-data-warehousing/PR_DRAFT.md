@@ -1,5 +1,8 @@
 # Add Data Warehousing Level 1 core course materials
 
+> Historical initial draft: the text below predates later extensions and PR #4.
+> Current delivered scope and test results are maintained in [integration-backlog.md](integration-backlog.md) and [VALIDATION.md](VALIDATION.md); do not reuse the remaining-scope list below as current status.
+
 Suggested state: **Draft**. This is a Level-sized initial materials package,
 not a single-video PR and not a claim that all planned Level 1 labs are complete.
 

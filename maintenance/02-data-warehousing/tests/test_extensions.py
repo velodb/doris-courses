@@ -125,19 +125,19 @@ class ExtensionsTest(unittest.TestCase):
     def test_backlog_distinguishes_optional_integrations(self):
         text = (REPO / "maintenance/02-data-warehousing/integration-backlog.md").read_text()
         self.assertNotRegex(text,r'\bD0[1-7]\b')
-        for label in ('Module 5.6', 'Module 5.7', 'Module 5.8', 'Module 5.9', '不要求交付外部实验环境', '三份扩展 Notebook 选做'):
+        for label in ('Module 5.6', 'Module 5.7', 'Module 5.8', 'Module 5.9', '不是当前结课门槛', 'Lab 5A / 5B 均选做'):
             self.assertIn(label,text)
         self.assertNotIn("仍需交付的持续集成实验", text)
         self.assertNotIn("不能因主线与扩展全部通过而宣布完整 Level 1 已结课验收", text)
 
-    def test_readings_explain_intro_only_scope(self):
+    def test_readings_separate_main_scope_and_optional_integrations(self):
         level = REPO / "doris-course/02-data-warehousing/level1"
         expectations = {
-            "README.md": ("不要求搭建外部链路", "扩展 Notebook 选做"),
+            "README.md": ("不要求搭建外部链路", "持续接入 Lab 均选做", "optional5_kafka_routine_load.ipynb", "optional5_flink_mysql_cdc.ipynb"),
             "module05-ingestion/course5_batch_and_streaming_ingestion.md": (
                 "5.6～5.9 为介绍型内容", "持续并发验证不作为本单元完成条件"),
             "module07-state-changes/course7_updates_deletes_and_replay.md": (
-                "不要求搭建真实 CDC", "Lab 使用模拟事件"),
+                "不要求搭建真实 CDC", "Lab 7 使用模拟事件", "受控 Savepoint"),
         }
         for name, phrases in expectations.items():
             with self.subTest(reading=name):

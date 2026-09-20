@@ -14,7 +14,7 @@
 正文按业务问题、概念、示例与结果解释组织，不以“观察与练习”或录制待办代替讲解。
 分节标题保留简洁的功能名称，例如 Streaming Job 与 CDC_STREAM；业务场景、术语含义和工作过程放在正文讲清楚。
 学员材料保留实验前置条件、操作风险与功能成熟度；制作状态和测试记录集中在本目录。
-Level 1 的 Iceberg Lab 提供本地自助环境并完成实测；Kafka、Flink CDC、Streaming Job 和 Group Commit 目前为概念教学，未新增对应实操验证。
+Level 1 的 Iceberg Lab 已实测；三份基础扩展覆盖文件查询、Group Commit 等操作，新增 Lab 5A / 5B 覆盖 Kafka 与 MySQL/Flink CDC 的选做链路。Streaming Job / CDC_STREAM 和持续文件仍仅介绍。具体实测边界见 VALIDATION.md。
 七份讲义的学习目标与五道测验逐项对应，单元总结回扣相同目标；题目定义中的
 objective 保存对应的学习目标原文，离线测试检查覆盖关系。
 教学时间是包含讲义、实验和测验的估计，不含环境准备，仍需试讲校准。
@@ -24,9 +24,10 @@ objective 保存对应的学习目标原文，离线测试检查覆盖关系。
 | --- | --- |
 | [VALIDATION.md](VALIDATION.md) | 实际验证结果与未验证范围 |
 | [WWI-VALIDATION.md](WWI-VALIDATION.md) | 候选 WWI 数据集的实际导入结果与业务缺口 |
-| [integration-backlog.md](integration-backlog.md) | 待补齐的集成实验 |
+| [integration-backlog.md](integration-backlog.md) | 已覆盖范围及未验证边界 |
 | [PR_DRAFT.md](PR_DRAFT.md) | PR 说明草稿 |
-| scripts/run_labs.py | 执行课程 Notebook 的代码单元 |
+| scripts/run_labs.py | 执行主线与三份基础扩展的代码单元 |
+| scripts/run_streaming_labs.py | 显式选择 Kafka / CDC 选做 Lab，固定独立库 dw_course_l1_streaming |
 | scripts/prepare_wwi.py | 校验并暂存本地 WWI Parquet 包，不上传 |
 | tests/test_course.py | 离线检查材料、数据与辅助工具 |
 
@@ -40,6 +41,8 @@ export DW_ALLOW_WRITES=yes
 .venv/bin/python maintenance/02-data-warehousing/scripts/run_labs.py
 # 加入本地湖表实验，并执行所有折叠参考答案：
 .venv/bin/python maintenance/02-data-warehousing/scripts/run_labs.py --iceberg --solutions
+# 单独选做持续接入；先读 environments/streaming/README.md，使用固定独立实验库：
+.venv/bin/python maintenance/02-data-warehousing/scripts/run_streaming_labs.py all
 ```
 
 如果 Python 环境安装在课程目录，将上面的 .venv/bin/python 换成对应路径。
@@ -77,4 +80,4 @@ Jupyter 中打开旧路径的标签页需关闭，再从课程目录进入新路
 配置以仓库为文件根目录，默认打开 doris-course，确保维护资料的相对链接也可访问。
 安装元数据、Python 缓存和 Jupyter 检查点只从文件列表隐藏，不删除；
 仍保留默认认证机制。学员无需预设连接地址；各 Lab 固定连接课程单容器沙箱。
-多人使用时，可在启动前用 DW_DATABASE 分配独立实验库。
+主线多人使用时，可在启动前用 DW_DATABASE 分配独立实验库；Lab 5A / 5B 使用固定的课程服务和独立库，不能在同一沙箱并发执行。

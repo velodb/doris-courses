@@ -30,7 +30,18 @@ SQL、API 和产品名称保留原文；课程主题与学习顺序沿用数仓�
 
 ## 学习完成条件
 
-完成七个主线 Lab、独立练习和 Quiz。Kafka、Flink CDC、CDC_STREAM、持续文件与真实位点恢复只需理解场景、架构、配置流程和注意事项，不要求搭建外部链路。已有扩展 Notebook 选做；持续并发验证属于进阶内容。配置阅读示例不代表课程已经实测该链路。
+完成七个主线 Lab、独立练习和 Quiz。Kafka、Flink CDC、CDC_STREAM、持续文件与真实位点恢复只需理解场景、架构、配置流程和注意事项，不要求搭建外部链路。已有三份基础扩展 Notebook 与新增两个持续接入 Lab 均选做；持续并发验证属于进阶内容。讲义中的配置阅读示例与选做 Lab 的固定环境分别管理。
+
+## 选做：真实持续接入
+
+完成主线后，可另外启动[持续接入环境](../environments/streaming/README.md)：
+
+| 实验 | 内容 | 建议时间 |
+|---|---|---|
+| [Lab 5A：Kafka 与 Routine Load](module05-ingestion/optional5_kafka_routine_load.ipynb) | 发送订单、查看进度、暂停积压、恢复与更新 | 25–40 分钟 |
+| [Lab 5B：MySQL 与 Flink CDC](module05-ingestion/optional5_flink_mysql_cdc.ipynb) | 单表快照、增删改、Checkpoint 与 Savepoint 恢复；Module 7 可复用 | 35–50 分钟 |
+
+这两个 Lab 使用独立演示库，不改变主线数据基线，不增加视频数。CDC_STREAM 和持续文件仍只作介绍。
 
 ## 数据怎样贯穿 Level 1？
 

@@ -15,7 +15,9 @@
 
 完成本单元后，你将能够使用 Stream Load 导入订单文件，核对结果，并验证失败和重试时的数据变化。
 
-**教学范围：** 5.6～5.9 为介绍型内容，通过架构图、配置阅读和 Quiz 学习，不要求搭建 Kafka、Flink 或真实 CDC/持续文件链路。主线动手实验是 Stream Load；已有对象存储批量和 Group Commit 扩展保持选做。真实位点恢复只讲原理，持续并发验证不作为本单元完成条件。外部配置示例未在课程环境实测，不是可直接运行的 Lab。
+**教学范围：** 5.6～5.9 为介绍型内容，通过架构图、配置阅读和 Quiz 学习，不要求搭建 Kafka、Flink 或真实 CDC/持续文件链路。主线动手实验是 Stream Load；已有对象存储批量和 Group Commit 扩展保持选做。真实位点恢复的主线要求是理解原理，持续并发验证不作为本单元完成条件。讲义中的外部配置阅读示例不等于可直接运行的 Lab。
+
+**选做实验：** [Lab 5A：Kafka / Routine Load](optional5_kafka_routine_load.ipynb) 与 [Lab 5B：MySQL / Flink CDC](optional5_flink_mysql_cdc.ipynb) 提供独立 Docker 环境和结果验收。后者演练固定 Schema 单表的快照、增删改及受控 Savepoint 恢复，不等同于整库同步、Schema 自动演进或崩溃故障恢复。准备条件见[持续接入环境](../../environments/streaming/README.md)。
 
 ## 学习目标
 

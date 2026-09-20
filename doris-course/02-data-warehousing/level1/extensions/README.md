@@ -39,4 +39,4 @@ DW_ALLOW_WRITES=yes DW_DATABASE=dw_course_l1_extensions_check \
 - Group Commit 扩展对比单请求确认与查询可见性，不验证多请求共享事务或持续吞吐。
 - Schema 变更只覆盖本实验的加列与类型变更，不代表所有模型和变更组合。
 - 冲突检测在独立暂存表执行，不是多消费者并发下原子性的拒收服务。
-- Kafka、真实源库 CDC、对象存储持续文件任务及真实位点恢复另行交付；本目录不提供这些环境。
+- Kafka 和 MySQL/Flink CDC 已另设 [Lab 5A / 5B 选做环境](../../environments/streaming/README.md)，不包含在本目录的三份基础扩展或 `--extensions` 执行范围中。CDC_STREAM 与对象存储持续文件仍仅介绍。

@@ -56,6 +56,9 @@ Level 1 提供七个单元，每个单元包含讲义、Lab 和五道交互测�
 
 课程镜像为 apache/doris:all-in-one-4.1.3。Module 5 的 Lab 练习 Stream Load，
 讲义同时介绍 Kafka、CDC 与对象存储持续接入的适用场景和工作方式。
+选做 [Lab 5A：Kafka / Routine Load](level1/module05-ingestion/optional5_kafka_routine_load.ipynb) 和
+[Lab 5B：MySQL / Flink CDC](level1/module05-ingestion/optional5_flink_mysql_cdc.ipynb) 提供可启动的真实链路；
+前置条件、独立数据及停止方式见[持续接入环境](environments/streaming/README.md)。它们不改变七个主线 Lab 的完成条件。
 Module 4 按需启动两个湖表辅助容器，准备方式见[湖表环境说明](environments/lakehouse/README.md)。
 
 ## 维护者资料
