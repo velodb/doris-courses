@@ -252,13 +252,33 @@ class MaterialsTest(unittest.TestCase):
         for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
             content = path.read_text()
             blocks = re.findall(
-                r"(?:(^<!-- external-service-example -->\n))?^```sql\n(.*?)^```",
+                r"(?:(^<!-- (?:external-service-example|reading-only-example) -->\n))?^```sql\n(.*?)^```",
                 content, re.MULTILINE | re.DOTALL,
             )
             self.assertTrue(blocks, path)
-            for external, block in blocks:
-                if external:
-                    self.assertEqual(path.parent.name, "module05-ingestion")
+            for marker, block in blocks:
+                if "reading-only-example" in marker:
+                    self.assertIn("SQL 阅读示例：", content)
+                    allowed_targets = {
+                        "module03-table-design": {"orders_partitioned"},
+                        "module05-ingestion": {"orders_defaults_reading"},
+                        "module06-data-quality": {"orders_classified", "orders_clean", "orders_rejected"},
+                        "module07-state-changes": {"orders_partial_update", "orders_delete_demo"},
+                    }
+                    self.assertIn(path.parent.name, allowed_targets)
+                    targets = re.findall(
+                        r"(?:CREATE TABLE|CREATE VIEW|INSERT INTO|UPDATE|DELETE FROM)\s+(\w+)", block)
+                    self.assertTrue(targets, path)
+                    self.assertLessEqual(set(targets), allowed_targets[path.parent.name])
+                    self.assertNotRegex(block, r"\b(DROP|TRUNCATE|ALTER|GRANT|REVOKE)\b")
+                    for statement in (s.strip() for s in block.split(";") if s.strip()):
+                        self.assertRegex(statement, r"^(CREATE TABLE|CREATE VIEW|INSERT INTO|UPDATE|DELETE FROM|SET|SELECT)\b")
+                        if statement.startswith("SET"):
+                            self.assertEqual(path.parent.name, "module07-state-changes")
+                            self.assertEqual(statement, "SET enable_unique_key_partial_update = true")
+                    continue
+                if "external-service-example" in marker:
+                    self.assertIn(path.parent.name, ("module04-external-access", "module05-ingestion"))
                     self.assertIn("<", block)  # Requires external connection parameters.
                     self.assertNotRegex(block, r"\b(orders_imported|wwi_\w+)\b")
                     continue

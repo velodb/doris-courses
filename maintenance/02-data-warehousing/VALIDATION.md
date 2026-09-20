@@ -1,5 +1,43 @@
 # Validation record
 
+## 2026-09-20：补齐关键操作讲解，精简接入主线
+
+- 保留 Module 1 的简洁阅读和全部 Level/Module 顺序；Module 2 增加 Tablet 字段、
+  Rowset 状态入口和可恢复会话设置的 Profile 观察；不制造固定版本数量或性能结论。
+- Module 3 展开实际分区 DDL；Module 4 展开课程 REST Catalog 配置与两类地址。
+  Module 6 展开与 Lab 相同的 CASE 分类 SQL、两条分流写入，以及 Schema Change 基础。
+  Module 7 展开部分更新和软删除/SQL DELETE，区分导入删除标记与内部 Delete Bitmap。
+- 写入片段明确标为 SQL 阅读示例，说明初始化、重试和会话恢复条件。
+  新增标记的材料检查限制可写目标，不将讲义写入混入默认只读查询；外部连接仍使用占位符。
+- Module 5 保留九小节，将 5.8 的实验性与版本前提提前，合并重复 CDC 概念；
+  增加省略字段的 DEFAULT 示例及金额单位映射解释。详细账务查询从 Lab 主流程移到
+  optional_invoice_and_receipts.md；十表导入、订单关联、重试及独立练习保留。
+- 建议学习时间调整为 Module 2/4/5/6 的 60/50/110/65 分钟，目录表与总时长相符；
+  这是内容估算，不是学员试讲计时。
+
+验证与自查：
+
+- 干净 HEAD 导出副本叠加本次相关文件后，69 项离线测试通过；新增五项验证 DDL/分类
+  与 Lab 一致、Profile 成功及失败后恢复开关、Catalog 参数、接入边界和删除机制讲解。
+  首次检查误用了 Notebook 单元格编号，改为实际稳定 ID historical-check 后通过。
+- 预设 scripts/run_labs.py --iceberg --solutions 在独立库
+  dw_course_l1_teaching_20260920 运行七个 Lab 与七份参考解答，全部通过。
+- 在上述独立验证库手工执行新增讲义片段：实际分区 DDL、REST Catalog（替换为本地
+  fixture 参数）、DEFAULT、CASE 分流、部分更新及删除对照全部通过；Schema 加列只在
+  orders_schema_reading 副本执行，十行旧数据的新列均为 NULL，未修改主线 Schema。
+- Profile 示例成功生成记录并恢复开关；沿 SHOW TABLET / DetailCmd 读取 Rowset 状态。
+  可选账务查询核对 267011.44 和 70426。所有数据库写入均限独立验证库及其专用 Catalog。
+- 八份阅读材料经过 Jupyter Markdown 渲染，所有表格列数一致；Lab 5 在全新 Jupyter
+  内核、独立库 dw_course_l1_teaching_kernel_20260920 中执行并导出 HTML，无执行错误，
+  参考答案保持折叠。输出只保存在临时验证目录，没有写回学员 Notebook。
+- 自查：没有修改 FE/BE、运行时辅助代码、数据样本或 Level 划分；没有新增并发、
+  持久化格式、跨组件协议或权限行为。复用既有 Lab SQL 与环境配置，不重复实现工具逻辑。
+  用户原有 Notebook 编辑和执行输出保留；只提交本次相关文件。
+- 边界：此轮复用单容器构建 doris-4.1.3-rc02-7126cf65d96，不代表其他版本或平台验证。
+  未执行 Kafka、真实源库 CDC、S3 持续文件、Group Commit sync/async、重型 Schema Change
+  或导入删除标记实验；概念补齐不代表这些集成已交付。未进行浏览器视觉检查或学员试讲。
+
+
 ## 2026-09-20：统一学员材料的 Module 命名
 
 - 七份讲义、测验标题、课程导航、实验说明及数据/环境说明统一使用 Module 1–7，

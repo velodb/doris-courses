@@ -5,7 +5,7 @@
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
 | 产品版本 | Apache Doris 4.x |
 | 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 50 分钟，包含讲义阅读、动手实验和测验 |
+| 预计时间 | 约 60 分钟，包含讲义阅读、动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 2](lab2_observe_storage.ipynb) · [打开测验 2](quiz2_storage_and_write_batches.ipynb)
 
@@ -31,8 +31,8 @@
 | --- | --- | --- | --- |
 | 2.1 列式存储与查询路径 | 查询流程图 | 5 分钟 | 沿订单查询解释 FE、BE 和列式读取 |
 | 2.2 Tablet、Rowset、Segment 与 Compaction | 层次图与例子 | 8 分钟 | 区分分片、写入版本和列式文件 |
-| 2.3 写入批次与可见性 | 对照分析 | 7 分钟 | 说明事务次数不同但业务结果相同 |
-| 实验 2 | 动手操作 | 25 分钟 | 完成两种写入并核对十行、12220.60 |
+| 2.3 写入批次与可见性 | 对照分析与状态读取 | 12 分钟 | 说明事务次数不同但业务结果相同 |
+| 实验 2 | 动手操作 | 30 分钟 | 完成两种写入并核对十行、12220.60 |
 | 测验 2 | 交互测验 | 5 分钟 | 检查查询路径、存储层次和观测方法 |
 
 ## 2.1 列式存储与查询路径
@@ -166,6 +166,57 @@ SHOW PARTITIONS FROM orders_batch;
 SHOW TABLETS FROM orders_batch;
 SHOW TABLETS FROM orders_rowwise;
 ```
+
+### 从 Tablet 信息读到 Rowset
+
+先执行上面的 SHOW TABLETS，找到每张表的 TabletId、Version 和 VersionCount：
+
+| 字段 | 怎么读 | 不代表什么 |
+| --- | --- | --- |
+| TabletId | 用它继续定位这个分片 | 不是业务订单号 |
+| Version | 该副本报告的数据版本位置 | 不是当前文件个数，Compaction 不会把它重置为 1 |
+| VersionCount | 采样时报告的版本数量，与合并状态有关 | 不等于提交次数，也不是 Segment 文件数 |
+
+例如，某次采样中逐行表的 VersionCount 比批量表大，可以继续查看它是否保留了更多
+未合并的 Rowset；不能仅凭这个数字断言查询慢了多少。元数据上报和后台合并都有时序，
+记录采样时间，不要求每次运行得到相同的数量。
+
+以下是命令形状，尖括号必须替换为本次返回值：
+
+```text
+SHOW TABLET <TabletId>;
+执行返回的 DetailCmd（SHOW PROC ...）
+读取返回的 CompactionStatus 地址，查看 rowsets
+```
+
+Rowset 清单中的版本范围用于理解哪些批次已经合并，例如 `[2-4]` 表示覆盖这段版本，
+不是三笔订单。这只是读法示意，不是本实验固定输出。
+课程容器返回的地址可能使用容器内网 IP；在宿主机查看时，只将本课程 BE 的地址换成
+`http://127.0.0.1:51040`，保留 `/api/compaction/show?tablet_id=...` 路径。
+这里只读取状态，不触发 Compaction，也不修改存储文件。
+[Tablet 状态入口](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/tablet-local-debug/)
+
+### 怎么取得一次真实查询的 Profile？
+
+完成 Lab 2 后，在同一个 Notebook 的临时代码格执行以下观察代码。
+它只打开本会话的 Profile 采集，不重建表，结束后恢复原设置：
+
+```python
+previous_profile = lab.query("SELECT @@enable_profile")[0][0]
+try:
+    lab.execute("SET enable_profile = true")
+    lab.sql("SELECT order_id, order_amount FROM orders_batch WHERE order_id = 1")
+    lab.sql("SHOW QUERY PROFILE")
+finally:
+    lab.execute("SET enable_profile = %s", (previous_profile,))
+```
+
+按数据库名、SQL 和开始时间找到刚才的查询，不要拿别人的查询做对照。
+Profile 可能稍后收集完成；再查看列表，或在本课 FE Web UI 的 QueryProfile 页面打开详情。
+先找扫描算子的行数、读取字节和耗时，再看过滤后输出：本查询最终返回一行，
+不意味着底层只读了一行。比较列裁剪时，使用相同过滤条件，只改变 SELECT 的列。
+本节不要求调优；完整慢查询分析放在 Level 2 的 Module 10。
+[Profile 配置与查看](https://doris.apache.org/docs/4.x/query-acceleration/query-profile/)
 
 ### 观察结果要怎么解释？
 

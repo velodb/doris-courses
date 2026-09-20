@@ -5,7 +5,7 @@
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
 | 产品版本 | Apache Doris 4.x |
 | 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 45 分钟，包含讲义阅读、动手实验和测验 |
+| 预计时间 | 约 50 分钟，包含讲义阅读、动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 4](lab4_query_iceberg.ipynb) · [打开测验 4](quiz4_internal_files_and_lake_tables.ipynb)
 
@@ -29,7 +29,7 @@
 
 | 环节 | 学习形式 | 建议时间 | 学习成果 |
 | --- | --- | --- | --- |
-| 4.1 内部表、外部文件与湖表查询 | 对象对照与 SQL | 10 分钟 | 区分访问路径，解释 JOIN 和导入边界 |
+| 4.1 内部表、外部文件与湖表查询 | 对象、配置与 SQL | 15 分钟 | 区分访问路径，解释 JOIN 和导入边界 |
 | 实验 4 | 动手操作（需 Iceberg） | 30 分钟 | 核对直查、关联、导入均为十单、12220.60 |
 | 测验 4 | 交互测验 | 5 分钟 | 检查对象、访问选择、表定位与关联结果 |
 
@@ -79,6 +79,38 @@ Iceberg 元数据与数据文件 ─ Catalog ┘      │
 “先直查”是一种接入选择，不保证所有外部查询都同样快；
 “导入”保存的是此次查询得到的结果，不会自动建立长期同步任务。
 文件 TVF 的对象存储接入在 Module 5 介绍，本 Lab 不运行独立文件实验。
+
+### 连接湖表要配置哪两类地址？
+
+Lab 的准备工具自动创建 Catalog。下面展开同一种 REST 接入配置，便于看懂工具做了什么。
+**外部环境示例，不随 Lab 重复执行。** 名称和连接参数均为占位符；Lab 实际按实验库名
+生成独立 Catalog，返回的 source 才是本次查询入口。不要另建一套入口后混用表名。
+
+<!-- external-service-example -->
+```sql
+CREATE CATALOG <catalog_name> PROPERTIES (
+    "type"="iceberg", "iceberg.catalog.type"="rest",
+    "iceberg.rest.uri"="<rest_service_url>",
+    "warehouse"="s3://<warehouse_bucket>/",
+    "s3.endpoint"="<object_storage_url>", "s3.region"="us-east-1",
+    "s3.access_key"="<access_key>", "s3.secret_key"="<secret_key>",
+    "use_path_style"="true", "iceberg.rest.view-enabled"="false"
+);
+```
+
+| 配置 | 在本课程中的用途 |
+| --- | --- |
+| type、iceberg.catalog.type | 选择 Iceberg 表格式及 REST 元数据服务 |
+| iceberg.rest.uri | 从元数据服务找表、快照和文件清单 |
+| warehouse | 本课程样本使用的对象存储位置，需与 REST 服务配置一致 |
+| s3.endpoint、region、访问凭据 | 让 Doris 节点读取实际数据文件 |
+| use_path_style | 匹配课程 MinIO 的路径访问方式 |
+| iceberg.rest.view-enabled | 本实验只用湖表，关闭外部视图支持 |
+
+本课容器网络中的服务地址是 `http://course-lake-rest:8181` 与
+`http://course-lake-minio:9000`，不是 Notebook 所在宿主机的 localhost。
+能取得表定义却读不到订单时，应分别检查元数据入口和文件入口。
+凭据只在实验环境中配置，不把真实密钥写入讲义。
 
 ### Catalog 如何定位外部表？
 

@@ -157,6 +157,20 @@ Lab 在独立的 `orders_partial_update` 上演示，不改变主线当前表：
 完成后恢复会话设置。订单号定位当前行，新版本参与新旧裁决，状态是本次要修改的内容；
 金额与地区由已有行保留。使用这种方式前，应明确启用部分更新以及目标表的支持条件。
 
+**SQL 阅读示例：对应 Lab 7 的部分更新步骤，不要在已完成的 Lab 上重复执行。**
+Lab 先在独立表写入上面的初始行，再在同一连接中执行：
+
+<!-- reading-only-example -->
+```sql
+SET enable_unique_key_partial_update = true;
+INSERT INTO orders_partial_update (order_id, status, event_version)
+VALUES (900001, 'CANCELLED', 2);
+```
+
+SET 开启本会话的部分更新语义，INSERT 提供主键和要改变的两列。
+Lab 在执行前保存原开关值，用 Python 的 try/finally 在成功或失败后恢复；
+不要在另一个连接中开开关，也不要省略恢复步骤。
+
 ```sql
 SELECT order_id, status, event_version, order_amount, region
 FROM orders_partial_update
@@ -168,7 +182,21 @@ ORDER BY order_id;
 
 ## 7.4 软删除、SQL 删除与回收
 
-### 三种“删除”回答不同的问题
+### 先区分业务标记、导入标记和内部位图
+
+| 名称 | 由谁使用 | 含义 |
+| --- | --- | --- |
+| is_deleted | 业务表与查询 SQL | 自定义软删除字段，需要查询主动过滤 |
+| __DORIS_DELETE_SIGN__ | Unique Key 的导入删除路径 | 为某个键表达删除；需要按导入方式提供标记，不能只传一个同名普通业务列就算完成配置 |
+| Delete Bitmap | MoW 引擎内部 | 标记不再对查询可见的物理行；普通 Upsert 覆盖旧行时也会涉及，并不只用于业务删除 |
+
+例如源库删除订单 900002，同步链路需要传递删除语义，而不是普通地再写一遍订单。
+导入删除标记用于表达这件事；业务 is_deleted 则是“仍保留记录，但应用不展示”。
+无论哪种方式，都不能仅凭普通查询不返回旧行，就判断底层文件已回收。
+本 Lab 执行下面的软删除与 SQL DELETE 对照，不执行导入删除标记实验。
+[更新与删除机制](https://doris.apache.org/docs/4.x/data-operate/update/update-overview/)
+
+### 三种操作回答不同的问题
 
 | 操作 | 查询结果 | 数据含义 |
 | --- | --- | --- |
@@ -179,6 +207,19 @@ ORDER BY order_id;
 Lab 的独立副本开始有两行：900001、900002。
 先软删除 900001，表里仍有两行，但 `WHERE is_deleted=false` 只返回 900002。
 再用 SQL DELETE 删除 900002，普通查询只剩软删除标记为真的 900001。
+
+**SQL 阅读示例：对应 Lab 7 的删除步骤，不要在已完成的 Lab 上重复执行。**
+先由 Lab 重建只有 900001、900002 的独立副本，再按顺序观察：
+
+<!-- reading-only-example -->
+```sql
+UPDATE orders_delete_demo SET is_deleted=true WHERE order_id=900001;
+SELECT order_id FROM orders_delete_demo WHERE is_deleted=false ORDER BY order_id;
+DELETE FROM orders_delete_demo WHERE order_id=900002;
+```
+
+UPDATE 只改变业务标记，第二条查询需显式过滤才能只看到 900002；
+DELETE 则删除另一笔订单，后续普通查询不再返回 900002。
 
 ```sql
 SELECT order_id, is_deleted, status
@@ -272,7 +313,7 @@ FROM orders_current;
 ## 单元总结
 
 - 当前表按 order_id，事件历史按 event_id，投递记录按每次尝试保存；三个粒度不能混用。
-- Sequence 列用业务版本裁决乱序，重投要求内容一致；到达顺序和日志位点不是业务新旧顺序。
+- Sequence 列用业务版本裁决乱序，重投要求内容一致；到达顺序不能替代业务版本，日志位点用于定位消费进度。
 - 部分列更新需要相应模型与配置，既检查新状态，也检查未提供字段；实验结束恢复会话设置。
 - 软删除、SQL DELETE 和物理回收不同；退款要保留业务事实，不用删除订单代替退款。
 - 恢复后核对 11/18/19 三种行数、完整记录和独立业务流水；支付 250.00、退款 150.00、净收款 100.00。

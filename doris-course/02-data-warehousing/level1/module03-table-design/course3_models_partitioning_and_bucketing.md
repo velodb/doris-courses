@@ -119,7 +119,31 @@ Lab 的分区表使用 Duplicate Key 保留历史明细，日期和订单号用�
 另建订单当前表时，应重新核对业务唯一键：如果同一订单的日期可能被修正，
 把日期也作为唯一键的一部分，就会把修正前后识别为两个不同的键。
 
-下面是 Lab 创建的物理布局，供阅读；建表和初始化由 Lab 执行：
+### 把分区和分桶写进建表语句
+
+**SQL 阅读示例：对应 Lab 3 的建表步骤，不要在已完成的 Lab 上重复执行。**
+初始化与重置仍在 Lab 中完成。先对照下面的语句理解布局：
+
+<!-- reading-only-example -->
+```sql
+CREATE TABLE orders_partitioned (
+    order_date DATE, order_id BIGINT, amount DECIMAL(18,2)
+) DUPLICATE KEY(order_date, order_id)
+PARTITION BY RANGE(order_date) (
+    PARTITION p_day1 VALUES [('2013-01-01'), ('2013-01-02')),
+    PARTITION p_day2 VALUES [('2013-01-02'), ('2013-01-03'))
+)
+DISTRIBUTED BY HASH(order_id) BUCKETS 4
+PROPERTIES("replication_num"="1");
+```
+
+- DUPLICATE KEY 中的日期、订单号组织排序，不保证订单号唯一。
+- PARTITION BY RANGE 按日期分区；每个范围包含左端、不包含右端。
+- DISTRIBUTED BY HASH 按订单号分桶；BUCKETS 4 是每个分区四桶，不是四个 BE。
+- replication_num=1 是教学沙箱的单副本设置，不是生产容灾方案。
+
+因此，2013-01-02 的订单属于 p_day2；分区内再由订单号计算目标桶。
+本例只有基础索引，物理布局为：
 
 ```text
 orders_partitioned

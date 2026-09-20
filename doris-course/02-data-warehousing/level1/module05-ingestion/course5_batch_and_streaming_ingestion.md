@@ -5,7 +5,7 @@
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
 | 产品版本 | Apache Doris 4.x |
 | 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 120 分钟，包含讲义阅读、动手实验和测验 |
+| 预计时间 | 约 110 分钟，包含讲义阅读、动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 5](lab5_stream_load.ipynb) · [打开测验 5](quiz5_load_methods_and_retry_safety.ipynb)
 
@@ -31,13 +31,13 @@
 | --- | --- | --- | --- |
 | 5.1 先决定访问还是导入 | 接入选择表 | 5 分钟 | 按来源与完成方式选择接入路径 |
 | 5.2 数据类型与 Schema | 字段对照 | 5 分钟 | 区分可解析的数据与合格业务记录 |
-| 5.3 默认值与列映射 | 映射示例 | 5 分钟 | 确定字段顺序与省略字段的含义 |
+| 5.3 默认值与列映射 | 映射与默认值示例 | 8 分钟 | 确定字段顺序与省略字段的含义 |
 | 5.4 Stream Load、结果检查与重试 | 请求与响应 | 5 分钟 | 判断成功、拒绝和不确定状态 |
-| 5.5 对象存储批量与 INSERT SELECT | SQL 与流程对照 | 10 分钟 | 区分查询、持久化和异步导入 |
+| 5.5 对象存储批量与 INSERT SELECT | SQL 与流程对照 | 8 分钟 | 区分查询、持久化和异步导入 |
 | 5.6 Kafka 与 Routine Load | SQL 与任务流程 | 10 分钟 | 解释消费进度与业务状态的区别 |
 | 5.7 Flink CDC 与 Doris Connector | 变更流程图 | 5 分钟 | 解释快照、增量和恢复 |
-| 5.8 Streaming Job 与 CDC_STREAM | 同步 SQL 与模式选择 | 15 分钟 | 解释 Streaming Job、CDC_STREAM 与目标表如何配合 |
-| 5.9 对象存储增量文件 | 任务 SQL 与文件进度 | 10 分钟 | 识别重复文件与迟到数据问题 |
+| 5.8 Streaming Job 与 CDC_STREAM | 同步 SQL 与模式选择 | 8 分钟 | 解释 Streaming Job、CDC_STREAM 与目标表如何配合 |
+| 5.9 对象存储增量文件 | 任务 SQL 与文件进度 | 6 分钟 | 识别重复文件与迟到数据问题 |
 | 实验 5 | 动手操作 | 45 分钟 | 导入 WWI 十表，检查模拟 CSV 重试与拒绝 |
 | 测验 5 | 交互测验 | 5 分钟 | 检查路径选择、映射、结果、重试和金额口径 |
 
@@ -105,11 +105,14 @@ Schema 是表的结构约定，包括列名、类型和是否允许为空。
 仍可能找不到对应客户。前者是类型问题，后者需要业务关联校验。
 Module 6 会保留原始文本，再将不合格记录单独分流。
 
-### 历史表的粒度也属于 Schema 理解的一部分
+### 导入多表时，先核对订单与明细
 
 Orders 一行是一笔订单，OrderLines 一行是商品明细。
 JOIN 后如果直接 COUNT(*)，数到的是明细，不是订单。
-WWI 客户账款又属于账户层，不能因为出现收款就分摊到某笔订单。
+本单元主线只检查订单、明细、客户和商品的行数、关系与金额。
+十张表仍全部导入，供后续使用；不要求在这里掌握完整账务模型。
+WWI 客户账款属于账户层，不能直接分摊为逐单支付；
+详细 SQL 放在[扩展阅读：发票与账户收款](optional_invoice_and_receipts.md)，不作为本节必做实验。
 
 完成历史表导入后，可以运行 Lab 中的日期分析：
 
@@ -158,10 +161,33 @@ event_time,paid_amount,refund_amount,region,data_source
 数据来源字段也可以使用该接入任务约定的来源标识。
 支付是否成功、实际支付金额等业务事实，应由源系统提供。
 
+**SQL 阅读示例：不随 Lab 执行。** 如需动手，使用独立实验库中尚不存在的
+orders_defaults_reading 表，只运行一次；不要把示例写入 orders_imported。
+
+<!-- reading-only-example -->
+```sql
+CREATE TABLE orders_defaults_reading (
+    order_id BIGINT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT "CREATED"
+) DUPLICATE KEY(order_id)
+DISTRIBUTED BY HASH(order_id) BUCKETS 1
+PROPERTIES("replication_num"="1");
+INSERT INTO orders_defaults_reading (order_id) VALUES (901001);
+INSERT INTO orders_defaults_reading (order_id, status) VALUES (901002, 'PAID');
+SELECT order_id, status FROM orders_defaults_reading ORDER BY order_id;
+```
+
+第一行省略 status，得到 `(901001, CREATED)`；第二行明确提供状态，得到 `(901002, PAID)`。
+默认值处理的是“没有提供该列”，不是把任意错误值修正成 CREATED。
+此表只说明默认值，不代表已经验证付款。
+
 列映射还可以通过表达式完成转换，例如把源字段整理成目标列需要的格式；
 生成列把计算表达式放在表定义里，由表负责计算，适用表达式受目标版本限制。
 选择时看规则属于哪个层次：某个来源专用的格式转换放在导入映射中，
-需要随表统一维护的派生字段再考虑生成列。本 Lab 练习显式字段映射。
+需要随表统一维护的派生字段再考虑生成列。例如源文件的金额以分记录，
+导入映射可使用 `order_amount=amount_cents/100.0`；18000 分应得到 180.00 元，
+需同时设置目标小数类型。与此不同，生成列是表定义中的表达式，不依赖某个 CSV 的列顺序。
+本 Lab 练习显式字段映射，生成列不作为本 Lab 操作。
 具体配置和限制参见 [Stream Load 文档](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)。
 
 ## 5.4 Stream Load、结果检查与重试
@@ -407,106 +433,45 @@ DELETE 也需要由连接器按删除语义传递，目标表才能正确移除�
 
 ## 5.8 Streaming Job 与 CDC_STREAM
 
-### 从“导入一次”到“持续同步”
-
-假设订单保存在 MySQL。早上把订单导入 Doris 后，业务仍在继续：客户支付了已有订单，
-也有人提交了新订单。看板要展示最新情况，就需要把这些变化持续送到 Doris。
-
-这时要完成两件事：读取业务库中的数据变化，以及持续把读取结果写入目标表。
-本节介绍的 **CDC_STREAM 负责读取，Streaming Job 负责组织持续导入**。
-上一节的 Flink 路径通过独立的 Flink 任务组织同步；本节则在 Doris 中创建和管理持续导入任务。
-
-CDC（Change Data Capture，变更数据捕获）利用数据库的变更日志识别新增、更新和删除。
-以 MySQL 为例，这些变化记录在 Binlog 中。读取日志后，同步链路才能知道某笔订单的状态已经改变。
-
-### 两个功能怎样配合？
-
-先从一张源订单表同步到一张 Doris 订单表理解：
-
-| 对象 | 负责什么 | 在订单案例中对应什么 |
-| --- | --- | --- |
-| MySQL 源表及 Binlog | 保存业务数据和后续变更 | 订单当前记录，以及支付后产生的状态更新 |
-| CDC_STREAM | 将源库数据与变更提供给同步 SQL | 读取指定 MySQL 订单表的数据 |
-| Streaming Job | 持续组织读取、写入并管理任务进度 | 一项名为“订单同步”的长期任务 |
-| Doris 目标表 | 保存同步结果，供 SQL 和看板查询 | 按订单号维护当前状态的 Unique Key 表 |
-
-CDC_STREAM 是表值函数（TVF）：调用它时指定数据源连接和表，SQL 就能从这个入口读取数据。
-在这里，它通常与 `CREATE JOB ... ON STREAMING` 配合使用，完成单表持续同步。
-[CDC_STREAM 功能说明](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/cdc-stream/)
-
-Streaming Job 是在 Doris 中创建的持续导入任务。其 SQL 映射模式使用
-`INSERT INTO 目标表 SELECT ... FROM CDC_STREAM(...)` 描述一次读取结果如何写入目标表，
-再由任务持续组织执行。SELECT 中可以选择列、调整列名或转换类型。
-源库连接参数决定“从哪里读”，SELECT 决定“怎样映射”，INSERT INTO 决定“写到哪里”。
-[Streaming Job 的创建与模式](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/job/CREATE-STREAMING-JOB/)
-
-```text
-MySQL 订单表：已有订单 + Binlog 中的后续变化
-                         ↓ CDC_STREAM 读取
-                   SELECT 映射字段
-                         ↓ INSERT INTO 写入
-                   Doris 订单当前表
-
-Streaming Job 持续组织上述过程，并记录任务状态与同步进度
-```
-
-### 已有订单与新变化怎样衔接？
-
-第一次同步通常既要搬入已有订单，也要继续接收之后的变化。
-“初始快照”读取源表已有记录；“增量同步”继续读取变更日志。
-在 Job 与 CDC_STREAM 配合的同步配置中，`offset="initial"` 表示先做全量初始化，再接增量。
-`offset="latest"` 则从最新日志位置开始接收后续变化，适合明确只需要新增变化的场景。
+**版本与范围：** 本节介绍 Doris 4.1 起的持续同步路径；官方将 MySQL、PostgreSQL
+相关能力标为 Experimental（实验性）。以下以 MySQL 单表为例，不随 Lab 执行，
+运行前需按目标补丁版本准备源库、驱动与同步权限。
 [MySQL SQL 映射同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/)
 
-下面用一笔订单说明过程。表中是预期行为示意，供理解同步阶段：
+### 与 Flink 路径有什么不同？
 
-| 阶段 | MySQL 中发生什么 | 同步需要完成的工作 | Doris 中应看到什么 |
-| --- | --- | --- | --- |
-| 初始同步 | 已有订单 900001，状态为 CREATED | 读取快照并写入目标表 | 订单 900001，状态为 CREATED |
-| 业务继续 | 同一订单更新为 PAID | 读取对应变更并更新目标记录 | 同一订单的状态变为 PAID |
-| 中断后恢复 | 任务中断期间源库继续产生变化 | 根据已保存进度衔接读取，并核对恢复结果 | 已同步订单保持正确，后续变化继续到达 |
+两条路径都要处理上一节的“快照 → 增量 → 恢复”。区别在于谁组织同步任务：
+Flink 路径由外部 Flink 作业运行；本节在 Doris 中创建 Streaming Job，
+通过 CDC_STREAM 表值函数读取源库，再按 SQL 映射写入目标表。
 
-要得到“同一订单的当前状态”，目标表必须按订单号识别逻辑记录。
-官方 SQL 映射同步要求目标为主键表，对应 Doris 的 Unique Key 模型，并提前创建目标表。
-源端删除如何传递、目标主键怎样映射，也需要在配置和验证中明确。
+```text
+MySQL 已有订单与 Binlog → CDC_STREAM → SELECT 字段映射 → Doris Unique Key 表
+                         └──── Streaming Job 持续组织执行并记录进度 ────┘
+```
 
-任务进度记录“同步处理到哪个位置”；Module 7 的业务版本规则解决“同一订单哪个版本应当胜出”。
-恢复时要同时核对进度和目标数据。如果所需 Binlog 已被源库清理，还需要重新评估补数或初始化方式。
-
-### 同步一张表，还是一组业务表？
-
-两种模式可以从你需要控制的内容来选择：
-
-| 需求 | 使用方式 | 需要准备的目标 |
+| 部分 | 负责什么 | 本例中要填写什么 |
 | --- | --- | --- |
-| 同步一张订单表，且需要选择字段、改列名或转换类型 | SQL 映射：Streaming Job + CDC_STREAM | 预先设计并创建 Doris Unique Key 表 |
-| 将订单、客户、商品等一组源表同步到 Doris，按源表结构建立对应表 | 自动建表同步：`FROM MYSQL (...) TO DATABASE ...` | 指定目标数据库、同步表范围和建表属性 |
+| CDC_STREAM | 读取源库数据与变更 | JDBC 地址、驱动、账号、源库和源表 |
+| SELECT / INSERT INTO | 映射字段并选择目标 | order_id、status，以及已创建的目标表 |
+| Streaming Job | 组织持续运行并保存进度 | 任务名、启动位置和运行配置 |
 
-例如，只保留订单号、客户号、状态三个字段时，可以在 SQL 映射中明确列出它们。
-如果希望先接入订单、客户和商品三张完整业务表，则可以通过自动建表模式指定表范围，
-让 Doris 在初次同步时创建对应目标表。
-自动建表模式适合镜像接入；其首次建表规则、后续结构变更和恢复语义要按该模式单独确认。
-[MySQL 自动建表同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-database/)
+`CREATE JOB ... ON STREAMING` 创建持续任务，
+`INSERT INTO ... SELECT ... FROM CDC_STREAM(...)` 描述读取结果怎么落表。
+SQL 映射模式需要预先创建 Unique Key 目标表；源端删除如何传递、主键怎样映射也需验证。
+[CDC_STREAM](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/cdc-stream/)
 
-Streaming Job 也能配合 S3 TVF 持续导入文件。任务仍负责持续运行，数据入口换成对象存储中的文件，
-下一节会继续解释这种情况。
+### 启动位置与同步范围怎么选？
 
-### 实际接入时，先准备和检查什么？
+- `offset="initial"`：先读取已有订单，再衔接增量变化。
+- `offset="latest"`：只接收启动后的增量，不会补齐启动前的订单。
+- 单表需要选择列、改名或转换类型时，使用本例的 SQL 映射模式。
+- 一组表按源结构接入时，可以评估 `FROM MYSQL (...) TO DATABASE ...` 自动建表同步。
+  初次建表与后续 Schema 变化是两件事，不能假定所有变更都会自动兼容。
+  [自动建表同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-database/)
 
-以 MySQL 为例，首先准备源库连接、匹配的 JDBC 驱动、同步账号与 Binlog 读取权限，
-并按 CDC 要求启用行模式 Binlog。然后确定源表范围、目标主键与列映射，以及从全量还是增量开始。
-初始同步较长或任务可能中断时，还要预留足够的源端日志保留时间。
-
-任务创建后，依次检查任务状态、同步进度和目标表：
-
-- 查看任务是否运行、是否有错误信息，确认同步流程已启动。
-- 在源库产生一笔可核对的变更，观察进度是否推进，再查询 Doris 中这笔订单的状态。
-- 在独立测试环境验证中断恢复，以及新增、更新和删除的处理结果。
-
-“任务正在运行”说明任务处于运行状态；订单查询结果和同步延迟，才是看板数据是否可用的验证依据。
-
-官方 4.x 导航将 MySQL、PostgreSQL 的这类持续同步标为 Experimental（实验性）。
-搭建实验时应按目标补丁版本确认参数、驱动和同步限制，配置入口见本节引用的官方说明。
+开始前确认 MySQL 行模式 Binlog、同步账号、JDBC 驱动、源表及目标主键；
+源日志必须保留到故障恢复需要的位置。任务进度回答“同步到哪里”，
+Module 7 的业务版本规则回答“同一订单哪个状态更新”，两者都要与目标数据核对。
 
 ### 阅读示例：把配置对应到一笔订单
 

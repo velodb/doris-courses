@@ -21,6 +21,70 @@ class LearningFlowTest(unittest.TestCase):
         path = next((ROOT / "level1" / module).glob("lab*.ipynb"))
         return {c["id"]: "".join(c["source"]) for c in json.loads(path.read_text())["cells"]}
 
+    def reading(self, module):
+        return next((ROOT / "level1" / module).glob("course*.md")).read_text()
+
+    def test_reading_ddl_and_classification_match_lab_sql(self):
+        for module, prefix in (("module03-table-design", "CREATE TABLE orders_partitioned"),
+                               ("module06-data-quality", "CREATE VIEW orders_classified")):
+            blocks = re.findall(r"```sql\n(.*?)```", self.reading(module), re.DOTALL)
+            excerpt = next(block for block in blocks if block.startswith(prefix))
+            source = "\n".join(self.notebook_cells(module).values())
+            self.assertIn(" ".join(excerpt.strip().rstrip(";").split()), " ".join(source.split()))
+        quality = self.reading("module06-data-quality")
+        self.assertIn("CASE WHEN", quality)
+        for fragment in ("WHERE reject_reason IS NULL", "WHERE reject_reason IS NOT NULL",
+                         "Lightweight Schema Change", "Heavyweight Schema Change"):
+            self.assertIn(fragment, quality)
+
+    def test_profile_example_restores_session_and_explains_fields(self):
+        reading = self.reading("module02-architecture")
+        source = re.search(r"```python\n(.*?)```", reading, re.DOTALL)[1]
+        lab = Mock()
+        for previous in (True, False):
+            lab.reset_mock()
+            lab.query.return_value = [(previous,)]
+            exec(compile(source, "profile-reading", "exec"), {"lab": lab})
+            lab.execute.assert_any_call("SET enable_profile = %s", (previous,))
+        lab.sql.side_effect = RuntimeError("query failed")
+        with self.assertRaisesRegex(RuntimeError, "query failed"):
+            exec(compile(source, "profile-reading", "exec"), {"lab": lab})
+        self.assertEqual(lab.execute.call_args.args, ("SET enable_profile = %s", (False,)))
+        for field in ("VersionCount", "CompactionStatus", "TabletId", "SHOW QUERY PROFILE"):
+            self.assertIn(field, reading)
+
+    def test_catalog_reading_matches_fixture_properties(self):
+        reading = self.reading("module04-external-access")
+        fixture_source = (ROOT / "dw_course/lakehouse.py").read_text()
+        for fragment in ('"type"="iceberg"', '"iceberg.catalog.type"="rest"',
+                         '"use_path_style"="true"', '"iceberg.rest.view-enabled"="false"'):
+            self.assertIn(fragment, reading)
+            self.assertIn(fragment, fixture_source)
+        self.assertIn("外部环境示例，不随 Lab 重复执行", reading)
+
+    def test_ingestion_keeps_cdc_boundary_and_optional_accounting(self):
+        reading = self.reading("module05-ingestion")
+        cdc = reading.split("## 5.8 Streaming Job 与 CDC_STREAM", 1)[1].split("## 5.9", 1)[0]
+        self.assertIn("Experimental", cdc.split("###", 1)[0])
+        self.assertIn('DEFAULT "CREATED"', reading)
+        self.assertIn("optional_invoice_and_receipts.md", reading)
+        cells = self.notebook_cells("module05-ingestion")
+        self.assertNotIn("TransactionTypeName", cells["historical-check"])
+        self.assertIn("wwi_order_lines", cells["historical-check"])
+        optional = (ROOT / "level1/module05-ingestion/optional_invoice_and_receipts.md").read_text()
+        self.assertIn("267011.44", optional)
+        self.assertIn("TransactionTypeName", optional)
+        for block in re.findall(r"```sql\n(.*?)```", optional, re.DOTALL):
+            for statement in (part.strip() for part in block.split(";") if part.strip()):
+                self.assertTrue(statement.startswith("SELECT"))
+
+    def test_update_reading_teaches_operations_and_distinct_delete_mechanisms(self):
+        reading = self.reading("module07-state-changes")
+        for fragment in ("INSERT INTO orders_partial_update", "UPDATE orders_delete_demo",
+                         "DELETE FROM orders_delete_demo", "__DORIS_DELETE_SIGN__", "Delete Bitmap",
+                         "try/finally", "不执行导入删除标记实验"):
+            self.assertIn(fragment, reading)
+
     def test_first_load_teaches_http_before_independent_work(self):
         cells = self.notebook_cells("module05-ingestion")
         source = cells["cell-4"]
