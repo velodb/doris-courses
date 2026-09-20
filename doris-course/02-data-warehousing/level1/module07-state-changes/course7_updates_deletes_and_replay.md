@@ -90,6 +90,19 @@ Unique Key 的更新改变同键的逻辑当前值，不意味着旧物理文件
 即使版本 2、3 尚未到达，版本 4 也足以建立当前行。若消息只包含某个变化字段，
 则需要按部分更新的语义处理，不能直接套用整行状态的写入方式。
 
+Lab 在第一次写入之前展示实际 DDL。先找到下面的键与属性片段：
+
+```text
+UNIQUE KEY(order_id)
+"enable_unique_key_merge_on_write"="true"
+"function_column.sequence_col"="event_version"
+```
+
+第一项识别订单，第二项启用写时合并，第三项指定业务版本列。
+仅把普通字段命名为 event_version 不会启用版本裁决。
+课程工具 `order_ddl(..., current=True)` 生成这些配置；迁移到自己的表时，应核对实际 DDL，
+而不是照搬 Python 参数。下例的版本比较以此配置和完整行写入为前提。
+
 Sequence 列是 Doris 比较同一 Key 下记录新旧的依据。
 对订单 900001，已有版本 4 时，后到的版本 2 不会让当前状态退回 PAID。
 这要求上游为同一订单提供可比较、能表达业务先后的版本；

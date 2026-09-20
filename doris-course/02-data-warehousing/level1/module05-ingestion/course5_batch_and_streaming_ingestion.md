@@ -5,7 +5,7 @@
 | 所属课程 | Data Warehousing with Apache Doris · Level 1 |
 | 产品版本 | Apache Doris 4.x |
 | 实验版本 | Apache Doris 4.1.3 |
-| 预计时间 | 约 95 分钟，包含讲义阅读、动手实验和测验 |
+| 预计时间 | 约 120 分钟，包含讲义阅读、动手实验和测验 |
 
 [课程目录](../README.md) · [打开实验 5](lab5_stream_load.ipynb) · [打开测验 5](quiz5_load_methods_and_retry_safety.ipynb)
 
@@ -33,12 +33,12 @@
 | D05-02：数据类型与 Schema | 字段对照 | 5 分钟 | 区分可解析的数据与合格业务记录 |
 | D05-03：默认值与列映射 | 映射示例 | 5 分钟 | 确定字段顺序与省略字段的含义 |
 | D05-04：Stream Load、结果检查与重试 | 请求与响应 | 5 分钟 | 判断成功、拒绝和不确定状态 |
-| D05-05：对象存储批量与 INSERT SELECT | 流程对照 | 5 分钟 | 区分查询、持久化和异步导入 |
-| D05-06：Kafka 与 Routine Load | 任务流程图 | 5 分钟 | 解释消费进度与业务状态的区别 |
+| D05-05：对象存储批量与 INSERT SELECT | SQL 与流程对照 | 10 分钟 | 区分查询、持久化和异步导入 |
+| D05-06：Kafka 与 Routine Load | SQL 与任务流程 | 10 分钟 | 解释消费进度与业务状态的区别 |
 | D05-07：Flink CDC 与 Doris Connector | 变更流程图 | 5 分钟 | 解释快照、增量和恢复 |
-| D05-08：Streaming Job 与 CDC_STREAM | 订单同步过程与模式选择 | 10 分钟 | 解释 Streaming Job、CDC_STREAM 与目标表如何配合 |
-| D05-09：对象存储增量文件 | 文件进度案例 | 5 分钟 | 识别重复文件与迟到数据问题 |
-| 实验 5 | 动手操作 | 40 分钟 | 导入 WWI 十表，检查模拟 CSV 重试与拒绝 |
+| D05-08：Streaming Job 与 CDC_STREAM | 同步 SQL 与模式选择 | 15 分钟 | 解释 Streaming Job、CDC_STREAM 与目标表如何配合 |
+| D05-09：对象存储增量文件 | 任务 SQL 与文件进度 | 10 分钟 | 识别重复文件与迟到数据问题 |
+| 实验 5 | 动手操作 | 45 分钟 | 导入 WWI 十表，检查模拟 CSV 重试与拒绝 |
 | 测验 5 | 交互测验 | 5 分钟 | 检查路径选择、映射、结果、重试和金额口径 |
 
 ## D05-01：先决定访问还是导入
@@ -193,6 +193,11 @@ group_commit: off_mode
 历史 Parquet 使用 format=parquet，不附 CSV 分隔符。
 参数决定解析和质量处理方式；所有请求都要检查返回的 JSON，而不只看 HTTP 状态。
 
+Lab 的第一次导入会展开完整的 Python HTTP 请求：URL 选择目标表，headers 对应上面的参数，
+`requests.put(..., data=payload)` 发送文件字节，`response.json()` 取得导入结果。
+之后再使用 `lab.stream_load()` 封装重复操作。独立练习沿用同一请求结构，
+只替换文件、目标表、批次 label 和列映射，不需要从零猜测 HTTP 写法。
+
 ### 响应与表内结果要一起看
 
 以下是成功导入模拟十单时需要核对的字段示意，并非完整响应：
@@ -266,6 +271,44 @@ Broker Load 是异步导入路径，提交被接受不等于任务已完成。
 重试策略需要同时考虑导入任务和目标表模型。
 操作入口见[Broker Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/broker-load-manual/)。
 
+### 阅读示例：先检查文件，再落表
+
+**外部环境示例，不随 Lab 执行。** 本节及后面的 Kafka、CDC 示例使用独立演示表，
+不向主线的 orders_imported 写入。实际运行前，先切换到独立实验库，准备外部服务，
+替换尖括号占位符；地址必须能被 Doris 节点访问，不能照搬 Notebook 所在机器的 localhost。
+凭据由实验环境提供，不把真实密钥保存到讲义或 Notebook。
+
+假设自行准备的 Parquet 文件只有 order_id、order_amount 两列，内容为
+`(901001, 180.00)`、`(901002, 80.00)`。它不是仓库中的完整 WWI 文件。
+下面先创建空的明细表，再从文件写入：
+
+<!-- external-service-example -->
+```sql
+CREATE TABLE orders_s3_demo (
+    order_id BIGINT, order_amount DECIMAL(18,2)
+) DUPLICATE KEY(order_id)
+DISTRIBUTED BY HASH(order_id) BUCKETS 1
+PROPERTIES("replication_num"="1");
+
+INSERT INTO orders_s3_demo (order_id, order_amount)
+SELECT order_id, order_amount FROM S3(
+    "uri"="s3://<bucket>/batch/orders.parquet",
+    "s3.endpoint"="<endpoint>", "s3.region"="<region>",
+    "s3.access_key"="<access_key>", "s3.secret_key"="<secret_key>",
+    "format"="parquet"
+);
+SELECT COUNT(*) AS orders, SUM(order_amount) AS amount FROM orders_s3_demo;
+```
+
+阅读和操作时分三步：
+
+1. 先单独取出 `SELECT ... FROM S3(...)` 执行，预期看到两条文件记录，内部表仍为空。
+2. 再执行完整的 INSERT INTO SELECT，把这两列写入内部表；uri 选文件，format 指定解析格式。
+3. 最后一条查询预期得到 2、260.00。不要为“确认成功”再次运行 INSERT，否则明细表会追加同一批记录。
+
+这里的预期来自上述两行演示数据，不是本地 Lab 的实测结果。参数见
+[S3 TVF](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)。
+
 ## D05-06：Kafka 与 Routine Load
 
 当上游不断产生订单消息时，无法等“整个文件准备好”再导入。
@@ -296,6 +339,39 @@ offset 回答“读到了哪里”，业务 event_version 回答“同一订单�
 例如先消费签收、后消费迟到的支付事件，消费进度向前不代表应把订单状态倒退。
 D07 会用订单事件进一步说明版本裁决。任务参数与管理方式见
 [Routine Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/routine-load-manual/)。
+
+### 阅读示例：创建任务后，还要看消费结果
+
+**外部环境示例，不随 Lab 执行。** 准备一个独立 Kafka Topic，仅发送两条无表头 CSV 消息：
+`901001,180.00` 和 `901002,80.00`。下面将消息的第一、二列映射为订单号、金额：
+
+<!-- external-service-example -->
+```sql
+CREATE TABLE orders_kafka_demo (
+    order_id BIGINT, order_amount DECIMAL(18,2)
+) DUPLICATE KEY(order_id)
+DISTRIBUTED BY HASH(order_id) BUCKETS 1
+PROPERTIES("replication_num"="1");
+
+CREATE ROUTINE LOAD orders_kafka_job ON orders_kafka_demo
+COLUMNS TERMINATED BY ",",
+COLUMNS(order_id, order_amount)
+PROPERTIES("strict_mode"="true", "max_filter_ratio"="0", "max_error_number"="0")
+FROM KAFKA(
+    "kafka_broker_list"="<broker>:9092",
+    "kafka_topic"="<dedicated_topic>",
+    "property.kafka_default_offsets"="OFFSET_BEGINNING"
+);
+SHOW ROUTINE LOAD FOR orders_kafka_job;
+SELECT COUNT(*) AS orders, SUM(order_amount) AS amount FROM orders_kafka_demo;
+```
+
+`OFFSET_BEGINNING` 指定新任务从分区开头消费，不是每一批都回到开头。
+等待这两条消息提交后，空表应变成 2 行、260.00；任务仍会等待新消息，不会因当前 Topic 读完而结束。
+在 SHOW 结果中查看 State、Progress、Statistic；若暂停，检查 ReasonOfStateChanged 和 ErrorLogUrls。
+不要重新创建任务来代替正常恢复，以免重新消费旧消息。操作字段见上面的 Routine Load 官方说明。
+观察结束后，可用 `PAUSE ROUTINE LOAD FOR orders_kafka_job` 暂停，
+继续观察时用 `RESUME ROUTINE LOAD FOR orders_kafka_job` 恢复。
 
 ## D05-07：Flink CDC 与 Doris Connector
 
@@ -433,6 +509,43 @@ Streaming Job 也能配合 S3 TVF 持续导入文件。任务仍负责持续运�
 官方 4.x 导航将 MySQL、PostgreSQL 的这类持续同步标为 Experimental（实验性）。
 搭建实验时应按目标补丁版本确认参数、驱动和同步限制，配置入口见本节引用的官方说明。
 
+### 阅读示例：把配置对应到一笔订单
+
+**外部环境示例，不随 Lab 执行。** 按上述条件准备 MySQL 与驱动；源表 demo.orders
+包含主键 order_id 和 status，初始只有 `(901001, 'CREATED')`。
+下面在 Doris 中预先创建同粒度的目标表，再创建同步任务：
+
+<!-- external-service-example -->
+```sql
+CREATE TABLE orders_cdc_demo (
+    order_id BIGINT NOT NULL, status VARCHAR(20)
+) UNIQUE KEY(order_id)
+DISTRIBUTED BY HASH(order_id) BUCKETS 1
+PROPERTIES("replication_num"="1", "enable_unique_key_merge_on_write"="true");
+
+CREATE JOB orders_mysql_job ON STREAMING DO
+INSERT INTO orders_cdc_demo (order_id, status)
+SELECT order_id, status FROM CDC_STREAM(
+    "type"="mysql", "jdbc_url"="jdbc:mysql://<mysql_host>:3306",
+    "driver_url"="<driver_jar_url>", "driver_class"="com.mysql.cj.jdbc.Driver",
+    "user"="<sync_user>", "password"="<sync_password>",
+    "database"="demo", "table"="orders", "offset"="initial"
+);
+SELECT * FROM jobs("type"="insert")
+WHERE ExecuteType = 'STREAMING' AND Name = 'orders_mysql_job';
+SELECT order_id, status FROM orders_cdc_demo ORDER BY order_id;
+```
+
+按“初始化 → 产生变化 → 核对结果”观察：先等目标表出现 CREATED，
+再在 MySQL 中把同一订单改成 PAID，等待同步后查 Doris，预期仍为一行、状态变为 PAID。
+`offset=initial` 决定从快照衔接增量，SELECT 两列决定映射，Unique Key 决定目标行的身份。
+状态和进度在 jobs() 中观察，但必须用最后一条订单查询确认业务变化已经到达。
+这是预期过程，不表示课程已经运行了真实 CDC；版本前提与配置见
+[MySQL SQL 映射同步](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-mysql-table/)。
+观察结束后，可用 `PAUSE JOB WHERE jobName = 'orders_mysql_job'` 暂停，
+继续时用 `RESUME JOB WHERE jobName = 'orders_mysql_job'` 恢复。
+操作语法见[持续导入任务管理](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-overview/)。
+
 ## D05-09：对象存储增量文件
 
 ### 新文件发现也是一种进度问题
@@ -455,6 +568,34 @@ Streaming Job 也能配合 S3 TVF 持续导入文件。任务仍负责持续运�
 排查“文件到了但表里没有”时，先比较文件名与这两个进度，再检查路径匹配、任务错误和目标订单。
 同名覆盖文件不应当作新的发布批次。规则与参数见
 [对象存储持续导入](https://doris.apache.org/docs/4.x/data-operate/import/import-way/streaming-job/continuous-load-s3/)。
+
+### 阅读示例：给文件查询加上持续任务
+
+**外部环境示例，不随 Lab 执行。** 沿用 D05-05 的两列文件结构，另建空表，
+并使用只包含增量文件的独立目录；不要指向已批量导入过的历史目录。
+
+<!-- external-service-example -->
+```sql
+CREATE TABLE orders_files_demo LIKE orders_s3_demo;
+CREATE JOB orders_files_job ON STREAMING DO
+INSERT INTO orders_files_demo (order_id, order_amount)
+SELECT order_id, order_amount FROM S3(
+    "uri"="s3://<bucket>/incremental/orders-*.parquet",
+    "s3.endpoint"="<endpoint>", "s3.region"="<region>",
+    "s3.access_key"="<access_key>", "s3.secret_key"="<secret_key>",
+    "format"="parquet"
+);
+SELECT * FROM jobs("type"="insert")
+WHERE ExecuteType = 'STREAMING' AND Name = 'orders_files_job';
+SELECT order_id, order_amount FROM orders_files_demo ORDER BY order_id;
+```
+
+先发布仅含 `(901001, 180.00)` 的 orders-001.parquet，等 CurrentOffset 推进且表内出现该行；
+再发布仅含 `(901002, 80.00)` 的 orders-002.parquet，预期最终两行、合计 260.00。
+与 D05-05 不同，CREATE JOB 让文件查询持续运行；无需手工重复 INSERT。
+若此后发布 orders-000.parquet，按本节规则不会作为新文件被读取，应另行安排补数。
+任务语法与进度字段见上面的对象存储持续导入说明。
+观察结束后同样暂停任务，使用 `PAUSE JOB WHERE jobName = 'orders_files_job'`，避免继续消费后续文件。
 
 ## 动手实验 5：批量导入、失败与重试
 

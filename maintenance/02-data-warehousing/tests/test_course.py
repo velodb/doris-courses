@@ -226,9 +226,17 @@ class MaterialsTest(unittest.TestCase):
     def test_readings_keep_examples_separate_from_lab_writes(self):
         for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
             content = path.read_text()
-            blocks = re.findall(r"^```sql\n(.*?)^```", content, re.MULTILINE | re.DOTALL)
+            blocks = re.findall(
+                r"(?:(^<!-- external-service-example -->\n))?^```sql\n(.*?)^```",
+                content, re.MULTILINE | re.DOTALL,
+            )
             self.assertTrue(blocks, path)
-            for block in blocks:
+            for external, block in blocks:
+                if external:
+                    self.assertEqual(path.parent.name, "module05-ingestion")
+                    self.assertIn("<", block)  # Requires external connection parameters.
+                    self.assertNotRegex(block, r"\b(orders_imported|wwi_\w+)\b")
+                    continue
                 statements = [s.strip() for s in block.split(";") if s.strip()]
                 for statement in statements:
                     self.assertRegex(statement, r"^(SELECT|EXPLAIN|SHOW)\b", path)

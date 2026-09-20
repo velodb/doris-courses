@@ -8,7 +8,7 @@ import tarfile
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[3] / "doris-course/02-data-warehousing"
 sys.path.insert(0, str(ROOT))
@@ -17,6 +17,94 @@ from dw_course import wwi
 
 
 class LearningFlowTest(unittest.TestCase):
+    def notebook_cells(self, module):
+        path = next((ROOT / "level1" / module).glob("lab*.ipynb"))
+        return {c["id"]: "".join(c["source"]) for c in json.loads(path.read_text())["cells"]}
+
+    def test_first_load_teaches_http_before_independent_work(self):
+        cells = self.notebook_cells("module05-ingestion")
+        source = cells["cell-4"]
+        lab = Mock(database="dw_course_l1_test", user="root", password="")
+        lab.query.return_value = [(10, "1400.00")]
+        response = Mock()
+        response.json.return_value = {"Status": "Success", "NumberLoadedRows": 10,
+                                      "NumberFilteredRows": 0}
+        namespace = {"lab": lab, "order_ddl": lambda _: "DDL", "show_sql": Mock(),
+                     "show_response": Mock(), "expect": runtime.expect, "COURSE_ROOT": ROOT,
+                     "ORDER_COLUMNS": ("order_id", "customer_id"), "uuid4": lambda: Mock(hex="test")}
+        with patch.dict("os.environ", {"DW_BE_HTTP_URL": "http://example.invalid:8040"}), \
+                patch("requests.put", return_value=response) as put:
+            exec(compile(source, "first-http-load", "exec"), namespace)
+        self.assertEqual(put.call_args.args[0],
+                         "http://example.invalid:8040/api/dw_course_l1_test/orders_imported/_stream_load")
+        args = put.call_args.kwargs
+        self.assertEqual(args["headers"]["columns"], "order_id,customer_id")
+        self.assertEqual(args["headers"]["label"], namespace["label"])
+        self.assertEqual(args["headers"]["group_commit"], "off_mode")
+        self.assertEqual(args["headers"]["max_filter_ratio"], "0")
+        self.assertEqual(args["auth"], ("root", ""))
+        self.assertFalse(args["allow_redirects"])
+        response.raise_for_status.assert_called_once()
+        lab.stream_load.assert_not_called()
+        self.assertIn('label, columns)', cells["cell-6"])
+
+    def test_sequence_ddl_is_shown_before_first_update(self):
+        from dw_course.schema import order_ddl
+        cells = self.notebook_cells("module07-state-changes")
+        source = cells["update-walkthrough"]
+        self.assertLess(source.index("show_sql("), source.index("lab.execute(ddl)"))
+        self.assertLess(source.index("lab.execute(ddl)"), source.index("lab.insert("))
+        for fragment in ('UNIQUE KEY(order_id)', '"function_column.sequence_col"="event_version"',
+                         '"enable_unique_key_merge_on_write"="true"'):
+            self.assertIn(fragment, order_ddl("orders_update_walkthrough", current=True))
+            self.assertIn(fragment, cells["update-walkthrough-help"])
+
+    def test_quality_negative_cases_target_uniqueness(self):
+        source = self.notebook_cells("module06-data-quality")["cell-8"]
+        cases = [n for n in ast.parse(source).body if isinstance(n, ast.With)]
+        self.assertEqual(len(cases), 2)
+        for case in cases:
+            self.assertEqual(ast.unparse(case.body[0]), "check_unique_orders()")
+            self.assertEqual(len(case.body), 1)
+
+    def test_uniqueness_detects_duplicates_without_total_changes(self):
+        from decimal import Decimal
+        rows = runtime.fixture("orders.json")
+        wrong = [dict(r) for r in rows]
+        wrong[1]["order_id"] = wrong[0]["order_id"]
+        self.assertEqual(len(wrong), len(rows))
+        self.assertEqual(sum(Decimal(r["order_amount"]) for r in wrong),
+                         sum(Decimal(r["order_amount"]) for r in rows))
+        source = self.notebook_cells("module06-data-quality")["cell-8"]
+        check = next(n for n in ast.parse(source).body
+                     if isinstance(n, ast.FunctionDef) and n.name == "check_unique_orders")
+        lab = Mock()
+        namespace = {"lab": lab, "expect": runtime.expect}
+        exec(compile(ast.Module(body=[check], type_ignores=[]), "uniqueness", "exec"), namespace)
+        for records, duplicates in ((rows, 0), (wrong, 1), (rows + [rows[0]], 1)):
+            lab.query.return_value = [(len(records) - len({r["order_id"] for r in records}),)]
+            if duplicates:
+                with self.assertRaises(runtime.CourseCheckError):
+                    namespace["check_unique_orders"]()
+            else:
+                namespace["check_unique_orders"]()
+            lab.query.assert_called_with(
+                "SELECT COUNT(*) - COUNT(DISTINCT order_id) FROM orders_clean")
+
+    def test_external_examples_have_explicit_scope_and_observation(self):
+        path = next((ROOT / "level1/module05-ingestion").glob("course*.md"))
+        content = path.read_text()
+        examples = re.findall(r"### 阅读示例：(.*?)(?=\n## |\Z)", content, re.DOTALL)
+        self.assertEqual(len(examples), 4)
+        for example in examples:
+            self.assertIn("外部环境示例，不随 Lab 执行", example)
+            self.assertIn("<!-- external-service-example -->\n```sql", example)
+            self.assertIn("SELECT", example)
+            self.assertRegex(example, "预期|应变成")
+        self.assertIn("SHOW ROUTINE LOAD FOR orders_kafka_job", content)
+        self.assertIn("Name = 'orders_mysql_job'", content)
+        self.assertIn("Name = 'orders_files_job'", content)
+
     def test_every_module_has_blank_exercise_and_folded_executable_solution(self):
         paths = list((ROOT / "level1").glob("*/lab*.ipynb"))
         self.assertEqual(len(paths), 7)
