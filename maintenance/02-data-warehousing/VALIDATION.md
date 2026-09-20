@@ -1,5 +1,33 @@
 # Validation record
 
+## 2026-09-20: Streaming review fixes and English optional-lab text
+
+This follow-up fixes the first two review findings. Startup output buffering remains unchanged.
+
+### Changes
+
+- Data waits now require a job-health callback. Kafka polls include `SHOW ALL ROUTINE LOAD FOR ...` and report unexpected PAUSED/STOPPED/CANCELLED states, the job name, state-change reason, and error URLs. Intentional pause checks still query the table directly.
+- Flink data and checkpoint waits check the job on every poll. An old completed checkpoint cannot hide a failed or unexpectedly finished job. Diagnostics include the job ID and exception-page URL.
+- `prepare_environment(start=True, streaming=True)` checks Docker-visible total RAM/CPU before startup and applies the committed streaming-only resource overlay (12 GiB memory and memory-plus-swap limits). Base main-course startup is unchanged. The profile requires 18 GiB total Docker capacity and 4 CPUs; this is a conservative preparation policy, not a measured minimum or a check of free RAM. README commands explain configuration, inspection, and shared-host pressure.
+- Both optional Notebook bodies, code-cell labels, and the streaming environment README are now English. Other course lessons, main notebooks, and shared Chinese display widgets have not been translated in this follow-up.
+
+### Evidence
+
+- **101 offline tests passed** against a clean HEAD export overlaid with only this task's files, excluding existing user Notebook outputs. New tests cover health checks on each poll, stale checkpoint rejection, stopped/suspended jobs, Routine Load error details, capacity failures before startup, overlay propagation, and English Notebook text with checked data waits.
+- Both updated English Notebooks passed `run_streaming_labs.py all` against the local Docker environment. Kafka: pause retains two rows, resume/duplicate/update yields three rows totaling 350.00. CDC: snapshot 350.00, source mutations 225.00, controlled savepoint restoration 240.00, with the restored path checked.
+- Initial Flink job: `5a181f6318aab36328a29e2620005467`; restored job: `205acd3419e06bef494218d8f71da256`. Both finished normally. Final savepoint: `file:/opt/flink/state/savepoints/savepoint-205acd-3081500352a1`.
+- Actual negative probes rejected the stopped Kafka job `course_orders_00d46ce84c38` and rejected checkpoint acceptance for the finished restored Flink job immediately. These were read-only probes after the labs, not injected production failures.
+- Docker inspect confirmed both Doris limits at `12884901888` bytes. The overlay recreated the course container while retaining BackendId `1789708590884`, host `127.0.0.1`, and `Alive=true`; BE `SUM(numbers(10))` remained 45. No active Routine Load jobs remained.
+- Execution log: `/tmp/dw-streaming-review-fixes.log`; offline test log: `/tmp/dw-review-unit.log`. Source Notebooks retain empty outputs. This run used locally cached images and existing volumes, not a fresh-install or Docker Desktop/ARM test. A fresh Jupyter kernel/browser rendering pass was not repeated for this follow-up.
+
+### Review checkpoints
+
+- Goal and scope: two reported defects fixed, two optional labs translated; SQL, data baselines, and the third review finding are unchanged.
+- Reuse and parallel paths: shared polling accepts health callbacks; both Kafka and Flink call sites are covered. Existing main-course startup retains its default behavior.
+- Concurrency and lifecycle: single-user execution remains required. No new locks or automatic cleanup of failed jobs; normal completion stops only lab jobs and retains volumes. Applying/removing the overlay can recreate Doris, so README warns against concurrent main-course work.
+- Configuration and compatibility: resource changes take effect through Compose recreation, not a live BE configuration change. No kernel, storage-format, Delete Bitmap, C++ lifetime, or memory-tracking changes.
+- Failure paths and tests: missing jobs and terminal states raise; preflight rejects insufficient capacity before container commands. Unit negatives and real stopped-job probes supplement full normal-path runs; arbitrary crash recovery is not claimed.
+
 ## 2026-09-20：新增 Kafka 与 MySQL/Flink CDC 选做 Lab
 
 在同日“主线仅要求理解持续接入”的范围上，补充两个**选做**实验；主线七个 Lab 的完成条件不变。

@@ -28,10 +28,12 @@ STARTUP_STEPS = {
 }
 
 
-def compose_command(*arguments):
+def compose_command(*arguments, streaming=False):
+    override = (["--file", str(COURSE_ROOT / "environments/streaming/doris-resources.yml")]
+                if streaming else [])
     return [
         "docker", "compose", "--project-name", PROJECT,
-        "--file", str(COMPOSE_FILE), *arguments,
+        "--file", str(COMPOSE_FILE), *override, *arguments,
     ]
 
 
@@ -62,28 +64,35 @@ def _verify_sql():
         connection.close()
 
 
-def prepare_environment(*, start=False):
+def prepare_environment(*, start=False, streaming=False):
     """Start on explicit opt-in and report each completed or failed step."""
     if not start and os.environ.get("DW_START_SANDBOX") != "yes":
         raise RuntimeError("Set DW_START_SANDBOX=yes only to start course 02's Docker sandbox")
+    if streaming:
+        from .streaming import check_resources
+        check_resources()
+
+    def command(*arguments):
+        return compose_command(*arguments, streaming=True) if streaming else compose_command(*arguments)
+
     progress = WorkflowProgress("准备 Doris 实验环境", STARTUP_STEPS)
     try:
         progress.advance(1)
         _run(["docker", "info", "--format", "{{.ServerVersion}}"], progress)
         _run(["docker", "compose", "version"], progress)
         progress.advance(2)
-        _run(compose_command("config", "--quiet"), progress)
+        _run(command("config", "--quiet"), progress)
         progress.advance(3)
-        _run(compose_command("pull", "--policy", "missing"), progress, timeout=1800)
+        _run(command("pull", "--policy", "missing"), progress, timeout=1800)
         progress.advance(4)
         # The pinned image supplies the container healthcheck.
-        _run(compose_command("up", "-d", "--wait", "--wait-timeout", "300"),
+        _run(command("up", "-d", "--wait", "--wait-timeout", "300"),
              progress, timeout=1800)
         progress.advance(5)
         _verify_sql()
         progress.log("SELECT 1 = 1；BE SUM(number) = 45")
         progress.advance(6)
-        _run(compose_command("ps"), progress)
+        _run(command("ps"), progress)
     except Exception as error:
         detail = str(error)
         if isinstance(error, (subprocess.CalledProcessError, subprocess.TimeoutExpired)):

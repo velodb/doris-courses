@@ -1,5 +1,6 @@
 """Offline regression checks for optional streaming orchestration and notebooks."""
 import ast
+import json
 from pathlib import Path
 import sys
 import unittest
@@ -10,7 +11,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[3] / "doris-course/02-data-warehousing"
 sys.path.insert(0, str(ROOT))
-from dw_course import streaming
+from dw_course import streaming, docker_runtime
 
 
 class StreamingTest(unittest.TestCase):
@@ -46,6 +47,106 @@ class StreamingTest(unittest.TestCase):
         with patch.object(streaming, "flink_api", return_value={"state": "FAILED"}):
             with self.assertRaisesRegex(RuntimeError, "FAILED; see"):
                 streaming.job_state("a" * 32)
+
+    def test_failed_job_cannot_pass_with_old_checkpoint(self):
+        def response(path):
+            return {"state": "FAILED"} if path.endswith("/job") else {"counts": {"completed": 1}}
+        with patch.object(streaming, "flink_api", side_effect=response), patch.object(streaming.time, "sleep") as sleep:
+            with self.assertRaisesRegex(RuntimeError, "FAILED; see"):
+                streaming.wait_checkpoint("job")
+            sleep.assert_not_called()
+
+    def test_checkpoint_wait_checks_health_on_every_poll(self):
+        with patch.object(streaming, "check_flink_job") as health, patch.object(
+            streaming, "flink_api", side_effect=[{"counts": {"completed": 0}}, {"counts": {"completed": 1}}]
+        ), patch.object(streaming.time, "sleep"):
+            self.assertEqual(streaming.wait_checkpoint("job")["counts"]["completed"], 1)
+            self.assertEqual(health.call_count, 2)
+
+    def test_data_wait_checks_health_before_accepting_matching_rows(self):
+        lab = Mock()
+        lab.query.return_value = [[1]]
+        health = Mock(side_effect=RuntimeError("job failed"))
+        with self.assertRaisesRegex(RuntimeError, "job failed"):
+            streaming.wait_rows(lab, "orders", [[1]], check_health=health)
+        lab.query.assert_not_called()
+
+    def test_data_wait_healthy_job(self):
+        lab = Mock()
+        lab.query.return_value = [[1]]
+        health = Mock()
+        self.assertEqual(streaming.wait_rows(lab, "orders", [[1]], check_health=health), [[1]])
+        health.assert_called_once()
+
+    def test_unexpected_flink_finish_and_suspension(self):
+        for state in ("FINISHED", "SUSPENDED", "CANCELED"):
+            with self.subTest(state=state), patch.object(streaming, "flink_api", return_value={"state": state}):
+                with self.assertRaisesRegex(RuntimeError, state):
+                    streaming.check_flink_job("job")
+
+    def test_routine_load_diagnostics_and_normal_states(self):
+        lab = Mock()
+        cursor = lab.connection.cursor.return_value.__enter__ = Mock()
+        lab.connection.cursor.return_value.__exit__ = Mock(return_value=False)
+        cursor.return_value.description = [("State",), ("ReasonOfStateChanged",), ("ErrorLogUrls",)]
+        for state in ("PAUSED", "STOPPED", "CANCELLED", "RUNNING", "NEED_SCHEDULE"):
+            cursor.return_value.fetchall.return_value = [(state, "bad amount", "http://error")]
+            if state in ("RUNNING", "NEED_SCHEDULE"):
+                streaming.check_routine_load(lab, "course_orders_abc")
+            else:
+                with self.assertRaisesRegex(RuntimeError, state + ".*bad amount.*http://error"):
+                    streaming.check_routine_load(lab, "course_orders_abc")
+        cursor.return_value.fetchall.return_value = []
+        with self.assertRaisesRegex(RuntimeError, "Expected one Routine Load"):
+            streaming.check_routine_load(lab, "course_orders_abc")
+
+    def test_resource_profile_and_base_configuration(self):
+        overlay = ROOT / "environments/streaming/doris-resources.yml"
+        config = yaml.safe_load(overlay.read_text())
+        self.assertEqual(config["services"]["doris"], {"mem_limit": "12g", "memswap_limit": "12g"})
+        self.assertNotIn(str(overlay), docker_runtime.compose_command("up"))
+        command = docker_runtime.compose_command("up", streaming=True)
+        self.assertIn(str(overlay), command)
+        self.assertIn("doris-warehousing-course", command)
+        self.assertEqual(command[-1], "up")
+
+    def test_resource_preflight_capacity(self):
+        for gib, cpus, succeeds in [(18, 4, True), (17, 4, False), (32, 2, False)]:
+            with self.subTest(gib=gib, cpus=cpus), patch.object(streaming.subprocess, "run", return_value=Mock(
+                stdout=json.dumps({"MemTotal": gib * 1024**3, "NCPU": cpus})
+            )):
+                if succeeds:
+                    streaming.check_resources()
+                else:
+                    with self.assertRaisesRegex(RuntimeError, "18 GiB RAM and 4 CPUs"):
+                        streaming.check_resources()
+
+    def test_resource_failure_precedes_container_start(self):
+        with patch.object(streaming, "check_resources", side_effect=RuntimeError("capacity")), patch.object(docker_runtime, "_run") as run:
+            with self.assertRaisesRegex(RuntimeError, "capacity"):
+                docker_runtime.prepare_environment(start=True, streaming=True)
+            run.assert_not_called()
+
+    def test_streaming_startup_uses_overlay_for_every_compose_command(self):
+        with patch.object(streaming, "check_resources") as check, patch.object(docker_runtime, "_run") as run, patch.object(docker_runtime, "_verify_sql"), patch.object(docker_runtime, "WorkflowProgress"):
+            docker_runtime.prepare_environment(start=True, streaming=True)
+            check.assert_called_once()
+            commands = [call.args[0] for call in run.call_args_list if call.args[0][:2] == ["docker", "compose"] and "--project-name" in call.args[0]]
+            self.assertEqual(len(commands), 4)
+            for command in commands:
+                self.assertIn(str(ROOT / "environments/streaming/doris-resources.yml"), command)
+
+    def test_optional_notebooks_are_english_and_use_checked_waits(self):
+        for path in (ROOT / "level1/module05-ingestion").glob("optional5_*.ipynb"):
+            notebook = nbformat.read(path, 4)
+            source = "\n".join(cell.source for cell in notebook.cells)
+            self.assertNotRegex(source, r"[\u4e00-\u9fff]")
+            self.assertIn("prepare_environment(start=True, streaming=True)", source)
+            for cell in notebook.cells:
+                if cell.cell_type == "code":
+                    for node in ast.walk(ast.parse(cell.source)):
+                        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "wait_rows":
+                            self.assertIn("check_health", [keyword.arg for keyword in node.keywords])
 
     def test_mysql_timezone_matches_cdc_notebook(self):
         config = yaml.safe_load(streaming.COMPOSE.read_text())
