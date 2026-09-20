@@ -20,5 +20,8 @@ dependencies = [
   "boto3==1.40.0",
 ]
 
+[project.optional-dependencies]
+extensions = ["pyarrow==19.0.1"]
+
 [tool.setuptools.packages.find]
 include = ["dw_course*"]

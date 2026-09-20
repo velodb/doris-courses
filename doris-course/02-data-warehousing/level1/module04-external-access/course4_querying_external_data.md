@@ -196,6 +196,8 @@ ORDER BY order_date;
 字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
 准备步骤把 datasets/wwi/sample.json 中 orders 的六个字段和十行数据写入 Iceberg 表，数据文件保存在课程对象存储中。
 
+补充操作见 [Level 1 扩展实验](../extensions/README.md)，在独立 `ext_*` 表执行，不重复改写本 Lab 的业务结果。
+
 ## 单元总结
 
 - Parquet 是文件格式，Iceberg 是管理快照和文件的表格式；External Catalog 是访问入口，不是数据复制。

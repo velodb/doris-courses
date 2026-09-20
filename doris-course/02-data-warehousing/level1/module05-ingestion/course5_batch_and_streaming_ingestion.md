@@ -577,6 +577,8 @@ SELECT order_id, order_amount FROM orders_files_demo ORDER BY order_id;
 历史部分采用 Microsoft WWI；新订单及变更标为 COURSE_SIMULATION，引用 WWI 客户和商品，但不回填历史。
 字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
 
+补充操作见 [Level 1 扩展实验](../extensions/README.md)，在独立 `ext_*` 表执行，不重复改写本 Lab 的业务结果。
+
 ## 单元总结
 
 - 从来源、批次或持续性、完成方式选择接入路径；Stream Load、S3 TVF、Routine Load 和 CDC 不是一条固定流水线。

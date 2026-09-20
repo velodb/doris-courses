@@ -310,6 +310,8 @@ FROM orders_current;
 历史部分采用 Microsoft WWI；新订单及变更标为 COURSE_SIMULATION，引用 WWI 客户和商品，但不回填历史。
 字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
 
+补充操作见 [Level 1 扩展实验](../extensions/README.md)，在独立 `ext_*` 表执行，不重复改写本 Lab 的业务结果。
+
 ## 单元总结
 
 - 当前表按 order_id，事件历史按 event_id，投递记录按每次尝试保存；三个粒度不能混用。

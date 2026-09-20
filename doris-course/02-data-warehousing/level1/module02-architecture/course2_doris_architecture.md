@@ -247,6 +247,8 @@ Profile 可能稍后收集完成；再查看列表，或在本课 FE Web UI 的 
 实验使用 Microsoft WWI 官方模拟批发业务的历史子集，保留原始客户与商品标识。
 字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
 
+补充操作见 [Level 1 扩展实验](../extensions/README.md)，在独立 `ext_*` 表执行，不重复改写本 Lab 的业务结果。
+
 ## 单元总结
 
 - 客户端提交 SQL，FE 规划并分发任务，BE 读取列数据并执行过滤、聚合等运算。

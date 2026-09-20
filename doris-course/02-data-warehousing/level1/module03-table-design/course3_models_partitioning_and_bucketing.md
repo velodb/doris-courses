@@ -207,6 +207,8 @@ WHERE order_date = '2013-01-01';
 实验使用 Microsoft WWI 官方模拟批发业务的历史子集，保留原始客户与商品标识。
 字段、业务口径和预期结果见[数据说明](../../datasets/README.md)。
 
+补充操作见 [Level 1 扩展实验](../extensions/README.md)，在独立 `ext_*` 表执行，不重复改写本 Lab 的业务结果。
+
 ## 单元总结
 
 - Duplicate 保留三行，Unique 保留两笔当前值，Aggregate SUM 得到订单 1 的 4550.00；相同输入不代表相同业务语义。

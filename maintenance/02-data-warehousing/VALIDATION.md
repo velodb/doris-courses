@@ -1,5 +1,42 @@
 # Validation record
 
+## 2026-09-20：交付三份扩展 Notebook，同步实验状态
+
+- 新增 level1/extensions 下三份可运行 Notebook：100,000 行批次/分区与 Profile；
+  Parquet TVF、INSERT SELECT、Broker Load、默认值/生成列、Group Commit；
+  Schema 加列与 INT→BIGINT、导入删除的版本裁决、事件 ID 内容冲突检测。
+- 原七个主线 Notebook 未修改。新增 ext_* 表与每次唯一对象路径，保留结果供排查；
+  课程湖表环境仍复用已有 prepare_lakehouse。PyArrow 19.0.1 作为 extensions 可选依赖。
+- 预设 run_labs.py 增加 --extensions / --extensions-only，抽取共用执行函数；
+  失败仍抛异常并恢复目录、关闭连接，不写回 Notebook 输出。
+- integration-backlog.md 改为当前 Module/小节编号，分开“主线/扩展已覆盖”和“仍未交付”；
+  不再把已验证的示例与整个单元都写成待实现。
+
+验证：
+
+- 干净 HEAD 导出副本叠加本次文件，78 项离线测试通过。新增检查包括扩展清单、
+  无输出与可编译性、局部重置、失败关闭连接、Broker 取消/超时、旧 FINISHED 任务
+  不能代替新列检查、Profile 恢复、固定结果与待办边界。
+- 首次运行缺少 PyArrow，补为明确可选依赖后安装验证；首次材料检查因原来写死
+  14 个 Notebook 和缺少统一封面失败，增加三份扩展后更新为 17 个并补齐相同封面。
+- 在独立库 dw_course_l1_extensions_20260920 用预设脚本执行
+  --iceberg --solutions --extensions，七个主线 Lab、七份参考解答、三份扩展全部通过；
+  重新运行同一数据库仍通过。用户工作区 Notebook 编辑与输出未混入验证副本。
+- 三份扩展分别经全新 Jupyter 内核执行并导出 HTML，均无执行错误；输出仅存临时目录。
+  没有进行浏览器视觉检查、学员试讲或生产负载测试。
+- WWI 文件、湖表和两种落地路径逐行一致；Broker 等待 FINISHED。默认值/生成列为
+  CREATED/180.00 与 PAID/80.00；Schema 下游投影不变；删除实验普通查询行数为 1→0→0→1。
+- 一轮 Group Commit 观察：off/sync/async 响应约 49.89/2046.53/9.14 ms，首次完整可见
+  约 58.57/2056.18/2050.77 ms；async 响应后首查 0 行。仅是本次单请求观测，
+  不写成固定时间或吞吐结论，不代表 WAL 故障恢复或多请求合批验收。
+- 运行复用课程单容器 doris-4.1.3-rc02-7126cf65d96 与本地 MinIO/REST，未改其他集群。
+
+自查结论：复用已有连接、数据契约和执行工具；没有 FE/BE 或持久化协议变化。
+实验按单写者顺序执行，异步导入与 Schema Change 有状态检查和超时，任务失败不算成功。
+会话设置用 finally 恢复；新增依赖可选，不改变基础安装。数据库写入限制在实验库和其湖表
+命名空间内，跨表操作不宣称原子性。HTTP 导入保留响应且不自动跟随重定向；本轮不是安全审查。
+Kafka、Flink CDC、CDC_STREAM、持续文件、真实位点恢复及持续并发负载仍未交付。
+
 ## 2026-09-20：补齐关键操作讲解，精简接入主线
 
 - 保留 Module 1 的简洁阅读和全部 Level/Module 顺序；Module 2 增加 Tablet 字段、

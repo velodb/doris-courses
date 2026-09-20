@@ -372,7 +372,7 @@ class MaterialsTest(unittest.TestCase):
 
     def test_notebooks_are_valid_clean_and_compilable(self):
         paths = list((COURSE_ROOT / "level1").glob("*/*.ipynb"))
-        self.assertEqual(len(paths), 14)
+        self.assertEqual(len(paths), 17)  # Seven Lab/Quiz pairs and three extensions.
         for path in paths:
             notebook = nbformat.read(path, as_version=4)
             nbformat.validate(notebook)
