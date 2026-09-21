@@ -55,6 +55,8 @@ Kafka shares the course Doris network and advertises `course-stream-kafka:9092`;
 
 The only additional host port is a Docker-selected free localhost port for the Flink Web UI. `prepare_streaming("cdc", start=True)` discovers that port and updates the Python REST client automatically, so it does not collide with Jupyter's randomly allocated ZMQ ports. Kafka and MySQL publish no host ports. Demonstration accounts and plaintext passwords are for local course tests only; Doris retains the sandbox root account with an empty password. Do not copy these settings to shared or production environments.
 
+Startup, Flink job, checkpoint, and data waits show a live status card in Jupyter with elapsed time, check count, and timeout. A wait is expected while local services initialize; a red failure card means the wait stopped and includes the last observation or error.
+
 ## Data and restoration boundaries
 
 - The labs rebuild only their respective tables, `ext_kafka_orders` and `ext_cdc_orders`, in the isolated Doris database `dw_course_l1_streaming`. They do not modify the main business tables.

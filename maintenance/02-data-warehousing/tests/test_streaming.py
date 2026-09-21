@@ -33,6 +33,16 @@ class StreamingTest(unittest.TestCase):
             self.assertEqual(streaming.wait_for(read, lambda x: x == [1], description="test"), [1])
         self.assertEqual(read.call_count, 2)
 
+    def test_wait_renders_live_notebook_progress(self):
+        handle = Mock()
+        read = Mock(side_effect=[False, True])
+        with patch.object(streaming, "get_ipython", return_value=object()), patch.object(
+            streaming, "display", return_value=handle
+        ) as display, patch.object(streaming.time, "sleep"):
+            self.assertTrue(streaming.wait_for(read, bool, description="service startup"))
+        self.assertEqual(display.call_count, 1)
+        self.assertEqual(handle.update.call_count, 2)
+
     def test_timeout_reports_last_observation(self):
         with patch.object(streaming.time, "monotonic", side_effect=[0, 0, 2]), patch.object(streaming.time, "sleep"):
             with self.assertRaisesRegex(TimeoutError, "last observation = 'lagging'"):

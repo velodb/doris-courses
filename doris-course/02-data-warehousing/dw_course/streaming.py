@@ -4,9 +4,12 @@ import json
 import re
 import subprocess
 import time
+from html import escape
 from uuid import uuid4
 
 import requests
+from IPython import get_ipython
+from IPython.display import HTML, display
 
 from .runtime import COURSE_ROOT, identifier, normalized
 
@@ -37,16 +40,63 @@ def configure_streaming_port():
     return port
 
 
+def _render_wait_progress(description, elapsed, timeout, attempt, handle=None, state="waiting"):
+    if get_ipython() is None:
+        return handle
+    percentage = min(100, int(elapsed / timeout * 100)) if timeout else 100
+    colors = {"waiting": ("#2563eb", "⏳"), "success": ("#16a34a", "✅"), "failure": ("#dc2626", "❌")}
+    color, icon = colors[state]
+    detail = {
+        "waiting": f"Still working · {elapsed}s elapsed · check {attempt} · timeout {timeout}s",
+        "success": f"Ready after {elapsed}s · {attempt} checks",
+        "failure": f"Stopped after {elapsed}s · {attempt}",
+    }[state]
+    description = escape(str(description))
+    detail = escape(detail)
+    content = f"""
+    <div style="border:1px solid #d1d5db;border-radius:8px;padding:10px 12px;margin:8px 0;
+                max-width:680px;font-family:system-ui,sans-serif">
+      <div style="font-size:14px"><span style="font-size:18px">{icon}</span> <b>{description}</b></div>
+      <div style="height:7px;background:#e5e7eb;border-radius:4px;margin:8px 0;overflow:hidden">
+        <div style="height:100%;width:{percentage}%;background:{color};border-radius:4px"></div>
+      </div>
+      <div style="color:#6b7280;font-size:12px">{detail}</div>
+    </div>
+    """
+    if handle is None:
+        return display(HTML(content), display_id=True)
+    handle.update(HTML(content))
+    return handle
+
+
 def wait_for(read, accepts, *, description, timeout=180, check_health=None):
     deadline = time.monotonic() + timeout
+    started = time.perf_counter()
     last = None
-    while time.monotonic() < deadline:
-        if check_health is not None:
-            check_health()
-        last = read()
-        if accepts(last):
-            return last
-        time.sleep(2)
+    attempt = 0
+    handle = None
+    try:
+        while time.monotonic() < deadline:
+            attempt += 1
+            elapsed = int(time.perf_counter() - started)
+            handle = _render_wait_progress(description, elapsed, timeout, attempt, handle)
+            if check_health is not None:
+                check_health()
+            last = read()
+            if accepts(last):
+                _render_wait_progress(
+                    description, int(time.perf_counter() - started), timeout,
+                    attempt, handle, "success"
+                )
+                return last
+            time.sleep(2)
+    except Exception as error:
+        _render_wait_progress(
+            description, int(time.perf_counter() - started), timeout,
+            f"last observation: {last!r}; error: {error}", handle, "failure"
+        )
+        raise
+    _render_wait_progress(description, int(time.perf_counter() - started), timeout, repr(last), handle, "failure")
     raise TimeoutError(f"{description}: last observation = {last!r}")
 
 
