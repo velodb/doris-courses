@@ -136,6 +136,13 @@ class StreamingTest(unittest.TestCase):
         self.assertEqual(streaming.wait_rows(lab, "orders", [[1]], check_health=health), [[1]])
         health.assert_called_once()
 
+    def test_data_wait_accepts_a_specific_description(self):
+        lab = Mock()
+        lab.query.return_value = [[1]]
+        with patch.object(streaming, "wait_for", return_value=[[1]]) as wait:
+            streaming.wait_rows(lab, "orders", [[1]], check_health=Mock(), description="after resume")
+        self.assertEqual(wait.call_args.kwargs["description"], "after resume")
+
     def test_unexpected_flink_finish_and_suspension(self):
         for state in ("FINISHED", "SUSPENDED", "CANCELED"):
             with self.subTest(state=state), patch.object(streaming, "flink_api", return_value={"state": state}):

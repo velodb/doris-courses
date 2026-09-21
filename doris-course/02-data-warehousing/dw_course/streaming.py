@@ -334,11 +334,11 @@ def stop_with_savepoint(job):
     return match.group(1)
 
 
-def wait_rows(lab, table, expected, *, check_health):
+def wait_rows(lab, table, expected, *, check_health, description=None):
     table = identifier(table)
     return wait_for(
         lambda: lab.query(f"SELECT * FROM {table} ORDER BY order_id"),
         lambda rows: normalized(rows) == normalized(expected),
-        description=f"{table} matches expected rows",
+        description=description or f"{table} matches expected rows",
         check_health=check_health,
     )
