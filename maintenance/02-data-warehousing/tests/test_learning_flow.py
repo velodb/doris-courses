@@ -8,7 +8,7 @@ import tarfile
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, call, patch
 
 ROOT = Path(__file__).resolve().parents[3] / "doris-course/02-data-warehousing"
 sys.path.insert(0, str(ROOT))
@@ -122,6 +122,62 @@ class LearningFlowTest(unittest.TestCase):
                          '"enable_unique_key_merge_on_write"="true"'):
             self.assertIn(fragment, order_ddl("orders_update_walkthrough", current=True))
             self.assertIn(fragment, cells["update-walkthrough-help"])
+
+    def test_business_ledger_restores_only_missing_products(self):
+        cells = self.notebook_cells("module07-state-changes")
+        source = cells["business-ledger"].split("for attempt in range(2):", 1)[0]
+        for existing in (False, True):
+            with self.subTest(existing=existing):
+                lab = Mock()
+                lab.query.side_effect = [[("wwi_products",)] if existing else [], [(227,)]]
+                lab.stream_load.return_value = {
+                    "Status": "Success", "NumberLoadedRows": 227, "NumberFilteredRows": 0,
+                }
+                paths = Mock(return_value={"products": Path("products.parquet")})
+                namespace = {
+                    "lab": lab, "fixture": runtime.fixture, "expect": runtime.expect,
+                    "show_sql": Mock(), "show_response": Mock(),
+                    "manifest": wwi.manifest, "parquet_ddl": wwi.parquet_ddl,
+                    "parquet_paths": paths, "uuid4": lambda: Mock(hex="test"),
+                }
+                exec(compile(source, "business-ledger-setup", "exec"), namespace)
+                lab.execute.assert_any_call(
+                    "INSERT INTO products SELECT StockItemID, StockItemName FROM wwi_products")
+                ddl = wwi.parquet_ddl("products", "wwi_products")
+                if existing:
+                    paths.assert_not_called()
+                    lab.stream_load.assert_not_called()
+                    self.assertNotIn(ddl, [call.args[0] for call in lab.execute.call_args_list])
+                else:
+                    paths.assert_called_once_with()
+                    lab.execute.assert_any_call(ddl)
+                    lab.stream_load.assert_called_once_with(
+                        "wwi_products", Path("products.parquet"), "module7_wwi_test", format="parquet")
+
+    def test_business_ledger_stops_on_invalid_product_load(self):
+        source = self.notebook_cells("module07-state-changes")["business-ledger"]
+        for response in (
+            {"Status": "Fail", "NumberLoadedRows": 0, "NumberFilteredRows": 0},
+            {"Status": "Success", "NumberLoadedRows": 226, "NumberFilteredRows": 0},
+            {"Status": "Success", "NumberLoadedRows": 227, "NumberFilteredRows": 1},
+        ):
+            with self.subTest(response=response):
+                lab = Mock()
+                lab.query.return_value = []
+                lab.stream_load.return_value = response
+                namespace = {
+                    "lab": lab, "fixture": runtime.fixture, "expect": runtime.expect,
+                    "show_sql": Mock(), "show_response": Mock(),
+                    "manifest": wwi.manifest, "parquet_ddl": wwi.parquet_ddl,
+                    "parquet_paths": lambda: {"products": Path("products.parquet")},
+                    "uuid4": lambda: Mock(hex="test"),
+                }
+                with self.assertRaises(runtime.CourseCheckError):
+                    exec(compile(source, "business-ledger-failed-load", "exec"), namespace)
+                self.assertNotIn(
+                    "INSERT INTO products SELECT StockItemID, StockItemName FROM wwi_products",
+                    [call.args[0] for call in lab.execute.call_args_list])
+                lab.insert.assert_not_called()
 
     def test_quality_negative_cases_target_uniqueness(self):
         source = self.notebook_cells("module06-data-quality")["cell-8"]
