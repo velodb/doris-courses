@@ -22,6 +22,11 @@ class StreamingTest(unittest.TestCase):
                     streaming.prepare_streaming(args[0], start=args[1])
             command.assert_not_called()
 
+    def test_streaming_port_is_dynamic_and_rest_client_follows_it(self):
+        with patch.object(streaming, "compose", return_value="127.0.0.1:49123\n"):
+            self.assertEqual(streaming.configure_streaming_port(), 49123)
+        self.assertEqual(streaming.REST, "http://127.0.0.1:49123")
+
     def test_wait_returns_only_matching_observation(self):
         read = Mock(side_effect=[[], [1]])
         with patch.object(streaming.time, "sleep"):
@@ -176,6 +181,7 @@ class StreamingTest(unittest.TestCase):
                 self.assertTrue(port.startswith("127.0.0.1:"))
         self.assertNotIn("ports", config["services"]["mysql"])
         self.assertNotIn("ports", config["services"]["kafka"])
+        self.assertEqual(config["services"]["jobmanager"]["ports"], ["127.0.0.1::8081"])
 
     def test_notebooks_are_clean_and_teaching_sql_visible(self):
         paths = sorted((ROOT / "level1/module05-ingestion").glob("optional5_*.ipynb"))

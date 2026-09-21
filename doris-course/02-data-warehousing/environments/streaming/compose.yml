@@ -53,7 +53,7 @@ services:
     <<: *flink
     command: jobmanager
     ports:
-      - "127.0.0.1:51881:8081"
+      - "127.0.0.1::8081"
   taskmanager:
     <<: *flink
     command: taskmanager

@@ -53,7 +53,7 @@ docker compose -f environments/streaming/compose.yml --profile cdc up -d --build
 
 Kafka shares the course Doris network and advertises `course-stream-kafka:9092`; the producer runs inside the Kafka container. MySQL is reachable only on the streaming network. Flink joins both networks, reaches FE through `doris:8030`, and explicitly sets `benodes=doris:8040` and `auto-redirect=false`. This avoids treating the single-container sandbox's registered BE loopback address as Flink's own loopback address. Do not substitute container `localhost` or host-mapped ports for these service addresses.
 
-The only additional host port is `127.0.0.1:51881` (Flink Web UI). Kafka and MySQL publish no host ports. Demonstration accounts and plaintext passwords are for local course tests only; Doris retains the sandbox root account with an empty password. Do not copy these settings to shared or production environments.
+The only additional host port is a Docker-selected free localhost port for the Flink Web UI. `prepare_streaming("cdc", start=True)` discovers that port and updates the Python REST client automatically, so it does not collide with Jupyter's randomly allocated ZMQ ports. Kafka and MySQL publish no host ports. Demonstration accounts and plaintext passwords are for local course tests only; Doris retains the sandbox root account with an empty password. Do not copy these settings to shared or production environments.
 
 ## Data and restoration boundaries
 
@@ -81,7 +81,7 @@ docker compose -f environments/streaming/compose.yml logs --tail=100 kafka mysql
 - **Flink failure:** data and checkpoint waits check job state on every poll and fail on terminal states, even if an earlier checkpoint completed. Follow the exception-page link and inspect SQL Client, JobManager, and TaskManager logs. Check JARs, networking, and source permissions. A SQL Client exit code alone does not establish success.
 - **Interrupted CDC notebook:** identify the course job in the Flink UI. Save state with `flink stop` below, or explicitly abandon the experiment with `flink cancel <job-id>`. New-experiment initialization rejects active jobs so it cannot clear tables during synchronization.
 - **Restoration timeout:** inspect job exceptions and checkpoints. Do not delete state or rerun initialization to disguise a failed restore. Expired Binlog history requires a new snapshot and separate consistency checks.
-- **Port conflict:** 51881 belongs to this lab. Do not stop unrelated processes. If changing the Compose port, also update `REST` in `dw_course/streaming.py`.
+- **Port conflict:** Docker selects a free localhost port automatically. If a previously created container still has the old fixed-port mapping, rerun `up` so Compose recreates the JobManager; do not stop unrelated processes.
 
 ```bash
 docker compose -f environments/streaming/compose.yml exec -T jobmanager \
