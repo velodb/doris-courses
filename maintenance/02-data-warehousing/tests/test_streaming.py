@@ -49,14 +49,29 @@ class StreamingTest(unittest.TestCase):
                 streaming.wait_for(lambda: "lagging", bool_false, description="test", timeout=1)
 
     def test_sql_client_errors_are_not_success(self):
-        with patch.object(streaming, "compose", return_value="[ERROR] connector missing"):
+        with patch.object(streaming, "active_flink_jobs", return_value=[]), patch.object(
+            streaming, "compose", return_value="[ERROR] connector missing"
+        ):
             with self.assertRaisesRegex(RuntimeError, "successful INSERT"):
                 streaming.submit_sql("INSERT INTO sink SELECT * FROM src")
 
     def test_submit_extracts_job_and_waits_for_running(self):
         job = "a" * 32
-        with patch.object(streaming, "compose", return_value="Job ID: " + job), patch.object(streaming, "flink_api", return_value={"state": "RUNNING"}):
+        def response(path):
+            return {"jobs": []} if path == "/jobs/overview" else {"state": "RUNNING"}
+
+        with patch.object(streaming, "compose", return_value="Job ID: " + job), patch.object(
+            streaming, "flink_api", side_effect=response
+        ):
             self.assertEqual(streaming.submit_sql("SQL"), job)
+
+    def test_submit_rejects_duplicate_course_cdc_job(self):
+        with patch.object(
+            streaming, "active_flink_jobs", return_value=[{"name": "course_mysql_orders"}]
+        ), patch.object(streaming, "compose") as command:
+            with self.assertRaisesRegex(RuntimeError, "already running"):
+                streaming.submit_sql("SQL")
+        command.assert_not_called()
 
     def test_terminal_failure_is_reported_without_waiting(self):
         with patch.object(streaming, "flink_api", return_value={"state": "FAILED"}):
@@ -126,6 +141,17 @@ class StreamingTest(unittest.TestCase):
         ]
         self.assertEqual(streaming.cleanup_kafka_routine_load(lab), ["course_orders_" + "a" * 12])
         lab.execute.assert_called_once_with("STOP ROUTINE LOAD FOR course_orders_aaaaaaaaaaaa")
+
+    def test_cleanup_cancels_only_stale_course_cdc_jobs(self):
+        job_id = "b" * 32
+        response = Mock()
+        with patch.object(streaming, "flink_api", side_effect=[
+            {"jobs": [{"jid": job_id, "name": "course_mysql_orders", "state": "RUNNING"}]},
+            {"jobs": []},
+        ]), patch.object(streaming.requests, "delete", return_value=response) as delete:
+            self.assertEqual(streaming.cleanup_cdc_jobs()[0]["jid"], job_id)
+        delete.assert_called_once()
+        response.raise_for_status.assert_called_once()
 
     def test_resource_profile_and_base_configuration(self):
         overlay = ROOT / "environments/streaming/doris-resources.yml"

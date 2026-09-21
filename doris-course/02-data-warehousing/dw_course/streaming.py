@@ -180,6 +180,37 @@ def check_flink_job(job):
         raise RuntimeError(f"Flink job {job} unexpectedly {state}; see {REST}/#/job/{job}/exceptions")
 
 
+def active_flink_jobs():
+    terminal = {"FINISHED", "CANCELED", "FAILED"}
+    return [job for job in flink_api("/jobs/overview")["jobs"] if job["state"] not in terminal]
+
+
+def cancel_flink_job(job):
+    if re.fullmatch(r"[0-9a-f]{32}", job) is None:
+        raise ValueError("Invalid Flink job ID")
+    response = requests.delete(REST + f"/jobs/{job}", timeout=10)
+    response.raise_for_status()
+
+
+def cleanup_cdc_jobs():
+    """Cancel only the continuous job owned by the optional CDC lab."""
+    jobs = active_flink_jobs()
+    unexpected = [job for job in jobs if job.get("name") != "course_mysql_orders"]
+    if unexpected:
+        names = [job.get("name", "<unnamed>") for job in unexpected]
+        raise RuntimeError(f"Found active Flink jobs outside this lab: {names}")
+    for job in jobs:
+        cancel_flink_job(job["jid"])
+    if jobs:
+        wait_for(
+            active_flink_jobs,
+            lambda current: not current,
+            description="stopping the previous CDC Flink job",
+            timeout=30,
+        )
+    return jobs
+
+
 def check_routine_load(lab, job):
     job = identifier(job)
     statement = f"SHOW ALL ROUTINE LOAD FOR {job}"
@@ -234,6 +265,11 @@ def _routine_load_jobs(lab):
 
 
 def submit_sql(sql):
+    if any(job.get("name") == "course_mysql_orders" for job in active_flink_jobs()):
+        raise RuntimeError(
+            "A course_mysql_orders job is already running; do not rerun the submission cell. "
+            "Use the existing job or stop it intentionally before submitting a new one."
+        )
     # Separate files prevent overwriting the SQL of a previous session.
     path = "/tmp/course-" + uuid4().hex + ".sql"
     output = compose("exec", "-T", "jobmanager", "sh", "-c",
