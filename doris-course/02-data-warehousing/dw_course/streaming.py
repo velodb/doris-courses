@@ -198,6 +198,41 @@ def check_routine_load(lab, job):
         )
 
 
+def cleanup_kafka_routine_load(lab):
+    """Stop only stale jobs created by this optional Kafka lab."""
+    with lab.connection.cursor() as cursor:
+        cursor.execute("SHOW ROUTINE LOAD")
+        columns = [column[0] for column in cursor.description]
+        jobs = [dict(zip(columns, row)) for row in cursor.fetchall()]
+    stale = []
+    for job in jobs:
+        name = job["Name"]
+        if (re.fullmatch(r"course_orders_[0-9a-f]{12}", name) is None
+                or job["TableName"] != "ext_kafka_orders"):
+            raise RuntimeError(
+                f"Found an active Routine Load job outside this lab: {name}. "
+                "Stop it manually only after confirming it belongs to this lab."
+            )
+        stale.append(name)
+    for name in stale:
+        lab.execute(f"STOP ROUTINE LOAD FOR {name}")
+    if stale:
+        wait_for(
+            lambda: _routine_load_jobs(lab),
+            lambda current: not current,
+            description="stopping the previous Kafka Routine Load job",
+            timeout=30,
+        )
+    return stale
+
+
+def _routine_load_jobs(lab):
+    with lab.connection.cursor() as cursor:
+        cursor.execute("SHOW ROUTINE LOAD")
+        columns = [column[0] for column in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
 def submit_sql(sql):
     # Separate files prevent overwriting the SQL of a previous session.
     path = "/tmp/course-" + uuid4().hex + ".sql"

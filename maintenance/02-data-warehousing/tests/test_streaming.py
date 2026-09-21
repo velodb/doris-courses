@@ -115,6 +115,18 @@ class StreamingTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "Expected one Routine Load"):
             streaming.check_routine_load(lab, "course_orders_abc")
 
+    def test_cleanup_stops_only_stale_course_kafka_jobs(self):
+        lab = Mock()
+        context = lab.connection.cursor.return_value
+        cursor = context.__enter__ = Mock()
+        context.__exit__ = Mock(return_value=False)
+        cursor.return_value.description = [("Name",), ("TableName",)]
+        cursor.return_value.fetchall.side_effect = [
+            [("course_orders_" + "a" * 12, "ext_kafka_orders")], []
+        ]
+        self.assertEqual(streaming.cleanup_kafka_routine_load(lab), ["course_orders_" + "a" * 12])
+        lab.execute.assert_called_once_with("STOP ROUTINE LOAD FOR course_orders_aaaaaaaaaaaa")
+
     def test_resource_profile_and_base_configuration(self):
         overlay = ROOT / "environments/streaming/doris-resources.yml"
         config = yaml.safe_load(overlay.read_text())
