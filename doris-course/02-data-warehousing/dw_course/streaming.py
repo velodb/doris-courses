@@ -8,10 +8,12 @@ from html import escape
 from uuid import uuid4
 
 import requests
+import pandas as pd
 from IPython import get_ipython
 from IPython.display import HTML, display
 
 from .runtime import COURSE_ROOT, identifier, normalized
+from .ui import in_notebook, show_frame
 
 COMPOSE = COURSE_ROOT / "environments/streaming/compose.yml"
 REST = "http://127.0.0.1:51881"
@@ -160,8 +162,17 @@ def produce(topic, rows):
 
 
 def mysql(sql):
-    return compose("exec", "-T", "mysql", "env", "MYSQL_PWD=course_stream_local_only",
-                   "mysql", "--protocol=TCP", "-h127.0.0.1", "-uroot", "--batch", "--raw", "-e", sql)
+    output = compose("exec", "-T", "mysql", "env", "MYSQL_PWD=course_stream_local_only",
+                     "mysql", "--protocol=TCP", "-h127.0.0.1", "-uroot", "--batch", "--raw", "-e", sql)
+    if in_notebook():
+        blocks = [block for block in re.split(r"\n\s*\n", output.strip()) if block.strip()]
+        for number, block in enumerate(blocks, start=1):
+            rows = [line.split("\t") for line in block.splitlines()]
+            columns = rows[0]
+            if len(rows) > 1 and all(len(row) == len(columns) for row in rows[1:]):
+                show_frame(f"MySQL result {number}", pd.DataFrame(rows[1:], columns=columns))
+        return ""
+    return output
 
 
 def flink_api(path):

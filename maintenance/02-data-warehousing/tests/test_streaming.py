@@ -27,6 +27,20 @@ class StreamingTest(unittest.TestCase):
             self.assertEqual(streaming.configure_streaming_port(), 49123)
         self.assertEqual(streaming.REST, "http://127.0.0.1:49123")
 
+    def test_mysql_renders_result_sets_as_notebook_tables(self):
+        output = (
+            "File\tPosition\tBinlog_Do_DB\n"
+            "mysql-bin.000001\t123\t\n\n"
+            "order_id\torder_status\n"
+            "920001\tCREATED\n"
+        )
+        with patch.object(streaming, "compose", return_value=output), patch.object(
+            streaming, "in_notebook", return_value=True
+        ), patch.object(streaming, "show_frame") as show:
+            self.assertEqual(streaming.mysql("SHOW MASTER STATUS; SELECT * FROM orders"), "")
+        self.assertEqual(show.call_count, 2)
+        self.assertEqual(list(show.call_args_list[1].args[1].columns), ["order_id", "order_status"])
+
     def test_wait_returns_only_matching_observation(self):
         read = Mock(side_effect=[[], [1]])
         with patch.object(streaming.time, "sleep"):
