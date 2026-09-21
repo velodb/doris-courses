@@ -417,11 +417,19 @@ class DorisLab:
         self,
         lab_dir: Path | None = None,
         *,
+        connection_host: str = "127.0.0.1",
+        connection_port: int = 9030,
+        profile_http_host: str | None = None,
+        profile_http_port: int = 8030,
         ready_title: str = "Lab tools are ready",
         ready_message: str = "You can now continue to Section 1 and run the remaining cells in order.",
     ) -> None:
         self.lab_dir = (lab_dir or LAB_DIR).resolve()
         self.connection = None
+        self._connection_host = connection_host
+        self._connection_port = connection_port
+        self._profile_http_host = profile_http_host or connection_host
+        self._profile_http_port = profile_http_port
         self._source_tvf: str | None = None
         self._s3_access_key: str | None = None
         self._s3_secret_key: str | None = None
@@ -445,11 +453,13 @@ class DorisLab:
     def _require_connection(self):
         if self.connection is None:
             try:
-                with socket.create_connection(("127.0.0.1", 9030), timeout=1):
+                with socket.create_connection(
+                    (self._connection_host, self._connection_port), timeout=1
+                ):
                     pass
                 self.connection = pymysql.connect(
-                    host="127.0.0.1",
-                    port=9030,
+                    host=self._connection_host,
+                    port=self._connection_port,
                     user="root",
                     password="",
                     charset="utf8mb4",
@@ -467,10 +477,12 @@ class DorisLab:
                     pass
             except (OSError, pymysql.MySQLError) as exc:
                 raise RuntimeError(
-                    "No running Doris server is reachable on 127.0.0.1:9030. "
-                    "Run the Prepare environment cell and then the Connect to Doris cell in "
-                    "Section 2. A kernel restart does not delete the Docker image, container, "
-                    "named volumes, or imported tables."
+                    "No running Doris server is reachable on "
+                    f"{self._connection_host}:{self._connection_port}. "
+                    "Start this module's Doris environment if it is stopped, then rerun the "
+                    "Notebook initialization cell. A kernel restart clears the Python "
+                    "connection, but it does not delete Docker containers, named volumes, "
+                    "or imported tables."
                 ) from exc
         return self.connection
 
@@ -629,6 +641,7 @@ class DorisLab:
         *,
         title: str = "Insert completed",
         low_memory_s3: bool = False,
+        expected_rows: int | None = None,
     ) -> int:
         """Run a learner-visible data insert and report its wall-clock duration."""
         started_at = time.perf_counter()
@@ -652,6 +665,10 @@ class DorisLab:
                 with connection.cursor() as cursor:
                     for variable, value in previous_settings.items():
                         cursor.execute(f"SET {variable} = {int(value)}")
+        if expected_rows is not None and affected != expected_rows:
+            raise AssertionError(
+                f"{title} affected {affected:,} rows; expected {expected_rows:,}."
+            )
         elapsed = time.perf_counter() - started_at
         card(
             f"Affected rows: {affected:,} · elapsed time: {elapsed:.1f} seconds",
@@ -672,22 +689,44 @@ class DorisLab:
         statement: str,
         *,
         expected_rows: int | None = None,
+        title: str | None = None,
+        low_memory_s3: bool = False,
     ) -> int:
         """Populate a derived course table without duplicating rows on rerun."""
         table_name = self._safe_table_name(table_name)
         expected_rows = expected_rows or self.EXPECTED_ROW_COUNT
-        connection = self._require_connection()
-        with connection.cursor() as cursor:
-            cursor.execute(f"SELECT COUNT(*) AS row_count FROM `{table_name}`")
-            current_count = int(cursor.fetchone()["row_count"])
-        if current_count == expected_rows:
-            return current_count
-        if current_count != 0:
+        if not self._metadata_rows(f"SHOW TABLES LIKE '{table_name}'"):
             raise RuntimeError(
-                f"{table_name} contains {current_count:,} rows; expected 0 or "
-                f"{expected_rows:,}. Drop and recreate that derived table before retrying."
+                f"{table_name} does not exist. Run its CREATE TABLE cell first."
             )
-        return self.execute(statement)
+        partitions = self._metadata_rows(f"SHOW PARTITIONS FROM `{table_name}`")
+        if not partitions:
+            raise RuntimeError(f"{table_name} has no visible Partition metadata.")
+        visible_versions = [int(row["VisibleVersion"]) for row in partitions]
+        metadata_rows = sum(int(row.get("RowCount", 0)) for row in partitions)
+        if any(version > 1 for version in visible_versions):
+            if metadata_rows > 0 and metadata_rows != expected_rows:
+                raise RuntimeError(
+                    f"{table_name} metadata reports {metadata_rows:,} rows; expected "
+                    f"{expected_rows:,}. Explicitly reset this Module table before retrying."
+                )
+            card(
+                f"Reused the committed {expected_rows:,}-row load; no INSERT was executed.",
+                "skip",
+                title or f"Reuse {table_name}",
+            )
+            return expected_rows
+        if metadata_rows > 0:
+            raise RuntimeError(
+                f"{table_name} metadata reports {metadata_rows:,} rows; expected 0 or "
+                f"{expected_rows:,}. Explicitly reset this Module table before retrying."
+            )
+        return self.insert(
+            statement,
+            title=title or f"Load {table_name}",
+            low_memory_s3=low_memory_s3,
+            expected_rows=expected_rows,
+        )
 
     def _metadata_rows(self, statement: str) -> list[dict[str, object]]:
         connection = self._require_connection()
@@ -703,6 +742,14 @@ class DorisLab:
                 return f"{amount:,.2f} {unit}"
             amount /= 1024
         return f"{amount:,.2f} TB"
+
+    @staticmethod
+    def _capacity_bytes(value: object) -> float:
+        units = {"B": 1, "KB": 1024, "MB": 1024**2, "GB": 1024**3, "TB": 1024**4}
+        match = re.match(r"\s*([0-9.]+)\s*([KMGT]?B)?", str(value), re.IGNORECASE)
+        if not match:
+            return 0
+        return float(match.group(1)) * units.get((match.group(2) or "B").upper(), 1)
 
     @staticmethod
     def _number_range(values: Sequence[int]) -> str:
@@ -864,6 +911,399 @@ class DorisLab:
             },
         ])
         show_frame(title or f"{table_name} tablet summary", frame)
+        return frame
+
+    def tablet_replica_placement(
+        self,
+        table_name: str,
+        *,
+        title: str | None = None,
+        show: bool = True,
+    ) -> pd.DataFrame:
+        """Show one compact row per logical tablet and its physical BE replicas."""
+        table_name = self._safe_table_name(table_name)
+        tablets = self._metadata_rows(f"SHOW TABLETS FROM `{table_name}`")
+        backends = self._metadata_rows("SHOW BACKENDS")
+        alive_by_id = {
+            str(row["BackendId"]): str(row["Alive"]).lower() == "true" for row in backends
+        }
+        grouped: dict[str, list[dict[str, object]]] = {}
+        for row in tablets:
+            grouped.setdefault(str(row["TabletId"]), []).append(row)
+        rows = []
+        for tablet_id, replicas in sorted(grouped.items(), key=lambda item: int(item[0])):
+            backend_ids = sorted(str(row["BackendId"]) for row in replicas)
+            alive = sum(alive_by_id.get(backend_id, False) for backend_id in backend_ids)
+            versions = [int(row["Version"]) for row in replicas]
+            target_version = max(versions)
+            complete = sum(
+                str(row.get("State", "")).upper() == "NORMAL"
+                and int(row["Version"]) == target_version
+                and int(row["Version"]) == int(row["LstSuccessVersion"])
+                and int(row["LstFailedVersion"]) == -1
+                for row in replicas
+            )
+            rows.append({
+                "tablet_id": tablet_id,
+                "replicas": len(replicas),
+                "alive_replicas": alive,
+                "version_complete": complete,
+                "version": self._number_range(versions),
+                "backend_ids": ", ".join(backend_ids),
+            })
+        frame = pd.DataFrame(rows)
+        if show:
+            show_frame(title or f"{table_name} tablet-to-replica placement", frame)
+        return frame
+
+    def tablet_replica_health_summary(
+        self,
+        table_name: str,
+        *,
+        title: str | None = None,
+        expected_tablets: int | None = None,
+        expected_replicas: int | None = None,
+        expected_alive: int | None = None,
+        expected_complete: int | None = None,
+    ) -> pd.DataFrame:
+        """Summarize replica records and currently alive copies for one table."""
+        placement = self.tablet_replica_placement(table_name, show=False)
+        checks = (
+            (expected_tablets, len(placement.index), "logical tablets"),
+            (expected_replicas, placement["replicas"].astype(int), "replicas per tablet"),
+            (expected_alive, placement["alive_replicas"].astype(int), "alive replicas per tablet"),
+            (
+                expected_complete,
+                placement["version_complete"].astype(int),
+                "version-complete replicas per tablet",
+            ),
+        )
+        for expected, observed, label in checks:
+            if expected is None:
+                continue
+            matches = observed == expected
+            if hasattr(matches, "all"):
+                matches = matches.all()
+            if not matches:
+                raise AssertionError(
+                    f"{table_name} did not have {expected} {label}; "
+                    f"observed {observed!r}."
+                )
+        backend_counts = [
+            len({value.strip() for value in str(ids).split(",") if value.strip()})
+            for ids in placement["backend_ids"]
+        ]
+        frame = pd.DataFrame([{
+            "table": self._safe_table_name(table_name),
+            "tablets": len(placement.index),
+            "replicas / tablet": self._number_range(placement["replicas"].astype(int).tolist()),
+            "BE nodes / tablet": self._number_range(backend_counts),
+            "alive replicas / tablet": self._number_range(
+                placement["alive_replicas"].astype(int).tolist()
+            ),
+            "version-complete / tablet": self._number_range(
+                placement["version_complete"].astype(int).tolist()
+            ),
+        }])
+        show_frame(title or f"{table_name} replica health", frame)
+        return frame
+
+    def tablet_replica_backend_summary(
+        self,
+        table_name: str,
+        *,
+        title: str | None = None,
+    ) -> pd.DataFrame:
+        """Show whether each BE has caught up every replica of one table."""
+        table_name = self._safe_table_name(table_name)
+        tablets = self._metadata_rows(f"SHOW TABLETS FROM `{table_name}`")
+        backends = self._metadata_rows("SHOW BACKENDS")
+        if not tablets:
+            raise RuntimeError(f"SHOW TABLETS returned no rows for {table_name}.")
+
+        alive_by_id = {
+            str(row["BackendId"]): str(row["Alive"]).lower() == "true"
+            for row in backends
+        }
+        target_by_tablet: dict[str, int] = {}
+        for row in tablets:
+            tablet_id = str(row["TabletId"])
+            target_by_tablet[tablet_id] = max(
+                target_by_tablet.get(tablet_id, -1), int(row["Version"])
+            )
+
+        replicas_by_backend: dict[str, list[dict[str, object]]] = {}
+        for row in tablets:
+            replicas_by_backend.setdefault(str(row["BackendId"]), []).append(row)
+
+        rows = []
+        for backend_id, replicas in sorted(
+            replicas_by_backend.items(), key=lambda item: int(item[0])
+        ):
+            current = sum(
+                str(row.get("State", "")).upper() == "NORMAL"
+                and int(row["Version"]) == target_by_tablet[str(row["TabletId"])]
+                and int(row["Version"]) == int(row["LstSuccessVersion"])
+                and int(row["LstFailedVersion"]) == -1
+                for row in replicas
+            )
+            versions = [int(row["Version"]) for row in replicas]
+            rows.append({
+                "backend_id": backend_id,
+                "alive": alive_by_id.get(backend_id, False),
+                "stored replicas": len(replicas),
+                "current-version replicas": current,
+                "replica versions": self._number_range(versions),
+            })
+
+        frame = pd.DataFrame(rows)
+        show_frame(title or f"{table_name} replica versions by BE", frame)
+        return frame
+
+    def wait_for_tablet_rows(
+        self,
+        table_name: str,
+        *,
+        expected_rows: int,
+        timeout_seconds: int = 180,
+    ) -> None:
+        """Validate committed rows immediately, then wait only for tablet reports."""
+        table_name = self._safe_table_name(table_name)
+        if not self._metadata_rows(f"SHOW TABLES LIKE '{table_name}'"):
+            raise RuntimeError(
+                f"{table_name} is unavailable. Create the Module table and complete "
+                "its insert before checking Tablet metadata."
+            )
+        query_rows = int(
+            self._metadata_rows(
+                f"SELECT COUNT(*) AS row_count FROM `{table_name}`"
+            )[0]["row_count"]
+        )
+        if query_rows != expected_rows:
+            raise AssertionError(
+                f"{table_name} contains {query_rows:,} committed rows; expected "
+                f"{expected_rows:,}. Complete the preceding insert cell first."
+            )
+
+        deadline = time.monotonic() + timeout_seconds
+        metadata_rows = None
+        while time.monotonic() < deadline:
+            tablets = self._metadata_rows(f"SHOW TABLETS FROM `{table_name}`")
+            per_tablet: dict[str, int] = {}
+            for row in tablets:
+                tablet_id = str(row["TabletId"])
+                # SHOW TABLETS returns one row per replica. Replica statistics are
+                # reported asynchronously, so an earlier row can temporarily be
+                # older than another replica of the same logical tablet.
+                per_tablet[tablet_id] = max(
+                    per_tablet.get(tablet_id, 0), int(row["RowCount"])
+                )
+            metadata_rows = sum(per_tablet.values())
+            if metadata_rows == expected_rows:
+                return
+            time.sleep(2)
+        raise TimeoutError(
+            f"{table_name} contains the expected {query_rows:,} committed rows, but "
+            f"Tablet metadata reported {metadata_rows}; expected {expected_rows:,} "
+            f"within {timeout_seconds} seconds."
+        )
+
+    def wait_for_replica_health(
+        self,
+        table_name: str,
+        *,
+        expected_alive: int,
+        expected_complete: int,
+        timeout_seconds: int = 120,
+    ) -> pd.DataFrame:
+        """Wait until every tablet has the requested alive and version-complete copies."""
+        deadline = time.monotonic() + timeout_seconds
+        placement = pd.DataFrame()
+        while time.monotonic() < deadline:
+            placement = self.tablet_replica_placement(table_name, show=False)
+            if (
+                not placement.empty
+                and (placement["alive_replicas"].astype(int) == expected_alive).all()
+                and (placement["version_complete"].astype(int) == expected_complete).all()
+            ):
+                return placement
+            time.sleep(1)
+        raise TimeoutError(
+            f"Replica health for {table_name} did not reach alive={expected_alive}, "
+            f"version_complete={expected_complete}; last placement={placement.to_dict('records')!r}"
+        )
+
+    def wait_for_node_state(
+        self,
+        statement: str,
+        *,
+        expected_total: int,
+        expected_alive: int,
+        expected_masters: int | None = None,
+        expected_roles: Sequence[str] | None = None,
+        require_same_version: bool = False,
+        timeout_seconds: int = 120,
+        title: str | None = None,
+    ) -> pd.DataFrame:
+        """Poll SHOW FRONTENDS or SHOW BACKENDS until a bounded topology state appears."""
+        normalized = " ".join(statement.upper().split())
+        if normalized not in {"SHOW FRONTENDS", "SHOW BACKENDS"}:
+            raise ValueError("Node state polling accepts SHOW FRONTENDS or SHOW BACKENDS only.")
+        deadline = time.monotonic() + timeout_seconds
+        rows: list[dict[str, object]] = []
+        last_error: Exception | None = None
+        while time.monotonic() < deadline:
+            try:
+                rows = self._metadata_rows(normalized)
+                last_error = None
+            except Exception as exc:
+                # FE election can briefly reject or forward metadata statements
+                # to the former Master. Retry on the same published FE endpoint.
+                last_error = exc
+                try:
+                    self._require_connection().ping(reconnect=True)
+                except Exception:
+                    self.connection = None
+                time.sleep(1)
+                continue
+            alive = sum(str(row.get("Alive", "")).lower() == "true" for row in rows)
+            masters = sum(str(row.get("IsMaster", "")).lower() == "true" for row in rows)
+            roles_ready = (
+                expected_roles is None
+                or {str(row.get("Role", "")) for row in rows} == set(expected_roles)
+            )
+            versions = {str(row.get("Version", "")) for row in rows}
+            versions_ready = not require_same_version or (
+                len(versions) == 1 and "" not in versions and "NULL" not in versions
+            )
+            if (
+                len(rows) == expected_total
+                and alive == expected_alive
+                and (expected_masters is None or masters == expected_masters)
+                and roles_ready
+                and versions_ready
+            ):
+                break
+            time.sleep(1)
+        else:
+            raise TimeoutError(
+                f"{normalized} did not reach total={expected_total}, alive={expected_alive}, "
+                f"masters={expected_masters}, roles={expected_roles}, "
+                f"same_version={require_same_version}; last rows={rows!r}; "
+                f"last error={last_error!r}"
+            )
+        frame = pd.DataFrame(rows)
+        columns = (
+            ["Name", "Host", "Role", "IsMaster", "Join", "Alive", "Version"]
+            if normalized == "SHOW FRONTENDS"
+            else ["BackendId", "Host", "Alive", "SystemDecommissioned", "TabletNum", "Version"]
+        )
+        frame = frame[[column for column in columns if column in frame.columns]]
+        show_frame(title or normalized.title(), frame)
+        return frame
+
+    def wait_for_backend_storage(
+        self,
+        *,
+        expected_backends: int,
+        timeout_seconds: int = 120,
+        title: str = "BE storage paths are ready",
+        show: bool = True,
+    ) -> pd.DataFrame:
+        """Wait until every live BE has reported nonzero local storage capacity."""
+        deadline = time.monotonic() + timeout_seconds
+        rows: list[dict[str, object]] = []
+        while time.monotonic() < deadline:
+            rows = self._metadata_rows("SHOW BACKENDS")
+            ready = [
+                row for row in rows
+                if str(row.get("Alive", "")).lower() == "true"
+                and self._capacity_bytes(row.get("TotalCapacity", 0)) > 0
+                and self._capacity_bytes(row.get("AvailCapacity", 0)) > 1024**2
+            ]
+            if len(rows) == expected_backends and len(ready) == expected_backends:
+                break
+            time.sleep(1)
+        else:
+            raise TimeoutError(
+                f"Only {len(ready) if 'ready' in locals() else 0}/{expected_backends} BEs "
+                f"reported usable storage; last rows={rows!r}"
+            )
+        frame = pd.DataFrame(rows)[
+            ["BackendId", "Host", "Alive", "AvailCapacity", "TotalCapacity"]
+        ]
+        if show:
+            show_frame(title, frame)
+        return frame
+
+    def environment_resource_summary(
+        self,
+        *,
+        expected_backends: int = 3,
+        minimum_cpus: int = 4,
+        minimum_memory_bytes: int = 8_000_000_000,
+        minimum_free_disk_bytes: int = 20 * 1024**3,
+        title: str = "Current Docker resources and Lab minimums",
+    ) -> pd.DataFrame:
+        """Compare Docker allocation and the shared BE filesystem with Lab minimums."""
+        docker = run(
+            ["docker", "info", "--format", "{{.NCPU}}|{{.MemTotal}}"], check=False
+        )
+        if docker.returncode != 0:
+            raise RuntimeError(f"Docker resource inspection failed: {docker.stderr.strip()}")
+        cpu_text, memory_text = docker.stdout.strip().split("|", 1)
+        cpus, memory_bytes = int(cpu_text), int(memory_text)
+        storage = self.wait_for_backend_storage(
+            expected_backends=expected_backends,
+            title="BE storage paths are ready",
+            show=False,
+        )
+        backends = storage.to_dict("records")
+        free_values = [self._capacity_bytes(row.get("AvailCapacity", 0)) for row in backends]
+        total_values = [self._capacity_bytes(row.get("TotalCapacity", 0)) for row in backends]
+        if not free_values or min(free_values) <= 0:
+            raise RuntimeError("BE storage capacity is not ready for resource validation.")
+        shared_free = min(free_values)
+        shared_total = min(total_values)
+        rows = [
+            {
+                "resource": "Docker CPU allocation",
+                "current": f"{cpus} cores",
+                "Lab minimum": f"{minimum_cpus} cores",
+                "status": "PASS" if cpus >= minimum_cpus else "BELOW MINIMUM",
+                "scope": "shared by all FE and BE containers",
+            },
+            {
+                "resource": "Docker memory allocation",
+                "current": (
+                    f"{memory_bytes / 1_000_000_000:.2f} GB / "
+                    f"{memory_bytes / 1024**3:.2f} GiB"
+                ),
+                "Lab minimum": "8.00 GB / 7.45 GiB reported",
+                "status": "PASS" if memory_bytes >= minimum_memory_bytes else "BELOW MINIMUM",
+                "scope": "one shared memory pool; limits are not reservations",
+            },
+            {
+                "resource": "BE data filesystem: free",
+                "current": f"{shared_free / 1024**3:.2f} GiB",
+                "Lab minimum": f"{minimum_free_disk_bytes / 1024**3:.0f} GiB",
+                "status": "PASS" if shared_free >= minimum_free_disk_bytes else "BELOW MINIMUM",
+                "scope": "one shared Docker filesystem; do not add the three BE rows",
+            },
+            {
+                "resource": "BE data filesystem: total",
+                "current": f"{shared_total / 1024**3:.2f} GiB",
+                "Lab minimum": "informational",
+                "status": "INFO",
+                "scope": "reported separately by each BE but backed by the same host",
+            },
+        ]
+        frame = pd.DataFrame(rows)
+        show_frame(title, frame)
+        failed = frame["status"] == "BELOW MINIMUM"
+        if failed.any():
+            missing = ", ".join(frame.loc[failed, "resource"])
+            raise RuntimeError(f"The Docker environment is below the Lab minimum for: {missing}.")
         return frame
 
     def storage_layout_summary(self, table_names: Sequence[str]) -> pd.DataFrame:
@@ -1055,6 +1495,31 @@ class DorisLab:
         show_log(title, "\n".join(scans) or "Selected TABLE lines are not shown.", opened=True)
         return plan
 
+    def explain_colocate_join(
+        self,
+        statement: str,
+        *,
+        title: str = "Colocate Join evidence",
+    ) -> str:
+        """Verify and display the Join and scan lines that prove a Colocate plan."""
+        normalized = statement.strip()
+        if not normalized.upper().startswith("EXPLAIN"):
+            raise ValueError("An EXPLAIN statement is required.")
+        connection = self._require_connection()
+        with connection.cursor() as cursor:
+            cursor.execute(normalized)
+            records = cursor.fetchall()
+        plan = "\n".join(str(next(iter(record.values()))) for record in records)
+        if not re.search(r"join op:\s*[^\n]*\bCOLOCATE\b", plan, re.IGNORECASE):
+            raise AssertionError("The plan did not select a Colocate Join.")
+        lines = [
+            line for line in plan.splitlines()
+            if re.search(r"join op:|equal join conjunct:|\bTABLE:", line, re.IGNORECASE)
+        ]
+        show_log(title, "\n".join(lines), opened=True)
+        show_log(f"{title}: complete EXPLAIN", plan)
+        return plan
+
     @staticmethod
     def _normalize_statement(statement: str) -> str:
         return " ".join(statement.strip().rstrip(";").split()).lower()
@@ -1108,7 +1573,10 @@ class DorisLab:
 
     def _profile_text(self, profile_id: str, *, timeout_seconds: int = 20) -> str:
         token = base64.b64encode(b"root:").decode("ascii")
-        url = f"http://127.0.0.1:8030/rest/v2/manager/query/profile/text/{profile_id}"
+        url = (
+            f"http://{self._profile_http_host}:{self._profile_http_port}"
+            f"/rest/v2/manager/query/profile/text/{profile_id}"
+        )
         deadline = time.monotonic() + timeout_seconds
         last_error: Exception | None = None
         while time.monotonic() < deadline:
@@ -2626,9 +3094,20 @@ LIMIT 10
         container: str = "doris",
         host: str = "127.0.0.1",
         port: int = 9030,
+        http_host: str | None = None,
+        http_port: int = 8030,
     ):
         wait_for_health(container, timeout_seconds=300, report=False)
+        if self.connection is not None:
+            try:
+                self.connection.close()
+            except Exception:
+                pass
         self.DORIS_CONTAINER = container
+        self._connection_host = host
+        self._connection_port = port
+        self._profile_http_host = http_host or host
+        self._profile_http_port = http_port
         self.connection = connect_doris(host=host, port=port)
         return self.connection
 
