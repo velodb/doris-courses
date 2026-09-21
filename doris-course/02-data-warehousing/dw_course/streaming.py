@@ -43,9 +43,12 @@ def configure_streaming_port():
 def _render_wait_progress(description, elapsed, timeout, attempt, handle=None, state="waiting"):
     if get_ipython() is None:
         return handle
-    percentage = min(100, int(elapsed / timeout * 100)) if timeout else 100
     colors = {"waiting": ("#2563eb", "⏳"), "success": ("#16a34a", "✅"), "failure": ("#dc2626", "❌")}
     color, icon = colors[state]
+    if state == "success":
+        percentage = 100
+    else:
+        percentage = min(100, int(elapsed / timeout * 100)) if timeout else 100
     detail = {
         "waiting": f"Still working · {elapsed}s elapsed · check {attempt} · timeout {timeout}s",
         "success": f"Ready after {elapsed}s · {attempt} checks",

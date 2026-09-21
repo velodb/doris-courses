@@ -43,6 +43,16 @@ class StreamingTest(unittest.TestCase):
         self.assertEqual(display.call_count, 1)
         self.assertEqual(handle.update.call_count, 2)
 
+    def test_completed_notebook_progress_is_full_green(self):
+        handle = Mock()
+        with patch.object(streaming, "get_ipython", return_value=object()), patch.object(
+            streaming, "display", return_value=handle
+        ) as display:
+            streaming._render_wait_progress("finished", 0, 180, 1, state="success")
+        content = display.call_args.args[0].data
+        self.assertIn("width:100%", content)
+        self.assertIn("background:#16a34a", content)
+
     def test_timeout_reports_last_observation(self):
         with patch.object(streaming.time, "monotonic", side_effect=[0, 0, 2]), patch.object(streaming.time, "sleep"):
             with self.assertRaisesRegex(TimeoutError, "last observation = 'lagging'"):
