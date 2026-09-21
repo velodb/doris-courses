@@ -2,6 +2,7 @@
 
 import json
 
+import pandas as pd
 from IPython import get_ipython
 from IPython.display import display
 
@@ -65,9 +66,24 @@ class WorkflowProgress:
             print("\n".join(self.logs), flush=True)
 
 
+def show_records(title, rows, *, columns=None):
+    """Display structured observations without changing their values or returning duplicate output."""
+    frame = pd.DataFrame(rows, columns=columns)
+    if in_notebook():
+        show_frame(title, frame)
+    else:
+        print(title)
+        print(frame.to_string(index=False))
+
+
 def show_response(response, title="Stream Load response"):
     content = json.dumps(response, ensure_ascii=False, indent=2)
     if in_notebook():
-        show_log(title, content, opened=True)
+        rows = [
+            (key, json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else value)
+            for key, value in response.items()
+        ]
+        show_records(title, rows, columns=["Field", "Value"])
+        show_log("Complete JSON: " + title, content)
     else:
         print(content)

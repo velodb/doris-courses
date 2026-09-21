@@ -29,10 +29,14 @@ class StreamingTest(unittest.TestCase):
 
     def test_mysql_renders_result_sets_as_notebook_tables(self):
         output = (
-            "File\tPosition\tBinlog_Do_DB\n"
-            "mysql-bin.000001\t123\t\n\n"
-            "order_id\torder_status\n"
-            "920001\tCREATED\n"
+            '<?xml version="1.0"?>\n'
+            '<resultset statement="SHOW MASTER STATUS">'
+            '<row><field name="File">mysql-bin.000001</field>'
+            '<field name="Position">123</field></row></resultset>\n'
+            '<?xml version="1.0"?>\n'
+            '<resultset statement="SELECT * FROM orders">'
+            '<row><field name="order_id">920001</field>'
+            '<field name="order_status">CREATED</field></row></resultset>\n'
         )
         with patch.object(streaming, "compose", return_value=output), patch.object(
             streaming, "in_notebook", return_value=True

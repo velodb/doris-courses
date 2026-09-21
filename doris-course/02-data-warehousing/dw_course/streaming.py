@@ -6,6 +6,7 @@ import subprocess
 import time
 from html import escape
 from uuid import uuid4
+from xml.etree import ElementTree
 
 import requests
 import pandas as pd
@@ -140,7 +141,7 @@ def prepare_streaming(profile, *, start=False):
             if profile == "kafka":
                 kafka("kafka-topics.sh", "--list")
             else:
-                mysql("SELECT COUNT(*) FROM course_cdc.orders")
+                mysql("SELECT COUNT(*) FROM course_cdc.orders", show=False)
                 response = requests.get(REST + "/overview", timeout=5)
                 response.raise_for_status()
                 return response.json()["slots-total"] >= 1
@@ -161,16 +162,24 @@ def produce(topic, rows):
                  input="".join(json.dumps(row) + "\n" for row in rows))
 
 
-def mysql(sql):
+def mysql(sql, *, show=True):
+    """Render each MySQL result separately; use structured output, not TSV boundary guesses."""
+    notebook = show and in_notebook()
+    output_format = ["--xml"] if notebook else ["--batch", "--raw"]
     output = compose("exec", "-T", "mysql", "env", "MYSQL_PWD=course_stream_local_only",
-                     "mysql", "--protocol=TCP", "-h127.0.0.1", "-uroot", "--batch", "--raw", "-e", sql)
-    if in_notebook():
-        blocks = [block for block in re.split(r"\n\s*\n", output.strip()) if block.strip()]
-        for number, block in enumerate(blocks, start=1):
-            rows = [line.split("\t") for line in block.splitlines()]
-            columns = rows[0]
-            if len(rows) > 1 and all(len(row) == len(columns) for row in rows[1:]):
-                show_frame(f"MySQL result {number}", pd.DataFrame(rows[1:], columns=columns))
+                     "mysql", "--protocol=TCP", "-h127.0.0.1", "-uroot", *output_format, "-e", sql)
+    if notebook:
+        # mysql --xml emits one XML document per result, including empty result sets.
+        documents = re.sub(r'<\?xml[^?]*\?>', '', output)
+        results = ElementTree.fromstring("<results>" + documents + "</results>")
+        for result in results:
+            columns = [field.attrib["name"] for field in result.findall("row[1]/field")]
+            rows = [
+                [None if field.get("{http://www.w3.org/2001/XMLSchema-instance}nil") == "true"
+                 else field.text or "" for field in row]
+                for row in result.findall("row")
+            ]
+            show_frame(result.attrib["statement"], pd.DataFrame(rows, columns=columns))
         return ""
     return output
 
