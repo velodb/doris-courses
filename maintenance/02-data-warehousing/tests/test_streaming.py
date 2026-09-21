@@ -148,10 +148,25 @@ class StreamingTest(unittest.TestCase):
         with patch.object(streaming, "flink_api", side_effect=[
             {"jobs": [{"jid": job_id, "name": "course_mysql_orders", "state": "RUNNING"}]},
             {"jobs": []},
-        ]), patch.object(streaming.requests, "delete", return_value=response) as delete:
+        ]), patch.object(streaming.requests, "patch", return_value=response) as patch_request:
             self.assertEqual(streaming.cleanup_cdc_jobs()[0]["jid"], job_id)
-        delete.assert_called_once()
+        patch_request.assert_called_once()
         response.raise_for_status.assert_called_once()
+
+    def test_cleanup_accepts_job_that_finished_before_cancel(self):
+        job_id = "c" * 32
+        response = Mock(status_code=404)
+        with patch.object(streaming, "active_flink_jobs", side_effect=[
+            [{"jid": job_id, "name": "course_mysql_orders", "state": "RUNNING"}],
+            [],
+        ]), patch.object(streaming.requests, "patch", return_value=response):
+            self.assertEqual(streaming.cleanup_cdc_jobs()[0]["jid"], job_id)
+
+    def test_cancel_treats_missing_job_as_already_cancelled(self):
+        response = Mock(status_code=404)
+        with patch.object(streaming.requests, "patch", return_value=response):
+            streaming.cancel_flink_job("d" * 32)
+        response.raise_for_status.assert_not_called()
 
     def test_resource_profile_and_base_configuration(self):
         overlay = ROOT / "environments/streaming/doris-resources.yml"

@@ -188,7 +188,11 @@ def active_flink_jobs():
 def cancel_flink_job(job):
     if re.fullmatch(r"[0-9a-f]{32}", job) is None:
         raise ValueError("Invalid Flink job ID")
-    response = requests.delete(REST + f"/jobs/{job}", timeout=10)
+    response = requests.patch(REST + f"/jobs/{job}", timeout=10)
+    # The job can finish between /jobs/overview and PATCH /jobs/{jid}.
+    # Flink then returns 404, which is already the desired cleanup state.
+    if response.status_code == 404:
+        return
     response.raise_for_status()
 
 
@@ -206,7 +210,7 @@ def cleanup_cdc_jobs():
             active_flink_jobs,
             lambda current: not current,
             description="stopping the previous CDC Flink job",
-            timeout=30,
+            timeout=120,
         )
     return jobs
 
