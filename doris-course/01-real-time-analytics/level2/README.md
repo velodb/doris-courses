@@ -54,6 +54,8 @@ Doris 官方推荐的建表流程也是先确定 Table Model，再选择数据�
 
 ## 模块 5：使用 Apache Doris 分析数据
 
+配套实验：[`lab5_analyze_data.ipynb`](module05-analyzing/lab5_analyze_data.ipynb)。
+
 ### 模块目标
 
 教会学员使用 Doris SQL 把 detail event data 转换为可解释的分析结果。
@@ -94,6 +96,8 @@ Doris window function 在 `WHERE`、`JOIN` 和 `GROUP BY` 之后计算，并且�
 - 每道任务都提供 expected row count 或关键 expected value，帮助学员验证 SQL semantics，而不是只判断 statement 是否成功。
 
 ## 模块 6：在 Apache Doris 中连接数据
+
+配套实验：[`lab6_join_data.ipynb`](module06-joining/lab6_join_data.ipynb)。
 
 ### 模块目标
 
@@ -139,6 +143,8 @@ Doris 官方文档将 Broadcast、Partition Shuffle、Bucket Shuffle 和 Colocat
 - 最后完成一条按 category 和 region 聚合 revenue 的 fact-dimension query。
 
 ## 模块 7：在 Apache Doris 中更新和删除数据
+
+配套实验：[`lab7_update_delete_data.ipynb`](module07-updating-deleting/lab7_update_delete_data.ipynb)。
 
 ### 模块目标
 
