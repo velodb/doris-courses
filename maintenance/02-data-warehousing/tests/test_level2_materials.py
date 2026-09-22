@@ -57,6 +57,23 @@ class Level2MaterialsTest(unittest.TestCase):
         for link in ("module08-views-materialized-views", "module09-modeling-and-joins", "module10-metric-processing", "module11-bi-and-ai"):
             self.assertIn(link, readme)
 
+    def test_level2_guides_follow_the_level1_learning_structure(self):
+        required_sections = (
+            "课程信息",
+            "单元目标",
+            "学习目标",
+            "单元安排",
+            "动手实验",
+            "单元总结",
+            "知识测验",
+            "官方参考资料",
+        )
+        for module in self.modules:
+            guide = (LEVEL2 / module / "course.md").read_text()
+            for section in required_sections:
+                self.assertIn(section, guide, module)
+            self.assertGreaterEqual(len(guide), 4000, module)
+
 
 if __name__ == "__main__":
     unittest.main()
