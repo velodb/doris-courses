@@ -1,35 +1,35 @@
-# Module 10: Metric processing and service delivery
+# 模块 10：指标加工与服务交付
 
-## Module Goal
+## 模块目标
 
-Define metrics at a declared grain, build a reusable aggregate result, and expose a stable query for downstream dashboards. Correctness comes before refresh or latency claims.
+在明确的粒度上定义指标，构建可复用的聚合结果，并为下游看板提供稳定查询。先保证正确性，再讨论刷新或延迟。
 
-## Learning Objectives
+## 学习目标
 
-1. define a metric with numerator, denominator, grain, and filter
-2. separate detail facts from an aggregate serving table
-3. validate metrics against an independent detail query
-4. use windows and conditional aggregation without changing grain accidentally
-5. publish a narrow serving query for a dashboard consumer
+1. 定义包含分子、分母、粒度和过滤条件的指标
+2. 区分明细事实与聚合服务表
+3. 使用独立明细查询验证指标
+4. 使用窗口函数和条件聚合，同时避免意外改变粒度
+5. 为看板消费者发布范围清晰的服务查询
 
-## Module Schedule
+## 模块安排
 
-| Section | Learning Format | Suggested Time | Learning Outcome |
+| 部分 | 学习方式 | 建议用时 | 学习产出 |
 | --- | --- | --- | --- |
-| 10.1–10.5 | Lesson and guided examples | 25 minutes | Apply the module concepts to the order domain |
-| Lab | Hands-on notebook | 30 minutes | Produce and validate an independent result |
-| Quiz | Interactive knowledge check | 5 minutes | Check the learning objectives |
+| 10.1–10.5 | 课程与引导示例 | 25 分钟 | 将概念应用到订单场景 |
+| 实验 | Notebook 动手实践 | 30 分钟 | 生成并验证独立结果 |
+| 测验 | 互动知识检查 | 5 分钟 | 检查学习目标 |
 
-## Hands-on Lab
+## 动手实验
 
-[`lab10_metric_processing.ipynb`](lab10_metric_processing.ipynb) uses tables owned by this module. Complete Level 1 first and set `DW_ALLOW_WRITES=yes` with a dedicated `DW_DATABASE` before running it.
+[`lab10_metric_processing.ipynb`](lab10_metric_processing.ipynb) 使用本模块创建的对象。请先完成 Level 1，再设置 `DW_ALLOW_WRITES=yes` 和专用的 `DW_DATABASE` 后运行。
 
-## Module Summary
+## 模块总结
 
-- Define metrics at a declared grain, build a reusable aggregate result, and expose a stable query for downstream dashboards. Correctness comes before refresh or latency claims.
-- Validate business results independently before making performance or freshness claims.
-- Keep consumer contracts separate from physical implementation details.
+- 在明确粒度上定义指标，构建聚合结果，并为下游看板提供稳定查询；先保证正确性，再讨论刷新或延迟。
+- 在作出性能或新鲜度结论前，先独立验证业务结果。
+- 将消费者契约与物理实现细节分开。
 
-## Knowledge Quiz
+## 知识测验
 
-[`quiz10_metric_processing.ipynb`](quiz10_metric_processing.ipynb) contains five offline questions.
+[`quiz10_metric_processing.ipynb`](quiz10_metric_processing.ipynb) 包含 5 道离线题目。

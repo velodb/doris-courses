@@ -1,35 +1,35 @@
-# Module 11: BI and AI applications
+# 模块 11：BI 与 AI 应用
 
-## Module Goal
+## 模块目标
 
-Deliver reviewed metrics to BI and AI consumers through stable SQL contracts. Separate semantic correctness, access boundaries, and feature freshness from the visualization or model itself.
+通过稳定的 SQL 契约向 BI 和 AI 消费者交付经过评审的指标。将语义正确性、访问边界和特征新鲜度与可视化或模型本身分开。
 
-## Learning Objectives
+## 学习目标
 
-1. design a consumer-facing semantic view with stable names
-2. distinguish dashboard dimensions from metric measures
-3. prepare a feature projection without claiming model quality
-4. validate nulls, freshness, and row counts before serving consumers
-5. document the boundary between Doris SQL and downstream BI or AI tools
+1. 设计名称稳定的消费者语义视图
+2. 区分看板维度和指标度量
+3. 准备特征投影，但不夸大模型质量结论
+4. 在服务消费者前验证空值、新鲜度和行数
+5. 记录 Doris SQL 与下游 BI 或 AI 工具之间的边界
 
-## Module Schedule
+## 模块安排
 
-| Section | Learning Format | Suggested Time | Learning Outcome |
+| 部分 | 学习方式 | 建议用时 | 学习产出 |
 | --- | --- | --- | --- |
-| 11.1–11.5 | Lesson and guided examples | 25 minutes | Apply the module concepts to the order domain |
-| Lab | Hands-on notebook | 30 minutes | Produce and validate an independent result |
-| Quiz | Interactive knowledge check | 5 minutes | Check the learning objectives |
+| 11.1–11.5 | 课程与引导示例 | 25 分钟 | 将概念应用到订单场景 |
+| 实验 | Notebook 动手实践 | 30 分钟 | 生成并验证独立结果 |
+| 测验 | 互动知识检查 | 5 分钟 | 检查学习目标 |
 
-## Hands-on Lab
+## 动手实验
 
-[`lab11_bi_and_ai_delivery.ipynb`](lab11_bi_and_ai_delivery.ipynb) uses tables owned by this module. Complete Level 1 first and set `DW_ALLOW_WRITES=yes` with a dedicated `DW_DATABASE` before running it.
+[`lab11_bi_and_ai_delivery.ipynb`](lab11_bi_and_ai_delivery.ipynb) 使用本模块创建的对象。请先完成 Level 1，再设置 `DW_ALLOW_WRITES=yes` 和专用的 `DW_DATABASE` 后运行。
 
-## Module Summary
+## 模块总结
 
-- Deliver reviewed metrics to BI and AI consumers through stable SQL contracts. Separate semantic correctness, access boundaries, and feature freshness from the visualization or model itself.
-- Validate business results independently before making performance or freshness claims.
-- Keep consumer contracts separate from physical implementation details.
+- 通过稳定 SQL 契约向 BI 和 AI 消费者交付指标，并把语义、访问边界和特征新鲜度与下游工具分开。
+- 在作出性能或新鲜度结论前，先独立验证业务结果。
+- 将消费者契约与物理实现细节分开。
 
-## Knowledge Quiz
+## 知识测验
 
-[`quiz11_bi_and_ai.ipynb`](quiz11_bi_and_ai.ipynb) contains five offline questions.
+[`quiz11_bi_and_ai.ipynb`](quiz11_bi_and_ai.ipynb) 包含 5 道离线题目。

@@ -1,35 +1,35 @@
-# Module 8: Views and materialized views
+# 模块 8：视图与物化视图
 
-## Module Goal
+## 模块目标
 
-Turn a stable business query into a logical view, then use a materialized view to precompute a repeated aggregate. Verify refresh state and query-rewrite evidence separately.
+把稳定的业务查询封装成逻辑视图，再用物化视图预计算重复使用的聚合结果。分别检查刷新状态和查询改写证据。
 
-## Learning Objectives
+## 学习目标
 
-1. distinguish a logical view from stored materialized results
-2. choose a refresh policy from freshness and cost requirements
-3. verify a materialized view with metadata and result checks
-4. use EXPLAIN as evidence for query rewrite rather than assuming a hit
-5. keep a published view contract stable while changing its implementation
+1. 区分逻辑视图和已存储的物化结果
+2. 根据新鲜度和成本要求选择刷新策略
+3. 通过元数据和结果检查验证物化视图
+4. 使用 EXPLAIN 证明查询改写，不凭对象命中猜测
+5. 在改变实现方式时保持已发布视图的契约稳定
 
-## Module Schedule
+## 模块安排
 
-| Section | Learning Format | Suggested Time | Learning Outcome |
+| 部分 | 学习方式 | 建议用时 | 学习产出 |
 | --- | --- | --- | --- |
-| 8.1–8.5 | Lesson and guided examples | 25 minutes | Apply the module concepts to the order domain |
-| Lab | Hands-on notebook | 30 minutes | Produce and validate an independent result |
-| Quiz | Interactive knowledge check | 5 minutes | Check the learning objectives |
+| 8.1–8.5 | 课程与引导示例 | 25 分钟 | 将概念应用到订单场景 |
+| 实验 | Notebook 动手实践 | 30 分钟 | 生成并验证独立结果 |
+| 测验 | 互动知识检查 | 5 分钟 | 检查学习目标 |
 
-## Hands-on Lab
+## 动手实验
 
-[`lab8_views_and_materialized_views.ipynb`](lab8_views_and_materialized_views.ipynb) uses tables owned by this module. Complete Level 1 first and set `DW_ALLOW_WRITES=yes` with a dedicated `DW_DATABASE` before running it.
+[`lab8_views_and_materialized_views.ipynb`](lab8_views_and_materialized_views.ipynb) 使用本模块创建的对象。请先完成 Level 1，再设置 `DW_ALLOW_WRITES=yes` 和专用的 `DW_DATABASE` 后运行。
 
-## Module Summary
+## 模块总结
 
-- Turn a stable business query into a logical view, then use a materialized view to precompute a repeated aggregate. Verify refresh state and query-rewrite evidence separately.
-- Validate business results independently before making performance or freshness claims.
-- Keep consumer contracts separate from physical implementation details.
+- 将稳定的业务查询封装成视图，并用物化视图预计算重复聚合；分别验证刷新状态和查询改写证据。
+- 在作出性能或新鲜度结论前，先独立验证业务结果。
+- 将消费者契约与物理实现细节分开。
 
-## Knowledge Quiz
+## 知识测验
 
-[`quiz8_views_and_materialized_views.ipynb`](quiz8_views_and_materialized_views.ipynb) contains five offline questions.
+[`quiz8_views_and_materialized_views.ipynb`](quiz8_views_and_materialized_views.ipynb) 包含 5 道离线题目。

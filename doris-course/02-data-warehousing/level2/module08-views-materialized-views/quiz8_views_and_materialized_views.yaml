@@ -1,79 +1,79 @@
-title: 'Module 8: Views and materialized views'
-description: Five single-choice questions; no database connection required.
+title: '模块 8：视图与物化视图'
+description: 共 5 道单选题，不需要连接数据库。
 questions:
 - id: q1
-  objective: distinguish a logical view from stored materialized results
-  prompt: Which statement best distinguishes a view from a materialized view?
+  objective: 区分逻辑视图和已存储的物化结果
+  prompt: 哪项说法最能区分视图和物化视图？
   options:
   - id: a
-    text: A. Both always store a second copy of every source row
+    text: A. 两者都会始终保存每一条源数据的副本
   - id: b
-    text: B. A view stores a definition; a materialized view maintains query results
+    text: B. 视图保存定义；物化视图维护查询结果
   - id: c
-    text: C. A materialized view is only a renamed table
+    text: C. 物化视图只是改名后的表
   - id: d
-    text: D. A view can never contain a JOIN
+    text: D. 视图不能包含 JOIN
   answer: b
-  explanation: A view stores the query definition; a materialized view also maintains
-    stored results that can serve repeated work.
+  explanation: 视图保存查询定义；物化视图还会维护
+    可用于重复计算的已存储结果。
 - id: q2
-  objective: choose a refresh policy from freshness and cost requirements
-  prompt: A dashboard accepts five-minute-old data to reduce refresh cost. Which design
-    is appropriate?
+  objective: 根据新鲜度和成本要求选择刷新策略
+  prompt: 看板可以接受延迟 5 分钟的数据以降低刷新成本，哪种设计
+    是合适的？
   options:
   - id: a
-    text: A. Refresh on every query regardless of cost
+    text: A. 不考虑成本、每次查询都刷新
   - id: b
-    text: B. Disable all refreshes and claim real-time data
+    text: B. 禁用所有刷新却声称数据实时
   - id: c
-    text: C. Use an explicit scheduled or manual refresh policy
+    text: C. 使用明确的定时或手动刷新策略
   - id: d
-    text: D. Replace the view with a client-side CSV
+    text: D. 用客户端 CSV 替换视图
   answer: c
-  explanation: A scheduled or manual refresh policy can trade freshness for predictable
-    work; the choice must be explicit.
+  explanation: 定时或手动刷新策略可以用新鲜度换取可预测的
+    工作量；策略选择必须明确。
 - id: q3
-  objective: verify a materialized view with metadata and result checks
-  prompt: What should be checked after creating a materialized view?
+  objective: 通过元数据和结果检查验证物化视图
+  prompt: 创建物化视图后应检查什么？
   options:
   - id: a
-    text: A. Refresh state, row values, and aggregate totals
+    text: A. 刷新状态、行值和聚合总数
   - id: b
-    text: B. Only the CREATE statement text
+    text: B. 只有 CREATE 语句文本
   - id: c
-    text: C. Only the client response time
+    text: C. 只有客户端响应时间
   - id: d
-    text: D. Only whether the object name exists
+    text: D. 只有对象名是否存在
   answer: a
-  explanation: Check metadata and compare the materialized result with the canonical
-    query result.
+  explanation: 检查元数据，并将物化结果与规范
+    查询结果进行对比。
 - id: q4
-  objective: use EXPLAIN as evidence for query rewrite rather than assuming a hit
-  prompt: What is the correct evidence that a query used a materialized view?
+  objective: 使用 EXPLAIN 证明查询改写，不凭对象命中猜测
+  prompt: 证明查询使用物化视图的正确证据是什么？
   options:
   - id: a
-    text: A. The query returned at least one row
+    text: A. 查询至少返回了一行
   - id: b
-    text: B. The source table still exists
+    text: B. 源表仍然存在
   - id: c
-    text: C. The view has a descriptive name
+    text: C. 视图有描述性名称
   - id: d
-    text: D. The plan shows the materialized view or its scan and results match
+    text: D. 执行计划显示物化视图或其扫描，且结果一致
   answer: d
-  explanation: EXPLAIN plan evidence, together with a result comparison, is stronger
-    than assuming an object name implies a rewrite.
+  explanation: EXPLAIN 计划证据与结果对比结合起来，比仅凭
+    对象名推断发生改写更可靠。
 - id: q5
-  objective: keep a published view contract stable while changing its implementation
-  prompt: Why publish a view as the service contract?
+  objective: 在改变实现方式时保持已发布视图契约稳定
+  prompt: 为什么将视图作为服务契约？
   options:
   - id: a
-    text: A. It forces every consumer to know physical tablets
+    text: A. 它迫使每个消费者了解物理 Tablet
   - id: b
-    text: B. It separates consumer contract from implementation details
+    text: B. 它将消费者契约与实现细节分开
   - id: c
-    text: C. It prevents all schema evolution
+    text: C. 它阻止所有 Schema 演进
   - id: d
-    text: D. It guarantees every query is rewritten
+    text: D. 它保证每个查询都会改写
   answer: b
-  explanation: Consumers depend on stable columns and semantics while maintainers
-    can change the underlying implementation.
+  explanation: 消费者依赖稳定的列和语义，维护者可以
+    改变底层实现。

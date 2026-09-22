@@ -1,35 +1,35 @@
-# Module 9: Warehouse modeling and joins
+# 模块 9：数仓建模与 JOIN
 
-## Module Goal
+## 模块目标
 
-Move from a single imported order table to a small fact-and-dimension model. Choose grain and keys first, then validate join cardinality and plan data movement.
+从单张导入订单表扩展到小型事实表与维表模型。先确定粒度和键，再验证 JOIN 基数与执行计划中的数据移动。
 
-## Learning Objectives
+## 学习目标
 
-1. state the grain of a fact and a dimension table
-2. choose a table model and key from update semantics
-3. validate one-to-one and one-to-many join cardinality
-4. use LEFT JOIN and anti-join checks to find missing dimensions
-5. read join distribution evidence from EXPLAIN
+1. 说明事实表和维表的粒度
+2. 根据更新语义选择表模型和键
+3. 验证一对一和一对多 JOIN 基数
+4. 使用 LEFT JOIN 与反连接检查缺失维度
+5. 从 EXPLAIN 中读取 JOIN 分布证据
 
-## Module Schedule
+## 模块安排
 
-| Section | Learning Format | Suggested Time | Learning Outcome |
+| 部分 | 学习方式 | 建议用时 | 学习产出 |
 | --- | --- | --- | --- |
-| 9.1–9.5 | Lesson and guided examples | 25 minutes | Apply the module concepts to the order domain |
-| Lab | Hands-on notebook | 30 minutes | Produce and validate an independent result |
-| Quiz | Interactive knowledge check | 5 minutes | Check the learning objectives |
+| 9.1–9.5 | 课程与引导示例 | 25 分钟 | 将概念应用到订单场景 |
+| 实验 | Notebook 动手实践 | 30 分钟 | 生成并验证独立结果 |
+| 测验 | 互动知识检查 | 5 分钟 | 检查学习目标 |
 
-## Hands-on Lab
+## 动手实验
 
-[`lab9_modeling_and_joins.ipynb`](lab9_modeling_and_joins.ipynb) uses tables owned by this module. Complete Level 1 first and set `DW_ALLOW_WRITES=yes` with a dedicated `DW_DATABASE` before running it.
+[`lab9_modeling_and_joins.ipynb`](lab9_modeling_and_joins.ipynb) 使用本模块创建的对象。请先完成 Level 1，再设置 `DW_ALLOW_WRITES=yes` 和专用的 `DW_DATABASE` 后运行。
 
-## Module Summary
+## 模块总结
 
-- Move from a single imported order table to a small fact-and-dimension model. Choose grain and keys first, then validate join cardinality and plan data movement.
-- Validate business results independently before making performance or freshness claims.
-- Keep consumer contracts separate from physical implementation details.
+- 从单张导入订单表扩展到事实表与维表模型，先确定粒度和键，再验证 JOIN 基数与数据移动。
+- 在作出性能或新鲜度结论前，先独立验证业务结果。
+- 将消费者契约与物理实现细节分开。
 
-## Knowledge Quiz
+## 知识测验
 
-[`quiz9_modeling_and_joins.ipynb`](quiz9_modeling_and_joins.ipynb) contains five offline questions.
+[`quiz9_modeling_and_joins.ipynb`](quiz9_modeling_and_joins.ipynb) 包含 5 道离线题目。
