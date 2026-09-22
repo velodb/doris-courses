@@ -28,7 +28,7 @@
 | 10.1 指标契约与粒度 | 一个指标究竟统计什么？ | 12 分钟 |
 | 10.2 聚合服务表 | 什么时候把计算提前做成服务结果？ | 12 分钟 |
 | 10.3 窗口函数与条件聚合 | 如何增加分析列而不改变行数？ | 12 分钟 |
-| 10.4 精确、近似与运行证据 | UV、Profile 和索引应该怎样选择？ | 10 分钟 |
+| 10.4 精确、近似与运行证据 | UV 精度如何选择，执行代价如何验证？ | 10 分钟 |
 | 10.5 服务发布与独立核对 | 如何让看板得到可复查的结果？ | 4 分钟 |
 | Lab 10 / Quiz 10 | 生成、对账与知识检查 | 35 / 5 分钟 |
 
@@ -140,17 +140,17 @@ WITH detail AS (
     FROM daily_order_metrics_l2
     GROUP BY order_date
 )
-SELECT d.order_date,
+SELECT COALESCE(d.order_date, s.order_date) AS order_date,
        d.order_count AS detail_orders,
        s.order_count AS serving_orders,
        d.gross_amount AS detail_amount,
        s.gross_amount AS serving_amount
 FROM detail d
-JOIN serving s ON s.order_date = d.order_date
-ORDER BY d.order_date;
+FULL OUTER JOIN serving s ON s.order_date = d.order_date
+ORDER BY order_date;
 ```
 
-预期两边都是 10 和 1400.00。若把服务表放进 detail CTE，查询即使返回一致，也只是在重复读取同一份错误。独立核对至少应覆盖行数、金额、日期范围和关键维度；重要交付还要做逐行或抽样核对。
+预期两边都是 10 和 1400.00。全外连接保留任一侧独有的日期，对应另一侧显示 NULL；不要先把这些 NULL 填成 0，否则会隐藏“缺少汇总行”和“真实零值”的区别。若把服务表放进 detail CTE，查询即使返回一致，也只是在重复读取同一份错误。独立核对至少应覆盖行数、金额、日期范围和关键维度；重要交付还要做逐行或抽样核对。
 
 ## 10.3 窗口函数与条件聚合
 
@@ -175,12 +175,12 @@ SELECT order_date,
            ORDER BY order_date
            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
        ) AS cumulative_amount,
-       LAG(gross_amount) OVER (ORDER BY order_date) AS previous_day_amount
+       LAG(gross_amount) OVER (ORDER BY order_date) AS previous_available_day_amount
 FROM daily
 ORDER BY order_date;
 ```
 
-窗口计算的输入已经是“日”粒度，所以输出仍是一日一行。如果直接对订单明细使用 `SUM(order_amount) OVER (PARTITION BY DATE(event_time))`，每一笔订单都会带上当天总额；这适合展示或后续去重，不适合再直接 SUM 这些重复的窗口列。
+窗口计算的输入已经是“日”粒度，所以输出仍是一日一行。`LAG` 取得排序后的上一行，不一定是日历上的昨天；缺失日期需要先补齐日历，再计算要求连续日期的环比或移动平均。如果直接对订单明细使用 `SUM(order_amount) OVER (PARTITION BY DATE(event_time))`，每一笔订单都会带上当天总额；这适合展示或后续去重，不适合再直接 SUM 这些重复的窗口列。
 
 常见窗口函数包括 `ROW_NUMBER`、`RANK`、`DENSE_RANK`、`SUM`、`AVG`、`LAG` 和 `LEAD`。排名要定义并列处理；累计值要定义排序稳定性；移动平均要明确窗口边界。语法和边界见 [窗口函数](https://doris.apache.org/docs/4.x/query-data/window-function/)。
 
@@ -211,10 +211,10 @@ ORDER BY order_date;
 | 方案 | 结果承诺 | 适合 | 代价或限制 |
 | --- | --- | --- | --- |
 | `COUNT(DISTINCT id)` | 精确 | 数据量可控、必须精确的核算 | 需要维护去重集合，资源随规模增长 |
-| Bitmap | 精确去重 | 整数 ID 的大规模 UV 汇总 | 需要 Bitmap 聚合列，不能当普通明细列读取 |
+| Bitmap | 精确去重 | 整数 ID 的大规模 UV 汇总 | 预聚合常使用 BITMAP_UNION 列；计数需通过 Bitmap 函数获取 |
 | HLL | 近似基数 | 可接受误差的超大规模 UV | 不是精确值，必须向业务说明估算性质 |
 
-Bitmap 的“精确”不等于所有字符串都能直接放入 Bitmap；官方示例使用整数 ID 和 `to_bitmap`，其他类型通常需要额外编码。HLL 也不能因为某次样本恰好相等就宣称精确。详细语法见 [Bitmap 精确去重](https://doris.apache.org/docs/4.x/query-acceleration/distinct-counts/bitmap-precise-deduplication/) 和 [HLL 近似去重](https://doris.apache.org/docs/4.x/query-acceleration/distinct-counts/hll-approximate-deduplication/)。
+Bitmap 的“精确”不等于所有字符串都能直接放入 Bitmap；官方示例使用整数 ID 和 `to_bitmap`，其他类型需要设计编码；要求严格精确时必须保证映射无冲突，直接哈希字符串可能产生碰撞。HLL 也不能因为某次样本恰好相等就宣称精确。详细语法见 [Bitmap 精确去重](https://doris.apache.org/docs/4.x/query-acceleration/distinct-counts/bitmap-precise-deduplication/) 和 [HLL 近似去重](https://doris.apache.org/docs/4.x/query-acceleration/distinct-counts/hll-approximate-deduplication/)。
 
 ### EXPLAIN 与 Query Profile 回答不同问题
 
