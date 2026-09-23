@@ -109,6 +109,12 @@ def prepare_environment(*, start=False, streaming=False):
 
 
 def connect_sandbox():
-    """Connect this notebook to the course container without starting Docker."""
+    """Connect to the course sandbox, recovering it when the FE is unavailable."""
     os.environ.update(CONNECTION)
-    return WarehouseLab(allow_writes=True)
+    try:
+        return WarehouseLab(allow_writes=True)
+    except pymysql.err.OperationalError as error:
+        if not error.args or error.args[0] != 2003:
+            raise
+        prepare_environment(start=True)
+        return WarehouseLab(allow_writes=True)

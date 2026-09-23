@@ -653,6 +653,18 @@ class AlignmentTest(unittest.TestCase):
                 self.assertEqual({key: os.environ[key] for key in CONNECTION}, CONNECTION)
                 run.assert_not_called()
 
+    def test_connection_refusal_recovers_the_course_sandbox(self):
+        from dw_course.docker_runtime import connect_sandbox
+        from pymysql.err import OperationalError
+        refused = OperationalError(2003, "Can't connect to course sandbox")
+        with patch("dw_course.docker_runtime.WarehouseLab", side_effect=[refused, Mock()]) as constructor, patch(
+            "dw_course.docker_runtime.prepare_environment"
+        ) as prepare:
+            self.assertIsNotNone(connect_sandbox())
+        prepare.assert_called_once_with(start=True)
+        self.assertEqual(constructor.call_count, 2)
+        constructor.assert_called_with(allow_writes=True)
+
     def test_explicit_sandbox_start_and_be_readiness(self):
         from dw_course.docker_runtime import prepare_environment
         cursor = Mock()
