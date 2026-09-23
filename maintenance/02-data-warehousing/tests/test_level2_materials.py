@@ -60,6 +60,24 @@ class Level2MaterialsTest(unittest.TestCase):
             self.assertIn("lab = connect_sandbox()", source, path)
             self.assertNotIn("lab = WarehouseLab()", source, path)
 
+    def test_level2_query_cells_suppress_duplicate_pandas_output(self):
+        for path in sorted(LEVEL2.glob("module*/lab*.ipynb")):
+            notebook = nbformat.read(path, as_version=4)
+            for cell in notebook.cells:
+                if cell.cell_type == "code" and "lab.sql(" in cell.source:
+                    tree = ast.parse(cell.source, filename=str(path))
+                    calls = [
+                        node for node in ast.walk(tree)
+                        if isinstance(node, ast.Call)
+                        and isinstance(node.func, ast.Attribute)
+                        and isinstance(node.func.value, ast.Name)
+                        and node.func.value.id == "lab"
+                        and node.func.attr == "sql"
+                    ]
+                    last_call = max(calls, key=lambda node: (node.end_lineno, node.end_col_offset))
+                    line = cell.source.splitlines()[last_call.end_lineno - 1]
+                    self.assertTrue(line[:last_call.end_col_offset].rstrip().endswith(";"), path)
+
     def test_level2_root_links_exist(self):
         readme = (LEVEL2 / "README.md").read_text()
         for link in ("module08-views-materialized-views", "module09-modeling-and-joins", "module10-metric-processing", "module11-bi-and-ai"):
