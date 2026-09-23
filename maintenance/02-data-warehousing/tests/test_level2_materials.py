@@ -52,6 +52,14 @@ class Level2MaterialsTest(unittest.TestCase):
             for forbidden in ("DROP TABLE orders_imported", "TRUNCATE TABLE orders_imported", "DROP TABLE customers"):
                 self.assertNotIn(forbidden, source, path)
 
+    def test_level2_labs_use_the_scoped_sandbox_connection(self):
+        for path in sorted(LEVEL2.glob("module*/lab*.ipynb")):
+            notebook = nbformat.read(path, as_version=4)
+            source = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "code")
+            self.assertIn("from dw_course.docker_runtime import connect_sandbox", source, path)
+            self.assertIn("lab = connect_sandbox()", source, path)
+            self.assertNotIn("lab = WarehouseLab()", source, path)
+
     def test_level2_root_links_exist(self):
         readme = (LEVEL2 / "README.md").read_text()
         for link in ("module08-views-materialized-views", "module09-modeling-and-joins", "module10-metric-processing", "module11-bi-and-ai"):

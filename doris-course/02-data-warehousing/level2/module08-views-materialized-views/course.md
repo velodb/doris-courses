@@ -217,7 +217,7 @@ ORDER BY order_date;
 
 ## 动手实验：从稳定定义到可核对的物化结果
 
-打开 [Lab 8](lab8_views_and_materialized_views.ipynb)，依次连接实验库、创建普通视图、创建异步物化视图、查询元数据并阅读 EXPLAIN。实验只重建 `_l2` 对象，源表来自 Lab 5。初始化需要 `DW_ALLOW_WRITES=yes`，且 `DW_DATABASE` 使用已有数据的 `dw_course_l1_*` 专用库。
+打开 [Lab 8](lab8_views_and_materialized_views.ipynb)，依次连接实验库、创建普通视图、创建异步物化视图、查询元数据并阅读 EXPLAIN。实验只重建 `_l2` 对象，源表来自 Lab 5。Notebook 使用课程专用的 `connect_sandbox()` 连接函数，并只重建本模块 `_l2` 对象；`DW_DATABASE` 使用已有数据的 `dw_course_l1_*` 专用库。若用维护脚本执行，而不是在 Notebook 中逐单元运行，才需要先设置 `DW_ALLOW_WRITES=yes`。
 
 ### 数据说明与验收
 

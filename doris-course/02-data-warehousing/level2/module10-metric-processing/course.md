@@ -259,7 +259,7 @@ SHOW QUERY PROFILE;
 
 ## 动手实验：构建日指标并独立核对
 
-打开 [Lab 10](lab10_metric_processing.ipynb)，依次创建 `daily_order_metrics_l2`、写入日期 × 来源聚合、查询看板指标，并用独立明细 CTE 对账。实验会重建带 `_l2` 后缀的表，使用 `DW_ALLOW_WRITES=yes` 和已有 Level 1 数据的专用 `dw_course_l1_*` 数据库。
+打开 [Lab 10](lab10_metric_processing.ipynb)，依次创建 `daily_order_metrics_l2`、写入日期 × 来源聚合、查询看板指标，并用独立明细 CTE 对账。实验会重建带 `_l2` 后缀的表，Notebook 使用课程专用的 `connect_sandbox()` 连接函数，并连接已有 Level 1 数据的专用 `dw_course_l1_*` 数据库；若用维护脚本执行，才需要设置 `DW_ALLOW_WRITES=yes`。
 
 | 检查 | 预期 |
 | --- | --- |
