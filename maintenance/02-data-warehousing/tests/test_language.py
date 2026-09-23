@@ -1,0 +1,67 @@
+"""Check authored language and local Markdown links without touching outputs."""
+
+import json
+from pathlib import Path
+import re
+import unittest
+from urllib.parse import unquote, urlsplit
+
+ROOT = Path(__file__).resolve().parents[3] / "doris-course/02-data-warehousing"
+SKIP = {".runtime", ".venv", ".ipynb_checkpoints", "__pycache__"}
+
+
+def authored_files(levels=None):
+    for path in ROOT.rglob("*"):
+        relative = path.relative_to(ROOT)
+        if levels and relative.parts[0] not in levels:
+            continue
+        if any(part in SKIP or part.startswith(".") for part in relative.parts):
+            continue
+        if path.suffix not in {".md", ".py", ".yaml", ".yml", ".ipynb"}:
+            continue
+        if path.suffix == ".ipynb":
+            cells = json.loads(path.read_text())["cells"]
+            yield path, "\n".join("".join(cell["source"]) for cell in cells)
+        else:
+            yield path, path.read_text()
+
+
+def heading_ids(text):
+    counts = {}
+    for heading in re.findall(r"^#{1,6}\s+(.+)$", text, re.MULTILINE):
+        heading = re.sub(r"<[^>]*>", "", heading).lower()
+        slug = re.sub(r"[^\w\- ]", "", heading).replace(" ", "-")
+        index = counts.get(slug, 0)
+        counts[slug] = index + 1
+        yield slug if index == 0 else f"{slug}-{index}"
+
+
+class EnglishMaterialTest(unittest.TestCase):
+    def test_authored_text_is_english(self):
+        for path, text in authored_files(("level1",)):
+            with self.subTest(path=str(path.relative_to(ROOT))):
+                self.assertNotRegex(text, r"[\u3400-\u4dbf\u4e00-\u9fff]")
+
+    def test_level2_and_level3_materials_include_chinese_learner_text(self):
+        for path, text in authored_files(("level2", "level3")):
+            with self.subTest(path=str(path.relative_to(ROOT))):
+                self.assertRegex(text, r"[\u3400-\u4dbf\u4e00-\u9fff]")
+
+    def test_local_markdown_fragments_match_translated_headings(self):
+        for path, text in authored_files():
+            if path.suffix not in {".md", ".ipynb"}:
+                continue
+            for target in re.findall(r"\]\(([^\s)]+)\)", text):
+                url = urlsplit(target)
+                if url.scheme or url.netloc or not url.fragment:
+                    continue
+                dest = (path.parent / unquote(url.path)).resolve() if url.path else path
+                if dest.suffix != ".md":
+                    continue
+                with self.subTest(source=str(path), target=target):
+                    self.assertTrue(dest.is_file())
+                    self.assertIn(unquote(url.fragment), set(heading_ids(dest.read_text())))
+
+
+if __name__ == "__main__":
+    unittest.main()
