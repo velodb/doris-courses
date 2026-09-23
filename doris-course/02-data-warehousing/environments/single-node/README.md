@@ -33,6 +33,7 @@ The course tools validate [compose.yml](compose.yml), start or reuse the sandbox
 verify the FE connection and BE computation, and then connect to the lab database. The first download and startup may take several minutes.
 
 Subsequent Labs automatically connect to the same sandbox without creating more containers or requiring manual connection environment variables.
+If the sandbox was stopped or its FE is unavailable, any Lab automatically starts or reuses this course-owned Compose sandbox and retries the connection; its data volumes are retained.
 Each Notebook configures the same set of connection parameters anew, without depending on the in-memory state of other Notebook kernels.
 Read the reset notice before starting a Lab; running the connection and lab code confirms that you agree to the corresponding teaching tables being rebuilt.
 
