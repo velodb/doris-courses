@@ -1,0 +1,78 @@
+title: '模块 10：指标加工与服务交付'
+description: 共 5 道单选题，不需要连接数据库。
+questions:
+- id: q1
+  objective: 定义包含分子、分母、粒度和过滤条件的指标
+  prompt: 指标契约必须说明什么？
+  options:
+  - id: a
+    text: A. 只有展示标题
+  - id: b
+    text: B. 只有看板刷新间隔
+  - id: c
+    text: C. 粒度、输入、过滤条件和计算方式
+  - id: d
+    text: D. 只有 SQL 引擎版本
+  answer: c
+  explanation: 只有明确粒度、输入、过滤条件和
+    计算方式，指标才可复现。
+- id: q2
+  objective: 区分明细事实与聚合服务表
+  prompt: 为什么创建聚合服务表？
+  options:
+  - id: a
+    text: A. 删除明细事实
+  - id: b
+    text: B. 在声明粒度上服务重复指标
+  - id: c
+    text: C. 隐藏所有源数据错误
+  - id: d
+    text: D. 让每个查询都不需要 JOIN
+  answer: b
+  explanation: 它可以提供稳定高效的服务粒度，同时保留明细事实
+    用于下钻和核对。
+- id: q3
+  objective: 使用独立明细查询验证指标
+  prompt: 聚合表应如何验收？
+  options:
+  - id: a
+    text: A. 将结果与独立明细查询核对
+  - id: b
+    text: B. 只检查 INSERT 是否成功
+  - id: c
+    text: C. 只检查物理 Bucket 数量
+  - id: d
+    text: D. 相信看板截图
+  answer: a
+  explanation: 在发布前，将行数和金额与独立明细聚合进行对比
+    。
+- id: q4
+  objective: 使用窗口函数和条件聚合，同时避免意外改变粒度
+  prompt: 窗口函数通常做什么？
+  options:
+  - id: a
+    text: A. 总会删除重复行
+  - id: b
+    text: B. 总会创建新表
+  - id: c
+    text: C. 总会把日指标改成月指标
+  - id: d
+    text: D. 保留输入行粒度并添加计算
+  answer: d
+  explanation: 它在现有行上添加计算，不会自动将行
+    折叠成分组。
+- id: q5
+  objective: 为看板消费者发布范围清晰的服务查询
+  prompt: 为什么提供范围较窄的服务查询？
+  options:
+  - id: a
+    text: A. 暴露所有物理列
+  - id: b
+    text: B. 阻止验证
+  - id: c
+    text: C. 将消费者耦合限制在经过评审的指标字段
+  - id: d
+    text: D. 保证刷新成本为零
+  answer: c
+  explanation: 范围较窄的契约可以降低耦合，并让看板列和语义
+    可被评审。

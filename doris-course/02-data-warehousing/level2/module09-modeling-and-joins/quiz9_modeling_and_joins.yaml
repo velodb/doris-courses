@@ -1,0 +1,76 @@
+title: '模块 9：数仓建模与 JOIN'
+description: 共 5 道单选题，不需要连接数据库。
+questions:
+- id: q1
+  objective: 说明事实表和维表的粒度
+  prompt: 选择 JOIN 键前应先记录什么？
+  options:
+  - id: a
+    text: A. 每个输入中一行数据的业务含义
+  - id: b
+    text: B. 只有预期查询延迟
+  - id: c
+    text: C. 看板颜色数量
+  - id: d
+    text: D. FE 主机名
+  answer: a
+  explanation: 粒度说明一行代表什么；没有粒度定义，重复匹配
+    和错误总数很容易被忽略。
+- id: q2
+  objective: 根据更新语义选择表模型和键
+  prompt: 客户维表每个客户只有一行当前记录时，哪种设计合适？
+  options:
+  - id: a
+    text: A. 以事件时间戳作为 Duplicate Key
+  - id: b
+    text: B. 以客户名作为 Aggregate Key
+  - id: c
+    text: C. 以 customer_id 作为 Unique Key
+  - id: d
+    text: D. 无键的随机分布
+  answer: c
+  explanation: 以 customer_id 为键的 Unique Key 模型表示当前状态，并支持
+    更新写入。
+- id: q3
+  objective: 验证一对一和一对多 JOIN 基数
+  prompt: 重复的维表键可能对订单总额造成什么影响？
+  options:
+  - id: a
+    text: A. 它总会删除事实记录
+  - id: b
+    text: B. 它只改变列名
+  - id: c
+    text: C. 它不会影响聚合结果
+  - id: d
+    text: D. 它可能复制行并放大总数
+  answer: d
+  explanation: 一对多匹配可能复制事实行并放大聚合结果。
+- id: q4
+  objective: 使用 LEFT JOIN 和反连接检查缺失维度
+  prompt: 哪种查询模式能找到没有匹配维度的事实？
+  options:
+  - id: a
+    text: A. INNER JOIN 加 WHERE right_key IS NOT NULL
+  - id: b
+    text: B. LEFT JOIN 加 WHERE right_key IS NULL
+  - id: c
+    text: C. 不使用 JOIN 的 GROUP BY
+  - id: d
+    text: D. 按维度名 ORDER BY
+  answer: b
+  explanation: LEFT JOIN 后检查右侧键为空，就是反连接检查。
+- id: q5
+  objective: 从 EXPLAIN 中读取 JOIN 分布证据
+  prompt: 为什么要检查 JOIN 的 EXPLAIN？
+  options:
+  - id: a
+    text: A. 读取 JOIN 类型、条件和分布证据
+  - id: b
+    text: B. 证明业务键唯一
+  - id: c
+    text: C. 替代结果验证
+  - id: d
+    text: D. 避免定义粒度
+  answer: a
+  explanation: 计划显示 JOIN 条件和可能的数据移动；本地环境中的小规模
+    运行时间不足以作为充分证据。
