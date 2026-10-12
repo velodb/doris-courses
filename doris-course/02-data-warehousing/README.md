@@ -8,7 +8,7 @@ You need to be able to read basic SQL; the first module walks you through connec
 
 ## Start Here
 
-1. Read [Environment Setup](environments/single-node/README.md) to prepare your Python environment.
+1. Read [First-time setup](GETTING_STARTED.md), then use [Environment Setup](environments/single-node/README.md) to prepare your Python environment.
 2. Open the [Level 1 Learning Guide](level1/README.md) and start with the Module 1 lesson.
 3. In each module, complete the lesson, Lab, and Quiz in that order. Run the Labs in module order; Quizzes do not require a database.
 
@@ -21,7 +21,7 @@ Lessons explain “why,” Labs show “how,” and Quizzes help you check your 
 | --- | --- | --- |
 | [Level 1: Ingestion, Cleaning, and Updates](level1/README.md) | How does data enter the warehouse, and how are errors and changes handled? | Explain order inputs, quality results, current state, and history |
 | [Level 2: Modeling, Analytics, and Service Delivery](level2/README.md) | How is data organized and delivered to the business? | Layered modeling, JOINs, metric processing, and dashboards |
-| Level 3: Permissions, Resources, and Operations (planned) | How do you manage multiple users and ongoing operation? | Access governance, resource control, and operations and maintenance |
+| Level 3: Permissions, Resources, and Operations (upcoming) | How do you manage multiple users and ongoing operation? | Access governance, resource control, and operations and maintenance |
 
 The course uses historical WWI business data and separate simulated new orders; no paid data services are required.
 Module 1 starts with ten historical WWI orders included in the repository; Module 5 imports the complete 10-table Parquet package;

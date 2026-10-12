@@ -630,7 +630,7 @@ class AlignmentTest(unittest.TestCase):
         for path in (COURSE_ROOT / "level1").glob("*/lab*.ipynb"):
             notebook = nbformat.read(path, as_version=4)
             code = "\n".join(c.source for c in notebook.cells if c.cell_type == "code")
-            self.assertIn("lab = connect_sandbox()", code, path)
+            self.assertRegex(code, r"lab = connect_sandbox\(\)" if path.parent.name not in {"module06-data-quality", "module07-state-changes"} else r"lab = connect_sandbox\(module=[67]\)", path)
             self.assertNotIn("USE_DOCKER", code, path)
             self.assertNotIn("FE_HOST =", code, path)
             self.assertNotIn("ALLOW_LAB_WRITES =", code, path)
@@ -652,18 +652,6 @@ class AlignmentTest(unittest.TestCase):
                 constructor.assert_called_once_with(allow_writes=True)
                 self.assertEqual({key: os.environ[key] for key in CONNECTION}, CONNECTION)
                 run.assert_not_called()
-
-    def test_connection_refusal_recovers_the_course_sandbox(self):
-        from dw_course.docker_runtime import connect_sandbox
-        from pymysql.err import OperationalError
-        refused = OperationalError(2003, "Can't connect to course sandbox")
-        with patch("dw_course.docker_runtime.WarehouseLab", side_effect=[refused, Mock()]) as constructor, patch(
-            "dw_course.docker_runtime.prepare_environment"
-        ) as prepare:
-            self.assertIsNotNone(connect_sandbox())
-        prepare.assert_called_once_with(start=True)
-        self.assertEqual(constructor.call_count, 2)
-        constructor.assert_called_with(allow_writes=True)
 
     def test_explicit_sandbox_start_and_be_readiness(self):
         from dw_course.docker_runtime import prepare_environment

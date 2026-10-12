@@ -34,6 +34,8 @@ Complete each module in the order **Course → Lab → Quiz**. The course explai
 
 The Labs create only objects with an `_l2` suffix, display query results as tables, and use the dedicated `dw_course_l1_*` database prepared in Level 1. Each Lab checks its input before writing and explains what to do if it is missing.
 
+Start the sandbox explicitly in Level 1 Lab 1 before connecting from a Level 2 Notebook. Each Notebook connects independently to that same sandbox. If Doris is stopped or unreachable, follow the setup message back to Lab 1, run **Start and Connect**, and then rerun the Level 2 connection cell.
+
 | Lab | Prerequisite | Input |
 | --- | --- | --- |
 | Lab 8 | Level 1 Lab 5 | Ten rows in `orders_imported` |
