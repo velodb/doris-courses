@@ -55,6 +55,8 @@ Complete each module in the order **Course → Lab → Quiz**. The Course explai
 
 All three Labs connect to a dedicated `dw_course_l1_*` database, creating it if needed, and use objects marked with `_l3`.
 
+Start the sandbox explicitly in Level 1 Lab 1 before connecting from a Level 3 Notebook. Each Notebook connects independently to that same sandbox. If Doris is stopped or unreachable, follow the setup message back to Lab 1, run **Start and Connect**, and then rerun the Level 3 connection cell.
+
 Lab 12 creates a view and role, tests view access and base-table denial with a randomly named ordinary user, and removes the user, grants, role, and view afterward. Lab 13 rebuilds `ops_orders_l3` and `ops_orders_drop_l3` to compare truncation, dropping, and recovery. Lab 14 removes leftover course rules, roles, and groups, rebuilds `orders_monthly_l3`, and cleans up its configuration afterward. Each Lab can be rerun.
 
 Roles, Workload Groups, and SQL Block Rules are cluster-wide objects. Lab 14's global rule briefly affects every sandbox session. It is created, checked, and deleted within one cell, with cleanup in `finally`.

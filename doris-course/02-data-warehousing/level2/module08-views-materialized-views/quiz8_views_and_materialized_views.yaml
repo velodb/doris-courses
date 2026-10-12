@@ -1,79 +1,87 @@
-title: '模块 8：视图与物化视图'
-description: 共 5 道单选题，不需要连接数据库。
+title: 'Module 8: Views and Materialized Views'
+description: Six scenario-based multiple-choice questions. No database connection required.
 questions:
 - id: q1
-  objective: 区分逻辑视图和已存储的物化结果
-  prompt: 哪项说法最能区分视图和物化视图？
+  objective: Distinguish a logical view from a stored materialized result.
+  prompt: Three teams need the same positive-order filter. Each query must include newly committed orders, and the current detail query is already fast. What should they share first?
   options:
   - id: a
-    text: A. 两者都会始终保存每一条源数据的副本
+    text: A. A regular view containing the reviewed filter; it reads the current base-table result when queried.
   - id: b
-    text: B. 视图保存定义；物化视图维护查询结果
+    text: B. A manually refreshed materialized view (MV); its stored result changes automatically on every base-table write.
   - id: c
-    text: C. 物化视图只是改名后的表
+    text: C. A daily copied table; a copy has the same freshness as its source without another load.
   - id: d
-    text: D. 视图不能包含 JOIN
-  answer: b
-  explanation: 视图保存查询定义；物化视图还会维护
-    可用于重复计算的已存储结果。
-- id: q2
-  objective: 根据新鲜度和成本要求选择刷新策略
-  prompt: 看板可以接受延迟 5 分钟的数据以降低刷新成本，哪种设计
-    是合适的？
-  options:
-  - id: a
-    text: A. 不考虑成本、每次查询都刷新
-  - id: b
-    text: B. 禁用所有刷新却声称数据实时
-  - id: c
-    text: C. 使用明确的定时或手动刷新策略
-  - id: d
-    text: D. 用客户端 CSV 替换视图
-  answer: c
-  explanation: 定时或手动刷新策略可以用新鲜度换取可预测的
-    工作量；策略选择必须明确。
-- id: q3
-  objective: 通过元数据和结果检查验证物化视图
-  prompt: 创建物化视图后应检查什么？
-  options:
-  - id: a
-    text: A. 刷新状态、行值和聚合总数
-  - id: b
-    text: B. 只有 CREATE 语句文本
-  - id: c
-    text: C. 只有客户端响应时间
-  - id: d
-    text: D. 只有对象名是否存在
+    text: D. Three separate queries, because a regular view must store its own rows before consumers can use it.
   answer: a
-  explanation: 检查元数据，并将物化结果与规范
-    查询结果进行对比。
-- id: q4
-  objective: 使用 EXPLAIN 证明查询改写，不凭对象命中猜测
-  prompt: 证明查询使用物化视图的正确证据是什么？
+  explanation: 'A: Correct. A regular view shares the query definition without introducing a separate refresh boundary. B: A manually triggered MV stores a result that can lag after a write. C: A copied table also needs an explicit update path. D: Separate copies invite filter drift; a regular view does not need to store rows.'
+- id: q2
+  objective: Choose a refresh strategy based on freshness and cost requirements.
+  prompt: A batch of orders normally finishes near 02:00 but can finish 20 minutes late. Refreshing the stored daily result takes four minutes. The dashboard opens at 03:00 and must contain the completed batch. Which trigger fits this requirement best?
   options:
   - id: a
-    text: A. 查询至少返回了一行
+    text: A. Run a fixed refresh at 02:01 and treat its successful completion as proof that the late batch was included.
   - id: b
-    text: B. 源表仍然存在
+    text: B. Turn refresh off after the initial build; the dashboard query will incorporate later writes into the stored result.
   - id: c
-    text: C. 视图有描述性名称
+    text: C. Trigger a refresh after the batch succeeds, wait for it to finish, and verify the published batch before 03:00.
   - id: d
-    text: D. 执行计划显示物化视图或其扫描，且结果一致
-  answer: d
-  explanation: EXPLAIN 计划证据与结果对比结合起来，比仅凭
-    对象名推断发生改写更可靠。
-- id: q5
-  objective: 在改变实现方式时保持已发布视图契约稳定
-  prompt: 为什么将视图作为服务契约？
+    text: D. Refresh after every row even though the consumer only needs one completed daily batch.
+  answer: c
+  explanation: 'A: A late batch can arrive after 02:01, so the timed refresh may publish the previous cut. B: Initial build does not keep a manual-trigger result current. C: Correct. Linking refresh to batch completion and checking its result matches the stated cut and deadline. D: Per-row refresh adds unnecessary work and is not implied by a daily freshness requirement.'
+- id: q3
+  objective: Validate a materialized view using metadata and results.
+  prompt: Creating an MV returned success, but its first refresh is still running. A colleague wants to publish its daily total now because the object appears in the database. What evidence is still missing?
   options:
   - id: a
-    text: A. 它迫使每个消费者了解物理 Tablet
+    text: A. Only the object name; a successful creation response already proves the stored rows are complete.
   - id: b
-    text: B. 它将消费者契约与实现细节分开
+    text: B. A finished refresh state and a comparison of the same dates and filters with an independent base-table aggregation.
   - id: c
-    text: C. 它阻止所有 Schema 演进
+    text: C. A short dashboard response time; fast queries prove both freshness and amount correctness.
   - id: d
-    text: D. 它保证每个查询都会改写
+    text: D. The text of the view definition; it proves the current refresh used all source batches.
   answer: b
-  explanation: 消费者依赖稳定的列和语义，维护者可以
-    改变底层实现。
+  explanation: 'A: Creation and completed refresh are separate events. B: Correct. Refresh status checks that the stored result was built, while a like-for-like base query checks its values. C: Latency is not a correctness or freshness check. D: A definition describes intended logic, not which data has actually been materialized.'
+- id: q4
+  objective: Use EXPLAIN rather than guessing to verify query rewrite.
+  prompt: An MV exists for a daily aggregation. The dashboard query names only the base table; its EXPLAIN plan scans that base table and does not scan the MV. The result is correct. What can you conclude?
+  options:
+  - id: a
+    text: A. Transparent rewrite occurred because an MV with a matching name exists.
+  - id: b
+    text: B. Transparent rewrite occurred because the returned numbers are correct.
+  - id: c
+    text: C. The MV must have been refreshed, since the base-table query returned current numbers.
+  - id: d
+    text: D. This plan does not show an MV hit; investigate rewrite eligibility separately from result correctness.
+  answer: d
+  explanation: 'A: Object existence does not establish plan selection. B: A base-table scan can return correct data without rewriting. C: A direct base-table query says nothing about MV refresh state. D: Correct. The plan is evidence of the selected scan, while value checks answer a different question.'
+- id: q5
+  objective: Keep a published view contract stable while changing its implementation.
+  prompt: Two dashboards consume a view with one row per day and the columns order_date, order_count, and gross_amount. They allow up to ten minutes of data lag. An MV stores the same grain and meanings; the team verified that its completed refresh includes every source batch required by that freshness rule. How should the serving implementation change?
+  options:
+  - id: a
+    text: A. Point the view at the MV, keep its published columns and meanings, and compare results at the same data cut before switching consumers.
+  - id: b
+    text: B. Give dashboards the MV name and its physical columns; keeping the old view would prevent acceleration.
+  - id: c
+    text: C. Add customer_id to each daily row without changing the declared grain, so future filters need no new contract.
+  - id: d
+    text: D. Rename gross_amount to revenue during the switch; the MV will make the two business measures equivalent.
+  answer: a
+  explanation: 'A: Correct. The verified refresh meets the stated freshness limit; comparing the same data cut checks the values while consumers retain a stable contract. B: Exposing a physical object couples dashboards to implementation details. C: Customer-level data needs a finer grain or separate interface, not an unexplained column on a daily total. D: A storage change cannot turn order amount into recognized revenue.'
+- id: q6
+  objective: Decide whether repeated query cost justifies maintaining a stored result.
+  prompt: One report runs a costly unchanged daily aggregation hundreds of times each hour. Consumers accept a ten-minute delay, and the team can monitor refresh failures. Which trade-off is reasonable?
+  options:
+  - id: a
+    text: A. Keep recalculating from detail; repeated cost is irrelevant once the query is logically correct.
+  - id: b
+    text: B. Use only a regular view; saving the query definition also saves its aggregate result.
+  - id: c
+    text: C. Maintain a materialized result at the report grain, with a measured refresh cadence and freshness checks.
+  - id: d
+    text: D. Copy the aggregation into each dashboard, so each team can refresh independently without shared monitoring.
+  answer: c
+  explanation: 'A: Correct logic does not remove repeated compute cost. B: A regular view stores its definition, not the result. C: Correct. Reuse can justify storage and refresh work when the lag is allowed and monitored. D: Separate copies increase cost and create inconsistent cuts of the same metric.'

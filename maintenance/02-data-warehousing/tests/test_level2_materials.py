@@ -1,6 +1,7 @@
 """Offline checks for the Data Warehousing Level 2 learner materials."""
 
 import ast
+import re
 import unittest
 from pathlib import Path
 
@@ -28,8 +29,20 @@ class Level2MaterialsTest(unittest.TestCase):
             quiz = next(path.glob("quiz*.yaml"))
             self.assertTrue((path / quiz.name.replace(".yaml", ".ipynb")).is_file(), module)
             payload = yaml.safe_load(quiz.read_text())
-            self.assertEqual(len(payload["questions"]), 5, quiz)
-            self.assertEqual([len(q["options"]) for q in payload["questions"]], [4] * 5)
+            self.assertEqual(len(payload["questions"]), 6, quiz)
+            self.assertEqual([len(q["options"]) for q in payload["questions"]], [4] * 6)
+            self.assertEqual(len({q["objective"] for q in payload["questions"]}), 6, quiz)
+            guide = (path / "course.md").read_text()
+            goals = guide.split("## Learning Objectives\n", 1)[1].split("\n## ", 1)[0]
+            self.assertEqual(len(re.findall(r"^\d+\. ", goals, re.MULTILINE)), 6, path)
+            for question in payload["questions"]:
+                with self.subTest(quiz=quiz.name, question=question["id"]):
+                    self.assertEqual([option["id"] for option in question["options"]], ["a", "b", "c", "d"])
+                    self.assertEqual(len({option["text"] for option in question["options"]}), 4)
+                    self.assertIn(question["answer"], {option["id"] for option in question["options"]})
+                    for option in question["options"]:
+                        self.assertIn(f"{option['id'].upper()}: ", question["explanation"])
+                    self.assertIn(f"{question['answer'].upper()}: Correct.", question["explanation"])
 
     def test_new_notebooks_are_source_only_and_valid(self):
         notebooks = sorted(LEVEL2.glob("module*/*.ipynb"))
@@ -76,7 +89,7 @@ class Level2MaterialsTest(unittest.TestCase):
                     ]
                     last_call = max(calls, key=lambda node: (node.end_lineno, node.end_col_offset))
                     line = cell.source.splitlines()[last_call.end_lineno - 1]
-                    self.assertTrue(line[:last_call.end_col_offset].rstrip().endswith(";"), path)
+                    self.assertTrue(line[last_call.end_col_offset:].strip().startswith(";"), path)
 
     def test_level2_root_links_exist(self):
         readme = (LEVEL2 / "README.md").read_text()
@@ -85,14 +98,14 @@ class Level2MaterialsTest(unittest.TestCase):
 
     def test_level2_guides_follow_the_level1_learning_structure(self):
         required_sections = (
-            "课程信息",
-            "单元目标",
-            "学习目标",
-            "单元安排",
-            "动手实验",
-            "单元总结",
-            "知识测验",
-            "官方参考资料",
+            "Course Information",
+            "Module Goal",
+            "Learning Objectives",
+            "Module Schedule",
+            "Hands-on Lab",
+            "Module Summary",
+            "Knowledge Quiz",
+            "Official References",
         )
         for module in self.modules:
             guide = (LEVEL2 / module / "course.md").read_text()
@@ -101,7 +114,7 @@ class Level2MaterialsTest(unittest.TestCase):
             self.assertGreaterEqual(len(guide), 4000, module)
 
     def test_level2_labs_explain_and_verify_the_work(self):
-        required_markdown = ("你将完成什么", "前置条件", "独立练习", "参考解释", "实验回顾")
+        required_markdown = ("What You Will Do", "Prerequisites", "Independent Exercise", "Reference Explanation", "Lab Review")
         for path in sorted(LEVEL2.glob("module*/lab*.ipynb")):
             notebook = nbformat.read(path, as_version=4)
             markdown = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "markdown")
@@ -111,6 +124,16 @@ class Level2MaterialsTest(unittest.TestCase):
             self.assertGreaterEqual(markdown.count("## "), 5, path)
             self.assertIn("expect(", source, path)
             self.assertIn("TODO:", source, path)
+
+    def test_level2_exercise_precedes_answer_and_reference(self):
+        for path in sorted(LEVEL2.glob("module*/lab*.ipynb")):
+            notebook = nbformat.read(path, as_version=4)
+            sources = [cell.source for cell in notebook.cells]
+            prompt = next(i for i, source in enumerate(sources) if source.startswith("## Independent Exercise"))
+            answer = next(i for i, source in enumerate(sources) if "# TODO:" in source)
+            reference = next(i for i, source in enumerate(sources) if source.startswith("<details>\n<summary>Reference Explanation"))
+            self.assertLess(prompt, answer, path)
+            self.assertLess(answer, reference, path)
 
 
 if __name__ == "__main__":

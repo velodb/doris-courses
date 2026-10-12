@@ -33,3 +33,18 @@ Local evidence is under `/tmp/dw-enhance-20260930/`: `full-final.log`, `final-ad
 | Transactions and writes | Only dedicated course objects are rebuilt. Table replacement is atomic, but writer pause/catch-up is simulated; no continuous CDC, crash-atomic release or zero-data-loss claim. Backup restores only its recorded cutoff. |
 | Persistence and FE/BE variables | Existing Doris SQL APIs own persistence; no EditLog, Delete Bitmap, memory-accounting or cross-end variable changes. Volumes are preserved, not deleted during testing. |
 | Performance and remaining limits | Measured fewer scanned rows, not a promised proportional speedup. Twenty sequential warmed samples are not production P95 capacity. Same-host object storage is not disaster recovery. ARM64, multi-node recovery, Ranger, Storage Vaults and continuous CDC remain unverified. |
+
+## Level 2 integration with merged Level 1 — 2026-10-12
+
+PR #8 incorporates `main` at `6333bbb2b5f606ef53afe9865cd7fa337cba04ef`, after the squash merge of Level 1 in PR #4. Level 1 materials, first-time setup, existing shared runtime modules, and single-node/streaming environments match `main` exactly. Level 2 retains its Modules 8–11, independent warehouse case, BI helper modules, and explicit-start Superset environment.
+
+The course entry links to both first-time setup and Level 2. The English check continues to cover all authored course material, with the Level 2 local-link check retained. Level 2 startup guidance follows the merged runtime: start Doris explicitly in Lab 1; an unavailable connection directs the learner back there rather than starting Docker from another Lab.
+
+Current validation:
+
+- `python -m unittest discover -s maintenance/02-data-warehousing/tests`: **139 passed**.
+- Executed the actual initialization cell from each Level 2 Lab with mocked SQL/Docker boundaries: **16 checks passed**, covering successful connections, refusal codes 2002/2003 with Lab 1 guidance, and unchanged propagation of authentication failures. No connection cell starts the sandbox.
+- Git tree comparisons confirm Level 1 and existing shared runtime/environment files are identical to `main`, and Level 2 executable Notebook cells are unchanged from the previous PR head.
+- Whitespace checks pass for the PR diff against `main`.
+
+This integration did not rerun live SQL Labs, Docker startup, or the Superset browser checks. The execution results above from September 30 remain historical evidence; the Level 3 additions are delivered separately in PR #9.

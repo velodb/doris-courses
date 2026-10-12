@@ -1,4 +1,4 @@
-"""Check authored language and local Markdown links without touching outputs."""
+"""Keep authored course 02 material English without rewriting learner outputs."""
 
 import json
 from pathlib import Path
@@ -10,12 +10,9 @@ ROOT = Path(__file__).resolve().parents[3] / "doris-course/02-data-warehousing"
 SKIP = {".runtime", ".venv", ".ipynb_checkpoints", "__pycache__"}
 
 
-def authored_files(levels=None):
+def authored_files():
     for path in ROOT.rglob("*"):
-        relative = path.relative_to(ROOT)
-        if levels and relative.parts[0] not in levels:
-            continue
-        if any(part in SKIP or part.startswith(".") for part in relative.parts):
+        if any(part in SKIP or part.startswith(".") for part in path.relative_to(ROOT).parts):
             continue
         if path.suffix not in {".md", ".py", ".yaml", ".yml", ".ipynb"}:
             continue
@@ -38,7 +35,7 @@ def heading_ids(text):
 
 class EnglishMaterialTest(unittest.TestCase):
     def test_authored_text_is_english(self):
-        for path, text in authored_files(("level1", "level3", "dw_course")):
+        for path, text in authored_files():
             with self.subTest(path=str(path.relative_to(ROOT))):
                 self.assertNotRegex(text, r"[\u3400-\u4dbf\u4e00-\u9fff]")
 
@@ -56,6 +53,19 @@ class EnglishMaterialTest(unittest.TestCase):
                 with self.subTest(source=str(path), target=target):
                     self.assertTrue(dest.is_file())
                     self.assertIn(unquote(url.fragment), set(heading_ids(dest.read_text())))
+
+    def test_level2_local_links_resolve(self):
+        for path, text in authored_files():
+            if path.relative_to(ROOT).parts[0] != "level2":
+                continue
+            if path.suffix not in {".md", ".ipynb"}:
+                continue
+            for target in re.findall(r"\]\(([^\s)]+)\)", text):
+                url = urlsplit(target)
+                if url.scheme or url.netloc or not url.path:
+                    continue
+                with self.subTest(source=str(path), target=target):
+                    self.assertTrue((path.parent / unquote(url.path)).exists())
 
 
 if __name__ == "__main__":
