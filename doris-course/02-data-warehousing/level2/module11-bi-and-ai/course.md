@@ -206,6 +206,8 @@ A BI team now wants a customer-region filter. The current view cannot provide it
 
 Open [Quiz 11](quiz11_bi_and_ai.ipynb) to check semantic views, dimensions and measures, feature projections, publication checks, Doris/BI/AI boundaries, and least-privilege MCP access.
 
+Next: this is the last module of Level 2. Level 3 starts with [Module 12: Publishing, Permissions, and Audit](../../level3/module12-publishing-permissions-audit/course.md).
+
 ## Official References
 
 - [Apache Superset integration](https://doris.apache.org/docs/4.x/connection-integration/data-integration/superset/)

@@ -2,7 +2,7 @@
 
 ## From Level 1 to Level 2
 
-In Level 1, you loaded ten orders into `orders_imported`, checked data quality, handled state changes and replay, and queried an external Iceberg table through a table-valued function (TVF).
+In Level 1, you queried an Iceberg table through an Iceberg REST Catalog, loaded ten orders into `orders_imported` and 701,846 rows of Wide World Importers (WWI) history into ten `wwi_*` tables, checked data quality, and handled state changes and replay.
 
 Now imagine that ten orders have become one million. Operations needs daily order counts and amounts; Finance applies a different filter; and a BI dashboard refreshes every five minutes. New requests for sales by customer region, average order value, and stable BI access make the problem more than a collection of SQL queries. **Level 2 teaches you to design data services that BI and AI consumers can use safely and predictably.**
 
@@ -90,7 +90,7 @@ An Aggregate Key `SUM` column accumulates repeated inserts. In this isolated Lab
 - [ ] Publish a semantic view and check freshness, nulls, row counts, and amounts.
 - [ ] Use an anti-join, `EXPLAIN`, and Query Profile to investigate incorrect or slow results.
 
-After Level 2, continue to Level 3 for publishing, access control, audit, and storage lifecycle management—or revisit Level 1 with a larger dataset.
+After Level 2, continue to [Level 3](../level3/README.md) for publishing, access control, audit, storage lifecycle management, and resource isolation—or revisit Level 1 with a larger dataset.
 
 ## Extended Core Case and Consumer
 

@@ -113,3 +113,7 @@ Connections remain available after you finish a Lab, so you can continue queryin
 ## Supplementary Activities
 
 After completing the main sequence, you can continue with the [Level 1 Extension Labs](extensions/README.md): scaling up data and Profile, batch file ingestion, defaults/generated columns, batch commit acknowledgment, schema changes, and deletes through ingestion. Extensions do not increase the video count; their dependencies and reset scopes are documented separately.
+
+## Next: Level 2
+
+After Lab 7 and Quiz 7, continue to [Level 2](../level2/README.md). It starts with [Module 8: Views and Materialized Views](../level2/module08-views-materialized-views/course.md).
