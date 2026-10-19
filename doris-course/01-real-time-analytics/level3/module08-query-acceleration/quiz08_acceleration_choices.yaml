@@ -1,4 +1,4 @@
-title: "Module 8 Quiz: Query Acceleration Choices"
+title: "Module 8 Quiz: Accelerating Queries in Apache Doris"
 description: >-
   Six independent scenarios check whether you can choose and validate Doris
   query-acceleration structures without confusing definitions, plans, runtime

@@ -195,7 +195,7 @@ class MaterialsTest(unittest.TestCase):
             reading = next(module.glob("course*.md")).read_text()
             quiz = yaml.safe_load(next(module.glob("quiz*.yaml")).read_text())
             self.assertTrue(reading.startswith(f"# Module {number}:"), module)
-            self.assertTrue(quiz["title"].startswith(f"Module {number}:"), module)
+            self.assertTrue(quiz["title"].startswith(f"Module {number} Quiz:"), module)
 
     def test_reading_schedule_titles_match_sections(self):
         for path in (COURSE_ROOT / "level1").glob("*/course*.md"):

@@ -434,12 +434,14 @@ regions do not represent real user locations.
 - A first Doris workflow is straightforward: connect, inspect, create, load,
   query, and validate.
 
-## Quiz 1: Apache Doris Fundamentals
+## Quiz 1: Introduction to Apache Doris
 
-Complete the five-question interactive knowledge check after finishing the
-module and Lab 1. It runs without a Doris sandbox.
+Complete the interactive knowledge check after finishing the module and
+Lab 1. It runs without a Doris sandbox.
 
-[Open Quiz 1 — Apache Doris Fundamentals](quiz01_doris_fundamentals.ipynb)
+[Open Quiz 1 — Introduction to Apache Doris](quiz01_doris_fundamentals.ipynb)
+
+Next module: [Module 2: Deep Dive into Apache Doris Architecture](../module02-architecture/course.md).
 
 ## Official references
 

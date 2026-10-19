@@ -209,9 +209,11 @@ A consumer now wants to filter the daily result by customer. Is the existing MV 
 - `CREATE`, refresh, direct query, and transparent rewriting are separate checks.
 - A view contract includes grain, filters, units, and ownership; physical optimization must not silently change it.
 
-## Knowledge Quiz
+## Knowledge Quiz 8: Views and Materialized Views
 
 Open [Quiz 8](quiz08_views_and_materialized_views.ipynb) after the reading and Lab. Its six scenario questions cover view types, refresh trade-offs, result checks, rewrite evidence, contract stability, and when precomputation pays off.
+
+Next module: [Module 9: Warehouse Modeling and Joins](../module09-modeling-and-joins/course.md).
 
 ## Official References
 

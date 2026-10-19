@@ -227,13 +227,13 @@ See the [data notes](../../datasets/README.md) for fields, business definitions,
 - Start by creating a table and inserting data, then use WHERE to filter, GROUP BY to aggregate, and ORDER BY to sort.
 - The ten sample orders have a pre-tax total of 12220.60. Check details as well as totals, and do not treat order amounts as payments received.
 
-## Knowledge Quiz 1: Doris Fundamentals and Your First Orders
+## Knowledge Quiz 1: Meet Doris and Analyze Your First Orders
 
 After completing the notes and lab, open [Quiz 1](quiz01_doris_fundamentals.ipynb).
 Five single-choice questions cover transactions versus analytics, Doris's role, FE/BE responsibilities, grouped queries, and amount definitions; no Doris connection is required.
 Read the explanations after submitting, then check whether you can explain why the other options are unsuitable.
 
-Next module: [Module 2: Observe Storage and Write Batches](../module02-architecture/course.md).
+Next module: [Module 2: Doris Storage Architecture and Write Mechanisms](../module02-architecture/course.md).
 
 ## Official References
 

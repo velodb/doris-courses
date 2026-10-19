@@ -1,4 +1,4 @@
-title: 'Module 6 Quiz: Properties, Materialized Views, and Indexes'
+title: "Module 6 Quiz: Table Properties, Materialized Views, and Indexes"
 description: Six questions check whether you can distinguish storage compression, Materialized View (MV)
   acceleration, and inverted-index filtering, and judge what plan or profile evidence proves.
 questions:

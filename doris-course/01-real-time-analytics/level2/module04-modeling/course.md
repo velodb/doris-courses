@@ -748,6 +748,15 @@ assuming that their `COUNT(*)` values should match. Module 5 now uses the
 complete `events_modelled` table to build analytical results whose grain remains
 explicit at every stage.
 
+## Quiz 4: Modeling Data in Apache Doris
+
+Complete the interactive knowledge check after finishing the module and
+Lab 4. It runs without a Doris sandbox.
+
+[Open Quiz 4 — Modeling Data in Apache Doris](quiz04_schema_and_modeling_choices.ipynb)
+
+Next module: [Module 5: Analyzing Data in Apache Doris](../module05-analyzing/course.md).
+
 ## Official references
 
 - Table design workflow: [Table Design Guide](https://doris.apache.org/docs/4.x/table-design/overview/) and [Table Model Best Practices](https://doris.apache.org/docs/4.x/table-design/data-model/tips/).

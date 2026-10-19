@@ -847,6 +847,15 @@ advance. These strategies change where rows meet, not which rows belong in the
 logical answer. Module 10 next defines how long those rows remain online and
 what recovery boundary exists after data is deliberately removed.
 
+## Quiz 9: Sharding, Replication, and Distributed Execution in Apache Doris
+
+Complete the interactive knowledge check after finishing the module and
+Lab 9. It runs without a Doris sandbox.
+
+[Open Quiz 9 — Sharding, Replication, and Distributed Execution in Apache Doris](quiz09_distribution_and_availability.ipynb)
+
+Next module: [Module 10: Controlling Storage Cost and Data Lifecycle in Apache Doris](../module10-managing-data/course.md).
+
 ## Official references
 
 - Architecture and execution: [Product Concepts](https://doris.apache.org/docs/4.x/features-architecture/product-concepts/) and [`EXPLAIN`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/EXPLAIN/)

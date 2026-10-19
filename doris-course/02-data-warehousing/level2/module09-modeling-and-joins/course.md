@@ -220,9 +220,11 @@ Repair the Lab's flawed CTE in a new query cell so every fact order has exactly 
 - Verify joins with unique keys, unmatched rows, row counts, distinct business keys, and amounts.
 - Logical join semantics and physical data movement are different; use `EXPLAIN` and Query Profile for different evidence.
 
-## Knowledge Quiz
+## Knowledge Quiz 9: Warehouse Modeling and Joins
 
 Open [Quiz 9](quiz09_modeling_and_joins.ipynb) to check grain, table-model choice, join cardinality, missing dimensions, plan reading, and replayable warehouse layers.
+
+Next module: [Module 10: Metric Processing and Delivery](../module10-metric-processing/course.md).
 
 ## Official References
 

@@ -1,4 +1,4 @@
-title: 'Module 8 Quiz: Grafana Alerting Rules'
+title: "Module 8 Quiz: Alerting with Grafana"
 description: Six questions check whether you can define the evaluated metric, reason about time-based
   alert conditions, separate routing from evaluation, and interpret alert evidence at the correct scope.
 questions:

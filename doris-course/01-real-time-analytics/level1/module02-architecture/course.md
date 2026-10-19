@@ -591,6 +591,15 @@ Open the notebook:
 - Predicate pushdown is not the same as pruning: a predicate can run inside the
   scan operator even when no entire Partition or Tablet is excluded.
 
+## Quiz 2: Deep Dive into Apache Doris Architecture
+
+Complete the interactive knowledge check after finishing the module and
+Lab 2. It runs without a Doris sandbox.
+
+[Open Quiz 2 — Deep Dive into Apache Doris Architecture](quiz02_doris_architecture_and_physical_design.ipynb)
+
+Next module: [Module 3: Loading Data into Apache Doris](../module03-loading-data/course.md).
+
 ## Official references
 
 - [Apache Doris source repository](https://github.com/apache/doris)

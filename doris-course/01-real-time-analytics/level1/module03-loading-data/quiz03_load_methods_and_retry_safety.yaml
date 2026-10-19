@@ -1,4 +1,4 @@
-title: "Module 3 Quiz: Load Methods and Retry Safety"
+title: "Module 3 Quiz: Loading Data into Apache Doris"
 description: >-
   Five questions check the load-method selection, quality, persistence,
   continuous-consumption, and retry decisions introduced in Module 3. Each

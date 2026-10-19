@@ -1,4 +1,4 @@
-title: 'Module 5 Quiz: Partition and Bucket Choices'
+title: "Module 5 Quiz: Partitioning and Bucketing for Observability Data"
 description: Six questions check whether daily, monthly, hourly, dynamic, and automatic partitioning answer
   different retention and analysis needs, and whether HASH, RANDOM, and automatic bucket choices match
   the access pattern.

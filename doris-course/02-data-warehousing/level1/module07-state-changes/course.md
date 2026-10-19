@@ -320,7 +320,7 @@ For additional operations, see [Level 1 Extension Labs](../extensions/README.md)
 - Soft deletion, SQL DELETE, and physical reclamation differ; retain business facts for refunds rather than deleting orders as a substitute.
 - After recovery, verify the 11/18/19 row counts, complete records, and independent business transactions: payments 250.00, refunds 150.00, and net receipts 100.00.
 
-## Knowledge Quiz 7: Resolve Out-of-Order Events, Preserve History, and Replay Recoverably
+## Knowledge Quiz 7: Data Updates, Deletion, and Event Replay
 
 After completing the course notes and lab, open [Quiz 7](quiz07_state_changes_and_replay.ipynb).
 The quiz contains five single-choice questions and requires no Doris or external services; read the explanations after submitting.

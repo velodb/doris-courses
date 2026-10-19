@@ -682,6 +682,15 @@ In Module 6, you will enrich the event rows with product attributes. Continue
 to state the result grain before interpreting a metric, because duplicate or
 unmatched Join keys can change which rows reach the next analytical stage.
 
+## Quiz 5: Analyzing Data in Apache Doris
+
+Complete the interactive knowledge check after finishing the module and
+Lab 5. It runs without a Doris sandbox.
+
+[Open Quiz 5 — Analyzing Data in Apache Doris](quiz05_analytical_query_semantics.ipynb)
+
+Next module: [Module 6: Joining Data in Apache Doris](../module06-joining/course.md).
+
 ## Official references
 
 - Function categories: [SQL Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/), [Scalar Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/scalar-functions/), [Aggregate Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/aggregate-functions/), [Combinators](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/), and [AI Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/ai-functions/overview/).

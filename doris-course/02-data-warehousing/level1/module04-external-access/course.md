@@ -1,4 +1,4 @@
-# Module 4: Joining lake tables and internal tables
+# Module 4: Querying External Data and Joining Lake Tables
 
 | Course Information | Details |
 | --- | --- |
@@ -206,10 +206,12 @@ See the [Level 1 extension labs](../extensions/README.md) for additional exercis
 - Duplicate dimension keys multiply JOIN results, while missing keys drop rows from inner joins; check row counts, amounts, and detail records together.
 - Verify direct lake-table queries, join results, and the internal table after loading separately; this sample has ten orders and a pre-tax amount of 12220.60 in each case.
 
-## Knowledge Quiz 4: Joining lake tables and internal tables
+## Knowledge Quiz 4: Querying External Data and Joining Lake Tables
 
 After completing the reading and lab, open [Quiz 4](quiz04_internal_files_and_lake_tables.ipynb).
 The quiz contains five single-choice questions and does not require Doris or external services; read the answer explanations after submitting.
+
+Next module: [Module 5: Batch and Continuous Data Ingestion](../module05-ingestion/course.md).
 
 ## Official References
 

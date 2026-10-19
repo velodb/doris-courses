@@ -257,10 +257,12 @@ See the [Level 1 extension labs](../extensions/README.md) for additional operati
 - Keep data, table structure, and configuration consistent when comparing batches. Both tables in this lab must contain ten rows and 12220.60.
 - Plans, metadata, and runtime statistics serve different purposes; small samples and a single observation cannot prove a fixed performance gain.
 
-## Knowledge Quiz 2: Observe Storage and Write Batches
+## Knowledge Quiz 2: Doris Storage Architecture and Write Mechanisms
 
 After completing the notes and lab, open [Quiz 2](quiz02_storage_and_write_batches.ipynb).
 The quiz contains five single-choice questions and does not depend on Doris or external services. Read the answer explanations after submitting.
+
+Next module: [Module 3: Doris Table Models, Partitioning, and Bucketing](../module03-table-design/course.md).
 
 ## Official References
 

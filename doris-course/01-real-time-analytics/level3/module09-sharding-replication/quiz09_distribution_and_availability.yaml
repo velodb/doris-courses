@@ -1,4 +1,4 @@
-title: "Module 9 Quiz: Distribution and Availability"
+title: "Module 9 Quiz: Sharding, Replication, and Distributed Execution in Apache Doris"
 description: >-
   Six independent scenarios check whether you can reason about Frontend entry
   paths, Backend replicas, distributed scans, failure recovery, and Join data

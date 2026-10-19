@@ -763,6 +763,15 @@ execution. Evaluate every structure against its storage, write, refresh, and
 operating costs. Module 9 next moves from local access choices to
 multi-BE placement, replica selection, and distributed execution.
 
+## Quiz 8: Accelerating Queries in Apache Doris
+
+Complete the interactive knowledge check after finishing the module and
+Lab 8. It runs without a Doris sandbox.
+
+[Open Quiz 8 — Accelerating Queries in Apache Doris](quiz08_acceleration_choices.ipynb)
+
+Next module: [Module 9: Sharding, Replication, and Distributed Execution in Apache Doris](../module09-sharding-replication/course.md).
+
 ## Official references
 
 - Materialized-view selection: [Materialized View](https://doris.apache.org/docs/4.x/query-acceleration/materialized-view/intro/) and [Synchronous Materialized View](https://doris.apache.org/docs/4.x/query-acceleration/materialized-view/sync-materialized-view/)

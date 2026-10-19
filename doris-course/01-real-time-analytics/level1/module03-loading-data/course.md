@@ -668,12 +668,14 @@ the Level 1 course.
 - Completion evidence differs by method. Always pair control-plane status with
   target-table validation.
 
-## Quiz 3: Load Methods and Retry Safety
+## Quiz 3: Loading Data into Apache Doris
 
-Complete the five-question interactive knowledge check after finishing the
-module and Lab 3. It runs without Doris, Kafka, or S3 credentials.
+Complete the interactive knowledge check after finishing the module and
+Lab 3. It runs without Doris, Kafka, or S3 credentials.
 
-[Open Quiz 3 — Load Methods and Retry Safety](quiz03_load_methods_and_retry_safety.ipynb)
+[Open Quiz 3 — Loading Data into Apache Doris](quiz03_load_methods_and_retry_safety.ipynb)
+
+Next: this is the last module of Level 1. Level 2 starts with [Module 4: Modeling Data in Apache Doris](../../level2/module04-modeling/course.md).
 
 ## Official references
 

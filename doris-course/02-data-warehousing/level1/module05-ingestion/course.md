@@ -591,10 +591,12 @@ See [Level 1 extension labs](../extensions/README.md) for additional operations,
 - The same label identifies same-batch requests within a limited period, business keys identify events, and job progress supports recovery; none replaces the others.
 - Historical order lines, account receipts, and simulated orders have different grains and sources; preserve WWI history rather than forcing account receipts onto individual orders.
 
-## Knowledge Quiz 5: Batch loading, failures, and retries
+## Knowledge Quiz 5: Batch and Continuous Data Ingestion
 
 After completing the reading and lab, open [Quiz 5](quiz05_load_methods_and_retry_safety.ipynb).
 The quiz has five single-choice questions and requires neither Doris nor external services; read the explanations after submitting.
+
+Next module: [Module 6: Data Quality and Schema Validation](../module06-data-quality/course.md).
 
 ## Official References
 

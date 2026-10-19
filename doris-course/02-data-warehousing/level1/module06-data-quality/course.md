@@ -280,10 +280,12 @@ For additional operations, see [Level 1 Extension Labs](../extensions/README.md)
 - Totals, uniqueness, relationships, amounts, and field-by-field comparisons complement each other; one total cannot prove data is complete and correct.
 - Known duplicates must cause checks to fail, and restored data must pass again; a fixed cutoff is not a freshness metric for a running system.
 
-## Knowledge Quiz 6: Preserve Input, Route Rejections, and Automate Validation
+## Knowledge Quiz 6: Data Quality and Schema Validation
 
 After completing the course notes and lab, open [Quiz 6](quiz06_data_quality_and_rejection.ipynb).
 The quiz contains five single-choice questions and requires no Doris or external services; read the explanations after submitting.
+
+Next module: [Module 7: Data Updates, Deletion, and Event Replay](../module07-state-changes/course.md).
 
 ## Official References
 

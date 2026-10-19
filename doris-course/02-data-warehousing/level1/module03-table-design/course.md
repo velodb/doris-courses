@@ -1,4 +1,4 @@
-# Module 3: Doris table models, partitioning, and bucketing
+# Module 3: Doris Table Models, Partitioning, and Bucketing
 
 | Course Information | Details |
 | --- | --- |
@@ -217,10 +217,12 @@ See the [Level 1 extension labs](../extensions/README.md) for additional exercis
 - Date conditions and Hash-key conditions can prune at different levels; use EXPLAIN to inspect the partitions and Tablets actually selected.
 - Verify detail records and amounts before discussing efficiency; a correctly executed SUM does not mean the metric definition is correct, and a smaller plan does not mean a speedup has been measured.
 
-## Knowledge Quiz 3: Model semantics, partitioning, and bucketing
+## Knowledge Quiz 3: Doris Table Models, Partitioning, and Bucketing
 
 After completing the reading and lab, open [Quiz 3](quiz03_models_and_data_distribution.ipynb).
 The quiz contains five single-choice questions and does not require Doris or external services; read the answer explanations after submitting.
+
+Next module: [Module 4: Querying External Data and Joining Lake Tables](../module04-external-access/course.md).
 
 ## Official References
 

@@ -1,4 +1,4 @@
-title: 'Module 1 Quiz: Observability Foundations in the DOG Stack'
+title: "Module 1 Quiz: Observability Foundations in the DOG Stack"
 description: Six questions check whether you can choose the right telemetry signal, assign responsibilities
   across Doris, OpenTelemetry, and Grafana (DOG), and judge whether the available evidence proves that
   telemetry reached the expected destination.

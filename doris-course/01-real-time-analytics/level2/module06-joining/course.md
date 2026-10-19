@@ -766,6 +766,15 @@ Profile reports one execution's rows and work. Keep those evidence levels
 separate when diagnosing or tuning a Join. Module 7 next applies the same
 contract-first reasoning to changing current-state rows and deleting data.
 
+## Quiz 6: Joining Data in Apache Doris
+
+Complete the interactive knowledge check after finishing the module and
+Lab 6. It runs without a Doris sandbox.
+
+[Open Quiz 6 — Joining Data in Apache Doris](quiz06_join_semantics_and_execution.ipynb)
+
+Next module: [Module 7: Updating and Deleting Data in Apache Doris](../module07-updating-deleting/course.md).
+
 ## Official references
 
 - Logical and physical Join behavior: [Doris Joins](https://doris.apache.org/docs/4.x/query-data/join/) and [SELECT Join syntax](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/SELECT/).

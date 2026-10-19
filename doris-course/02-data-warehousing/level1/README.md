@@ -18,13 +18,13 @@ SQL, APIs, and product names remain unchanged; the course topics and learning or
 
 | Order | Module and Business Questions | Hands-on Lab | Knowledge Quiz |
 | --- | --- | --- | --- |
-| Module 1 | [Introduction to Doris and Basic SQL](module01-introduction/course.md) | [Lab 1](module01-introduction/lab01_connect_and_query.ipynb) | [Quiz 1](module01-introduction/quiz01_doris_fundamentals.ipynb) |
+| Module 1 | [Meet Doris and Analyze Your First Orders](module01-introduction/course.md) | [Lab 1](module01-introduction/lab01_connect_and_query.ipynb) | [Quiz 1](module01-introduction/quiz01_doris_fundamentals.ipynb) |
 | Module 2 | [Doris Storage Architecture and Write Mechanisms](module02-architecture/course.md) | [Lab 2](module02-architecture/lab02_observe_storage.ipynb) | [Quiz 2](module02-architecture/quiz02_storage_and_write_batches.ipynb) |
 | Module 3 | [Doris Table Models, Partitioning, and Bucketing](module03-table-design/course.md) | [Lab 3](module03-table-design/lab03_models_and_pruning.ipynb) | [Quiz 3](module03-table-design/quiz03_models_and_data_distribution.ipynb) |
 | Module 4 | [Querying External Data and Joining Lake Tables](module04-external-access/course.md) | [Lab 4](module04-external-access/lab04_query_iceberg.ipynb) | [Quiz 4](module04-external-access/quiz04_internal_files_and_lake_tables.ipynb) |
 | Module 5 | [Batch and Continuous Data Ingestion](module05-ingestion/course.md) | [Lab 5](module05-ingestion/lab05_stream_load.ipynb) | [Quiz 5](module05-ingestion/quiz05_load_methods_and_retry_safety.ipynb) |
 | Module 6 | [Data Quality and Schema Validation](module06-data-quality/course.md) | [Lab 6](module06-data-quality/lab06_validate_orders.ipynb) | [Quiz 6](module06-data-quality/quiz06_data_quality_and_rejection.ipynb) |
-| Module 7 | [Data Updates, Deletes, and Event Replay](module07-state-changes/course.md) | [Lab 7](module07-state-changes/lab07_current_state_and_replay.ipynb) | [Quiz 7](module07-state-changes/quiz07_state_changes_and_replay.ipynb) |
+| Module 7 | [Data Updates, Deletion, and Event Replay](module07-state-changes/course.md) | [Lab 7](module07-state-changes/lab07_current_state_and_replay.ipynb) | [Quiz 7](module07-state-changes/quiz07_state_changes_and_replay.ipynb) |
 
 Follow Modules 1–7 in order. Module 6 completes data quality validation, and Module 7 uses the valid orders to handle state changes and event replay. If you need to skip or repeat a Lab, [First-time setup](../GETTING_STARTED.md#follow-the-data-dependencies) lists which tables each Lab needs.
 

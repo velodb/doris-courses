@@ -1,4 +1,4 @@
-title: 'Module 4 Quiz: Observability Table Models'
+title: "Module 4 Quiz: Table Models for Observability Data"
 description: Six questions check whether you can choose DUPLICATE, AGGREGATE, and UNIQUE models for raw
   telemetry, pre-aggregated metrics, and alert deduplication, and predict how rows combine under each
   model.

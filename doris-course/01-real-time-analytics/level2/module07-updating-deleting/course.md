@@ -307,6 +307,15 @@ Predicate DELETE fits a SQL-defined set, Delete Sign fits incoming Unique Keys,
 and `TRUNCATE` or `INSERT OVERWRITE` fits complete lifecycle scopes. Published
 changes affect query visibility before Compaction necessarily reclaims storage.
 
+## Quiz 7: Updating and Deleting Data in Apache Doris
+
+Complete the interactive knowledge check after finishing the module and
+Lab 7. It runs without a Doris sandbox.
+
+[Open Quiz 7 — Updating and Deleting Data in Apache Doris](quiz07_state_changes_and_deletion.ipynb)
+
+Next: this is the last module of Level 2. Level 3 starts with [Module 8: Accelerating Queries in Apache Doris](../../level3/module08-query-acceleration/course.md).
+
 ## Official references
 
 - [Data Update and Delete](https://doris.apache.org/docs/4.x/key-features/data-update-delete/) and [Unique Key](https://doris.apache.org/docs/4.x/key-features/unique-key/)

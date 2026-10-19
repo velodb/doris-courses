@@ -1,4 +1,4 @@
-title: 'Module 2 Quiz: Ingesting Observability Data'
+title: "Module 2 Quiz: Ingesting Observability Data"
 description: Six questions check how logs, metrics, and traces move through OpenTelemetry (OTel) pipelines
   into Doris, including pull versus push, batching, retry boundaries, and what a seemingly successful
   trace export actually proves.

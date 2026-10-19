@@ -1,4 +1,4 @@
-title: 'Module 7 Quiz: Analysis and Litefuse'
+title: "Module 7 Quiz: Trace Analysis and Litefuse"
 description: Six questions check whether you can choose window and aggregate operations for trace analysis,
   interpret percentile evidence, and place Litefuse in an application-observability workflow without confusing
   it with the DOG stack.
