@@ -759,7 +759,7 @@ eligible mistaken deletion?
 
 ## Lab 9: Observe Sharding, Replication, and Distributed Execution
 
-Open [Lab 9 — Observe Sharding, Replication, and Distributed Execution](lab9_observe_sharding_and_replication.ipynb)
+Open [Lab 9 — Observe Sharding, Replication, and Distributed Execution](lab09_observe_sharding_and_replication.ipynb)
 after completing Lab 8. It uses an isolated Module 9 Compose project rather
 than the single-node `doris` container from Modules 1–8.
 

@@ -707,7 +707,7 @@ can review the evidence and decide whether the tradeoff fits its workload.
 
 ## Lab 8: Accelerate Queries with Views and Indexes
 
-Open [Lab 8 — Accelerate Queries with Views and Indexes](lab8_accelerate_queries.ipynb)
+Open [Lab 8 — Accelerate Queries with Views and Indexes](lab08_accelerate_queries.ipynb)
 after completing Labs 4 and 6. It reads the query-ready event table and product
 dimension, then creates only Module 8 objects in the `doris_course` Database.
 The source tables remain unchanged.

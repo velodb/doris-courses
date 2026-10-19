@@ -7,7 +7,7 @@
 | Prerequisites | Level 1 orders and customers; Module 8 views |
 | Suggested time | About 113 minutes: reading 45, Lab 60, Quiz 8; first-start image downloads/builds are additional |
 
-[Level 2 contents](../README.md) · [Open Lab 9](lab9_modeling_and_joins.ipynb) · [Open Quiz 9](quiz9_modeling_and_joins.ipynb)
+[Level 2 contents](../README.md) · [Open Lab 9](lab09_modeling_and_joins.ipynb) · [Open Quiz 9](quiz09_modeling_and_joins.ipynb)
 
 ## Module Goal
 
@@ -195,7 +195,7 @@ A Runtime Filter is produced from join-side values during execution and can remo
 
 ## Hands-on Lab: Order Facts and Customer Dimensions
 
-Open [Lab 9](lab9_modeling_and_joins.ipynb) after completing Level 1 Labs 5 and 6 in the same course database. The Lab creates its own `_l2` fact and dimension tables, joins them, checks missing customers, reconciles rows and amounts, and reads the plan. A read-only CTE then removes customer 2 and duplicates customer 1 to expose both join failure modes without changing the dimension table.
+Open [Lab 9](lab09_modeling_and_joins.ipynb) after completing Level 1 Labs 5 and 6 in the same course database. The Lab creates its own `_l2` fact and dimension tables, joins them, checks missing customers, reconciles rows and amounts, and reads the plan. A read-only CTE then removes customer 2 and duplicates customer 1 to expose both join failure modes without changing the dimension table.
 
 | Input or result | Expected in this sample |
 | --- | --- |
@@ -222,7 +222,7 @@ Repair the Lab's flawed CTE in a new query cell so every fact order has exactly 
 
 ## Knowledge Quiz
 
-Open [Quiz 9](quiz9_modeling_and_joins.ipynb) to check grain, table-model choice, join cardinality, missing dimensions, plan reading, and replayable warehouse layers.
+Open [Quiz 9](quiz09_modeling_and_joins.ipynb) to check grain, table-model choice, join cardinality, missing dimensions, plan reading, and replayable warehouse layers.
 
 ## Official References
 
