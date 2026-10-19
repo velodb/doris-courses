@@ -364,6 +364,18 @@ def connect_doris(host: str = "127.0.0.1", port: int = 9030):
                            cursorclass=pymysql.cursors.DictCursor)
 
 
+class ReturnLater(RuntimeError):
+    """Stop a cell whose observation needs the real clock to advance first.
+
+    The card shown before raising says when to come back. Raising keeps
+    "Run All" from continuing into checks that cannot pass yet, and IPython
+    renders this exception as one line instead of a traceback.
+    """
+
+    def _render_traceback_(self) -> list[str]:
+        return [f"Stopped on purpose: {self}"]
+
+
 def mask_secrets(text: str, secrets: Sequence[str] = ()) -> str:
     for secret in secrets:
         if secret:
@@ -4112,10 +4124,12 @@ LIMIT 10
             minutes = max(1, int(remaining.total_seconds() // 60) + 1)
             card(f"Return at or after {expiry_at:%Y-%m-%d %H:%M:%S} "
                  f"(Asia/Shanghai); about {minutes} minute(s) remain until the "
-                 "whole hour becomes ineligible.",
+                 "whole hour becomes ineligible. Keep the container running and "
+                 "rerun this cell then; do not rerun Section 2.",
                  "info", "The hourly retention boundary has not arrived")
-            raise RuntimeError("The marked Partition is still inside the hourly window. "
-                               "Return after the displayed hour boundary.")
+            raise ReturnLater(
+                f"rerun this cell at or after {expiry_at:%Y-%m-%d %H:%M} (Asia/Shanghai)."
+            )
 
         partitions = self._metadata_rows(
             f"SHOW PARTITIONS FROM `{table_name}` ORDER BY PartitionName"
