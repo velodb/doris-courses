@@ -589,6 +589,30 @@ class AlignmentTest(unittest.TestCase):
         self.assertEqual(frame.iloc[0]["amount"], Decimal("100.00"))
         show.assert_called_once()
 
+    def test_sql_keeps_nullable_integers_and_reports_errors(self):
+        import pymysql
+
+        lab = WarehouseLab.__new__(WarehouseLab)
+        cursor = Mock()
+        cursor.description = [("customer_id",)]
+        cursor.fetchall.return_value = [(42,), (None,)]
+        manager = Mock()
+        manager.__enter__ = Mock(return_value=cursor)
+        manager.__exit__ = Mock(return_value=False)
+        lab.connection = Mock()
+        lab.connection.cursor.return_value = manager
+        with patch("dw_course.runtime.in_notebook", return_value=True), patch("dw_course.runtime.show_sql"), patch("dw_course.runtime.show_frame"):
+            frame = lab.sql("SELECT customer_id FROM orders_clean")
+        self.assertEqual(str(frame["customer_id"].dtype), "Int64")
+        self.assertEqual(frame["customer_id"].iloc[0], 42)
+        cursor.execute.side_effect = pymysql.err.ProgrammingError(1105, "errCode = 2, detailMessage = Unknown table 'missing'")
+        with patch("dw_course.runtime.in_notebook", return_value=True), patch("dw_course.runtime.show_sql"), \
+             patch("dw_course.runtime.report_sql_error") as report:
+            with self.assertRaises(pymysql.err.ProgrammingError):
+                lab.sql("SELECT * FROM missing", title="Missing table")
+        report.assert_called_once()
+        self.assertEqual(report.call_args.args[0], "Missing table")
+
     def test_compose_scope_and_persistence(self):
         from dw_course.docker_runtime import COMPOSE_FILE, CONNECTION, PROJECT
         config = yaml.safe_load(COMPOSE_FILE.read_text())
