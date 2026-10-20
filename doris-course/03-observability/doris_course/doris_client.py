@@ -861,9 +861,9 @@ demo_compose ps
         """Wait until the demo's flag service serves ``variant`` for ``flag``, then show the flag.
 
         Set the flag in the demo's flag page, {demo_url}/feature. This asks the
-        flag service, flagd, through the storefront's proxy, as the demo's
-        services do; the request is shown first, so that it can be repeated
-        with curl.
+        flag service, flagd, through the storefront's proxy, as the storefront's
+        pages do in the browser; the request is shown first, so that it can be
+        repeated with curl.
         """
         url = self.demo_url + FLAGD_RESOLVE_ALL_PATH
         show_sql(
