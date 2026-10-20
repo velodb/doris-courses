@@ -405,11 +405,28 @@ class NotebookTests(unittest.TestCase):
         # Lab 7 leads to the optional Lab.
         self.assertIn(OPTIONAL7.name, markdown_text(LAB7))
 
+    def test_module7_measures_the_incident_with_sql(self):
+        cells = code_cells(LAB7)
+        origin = next(cell for cell in cells if "NOT EXISTS" in cell)
+        # A service where the failure starts: its server span failed, and none of its own calls did.
+        self.assertIn("s.span_kind = 'SPAN_KIND_SERVER'", origin)
+        self.assertIn("c.service_name = s.service_name", origin)
+        self.assertIn("c.span_kind = 'SPAN_KIND_CLIENT'", origin)
+        # The newest orders may still miss spans.
+        self.assertIn("end_time < UTC_TIMESTAMP() - INTERVAL 1 MINUTE", origin)
+        for condition in FAILED_ORDER:
+            self.assertIn(condition, origin)
+        window = next(cell for cell in cells if "ROWS BETWEEN 9 PRECEDING AND CURRENT ROW" in cell)
+        self.assertIn("ROW_NUMBER() OVER (ORDER BY timestamp)", window)
+        red = next(cell for cell in cells if "PERCENTILE_APPROX(duration, 0.99)" in cell)
+        self.assertIn("timestamp >= '{INCIDENT_START}'", red)
+
     def test_span_durations_are_converted_from_microseconds(self):
         # The Doris exporter stores duration in microseconds (end_time minus timestamp).
         text = "\n".join(code_cells(LAB7))
         self.assertNotIn("1000000", text)
-        self.assertIn("duration / 1000.0", text)
+        self.assertRegex(text, r"PERCENTILE_APPROX\(duration, 0\.\d+\) / 1000\.0")
+        self.assertIn("MAX(duration) / 1000.0", text)
 
 
 if __name__ == "__main__":
