@@ -69,8 +69,9 @@ class NotebookTests(unittest.TestCase):
         self.assertLess(flag, orders)
         for condition in FAILED_ORDER:
             self.assertIn(condition, cells[orders])
-        # The load generator places a few orders a minute: the first failure can take minutes.
-        self.assertIn("timeout_seconds=300", cells[orders])
+        # The load generator places one or two orders a minute: the first failure can take minutes
+        # (107 seconds after the flag in a clean run).
+        self.assertIn("timeout_seconds=600", cells[orders])
 
     def test_module2_follows_one_failed_order_through_the_three_tables(self):
         cells = code_cells(LAB2)
