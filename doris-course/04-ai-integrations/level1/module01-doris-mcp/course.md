@@ -3,33 +3,33 @@
 | Course information | Value |
 | --- | --- |
 | Course | AI Integrations with Apache Doris |
-| Product baseline | Apache Doris 4.1.3 |
-| Integration baseline | Apache Doris MCP Server 1.0.0 |
-| MCP exposure | Hierarchical tools over local stdio |
-| Estimated time | About 85 minutes: reading 25, Lab and Host setup 50 (including about 3 minutes of waiting for Doris), quiz 10 |
+| Doris | Apache Doris 4.1.3 |
+| MCP Server | Apache Doris MCP Server 1.0.0, hierarchical tools over local stdio |
+| Estimated time | About 90 minutes: reading 30, Lab and Host setup 50 (including about 3 minutes of waiting for Doris), quiz 10 |
 
 ## Module goal
 
-An analytics team already uses Apache Doris for event analysis. Its users now
-want to ask an AI agent about the same data without copying schemas into a
-prompt, giving the model an administrator account, or exposing the local
-database over a new network service.
+An analytics team keeps its storefront events in Apache Doris. Its users want
+to ask an AI agent about that data without pasting schemas into prompts,
+without giving the model an administrator account, and without publishing the
+database on a new network service.
 
-This module connects an AI agent to the official Apache Doris MCP Server. You
-need **one** of these Hosts; connecting more of them is optional:
+In this module you connect an AI agent to the official Apache Doris MCP Server
+on your own computer. You need **one** of these MCP Hosts; connecting more is
+optional:
 
 - Claude Desktop;
 - Cursor;
 - VS Code with GitHub Copilot;
-- Codex CLI or the Codex desktop experience.
+- Codex: the CLI, the IDE extension, or the ChatGPT desktop app.
 
-Each Host starts a local MCP Server process over standard input and output.
-Every process connects to the same single-Frontend (FE), single-Backend (BE)
-Doris sandbox, which this module starts for you. The complete verification runs
-once, in any one connected Host. An additional Host only needs a connection
-smoke test rather than repeating the same analysis.
+Each Host starts the Server as a local process and talks to it over standard
+input and output. The Server reads from a single-Frontend (FE),
+single-Backend (BE) Doris sandbox that the module starts for you. You run the
+complete verification once, in one Host; another Host only needs its
+connection check.
 
-This lesson comes with a Lab notebook,
+The lesson comes with a Lab notebook,
 [Connect an Agent to Doris and Check Its Evidence](lab01_connect_agent_to_doris.ipynb).
 The Lab starts the sandbox, loads the course data, creates the read-only
 account, and checks the launcher. You then connect a Host and return to the Lab
@@ -80,49 +80,28 @@ anyway, the sandbox contains it:
 Each vendor's free tier, if it has one, may limit how many requests you can
 make; the three conversation steps in section 1.6 need only a few. Your prompts
 and the tool results go to the Host's model service, outside your computer.
-Section 1.8 explains what that means for the data you let an agent read.
+Section 1.7 explains what that means for the data you let an agent read.
 
-## Follow one local analytics connection
+## How the module runs
 
-The team begins with an existing local Doris dataset. It adds one boundary at a
-time:
+| Lesson | Lab | You end with |
+| --- | --- | --- |
+| 1.1–1.2: the four layers and the Server's tools | — | A map of who does what |
+| 1.3: the course environment | Sections 1–2 | The sandbox and the `ai_course.events` table |
+| 1.4: the protected entry point | Sections 3–4 | `mcp_reader`, `.env.mcp.local`, and a launcher that works |
+| 1.5: connect one Host | Section 4, `lab.host_configs()` | A Host that shows `doris` as connected |
+| 1.6: three questions in one conversation | Sections 5–7 | An answer checked against Doris and the audit trail |
+| 1.7: safety and troubleshooting | Section 8 | A failure you caused, found, and fixed |
 
-```text
-start the module's Doris sandbox and load the events table
-    -> create a least-privilege Doris identity
-    -> prepare one protected stdio launcher
-    -> register that launcher in at least one MCP Host
-    -> verify the active connection in that Host
-    -> ground the conversation in the real events schema
-    -> execute one bounded read-only aggregation
-    -> inspect one bounded BE memory view
-    -> preserve facts, limitations, and approval boundaries
-```
-
-Each section turns a requirement into a decision:
-
-| Section | Requirement scenario | Decision developed | Evidence produced |
-| --- | --- | --- | --- |
-| **1.1 Separate the four responsibilities** | The model, tool protocol, server process, and database are easy to collapse into one component. | Assign planning, transport, validation, and execution to the correct layer. | A local process and data-flow diagram. |
-| **1.2 Read the capability map** | The Server exposes more capabilities than one lesson should demonstrate. | Introduce all eight domains, then select three children for the guided path. | A bounded domain map and selected-tool table. |
-| **1.3 Prepare the course environment** | An agent needs a Doris with a known table and known numbers to report. | Start the module's own sandbox and data, or point the Lab at your own Doris 4.x. | One FE, one BE, three loopback ports, and the verified `events` table. |
-| **1.4 Prepare the stdio entry point** | Each Host configuration would otherwise need its own copy of the database password. | Put the route in one ignored local environment file and expose one launcher path. | A protected environment file and launcher contract. |
-| **1.5 Connect a Host** | Each product stores local MCP configuration differently. | Register the shared launcher in at least one Host and verify only its product-specific connection state. | A connected state in each Host you use. |
-| **1.6 Verify in one Host** | A connection alone does not prove useful or bounded tool behavior. | Ground in metadata, query read-only data, then inspect one memory view. | Three tool traces and a directly reproducible SQL result. |
-| **1.7 Interpret the trace** | A polished answer can hide missing or partial evidence. | Read domain discovery, child execution, source, and warning fields separately. | An annotated trace and an evidence checklist. |
-| **1.8 Keep the boundary safe** | Path, port, permission, and capability errors can look similar. | Troubleshoot from Doris outward without broadening privileges. | A symptom-to-check matrix. |
-
-The workflow uses bounded evidence from a local teaching system. It does not
-prove production availability, multi-node fault tolerance, or universal agent
-accuracy.
-
----
+Everything runs on a local teaching system. It shows how to read an agent's
+evidence; it does not prove production availability, multi-node fault
+tolerance, or the accuracy of agents in general.
 
 ## 1.1 Separate the Host, Client, Server, and Database
 
 Model Context Protocol (MCP) gives an AI Host a standard way to discover and
-call tools. It does not merge the Host, model, tool server, and database into
-one trusted process.
+call tools. It does not merge the Host, the model, the tool server, and the
+database into one trusted process.
 
 ![The MCP Host and its MCP Client, the Doris MCP Server, and the Doris sandbox all run on your computer. The Client talks to the Server over stdio, and the Server reaches Doris on 127.0.0.1 ports 39030, 38030, and 38040. Only the Host's connection to its model provider leaves the computer.](images/mcp-local-architecture.svg)
 
@@ -130,100 +109,60 @@ All four layers run on your computer, and no layer opens a network service for
 the others: the Host reaches the Server through a child process's standard
 input and output, and the Server reaches Doris on loopback ports. One
 connection does leave the computer: the Host sends your prompts and the tool
-results to its model provider. Section 1.8 comes back to it.
+results to its model provider. Section 1.7 comes back to it.
 
-### The Host decides when to request a tool
+| Layer | What it does | What it does not do |
+| --- | --- | --- |
+| MCP Host | Keeps the conversation, calls the model, decides whether a question needs a tool, and can ask you to approve a call. | Check SQL or Doris privileges. |
+| MCP Client, inside the Host | Starts the launcher as a child process and carries MCP messages over its standard input and output. Four Hosts start four Server processes. | Share one Server process between Hosts. |
+| Doris MCP Server | Publishes typed tools, accepts only read-only requests within its result limits, uses the configured Doris route, and reports evidence that is unavailable. | Replace Doris authentication or privileges. |
+| Apache Doris | Authenticates the account, applies its grants, runs the metadata and SQL requests, and reports metrics. | Interpret the result for you. |
 
-The Host owns the conversation and model invocation. It may decide that a
-question can be answered without a tool, ask the learner to approve a tool, or
-request one of the schemas published by a connected Server. A Host-level tool
-approval is therefore useful even when every Doris tool is read-only.
-
-### The MCP Client owns the local process connection
-
-For stdio, the Client starts a command as a child process and exchanges MCP
-messages through that process's standard input and output. Opening four Hosts
-at the same time normally creates four Server child processes. They reuse the
-same implementation and launcher, but they are not one shared daemon.
-
-### The Server constrains the request
-
-The Doris MCP Server publishes typed inputs and outputs, performs read-only and
-result-bound checks, selects configured Doris routes, and reports unavailable
-evidence explicitly. It does not replace Doris authentication or RBAC.
-
-### Doris remains the source of truth
-
-Doris decides which catalogs, databases, tables, rows, and metadata the
-configured identity can read. The final SQL result comes from Doris, not from
-the model's training data. The agent's explanation remains an interpretation
-of that result.
-
-Keep these conclusions separate:
+The final numbers come from Doris, not from the model; the agent's explanation
+is an interpretation of them. Keep these conclusions separate:
 
 | Observation | What it establishes | What it does not establish |
 | --- | --- | --- |
-| The Host shows `doris` as connected | The Host initialized a local MCP Server process. | Every child capability is callable. |
-| A child call succeeds | The current route, permission, and capability checks passed for that call. | Every number in the prose explanation is correct. |
-| Doris returns rows | The SQL produced those rows under the configured identity. | The query represents the intended business population. |
-| A monitoring child reports `partial` | Some bounded evidence is available and some is missing. | The missing value is zero or safe to infer. |
+| The Host shows `doris` as connected | The Host started a local MCP Server process. | Every child capability is callable. |
+| A child call succeeds | The route, the account's permission, and the capability checks passed for that call. | Every number in the prose explanation is correct. |
+| Doris returns rows | The SQL produced those rows under the configured account. | The query represents the intended business population. |
+| A monitoring child reports `partial` | Some evidence is available and some is missing. | The missing value is zero or safe to infer. |
 
 ## 1.2 Read the Doris MCP Capability Map
 
-Apache Doris MCP Server 1.0 organizes its built-in read-only catalog into eight
-top-level domains. In hierarchical mode, the Host first calls a domain to
-discover authorized children, exact schemas, runtime availability, and a
-`manifest_version`. It then calls the same domain with one exact child request.
+Doris MCP Server 1.0 organizes its read-only tools into eight top-level
+domains. In hierarchical mode, the default, a Host first calls a domain with
+`{}`. The answer, a manifest, lists the domain's children, their exact input
+schemas, whether each one is callable now, and a `manifest_version`. The Host
+then calls the same domain again with one `child_tool`, its `arguments`, and
+that `manifest_version`. The Host builds both calls from the published schemas;
+you never type them. Section 1.6 shows real ones.
 
-| Domain | Capability summary | Example question |
+| Domain | What its children do | Example question |
 | --- | --- | --- |
-| `doris_catalog` | Navigate catalogs, databases, tables, schemas, indexes, and bounded size evidence. | Which columns and indexes belong to this table? |
-| `doris_query` | Execute bounded read-only SQL, explain plans, retrieve profiles, and diagnose query evidence. | What does this bounded aggregation return? |
-| `doris_cluster` | Inspect nodes, active tasks, memory, cache, compaction, workload groups, and other runtime state. | Which memory trackers are observable now? |
-| `doris_pipeline` | Inspect ingestion, materialized-view activity, data freshness, and bounded dependency evidence. | Is a Routine Load job progressing? |
-| `doris_search` | Run and inspect bounded text, vector, and hybrid retrieval. | Is the requested search index and vector shape valid? |
-| `doris_governance` | Analyze columns, storage, lineage, audit evidence, access patterns, and authorization mapping. | What quality or lineage evidence is available for this column? |
-| `doris_lakehouse` | Inspect external catalogs, lakehouse table metadata, and Variant columns. | Which snapshots or pushdown evidence are visible for this table? |
-| `doris_semantic` | Consume configured semantic or MetricFlow models and compile bounded metric requests. | Which reviewed metrics and dimensions are available? |
+| `doris_catalog` | Navigate catalogs, databases, tables, schemas, comments, indexes, and table sizes. | Which columns and indexes belong to this table? |
+| `doris_query` | Run read-only SQL, explain plans, read Query Profiles, and diagnose queries. | What does this aggregation return? |
+| `doris_cluster` | Inspect nodes, active tasks, memory, cache, compaction, and workload groups. | How much memory does the BE use now? |
+| `doris_pipeline` | Inspect ingestion jobs, materialized views, and data freshness. | Is a Routine Load job progressing? |
+| `doris_search` | Run and inspect text, vector, and hybrid retrieval. | Is the requested search index valid? |
+| `doris_governance` | Analyze columns, storage, lineage, audit records, and access patterns. | Who reads this table, and how often? |
+| `doris_lakehouse` | Inspect external catalogs, lakehouse tables, and Variant columns. | Which snapshots does this Iceberg table have? |
+| `doris_semantic` | Read configured semantic and MetricFlow models and compile metric requests. | Which reviewed metrics are available? |
 
-The reserved `doris_admin` surface is not registered. The built-in catalog is
-read-only; this module does not enable a changing or administrative tool.
+A child can be in the catalog and still report `callable: false`, with a
+reason code: the Doris version, a provider that is not configured, or, as you
+will see in section 1.6, an account that may not read what the child needs. No
+administration domain is registered. A Host that cannot do discovery can use
+the Server's flat mode instead, which lists all 55 children as separate tools;
+you set it with `MCP_TOOL_EXPOSURE_MODE` before the Server starts.
 
-### Progressive disclosure keeps the first tool list bounded
+The module uses three children, one per domain that it needs:
 
-Conceptually, discovery and execution have this shape:
-
-```json
-{}
-```
-
-The discovery response provides the child schema and a manifest version. A
-subsequent request has this shape:
-
-```json
-{
-  "child_tool": "<exact child name>",
-  "arguments": {},
-  "manifest_version": "<value returned by discovery>"
-}
-```
-
-The learner does not write this JSON during the guided conversation. The Host
-builds it from the published schema. The trace is expanded later so that the
-learner can see the two stages.
-
-### Select three children for one coherent path
-
-This module introduces all eight domains but demonstrates only three children:
-
-| Domain | Child | Reason for inclusion |
+| Domain | Child | Why |
 | --- | --- | --- |
-| `doris_catalog` | `get_table_context` | Prevent the agent from inventing the `events` schema. |
-| `doris_query` | `execute_query` | Produce one bounded, directly reproducible analytical result. |
-| `doris_cluster` | `get_memory_stats` | Show one resource-observation path and preserve partial evidence. |
-
-The course does not enumerate every child, execute a Query Profile, modify a
-pipeline, or turn the agent into a complete monitoring console.
+| `doris_catalog` | `get_table_context` | Keep the agent from inventing the `events` schema. |
+| `doris_query` | `execute_query` | Produce one result that you can reproduce directly. |
+| `doris_cluster` | `get_memory_stats` | Show how a monitoring child reports its source and warnings. |
 
 ## 1.3 Prepare the Course Environment
 
@@ -246,18 +185,12 @@ start the sandbox and load the course table:
 | Time range | `2026-03-01 00:10:30` through `2026-03-31 23:06:38` |
 
 The table is small on purpose: it gives an agent a real schema and real numbers
-to report, and the Lab loads it in seconds. Its columns and the table itself
-carry comments, which the agent can read as part of the table context. The
-ports belong to this course's range, so the sandbox can run next to the
-sandboxes of the other courses. To use other ports, set the variables before you
-start Jupyter; the Lab writes the ports it used into the MCP Server's
-environment file in section 3.
-
-The single-node topology is why this module does not use
-`get_cluster_overview` as a main demonstration. Reporting one FE and one BE
-would add little beyond the Lab's own environment check. `get_memory_stats`
-still has a useful purpose: it shows how a resource child reports current
-evidence, its source, and any partial-availability warning.
+to report, and the Lab loads it in seconds. The table and its columns carry
+comments, which the agent reads as part of the table context. The ports belong
+to this course's range, so the sandbox can run next to the sandboxes of the
+other courses. To use other ports, set the variables before you start Jupyter;
+the Lab writes the ports it used into the MCP Server's environment file in
+section 3.
 
 ### Use your own Doris instead (optional)
 
@@ -285,9 +218,10 @@ repair a stopped container, a missing table, or wrong data.
 
 ## 1.4 Prepare One Protected Local Stdio Entry Point
 
-Host configurations should not each contain a copy of the same Doris
-password. This module uses one ignored local environment file and one launcher.
-Every Host stores only the absolute launcher path.
+Every Host needs to start the Server with the Doris address and a password.
+Writing the password into each Host's configuration would scatter it across
+files. This module keeps it in one protected environment file next to one
+launcher, and every Host stores only the launcher's absolute path.
 
 All files of this section are in the module directory,
 `doris-course/04-ai-integrations/level1/module01-doris-mcp/`:
@@ -301,7 +235,7 @@ All files of this section are in the module directory,
 
 ### Create a least-privilege Doris identity
 
-Lab section 3 creates a dedicated identity with these statements, using the
+Lab section 3 creates a dedicated account with these statements, using the
 administrator account and a password that it generates:
 
 ```sql
@@ -315,31 +249,20 @@ TO 'mcp_reader'@'%';
 SHOW GRANTS FOR 'mcp_reader'@'%';
 ```
 
-The `%` host pattern allows the connection path used by the local Docker port
-mapping. The Doris ports themselves remain bound to `127.0.0.1`, so they are
-not published to the LAN. A production deployment should replace this teaching
-choice with its reviewed identity, network, and secret-management policy.
-
-Do not grant `ADMIN_PRIV`, `NODE_PRIV`, `LOAD_PRIV`, `ALTER_PRIV`,
-`CREATE_PRIV`, or `DROP_PRIV`. The MCP Server's read-only checks are a second
-boundary; they do not replace Doris RBAC.
-
-The Lab then verifies the new identity before any Agent uses it: as
-`mcp_reader`, it reads `ai_course.events`, and Doris denies a write, a table
-creation, and a read of the Doris audit log.
-
-### Use the pinned MCP Server from the course environment
-
-The course's `requirements.txt` installs `doris-mcp-server==1.0.0` into the
-course's virtual environment, together with Jupyter; the Lab's introduction
-shows the commands. There is nothing else to install. The Server command is
-`doris-mcp-server`. Do not substitute the separate `doris-mcp-client` command
-in a Host configuration.
+The `%` host pattern accepts connections that arrive through Docker's port
+mapping. The ports themselves listen only on `127.0.0.1`, so nothing is
+published to your network. Do not grant `ADMIN_PRIV`, `NODE_PRIV`, `LOAD_PRIV`,
+`ALTER_PRIV`, `CREATE_PRIV`, or `DROP_PRIV`: the Server's read-only checks are a
+second boundary, not a replacement for Doris privileges. The Lab then connects
+as `mcp_reader`: the read succeeds, and Doris denies a write, a table creation,
+and a read of the Doris audit log.
 
 ### Store the Doris route outside Host files
 
-Lab section 3 also writes `.env.mcp.local` next to the launcher, from
-`.env.mcp.local.example`, with the generated password:
+The course's `requirements.txt` installs `doris-mcp-server==1.0.0` into the
+course's virtual environment, so there is nothing else to install. Lab
+section 3 writes `.env.mcp.local` from `.env.mcp.local.example`, with the
+generated password:
 
 ```dotenv
 DORIS_HOST=127.0.0.1
@@ -358,14 +281,13 @@ MCP_TOOL_EXPOSURE_MODE=hierarchical
 
 Only your user can read the file (mode 600), and Git ignores it. Do not paste
 its contents into a screenshot, issue, chat message, or Host configuration.
-
-`DORIS_BE_HOSTS` contains the host allowlist. The web-server port remains in
-`DORIS_BE_WEBSERVER_PORT`. All destinations are operator configuration; a
-model request cannot supply an arbitrary FE or BE address.
+`DORIS_BE_HOSTS` lists the BE hosts that the Server may read metrics from, and
+the port is in `DORIS_BE_WEBSERVER_PORT`. Every address is your configuration;
+a model cannot make the Server connect anywhere else.
 
 To prepare the file by hand instead, for example for your own Doris, run these
-commands in the module directory, put the generated value between the single
-quotes of `DORIS_PASSWORD`, and use the same value in `CREATE USER`:
+commands, put the generated value between the single quotes of
+`DORIS_PASSWORD`, and use the same value in `CREATE USER`:
 
 ```bash
 cd doris-course/04-ai-integrations/level1/module01-doris-mcp
@@ -395,18 +317,13 @@ export LOG_FILE_PATH="${LOG_FILE_PATH:-$MCP_HOME/logs/doris_mcp_server.log}"
 exec "$COURSE_HOME/.venv/bin/doris-mcp-server" --transport stdio
 ```
 
-The launcher has four important properties:
-
-1. It resolves the environment file and the Server from its own absolute
-   location, so the checked-in script contains no developer-specific path.
-2. It keeps the password out of JSON and TOML Host files.
-3. It replaces the shell with the Server process by using `exec`.
-4. It leaves standard output exclusively for MCP protocol frames. The Server
-   writes its logs to `logs/` next to the launcher, whatever working directory
-   a Host starts it in, and the launcher's own messages go to standard error.
-
-Lab section 4 runs the launcher the way a Host does and lists the eight domain
-tools that the Server returns.
+It finds the environment file and the Server from its own location, so the
+script contains no path of your computer, and the Host files contain no
+password. `exec` replaces the shell with the Server, which keeps standard output
+for MCP messages only. The Server writes its logs to `logs/`, whatever working
+directory a Host starts it in; the launcher's own error messages, such as a
+missing environment file, go to standard error. Lab section 4 starts the
+launcher the way a Host does and lists the eight domain tools.
 
 A Host starts the launcher from a working directory of its own choice, so every
 Host configuration needs the launcher's absolute path. In the Lab,
@@ -420,26 +337,15 @@ echo "$(pwd)/run-doris-mcp-local"
 ```
 
 The configurations in section 1.5 write it as `/ABSOLUTE/PATH/TO/run-doris-mcp-local`.
-
-### Understand what several Hosts share
-
-If you connect more than one Host, they share the launcher, package version,
-and Doris target. They do not share one persistent stdio process. If several
-Hosts are open, each Host may
-start its own `doris-mcp-server` child process with the same route.
-
-One running process also does not switch between Doris environments. Connecting
-a second Doris would need a second launcher and Server entry, such as
-`doris_staging`, each with its own FE and BE routes. That design is outside
-this module.
+Several Hosts share the launcher, the Server version, and the Doris route, but
+each starts its own Server process. A second Doris would need a second launcher
+and a second Server entry; one process never switches between them.
 
 ## 1.5 Connect an MCP Host to the Doris Target
 
-Connect at least one of the four Hosts below. One is enough to finish the
-module; the others are optional. All of them use the same absolute launcher
-path. Complete only the product-specific registration and connection check in
-this section. Do not repeat the analytical workflow in every Host; Section 1.6
-performs it once, in one Host.
+Connect at least one of the four Hosts below; the others are optional. Each
+card registers the same launcher and checks only that the Host started the
+Server. Run the analytical conversation of section 1.6 once, in one Host.
 
 Cursor and VS Code keep their configuration in the project you open, in
 `.cursor/mcp.json` and `.vscode/mcp.json`. If that project is this repository,
@@ -448,8 +354,10 @@ commit these files: they contain an absolute path on your computer.
 
 ### Connect Claude Desktop
 
-Open Claude Desktop's local MCP configuration entry and add the following
-server to `claude_desktop_config.json`:
+Claude Desktop reads `claude_desktop_config.json`: on macOS in
+`~/Library/Application Support/Claude/`, and on Windows in `%APPDATA%\Claude\`.
+**Settings > Developer > Edit Config** opens it. Add the server, and merge it
+into the existing `mcpServers` object if the file already has one:
 
 ```json
 {
@@ -462,23 +370,17 @@ server to `claude_desktop_config.json`:
 }
 ```
 
-If the file already contains other servers, merge the `doris` object into its
-existing `mcpServers` object instead of replacing the file.
-
-Then:
-
-1. Save the configuration.
-2. Fully quit Claude Desktop so that its local processes stop.
-3. Reopen Claude Desktop.
-4. Open **Settings > Developer**.
-5. Under **Local MCP servers**, select `doris`. It shows the state **Running**
-   and the launcher path as its **Command**. This page proves that Claude
-   Desktop started the local process; no chat message is needed.
+Save the file, quit Claude Desktop completely, and open it again. In
+**Settings > Developer**, under **Local MCP servers**, `doris` shows the state
+**Running** and the launcher path as its **Command**; no chat message is
+needed. Claude Desktop writes its connection log to `mcp.log` and the Server's
+standard error to `mcp-server-doris.log`, in `~/Library/Logs/Claude/` on macOS
+and in `%APPDATA%\Claude\logs\` on Windows.
 
 ### Connect Cursor
 
-For a project-scoped connection, create `.cursor/mcp.json` in the project that
-will host the demonstration:
+Create `.cursor/mcp.json` in the project you open in Cursor (a user-wide
+`~/.cursor/mcp.json` works too):
 
 ```json
 {
@@ -491,29 +393,19 @@ will host the demonstration:
 }
 ```
 
-Cursor can also use a user-scoped `~/.cursor/mcp.json`. This module uses the
-project-scoped file so that the intended scope is visible, while the password
-remains outside the project.
-
-Then:
-
-1. Save `.cursor/mcp.json`.
-2. Reload or restart Cursor.
-3. Open Cursor Settings and navigate to the MCP or Tools & MCP page provided by
-   the installed version.
-4. Open **Configure doris** and confirm that the project source is enabled and
-   **Local** shows **Connected**.
-5. Expand **Tools** and confirm that the Doris domain tools are listed. Do not
-   send a chat message or change unrelated global auto-run settings.
+Save the file and reload Cursor. In Cursor Settings, open the MCP page, then
+**Configure doris**: the project source is enabled, **Local** shows
+**Connected**, and **Tools** lists the Doris domains.
 
 ![Cursor shows the project-scoped Doris MCP Server connected locally](images/cursor-doris-mcp-connected.png)
 
-*The enabled project source, **Local Connected** state, and Doris tool list are
-visible together. This is a connection check only; no LLM request was sent.*
-
-If the Server fails, open the Output panel and select MCP Logs before changing
-the database account. A GUI-specific `PATH` failure is more likely to require
-an absolute executable or launcher path than broader Doris privileges.
+Cursor lists the domains under **Reads** because the Server marks its tools as
+read-only. The selector next to the group, **Allow all** in the screenshot,
+sets whether Cursor runs these tools without asking you first; by default,
+Cursor asks before it uses an MCP tool. Either way, every call appears in the
+chat with its arguments, so the trace stays readable. If the Server fails,
+open the Output panel (Cmd+Shift+U on macOS, Ctrl+Shift+U elsewhere) and
+select **MCP Logs** before you change the database account.
 
 ### Connect VS Code with GitHub Copilot
 
@@ -531,27 +423,14 @@ Create `.vscode/mcp.json` in the workspace:
 }
 ```
 
-The workspace file may contain the launcher path, but it must not contain the
-Doris password.
-
-Then:
-
-1. Save `.vscode/mcp.json`.
-2. Select the **Start** CodeLens shown above the `doris` definition, or run
-   **MCP: List Servers** from the Command Palette and start `doris`.
-3. Open **View > Output** and select **MCP: doris** from the output-channel
-   selector.
-4. Confirm that the log contains **Connection state: Running** and
-   **Discovered 8 tools**.
-5. Open GitHub Copilot Chat only to confirm that its Agent selector is
-   available. Do not enter or send a prompt during this connection check.
+Save the file, then select the **Start** CodeLens above the `doris` entry, or
+run **MCP: List Servers** from the Command Palette and start `doris`. In
+**View > Output**, select **MCP: doris**: the log shows **Connection state:
+Running** and **Discovered 8 tools**. You do not need to send a chat message.
 
 ![VS Code MCP output shows the Doris Server running with eight discovered tools](images/vscode-doris-mcp-running.png)
 
-*The MCP output supplies the runtime evidence, while the empty chat panel shows
-that the connection was verified without starting an LLM conversation.*
-
-### Connect Codex CLI and the desktop experience
+### Connect Codex CLI and the desktop app
 
 Codex stores local MCP configuration in `~/.codex/config.toml`. Register the
 launcher with one command, then check the entry it wrote:
@@ -561,7 +440,7 @@ codex mcp add doris -- "/ABSOLUTE/PATH/TO/run-doris-mcp-local"
 codex mcp get doris
 ```
 
-`codex mcp get doris` prints the entry:
+`codex mcp get doris` prints:
 
 ```text
 doris
@@ -581,50 +460,41 @@ The `add` command wrote this table to the file:
 command = "/ABSOLUTE/PATH/TO/run-doris-mcp-local"
 ```
 
-Start the Codex terminal interface and use:
+Start the Codex terminal interface and type `/mcp`. It lists every MCP Server
+that Codex has configured, and the `doris` line should read
+`doris: connected (8 tools)`. In the ChatGPT desktop app, you can register the
+same command under **Settings > MCP servers > Add server** (choose **STDIO**,
+save, then **Restart**); the CLI, the desktop app, and the IDE extension share
+one configuration.
 
-```text
-/mcp
-```
+### Check the connection
 
-`/mcp` lists every MCP Server that Codex has configured, and the `doris` line
-should read `doris: connected (8 tools)`: Codex started the launcher and
-received the eight domain tools. Running `/mcp` inspects the connection and does
-not send an analytical prompt. Official OpenAI documentation also allows the
-ChatGPT desktop app to register a Server through **Settings > MCP servers >
-Add server**. Choose **STDIO**, enter the same launcher command, save, and select
-**Restart**. Codex CLI, the desktop app, and the IDE extension share MCP
-configuration for the same Codex host.
-
-### Connection smoke-test boundary
-
-At the end of this section, every Host you connected should initialize its own
-local Server process. Choose one of them for the complete tool workflow in
-Section 1.6.
-
-| Host | Connected-state evidence |
+| Host | Connected when |
 | --- | --- |
-| Claude Desktop | `doris` shows **Running** in Developer settings |
-| Cursor | Project source enabled; **Local Connected**; tools listed |
-| VS Code | **Running**; eight tools discovered; chat left empty |
-| Codex | `doris: connected (8 tools)` in `/mcp` |
+| Claude Desktop | `doris` shows **Running** in Developer settings. |
+| Cursor | The project source is enabled, **Local** shows **Connected**, and the tools are listed. |
+| VS Code | The `MCP: doris` output shows **Running** and eight discovered tools. |
+| Codex | `/mcp` shows `doris: connected (8 tools)`. |
+
+If a Host shows the Server as failed, read `logs/doris_mcp_server_error.log`
+next to the launcher first: every Host writes the Server's logs there. Then
+follow section 1.7.
 
 ## 1.6 Verify the Complete Path in One Host
 
-Use one continuous conversation in one connected Host for the three requests in
-this section. Each Host shows the tool calls, their arguments, and their results
-in its own chat view; the checks below do not depend on the product.
+Ask the three questions of this section in one conversation in one Host. The
+prompts describe what you want to know; they do not name a domain or a child.
+Choosing the tool is the Host's job, and its trace shows what it chose. Each
+Host shows the tool calls, their arguments, and their results in its own chat
+view.
 
-Each step ends with a reference trace: the same tool calls, made through the
-same launcher without a model, as Lab section 6 makes them on your computer. The
-traces were recorded with Doris MCP Server 1.0.0 and Doris 4.1.3 and trimmed to
-the fields that the checks use; the full results also carry each child's
-schemas, the evidence behind each section, request IDs, and timings. Your Host
-may choose other arguments for the same child, and the `manifest_version`
-values are opaque strings that can differ on your computer.
-The prompts describe the analytical intent. They do not tell the learner to
-name an MCP domain or dictate a child tool. Tool selection is the Host's job;
-the trace provides evidence of what it selected.
+Each step ends with an expected result and a reference trace: the same tool
+calls, made through the same launcher without a model, as Lab section 6 makes
+them on your computer. The traces were recorded with Doris MCP Server 1.0.0 and
+Doris 4.1.3, and trimmed to the fields that the checks use; the full results
+also carry each child's schemas, the source of each section, request IDs, and
+timings. Your Host may choose other arguments for the same child, and the
+`manifest_version` values are opaque strings that can differ on your computer.
 
 ### Step 1: ground the conversation in the real table
 
@@ -634,21 +504,11 @@ Enter this prompt:
 > `ai_course.events`. Do not query business rows, and do not invent fields
 > that are absent from the returned table context.
 
-In hierarchical mode, the expected internal path is:
-
-```text
-doris_catalog {}
-    -> return authorized child schemas and manifest_version
-    -> doris_catalog/get_table_context
-       database = ai_course
-       table = events
-```
-
-The response should be grounded in the actual table metadata. It should not
-silently add common ecommerce fields such as `session_id`, `device_type`, or
-`category_id` when those fields are absent.
-
-Check the answer against the table that Lab section 2 created:
+**Expected result.** The agent calls `doris_catalog` with `{}`, then calls
+`doris_catalog` again with the child `get_table_context` and the arguments
+`database = ai_course`, `table = events`. Its answer lists only the seven
+columns of the table that Lab section 2 created, without common ecommerce
+fields such as `session_id` or `category_id`:
 
 | Field | Type | Key | Comment |
 | --- | --- | --- | --- |
@@ -660,12 +520,11 @@ Check the answer against the table that Lab section 2 created:
 | `product_id` | `BIGINT` | no | Product identifier |
 | `revenue` | `DECIMAL(12,2)` | no | Order value in USD for purchase events, otherwise 0.00 |
 
-The `get_table_context` result contains all seven columns, with their types,
-nullability, key flags, defaults, and comments, plus the table comment. Its
-`indexes` section reports zero secondary indexes. Its `basic` section reports
-a row count of 14,307: a table statistic that Doris refreshes about once a
-minute, not a `COUNT(*)`, which is why Lab section 2 waits for it. The result
-does not contain the key model, the distribution, or the partitioning.
+The `indexes` section reports zero secondary indexes, and the `basic` section
+a row count of 14,307. That count is a table statistic that Doris refreshes
+about once a minute, not a `COUNT(*)`, which is why Lab section 2 waits for it.
+The result does not contain the key model, the distribution, or the
+partitioning, so the agent should not describe them.
 
 Reference trace. The discovery call `doris_catalog` with `{}` returns a
 manifest of five callable children:
@@ -735,10 +594,18 @@ and receives:
 }
 ```
 
-The trace proves which tool path supplied the context. The answer text proves
-only how the agent summarized that context.
+Read the child call by its three fields:
 
-### Step 2: execute a bounded read-only aggregation
+| Field | Role | Failure to avoid |
+| --- | --- | --- |
+| `child_tool` | Selects one exact capability inside the domain. | Guessing an old tool name from before version 1.0. |
+| `arguments` | Supplies values that the child's schema validates. | Sending hostnames, arbitrary SQL, or values that the schema does not allow. |
+| `manifest_version` | Ties the call to the discovery that produced it. | Reusing a manifest after availability or permissions changed: the Server rejects the call with `CHILD_MANIFEST_STALE`, and the Host discovers again. |
+
+The trace proves which tool supplied the context. The answer text proves only
+how the agent summarized it.
+
+### Step 2: run a read-only aggregation
 
 Continue in the same conversation:
 
@@ -747,16 +614,8 @@ Continue in the same conversation:
 > event count descending and return at most 10 rows. Use read-only SQL, and
 > separate query facts from interpretation.
 
-The expected path is:
-
-```text
-doris_query {}
-    -> return authorized child schemas and manifest_version
-    -> doris_query/execute_query
-       one bounded SELECT statement
-```
-
-The generated SQL should have this semantic shape:
+**Expected result.** The agent calls `doris_query` with `{}`, then the child
+`execute_query` with one `SELECT` statement of this shape:
 
 ```sql
 SELECT
@@ -771,19 +630,9 @@ ORDER BY event_count DESC
 LIMIT 10;
 ```
 
-Reproduce the same SQL outside the Agent before accepting its numbers: Lab
-section 5 runs it directly as `mcp_reader`.
-
-Compare the complete result, not just the first row. The expected controls are:
-
-- one `SELECT` statement;
-- the requested inclusive lower and exclusive upper time boundaries;
-- grouping by `event_type`;
-- descending event-count order;
-- `LIMIT 10`; and
-- no DDL, DML, administrative statement, or stacked second statement.
-
-The tool call returns three rows:
+Check the statement, not only the rows: one `SELECT`, the inclusive lower and
+exclusive upper time bound, grouping by `event_type`, descending order,
+`LIMIT 10`, and no DDL, DML, or second statement. The result has three rows:
 
 | `event_type` | `event_count` | `distinct_users` |
 | --- | ---: | ---: |
@@ -791,9 +640,9 @@ The tool call returns three rows:
 | `cart` | 238 | 204 |
 | `purchase` | 106 | 94 |
 
-The direct query in Lab section 5 returns the same three rows and values in the
-same order. The Server result also reports `status=success`,
-`operation=SELECT`, `truncated=false`, and no warnings.
+Lab section 5 runs the same SQL directly as `mcp_reader` and returns the same
+rows in the same order. Treat that direct query as the numerical cross-check:
+the agent may interpret the rows, but its interpretation must not replace them.
 
 Reference trace. Discovery of `doris_query` returns seven children. Four are
 callable; `list_slow_queries` reports `callable: false` with the reason
@@ -842,11 +691,15 @@ and receives:
 }
 ```
 
-Treat the direct query as the numerical cross-check. The Agent may make
-a useful interpretation, but that interpretation must not replace the returned
-rows.
+A child with `callable: false` stays unavailable until you fix its cause: if a
+Host calls it anyway, the Server answers with `CHILD_CAPABILITY_UNAVAILABLE`.
+Preserve the reason in the answer, and fix the condition that you control.
+Do not switch the account to `root`, let the model supply a different FE or BE
+address, invent a missing value from an unrelated counter, or switch to flat
+mode in the middle of a conversation: flat mode lists the same children with
+the same availability.
 
-### Step 3: inspect one memory evidence path
+### Step 3: read one memory evidence path
 
 Continue without starting a new conversation:
 
@@ -854,23 +707,12 @@ Continue without starting a new conversation:
 > available memory trackers, preserve source, partial, and warning fields, and
 > do not infer values for unavailable metrics.
 
-The expected path is:
-
-```text
-doris_cluster {}
-    -> return authorized child schemas and manifest_version
-    -> doris_cluster/get_memory_stats
-       bounded tracker and source evidence
-```
-
-This is an observability example, not a cluster-availability test. The course
-environment has one BE. The useful questions are:
-
-- Which tracker or category did the Server return?
-- Which FE, BE, SQL, or HTTP source produced the evidence?
-- Did the response declare itself complete or partial?
-- Did it include a warning or unavailable section?
-- Did the agent preserve those limitations in its answer?
+**Expected result.** The agent calls `doris_cluster` with `{}`, then the child
+`get_memory_stats`. Its answer reports a few leading values for the one BE,
+and states where they came from, that the result is complete (`success`), and
+that there were no warnings. One BE is enough for this question; it is not a
+test of cluster availability, so the agent need not extend it to CPU, disk,
+compaction, or Query Profiles.
 
 Reference trace. Discovery of `doris_cluster` returns eleven children; eight
 are callable here, including `get_memory_stats`. The child call sends
@@ -910,7 +752,7 @@ and receives, trimmed to four of its 24 metrics:
 ```
 
 The byte values are live counters and change on every call. The evidence fields
-are the stable target: the BE web server (`doris_be_metrics`) is the source,
+are what to check: the BE web server (`doris_be_metrics`) is the source,
 `status` is `success`, `warnings` is empty, and `invented_values` is `false`.
 With several BEs, a BE that the Server cannot reach adds a warning and the
 status becomes `partial`. With no reachable BE, the call fails with
@@ -918,93 +760,32 @@ status becomes `partial`. With no reachable BE, the call fails with
 ask for `detail` `trackers` or `top_consumers`, which return other metric sets
 with the same evidence fields.
 
-Do not extend this step into CPU, disk, compaction, Query Profile, or a complete
-monitoring dashboard. One well-bounded resource example is enough to show the
-domain switch.
-
-### Evaluate the final conversation as one evidence chain
-
-The three requests should form one traceable chain:
+### Evaluate the conversation as one evidence chain
 
 | Stage | Doris-backed fact | Agent responsibility | Independent check |
 | --- | --- | --- | --- |
-| Table context | Returned columns, types, and index sections | Summarize without inventing fields | Compare with the table in Step 1, or with Lab section 6 |
-| Aggregation | Returned rows from the bounded `SELECT` | Separate result facts from interpretation | Run the same SQL directly (Lab section 5) |
-| Memory | Returned tracker, source, and availability fields | Preserve partial and warning evidence | Inspect the original structured tool result |
+| Table context | Returned columns, types, comments, and sections | Summarize without inventing fields | The table in Step 1, or Lab section 6 |
+| Aggregation | Rows of the read-only `SELECT` | Separate the rows from the interpretation | The same SQL run directly (Lab section 5) |
+| Memory | Values with their source, status, and warnings | Keep partial and warning evidence | The structured result, or Lab section 6 |
 
-An answer passes only when the trace, Doris result, and prose agree. A fluent
-answer without the required call, a successful call with altered numbers, or a
-monitoring summary that removes warnings does not pass.
+Read every answer in the same order: the selected tool, its arguments, the
+structured result with its warnings, the decisive SQL run directly when there
+is one, and the prose last. An answer passes only when the trace, the Doris
+result, and the prose agree. A fluent answer without the required call, a
+successful call with altered numbers, or a monitoring summary that drops
+warnings does not pass.
 
-## 1.7 Read the Tool Trace as Evidence
-
-The first domain call can contain only `{}` because its purpose is discovery.
-The returned manifest tells the Host which children are currently authorized
-and callable, their exact schemas, and the manifest version to bind to the next
-request.
-
-The child execution then carries three important fields:
-
-| Field | Role | Failure to avoid |
-| --- | --- | --- |
-| `child_tool` | Selects one exact capability inside the domain. | Guessing an old pre-1.0 tool alias. |
-| `arguments` | Supplies values validated by that child's schema. | Sending arbitrary SQL, hostnames, or unbounded values where the schema does not allow them. |
-| `manifest_version` | Binds execution to the discovered capability generation. | Reusing a stale manifest after capability or authorization state changes. |
-
-In the reference trace of Step 1:
-
-1. Domain discovery, `doris_catalog` with `{}`, obtains the authorized child
-   schemas.
-2. `manifest_version` `catalog.6c948ca49041` binds the next call to that
-   capability generation.
-3. `child_tool` selects `get_table_context`.
-4. `arguments` supplies `database=ai_course` and `table=events`.
-
-### Preserve unavailability instead of bypassing it
-
-A child can belong to the public catalog and still report `callable=false` for
-the current runtime. Version, configuration, route, provider, permission, or
-live evidence can make a child unavailable.
-
-The correct response is to preserve the structured reason and fix the matching
-operator-controlled condition. Do not:
-
-- change the MCP caller to `root`;
-- let the model provide a different FE or BE hostname;
-- invent a missing metric from an unrelated counter;
-- silently switch from hierarchical to flat mode during a conversation; or
-- describe a partial result as a complete cluster diagnosis.
-
-If the Server reports a stale child manifest, rediscover the domain with `{}`
-and use the new returned version. Flat exposure is a Host-compatibility fallback
-configured before process startup, not a per-prompt workaround.
-
-### Separate facts from interpretation
-
-Use this reading order whenever an agent answers a Doris question:
-
-```text
-identify the selected tool
-    -> inspect sanitized arguments
-    -> inspect structured result and warnings
-    -> reproduce the decisive SQL when applicable
-    -> evaluate the prose interpretation last
-```
-
-This order prevents a confident explanation from becoming stronger evidence
-than the database result that it summarizes.
-
-## 1.8 Keep the Connection Safe and Diagnosable
+## 1.7 Keep the Connection Safe and Diagnosable
 
 The integration has four separate boundaries. Keep all four rather than relying
-on the MCP Server's read-only catalog alone.
+on the MCP Server's read-only tools alone.
 
 | Boundary | Course control | Risk it limits |
 | --- | --- | --- |
 | Doris identity | `mcp_reader` receives only `SELECT_PRIV` on `internal.ai_course.*`. | A Server or Host defect cannot use administrator privileges through this identity. |
-| MCP Server | Built-in read-only tools, bounded schemas, result ceilings, and hierarchical discovery. | The model cannot turn a normal query child into arbitrary administration. |
-| Host | Local stdio process and tool approval. | A tool request remains visible at the user interaction boundary. |
-| Network and secrets | Doris ports bind only to loopback; the password stays in an ignored protected file. | The lesson does not create a new remote service or check credentials into the project. |
+| MCP Server | Read-only tools, typed arguments, result limits, and hierarchical discovery. | The model cannot turn a query child into administration. |
+| Host | A local stdio process, and approval of tool calls. | Every tool request is visible where you talk to the agent. |
+| Network and secrets | Doris ports listen only on loopback; the password stays in one ignored, protected file. | The module creates no remote service and puts no credentials in the project. |
 
 These boundaries keep the agent from changing Doris. They do not keep the data
 it reads on your computer, they do not make that data trustworthy, and they do
@@ -1022,8 +803,8 @@ Give the agent's account only the data that you would paste into the chat
 yourself. The course data is synthetic. With real data, grant the account the
 views or columns that the questions need instead of whole databases; Doris
 column privileges and row policies narrow a grant further. The Server's result
-ceiling, 100 rows per call unless the agent asks for more, limits how much one
-call returns, but it does not choose what is safe to return.
+limit, 100 rows per call unless the agent asks for more, caps how much one call
+returns, but it does not choose what is safe to return.
 
 ### Treat text from tables as untrusted input
 
@@ -1047,8 +828,8 @@ read the arguments of each call before you approve it.
 Two records show what an agent did, and Lab section 7 reads both:
 
 - The MCP Server's audit log, `logs/doris_mcp_server_audit.log` next to the
-  launcher, has one line per tool call: the tool, the status, the duration,
-  and the names of the arguments. It does not record argument values, so it
+  launcher, has one line per tool call: the tool, the status, the duration, and
+  the names of the arguments. It does not record argument values, so it
   contains no SQL.
 - Doris's audit table, `__internal_schema.audit_log`, records every statement
   that `mcp_reader` ran, with its text and state. Only an administrator can
@@ -1066,31 +847,34 @@ show scoped grants, column privileges, and row policies for consumers.
 
 ### Troubleshoot from Doris outward
 
-Use the following order:
+Check one layer at a time, in this order; changing several at once makes the
+evidence hard to read:
 
 ```text
 Docker and ports
-    -> direct Doris identity and data
-    -> launcher process and stderr
-    -> Host connection state
-    -> domain and child availability
-    -> prompt and answer interpretation
+    -> Doris, the account, and the data
+    -> the launcher and logs/doris_mcp_server_error.log
+    -> the Host's connection state and its log
+    -> the domain's children and their availability
+    -> the prompt and the interpretation of the answer
 ```
-
-Changing several layers at once makes evidence harder to interpret.
 
 | Symptom | First check | Correct direction |
 | --- | --- | --- |
 | `39030` refuses the connection | Is the `doris-ai` container running and healthy? | Run `lab.start()` or Lab section 1 before changing MCP files. |
-| The course table is absent or has unexpected rows | Does Lab section 2 pass? | Rerun Lab section 2; do not create a replacement table by hand. |
-| The Host reports that the Server failed to start | Does the absolute launcher path exist and have execute permission? | Run the launcher under the same local user and inspect stderr. |
-| CLI works but a GUI Host fails | Does the GUI inherit the same `PATH` and environment? | Keep absolute launcher, environment-file, and virtual-environment paths. |
-| The Server starts but Doris authentication fails | Does `lab.check_reader_login()` succeed? | Correct the protected password or account grant; do not switch the Agent to `root`. |
-| Tools are visible but a query is rejected | Is the SQL one bounded read-only statement? | Reduce scope, add the required bound, or correct the schema-derived SQL. |
-| `get_memory_stats` is unavailable or partial | Are `38030` and `38040` reachable, and are FE/BE HTTP settings correct? | Repair the configured evidence route and preserve the unavailable reason. |
-| A child reports a stale manifest | Did capability or authorization state change? | Rediscover the domain with `{}` and use the new manifest version. |
-| A Host cannot complete progressive discovery | Does that Host support the hierarchical flow? | Record the incompatibility, then configure `MCP_TOOL_EXPOSURE_MODE=flat` before restart as a bounded fallback. |
-| The SQL result is correct but the explanation is not | Do the prose numbers and claims match the structured result? | Correct the interpretation; do not rerun unrelated tools to justify it. |
+| The course table is missing or has unexpected rows | Does Lab section 2 pass? | Rerun Lab section 2; do not create a replacement table by hand. |
+| The Host reports that the Server failed or disconnected | What does `logs/doris_mcp_server_error.log` say? | Run `lab.check_launcher()`, which starts the launcher the way a Host does and shows its errors. Run by hand in a terminal, the launcher prints nothing: it waits for MCP messages on standard input until you press Ctrl+C. |
+| The error log says `Database connectivity test failed` while Doris is running | Does `lab.check_reader_login()` succeed? | The Server hides the cause, so a wrong password looks like a stopped Doris. Correct the password in `.env.mcp.local` or the account; do not switch the agent to `root`. |
+| A terminal works but a GUI Host fails | Does the Host configuration use the absolute launcher path? | Use the absolute path; a GUI Host does not inherit your shell's working directory or `PATH`. |
+| Tools are visible but a query is rejected | Is the SQL one read-only statement? | Correct the SQL; `QUERY_READ_ONLY_VIOLATION` means a write, DDL, or a second statement. |
+| `get_memory_stats` fails with `MEMORY_METRICS_UNAVAILABLE` | Is `38040` reachable, and are `DORIS_BE_HOSTS` and `DORIS_BE_WEBSERVER_PORT` right? | Repair the configured route, and report the failure instead of a number. |
+| A child call returns `CHILD_MANIFEST_STALE` | Did availability or permissions change? | Discover the domain again with `{}` and use the new manifest version. |
+| The Host cannot do discovery | Does it support calling a domain with `{}` first? | Set `MCP_TOOL_EXPOSURE_MODE=flat` in `.env.mcp.local` and restart the Host. |
+| The SQL result is correct but the explanation is not | Do the numbers in the prose match the structured result? | Correct the interpretation; do not rerun unrelated tools to justify it. |
+
+Lab section 8 lets you practice the most common case: you change one character
+of the password, find the failure in the Server's error log, confirm the cause
+with a direct login, and put the password back. No Doris privilege changes.
 
 ## Clean up
 
@@ -1118,25 +902,37 @@ If you only stop the sandbox with `lab.stop()` and keep the Host entries, each
 Host reports the `doris` Server as failed whenever it starts it, until you run
 `lab.start()` again.
 
+## Summary
+
+1. The Host decides when to call a tool and sends the conversation to its
+   model; its MCP Client starts the Server as a local process; the Server
+   checks each request and reports its evidence; Doris applies the account's
+   grants and produces every fact.
+2. Hierarchical discovery shows eight domains first and a domain's children
+   only when the Host needs them. A child with `callable: false` carries a
+   reason to report, not a check to work around.
+3. One launcher with one protected environment file serves every Host. The
+   Doris account reads only `ai_course`, so a defect anywhere above Doris cannot
+   write or administer.
+4. An answer is accepted when its tool calls, its structured results with their
+   warnings, and the same SQL run directly agree; the prose comes last.
+5. Read-only does not mean local: tool results go to the model provider. Text
+   from tables can carry instructions, and the Server's and Doris's audit logs
+   record what the agent did.
+6. Troubleshoot from Doris outward, one layer at a time, and fix the route or
+   the password instead of widening the account's privileges.
+
 ## Completion checklist
 
-- [ ] The active Doris environment is the module's single-FE, single-BE
-  `doris-ai` sandbox, or your own Doris 4.x.
-- [ ] Ports 39030, 38030, and 38040 are reachable only through the intended local
-  mappings.
-- [ ] `ai_course.events` matches `datasets/events.yaml` (Lab section 2).
-- [ ] `mcp_reader` can read the course database and does not have Doris
-  administrator, node, load, alter, create, or drop privileges.
-- [ ] The protected environment file is ignored by version control.
-- [ ] At least one Host starts the shared launcher and shows a connected
-  state; any additional Host uses the same launcher path and Doris ports.
-- [ ] The agent reads table context before generating the analytical SQL.
-- [ ] The generated SQL uses the required time range, grouping, order, and
-  `LIMIT 10`.
-- [ ] The Agent's query rows match the same SQL executed directly (Lab
-  section 5).
-- [ ] The memory answer preserves source, `partial`, `warning`, and unavailable
-  evidence exactly as returned.
+- [ ] Lab sections 1–4 pass: the sandbox, the 14,307 events, `mcp_reader`, and
+  a launcher that lists eight domain tools.
+- [ ] At least one Host shows `doris` as connected.
+- [ ] The agent read the table context before it wrote the SQL, and its SQL has
+  the required time bounds, grouping, order, and `LIMIT 10`.
+- [ ] The agent's rows match the direct query of Lab section 5.
+- [ ] The memory answer keeps the source, status, and warnings as returned.
+- [ ] You found the agent's statements in the Doris audit table (Lab
+  section 7) and restored the password after the exercise (Lab section 8).
 
 ## Review questions
 
@@ -1224,51 +1020,25 @@ Check yourself with [Quiz 1: Connect AI Agents to Apache Doris with MCP](quiz01_
 six single-choice questions, one for each learning objective, with an
 explanation for every answer.
 
----
+## Next
 
-## Guided workflow summary
+This is the only module of the course for now.
 
-| Stage | What you do | What the result establishes |
+## References
+
+- Apache Doris MCP Server 1.0.0: [README](https://github.com/apache/doris-mcp-server/blob/1.0.0/README.md), [Quick start](https://github.com/apache/doris-mcp-server/blob/1.0.0/docs/getting-started/quickstart.md), [Host integrations](https://github.com/apache/doris-mcp-server/blob/1.0.0/docs/integrations/hosts.md), [Tool domains](https://github.com/apache/doris-mcp-server/blob/1.0.0/docs/capabilities/tool-domains.md), [Configuration reference](https://github.com/apache/doris-mcp-server/blob/1.0.0/docs/reference/configuration.md), and [Security model](https://github.com/apache/doris-mcp-server/blob/1.0.0/docs/security/security-model.md)
+- Apache Doris 4.x: [CREATE USER](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/account-management/CREATE-USER/), [GRANT TO](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/account-management/GRANT-TO/), [SHOW GRANTS](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/account-management/SHOW-GRANTS/), and [Audit log](https://doris.apache.org/docs/4.x/admin-manual/audit-plugin/)
+- Model Context Protocol: [Connect to local MCP servers](https://modelcontextprotocol.io/docs/develop/connect-local-servers), which also lists Claude Desktop's log files
+- Claude Desktop: [Getting started with local MCP servers on Claude Desktop](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop)
+- Cursor: [Model Context Protocol (MCP)](https://cursor.com/docs/mcp)
+- Visual Studio Code: [Add MCP servers](https://code.visualstudio.com/docs/agent-customization/mcp-servers) and [MCP configuration reference](https://code.visualstudio.com/docs/agents/reference/mcp-configuration)
+- Codex: [Model Context Protocol](https://learn.chatgpt.com/docs/extend/mcp)
+
+### Tested with
+
+| Component | Version | What was checked, on 2026-10-20 |
 | --- | --- | --- |
-| **Environment** | Start the module's sandbox and load the events table (Lab sections 1–2). | MCP failures can be separated from missing Doris prerequisites. |
-| **Identity** | Create `mcp_reader` with database-level read permission only. | Doris RBAC remains the final data boundary. |
-| **Launcher** | Read one protected local environment file and start stdio with absolute paths. | Host files avoid duplicated secrets and GUI `PATH` assumptions. |
-| **Host connection** | Register the launcher in at least one Host: Claude Desktop, Cursor, VS Code, or Codex. | The Host can initialize the local integration; other Hosts reuse the same shape. |
-| **Catalog grounding** | Ask the agent to inspect `ai_course.events`. | The answer begins from live schema evidence. |
-| **Bounded query** | Ask for a fixed-window aggregation and reproduce it directly. | Agent output can be checked against Doris rows. |
-| **Memory evidence** | Ask for current memory trackers and keep source and warnings. | One `doris_cluster` path demonstrates bounded operational evidence. |
-| **Trace review** | Inspect discovery, manifest, child arguments, and result fields. | Product UI, protocol evidence, and prose interpretation remain distinct. |
-
-## Module summary
-
-MCP adds a governed tool boundary between an AI Host and Apache Doris. The Host
-owns the conversation and tool decision. Its MCP Client owns the local stdio
-process. The Doris MCP Server publishes schemas, validates bounded read-only
-requests, and preserves availability evidence. Doris still owns authentication,
-authorization, metadata, SQL execution, and returned facts.
-
-The eight domains organize the complete product surface, but a course does not
-need to demonstrate all of them. This module uses table context to prevent
-schema invention, a bounded query to produce reproducible analytical facts,
-and one memory child to show operational evidence without pretending that a
-single-BE sandbox proves cluster availability.
-
-Claude Desktop, Cursor, VS Code, and Codex can reuse the same launcher and
-Doris route. Under stdio they normally start separate child processes. A second
-Doris environment would require a separately named route and Server entry; a
-single process does not switch databases or port sets because a prompt asks it
-to do so.
-
-Finally, tool success and answer correctness are different checks. Read the
-tool trace, preserve warnings, reproduce decisive SQL, and evaluate the model's
-interpretation last.
-
-## Official references
-
-- Apache Doris MCP Server: [README](https://github.com/apache/doris-mcp-server/blob/master/README.md), [Quickstart](https://github.com/apache/doris-mcp-server/blob/master/docs/getting-started/quickstart.md), and [Deployment](https://github.com/apache/doris-mcp-server/blob/master/docs/operations/deployment.md)
-- Apache Doris MCP Server: [Host integrations](https://github.com/apache/doris-mcp-server/blob/master/docs/integrations/hosts.md), [Tool domains](https://github.com/apache/doris-mcp-server/blob/master/docs/capabilities/tool-domains.md), and [Configuration reference](https://github.com/apache/doris-mcp-server/blob/master/docs/reference/configuration.md)
-- Apache Doris: [CREATE USER](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/account-management/CREATE-USER/), [GRANT TO](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/account-management/GRANT-TO/), and [SHOW GRANTS](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/account-management/SHOW-GRANTS/)
-- OpenAI Docs: [Model Context Protocol](https://learn.chatgpt.com/docs/extend/mcp)
-- Anthropic Support: [Getting started with local MCP servers on Claude Desktop](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop)
-- Cursor: [Model Context Protocol](https://prod.cursor.com/help/customization/mcp)
-- Visual Studio Code: [MCP configuration reference](https://code.visualstudio.com/docs/agents/reference/mcp-configuration)
+| Apache Doris | 4.1.3, `apache/doris:all-in-one-4.1.3` | The whole Lab, on macOS on Apple Silicon with Docker 29.6.2 |
+| Apache Doris MCP Server | 1.0.0 | Every tool call and error in this lesson, through the launcher, with the MCP Python SDK 2.0.1 as the client |
+| Codex CLI | 0.163.0 | `codex mcp add`, `get`, and `remove` with the launcher |
+| Claude Desktop, Cursor, VS Code | — | The configuration formats and log locations follow each vendor's documentation as of October 2026. The Cursor and VS Code screenshots come from connections made with Doris MCP Server 1.0.0 in October 2026. |
