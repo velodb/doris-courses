@@ -15,7 +15,8 @@ DEFAULTS = dict(re.findall(r'env_port\("(DORIS_AI_\w+)", (\d+)\)', (ROOT / "dori
 
 
 def course_texts():
-    """Yield the learner-facing files of each module with their text."""
+    """Yield the course README and the learner-facing files of each module with their text."""
+    yield ROOT / "README.md", (ROOT / "README.md").read_text()
     for path in sorted(ROOT.glob("level*/module*/*")):
         if path.suffix == ".ipynb":
             cells = json.loads(path.read_text())["cells"]

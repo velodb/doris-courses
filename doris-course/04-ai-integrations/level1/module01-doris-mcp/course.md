@@ -260,7 +260,8 @@ and a read of the Doris audit log.
 ### Store the Doris route outside Host files
 
 The course's `requirements.txt` installs `doris-mcp-server==1.0.0` into the
-course's virtual environment, so there is nothing else to install. Lab
+course's virtual environment (see Get started in the
+[course README](../../README.md)), so there is nothing else to install. Lab
 section 3 writes `.env.mcp.local` from `.env.mcp.local.example`, with the
 generated password:
 
