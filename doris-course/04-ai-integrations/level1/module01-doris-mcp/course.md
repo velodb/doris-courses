@@ -2,7 +2,7 @@
 
 | Course information | Value |
 | --- | --- |
-| Course | AI Integrations with Apache Doris |
+| Course | AI Integrations with Apache Doris (Preview) |
 | Doris | Apache Doris 4.1.3 |
 | MCP Server | Apache Doris MCP Server 1.0.0, hierarchical tools over local stdio |
 | Estimated time | About 90 minutes: reading 30, Lab and Host setup 50 (including about 3 minutes of waiting for Doris), quiz 10 |
@@ -1023,7 +1023,9 @@ explanation for every answer.
 
 ## Next
 
-This is the only module of the course for now.
+This is the only module of the course for now. The
+[course README](../../README.md#roadmap) lists the modules that are planned:
+Hybrid Search, AI Functions, and Lakehouse federated retrieval.
 
 ## References
 

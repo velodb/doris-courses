@@ -8,7 +8,7 @@ whether its answer matches. Everything runs on your own computer, against a
 Doris sandbox that the course starts for you.
 
 > **Preview.** The course has one module so far. It is complete and tested, and
-> more modules are planned; see [Course outline](#course-outline).
+> more modules are planned; see [Roadmap](#roadmap).
 
 ## Who this course is for
 
@@ -42,6 +42,18 @@ Doris sandbox that the course starts for you.
 | 1 | [Module 1: Connect AI Agents to Apache Doris with MCP](level1/module01-doris-mcp/course.md) | Start a Doris sandbox, connect one MCP Host through a protected launcher, and check the agent's table context, query results, and memory evidence against Doris | 90 min | Available |
 
 Each module has a lesson (`course.md`), a Lab notebook, and a quiz notebook.
+
+## Roadmap
+
+The modules below are planned, in this order. They are not available yet, and
+their scope may change once they have been tried on Doris 4.x. Each will state
+at its start what it uses from Module 1.
+
+| Planned module | What it will cover | Uses from Module 1 |
+| --- | --- | --- |
+| Hybrid Search | Combine Doris's full-text (inverted) index and vector (ANN) index on a table in Doris, and let an agent run the search through the `doris_search` domain. | The read-only account and the evidence checks |
+| AI Functions | Call language models from SQL with Doris's AI functions, available since Doris 4.0, and handle their cost, rate limits, failures, and non-deterministic results. | What leaves your computer, and text that cannot be trusted |
+| Lakehouse federated retrieval | Query lakehouse tables through Doris catalogs next to tables in Doris, and see where Doris's indexes apply and where they do not. | Discovery of the `doris_lakehouse` domain |
 
 ## Environment
 
