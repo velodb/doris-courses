@@ -312,6 +312,16 @@ Host configurations should not each contain a copy of the same Doris
 password. This module uses one ignored local environment file and one launcher.
 Every Host stores only the absolute launcher path.
 
+All files of this section are in the module directory,
+`doris-course/04-ai-integrations/level1/module01-doris-mcp/`:
+
+| File | Written by | Purpose |
+| --- | --- | --- |
+| `run-doris-mcp-local` | the repository | The launcher. Every Host configuration names its absolute path. |
+| `.env.mcp.local.example` | the repository | The template of the environment file, without a password. |
+| `.env.mcp.local` | Lab section 3 | The Doris route and the `mcp_reader` password. Only your user can read it, and Git ignores it. |
+| `logs/` | the MCP Server | The Server's logs, including its audit log. Git ignores it. |
+
 ### Create a least-privilege Doris identity
 
 Lab section 3 creates a dedicated identity with these statements, using the
@@ -369,15 +379,27 @@ DORIS_BE_WEBSERVER_PORT=38040
 MCP_TOOL_EXPOSURE_MODE=hierarchical
 ```
 
-Only your user can read the file (mode 600), and Git ignores it.
+Only your user can read the file (mode 600), and Git ignores it. Do not paste
+its contents into a screenshot, issue, chat message, or Host configuration.
 
 `DORIS_BE_HOSTS` contains the host allowlist. The web-server port remains in
 `DORIS_BE_WEBSERVER_PORT`. All destinations are operator configuration; a
 model request cannot supply an arbitrary FE or BE address.
 
-Protect the file with permissions appropriate for your operating system. Do
-not paste its contents into a screenshot, issue, chat message, or checked-in
-Host configuration.
+To prepare the file by hand instead, for example for your own Doris, run these
+commands in the module directory, put the generated value between the single
+quotes of `DORIS_PASSWORD`, and use the same value in `CREATE USER`:
+
+```bash
+cd doris-course/04-ai-integrations/level1/module01-doris-mcp
+cp .env.mcp.local.example .env.mcp.local
+chmod 600 .env.mcp.local
+python3 -c "import secrets; print(secrets.token_urlsafe(24))"
+```
+
+The generated password contains only letters, digits, `-`, and `_`, so it needs
+no escaping in the shell file or in SQL. A password with a single quote would
+break both.
 
 ### Use the shared launcher
 
@@ -409,6 +431,19 @@ The launcher has four important properties:
 Lab section 4 runs the launcher the way a Host does and lists the eight domain
 tools that the Server returns.
 
+A Host starts the launcher from a working directory of its own choice, so every
+Host configuration needs the launcher's absolute path. In the Lab,
+`lab.launcher` holds it, and `lab.host_configs()` prints the configuration of
+each Host in section 1.5 with the path filled in. In a terminal, print it from
+the module directory:
+
+```bash
+cd doris-course/04-ai-integrations/level1/module01-doris-mcp
+echo "$(pwd)/run-doris-mcp-local"
+```
+
+The configurations in section 1.5 write it as `/ABSOLUTE/PATH/TO/run-doris-mcp-local`.
+
 ### Understand what several Hosts share
 
 If you connect more than one Host, they share the launcher, package version,
@@ -429,6 +464,11 @@ path. Complete only the product-specific registration and connection check in
 this section. Do not repeat the analytical workflow in every Host; Section 1.6
 performs it once, in one Host.
 
+Cursor and VS Code keep their configuration in the project you open, in
+`.cursor/mcp.json` and `.vscode/mcp.json`. If that project is this repository,
+its `.gitignore` already ignores both directories. In any other project, do not
+commit these files: they contain an absolute path on your computer.
+
 Before capturing any screen:
 
 - close editors that show `.env.mcp.local`;
@@ -446,7 +486,7 @@ server to `claude_desktop_config.json`:
 {
   "mcpServers": {
     "doris": {
-      "command": "/absolute/path/to/mcp-course/run-doris-mcp-local",
+      "command": "/ABSOLUTE/PATH/TO/run-doris-mcp-local",
       "args": []
     }
   }
@@ -482,7 +522,7 @@ will host the demonstration:
 {
   "mcpServers": {
     "doris": {
-      "command": "/absolute/path/to/mcp-course/run-doris-mcp-local",
+      "command": "/ABSOLUTE/PATH/TO/run-doris-mcp-local",
       "args": []
     }
   }
@@ -522,7 +562,7 @@ Create `.vscode/mcp.json` in the workspace:
   "servers": {
     "doris": {
       "type": "stdio",
-      "command": "/absolute/path/to/mcp-course/run-doris-mcp-local",
+      "command": "/ABSOLUTE/PATH/TO/run-doris-mcp-local",
       "args": []
     }
   }
@@ -551,26 +591,20 @@ that the connection was verified without starting an LLM conversation.*
 
 ### Connect Codex CLI and the desktop experience
 
-Codex stores local MCP configuration in `config.toml`. By default, edit
-`~/.codex/config.toml` and add:
+Codex stores local MCP configuration in `~/.codex/config.toml`. Register the
+launcher with one command, then check the entry it wrote:
+
+```bash
+codex mcp add doris -- "/ABSOLUTE/PATH/TO/run-doris-mcp-local"
+codex mcp get doris
+```
+
+`codex mcp get doris` prints `enabled: true`, `transport: stdio`, and the
+launcher path as `command`. The command added this table to the file:
 
 ```toml
 [mcp_servers.doris]
-command = "/absolute/path/to/mcp-course/run-doris-mcp-local"
-args = []
-required = true
-startup_timeout_sec = 20
-tool_timeout_sec = 60
-```
-
-`required = true` makes a failed Server initialization visible instead of
-silently continuing without this required course dependency.
-
-Check the registered configuration. `codex mcp get doris` prints the transport,
-launcher, enabled state, and timeouts for this one Server:
-
-```bash
-codex mcp get doris
+command = "/ABSOLUTE/PATH/TO/run-doris-mcp-local"
 ```
 
 Start the Codex terminal interface and use:
