@@ -55,6 +55,14 @@ class LessonTests(unittest.TestCase):
                 quiz_section = lesson.split("\n## Quiz ", 1)[1].split("\n## ", 1)[0]
                 self.assertRegex(quiz_section, r"Next(?: module)?: ")
 
+    def test_each_quiz_question_tests_an_objective_of_its_lesson(self):
+        for path in LESSONS:
+            quiz = yaml.safe_load(next(path.parent.glob("quiz*.yaml")).read_text())
+            used = [question["objective"] for question in quiz["questions"]]
+            with self.subTest(lesson=path.parent.name):
+                # The quiz uses the lesson's wording, and every objective has a question.
+                self.assertEqual(set(used), set(objectives(path.read_text())))
+
     def test_a_lesson_links_each_image_with_a_description(self):
         for path in LESSONS:
             for alt, target in re.findall(r"!\[([^\]]*)\]\(([^)]+)\)", path.read_text()):
