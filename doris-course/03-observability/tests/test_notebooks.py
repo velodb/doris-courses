@@ -85,8 +85,8 @@ class NotebookTests(unittest.TestCase):
         metric = next(cell for cell in cells[order + 1:] if "FROM otel_metrics_sum" in cell)
         self.assertIn("metric_name = 'traces.span.metrics.calls'", metric)
 
-    def test_level1_exercises_have_a_collapsed_reference_solution(self):
-        for path in LEVEL1_LABS:
+    def test_exercises_have_a_collapsed_reference_solution(self):
+        for path in (*LEVEL1_LABS, LAB4):
             cells = json.loads(path.read_text())["cells"]
             blank = [index for index, cell in enumerate(cells)
                      if cell["cell_type"] == "code" and "".join(cell["source"]).strip() == "# Your code here"]
@@ -144,7 +144,7 @@ class NotebookTests(unittest.TestCase):
             self.assertEqual(text.count(macro), 3, macro)
 
     def test_analysis_labs_check_their_data_before_using_it(self):
-        for path, table in ((LAB3, "FROM otel_traces"), (LAB4, "FROM otel_logs"), (LAB6, "FROM otel_logs"),
+        for path, table in ((LAB3, "FROM otel_traces"), (LAB4, "FROM otel_traces"), (LAB6, "FROM otel_logs"),
                             (LAB7, "FROM otel_traces"), (LAB8, "FROM otel_metrics_gauge")):
             cells = code_cells(path)
             with self.subTest(notebook=path.name):
@@ -169,25 +169,39 @@ class NotebookTests(unittest.TestCase):
     def test_module4_keys_are_the_reporting_grain(self):
         text = "\n".join(code_cells(LAB4))
         # A datetime(6) key would merge only the rows of the same microsecond.
-        self.assertIn("AGGREGATE KEY(log_date, service_name)", text)
-        self.assertRegex(text, r"log_date\s+DATE,")
-        self.assertRegex(text, r"error_count\s+BIGINT SUM")
+        self.assertIn("AGGREGATE KEY(request_minute, service_name)", text)
+        self.assertRegex(text, r"request_minute\s+DATETIME,")
+        self.assertRegex(text, r"failed_requests\s+BIGINT SUM")
         self.assertIn("UNIQUE KEY(alarm_date, alarm_hash)", text)
         # REPLACE value columns would keep one arbitrary error message per key.
         self.assertNotIn("REPLACE", text.replace("REGEXP_REPLACE", ""))
+
+    def test_module4_counts_each_request_in_the_minute_in_which_it_ended(self):
+        # A span reaches Doris when it ends; a flag stream that started minutes earlier would be missed.
+        load = next(cell for cell in code_cells(LAB4) if "INSERT INTO requests_per_minute" in cell)
+        self.assertIn("SELECT DATE_TRUNC(end_time, 'minute'), service_name", load)
+        self.assertIn("span_kind = 'SPAN_KIND_SERVER'", load)
+        self.assertIn("MAX(end_time) - INTERVAL 60 SECOND AS second_batch_start", load)
+        self.assertNotIn("timestamp <", load)
+        # The alarms come from error spans: the incident leaves no error logs.
+        alerts = next(cell for cell in code_cells(LAB4) if "INSERT INTO error_alerts" in cell)
+        self.assertIn("FROM otel_traces", alerts)
+        self.assertIn("status_code = 'STATUS_CODE_ERROR'", alerts)
 
     def test_module4_cells_can_be_rerun(self):
         cells = code_cells(LAB4)
         text = "\n".join(cells)
         tables = re.findall(r"CREATE TABLE (IF NOT EXISTS )?(\w+)", text)
-        self.assertEqual({table for _, table in tables}, {"daily_log_counts", "error_alerts"})
+        self.assertEqual({table for _, table in tables}, {"requests_per_minute", "error_alerts", "daily_log_counts"})
         for if_not_exists, table in tables:
             with self.subTest(table=table):
                 self.assertTrue(if_not_exists)
         # SUM adds every load again, so a cell that loads the counts empties the table first.
-        for cell in cells:
-            if "INSERT INTO daily_log_counts" in cell:
-                self.assertLess(cell.index("TRUNCATE TABLE daily_log_counts"), cell.index("INSERT INTO daily_log_counts"))
+        for table in ("requests_per_minute", "daily_log_counts"):
+            loads = [cell for cell in cells if f"INSERT INTO {table}" in cell]
+            self.assertTrue(loads, table)
+            for cell in loads:
+                self.assertLess(cell.index(f"TRUNCATE TABLE {table}"), cell.index(f"INSERT INTO {table}"))
         # Dates and partition names in the statements go stale.
         self.assertNotRegex(text, r"20\d\d-\d\d-\d\d|PARTITION p\d{8}")
 
