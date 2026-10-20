@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import http.client
 import json
 import re
@@ -50,6 +51,10 @@ DEMO_PORTS = ((env.DEMO_PORT, "DORIS_OBS_DEMO_PORT", "Demo storefront"),)
 TRACE_COLLECTOR_PORTS = (
     (env.TRACES_OTLP_HTTP_PORT, "DORIS_OBS_TRACES_OTLP_HTTP_PORT", "Module 2 trace collector OTLP HTTP"),
 )
+LITEFUSE_PORTS = ((env.LITEFUSE_PORT, "DORIS_OBS_LITEFUSE_PORT", "Litefuse web UI and API"),)
+LITEFUSE_COMPOSE_FILE = "environments/litefuse/compose.litefuse.yml"
+LITEFUSE_HINT = (f"Read the log with docker logs {env.LITEFUSE_WEB_CONTAINER}, start Litefuse again with "
+                 "lab.start_litefuse(), then rerun this cell.")
 
 # The override files replace upstream lists with the !override merge tag (Compose 2.24.4).
 MIN_COMPOSE_VERSION = (2, 24, 4)
@@ -210,6 +215,11 @@ class ObservabilityLab:
     def mailpit_url(self) -> str:
         """The Mailpit inbox on this host, which receives every email that Grafana sends."""
         return f"http://127.0.0.1:{env.MAILPIT_PORT}"
+
+    @property
+    def litefuse_url(self) -> str:
+        """The Litefuse web UI and API on this host."""
+        return f"http://127.0.0.1:{env.LITEFUSE_PORT}"
 
     def sql(
         self,
@@ -372,10 +382,16 @@ class ObservabilityLab:
         ))
         return pd.Series(totals, name="rows")
 
-    def _read(self, url: str, service: str, hint: str) -> str:
-        """GET a page from Grafana or Mailpit; stop with a card when the service does not answer."""
+    def _read(self, url: str, service: str, hint: str, *, auth: tuple[str, str] | None = None) -> str:
+        """GET a page from Grafana, Mailpit, or Litefuse; stop with a card when the service does not answer.
+
+        ``auth`` is a user name and password for HTTP basic authentication.
+        """
+        headers = {}
+        if auth:
+            headers["Authorization"] = "Basic " + base64.b64encode(":".join(auth).encode()).decode()
         try:
-            with urllib.request.urlopen(url, timeout=10) as response:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=10) as response:
                 return response.read().decode("utf-8")
         except (OSError, http.client.HTTPException) as error:
             self._failure(f"{service} does not answer", f"Could not read {url} ({error}). {hint}")
@@ -693,16 +709,21 @@ demo_compose ps
         ]
         return pd.DataFrame(rows, columns=["container", "state", "restarts"]).sort_values("container", ignore_index=True)
 
-    def _storefront_status(self) -> int | None:
-        """The HTTP status of the storefront page, or None when it does not answer."""
+    @staticmethod
+    def _http_status(url: str) -> int | None:
+        """The HTTP status of a page, or None when the server does not answer."""
         try:
-            with urllib.request.urlopen(self.demo_url, timeout=5) as response:
+            with urllib.request.urlopen(url, timeout=5) as response:
                 return response.status
         except urllib.error.HTTPError as error:
             return error.code
         except (OSError, http.client.HTTPException):
-            # The proxy keeps the connection open while the frontend starts, so this is often a timeout.
             return None
+
+    def _storefront_status(self) -> int | None:
+        """The HTTP status of the storefront page, or None when it does not answer."""
+        # The proxy keeps the connection open while the frontend starts, so no answer is often a timeout.
+        return self._http_status(self.demo_url)
 
     def _wait_for_demo(self, timeout_seconds: int) -> None:
         """Wait until every demo container is running and the storefront answers; stop with a card otherwise."""
@@ -750,6 +771,129 @@ demo_compose ps
         # Compose finds a project's containers and networks by their labels, without the files.
         self.shell(f"docker compose -p {env.DEMO_PROJECT} down", title="Stop the OpenTelemetry demo")
 
+    def _set_be_private_endpoint(self) -> None:
+        """Make the FE redirect Stream Loads from other containers to an address where they reach the BE.
+
+        Clients such as Litefuse send a Stream Load to the FE, which redirects it
+        to the BE. In the single-container Doris the BE is registered as
+        127.0.0.1, which another container cannot reach. When a BE has a private
+        endpoint, the FE redirects to the host that the client used for the FE,
+        doris-obs, with the port of the endpoint. MODIFY BACKEND replaces all
+        tags of the BE, so the statement repeats the ones it has.
+        """
+        for backend in self.query("SHOW BACKENDS").to_dict("records"):
+            tags = json.loads(backend.get("Tag") or "{}")
+            tags["private_endpoint"] = env.DORIS_BE_HTTP_ENDPOINT
+            ordered = sorted(tags.items(), key=lambda item: item[0] != "location")
+            assignments = ",\n     ".join(f'"tag.{name}" = "{value}"' for name, value in ordered)
+            self.execute(
+                f'ALTER SYSTEM MODIFY BACKEND "{backend["Host"]}:{backend["HeartbeatPort"]}"\n'
+                f"SET ({assignments})",
+                title="Give the BE an address that the other containers can reach",
+            )
+
+    def start_litefuse(self, *, timeout_seconds: int = 180) -> None:
+        """Start Litefuse, which keeps its LLM traces in this course's Doris, in the database litefuse.
+
+        Returns once its web UI and API answer and accept the course's API keys.
+        """
+        self.ensure_docker_ready()
+        if not self._dog_stack_running():
+            self._failure(
+                "The DOG stack is not running",
+                "Litefuse keeps its tables in the DOG stack's Doris. Run lab.prepare_environment() "
+                "in Module 1 first, then rerun this cell.",
+            )
+            raise EnvironmentNotReady("the DOG stack is not running.")
+        self._check_compose_version()
+        self._check_ports(LITEFUSE_PORTS, (env.LITEFUSE_WEB_CONTAINER,))
+        self._set_be_private_endpoint()
+        compose = f"docker compose -p {env.LITEFUSE_PROJECT} -f {LITEFUSE_COMPOSE_FILE}"
+        self.shell(f"""set -euo pipefail
+
+echo "[1/2] Start Litefuse"
+{compose} up -d
+
+echo "[2/2] Show the Litefuse services"
+{compose} ps
+""", title="Start Litefuse")
+        self._wait_for_litefuse(timeout_seconds)
+
+    def _wait_for_litefuse(self, timeout_seconds: int) -> None:
+        """Wait until Litefuse answers, then check its project with the course's API keys."""
+        health = f"{self.litefuse_url}/api/public/health"
+        projects = f"{self.litefuse_url}/api/public/projects"
+        keys = (env.LITEFUSE_PUBLIC_KEY, env.LITEFUSE_SECRET_KEY)
+        show_sql(
+            f"Wait until Litefuse answers (every 3 seconds for up to {timeout_seconds} seconds), "
+            "then read the project that the API keys belong to",
+            f'curl -s "{health}"\ncurl -s -u {":".join(keys)} "{projects}"',
+        )
+        started = time.monotonic()
+        while self._http_status(health) != 200:
+            if time.monotonic() - started >= timeout_seconds:
+                self._failure(
+                    "Litefuse does not answer",
+                    f"{health} did not answer with HTTP 200 within {timeout_seconds} seconds. On its first "
+                    "start, Litefuse creates its database in Postgres and its tables in Doris before it "
+                    f"answers. Read the log with docker logs {env.LITEFUSE_WEB_CONTAINER}, then rerun this cell.",
+                )
+                raise EnvironmentNotReady(f"Litefuse did not answer within {timeout_seconds} seconds.")
+            time.sleep(3)
+        elapsed = time.monotonic() - started
+        found = json.loads(self._read(projects, "Litefuse", LITEFUSE_HINT, auth=keys)).get("data") or []
+        project = next((item for item in found if item.get("id") == env.LITEFUSE_PROJECT_ID), None)
+        if project is None:
+            self._failure(
+                "The API keys do not belong to the course's project",
+                f"Litefuse answers, but the keys belong to no project with the ID {env.LITEFUSE_PROJECT_ID}. "
+                f"Remove Litefuse with docker compose -p {env.LITEFUSE_PROJECT} down --volumes, then rerun "
+                "this cell: Litefuse creates the project, its keys, and the user when it starts on empty volumes.",
+            )
+            raise EnvironmentNotReady("the course's Litefuse project is missing.")
+        show_frame("The project that the API keys belong to", pd.DataFrame([{
+            "organization": (project.get("organization") or {}).get("name"),
+            "project": project.get("name"),
+            "project_id": project.get("id"),
+        }]))
+        card(
+            f"Litefuse answers at {self.litefuse_url} (waited {elapsed:.0f} seconds). Sign in with "
+            f"{env.LITEFUSE_USER_EMAIL} and the password {env.LITEFUSE_USER_PASSWORD}. Its tables are in "
+            f"the Doris database {env.LITEFUSE_DATABASE}.",
+            "ok",
+            "Litefuse is running",
+        )
+
+    def litefuse_trace(self, trace_id: str) -> dict:
+        """Show a trace as Litefuse's public API returns it, one row per observation, and return it."""
+        url = f"{self.litefuse_url}/api/public/traces/{trace_id}"
+        show_sql(
+            "Read the trace from Litefuse's public API",
+            f'curl -s -u {env.LITEFUSE_PUBLIC_KEY}:{env.LITEFUSE_SECRET_KEY} "{url}"',
+        )
+        trace = json.loads(self._read(url, "Litefuse", LITEFUSE_HINT,
+                                      auth=(env.LITEFUSE_PUBLIC_KEY, env.LITEFUSE_SECRET_KEY)))
+        observations = sorted(trace.get("observations") or [], key=lambda item: item.get("startTime") or "")
+        show_frame(
+            f"Trace {trace.get('name')} ({trace_id}) · latency {trace.get('latency')} s · "
+            f"total cost {trace.get('totalCost')} USD",
+            pd.DataFrame([{
+                "type": item.get("type"),
+                "name": item.get("name"),
+                "start_time_utc": _utc(item.get("startTime")),
+                "latency_s": item.get("latency"),
+                "model": item.get("model"),
+                "usage": item.get("usageDetails"),
+                "cost_usd": (item.get("costDetails") or {}).get("total"),
+            } for item in observations], columns=["type", "name", "start_time_utc", "latency_s", "model",
+                                                   "usage", "cost_usd"]),
+        )
+        return trace
+
+    def stop_litefuse(self) -> None:
+        """Stop and remove the Litefuse containers. Its user, keys, and traces stay for the next start."""
+        self.shell(f"docker compose -p {env.LITEFUSE_PROJECT} down", title="Stop Litefuse")
+
     def check_trace_collector_port(self) -> None:
         """Show the host port of the Module 2 trace collector; stop when another program holds it."""
         self._check_ports(TRACE_COLLECTOR_PORTS, (env.TRACE_COLLECTOR_CONTAINER,))
@@ -757,32 +901,36 @@ demo_compose ps
     def teardown(self, *, keep_data: bool = False) -> None:
         """Remove every container and network of this course, and its volumes unless keep_data.
 
-        With keep_data=True, prepare_environment() later starts Doris and Grafana
-        again with the same data.
+        With keep_data=True, prepare_environment() and start_litefuse() later
+        start Doris, Grafana, and Litefuse again with the same data.
         """
         volumes = "" if keep_data else " --volumes"
         containers = " ".join((*env.MODULE2_COLLECTORS, env.CPU_LOAD_CONTAINER))
         # Compose finds each project's containers, networks, and volumes by their labels,
-        # so this also works after .runtime/ was deleted. The demo Collector and the
-        # Module 2 collectors are attached to the doris-obs network: remove them first.
+        # so this also works after .runtime/ was deleted. The demo Collector, Litefuse,
+        # and the Module 2 collectors are attached to the doris-obs network: remove them first.
         script = f"""set -euo pipefail
 
-echo "[1/3] Remove the OpenTelemetry demo"
+echo "[1/4] Remove the OpenTelemetry demo"
 docker compose -p {env.DEMO_PROJECT} down
 
-echo "[2/3] Remove the Module 2 collectors and the Module 8 CPU load"
+echo "[2/4] Remove Litefuse"
+docker compose -p {env.LITEFUSE_PROJECT} down{volumes}
+
+echo "[3/4] Remove the Module 2 collectors and the Module 8 CPU load"
 for name in {containers}; do
   if docker container inspect "$name" >/dev/null 2>&1; then
     docker rm -f "$name"
   fi
 done
 
-echo "[3/3] Remove the DOG core services"
+echo "[4/4] Remove the DOG core services"
 docker compose -p {env.PROJECT} down{volumes}
 """
         self.shell(script, title="Remove the observability environment")
         self.connection = None
-        kept = "The Doris and Grafana volumes were kept." if keep_data else "Their volumes were removed too."
+        kept = ("The Doris, Grafana, and Litefuse volumes were kept." if keep_data
+                else "Their volumes were removed too.")
         card(
             f"Removed the course containers and networks. {kept} The upstream checkout and the "
             f"Doris logs stay in {self.RUNTIME_DIRECTORY}/; delete that directory if you no longer need them.",
@@ -791,7 +939,7 @@ docker compose -p {env.PROJECT} down{volumes}
         )
 
     def show_containers(self) -> None:
-        """Display the containers of this course: the DOG stack, the collectors, and the demo."""
+        """Display the containers of this course: the DOG stack, the collectors, the demo, and Litefuse."""
         self.shell(
             f'docker ps -a --filter name={env.PROJECT} '
             '--format "table {{.Names}}\\t{{.Image}}\\t{{.Status}}\\t{{.Ports}}"',

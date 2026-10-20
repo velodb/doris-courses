@@ -163,6 +163,36 @@ class NotebookTests(unittest.TestCase):
         stop = next(cell for cell in code_cells(LAB8) if "Stop the CPU load" in cell)
         self.assertIn(f"docker rm -f {environment.CPU_LOAD_CONTAINER}", stop)
 
+    def test_module7_traces_an_llm_app_with_the_local_litefuse(self):
+        cells = code_cells(LAB7)
+        start = next(index for index, cell in enumerate(cells) if "lab.start_litefuse()" in cell)
+        app = next(index for index, cell in enumerate(cells) if "from langfuse import" in cell)
+        self.assertLess(start, app)
+        # The SDK sends to the local Litefuse with the keys that Litefuse creates on its first start.
+        self.assertIn(f'os.environ["LANGFUSE_PUBLIC_KEY"] = "{environment.LITEFUSE_PUBLIC_KEY}"', cells[app])
+        self.assertIn(f'os.environ["LANGFUSE_SECRET_KEY"] = "{environment.LITEFUSE_SECRET_KEY}"', cells[app])
+        self.assertIn('os.environ["LANGFUSE_BASE_URL"] = lab.litefuse_url', cells[app])
+        self.assertIn("langfuse.flush()", cells[app])
+        # No cloud account, no model API key, and no installs from the notebook.
+        text = "\n".join(cells)
+        for word in ("litefuse.cloud", "openai", "OPENAI", "%pip", "%env"):
+            self.assertNotIn(word, text)
+        # Litefuse creates the project's tables with its first trace; a query on a missing table fails at once.
+        tables = f"litefuse.spans_{environment.LITEFUSE_PROJECT_ID}"
+        wait = next(index for index, cell in enumerate(cells) if "information_schema.tables" in cell)
+        first_query = next(index for index, cell in enumerate(cells) if tables in cell)
+        self.assertLess(app, wait)
+        self.assertLess(wait, first_query)
+        self.assertIn("lab.wait_for_rows(", cells[wait])
+        self.assertIn(f"LIKE '%{environment.LITEFUSE_PROJECT_ID}'", cells[wait])
+        self.assertIn("lab.wait_for_rows(", cells[first_query])
+        # The web steps sign in with the user that Litefuse creates, without screenshots of an account.
+        markdown = markdown_text(LAB7)
+        self.assertIn(f"`{environment.LITEFUSE_USER_EMAIL}`", markdown)
+        self.assertIn(f"`{environment.LITEFUSE_USER_PASSWORD}`", markdown)
+        self.assertNotIn("litefuse.cloud", markdown)
+        self.assertNotIn("<img", markdown)
+
     def test_span_durations_are_converted_from_microseconds(self):
         # The Doris exporter stores duration in microseconds (end_time minus timestamp).
         text = "\n".join(code_cells(LAB7))

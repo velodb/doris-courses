@@ -51,3 +51,19 @@ DEMO_PROJECT = "doris-obs-demo"
 DEMO_NETWORK = "doris-obs-demo"
 DEMO_PROXY_CONTAINER = "doris-obs-demo-frontend-proxy"
 DEMO_PORT = env_port("DORIS_OBS_DEMO_PORT", 28082)  # forwards to the storefront proxy port 8080
+
+# Litefuse for Module 7: Compose project doris-obs-litefuse (environments/litefuse/compose.litefuse.yml).
+# It joins NETWORK and keeps its analytics tables in DORIS_CONTAINER, in LITEFUSE_DATABASE.
+# The project, keys, and user are created when Litefuse first starts (LITEFUSE_INIT_* in
+# the Compose file); Litefuse names the project's tables after LITEFUSE_PROJECT_ID.
+LITEFUSE_PROJECT = "doris-obs-litefuse"
+LITEFUSE_WEB_CONTAINER = "doris-obs-litefuse-web"
+LITEFUSE_PORT = env_port("DORIS_OBS_LITEFUSE_PORT", 23100)  # forwards to the Litefuse web port 3000
+LITEFUSE_DATABASE = "litefuse"
+LITEFUSE_PROJECT_ID = "llm_app"
+LITEFUSE_PUBLIC_KEY = "pk-lf-doris-course"
+LITEFUSE_SECRET_KEY = "sk-lf-doris-course"
+LITEFUSE_USER_EMAIL = "learner@example.com"
+LITEFUSE_USER_PASSWORD = "doris-course-1"
+# The address at which the other containers on NETWORK reach the Doris BE's HTTP port.
+DORIS_BE_HTTP_ENDPOINT = f"{DORIS_CONTAINER}:8040"
