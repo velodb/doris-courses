@@ -31,5 +31,27 @@ Run the repository checks from the repository root. The quiz check and the tests
 python3 tools/check_links.py                       # relative links and images in Markdown and notebooks
 python3 tools/check_notebook_outputs.py --strict   # no outputs, errors, local paths or run state in notebooks
 python3 tools/check_quiz_balance.py                # quiz structure, and how the answers are spread
+python3 tools/check_sensitive_info.py              # secrets, local paths and personal email addresses
 python3 -m unittest discover -s tools/tests        # tests of the checks themselves
 ```
+
+`check_sensitive_info.py` only knows generic patterns. Screenshots cannot be scanned: before adding one, check it for personal information, account names, unrelated objects from your own environment, and the browser's address bar and profile picture.
+
+## Tests
+
+Each course and the shared runtime have offline tests in their own `tests/` directory. They need no Docker and no running Doris. Create the course's virtual environment with Python 3.10 to 3.13 and install its requirements from the course directory, because the requirements install the shared runtime with the relative path `-e ../common`:
+
+```bash
+cd doris-course/02-data-warehousing
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+For the shared runtime, run the same `unittest` command in `doris-course/common` with any course's virtual environment. Changes to `doris-course/common` affect every course, so run the tests of all of them.
+
+The offline tests do not replace running the labs: when you change a lab or its environment, run it from a clean environment as the course README describes.
+
+## Continuous integration
+
+GitHub Actions runs the checks above and the offline tests of the shared runtime and every course on each pull request and on `main` (`.github/workflows/ci.yml`).
