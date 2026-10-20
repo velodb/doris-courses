@@ -153,22 +153,23 @@ starts it in Module 7. The model server of the optional Lab 7A has
 - The upstream checkout and the Doris FE logs stay in `.runtime/`. Delete that
   directory when you no longer need them.
 
-## Interactive quizzes
+## Modules
 
-Each module includes a six-question, single-choice knowledge check. The
-quizzes use the shared `doris_course.quiz` interface and do not require a
-running Docker environment or external services.
+Each module of Level 1 has a lesson, a Lab notebook, and a quiz; the modules of
+Level 2 have a Lab and a quiz. Read the lesson, run the Lab, then take the quiz.
+Each quiz has six single-choice questions; it uses the shared `doris_course.quiz`
+interface and needs no running Docker environment or external services.
 
 Level 1:
 
-- Module 1: Observability Foundations in the DOG Stack — [Notebook](level1/module01-observability-introduction/quiz01_observability_foundations.ipynb) · [Question YAML](level1/module01-observability-introduction/quiz01_observability_foundations.yaml)
-- Module 2: Ingesting Observability Data — [Notebook](level1/module02-data-ingest/quiz02_ingesting_observability_data.ipynb) · [Question YAML](level1/module02-data-ingest/quiz02_ingesting_observability_data.yaml)
-- Module 3: Visualizing Observability Data — [Notebook](level1/module03-data-visualization/quiz03_observability_visualization.ipynb) · [Question YAML](level1/module03-data-visualization/quiz03_observability_visualization.yaml)
+- Module 1: Observability Foundations in the DOG Stack — [Lesson](level1/module01-observability-introduction/course.md) · [Lab](level1/module01-observability-introduction/lab01_observability_introduction.ipynb) · [Quiz](level1/module01-observability-introduction/quiz01_observability_foundations.ipynb)
+- Module 2: Ingesting Observability Data — [Lesson](level1/module02-data-ingest/course.md) · [Lab](level1/module02-data-ingest/lab02_ingest_observability_data.ipynb) · [Quiz](level1/module02-data-ingest/quiz02_ingesting_observability_data.ipynb)
+- Module 3: Visualizing Observability Data — [Lesson](level1/module03-data-visualization/course.md) · [Lab](level1/module03-data-visualization/lab03_data_visualization.ipynb) · [Quiz](level1/module03-data-visualization/quiz03_observability_visualization.ipynb)
 
 Level 2:
 
-- Module 4: Table Models for Observability Data — [Notebook](level2/module04-table-model/quiz04_observability_table_models.ipynb) · [Question YAML](level2/module04-table-model/quiz04_observability_table_models.yaml)
-- Module 5: Partitioning and Bucketing for Observability Data — [Notebook](level2/module05-partition-bucket/quiz05_partition_and_bucket_choices.ipynb) · [Question YAML](level2/module05-partition-bucket/quiz05_partition_and_bucket_choices.yaml)
-- Module 6: Table Properties, Materialized Views, and Indexes — [Notebook](level2/module06-property-mv-index/quiz06_properties_mv_and_indexes.ipynb) · [Question YAML](level2/module06-property-mv-index/quiz06_properties_mv_and_indexes.yaml)
-- Module 7: Trace Analysis and Litefuse — [Notebook](level2/module07-data-analysis-litefuse/quiz07_analysis_and_litefuse.ipynb) · [Question YAML](level2/module07-data-analysis-litefuse/quiz07_analysis_and_litefuse.yaml)
-- Module 8: Alerting with Grafana — [Notebook](level2/module08-alerting/quiz08_alerting_rules.ipynb) · [Question YAML](level2/module08-alerting/quiz08_alerting_rules.yaml)
+- Module 4: Table Models for Observability Data — [Lab](level2/module04-table-model/lab04_table_models.ipynb) · [Quiz](level2/module04-table-model/quiz04_observability_table_models.ipynb)
+- Module 5: Partitioning and Bucketing for Observability Data — [Lab](level2/module05-partition-bucket/lab05_partition_and_bucket.ipynb) · [Quiz](level2/module05-partition-bucket/quiz05_partition_and_bucket_choices.ipynb)
+- Module 6: Table Properties, Materialized Views, and Indexes — [Lab](level2/module06-property-mv-index/lab06_properties_mv_index.ipynb) · [Quiz](level2/module06-property-mv-index/quiz06_properties_mv_and_indexes.ipynb)
+- Module 7: Trace Analysis and Litefuse — [Lab](level2/module07-data-analysis-litefuse/lab07_data_analysis_litefuse.ipynb) · [Quiz](level2/module07-data-analysis-litefuse/quiz07_analysis_and_litefuse.ipynb)
+- Module 8: Alerting with Grafana — [Lab](level2/module08-alerting/lab08_alerting.ipynb) · [Quiz](level2/module08-alerting/quiz08_alerting_rules.ipynb)
