@@ -26,9 +26,8 @@ need **one** of these Hosts; connecting more of them is optional:
 Each Host starts a local MCP Server process over standard input and output.
 Every process connects to the same single-Frontend (FE), single-Backend (BE)
 Doris sandbox, which this module starts for you. The complete verification runs
-once, in any one connected Host; the examples and screenshots use Codex. An
-additional Host only needs a connection smoke test rather than repeating the
-same analysis.
+once, in any one connected Host. An additional Host only needs a connection
+smoke test rather than repeating the same analysis.
 
 This lesson comes with a Lab notebook,
 [Connect an Agent to Doris and Check Its Evidence](lab01_connect_agent_to_doris.ipynb).
@@ -128,7 +127,7 @@ Model Context Protocol (MCP) gives an AI Host a standard way to discover and
 call tools. It does not merge the Host, model, tool server, and database into
 one trusted process.
 
-![The MCP Host and its MCP Client, the Doris MCP Server, and the Doris sandbox all run on your computer. The Client talks to the Server over stdio, and the Server reaches Doris on 127.0.0.1 ports 39030, 38030, and 38040. Only the Host's connection to its model provider leaves the computer.](assets/mcp-local-architecture.svg)
+![The MCP Host and its MCP Client, the Doris MCP Server, and the Doris sandbox all run on your computer. The Client talks to the Server over stdio, and the Server reaches Doris on 127.0.0.1 ports 39030, 38030, and 38040. Only the Host's connection to its model provider leaves the computer.](images/mcp-local-architecture.svg)
 
 All four layers run on your computer, and no layer opens a network service for
 the others: the Host reaches the Server through a child process's standard
@@ -475,13 +474,9 @@ Then:
 2. Fully quit Claude Desktop so that its local processes stop.
 3. Reopen Claude Desktop.
 4. Open **Settings > Developer**.
-5. Confirm that the `doris` local MCP Server shows **Running**. This page proves
-   that Claude Desktop initialized the local process; no chat message is needed.
-
-![Claude Desktop shows the local Doris MCP Server in Running state](assets/claude-doris-mcp-running.png)
-
-*The `doris` row and its **Running** state are the connection evidence. The
-protected environment file is not displayed.*
+5. Under **Local MCP servers**, select `doris`. It shows the state **Running**
+   and the launcher path as its **Command**. This page proves that Claude
+   Desktop started the local process; no chat message is needed.
 
 ### Connect Cursor
 
@@ -514,7 +509,7 @@ Then:
 5. Expand **Tools** and confirm that the Doris domain tools are listed. Do not
    send a chat message or change unrelated global auto-run settings.
 
-![Cursor shows the project-scoped Doris MCP Server connected locally](assets/cursor-doris-mcp-connected.png)
+![Cursor shows the project-scoped Doris MCP Server connected locally](images/cursor-doris-mcp-connected.png)
 
 *The enabled project source, **Local Connected** state, and Doris tool list are
 visible together. This is a connection check only; no LLM request was sent.*
@@ -554,7 +549,7 @@ Then:
 5. Open GitHub Copilot Chat only to confirm that its Agent selector is
    available. Do not enter or send a prompt during this connection check.
 
-![VS Code MCP output shows the Doris Server running with eight discovered tools](assets/vscode-doris-mcp-running.png)
+![VS Code MCP output shows the Doris Server running with eight discovered tools](images/vscode-doris-mcp-running.png)
 
 *The MCP output supplies the runtime evidence, while the empty chat panel shows
 that the connection was verified without starting an LLM conversation.*
@@ -569,8 +564,20 @@ codex mcp add doris -- "/ABSOLUTE/PATH/TO/run-doris-mcp-local"
 codex mcp get doris
 ```
 
-`codex mcp get doris` prints `enabled: true`, `transport: stdio`, and the
-launcher path as `command`. The command added this table to the file:
+`codex mcp get doris` prints the entry:
+
+```text
+doris
+  enabled: true
+  transport: stdio
+  command: /ABSOLUTE/PATH/TO/run-doris-mcp-local
+  args: -
+  cwd: -
+  env: -
+  remove: codex mcp remove doris
+```
+
+The `add` command wrote this table to the file:
 
 ```toml
 [mcp_servers.doris]
@@ -583,18 +590,14 @@ Start the Codex terminal interface and use:
 /mcp
 ```
 
-The active Server list should show `doris: connected (8 tools)`.
-Official OpenAI documentation also
-allows the desktop experience to register a Server through **Settings > MCP
-servers > Add server**. Choose **STDIO**, enter the same launcher command, save,
-and select **Restart**. Codex CLI, the desktop experience, and the IDE extension
-share MCP configuration for the same Codex host.
-
-![Codex CLI shows the Doris MCP Server connected with eight tools](assets/codex-doris-mcp-active.png)
-
-*The `/mcp` inventory is runtime evidence: Codex initialized `doris` and
-received all eight domain tools. Running `/mcp` inspects the connection and
-does not send an analytical prompt.*
+`/mcp` lists every MCP Server that Codex has configured, and the `doris` line
+should read `doris: connected (8 tools)`: Codex started the launcher and
+received the eight domain tools. Running `/mcp` inspects the connection and does
+not send an analytical prompt. Official OpenAI documentation also allows the
+ChatGPT desktop app to register a Server through **Settings > MCP servers >
+Add server**. Choose **STDIO**, enter the same launcher command, save, and select
+**Restart**. Codex CLI, the desktop app, and the IDE extension share MCP
+configuration for the same Codex host.
 
 ### Connection smoke-test boundary
 
@@ -612,9 +615,16 @@ Section 1.6.
 ## 1.6 Verify the Complete Path in One Host
 
 Use one continuous conversation in one connected Host for the three requests in
-this section. The examples and screenshots come from Codex. Other Hosts show the
-tool calls, their arguments, and their results in their own chat view; the
-checks below do not depend on the product.
+this section. Each Host shows the tool calls, their arguments, and their results
+in its own chat view; the checks below do not depend on the product.
+
+Each step ends with a reference trace: the same tool calls, made through the
+same launcher without a model, as Lab section 6 makes them on your computer. The
+traces were recorded with Doris MCP Server 1.0.0 and Doris 4.1.3 and trimmed to
+the fields that the checks use; the full results also carry each child's
+schemas, the evidence behind each section, request IDs, and timings. Your Host
+may choose other arguments for the same child, and the `manifest_version`
+values are opaque strings that can differ on your computer.
 The prompts describe the analytical intent. They do not tell the learner to
 name an MCP domain or dictate a child tool. Tool selection is the Host's job;
 the trace provides evidence of what it selected.
@@ -660,13 +670,76 @@ a row count of 14,307: a table statistic that Doris refreshes about once a
 minute, not a `COUNT(*)`, which is why Lab section 2 waits for it. The result
 does not contain the key model, the distribution, or the partitioning.
 
-![Codex discovers the catalog domain and retrieves the real events table context](assets/codex-catalog-grounding.png)
+Reference trace. The discovery call `doris_catalog` with `{}` returns a
+manifest of five callable children:
 
-*Callout 1 is the domain discovery. Callouts 2–4 identify the manifest version,
-child tool, and sanitized arguments used for the table-context execution.*
+```json
+{
+  "mode": "manifest",
+  "domain": "doris_catalog",
+  "manifest_version": "catalog.6c948ca49041",
+  "children": [
+    {"name": "list_catalogs", "availability": {"callable": true}},
+    {"name": "list_databases", "availability": {"callable": true}},
+    {"name": "list_tables", "availability": {"callable": true}},
+    {"name": "get_table_context", "availability": {"callable": true}},
+    {"name": "get_table_size", "availability": {"callable": true}}
+  ]
+}
+```
 
-The screenshot proves which tool path supplied the context. The answer text
-proves only how the agent summarized that context.
+The child call sends these arguments to `doris_catalog`:
+
+```json
+{
+  "child_tool": "get_table_context",
+  "arguments": {"database": "ai_course", "table": "events"},
+  "manifest_version": "catalog.6c948ca49041"
+}
+```
+
+and receives:
+
+```json
+{
+  "mode": "result",
+  "domain": "doris_catalog",
+  "child_tool": "get_table_context",
+  "manifest_version": "catalog.6c948ca49041",
+  "data": {
+    "status": "success",
+    "warnings": [],
+    "data": {
+      "schema": {
+        "status": "success",
+        "data": {
+          "column_count": 7,
+          "columns": [
+            {"column_name": "event_time", "data_type": "datetime", "is_nullable": false, "key": "YES", "default_value": null, "comment": "When the event happened"},
+            {"column_name": "event_id", "data_type": "bigint", "is_nullable": false, "key": "YES", "default_value": null, "comment": "Unique event identifier"},
+            {"column_name": "user_id", "data_type": "bigint", "is_nullable": false, "key": "NO", "default_value": null, "comment": "Anonymous shopper identifier"},
+            {"column_name": "event_type", "data_type": "varchar(16)", "is_nullable": false, "key": "NO", "default_value": null, "comment": "view, cart, or purchase"},
+            {"column_name": "region", "data_type": "varchar(16)", "is_nullable": false, "key": "NO", "default_value": null, "comment": "Sales region of the shopper"},
+            {"column_name": "product_id", "data_type": "bigint", "is_nullable": false, "key": "NO", "default_value": null, "comment": "Product identifier"},
+            {"column_name": "revenue", "data_type": "decimal(12,2)", "is_nullable": false, "key": "NO", "default_value": "0.00", "comment": "Order value in USD for purchase events, otherwise 0.00"}
+          ]
+        }
+      },
+      "comments": {
+        "status": "success",
+        "data": {"table": {"comment": "Synthetic storefront events for the AI Integrations course"}}
+      },
+      "indexes": {"status": "success", "data": {"index_count": 0, "items": []}},
+      "basic": {"status": "success", "data": {"engine": "Doris", "type": "table", "row_count": 14307}}
+    }
+  },
+  "metadata": {"source": "doris", "truncated": false},
+  "warnings": []
+}
+```
+
+The trace proves which tool path supplied the context. The answer text proves
+only how the agent summarized that context.
 
 ### Step 2: execute a bounded read-only aggregation
 
@@ -725,10 +798,52 @@ The direct query in Lab section 5 returns the same three rows and values in the
 same order. The Server result also reports `status=success`,
 `operation=SELECT`, `truncated=false`, and no warnings.
 
-![Codex executes the bounded read-only aggregation and returns the real Doris rows](assets/codex-readonly-query.png)
+Reference trace. Discovery of `doris_query` returns seven children. Four are
+callable; `list_slow_queries` reports `callable: false` with the reason
+`RUNTIME_PROBE_FAILED`, because `mcp_reader` may not read the audit history it
+needs, and the two ADBC children report `PROVIDER_NOT_CONFIGURED`. The child
+call sends:
 
-*The numbered annotations identify the two time predicates, `LIMIT 10`, and
-the successful tool status. The result table is the actual local Doris result.*
+```json
+{
+  "child_tool": "execute_query",
+  "arguments": {"sql": "SELECT\n    event_type,\n    COUNT(*) AS event_count,\n    COUNT(DISTINCT user_id) AS distinct_users\nFROM ai_course.events\nWHERE event_time >= '2026-03-09 00:00:00'\n  AND event_time <  '2026-03-16 00:00:00'\nGROUP BY event_type\nORDER BY event_count DESC\nLIMIT 10"},
+  "manifest_version": "query.5eaae5b27664"
+}
+```
+
+and receives:
+
+```json
+{
+  "mode": "result",
+  "domain": "doris_query",
+  "child_tool": "execute_query",
+  "manifest_version": "query.5eaae5b27664",
+  "data": {
+    "status": "success",
+    "warnings": [],
+    "data": {
+      "columns": [{"name": "event_type"}, {"name": "event_count"}, {"name": "distinct_users"}],
+      "row_count": 3,
+      "rows": [
+        {"event_type": "view", "event_count": 2904, "distinct_users": 453},
+        {"event_type": "cart", "event_count": 238, "distinct_users": 204},
+        {"event_type": "purchase", "event_count": 106, "distinct_users": 94}
+      ],
+      "truncated": false
+    },
+    "metadata": {
+      "operation": "SELECT",
+      "limits": {"max_rows": 100, "max_bytes": 1048576, "timeout_seconds": 30},
+      "source": "doris_query",
+      "truncation_reason": null
+    }
+  },
+  "metadata": {"source": "doris", "truncated": false},
+  "warnings": []
+}
+```
 
 Treat the direct query as the numerical cross-check. The Agent may make
 a useful interpretation, but that interpretation must not replace the returned
@@ -760,24 +875,51 @@ environment has one BE. The useful questions are:
 - Did it include a warning or unavailable section?
 - Did the agent preserve those limitations in its answer?
 
-The live snapshot returned these leading values for BE node `configured_0`:
+Reference trace. Discovery of `doris_cluster` returns eleven children; eight
+are callable here, including `get_memory_stats`. The child call sends
+`{"child_tool": "get_memory_stats", "arguments": {}, "manifest_version": "cluster.9040d00a1953"}`
+and receives, trimmed to four of its 24 metrics:
 
-| Tracker or metric | Reported value | Approximate value |
-| --- | ---: | ---: |
-| Total BE memory allocated | 1,896,591,360 bytes | 1.77 GiB |
-| jemalloc resident | 1,611,202,560 bytes | 1.50 GiB |
-| jemalloc active | 1,594,490,880 bytes | 1.48 GiB |
-| jemalloc allocated | 1,505,204,536 bytes | 1.40 GiB |
+```json
+{
+  "mode": "result",
+  "domain": "doris_cluster",
+  "child_tool": "get_memory_stats",
+  "manifest_version": "cluster.9040d00a1953",
+  "data": {
+    "status": "success",
+    "warnings": [],
+    "data": {
+      "detail": "summary",
+      "nodes": [
+        {
+          "node_id": "configured_0",
+          "role": "be",
+          "host": "127.0.0.1",
+          "metrics": {
+            "doris_be_memory_allocated_bytes": 1719767040,
+            "doris_be_memory_jemalloc_resident_bytes": 1358299136,
+            "doris_be_memory_jemalloc_active_bytes": 1339097088,
+            "doris_be_memory_jemalloc_allocated_bytes": 1226856576
+          }
+        }
+      ]
+    },
+    "metadata": {"source": "doris_be_metrics", "invented_values": false}
+  },
+  "metadata": {"source": "doris", "truncated": false},
+  "warnings": []
+}
+```
 
-The accompanying evidence fields were `source=doris_be_metrics`,
-`status=success`, `partial` not returned, `warnings=[]`, `truncated=false`, and
-`invented_values=false`. These are live counters and will change between
-runs; the provenance and limitation fields are the stable teaching target.
-
-![Codex returns live Doris BE memory evidence together with source and availability fields](assets/codex-memory-evidence.png)
-
-*The annotations identify the source, the leading returned metric, and the
-absence of a partial flag or warnings. No warning was added for presentation.*
+The byte values are live counters and change on every call. The evidence fields
+are the stable target: the BE web server (`doris_be_metrics`) is the source,
+`status` is `success`, `warnings` is empty, and `invented_values` is `false`.
+With several BEs, a BE that the Server cannot reach adds a warning and the
+status becomes `partial`. With no reachable BE, the call fails with
+`MEMORY_METRICS_UNAVAILABLE` instead of returning numbers. The Host may also
+ask for `detail` `trackers` or `top_consumers`, which return other metric sets
+with the same evidence fields.
 
 Do not extend this step into CPU, disk, compaction, Query Profile, or a complete
 monitoring dashboard. One well-bounded resource example is enough to show the
@@ -812,10 +954,12 @@ The child execution then carries three important fields:
 | `arguments` | Supplies values validated by that child's schema. | Sending arbitrary SQL, hostnames, or unbounded values where the schema does not allow them. |
 | `manifest_version` | Binds execution to the discovered capability generation. | Reusing a stale manifest after capability or authorization state changes. |
 
-![Numbered catalog discovery and child execution fields in Codex](assets/codex-catalog-grounding.png)
+In the reference trace of Step 1:
 
-1. Domain discovery obtains the authorized child schemas.
-2. `manifest_version` binds the next call to that capability generation.
+1. Domain discovery, `doris_catalog` with `{}`, obtains the authorized child
+   schemas.
+2. `manifest_version` `catalog.6c948ca49041` binds the next call to that
+   capability generation.
 3. `child_tool` selects `get_table_context`.
 4. `arguments` supplies `database=ai_course` and `table=events`.
 
