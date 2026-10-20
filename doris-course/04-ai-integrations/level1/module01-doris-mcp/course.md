@@ -1043,5 +1043,5 @@ Hybrid Search, AI Functions, and Lakehouse federated retrieval.
 | --- | --- | --- |
 | Apache Doris | 4.1.3, `apache/doris:all-in-one-4.1.3` | The whole Lab, on macOS on Apple Silicon with Docker 29.6.2 |
 | Apache Doris MCP Server | 1.0.0 | Every tool call and error in this lesson, through the launcher, with the MCP Python SDK 2.0.1 as the client |
-| Codex CLI | 0.163.0 | `codex mcp add`, `get`, and `remove` with the launcher |
+| Codex CLI | 0.163.0 | `codex mcp add`, `get`, and `remove` with the launcher, and the three questions of section 1.6 in one session (`codex exec`): the tool calls and rows matched the reference traces, and the query appeared in the Doris audit table |
 | Claude Desktop, Cursor, VS Code | — | The configuration formats and log locations follow each vendor's documentation as of October 2026. The Cursor and VS Code screenshots come from connections made with Doris MCP Server 1.0.0 in October 2026. |
