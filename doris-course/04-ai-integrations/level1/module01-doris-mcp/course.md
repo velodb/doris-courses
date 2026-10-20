@@ -57,6 +57,35 @@ After completing this module, you will be able to:
 8. Diagnose common path, port, permission, and capability failures without
    switching the Agent to a Doris administrator account.
 
+## Before you begin
+
+Check that you have everything below before you start. This module does not
+need any other course.
+
+| You need | Details |
+| --- | --- |
+| A computer | macOS on Apple Silicon, where the module was verified, or Linux on x86-64, which uses the same Doris image but was not run end to end. On Windows, work inside WSL 2: the launcher is a Bash script. |
+| Docker | Docker Desktop or Docker Engine, running, with at least 4 GB of memory for containers; the sandbox uses about 3 GB. The first start downloads the Doris image: about 1.9 GB, 4.5 GB on disk. |
+| Python | Python 3.12 or 3.13 for the course's virtual environment. The MCP Server needs 3.12 or later, and the course's notebook runtime supports up to 3.13. The course requirements install Jupyter and the MCP Server. |
+| One MCP Host | One of the four Hosts below, installed and signed in. The module does not cover installing them. |
+| Network access | Docker Hub and PyPI for the first setup; your Host's model service during the conversation. |
+
+You do not need a MySQL client: the Lab runs every SQL check. To use one
+anyway, the sandbox contains it:
+`docker exec -it doris-ai mysql -h 127.0.0.1 -P 9030 -u root`.
+
+| Host | What it needs | What it costs |
+| --- | --- | --- |
+| Claude Desktop | The Claude desktop app and a Claude account | Model use counts against your Claude plan |
+| Cursor | The Cursor editor and a Cursor account | Model use counts against your Cursor plan |
+| VS Code with GitHub Copilot | VS Code with GitHub Copilot and a GitHub account that has Copilot | Model use counts against your Copilot plan |
+| Codex | The Codex CLI, the Codex IDE extension, or the ChatGPT desktop app, signed in with a ChatGPT account or an OpenAI API key | Model use counts against your ChatGPT plan or API billing |
+
+Each vendor's free tier, if it has one, may limit how many requests you can
+make; the three conversation steps in section 1.6 need only a few. Your prompts
+and the tool results go to the Host's model service, outside your computer.
+Section 1.8 explains what that means for the data you let an agent read.
+
 ## Follow one local analytics connection
 
 The team begins with an existing local Doris dataset. It adds one boundary at a
