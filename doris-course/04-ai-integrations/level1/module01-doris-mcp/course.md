@@ -128,32 +128,13 @@ Model Context Protocol (MCP) gives an AI Host a standard way to discover and
 call tools. It does not merge the Host, model, tool server, and database into
 one trusted process.
 
-```text
-learner
-   |
-   v
-AI Agent / MCP Host
-keeps the conversation, invokes the model, and decides whether to request a tool
-   |
-   v
-MCP Client inside the Host
-starts and communicates with a local stdio child process
-   |
-   v
-Apache Doris MCP Server
-publishes schemas, validates bounded read-only requests, and returns evidence
-   |
-   v
-local Apache Doris Docker environment
-applies RBAC and executes metadata, SQL, and monitoring requests
-```
+![The MCP Host and its MCP Client, the Doris MCP Server, and the Doris sandbox all run on your computer. The Client talks to the Server over stdio, and the Server reaches Doris on 127.0.0.1 ports 39030, 38030, and 38040. Only the Host's connection to its model provider leaves the computer.](assets/mcp-local-architecture.svg)
 
-> **Diagram placeholder — local MCP responsibility boundary**
-> Replace this block with `assets/mcp-local-architecture.svg`. Show the four
-> layers vertically. Use a solid arrow from the Host to the MCP Server labeled
-> `stdio`, and separate arrows from the Server to `127.0.0.1:39030`, `:38030`,
-> and `:38040`. Add a boundary around the learner's computer. Do not draw a
-> public Internet endpoint between the Host and Server.
+All four layers run on your computer, and no layer opens a network service for
+the others: the Host reaches the Server through a child process's standard
+input and output, and the Server reaches Doris on loopback ports. One
+connection does leave the computer: the Host sends your prompts and the tool
+results to its model provider. Section 1.8 comes back to it.
 
 ### The Host decides when to request a tool
 
@@ -469,14 +450,6 @@ Cursor and VS Code keep their configuration in the project you open, in
 its `.gitignore` already ignores both directories. In any other project, do not
 commit these files: they contain an absolute path on your computer.
 
-Before capturing any screen:
-
-- close editors that show `.env.mcp.local`;
-- hide terminal history that contains secrets;
-- crop user-specific home-directory segments when they add no teaching value;
-- remove account names, API keys, session identifiers, and unrelated projects;
-- keep the Server name, connection state, and relevant tool controls visible.
-
 ### Connect Claude Desktop
 
 Open Claude Desktop's local MCP configuration entry and add the following
@@ -509,9 +482,6 @@ Then:
 
 *The `doris` row and its **Running** state are the connection evidence. The
 protected environment file is not displayed.*
-
-This screenshot establishes product connection state. The JSON block remains
-the source that learners copy.
 
 ### Connect Cursor
 
@@ -922,11 +892,6 @@ Changing several layers at once makes evidence harder to interpret.
 | A child reports a stale manifest | Did capability or authorization state change? | Rediscover the domain with `{}` and use the new manifest version. |
 | A Host cannot complete progressive discovery | Does that Host support the hierarchical flow? | Record the incompatibility, then configure `MCP_TOOL_EXPOSURE_MODE=flat` before restart as a bounded fallback. |
 | The SQL result is correct but the explanation is not | Do the prose numbers and claims match the structured result? | Correct the interpretation; do not rerun unrelated tools to justify it. |
-
-Failure screenshots are intentionally omitted. Error layouts change frequently,
-while the symptom, first check, and corrective boundary remain stable. Use text
-and copied sanitized error codes in the final course instead of maintaining a
-gallery of transient error dialogs.
 
 ### Completion checklist
 
