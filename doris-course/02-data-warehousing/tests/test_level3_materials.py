@@ -11,7 +11,7 @@ from urllib.parse import unquote, urlsplit
 import nbformat
 import yaml
 
-ROOT = Path(__file__).resolve().parents[3] / "doris-course/02-data-warehousing"
+ROOT = Path(__file__).resolve().parents[1]
 LEVEL3 = ROOT / "level3"
 
 

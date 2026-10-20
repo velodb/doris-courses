@@ -8,7 +8,7 @@ from pathlib import Path
 import nbformat
 import yaml
 
-ROOT = Path(__file__).resolve().parents[3] / "doris-course/02-data-warehousing"
+ROOT = Path(__file__).resolve().parents[1]
 LEVEL2 = ROOT / "level2"
 
 
