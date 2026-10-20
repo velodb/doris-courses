@@ -12,6 +12,10 @@ from doris_course import environment
 ROOT = Path(__file__).resolve().parents[1]
 LAB1 = ROOT / "level1/module01-observability-introduction/lab01_observability_introduction.ipynb"
 LAB2 = ROOT / "level1/module02-data-ingest/lab02_ingest_observability_data.ipynb"
+LEVEL1_LABS = (LAB1, LAB2)
+# A failed order: the checkout span of the order has an error status.
+FAILED_ORDER = ("service_name = 'checkout'", "span_name = 'oteldemo.CheckoutService/PlaceOrder'",
+                "status_code = 'STATUS_CODE_ERROR'")
 LAB4 = ROOT / "level2/module04-table-model/lab04_table_models.ipynb"
 LAB6 = ROOT / "level2/module06-property-mv-index/lab06_properties_mv_index.ipynb"
 LAB7 = ROOT / "level2/module07-data-analysis-litefuse/lab07_data_analysis_litefuse.ipynb"
@@ -53,6 +57,42 @@ class NotebookTests(unittest.TestCase):
         # The exporter stores UTC; one row per signal that has recent rows.
         self.assertIn("UTC_TIMESTAMP()", check)
         self.assertIn("min_rows=3", check)
+
+    def test_module1_starts_the_incident_and_waits_for_a_failed_order(self):
+        cells = code_cells(LAB1)
+        flag = next(index for index, cell in enumerate(cells) if "lab.wait_for_feature_flag(" in cell)
+        # The flag of the course's incident, at the value that the later modules expect.
+        self.assertIn('lab.wait_for_feature_flag("paymentFailure", "50%")', cells[flag])
+        self.assertIn("http://127.0.0.1:28082/feature", markdown_text(LAB1))
+        orders = next(index for index, cell in enumerate(cells) if "first_failure = lab.wait_for_rows(" in cell)
+        self.assertLess(flag, orders)
+        for condition in FAILED_ORDER:
+            self.assertIn(condition, cells[orders])
+        # The load generator places a few orders a minute: the first failure can take minutes.
+        self.assertIn("timeout_seconds=300", cells[orders])
+
+    def test_module2_follows_one_failed_order_through_the_three_tables(self):
+        cells = code_cells(LAB2)
+        order = next(index for index, cell in enumerate(cells) if "failed_order = lab.wait_for_rows(" in cell)
+        for condition in FAILED_ORDER:
+            self.assertIn(condition, cells[order])
+        self.assertIn('failed_trace = failed_order["trace_id"][0]', cells[order])
+        for table in ("FROM otel_traces", "FROM otel_logs"):
+            lookup = next(cell for cell in cells[order + 1:] if table in cell)
+            self.assertIn("WHERE trace_id = '{failed_trace}'", lookup)
+        metric = next(cell for cell in cells[order + 1:] if "FROM otel_metrics_sum" in cell)
+        self.assertIn("metric_name = 'traces.span.metrics.calls'", metric)
+
+    def test_level1_exercises_have_a_collapsed_reference_solution(self):
+        for path in LEVEL1_LABS:
+            cells = json.loads(path.read_text())["cells"]
+            blank = [index for index, cell in enumerate(cells)
+                     if cell["cell_type"] == "code" and "".join(cell["source"]).strip() == "# Your code here"]
+            with self.subTest(notebook=path.name):
+                self.assertEqual(len(blank), 1)
+                solution = next(cell for cell in cells[blank[0] + 1:] if cell["cell_type"] == "code")
+                self.assertIs(solution["metadata"]["jupyter"]["source_hidden"], True)
+                self.assertEqual(solution["metadata"]["tags"], ["reference-solution"])
 
     def test_level2_labs_check_their_data_before_using_it(self):
         for path, table in ((LAB4, "FROM otel_logs"), (LAB6, "FROM otel_logs"), (LAB7, "FROM otel_traces"),

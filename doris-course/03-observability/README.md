@@ -40,8 +40,10 @@ stack into the ignored `.runtime/` directory, mounts the Doris FE's log director
 and starts Doris, Grafana, the OpenTelemetry Collector, and Mailpit, a local mail
 server that receives Grafana's alert emails in Module 8. It then starts the
 OpenTelemetry demo and waits until the demo's traces, logs, and metrics reach
-Doris; the Level 2 labs that analyze this data check for it first. Module 2 starts
-dedicated collectors for logs, metrics, and traces. Module 7 starts Litefuse, an
+Doris; the Level 2 labs that analyze this data check for it first. At the end of
+Module 1 you turn on one of the demo's feature flags, `paymentFailure`, so that
+half of the store's payments fail: the course follows this incident from module
+to module. Module 2 starts dedicated collectors for logs, metrics, and traces. Module 7 starts Litefuse, an
 observability platform for LLM applications that keeps its tables in the same Doris.
 Its optional Lab 7A gives the Lab's LLM application a real model: a small open model
 that llama.cpp's server runs on your computer, or OpenAI's API with your own key.
@@ -130,7 +132,9 @@ starts it in Module 7. The model server of the optional Lab 7A has
 ## Stop and clean up
 
 - `lab.stop_demo()` stops and removes the demo containers. The telemetry already
-  in Doris stays, and `lab.start_demo()` starts the demo again.
+  in Doris stays, and `lab.start_demo()` starts the demo again. The feature flags
+  stay as you set them in the demo's flag page; to end the payment failure, set
+  `paymentFailure` back to `off` there.
 - `lab.stop_litefuse()` stops and removes the Litefuse containers. Its user,
   keys, and traces stay in its volumes and in Doris, and `lab.start_litefuse()`
   starts it again with them.
@@ -141,8 +145,9 @@ starts it in Module 7. The model server of the optional Lab 7A has
   load if it still runs, and the DOG stack. The Grafana volume holds the alert
   rule, the notification policy, and the contact point of Module 8. It also
   removes `.runtime/collector-state/`, where the Module 2 log collector keeps its
-  read position. `lab.teardown(keep_data=True)` keeps the volumes of Doris,
-  Grafana, Litefuse, and the local model, and the read position, so a later
+  read position, and turns the demo's feature flags off.
+  `lab.teardown(keep_data=True)` keeps the volumes of Doris, Grafana, Litefuse,
+  and the local model, the read position, and the flags, so a later
   `lab.prepare_environment()` and `lab.start_litefuse()` continue with the same
   data.
 - The upstream checkout and the Doris FE logs stay in `.runtime/`. Delete that
