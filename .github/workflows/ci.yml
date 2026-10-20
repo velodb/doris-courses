@@ -30,7 +30,11 @@ jobs:
       - name: Notebook outputs
         run: python tools/check_notebook_outputs.py --strict
       - name: Quiz structure
-        run: python tools/check_quiz_balance.py
+        # Every quiz must have a valid structure. A course whose quizzes have
+        # been revised must also meet the answer-balance thresholds.
+        run: |
+          python tools/check_quiz_balance.py
+          python tools/check_quiz_balance.py --strict doris-course/04-ai-integrations
       - name: Secrets, local paths and email addresses
         run: python tools/check_sensitive_info.py
       - name: Tests of the checks

@@ -6,7 +6,7 @@
 | Product baseline | Apache Doris 4.1.3 |
 | Integration baseline | Apache Doris MCP Server 1.0.0 |
 | MCP exposure | Hierarchical tools over local stdio |
-| Estimated time | Approximately 60 minutes |
+| Estimated time | About 85 minutes: reading 25, Lab and Host setup 50 (including about 3 minutes of waiting for Doris), quiz 10 |
 
 ## Module goal
 
@@ -40,21 +40,18 @@ generates the account's password on your computer.
 
 After completing this module, you will be able to:
 
-1. Identify the responsibilities of an MCP Host, MCP Client, MCP Server, and
-   Apache Doris.
-2. Summarize the eight built-in Doris MCP tool domains without treating the
-   complete tool catalog as one lesson.
-3. Prepare one protected local stdio launcher that any number of Hosts can
-   share.
-4. Connect an MCP Host such as Claude Desktop, Cursor, VS Code, or Codex to the
-   local Doris target.
-5. Use the connected Host to inspect real table context before executing a
-   bounded read-only query.
-6. Retrieve one bounded memory view from the `doris_cluster` domain while
-   preserving source, partial-availability, and warning evidence.
-7. Separate a successful MCP call, a Doris fact, and an agent interpretation.
-8. Diagnose common path, port, permission, and capability failures without
-   switching the Agent to a Doris administrator account.
+1. Identify the responsibilities of an MCP Host, its MCP Client, the Doris MCP
+   Server, and Apache Doris.
+2. Use hierarchical discovery to find the callable children of the eight Doris
+   domains, and explain why a child can be unavailable.
+3. Connect an MCP Host to Doris through one protected stdio launcher and a
+   least-privilege Doris account.
+4. Check an agent's answer against its evidence: the tool calls, the structured
+   results with their warnings, and the same SQL run directly.
+5. Explain what an agent's conversation sends off your computer, why text read
+   from tables is untrusted, and where its work is audited.
+6. Diagnose launcher, password, port, and capability failures from Doris
+   outward, without switching the agent to an administrator account.
 
 ## Before you begin
 
@@ -1095,7 +1092,33 @@ Changing several layers at once makes evidence harder to interpret.
 | A Host cannot complete progressive discovery | Does that Host support the hierarchical flow? | Record the incompatibility, then configure `MCP_TOOL_EXPOSURE_MODE=flat` before restart as a bounded fallback. |
 | The SQL result is correct but the explanation is not | Do the prose numbers and claims match the structured result? | Correct the interpretation; do not rerun unrelated tools to justify it. |
 
-### Completion checklist
+## Clean up
+
+When you have finished the module:
+
+1. Remove the `doris` entry from each Host you connected, so that it no longer
+   starts the launcher:
+   - Claude Desktop: open **Settings > Developer**, choose **Edit Config**,
+     delete the `doris` object from `mcpServers`, save, and restart Claude
+     Desktop.
+   - Cursor: delete `.cursor/mcp.json` from the project, or only its `doris`
+     entry, and reload Cursor.
+   - VS Code: delete `.vscode/mcp.json` from the workspace, or only its `doris`
+     entry.
+   - Codex: run `codex mcp remove doris`.
+2. In the last section of the Lab, set `REMOVE_EVERYTHING = True` and run the
+   cell. It removes the `doris-ai` container with its two volumes and its
+   network, `.env.mcp.local`, and `logs/`. The `mcp_reader` account goes with
+   the sandbox. With your own Doris, run `lab.drop_mcp_account()` and drop the
+   `ai_course` database instead.
+3. Optionally, delete the course's virtual environment,
+   `doris-course/04-ai-integrations/.venv`.
+
+If you only stop the sandbox with `lab.stop()` and keep the Host entries, each
+Host reports the `doris` Server as failed whenever it starts it, until you run
+`lab.start()` again.
+
+## Completion checklist
 
 - [ ] The active Doris environment is the module's single-FE, single-BE
   `doris-ai` sandbox, or your own Doris 4.x.
@@ -1115,20 +1138,91 @@ Changing several layers at once makes evidence harder to interpret.
 - [ ] The memory answer preserves source, `partial`, `warning`, and unavailable
   evidence exactly as returned.
 
-### Review questions
+## Review questions
+
+Answer each question in your own words first, then open the reference answer.
 
 1. Why does Doris still need a least-privilege identity when the built-in MCP
    catalog is read-only?
-2. What does hierarchical discovery reduce, and why must execution include the
-   returned manifest version?
+
+   <details><summary>Reference answer</summary>
+
+   The Server's read-only checks are one boundary, enforced by one program that
+   can have a defect or a different configuration. Doris checks every statement
+   against the account's grants, whoever sends it. With `SELECT_PRIV` on
+   `ai_course` only, the most this identity can do is read the course data: it
+   cannot write, administer, or read other databases.
+
+   </details>
+
+2. What does hierarchical discovery reduce, and what does the returned manifest
+   version protect against?
+
+   <details><summary>Reference answer</summary>
+
+   The Host registers eight domain tools instead of 55 children, so the model
+   starts with a short tool list and sees a domain's children and their exact
+   schemas only when it needs that domain. The manifest version ties a child
+   call to the discovery that produced it: if availability or authorization
+   changed in between, the Server rejects the call with `CHILD_MANIFEST_STALE`,
+   and the Host discovers again instead of using an outdated schema.
+
+   </details>
+
 3. Why can four open Hosts create four MCP Server processes even though they
    use one launcher configuration?
+
+   <details><summary>Reference answer</summary>
+
+   With stdio, each Host starts the launcher as its own child process and talks
+   to it over that process's standard input and output. There is no shared
+   network service. The Hosts share the launcher, the package, and the Doris
+   route, but each runs its own Server process with its own Doris connections.
+
+   </details>
+
 4. Why is `get_memory_stats` useful in the single-BE sandbox while a cluster
    availability demonstration is deferred?
+
+   <details><summary>Reference answer</summary>
+
+   An overview of one FE and one BE adds little to what the Lab already shows.
+   The memory child shows the pattern of every monitoring tool: live values with
+   their source, status, and warnings, and an error instead of numbers when no
+   BE answers. The pattern carries over to larger clusters, where partial
+   evidence is common.
+
+   </details>
+
 5. Which evidence should you compare before accepting numerical claims in an
    agent's final answer?
+
+   <details><summary>Reference answer</summary>
+
+   The tool call (which child, and which arguments, such as the SQL and its
+   bounds), the structured result (rows, status, warnings, truncation), and the
+   same SQL run directly as the same account. Accept a number when all three
+   agree, and read the prose last.
+
+   </details>
+
 6. Why is a `partial` monitoring result evidence to preserve rather than an
    inconvenience to hide?
+
+   <details><summary>Reference answer</summary>
+
+   `partial` says that some sources answered and others did not, and the warnings
+   name which. Hiding it turns a statement about some nodes into a claim about
+   the whole cluster and invites invented values for the missing ones. Keeping it
+   tells the reader what is known and what to check next.
+
+   </details>
+
+## Quiz
+
+Check yourself with [Quiz 1: Connect AI Agents to Apache Doris with MCP](quiz01_doris_mcp.ipynb):
+six single-choice questions, one for each learning objective, with an
+explanation for every answer.
 
 ---
 
