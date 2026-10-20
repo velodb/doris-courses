@@ -36,7 +36,7 @@ lab.execute("CREATE DATABASE IF NOT EXISTS otel")
 ```
 
 Module 1 prepares the persistent DOG stack. It checks out the pinned upstream
-stack into the ignored `.runtime/` directory, mounts the Doris log directories,
+stack into the ignored `.runtime/` directory, mounts the Doris FE's log directory,
 and starts Doris, Grafana, the OpenTelemetry Collector, and Mailpit, a local mail
 server that receives Grafana's alert emails in Module 8. It then starts the
 OpenTelemetry demo and waits until the demo's traces, logs, and metrics reach
@@ -139,11 +139,13 @@ starts it in Module 7. The model server of the optional Lab 7A has
 - `lab.teardown()` removes every container, network, and volume of this course:
   the demo, Litefuse, the local model, the Module 2 collectors, the Module 8 CPU
   load if it still runs, and the DOG stack. The Grafana volume holds the alert
-  rule, the notification policy, and the contact point of Module 8.
-  `lab.teardown(keep_data=True)` keeps the volumes of Doris, Grafana, Litefuse,
-  and the local model, so a later `lab.prepare_environment()` and
-  `lab.start_litefuse()` continue with the same data.
-- The upstream checkout and the Doris logs stay in `.runtime/`. Delete that
+  rule, the notification policy, and the contact point of Module 8. It also
+  removes `.runtime/collector-state/`, where the Module 2 log collector keeps its
+  read position. `lab.teardown(keep_data=True)` keeps the volumes of Doris,
+  Grafana, Litefuse, and the local model, and the read position, so a later
+  `lab.prepare_environment()` and `lab.start_litefuse()` continue with the same
+  data.
+- The upstream checkout and the Doris FE logs stay in `.runtime/`. Delete that
   directory when you no longer need them.
 
 ## Interactive quizzes

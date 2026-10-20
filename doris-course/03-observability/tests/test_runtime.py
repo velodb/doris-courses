@@ -164,6 +164,9 @@ class RuntimeTests(unittest.TestCase):
             self.assertEqual("--volumes" in script[litefuse:model], volumes)
             self.assertEqual("--volumes" in script[model:collectors], volumes)
             self.assertEqual("--volumes" in script[core:], volumes)
+            # The log collector saves its read position when it stops; without the data, the position goes too.
+            self.assertLess(script.index('docker stop -t 5 "$name"', collectors), script.index("docker rm -f", collectors))
+            self.assertEqual("rm -rf .runtime/collector-state" in script[core:], volumes)
 
     def test_shell_runs_from_the_course_root(self):
         lab = object.__new__(ObservabilityLab)

@@ -176,6 +176,8 @@ class ObservabilityLab:
     RUNTIME_DIRECTORY = ".runtime"
     STACK_DIRECTORY = "ai-observe-stack"
     DORIS_LOG_DIRECTORY = "doris-logs"
+    # Where the Module 2 log collector keeps its read position (file_storage).
+    COLLECTOR_STATE_DIRECTORY = "collector-state"
     DEMO_PORT = env.DEMO_PORT
 
     def __init__(
@@ -663,7 +665,7 @@ demo_compose() {{
                                        env.MAILPIT_CONTAINER))
         script = self._compose_script(r"""
 echo "[1/4] Prepare the local runtime directory"
-mkdir -p .runtime/doris-logs/fe .runtime/doris-logs/be
+mkdir -p .runtime/doris-logs/fe
 
 echo "[2/4] Check out the pinned DOG stack"
 """ + CHECKOUT_STACK + r"""
@@ -1010,38 +1012,52 @@ echo "[3/3] Show the model server"
 
         With keep_data=True, prepare_environment() and start_litefuse() later
         start Doris, Grafana, and Litefuse again with the same data, and
-        start_local_model() does not download the model again.
+        start_local_model() does not download the model again. Without it, the
+        Module 2 log collector's read position goes too: it describes how much
+        of the FE log the removed Doris had loaded.
         """
         volumes = "" if keep_data else " --volumes"
+        state = f"{self.RUNTIME_DIRECTORY}/{self.COLLECTOR_STATE_DIRECTORY}"
+        if keep_data:
+            forget = f'echo "Keep {state}/: the Module 2 log collector continues where it stopped."'
+        else:
+            forget = f"rm -rf {state}"
         containers = " ".join((*env.MODULE2_COLLECTORS, env.CPU_LOAD_CONTAINER))
         # Compose finds each project's containers, networks, and volumes by their labels,
         # so this also works after .runtime/ was deleted. The demo Collector, Litefuse,
         # and the Module 2 collectors are attached to the doris-obs network: remove them first.
         script = f"""set -euo pipefail
 
-echo "[1/5] Remove the OpenTelemetry demo"
+echo "[1/6] Remove the OpenTelemetry demo"
 docker compose -p {env.DEMO_PROJECT} down
 
-echo "[2/5] Remove Litefuse"
+echo "[2/6] Remove Litefuse"
 docker compose -p {env.LITEFUSE_PROJECT} down{volumes}
 
-echo "[3/5] Remove the local model of Module 7's optional lab"
+echo "[3/6] Remove the local model of Module 7's optional lab"
 docker compose -p {env.LOCAL_MODEL_PROJECT} down{volumes}
 
-echo "[4/5] Remove the Module 2 collectors and the Module 8 CPU load"
+echo "[4/6] Remove the Module 2 collectors and the Module 8 CPU load"
 for name in {containers}; do
   if docker container inspect "$name" >/dev/null 2>&1; then
-    docker rm -f "$name"
+    # Stop first, so that the log collector saves its read position.
+    docker stop -t 5 "$name" >/dev/null 2>&1 || true
+    docker rm -f "$name" >/dev/null 2>&1 || true
+    echo "$name"
   fi
 done
 
-echo "[5/5] Remove the DOG core services"
+echo "[5/6] Remove the DOG core services"
 docker compose -p {env.PROJECT} down{volumes}
+
+echo "[6/6] Forget where the Module 2 log collector stopped reading"
+{forget}
 """
         self.shell(script, title="Remove the observability environment")
         self.connection = None
-        kept = ("The volumes of Doris, Grafana, Litefuse, and the local model were kept." if keep_data
-                else "Their volumes were removed too.")
+        kept = ("The volumes of Doris, Grafana, Litefuse, and the local model were kept, and so was the "
+                "Module 2 log collector's read position." if keep_data
+                else "Their volumes were removed too, and so was the Module 2 log collector's read position.")
         card(
             f"Removed the course containers and networks. {kept} The upstream checkout and the "
             f"Doris logs stay in {self.RUNTIME_DIRECTORY}/; delete that directory if you no longer need them.",
