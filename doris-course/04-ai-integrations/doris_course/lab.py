@@ -336,7 +336,7 @@ class AiIntegrationsLab:
         """Start the course's Doris sandbox, or reuse it, and show its FE and BE."""
         if not self.uses_sandbox:
             card(
-                f"DORIS_AI_HOST or DORIS_AI_ADMIN_PASSWORD is set, so the labs use your own Doris at "
+                f"The DORIS_AI_HOST or DORIS_AI_ADMIN_* variables point the labs at your own Doris at "
                 f"{env.HOST}:{env.QUERY_PORT}. This step starts nothing; continue with the next section.",
                 "skip", "Sandbox not needed",
             )
@@ -354,8 +354,9 @@ class AiIntegrationsLab:
             self._failure(
                 "Existing container conflict",
                 f"A container named {env.DORIS_CONTAINER} exists but does not use this course's image, ports, "
-                f"volumes, or network. It was left unchanged. If you no longer need it, remove it with "
-                f"`docker rm -f {env.DORIS_CONTAINER}`, then rerun this cell.",
+                f"volumes, or network, for example because it was created with other DORIS_AI_* ports. It was "
+                f"left unchanged. Set the variables back to the ports it was created with, or remove it with "
+                f"`docker rm -f {env.DORIS_CONTAINER}` (its volumes keep the data) and rerun this cell.",
             )
             raise EnvironmentNotReady(f"a different container named {env.DORIS_CONTAINER} exists.")
 
