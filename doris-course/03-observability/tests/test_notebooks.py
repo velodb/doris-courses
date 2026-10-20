@@ -12,7 +12,8 @@ from doris_course import environment
 ROOT = Path(__file__).resolve().parents[1]
 LAB1 = ROOT / "level1/module01-observability-introduction/lab01_observability_introduction.ipynb"
 LAB2 = ROOT / "level1/module02-data-ingest/lab02_ingest_observability_data.ipynb"
-LEVEL1_LABS = (LAB1, LAB2)
+LAB3 = ROOT / "level1/module03-data-visualization/lab03_data_visualization.ipynb"
+LEVEL1_LABS = (LAB1, LAB2, LAB3)
 # A failed order: the checkout span of the order has an error status.
 FAILED_ORDER = ("service_name = 'checkout'", "span_name = 'oteldemo.CheckoutService/PlaceOrder'",
                 "status_code = 'STATUS_CODE_ERROR'")
@@ -94,9 +95,56 @@ class NotebookTests(unittest.TestCase):
                 self.assertIs(solution["metadata"]["jupyter"]["source_hidden"], True)
                 self.assertEqual(solution["metadata"]["tags"], ["reference-solution"])
 
-    def test_level2_labs_check_their_data_before_using_it(self):
-        for path, table in ((LAB4, "FROM otel_logs"), (LAB6, "FROM otel_logs"), (LAB7, "FROM otel_traces"),
-                            (LAB8, "FROM otel_metrics_gauge")):
+    def test_module3_searches_the_time_range_in_utc(self):
+        cells = code_cells(LAB3)
+        window = next(cell for cell in cells if "TIME_FROM = " in cell)
+        # Doris stores UTC; the Doris App compares its range in the browser's time zone.
+        self.assertIn("datetime.now(timezone.utc)", window)
+        text = markdown_text(LAB3)
+        self.assertIn("**Absolute time range**", text)
+        self.assertIn("Unless your computer uses UTC", text)
+        # Every check of a Discover search uses the range that the learner typed into Discover.
+        for cell in cells:
+            if "FROM otel_logs" in cell and "MATCH_PHRASE" in cell or "severity_number >= 17" in cell:
+                self.assertIn("timestamp >= '{TIME_FROM}' AND timestamp < '{TIME_TO}'", cell)
+
+    def test_module3_finds_every_failed_checkout_in_the_access_log(self):
+        text = markdown_text(LAB3)
+        # The storefront page sends /api/checkout?currencyCode=..., which one long phrase would miss.
+        self.assertIn('body:"POST /api/checkout" AND body:"HTTP/1.1 500"', text)
+        self.assertIn("body MATCH_PHRASE 'POST /api/checkout' AND body MATCH_PHRASE 'HTTP/1.1 500'", text)
+        for cell in code_cells(LAB3):
+            if "MATCH_PHRASE" in cell:
+                self.assertIn("MATCH_PHRASE 'POST /api/checkout'\n", cell)
+                self.assertIn("MATCH_PHRASE 'HTTP/1.1 500'", cell)
+        self.assertNotIn("MATCH_PHRASE 'POST /api/checkout HTTP/1.1 500'", "\n".join(code_cells(LAB3)))
+
+    def test_module3_measures_host_cpu_as_module8_does(self):
+        query = next(cell for cell in code_cells(LAB3) if "system.cpu.utilization" in cell)
+        for condition in ("attributes['state'] = 'idle'", "(1 - AVG(value)) * 100",
+                          "scope_name LIKE '%hostmetricsreceiver%'", "resource_attributes['host.name'] IS NOT NULL"):
+            self.assertIn(condition, query)
+        # The dashboard panel uses the same conditions.
+        text = markdown_text(LAB3)
+        for condition in ("attributes['state'] = 'idle'", "(1 - AVG(value)) * 100", "IS NOT NULL"):
+            self.assertIn(condition, text)
+        # hostmetrics measures the Docker host, not a Doris node.
+        for path in sorted(ROOT.glob("level1/module*/*")):
+            if path.suffix in {".ipynb", ".yaml", ".md"}:
+                with self.subTest(file=path.name):
+                    self.assertNotIn("Doris node CPU", path.read_text())
+
+    def test_module3_reads_back_the_dashboard_that_the_learner_saves(self):
+        text = markdown_text(LAB3)
+        self.assertIn("set **Title** to `Payment incident`", text)
+        check = next(cell for cell in code_cells(LAB3) if "lab.grafana_dashboard(" in cell)
+        self.assertIn('lab.grafana_dashboard("Payment incident")', check)
+        for macro in ("$__timeFilter(timestamp)", "$__timeGroupAlias(timestamp, 1m)"):
+            self.assertEqual(text.count(macro), 3, macro)
+
+    def test_analysis_labs_check_their_data_before_using_it(self):
+        for path, table in ((LAB3, "FROM otel_traces"), (LAB4, "FROM otel_logs"), (LAB6, "FROM otel_logs"),
+                            (LAB7, "FROM otel_traces"), (LAB8, "FROM otel_metrics_gauge")):
             cells = code_cells(path)
             with self.subTest(notebook=path.name):
                 self.assertIn("lab = DorisLab(", cells[0])

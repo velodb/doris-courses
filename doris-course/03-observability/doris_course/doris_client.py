@@ -9,6 +9,7 @@ import shlex
 import subprocess
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime
 from pathlib import Path
@@ -557,6 +558,39 @@ class ObservabilityLab:
         text = self._read(export, "Grafana", GRAFANA_HINT)
         show_log(f"The rule {rule!r} as provisioning YAML", text, opened=True)
         return text
+
+    def grafana_dashboard(self, title: str) -> pd.DataFrame:
+        """Show the panels of a saved Grafana dashboard, with the SQL of each, and return them.
+
+        Reads the dashboard from Grafana's API as Grafana's anonymous viewer, so
+        it does not depend on the admin password; the requests are shown first,
+        so that they can be repeated with curl.
+        """
+        search = f"{self.grafana_url}/api/search?type=dash-db&query={urllib.parse.quote(title)}"
+        show_sql(
+            f"Find the dashboard {title!r}, then read it, from Grafana's API",
+            f'curl -s "{search}"\ncurl -s "{self.grafana_url}/api/dashboards/uid/<uid of the dashboard>"',
+        )
+        found = [item for item in json.loads(self._read(search, "Grafana", GRAFANA_HINT)) if item.get("title") == title]
+        if not found:
+            self._failure(
+                f"Grafana has no dashboard named {title!r}",
+                "Save the dashboard in Grafana: click Save dashboard, enter exactly this title, and click Save. "
+                "Then rerun this cell.",
+            )
+            raise EnvironmentNotReady(f"Grafana has no dashboard named {title!r}.")
+        uid = found[0]["uid"]
+        dashboard = json.loads(self._read(f"{self.grafana_url}/api/dashboards/uid/{uid}", "Grafana",
+                                          GRAFANA_HINT)).get("dashboard") or {}
+        rows = [
+            {"panel": panel.get("title"), "visualization": panel.get("type"),
+             "format": target.get("format"), "sql": target.get("rawSql", "")}
+            for panel in dashboard.get("panels") or []
+            for target in panel.get("targets") or [{}]
+        ]
+        frame = pd.DataFrame(rows, columns=["panel", "visualization", "format", "sql"])
+        show_frame(f"The panels of {title} · {self.grafana_url}/d/{uid}", frame)
+        return frame
 
     def connect(
         self,

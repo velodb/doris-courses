@@ -406,6 +406,40 @@ class FeatureFlagTests(unittest.TestCase):
         self.assertTrue((upstream / FLAGS_FILE).is_file())
 
 
+class GrafanaDashboardTests(unittest.TestCase):
+    def test_the_dashboard_is_found_by_its_exact_title_and_listed_by_panel(self):
+        lab = object.__new__(ObservabilityLab)
+        found = json.dumps([{"uid": "u0", "title": "Payment incident (copy)"}, {"uid": "u1", "title": "Payment incident"}])
+        dashboard = json.dumps({"dashboard": {"panels": [
+            {"title": "Orders per minute", "type": "timeseries",
+             "targets": [{"format": "time_series", "rawSql": "SELECT 1"}]},
+            {"title": "Notes", "type": "text"},
+        ]}})
+        with patch.object(ObservabilityLab, "_read", side_effect=[found, dashboard]) as read, \
+             patch("doris_course.doris_client.show_sql") as statement, \
+             patch("doris_course.doris_client.show_frame"):
+            frame = lab.grafana_dashboard("Payment incident")
+        # Grafana's anonymous viewer may read dashboards; the learner sees the requests.
+        self.assertEqual(read.call_args_list[0].args[0],
+                         f"{lab.grafana_url}/api/search?type=dash-db&query=Payment%20incident")
+        self.assertEqual(read.call_args_list[1].args[0], f"{lab.grafana_url}/api/dashboards/uid/u1")
+        self.assertIn("curl -s", statement.call_args.args[1])
+        self.assertEqual(frame.to_dict("records"), [
+            {"panel": "Orders per minute", "visualization": "timeseries", "format": "time_series", "sql": "SELECT 1"},
+            {"panel": "Notes", "visualization": "text", "format": None, "sql": ""},
+        ])
+
+    def test_a_dashboard_that_was_not_saved_stops_with_a_card(self):
+        lab = object.__new__(ObservabilityLab)
+        with patch.object(ObservabilityLab, "_read", return_value="[]"), \
+             patch("doris_course.doris_client.show_sql"), \
+             patch("doris_course.doris_client.card") as card:
+            with self.assertRaises(EnvironmentNotReady):
+                lab.grafana_dashboard("Payment incident")
+        self.assertEqual(card.call_args.args[1:], ("fail", "Grafana has no dashboard named 'Payment incident'"))
+        self.assertIn("Save dashboard", card.call_args.args[0])
+
+
 class LitefuseTests(unittest.TestCase):
     def lab(self):
         lab = object.__new__(ObservabilityLab)
