@@ -7,6 +7,7 @@ import sys
 import unittest
 from collections import Counter
 from decimal import Decimal
+from html import escape
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -388,18 +389,21 @@ class MaterialsTest(unittest.TestCase):
             ids = [q["id"] for q in data["questions"]]
             self.assertEqual(len(ids), len(set(ids)), path)
             for question in data["questions"]:
+                # Options are shown shuffled, so they are named, not lettered.
                 options = [option["id"] for option in question["options"]]
-                self.assertEqual(options, ["a", "b", "c", "d"], (path, question["id"]))
+                self.assertEqual(len(options), 4, (path, question["id"]))
+                for option_id in options:
+                    self.assertRegex(option_id, r"^[a-z0-9]+(?:_[a-z0-9]+)*$", (path, question["id"]))
+                    self.assertGreater(len(option_id), 1, (path, question["id"]))
                 texts = [option["text"].strip() for option in question["options"]]
                 self.assertTrue(all(texts), (path, question["id"]))
                 self.assertEqual(len(set(texts)), 4, (path, question["id"]))
                 self.assertEqual(len(options), len(set(options)))
                 self.assertIn(question["answer"], options)
                 self.assertTrue(question["explanation"])
-                for option in question["options"]:
-                    letter = option["id"].upper()
-                    self.assertTrue(option["text"].startswith(f"{letter}. "))
-                    self.assertIn(f"{letter}:", question["explanation"])
+                for text in texts:
+                    self.assertNotRegex(text, r"^[A-D]\. ", (path, question["id"]))
+                self.assertNotRegex(question["explanation"], r"(^|\s)[A-D]: ", (path, question["id"]))
             self.assertIsInstance(CourseQuiz.from_yaml(path), CourseQuiz)
 
     def test_quiz_four_choices_and_feedback_render(self):
@@ -426,8 +430,7 @@ class MaterialsTest(unittest.TestCase):
                         self.assertEqual(
                             "Not quite." in feedback.value, option.option_id != question.answer
                         )
-                        for letter in "ABCD":
-                            self.assertIn(f"{letter}:", feedback.value)
+                        self.assertIn(escape(question.explanation), feedback.value)
 
     def test_learner_table_names_and_upstream_references(self):
         for path in COURSE_ROOT.rglob("*"):
