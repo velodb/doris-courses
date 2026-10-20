@@ -25,14 +25,17 @@ need **one** of these Hosts; connecting more of them is optional:
 
 Each Host starts a local MCP Server process over standard input and output.
 Every process connects to the same single-Frontend (FE), single-Backend (BE)
-Doris teaching environment. The complete verification runs once, in any one
-connected Host; the examples and screenshots use Codex. An additional Host only
-needs a connection smoke test rather than repeating the same analysis.
+Doris sandbox, which this module starts for you. The complete verification runs
+once, in any one connected Host; the examples and screenshots use Codex. An
+additional Host only needs a connection smoke test rather than repeating the
+same analysis.
 
-This module is a guided Markdown workflow. There is no separate Jupyter
-Notebook or Lab document. Commands and configuration blocks are intended for
-the learner to run in their own environment; the course repository does not
-store credentials.
+This lesson comes with a Lab notebook,
+[Connect an Agent to Doris and Check Its Evidence](lab01_connect_agent_to_doris.ipynb).
+The Lab starts the sandbox, loads the course data, creates the read-only
+account, and checks the launcher. You then connect a Host and return to the Lab
+to check the Host's answers. The repository stores no credentials: the Lab
+generates the account's password on your computer.
 
 ## Learning objectives
 
@@ -60,7 +63,7 @@ The team begins with an existing local Doris dataset. It adds one boundary at a
 time:
 
 ```text
-confirm the existing Doris baseline
+start the module's Doris sandbox and load the events table
     -> create a least-privilege Doris identity
     -> prepare one protected stdio launcher
     -> register that launcher in at least one MCP Host
@@ -77,7 +80,7 @@ Each section turns a requirement into a decision:
 | --- | --- | --- | --- |
 | **1.1 Separate the four responsibilities** | The model, tool protocol, server process, and database are easy to collapse into one component. | Assign planning, transport, validation, and execution to the correct layer. | A local process and data-flow diagram. |
 | **1.2 Read the capability map** | The Server exposes more capabilities than one lesson should demonstrate. | Introduce all eight domains, then select three children for the guided path. | A bounded domain map and selected-tool table. |
-| **1.3 Confirm the course environment** | The repository contains both single-node and multi-node Doris environments. | Use the persistent Level 1–8 single-node baseline for this MCP module. | One FE, one BE, three loopback ports, and the verified `events` table. |
+| **1.3 Prepare the course environment** | An agent needs a Doris with a known table and known numbers to report. | Start the module's own sandbox and data, or point the Lab at your own Doris 4.x. | One FE, one BE, three loopback ports, and the verified `events` table. |
 | **1.4 Prepare the stdio entry point** | Each Host configuration would otherwise need its own copy of the database password. | Put the route in one ignored local environment file and expose one launcher path. | A protected environment file and launcher contract. |
 | **1.5 Connect a Host** | Each product stores local MCP configuration differently. | Register the shared launcher in at least one Host and verify only its product-specific connection state. | A connected state in each Host you use. |
 | **1.6 Verify in one Host** | A connection alone does not prove useful or bounded tool behavior. | Ground in metadata, query read-only data, then inspect one memory view. | Three tool traces and a directly reproducible SQL result. |
@@ -119,8 +122,8 @@ applies RBAC and executes metadata, SQL, and monitoring requests
 > **Diagram placeholder — local MCP responsibility boundary**
 > Replace this block with `assets/mcp-local-architecture.svg`. Show the four
 > layers vertically. Use a solid arrow from the Host to the MCP Server labeled
-> `stdio`, and separate arrows from the Server to `127.0.0.1:19030`, `:18030`,
-> and `:18040`. Add a boundary around the learner's computer. Do not draw a
+> `stdio`, and separate arrows from the Server to `127.0.0.1:39030`, `:38030`,
+> and `:38040`. Add a boundary around the learner's computer. Do not draw a
 > public Internet endpoint between the Host and Server.
 
 ### The Host decides when to request a tool
@@ -216,88 +219,63 @@ This module introduces all eight domains but demonstrates only three children:
 The course does not enumerate every child, execute a Query Profile, modify a
 pipeline, or turn the agent into a complete monitoring console.
 
-## 1.3 Confirm the Single-Node Course Environment
+## 1.3 Prepare the Course Environment
 
-This module uses the persistent Level 1–8 teaching environment. It does not use
-the isolated multi-node environment from Module 9.
+This module brings its own Doris. It does not need any other course, and it
+does not use another course's containers or data.
 
-| Environment property | Required value |
+Run sections 1 and 2 of the [Lab](lab01_connect_agent_to_doris.ipynb) now. They
+start the sandbox and load the course table:
+
+| Environment property | Value |
 | --- | --- |
-| Docker container | `doris-rta` |
-| Image baseline | `apache/doris:all-in-one-4.1.3` |
+| Docker container | `doris-ai`, with the volumes `doris-ai-fe-meta` and `doris-ai-be-storage` and the network `doris-ai` |
+| Image | `apache/doris:all-in-one-4.1.3` |
 | Topology | One FE and one BE |
-| FE MySQL protocol | `127.0.0.1:19030` |
-| FE HTTP | `127.0.0.1:18030` |
-| BE web server | `127.0.0.1:18040` |
-| Database | `doris_course` |
-| Shared table | `events` |
-| Expected rows | `10,158,080` |
-| Expected time range | `2019-12-01 00:00:12` through `2020-03-11 04:53:08` |
+| FE MySQL protocol | `127.0.0.1:39030` (variable `DORIS_AI_QUERY_PORT`) |
+| FE HTTP | `127.0.0.1:38030` (variable `DORIS_AI_HTTP_PORT`) |
+| BE web server | `127.0.0.1:38040` (variable `DORIS_AI_BE_HTTP_PORT`) |
+| Database and table | `ai_course.events` |
+| Rows | 14,307 synthetic storefront events |
+| Time range | `2026-03-01 00:10:30` through `2026-03-31 23:06:38` |
 
-The fixed environment serves three purposes:
-
-- Catalog and Query examples can reuse the established `events` contract.
-- The FE and BE HTTP ports required for the memory example have stable
-  loopback mappings.
-- The MCP lesson remains focused on agent integration rather than repeating
-  FE election, replica placement, and failure recovery.
+The table is small on purpose: it gives an agent a real schema and real numbers
+to report, and the Lab loads it in seconds. Its columns and the table itself
+carry comments, which the agent can read as part of the table context. The
+ports belong to this course's range, so the sandbox can run next to the
+sandboxes of the other courses. To use other ports, set the variables before you
+start Jupyter; the Lab writes the ports it used into the MCP Server's
+environment file in section 3.
 
 The single-node topology is why this module does not use
 `get_cluster_overview` as a main demonstration. Reporting one FE and one BE
-would add little beyond the environment preflight. `get_memory_stats` still
-has a useful purpose: it shows how a resource child reports current evidence,
-its source, and any partial-availability warning.
+would add little beyond the Lab's own environment check. `get_memory_stats`
+still has a useful purpose: it shows how a resource child reports current
+evidence, its source, and any partial-availability warning.
 
-### Recover the expected prerequisite instead of creating a second sandbox
+### Use your own Doris instead (optional)
 
-Use the following decision table before changing MCP configuration:
+If you already run Apache Doris 4.x, you can point the module at it. It must be
+reachable from this computer on its FE MySQL port, its FE HTTP port, and its BE
+web-server port, and you need an account that may create a database, a table,
+and a user. Before you start Jupyter, set `DORIS_AI_HOST`,
+`DORIS_AI_QUERY_PORT`, `DORIS_AI_HTTP_PORT`, `DORIS_AI_BE_HTTP_PORT`,
+`DORIS_AI_ADMIN_USER`, and `DORIS_AI_ADMIN_PASSWORD`, and skip Lab section 1.
+The Lab creates `ai_course` and `mcp_reader` in that Doris and writes its
+addresses into the environment file. If the BE runs on another host than the
+FE, change `DORIS_BE_HOSTS` in `.env.mcp.local` after Lab section 3.
 
-| Current state | Required action |
+### When the environment is not as expected
+
+| Current state | What to do |
 | --- | --- |
-| The `doris-rta` container or `doris_course.events` does not exist | Complete [Lab 1: Start Doris and Build a Baseline Dataset](../../../01-real-time-analytics/level1/module01-introduction/lab01_start_doris_and_build_baseline.ipynb). Run its initialization, environment preparation, database creation, table creation, and baseline reload sections in order. |
-| The `doris-rta` container exists but is stopped | Run **Restart the Doris sandbox** at the end of Lab 1. The named volumes preserve the baseline. |
-| The Module 9 multi-node environment is running | Run **Stop the Module 9 cluster** in [Lab 9](../../../01-real-time-analytics/level3/module09-sharding-replication/lab09_observe_sharding_and_replication.ipynb), then run **Restart the Doris sandbox** in Lab 1. |
-| The `events` count or time range differs | Rerun **Reload and validate the baseline dataset** in Lab 1. Do not repair the baseline inside this MCP module. |
+| The Lab's port check reports a port `in use` | Another program holds it. Stop that program, or set the matching `DORIS_AI_*` variable to a free port and restart Jupyter. |
+| A container named `doris-ai` exists but does not match | The Lab leaves it unchanged. If you do not need it, remove it with `docker rm -f doris-ai`, then rerun Lab section 1. |
+| The `doris-ai` container is stopped | Run `lab.start()` (Lab section 10). The volumes keep the data and the account. |
+| The loaded table does not match `datasets/events.yaml` | Rerun Lab section 2. It empties the table and loads the file again. |
 
-Lab 3 creates `events_stream`, `events_s3`, and `events_routine`. None of those
-tables is required here, so there is no need to run Lab 3 for this module.
-
-### Verify Doris before debugging MCP
-
-First confirm that the three loopback ports accept connections. Use a local
-port-checking command available on your operating system, for example:
-
-```bash
-nc -z 127.0.0.1 19030
-nc -z 127.0.0.1 18030
-nc -z 127.0.0.1 18040
-```
-
-Then use the administrative identity only for this preflight and for creating
-the lower-privilege account in the next section:
-
-```bash
-mysql -h 127.0.0.1 -P 19030 -u root -e '
-SHOW FRONTENDS;
-SHOW BACKENDS;
-SELECT
-  COUNT(*) AS row_count,
-  MIN(event_time) AS min_event_time,
-  MAX(event_time) AS max_event_time
-FROM doris_course.events;
-'
-```
-
-The expected evidence is:
-
-- one joined, alive FE;
-- one alive BE;
-- `10,158,080` event rows;
-- minimum event time `2019-12-01 00:00:12`; and
-- maximum event time `2020-03-11 04:53:08`.
-
-If this check fails, return to the prerequisite table. Changing a Host MCP file
-cannot repair a stopped container, missing table, or incorrect baseline.
+Fix these in Doris before you change any MCP configuration. A Host file cannot
+repair a stopped container, a missing table, or wrong data.
 
 ## 1.4 Prepare One Protected Local Stdio Entry Point
 
@@ -307,15 +285,15 @@ Every Host stores only the absolute launcher path.
 
 ### Create a least-privilege Doris identity
 
-Connect as the local course administrator and create a dedicated identity. Use
-a generated password in place of the placeholder:
+Lab section 3 creates a dedicated identity with these statements, using the
+administrator account and a password that it generates:
 
 ```sql
 CREATE USER IF NOT EXISTS 'mcp_reader'@'%'
 IDENTIFIED BY '<GENERATED_LOCAL_PASSWORD>';
 
 GRANT SELECT_PRIV
-ON internal.doris_course.*
+ON internal.ai_course.*
 TO 'mcp_reader'@'%';
 
 SHOW GRANTS FOR 'mcp_reader'@'%';
@@ -330,46 +308,39 @@ Do not grant `ADMIN_PRIV`, `NODE_PRIV`, `LOAD_PRIV`, `ALTER_PRIV`,
 `CREATE_PRIV`, or `DROP_PRIV`. The MCP Server's read-only checks are a second
 boundary; they do not replace Doris RBAC.
 
-Verify the new identity before introducing an Agent:
+The Lab then verifies the new identity before any Agent uses it: as
+`mcp_reader`, it reads `ai_course.events`, and Doris denies a write, a table
+creation, and a read of the Doris audit log.
 
-```bash
-mysql -h 127.0.0.1 -P 19030 -u mcp_reader -p -e '
-SELECT COUNT(*) AS row_count FROM doris_course.events;
-'
-```
+### Use the pinned MCP Server from the course environment
 
-### Install the pinned MCP Server in a local virtual environment
-
-Run these commands from a local directory that is not committed with secrets:
-
-```bash
-python3.12 -m venv .venv
-.venv/bin/pip install 'doris-mcp-server==1.0.0'
-.venv/bin/doris-mcp-server --version
-```
-
-The Server command is `doris-mcp-server`. Do not substitute the separate
-`doris-mcp-client` command in a Host configuration.
+The course's `requirements.txt` installs `doris-mcp-server==1.0.0` into the
+course's virtual environment, together with Jupyter; the Lab's introduction
+shows the commands. There is nothing else to install. The Server command is
+`doris-mcp-server`. Do not substitute the separate `doris-mcp-client` command
+in a Host configuration.
 
 ### Store the Doris route outside Host files
 
-Create `.env.mcp.local` beside the virtual environment and add that file to the
-applicable `.gitignore`:
+Lab section 3 also writes `.env.mcp.local` next to the launcher, from
+`.env.mcp.local.example`, with the generated password:
 
 ```dotenv
 DORIS_HOST=127.0.0.1
-DORIS_PORT=19030
+DORIS_PORT=39030
 DORIS_USER=mcp_reader
 DORIS_PASSWORD='<GENERATED_LOCAL_PASSWORD>'
-DORIS_DATABASE=doris_course
+DORIS_DATABASE=ai_course
 
 DORIS_FE_HTTP_HOST=127.0.0.1
-DORIS_FE_HTTP_PORT=18030
+DORIS_FE_HTTP_PORT=38030
 DORIS_BE_HOSTS=127.0.0.1
-DORIS_BE_WEBSERVER_PORT=18040
+DORIS_BE_WEBSERVER_PORT=38040
 
 MCP_TOOL_EXPOSURE_MODE=hierarchical
 ```
+
+Only your user can read the file (mode 600), and Git ignores it.
 
 `DORIS_BE_HOSTS` contains the host allowlist. The web-server port remains in
 `DORIS_BE_WEBSERVER_PORT`. All destinations are operator configuration; a
@@ -379,38 +350,35 @@ Protect the file with permissions appropriate for your operating system. Do
 not paste its contents into a screenshot, issue, chat message, or checked-in
 Host configuration.
 
-### Create the shared launcher
+### Use the shared launcher
 
-Use the provided executable file `run-doris-mcp-local` beside the environment
-file. It resolves that directory from its own location:
+The launcher `run-doris-mcp-local` is the executable file next to
+`.env.mcp.local`. Its essential lines are:
 
 ```bash
-#!/usr/bin/env bash
-set -euo pipefail
-
 MCP_HOME="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+COURSE_HOME="$(CDPATH= cd -- "$MCP_HOME/../.." && pwd)"
 
 set -a
 . "$MCP_HOME/.env.mcp.local"
 set +a
 
-exec "$MCP_HOME/.venv/bin/doris-mcp-server" --transport stdio
-```
-
-Make the launcher executable:
-
-```bash
-chmod 700 /absolute/path/to/mcp-course/run-doris-mcp-local
+export LOG_FILE_PATH="${LOG_FILE_PATH:-$MCP_HOME/logs/doris_mcp_server.log}"
+exec "$COURSE_HOME/.venv/bin/doris-mcp-server" --transport stdio
 ```
 
 The launcher has four important properties:
 
-1. It resolves the environment and executable from the launcher's own absolute
+1. It resolves the environment file and the Server from its own absolute
    location, so the checked-in script contains no developer-specific path.
 2. It keeps the password out of JSON and TOML Host files.
 3. It replaces the shell with the Server process by using `exec`.
-4. It leaves standard output exclusively for MCP protocol frames; diagnostic
-   logging belongs on standard error or in a configured log file.
+4. It leaves standard output exclusively for MCP protocol frames. The Server
+   writes its logs to `logs/` next to the launcher, whatever working directory
+   a Host starts it in, and the launcher's own messages go to standard error.
+
+Lab section 4 runs the launcher the way a Host does and lists the eight domain
+tools that the Server returns.
 
 ### Understand what several Hosts share
 
@@ -419,10 +387,10 @@ and Doris target. They do not share one persistent stdio process. If several
 Hosts are open, each Host may
 start its own `doris-mcp-server` child process with the same route.
 
-One running process also does not switch automatically between the single-node
-and Module 9 environments. A future dual-target design would need two launcher
-and server entries, such as `doris_single` and `doris_multinode`, each with its
-own FE and BE routes. That design is outside this module.
+One running process also does not switch between Doris environments. Connecting
+a second Doris would need a second launcher and Server entry, such as
+`doris_staging`, each with its own FE and BE routes. That design is outside
+this module.
 
 ## 1.5 Connect an MCP Host to the Doris Target
 
@@ -623,7 +591,7 @@ the trace provides evidence of what it selected.
 Enter this prompt:
 
 > Inspect the schema, key columns, and index context for
-> `doris_course.events`. Do not query business rows, and do not invent fields
+> `ai_course.events`. Do not query business rows, and do not invent fields
 > that are absent from the returned table context.
 
 In hierarchical mode, the expected internal path is:
@@ -632,7 +600,7 @@ In hierarchical mode, the expected internal path is:
 doris_catalog {}
     -> return authorized child schemas and manifest_version
     -> doris_catalog/get_table_context
-       database = doris_course
+       database = ai_course
        table = events
 ```
 
@@ -640,23 +608,24 @@ The response should be grounded in the actual table metadata. It should not
 silently add common ecommerce fields such as `session_id`, `device_type`, or
 `category_id` when those fields are absent.
 
-Check the answer against the established table contract:
+Check the answer against the table that Lab section 2 created:
 
-| Field | Course baseline type |
-| --- | --- |
-| `event_time` | `DATETIME` |
-| `event_id` | `BIGINT` |
-| `user_id` | `BIGINT` |
-| `event_type` | `VARCHAR(32)` |
-| `region` | `VARCHAR(16)` |
-| `product_id` | `BIGINT` |
-| `revenue` | `DECIMAL(12,2)` |
+| Field | Type | Key | Comment |
+| --- | --- | --- | --- |
+| `event_time` | `DATETIME` | yes | When the event happened |
+| `event_id` | `BIGINT` | yes | Unique event identifier |
+| `user_id` | `BIGINT` | no | Anonymous shopper identifier |
+| `event_type` | `VARCHAR(16)` | no | view, cart, or purchase |
+| `region` | `VARCHAR(16)` | no | Sales region of the shopper |
+| `product_id` | `BIGINT` | no | Product identifier |
+| `revenue` | `DECIMAL(12,2)` | no | Order value in USD for purchase events, otherwise 0.00 |
 
-The live response returned all seven columns above. It identified
-`event_time`, `event_id`, and `user_id` as key columns, reported zero secondary
-indexes, and did not return a Doris key model, distribution definition, or
-partition definition. An independent `DESCRIBE events` using `mcp_reader`
-matched every returned column, type, nullability flag, key flag, and default.
+The `get_table_context` result contains all seven columns, with their types,
+nullability, key flags, defaults, and comments, plus the table comment. Its
+`indexes` section reports zero secondary indexes. Its `basic` section reports
+a row count of 14,307: a table statistic that Doris refreshes about once a
+minute, not a `COUNT(*)`, which is why Lab section 2 waits for it. The result
+does not contain the key model, the distribution, or the partitioning.
 
 ![Codex discovers the catalog domain and retrieves the real events table context](assets/codex-catalog-grounding.png)
 
@@ -671,7 +640,7 @@ proves only how the agent summarized that context.
 Continue in the same conversation:
 
 > Using the schema you just inspected, count events and distinct users for
-> each `event_type` from 2020-03-01 inclusive to 2020-03-09 exclusive. Sort by
+> each `event_type` from 2026-03-09 inclusive to 2026-03-16 exclusive. Sort by
 > event count descending and return at most 10 rows. Use read-only SQL, and
 > separate query facts from interpretation.
 
@@ -691,33 +660,16 @@ SELECT
     event_type,
     COUNT(*) AS event_count,
     COUNT(DISTINCT user_id) AS distinct_users
-FROM doris_course.events
-WHERE event_time >= '2020-03-01 00:00:00'
-  AND event_time <  '2020-03-09 00:00:00'
+FROM ai_course.events
+WHERE event_time >= '2026-03-09 00:00:00'
+  AND event_time <  '2026-03-16 00:00:00'
 GROUP BY event_type
 ORDER BY event_count DESC
 LIMIT 10;
 ```
 
-The exact result values come from the current verified baseline. Reproduce the
-same SQL outside the Agent before accepting its numbers:
-
-```bash
-mysql -h 127.0.0.1 -P 19030 -u mcp_reader -p \
-  --database doris_course \
-  --execute "
-SELECT
-    event_type,
-    COUNT(*) AS event_count,
-    COUNT(DISTINCT user_id) AS distinct_users
-FROM events
-WHERE event_time >= '2020-03-01 00:00:00'
-  AND event_time <  '2020-03-09 00:00:00'
-GROUP BY event_type
-ORDER BY event_count DESC
-LIMIT 10;
-"
-```
+Reproduce the same SQL outside the Agent before accepting its numbers: Lab
+section 5 runs it directly as `mcp_reader`.
 
 Compare the complete result, not just the first row. The expected controls are:
 
@@ -728,16 +680,16 @@ Compare the complete result, not just the first row. The expected controls are:
 - `LIMIT 10`; and
 - no DDL, DML, administrative statement, or stacked second statement.
 
-The live tool call returned three rows:
+The tool call returns three rows:
 
 | `event_type` | `event_count` | `distinct_users` |
 | --- | ---: | ---: |
-| `view` | 5,010,899 | 817,375 |
-| `cart` | 201,943 | 86,911 |
-| `purchase` | 69,416 | 45,818 |
+| `view` | 2,904 | 453 |
+| `cart` | 238 | 204 |
+| `purchase` | 106 | 94 |
 
-The independent MySQL client returned the same three rows and values in the
-same order. The Server result also reported `status=success`,
+The direct query in Lab section 5 returns the same three rows and values in the
+same order. The Server result also reports `status=success`,
 `operation=SELECT`, `truncated=false`, and no warnings.
 
 ![Codex executes the bounded read-only aggregation and returns the real Doris rows](assets/codex-readonly-query.png)
@@ -745,7 +697,7 @@ same order. The Server result also reported `status=success`,
 *The numbered annotations identify the two time predicates, `LIMIT 10`, and
 the successful tool status. The result table is the actual local Doris result.*
 
-Treat the MySQL client result as the numerical cross-check. The Agent may make
+Treat the direct query as the numerical cross-check. The Agent may make
 a useful interpretation, but that interpretation must not replace the returned
 rows.
 
@@ -804,8 +756,8 @@ The three requests should form one traceable chain:
 
 | Stage | Doris-backed fact | Agent responsibility | Independent check |
 | --- | --- | --- | --- |
-| Table context | Returned columns, types, and index sections | Summarize without inventing fields | Compare with `DESCRIBE` or the established Lab 1 contract |
-| Aggregation | Returned rows from the bounded `SELECT` | Separate result facts from interpretation | Run the same SQL with the MySQL client |
+| Table context | Returned columns, types, and index sections | Summarize without inventing fields | Compare with the table in Step 1, or with Lab section 6 |
+| Aggregation | Returned rows from the bounded `SELECT` | Separate result facts from interpretation | Run the same SQL directly (Lab section 5) |
 | Memory | Returned tracker, source, and availability fields | Preserve partial and warning evidence | Inspect the original structured tool result |
 
 An answer passes only when the trace, Doris result, and prose agree. A fluent
@@ -832,7 +784,7 @@ The child execution then carries three important fields:
 1. Domain discovery obtains the authorized child schemas.
 2. `manifest_version` binds the next call to that capability generation.
 3. `child_tool` selects `get_table_context`.
-4. `arguments` supplies `database=doris_course` and `table=events`.
+4. `arguments` supplies `database=ai_course` and `table=events`.
 
 ### Preserve unavailability instead of bypassing it
 
@@ -875,7 +827,7 @@ on the MCP Server's read-only catalog alone.
 
 | Boundary | Course control | Risk it limits |
 | --- | --- | --- |
-| Doris identity | `mcp_reader` receives only `SELECT_PRIV` on `internal.doris_course.*`. | A Server or Host defect cannot use administrator privileges through this identity. |
+| Doris identity | `mcp_reader` receives only `SELECT_PRIV` on `internal.ai_course.*`. | A Server or Host defect cannot use administrator privileges through this identity. |
 | MCP Server | Built-in read-only tools, bounded schemas, result ceilings, and hierarchical discovery. | The model cannot turn a normal query child into arbitrary administration. |
 | Host | Local stdio process and tool approval. | A tool request remains visible at the user interaction boundary. |
 | Network and secrets | Doris ports bind only to loopback; the password stays in an ignored protected file. | The lesson does not create a new remote service or check credentials into the project. |
@@ -897,13 +849,13 @@ Changing several layers at once makes evidence harder to interpret.
 
 | Symptom | First check | Correct direction |
 | --- | --- | --- |
-| `19030` refuses the connection | Is the `doris-rta` container running and healthy? | Recover the Lab 1 sandbox before changing MCP files. |
-| The baseline table is absent or has unexpected rows | Does the Lab 1 validation pass? | Rerun the Lab 1 baseline section; do not create a replacement table here. |
+| `39030` refuses the connection | Is the `doris-ai` container running and healthy? | Run `lab.start()` or Lab section 1 before changing MCP files. |
+| The course table is absent or has unexpected rows | Does Lab section 2 pass? | Rerun Lab section 2; do not create a replacement table by hand. |
 | The Host reports that the Server failed to start | Does the absolute launcher path exist and have execute permission? | Run the launcher under the same local user and inspect stderr. |
 | CLI works but a GUI Host fails | Does the GUI inherit the same `PATH` and environment? | Keep absolute launcher, environment-file, and virtual-environment paths. |
-| The Server starts but Doris authentication fails | Can `mcp_reader` run the direct count query? | Correct the protected password or account grant; do not switch the Agent to `root`. |
+| The Server starts but Doris authentication fails | Does `lab.check_reader_login()` succeed? | Correct the protected password or account grant; do not switch the Agent to `root`. |
 | Tools are visible but a query is rejected | Is the SQL one bounded read-only statement? | Reduce scope, add the required bound, or correct the schema-derived SQL. |
-| `get_memory_stats` is unavailable or partial | Are `18030` and `18040` reachable, and are FE/BE HTTP settings correct? | Repair the configured evidence route and preserve the unavailable reason. |
+| `get_memory_stats` is unavailable or partial | Are `38030` and `38040` reachable, and are FE/BE HTTP settings correct? | Repair the configured evidence route and preserve the unavailable reason. |
 | A child reports a stale manifest | Did capability or authorization state change? | Rediscover the domain with `{}` and use the new manifest version. |
 | A Host cannot complete progressive discovery | Does that Host support the hierarchical flow? | Record the incompatibility, then configure `MCP_TOOL_EXPOSURE_MODE=flat` before restart as a bounded fallback. |
 | The SQL result is correct but the explanation is not | Do the prose numbers and claims match the structured result? | Correct the interpretation; do not rerun unrelated tools to justify it. |
@@ -915,11 +867,11 @@ gallery of transient error dialogs.
 
 ### Completion checklist
 
-- [ ] The active Doris environment is the Level 1–8 single-FE, single-BE
-  `doris-rta` container.
-- [ ] Ports 19030, 18030, and 18040 are reachable only through the intended local
+- [ ] The active Doris environment is the module's single-FE, single-BE
+  `doris-ai` sandbox, or your own Doris 4.x.
+- [ ] Ports 39030, 38030, and 38040 are reachable only through the intended local
   mappings.
-- [ ] `doris_course.events` contains the verified Lab 1 baseline.
+- [ ] `ai_course.events` matches `datasets/events.yaml` (Lab section 2).
 - [ ] `mcp_reader` can read the course database and does not have Doris
   administrator, node, load, alter, create, or drop privileges.
 - [ ] The protected environment file is ignored by version control.
@@ -928,8 +880,8 @@ gallery of transient error dialogs.
 - [ ] The agent reads table context before generating the analytical SQL.
 - [ ] The generated SQL uses the required time range, grouping, order, and
   `LIMIT 10`.
-- [ ] The Agent's query rows match the same SQL executed through the MySQL
-  client.
+- [ ] The Agent's query rows match the same SQL executed directly (Lab
+  section 5).
 - [ ] The memory answer preserves source, `partial`, `warning`, and unavailable
   evidence exactly as returned.
 
@@ -954,11 +906,11 @@ gallery of transient error dialogs.
 
 | Stage | What you do | What the result establishes |
 | --- | --- | --- |
-| **Environment** | Reuse the verified Lab 1 container and event baseline. | MCP failures can be separated from missing Doris prerequisites. |
+| **Environment** | Start the module's sandbox and load the events table (Lab sections 1–2). | MCP failures can be separated from missing Doris prerequisites. |
 | **Identity** | Create `mcp_reader` with database-level read permission only. | Doris RBAC remains the final data boundary. |
 | **Launcher** | Read one protected local environment file and start stdio with absolute paths. | Host files avoid duplicated secrets and GUI `PATH` assumptions. |
 | **Host connection** | Register the launcher in at least one Host: Claude Desktop, Cursor, VS Code, or Codex. | The Host can initialize the local integration; other Hosts reuse the same shape. |
-| **Catalog grounding** | Ask the agent to inspect `doris_course.events`. | The answer begins from live schema evidence. |
+| **Catalog grounding** | Ask the agent to inspect `ai_course.events`. | The answer begins from live schema evidence. |
 | **Bounded query** | Ask for a fixed-window aggregation and reproduce it directly. | Agent output can be checked against Doris rows. |
 | **Memory evidence** | Ask for current memory trackers and keep source and warnings. | One `doris_cluster` path demonstrates bounded operational evidence. |
 | **Trace review** | Inspect discovery, manifest, child arguments, and result fields. | Product UI, protocol evidence, and prose interpretation remain distinct. |
