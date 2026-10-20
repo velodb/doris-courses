@@ -18,6 +18,7 @@ LEVEL1_LABS = (LAB1, LAB2, LAB3)
 FAILED_ORDER = ("service_name = 'checkout'", "span_name = 'oteldemo.CheckoutService/PlaceOrder'",
                 "status_code = 'STATUS_CODE_ERROR'")
 LAB4 = ROOT / "level2/module04-table-model/lab04_table_models.ipynb"
+LAB5 = ROOT / "level2/module05-partition-bucket/lab05_partition_and_bucket.ipynb"
 LAB6 = ROOT / "level2/module06-property-mv-index/lab06_properties_mv_index.ipynb"
 LAB7 = ROOT / "level2/module07-data-analysis-litefuse/lab07_data_analysis_litefuse.ipynb"
 OPTIONAL7 = ROOT / "level2/module07-data-analysis-litefuse/optional07_trace_a_real_model.ipynb"
@@ -86,7 +87,7 @@ class NotebookTests(unittest.TestCase):
         self.assertIn("metric_name = 'traces.span.metrics.calls'", metric)
 
     def test_exercises_have_a_collapsed_reference_solution(self):
-        for path in (*LEVEL1_LABS, LAB4):
+        for path in (*LEVEL1_LABS, LAB4, LAB5):
             cells = json.loads(path.read_text())["cells"]
             blank = [index for index, cell in enumerate(cells)
                      if cell["cell_type"] == "code" and "".join(cell["source"]).strip() == "# Your code here"]
@@ -144,7 +145,7 @@ class NotebookTests(unittest.TestCase):
             self.assertEqual(text.count(macro), 3, macro)
 
     def test_analysis_labs_check_their_data_before_using_it(self):
-        for path, table in ((LAB3, "FROM otel_traces"), (LAB4, "FROM otel_traces"), (LAB6, "FROM otel_logs"),
+        for path, table in ((LAB3, "FROM otel_traces"), (LAB4, "FROM otel_traces"), (LAB5, "FROM otel_traces"), (LAB6, "FROM otel_logs"),
                             (LAB7, "FROM otel_traces"), (LAB8, "FROM otel_metrics_gauge")):
             cells = code_cells(path)
             with self.subTest(notebook=path.name):
@@ -204,6 +205,35 @@ class NotebookTests(unittest.TestCase):
                 self.assertLess(cell.index(f"TRUNCATE TABLE {table}"), cell.index(f"INSERT INTO {table}"))
         # Dates and partition names in the statements go stale.
         self.assertNotRegex(text, r"20\d\d-\d\d-\d\d|PARTITION p\d{8}")
+
+    def test_module5_reads_the_plan_of_the_incident_window(self):
+        cells = code_cells(LAB5)
+        text = "\n".join(cells)
+        # The window starts at the first failed order, and the query filters on the partition column.
+        self.assertIn('INCIDENT_START = str(incident["first_failed_order"][0])', text)
+        self.assertIn("AND timestamp >= '{start}'", text)
+        for table in ("otel_traces", "spans_by_service"):
+            self.assertIn(f'lab.explain_scan(INCIDENT_QUERY.format(table="{table}", start=INCIDENT_START)', text)
+            self.assertIn(f'lab.tablet_rows("{table}")', text)
+        # The copy is bucketed by the service that the incident query filters on, and partitioned by its data.
+        copy = next(cell for cell in cells if "CREATE TABLE IF NOT EXISTS spans_by_service" in cell)
+        self.assertIn("DISTRIBUTED BY HASH(service_name) BUCKETS 10", copy)
+        self.assertIn("AUTO PARTITION BY RANGE (date_trunc(timestamp, 'day'))", copy)
+        self.assertIn('"partition.retention_count" = "7"', copy)
+        # Doris folds UTC_TIMESTAMP() when it plans, but not UTC_DATE(): a filter on it prunes nothing.
+        self.assertNotIn("UTC_DATE()", text)
+
+    def test_module5_cells_can_be_rerun(self):
+        cells = code_cells(LAB5)
+        text = "\n".join(cells)
+        tables = re.findall(r"CREATE TABLE (IF NOT EXISTS )?(\w+)", text)
+        self.assertEqual({table for _, table in tables}, {"spans_by_service", "spans_by_trace"})
+        for if_not_exists, table in tables:
+            self.assertTrue(if_not_exists, table)
+            load = next(cell for cell in cells if f"INSERT INTO {table}" in cell)
+            self.assertLess(load.index(f"TRUNCATE TABLE {table}"), load.index(f"INSERT INTO {table}"))
+        # Dates and partition names go stale; the old hourly and monthly tables wrote down 242 partitions.
+        self.assertNotRegex(text, r"20\d\d-\d\d-\d\d|PARTITION p\d{8}|history_partition_num")
 
     def test_labs_show_only_tables_that_exist(self):
         # A Lab may look at the exporter's tables and at the tables that it or an earlier Lab creates.

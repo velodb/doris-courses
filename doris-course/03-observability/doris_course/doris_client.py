@@ -118,6 +118,48 @@ def _scan_reported(profile: str) -> bool:
     return "DetailProfile" in profile and "OLAP_SCAN_OPERATOR" in profile.split("DetailProfile", 1)[1]
 
 
+# The sections in which an EXPLAIN plan lists the materialized views that Doris tried.
+VIEW_REWRITE_RESULTS = {
+    "MaterializedViewRewriteSuccessAndChose:": "chosen",
+    "MaterializedViewRewriteSuccessButNotChose:": "usable, not chosen",
+    "MaterializedViewRewriteFail:": "not usable",
+}
+
+
+def _plan_scans(lines: Sequence[str]) -> tuple[list[dict], list[dict]]:
+    """The table scans and the materialized views that a Doris EXPLAIN plan lists.
+
+    A scan reads a table, or one of its materialized views, which TABLE: names in
+    parentheses; its partitions= and tablets= lines say how many it reads of how
+    many there are. Doris lists each materialized view that it considered under
+    one of VIEW_REWRITE_RESULTS, with the reason when it could not use it.
+    """
+    scans, views, result = [], [], None
+    for line in lines:
+        text = line.strip()
+        if "VOlapScanNode" in text:
+            scans.append({"table": "", "reads": "", "partitions": "", "tablets": "", "predicates": ""})
+        elif scans and result is None and text.startswith("TABLE:"):
+            name = text[len("TABLE:"):].split(",")[0].strip()
+            scans[-1]["table"], _, index = name.partition("(")
+            scans[-1]["reads"] = index.rstrip(")")
+        elif scans and result is None and text.startswith("PREDICATES:"):
+            scans[-1]["predicates"] = text[len("PREDICATES:"):].strip()
+        elif scans and result is None and text.startswith("partitions="):
+            scans[-1]["partitions"] = text[len("partitions="):]
+        elif scans and result is None and text.startswith("tablets="):
+            scans[-1]["tablets"] = text[len("tablets="):].split(",")[0]
+        elif text in VIEW_REWRITE_RESULTS:
+            result = VIEW_REWRITE_RESULTS[text]
+        elif text.startswith("FailInfo:") and views:
+            views[-1]["reason"] = text[len("FailInfo:"):].strip()
+        elif result and text.startswith(("CBO.", "RBO.")):
+            views.append({"materialized_view": text.split()[0].rsplit(".", 1)[-1], "result": result, "reason": ""})
+        elif text.startswith("========== STATISTICS"):  # the plan and its materializations end here
+            break
+    return scans, views
+
+
 # Grafana's rules API lists every Grafana-managed alert rule with the instances of
 # its last evaluation. Grafana's anonymous viewer, which the DOG stack enables, may
 # read it, so the Labs do not depend on the admin password.
@@ -419,6 +461,57 @@ class ObservabilityLab:
              for name, meaning in SCAN_FILTER_COUNTERS]
         ))
         return pd.Series(totals, name="rows")
+
+    def explain_scan(self, statement: str, *, title: str = "Which partitions and tablets the query reads") -> pd.DataFrame:
+        """Show which partitions and tablets each table scan of a query reads, and return the scans.
+
+        Runs EXPLAIN, which plans the query without running it, and shows one row
+        per scan, then the whole plan in a collapsed box. When Doris considered
+        materialized views for the query, a second table lists them with the
+        result and the reason.
+        """
+        clean = statement.strip().rstrip(";")
+        show_sql(title, f"EXPLAIN {clean}")
+        lines = [str(line) for line in self.query(f"EXPLAIN {clean}").iloc[:, 0]]
+        scans, views = _plan_scans(lines)
+        frame = pd.DataFrame(scans, columns=["table", "reads", "partitions", "tablets", "predicates"])
+        if frame.empty:
+            card("The plan reads no table: the partitions that the query's filters select hold no rows, "
+                 "so Doris answers without reading any data.", "info", "No table scan")
+        else:
+            show_frame(f"{title} · {len(frame)} scan(s)", frame)
+        if views:
+            show_frame("The materialized views that Doris considered",
+                       pd.DataFrame(views, columns=["materialized_view", "result", "reason"]))
+        show_log("The whole plan", "\n".join(lines))
+        return frame
+
+    def tablet_rows(self, table: str, *, title: str | None = None) -> pd.DataFrame:
+        """Count the rows of each tablet in the partitions of ``table`` that have data, and return them.
+
+        SHOW TABLETS shows a tablet's row count only after its BE reports it, so
+        each tablet is counted with SELECT COUNT(*) ... TABLET(<id>), which reads
+        that tablet now. The statements are shown first.
+        """
+        show_sql(title or f"Count the rows in each tablet of {table}", "\n".join((
+            f"SHOW PARTITIONS FROM {table}",
+            f"SHOW TABLETS FROM {table} PARTITION (<partition>)",
+            f"SELECT COUNT(*) FROM {table} TABLET(<tablet id>)",
+        )))
+        partitions = self.query(f"SHOW PARTITIONS FROM {table}")
+        rows = []
+        for partition, version in zip(partitions["PartitionName"], partitions["VisibleVersion"]):
+            if int(version) <= 1:  # every load adds a version: version 1 has no data
+                continue
+            for tablet in self.query(f"SHOW TABLETS FROM {table} PARTITION ({partition})")["TabletId"]:
+                count = self.query(f"SELECT COUNT(*) AS row_count FROM {table} TABLET({tablet})")["row_count"].iloc[0]
+                rows.append({"partition": partition, "tablet": str(tablet), "rows": int(count)})
+        frame = pd.DataFrame(rows, columns=["partition", "tablet", "rows"])
+        totals = frame.groupby("partition")["rows"].transform("sum")
+        frame["percent_of_partition"] = (100 * frame["rows"] / totals.where(totals > 0)).round(1)
+        show_frame(f"Rows in each tablet of {table} · {len(frame)} tablet(s) in "
+                   f"{frame['partition'].nunique()} partition(s) with data", frame)
+        return frame
 
     def _read(self, url: str, service: str, hint: str, *, auth: tuple[str, str] | None = None) -> str:
         """GET a page from Grafana, Mailpit, or Litefuse; stop with a card when the service does not answer.

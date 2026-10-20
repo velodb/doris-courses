@@ -223,5 +223,89 @@ class QueryProfileTests(unittest.TestCase):
         self.assertIn("profile_level 2", card.call_args.args[0])
 
 
+# A shortened EXPLAIN plan of Doris 4.1.3: a scan that a materialized view answers,
+# and a second view that Doris could not use.
+PLAN = """PLAN FRAGMENT 0
+  0:VOlapScanNode(192)
+     TABLE: otel.otel_traces(server_minutes_mv), PREAGGREGATION: ON
+     PREDICATES: (service_mv[#1] = 'payment')
+     partitions=1/5 (p20261020)
+     tablets=10/10, tabletList=1792538591526,1792538591528 ...
+     cardinality=2553, avgRowSize=0.0, numNodes=1
+
+========== MATERIALIZATIONS ==========
+
+MaterializedView
+MaterializedViewRewriteSuccessAndChose:
+ CBO.internal.otel.otel_traces.server_minutes_mv chose
+
+MaterializedViewRewriteSuccessButNotChose:
+
+MaterializedViewRewriteFail:
+ CBO.internal.otel.otel_traces.other_mv fail
+  FailInfo: View struct info is invalid, View dimensions doesn't not cover the query dimensions
+
+========== STATISTICS ==========
+TABLE: not a scan
+"""
+
+
+class PlanTests(unittest.TestCase):
+    def explain(self, plan):
+        lab = object.__new__(ObservabilityLab)
+        frame = pd.DataFrame({"Explain String(Nereids Planner)": plan.splitlines()})
+        with patch.object(ObservabilityLab, "query", return_value=frame) as query, \
+             patch("doris_course.doris_client.show_sql") as statement, \
+             patch("doris_course.doris_client.show_frame") as shown, \
+             patch("doris_course.doris_client.show_log") as log, \
+             patch("doris_course.doris_client.card") as card:
+            scans = lab.explain_scan("SELECT 1;", title="The plan")
+        return scans, query, statement, shown, log, card
+
+    def test_scans_and_materialized_views_are_read_from_the_plan(self):
+        scans, query, statement, shown, log, card = self.explain(PLAN)
+        query.assert_called_once_with("EXPLAIN SELECT 1")
+        statement.assert_called_once_with("The plan", "EXPLAIN SELECT 1")
+        self.assertEqual(scans.to_dict("records"), [{
+            "table": "otel.otel_traces", "reads": "server_minutes_mv", "partitions": "1/5 (p20261020)",
+            "tablets": "10/10", "predicates": "(service_mv[#1] = 'payment')",
+        }])
+        views = shown.call_args_list[1].args[1]
+        self.assertEqual(views.to_dict("records"), [
+            {"materialized_view": "server_minutes_mv", "result": "chosen", "reason": ""},
+            {"materialized_view": "other_mv", "result": "not usable",
+             "reason": "View struct info is invalid, View dimensions doesn't not cover the query dimensions"},
+        ])
+        log.assert_called_once_with("The whole plan", PLAN.rstrip("\n"))
+        card.assert_not_called()
+
+    def test_a_plan_without_a_scan_is_reported_with_a_card(self):
+        # A filter that selects only empty partitions: Doris plans an empty set.
+        scans, _, _, shown, _, card = self.explain("PLAN FRAGMENT 0\n  0:VEMPTYSET(115)\n========== STATISTICS ==========\n")
+        self.assertTrue(scans.empty)
+        shown.assert_not_called()
+        self.assertEqual(card.call_args.args[2], "No table scan")
+
+    def test_tablet_rows_counts_each_tablet_of_the_partitions_with_data(self):
+        lab = object.__new__(ObservabilityLab)
+        answers = {
+            "SHOW PARTITIONS FROM t": pd.DataFrame({"PartitionName": ["p1", "p2"], "VisibleVersion": ["1", "3"]}),
+            "SHOW TABLETS FROM t PARTITION (p2)": pd.DataFrame({"TabletId": ["11", "12"]}),
+            "SELECT COUNT(*) AS row_count FROM t TABLET(11)": pd.DataFrame({"row_count": [30]}),
+            "SELECT COUNT(*) AS row_count FROM t TABLET(12)": pd.DataFrame({"row_count": [10]}),
+        }
+        with patch.object(ObservabilityLab, "query", side_effect=lambda statement: answers[statement]) as query, \
+             patch("doris_course.doris_client.show_sql") as statement, \
+             patch("doris_course.doris_client.show_frame"):
+            frame = lab.tablet_rows("t")
+        # Version 1 is an empty partition: its tablets are not counted.
+        self.assertNotIn("SHOW TABLETS FROM t PARTITION (p1)", [call.args[0] for call in query.call_args_list])
+        self.assertEqual(frame.to_dict("records"), [
+            {"partition": "p2", "tablet": "11", "rows": 30, "percent_of_partition": 75.0},
+            {"partition": "p2", "tablet": "12", "rows": 10, "percent_of_partition": 25.0},
+        ])
+        self.assertIn("SELECT COUNT(*) FROM t TABLET(<tablet id>)", statement.call_args.args[1])
+
+
 if __name__ == "__main__":
     unittest.main()
