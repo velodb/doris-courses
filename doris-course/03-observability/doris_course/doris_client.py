@@ -101,14 +101,19 @@ fi
 """
 
 
-# Row counters of a table scan in a Query Profile. For a filter that Doris checks
-# against zone maps and an inverted index, such as service_name = 'cart' in
-# Module 6, each row of the scanned partitions is counted in exactly one of them.
-# Filters on leading key columns and bloom filters have counters of their own.
+# Row counters of a table scan in a Query Profile. For filters that Doris checks
+# against zone maps, inverted indexes, and the values it reads, such as the
+# access-log search of Module 6, each row of the scanned partitions is counted in
+# exactly one of them. A filter on a column's value, such as service_name = 'cart',
+# drops rows in RowsVectorPredFiltered; a filter expression, such as LIKE or a
+# MATCH_PHRASE that Doris evaluates without the index, in RowsExprPredFiltered
+# (SegmentIterator::_execute_common_expr in 4.1.3). Filters on leading key columns
+# and bloom filters have counters of their own.
 SCAN_FILTER_COUNTERS = (
     ("RowsStatsFiltered", "Skipped unread: the zone map (minimum and maximum) of their segment or page rules out a match"),
     ("RowsInvertedIndexFiltered", "Skipped unread: the inverted index shows that they do not match"),
-    ("RowsVectorPredFiltered", "Read, then dropped: their values did not match the filter"),
+    ("RowsVectorPredFiltered", "Read, then dropped: their values did not match a filter on a column"),
+    ("RowsExprPredFiltered", "Read, then dropped: a filter expression, such as LIKE or a MATCH without its index, did not match"),
     ("RowsRead", "Read, and passed every filter"),
 )
 
@@ -461,6 +466,12 @@ class ObservabilityLab:
              for name, meaning in SCAN_FILTER_COUNTERS]
         ))
         return pd.Series(totals, name="rows")
+
+    def show_create_table(self, table: str) -> str:
+        """Show the statement that SHOW CREATE TABLE returns for ``table``, as text, and return it."""
+        statement = str(self.query(f"SHOW CREATE TABLE {table}").iloc[0, 1])
+        show_sql(f"SHOW CREATE TABLE {table} returns", statement)
+        return statement
 
     def explain_scan(self, statement: str, *, title: str = "Which partitions and tablets the query reads") -> pd.DataFrame:
         """Show which partitions and tablets each table scan of a query reads, and return the scans.

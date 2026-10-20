@@ -31,12 +31,14 @@ DetailProfile(a1-b2):
                    - RowsInvertedIndexFiltered: 3.891K (3891)
                    - RowsStatsFiltered: 22.38K (22380)
                    - RowsVectorPredFiltered: 0
+                   - RowsExprPredFiltered: 0
           OLAP_SCAN_OPERATOR(nereids_id=66. table_name=otel_logs(otel_logs))(id=0):
                - RowsRead: 14
                 SegmentIterator:
                    - RowsInvertedIndexFiltered: 756
                    - RowsStatsFiltered: 1.673K (1673)
                    - RowsVectorPredFiltered: 0
+                   - RowsExprPredFiltered: 12
 """
 QUERY = "SELECT severity_text, COUNT(*) AS log_rows FROM otel_logs WHERE service_name = 'cart' GROUP BY severity_text"
 PROFILE_ROW = {"Profile ID": "a1-b2", "Start Time": "2026-10-20 06:54:14", "Total": "11ms", "Sql Statement": QUERY}
@@ -205,6 +207,7 @@ class QueryProfileTests(unittest.TestCase):
             "RowsStatsFiltered": 24053,
             "RowsInvertedIndexFiltered": 4647,
             "RowsVectorPredFiltered": 0,
+            "RowsExprPredFiltered": 12,
             "RowsRead": 276,
         })
         frame = shown.call_args.args[1]
@@ -219,7 +222,8 @@ class QueryProfileTests(unittest.TestCase):
             with self.assertRaises(EnvironmentNotReady):
                 self.lab().scan_filters(level1)
         shown.assert_not_called()
-        self.assertIn("RowsStatsFiltered, RowsVectorPredFiltered, RowsRead", card.call_args.args[0])
+        self.assertIn("RowsStatsFiltered, RowsVectorPredFiltered, RowsExprPredFiltered, RowsRead",
+                      card.call_args.args[0])
         self.assertIn("profile_level 2", card.call_args.args[0])
 
 
@@ -285,6 +289,16 @@ class PlanTests(unittest.TestCase):
         self.assertTrue(scans.empty)
         shown.assert_not_called()
         self.assertEqual(card.call_args.args[2], "No table scan")
+
+    def test_create_table_statement_is_shown_as_text(self):
+        lab = object.__new__(ObservabilityLab)
+        ddl = "CREATE TABLE `otel_logs` (\n  `timestamp` datetime(6) NULL\n) ENGINE=OLAP"
+        answer = pd.DataFrame({"Table": ["otel_logs"], "Create Table": [ddl]})
+        with patch.object(ObservabilityLab, "query", return_value=answer) as query, \
+             patch("doris_course.doris_client.show_sql") as statement:
+            self.assertEqual(lab.show_create_table("otel_logs"), ddl)
+        query.assert_called_once_with("SHOW CREATE TABLE otel_logs")
+        statement.assert_called_once_with("SHOW CREATE TABLE otel_logs returns", ddl)
 
     def test_tablet_rows_counts_each_tablet_of_the_partitions_with_data(self):
         lab = object.__new__(ObservabilityLab)

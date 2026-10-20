@@ -87,7 +87,7 @@ class NotebookTests(unittest.TestCase):
         self.assertIn("metric_name = 'traces.span.metrics.calls'", metric)
 
     def test_exercises_have_a_collapsed_reference_solution(self):
-        for path in (*LEVEL1_LABS, LAB4, LAB5):
+        for path in (*LEVEL1_LABS, LAB4, LAB5, LAB6):
             cells = json.loads(path.read_text())["cells"]
             blank = [index for index, cell in enumerate(cells)
                      if cell["cell_type"] == "code" and "".join(cell["source"]).strip() == "# Your code here"]
@@ -241,7 +241,9 @@ class NotebookTests(unittest.TestCase):
         for path in sorted(ROOT.glob("level*/module*/lab*.ipynb")):
             text = "\n".join(code_cells(path))
             created.update(re.findall(r"(?<!SHOW )CREATE TABLE (?:IF NOT EXISTS )?`?(\w+)", text))
-            for table in re.findall(r"SHOW (?:CREATE TABLE|PARTITIONS FROM) `?(\w+)", text):
+            shown = re.findall(r"SHOW (?:CREATE TABLE|PARTITIONS FROM) `?(\w+)", text)
+            shown += re.findall(r'lab\.(?:show_create_table|tablet_rows)\("(\w+)"', text)
+            for table in shown:
                 with self.subTest(notebook=path.name, table=table):
                     self.assertIn(table, created)
 
@@ -263,6 +265,53 @@ class NotebookTests(unittest.TestCase):
         # The comparison turns the index off for the session, and on again even when a step fails.
         comparison = next(cell for cell in cells if "enable_inverted_index_query = false" in cell)
         self.assertLess(comparison.index("finally:"), comparison.index("enable_inverted_index_query = true"))
+
+    def test_module6_measures_the_incident_search_with_and_without_the_index(self):
+        query = next(cell for cell in code_cells(LAB6) if "INDEX_QUERY = " in cell)
+        # The search of Module 3: two phrases, so that the storefront's ?currencyCode=USD requests match too.
+        self.assertIn("body MATCH_PHRASE 'POST /api/checkout'\n", query)
+        self.assertIn("body MATCH_PHRASE 'HTTP/1.1 500'", query)
+        # A COUNT(*) alone is answered from the index (COUNT_ON_INDEX) and reads no rows.
+        self.assertIn("GROUP BY service_name", query)
+        # The plans and the screenshots of them are cells now.
+        self.assertFalse((LAB6.parent / "images").exists())
+        self.assertNotIn("<img", markdown_text(LAB6))
+
+    def test_module6_builds_the_view_before_relying_on_it(self):
+        cells = code_cells(LAB6)
+        create = next(cell for cell in cells if "CREATE MATERIALIZED VIEW" in cell)
+        # Doris 4.1.3 does not skip an existing synchronous view, even with IF NOT EXISTS.
+        self.assertNotIn("IF NOT EXISTS server_minutes_mv", create)
+        self.assertLess(create.index("DROP MATERIALIZED VIEW IF EXISTS server_minutes_mv ON otel_traces"),
+                        create.index("CREATE MATERIALIZED VIEW server_minutes_mv"))
+        # The build is a job; the cell waits for this run's job to finish (F-08).
+        self.assertIn("State = 'FINISHED' AND CreateTime >= '{created_after}'", create)
+        self.assertLess(create.index("CREATE MATERIALIZED VIEW"), create.index("lab.wait_for_rows("))
+        # The view's columns cannot take the names of the table's columns.
+        view = create.split("CREATE MATERIALIZED VIEW server_minutes_mv AS", 1)[1].split("FROM otel_traces")[0]
+        for alias in re.findall(r"\bAS (\w+)", view):
+            self.assertTrue(alias.startswith("mv_"), alias)
+        later = cells[cells.index(create) + 1:]
+        self.assertTrue(any("lab.explain_scan(MINUTES_QUERY" in cell for cell in later))
+
+    def test_module6_compares_compression_on_the_same_rows(self):
+        cells = code_cells(LAB6)
+        load = next(cell for cell in cells if "logs_{algorithm}" in cell)
+        # Two tables that differ only in compression, each loaded once with the same rows.
+        self.assertIn('for algorithm in ("zstd", "lz4"):', load)
+        self.assertIn('PROPERTIES ("compression" = "{algorithm}")', load)
+        self.assertIn("DISTRIBUTED BY RANDOM BUCKETS 1", load)
+        self.assertIn("WHERE timestamp < '{copy_limit}'", load)
+        self.assertLess(load.index("TRUNCATE TABLE logs_{algorithm}"), load.index("INSERT INTO logs_{algorithm}"))
+        # The sizes come from the BEs' reports, which lag: wait until both report every row.
+        sizes = next(cell for cell in cells if "DATA_LENGTH" in cell)
+        self.assertIn("lab.wait_for_rows(", sizes)
+        self.assertIn("TABLE_ROWS = {copied}", sizes)
+        self.assertIn("min_rows=2", sizes)
+        # ZSTD is the default of Doris 4.x (F-01).
+        text = markdown_text(LAB6)
+        self.assertIn("ZSTD is the default in Doris 4.x", text)
+        self.assertNotRegex(text, r"default compression algorithm,? LZ4")
 
     def test_module8_alert_query_measures_how_busy_each_host_is(self):
         query = next(cell for cell in code_cells(LAB8) if "HOST_CPU_QUERY = " in cell)
