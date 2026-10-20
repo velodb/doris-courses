@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import http.client
 import json
+import os
 import re
 import shlex
 import subprocess
@@ -55,6 +56,31 @@ LITEFUSE_PORTS = ((env.LITEFUSE_PORT, "DORIS_OBS_LITEFUSE_PORT", "Litefuse web U
 LITEFUSE_COMPOSE_FILE = "environments/litefuse/compose.litefuse.yml"
 LITEFUSE_HINT = (f"Read the log with docker logs {env.LITEFUSE_WEB_CONTAINER}, start Litefuse again with "
                  "lab.start_litefuse(), then rerun this cell.")
+LOCAL_MODEL_PORTS = ((env.LOCAL_MODEL_PORT, "DORIS_OBS_LLM_PORT", "Local model server (llama.cpp)"),)
+LOCAL_MODEL_COMPOSE_FILE = "environments/llm/compose.llm.yml"
+
+# Download the model file into the volume of the model server, once, and check it.
+# It runs in the server's image, which has curl and sha256sum; $0 is the URL.
+DOWNLOAD_LOCAL_MODEL = r"""
+set -e
+model=/models/$MODEL_FILE
+if [ -f "$model" ]; then
+  echo "Already downloaded: $model"
+else
+  curl -fsSL -o "$model.part" "$0" &
+  download=$!
+  while kill -0 "$download" 2>/dev/null; do
+    sleep 5
+    echo "Downloaded $(( $(stat -c %s "$model.part" 2>/dev/null || echo 0) / 1000000 )) MB of $MODEL_MB MB"
+  done
+  if ! wait "$download"; then
+    echo "The download failed. If $0 cannot be reached, set DORIS_OBS_LLM_MODEL_URL to the same file on a mirror before starting Jupyter."
+    exit 1
+  fi
+  mv "$model.part" "$model"
+fi
+echo "$MODEL_SHA256  $model" | sha256sum -c -
+"""
 
 # The override files replace upstream lists with the !override merge tag (Compose 2.24.4).
 MIN_COMPOSE_VERSION = (2, 24, 4)
@@ -220,6 +246,11 @@ class ObservabilityLab:
     def litefuse_url(self) -> str:
         """The Litefuse web UI and API on this host."""
         return f"http://127.0.0.1:{env.LITEFUSE_PORT}"
+
+    @property
+    def local_model_url(self) -> str:
+        """The local model server on this host; its OpenAI-compatible API is under /v1."""
+        return f"http://127.0.0.1:{env.LOCAL_MODEL_PORT}"
 
     def sql(
         self,
@@ -894,6 +925,82 @@ echo "[2/2] Show the Litefuse services"
         """Stop and remove the Litefuse containers. Its user, keys, and traces stay for the next start."""
         self.shell(f"docker compose -p {env.LITEFUSE_PROJECT} down", title="Stop Litefuse")
 
+    def start_local_model(self, *, timeout_seconds: int = 120) -> None:
+        """Download the course's small open model once, then serve it with llama.cpp's server.
+
+        Returns once the server answers and lists the model. The model file is
+        checked against its SHA-256 at every start.
+        """
+        self.ensure_docker_ready()
+        self._check_compose_version()
+        self._check_ports(LOCAL_MODEL_PORTS, (env.LOCAL_MODEL_CONTAINER,))
+        compose = f"docker compose -p {env.LOCAL_MODEL_PROJECT} -f {LOCAL_MODEL_COMPOSE_FILE}"
+        self.shell(f"""set -euo pipefail
+
+echo "[1/3] Download the model file once ({env.LOCAL_MODEL_FILE}, 491 MB)"
+{compose} run --rm --no-deps --entrypoint sh \\
+  -e MODEL_FILE={env.LOCAL_MODEL_FILE} -e MODEL_SHA256={env.LOCAL_MODEL_SHA256} -e MODEL_MB=491 \\
+  llm -c {shlex.quote(DOWNLOAD_LOCAL_MODEL)} {shlex.quote(env.LOCAL_MODEL_URL)}
+
+echo "[2/3] Start the model server"
+{compose} up -d
+
+echo "[3/3] Show the model server"
+{compose} ps
+""", title="Start the local model")
+        self._wait_for_local_model(timeout_seconds)
+
+    def _wait_for_local_model(self, timeout_seconds: int) -> None:
+        """Wait until the model server answers, then show the models that it serves."""
+        health = f"{self.local_model_url}/health"
+        models = f"{self.local_model_url}/v1/models"
+        show_sql(
+            f"Wait until the model server answers (every 2 seconds for up to {timeout_seconds} seconds), "
+            "then list its models",
+            f'curl -s "{health}"\ncurl -s "{models}"',
+        )
+        started = time.monotonic()
+        while self._http_status(health) != 200:
+            if time.monotonic() - started >= timeout_seconds:
+                self._failure(
+                    "The model server does not answer",
+                    f"{health} did not answer with HTTP 200 within {timeout_seconds} seconds. Read the log with "
+                    f"docker logs {env.LOCAL_MODEL_CONTAINER}, then rerun this cell.",
+                )
+                raise EnvironmentNotReady(f"the model server did not answer within {timeout_seconds} seconds.")
+            time.sleep(2)
+        elapsed = time.monotonic() - started
+        served = [item.get("id") for item in json.loads(self._read(
+            models, "The model server", f"Read the log with docker logs {env.LOCAL_MODEL_CONTAINER}, "
+            "then rerun this cell.")).get("data") or []]
+        show_frame("Models that the server offers", pd.DataFrame({"model": served}))
+        card(
+            f"The model {env.LOCAL_MODEL} answers at {self.local_model_url}/v1, the OpenAI chat completions "
+            f"API (waited {elapsed:.0f} seconds).",
+            "ok",
+            "The local model is running",
+        )
+
+    def stop_local_model(self) -> None:
+        """Stop and remove the model server. The downloaded model file stays for the next start."""
+        self.shell(f"docker compose -p {env.LOCAL_MODEL_PROJECT} down", title="Stop the local model")
+
+    def openai_api_key(self) -> str:
+        """The OpenAI API key from the environment variable OPENAI_API_KEY; stop with a card when it is not set.
+
+        The key is read from the environment, not written in a notebook, so that
+        it never ends up in a file that is saved or shared.
+        """
+        key = os.environ.get("OPENAI_API_KEY", "").strip()
+        if not key:
+            self._failure(
+                "OPENAI_API_KEY is not set",
+                "Stop Jupyter, set the variable in the terminal, for example export OPENAI_API_KEY=sk-..., "
+                "start Jupyter again from that terminal, and rerun the cells. Or choose the local model.",
+            )
+            raise EnvironmentNotReady("OPENAI_API_KEY is not set.")
+        return key
+
     def check_trace_collector_port(self) -> None:
         """Show the host port of the Module 2 trace collector; stop when another program holds it."""
         self._check_ports(TRACE_COLLECTOR_PORTS, (env.TRACE_COLLECTOR_CONTAINER,))
@@ -902,7 +1009,8 @@ echo "[2/2] Show the Litefuse services"
         """Remove every container and network of this course, and its volumes unless keep_data.
 
         With keep_data=True, prepare_environment() and start_litefuse() later
-        start Doris, Grafana, and Litefuse again with the same data.
+        start Doris, Grafana, and Litefuse again with the same data, and
+        start_local_model() does not download the model again.
         """
         volumes = "" if keep_data else " --volumes"
         containers = " ".join((*env.MODULE2_COLLECTORS, env.CPU_LOAD_CONTAINER))
@@ -911,25 +1019,28 @@ echo "[2/2] Show the Litefuse services"
         # and the Module 2 collectors are attached to the doris-obs network: remove them first.
         script = f"""set -euo pipefail
 
-echo "[1/4] Remove the OpenTelemetry demo"
+echo "[1/5] Remove the OpenTelemetry demo"
 docker compose -p {env.DEMO_PROJECT} down
 
-echo "[2/4] Remove Litefuse"
+echo "[2/5] Remove Litefuse"
 docker compose -p {env.LITEFUSE_PROJECT} down{volumes}
 
-echo "[3/4] Remove the Module 2 collectors and the Module 8 CPU load"
+echo "[3/5] Remove the local model of Module 7's optional lab"
+docker compose -p {env.LOCAL_MODEL_PROJECT} down{volumes}
+
+echo "[4/5] Remove the Module 2 collectors and the Module 8 CPU load"
 for name in {containers}; do
   if docker container inspect "$name" >/dev/null 2>&1; then
     docker rm -f "$name"
   fi
 done
 
-echo "[4/4] Remove the DOG core services"
+echo "[5/5] Remove the DOG core services"
 docker compose -p {env.PROJECT} down{volumes}
 """
         self.shell(script, title="Remove the observability environment")
         self.connection = None
-        kept = ("The Doris, Grafana, and Litefuse volumes were kept." if keep_data
+        kept = ("The volumes of Doris, Grafana, Litefuse, and the local model were kept." if keep_data
                 else "Their volumes were removed too.")
         card(
             f"Removed the course containers and networks. {kept} The upstream checkout and the "
@@ -939,7 +1050,7 @@ docker compose -p {env.PROJECT} down{volumes}
         )
 
     def show_containers(self) -> None:
-        """Display the containers of this course: the DOG stack, the collectors, the demo, and Litefuse."""
+        """Display the containers of this course: the DOG stack, the collectors, the demo, Litefuse, and the model."""
         self.shell(
             f'docker ps -a --filter name={env.PROJECT} '
             '--format "table {{.Names}}\\t{{.Image}}\\t{{.Status}}\\t{{.Ports}}"',

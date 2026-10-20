@@ -15,6 +15,7 @@ LAB2 = ROOT / "level1/module02-data-ingest/lab02_ingest_observability_data.ipynb
 LAB4 = ROOT / "level2/module04-table-model/lab04_table_models.ipynb"
 LAB6 = ROOT / "level2/module06-property-mv-index/lab06_properties_mv_index.ipynb"
 LAB7 = ROOT / "level2/module07-data-analysis-litefuse/lab07_data_analysis_litefuse.ipynb"
+OPTIONAL7 = ROOT / "level2/module07-data-analysis-litefuse/optional07_trace_a_real_model.ipynb"
 LAB8 = ROOT / "level2/module08-alerting/lab08_alerting.ipynb"
 QUIZ8 = ROOT / "level2/module08-alerting/quiz08_alerting_rules.yaml"
 # The tables that the Doris exporter creates when a collector starts.
@@ -192,6 +193,35 @@ class NotebookTests(unittest.TestCase):
         self.assertIn(f"`{environment.LITEFUSE_USER_PASSWORD}`", markdown)
         self.assertNotIn("litefuse.cloud", markdown)
         self.assertNotIn("<img", markdown)
+
+    def test_module7_optional_lab_traces_a_real_model_without_keys_in_the_notebook(self):
+        cells = code_cells(OPTIONAL7)
+        text = "\n".join(cells)
+        litefuse = next(index for index, cell in enumerate(cells) if "lab.start_litefuse()" in cell)
+        model = next(index for index, cell in enumerate(cells) if "lab.start_local_model()" in cell)
+        choose = next(index for index, cell in enumerate(cells) if "MODEL_PROVIDER = " in cell)
+        app = next(index for index, cell in enumerate(cells) if "from langfuse.openai import OpenAI" in cell)
+        self.assertLess(litefuse, app)
+        self.assertLess(model, choose)
+        self.assertLess(choose, app)
+        # The local model is the default, under the name that the server offers it.
+        self.assertIn('MODEL_PROVIDER = "local"', cells[choose])
+        self.assertIn(f'"{environment.LOCAL_MODEL}"', cells[choose])
+        # An OpenAI key comes from the environment through the helper, never from the notebook.
+        self.assertIn("lab.openai_api_key()", cells[choose])
+        # (Litefuse's own key pair, sk-lf-..., is created by the course and may appear.)
+        self.assertNotRegex(text, r"OPENAI_API_KEY\"?\]?\s*=|sk-(?!lf-)[A-Za-z0-9]")
+        for word in ("%pip", "%env"):
+            self.assertNotIn(word, text)
+        # The wrapper records the call; the Lab reports nothing by hand.
+        self.assertIn('name="llm-answer"', cells[app])
+        self.assertNotIn("update_current_generation", text)
+        self.assertIn(f'os.environ["LANGFUSE_PUBLIC_KEY"] = "{environment.LITEFUSE_PUBLIC_KEY}"', cells[app])
+        self.assertIn("langfuse.flush()", cells[app])
+        wait = next(index for index, cell in enumerate(cells) if "lab.wait_for_rows(" in cell)
+        self.assertLess(app, wait)
+        # Lab 7 leads to the optional Lab.
+        self.assertIn(OPTIONAL7.name, markdown_text(LAB7))
 
     def test_span_durations_are_converted_from_microseconds(self):
         # The Doris exporter stores duration in microseconds (end_time minus timestamp).

@@ -1,6 +1,7 @@
 """Offline checks that every place naming a Docker resource or host port agrees."""
 
 import json
+import os
 import re
 import unittest
 from pathlib import Path
@@ -8,11 +9,20 @@ from pathlib import Path
 import yaml
 
 from doris_course import environment
-from doris_course.doris_client import CORE_PORTS, DEMO_PORTS, LITEFUSE_COMPOSE_FILE, LITEFUSE_PORTS, TRACE_COLLECTOR_PORTS
+from doris_course.doris_client import (
+    CORE_PORTS,
+    DEMO_PORTS,
+    LITEFUSE_COMPOSE_FILE,
+    LITEFUSE_PORTS,
+    LOCAL_MODEL_COMPOSE_FILE,
+    LOCAL_MODEL_PORTS,
+    TRACE_COLLECTOR_PORTS,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 ENVIRONMENT_DIR = ROOT / "environments/dog-stack"
 LITEFUSE_COMPOSE = ROOT / LITEFUSE_COMPOSE_FILE
+LOCAL_MODEL_COMPOSE = ROOT / LOCAL_MODEL_COMPOSE_FILE
 MODULE2_LAB = ROOT / "level1/module02-data-ingest/lab02_ingest_observability_data.ipynb"
 DEFAULTS = dict(re.findall(r'env_port\("(DORIS_OBS_\w+)", (\d+)\)', (ROOT / "doris_course/environment.py").read_text()))
 SHELL_DEFAULT = re.compile(r"\$\{(DORIS_OBS_\w+):-(\d+)\}")
@@ -68,7 +78,8 @@ class EnvironmentTests(unittest.TestCase):
                  environment.COLLECTOR_CONTAINER, environment.GRAFANA_CONTAINER, environment.MAILPIT_CONTAINER,
                  environment.DEMO_PROJECT, environment.DEMO_NETWORK, environment.DEMO_PROXY_CONTAINER,
                  *environment.MODULE2_COLLECTORS, environment.CPU_LOAD_CONTAINER,
-                 environment.LITEFUSE_PROJECT, environment.LITEFUSE_WEB_CONTAINER]
+                 environment.LITEFUSE_PROJECT, environment.LITEFUSE_WEB_CONTAINER,
+                 environment.LOCAL_MODEL_PROJECT, environment.LOCAL_MODEL_CONTAINER]
         for name in names:
             self.assertTrue(name.startswith("doris-obs"), name)
 
@@ -80,7 +91,7 @@ class EnvironmentTests(unittest.TestCase):
 
     def test_port_checks_cover_every_host_port(self):
         checked = {variable: port for port, variable, _purpose
-                   in CORE_PORTS + DEMO_PORTS + TRACE_COLLECTOR_PORTS + LITEFUSE_PORTS}
+                   in CORE_PORTS + DEMO_PORTS + TRACE_COLLECTOR_PORTS + LITEFUSE_PORTS + LOCAL_MODEL_PORTS}
         self.assertEqual(checked, {name: int(value) for name, value in DEFAULTS.items()})
 
     def test_dog_override_uses_the_python_names(self):
@@ -200,12 +211,33 @@ class EnvironmentTests(unittest.TestCase):
         self.assertRegex(environment.LITEFUSE_USER_PASSWORD, r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$")
         self.assertEqual(environment.DORIS_BE_HTTP_ENDPOINT, f"{environment.DORIS_CONTAINER}:8040")
 
-    def test_the_langfuse_sdk_is_pinned(self):
+    def test_the_llm_sdks_are_pinned(self):
         requirements = (ROOT / "requirements.txt").read_text().splitlines()
-        pinned = [line for line in requirements if line.startswith("langfuse")]
-        self.assertEqual(len(pinned), 1)
-        self.assertRegex(pinned[0], r"^langfuse==\d+\.\d+\.\d+$")
-        self.assertIn(f'"{pinned[0]}"', (ROOT / "pyproject.toml").read_text())
+        for package in ("langfuse", "openai"):
+            with self.subTest(package=package):
+                pinned = [line for line in requirements if line.startswith(package)]
+                self.assertEqual(len(pinned), 1)
+                self.assertRegex(pinned[0], rf"^{package}==\d+\.\d+\.\d+$")
+                self.assertIn(f'"{pinned[0]}"', (ROOT / "pyproject.toml").read_text())
+
+    def test_local_model_server_is_pinned_and_serves_the_python_model(self):
+        compose = load_compose(LOCAL_MODEL_COMPOSE)
+        server = compose["services"]["llm"]
+        self.assertEqual(list(compose["services"]), ["llm"])
+        self.assertEqual(server["container_name"], environment.LOCAL_MODEL_CONTAINER)
+        self.assertRegex(server["image"], r"^ghcr\.io/ggml-org/llama\.cpp:server-b\d+$")
+        self.assertEqual(server["ports"], ["127.0.0.1:${DORIS_OBS_LLM_PORT:-28080}:8080"])
+        self.assertEqual(server["volumes"], ["models:/models"])
+        command = server["command"]
+        # The server loads the file that start_local_model() downloads, under the name that requests use.
+        self.assertEqual(command[command.index("--model") + 1], f"/models/{environment.LOCAL_MODEL_FILE}")
+        self.assertEqual(command[command.index("--alias") + 1], environment.LOCAL_MODEL)
+        self.assertRegex(environment.LOCAL_MODEL_SHA256, r"^[0-9a-f]{64}$")
+        if "DORIS_OBS_LLM_MODEL_URL" not in os.environ:
+            # The file comes from a fixed commit of its repository, not from a branch that can move.
+            self.assertRegex(environment.LOCAL_MODEL_URL,
+                             rf"^https://huggingface\.co/[\w.-]+/[\w.-]+/resolve/[0-9a-f]{{40}}/"
+                             rf"{re.escape(environment.LOCAL_MODEL_FILE)}$")
 
     def test_module2_collectors_use_the_course_network_and_names(self):
         text = "\n".join(source for path, source in notebook_sources() if path == MODULE2_LAB)
