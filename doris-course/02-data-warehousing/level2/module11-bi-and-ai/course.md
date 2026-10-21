@@ -151,7 +151,7 @@ MCP client (an AI tool) → Doris MCP Server → Doris, as one read-only databas
 
 The server's own limits, such as allowed tools, timeouts, result sizes, and its log, add to the Doris account's privileges; they do not replace them. A safe setup gives the server an account that can read only the published views (Module 12), keeps its password out of notebooks and prompts, reviews the SQL that the tool generates, especially for sensitive columns and wide scans, limits rows and time ranges, treats text that comes back from tables as untrusted input, and keeps the audit records (Module 12). Never connect it as root, and never take a model's confidence for a check of a metric.
 
-Lab 11 installs no MCP server. The course [AI Integrations with Apache Doris](../../../04-ai-integrations/README.md) connects an AI tool to Doris through the MCP server, with a read-only account, as further reading.
+Lab 11 installs no MCP server. For further reading, [Module 1: Connect AI Agents to Apache Doris with MCP](../../../04-ai-integrations/level1/module01-doris-mcp/course.md) of the course AI Integrations with Apache Doris connects an AI tool to Doris through the MCP server, with a read-only account.
 
 ## 11.6 Optional: A Real Dashboard
 
