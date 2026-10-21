@@ -869,7 +869,8 @@ class DorisLab:
                 f"{expected_rows:,}. Complete the preceding insert cell first."
             )
 
-        deadline = time.monotonic() + timeout_seconds
+        started = time.monotonic()
+        deadline = started + timeout_seconds
         metadata_rows = None
         while time.monotonic() < deadline:
             tablets = self._metadata_rows(f"SHOW TABLETS FROM `{table_name}`")
@@ -883,7 +884,21 @@ class DorisLab:
                     per_tablet.get(tablet_id, 0), int(row["RowCount"])
                 )
             metadata_rows = sum(per_tablet.values())
-            if metadata_rows == expected_rows:
+            partitions = self._metadata_rows(f"SHOW PARTITIONS FROM `{table_name}`")
+            partition_rows = sum(max(int(row.get("RowCount", 0)), 0) for row in partitions)
+            if metadata_rows == expected_rows and partition_rows == expected_rows:
+                card(
+                    f"{len(per_tablet)} tablets and {len(partitions)} partition(s) report all "
+                    f"{expected_rows:,} rows (waited {time.monotonic() - started:.0f} seconds)",
+                    "ok",
+                    f"Tablet reports for {table_name} are complete",
+                )
+                self.show_statements(
+                    f"SELECT COUNT(*) AS row_count FROM {table_name}",
+                    f"SHOW TABLETS FROM {table_name}",
+                    f"SHOW PARTITIONS FROM {table_name}",
+                    title="SQL behind this check (the two SHOW statements repeat until their counts match)",
+                )
                 return
             time.sleep(2)
         raise self._timed_out(
