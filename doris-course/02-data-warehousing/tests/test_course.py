@@ -158,6 +158,19 @@ class RuntimeTest(unittest.TestCase):
         self.assertNotIn("columns", headers)
         self.assertFalse(put.call_args.kwargs["allow_redirects"])
 
+    def test_json_stream_load_reads_one_array_of_objects(self):
+        lab = WarehouseLab.__new__(WarehouseLab)
+        lab.database, lab.user, lab.password = "dw_course_l1_test", "student", "not-a-real-password"
+        response = Mock(status_code=200)
+        response.json.return_value = {"Status": "Success"}
+        with patch("requests.put", return_value=response) as put:
+            lab.stream_load("orders_raw", COURSE_ROOT / "datasets/raw_orders.json", "test", "input_id,order_id", format="json")
+        headers = put.call_args.kwargs["headers"]
+        self.assertEqual((headers["format"], headers["strip_outer_array"], headers["columns"]), ("json", "true", "input_id,order_id"))
+        self.assertNotIn("column_separator", headers)
+        with self.assertRaises(ValueError):
+            lab.stream_load("orders_raw", COURSE_ROOT / "datasets/raw_orders.json", "test", format="xml")
+
     def test_wwi_bundle_rejects_missing_or_changed_files(self):
         import hashlib
         import tempfile

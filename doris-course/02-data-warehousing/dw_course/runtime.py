@@ -220,16 +220,21 @@ class WarehouseLab:
             return cursor.executemany(statement, rows)
 
     def stream_load(self, table, path, label, columns=None, *, format="csv"):
-        """Use an explicitly configured BE HTTP endpoint; do not forward secrets on redirects."""
+        """Use an explicitly configured BE HTTP endpoint; do not forward secrets on redirects.
+
+        A JSON file holds one array of objects whose keys name the columns.
+        """
         table = identifier(table)
-        if format not in ("csv", "parquet"):
-            raise ValueError("This lab supports CSV and Parquet")
+        if format not in ("csv", "parquet", "json"):
+            raise ValueError("This lab supports CSV, Parquet, and JSON")
         headers = {
             "label": label, "format": format, "strict_mode": "true",
             "max_filter_ratio": "0", "group_commit": "off_mode",
         }
         if format == "csv":
             headers["column_separator"] = ","
+        if format == "json":
+            headers["strip_outer_array"] = "true"
         if columns is not None:
             headers["columns"] = columns
         endpoint = os.environ.get("DW_BE_HTTP_URL", "http://127.0.0.1:8040").rstrip("/")

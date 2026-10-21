@@ -94,8 +94,10 @@ This lab keeps fields unchanged and focuses on data acceptance. [Schema Change](
 
 ### Trace Every Error to Its Source
 
-The raw layer `orders_raw` initially stores business fields as strings and adds a stable input_id.
-Original values are not discarded when conversion fails, so you can later explain which row and field had a problem.
+The raw layer `orders_raw` stores business fields as strings and adds a stable input_id.
+Lab 6 loads the thirteen inputs from `raw_orders.json` with Stream Load, the method of Module 5: with `format=json` and `strip_outer_array=true`, each object of the file's array becomes a row, its keys matched to the columns named in `columns`.
+Because every business column is text, the load's strict mode has nothing to reject: `not-a-number` and a missing order ID arrive as they were sent.
+Original values are not discarded when conversion fails, so you can later explain which row and field had a problem. A typed staging table would reject those rows at the door, and their content would be lost.
 
 Two identifiers are needed here: `input_id` identifies a particular input received in this batch, while `order_id` identifies the business order.
 Even if an input lacks an order ID, input_id can still locate the raw record; when the same order arrives repeatedly,
@@ -261,7 +263,7 @@ Before starting, complete Module 5, understand the distinction between load resp
 
 Open [Lab 6](lab06_validate_orders.ipynb) and complete these steps in order:
 
-1. Stage thirteen input rows, including an invalid amount, a missing order ID, and an invalid customer.
+1. Stage thirteen input rows with Stream Load, including an invalid amount, a missing order ID, and an invalid customer.
 2. Explicitly route them into ten accepted rows and three rejected rows, tracing reasons by input_id.
 3. Check accepted records row by row, inject duplicate orders to verify that checks fail, then restore the correct data.
 
