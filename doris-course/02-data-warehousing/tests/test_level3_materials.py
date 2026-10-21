@@ -11,8 +11,6 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 LEVEL3 = ROOT / "level3"
-# Labs rewritten in the course's Lab template; tests/test_learning_flow.py checks their form.
-REWRITTEN = {"lab12_publishing_permissions_audit.ipynb", "lab13_storage_and_lifecycle.ipynb"}
 
 
 class Level3MaterialsTest(unittest.TestCase):
@@ -89,34 +87,6 @@ class Level3MaterialsTest(unittest.TestCase):
                 self.assertIn(section, guide, module)
             self.assertGreaterEqual(len(guide), 4000, module)
 
-    def test_labs_explain_verify_and_clean_up_the_work(self):
-        required_markdown = ("What You Will Do", "Prerequisites", "Independent Exercise", "Reference Explanation", "Lab Review")
-        for path in sorted(p for p in LEVEL3.glob("module*/lab*.ipynb") if p.name not in REWRITTEN):
-            notebook = nbformat.read(path, as_version=4)
-            nbformat.validate(notebook)
-            markdown = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "markdown")
-            source = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "code")
-            for cell in notebook.cells:
-                if cell.cell_type == "code":
-                    ast.parse(cell.source, filename=str(path))
-                    self.assertFalse(cell.get("outputs"), path)
-                    self.assertIsNone(cell.get("execution_count"), path)
-            for section in required_markdown:
-                self.assertIn(section, markdown, path)
-            self.assertGreaterEqual(markdown.count("## "), 5, path)
-            self.assertIn("expect(", source, path)
-            self.assertIn("TODO:", source, path)
-
-    def test_exercise_precedes_answer_and_reference(self):
-        for path in sorted(p for p in LEVEL3.glob("module*/lab*.ipynb") if p.name not in REWRITTEN):
-            notebook = nbformat.read(path, as_version=4)
-            sources = [cell.source for cell in notebook.cells]
-            prompt = next(i for i, source in enumerate(sources) if source.startswith("## Independent Exercise"))
-            answer = next(i for i, source in enumerate(sources) if "# TODO:" in source)
-            reference = next(i for i, source in enumerate(sources) if source.startswith("<details>\n<summary>Reference Explanation"))
-            self.assertLess(prompt, answer, path)
-            self.assertLess(answer, reference, path)
-
     def test_labs_use_the_scoped_sandbox_connection(self):
         for path in sorted(LEVEL3.glob("module*/lab*.ipynb")):
             notebook = nbformat.read(path, as_version=4)
@@ -138,8 +108,16 @@ class Level3MaterialsTest(unittest.TestCase):
         path = LEVEL3 / "module14-resource-isolation/lab14_resource_isolation.ipynb"
         notebook = nbformat.read(path, as_version=4)
         code = [cell.source for cell in notebook.cells if cell.cell_type == "code"]
-        for forbidden in ("SET PROPERTY", "CREATE USER", "WORKLOAD GROUP normal", "SET GLOBAL"):
+        for forbidden in ("CREATE USER", "WORKLOAD GROUP normal", "SET GLOBAL", "SET PROPERTY '", "SET PROPERTY FOR 'root'"):
             self.assertNotIn(forbidden, "\n".join(code))
+        # The one account property that the Lab sets is the temporary user's default group,
+        # and it is set back to normal in a finally block, so that the groups can be dropped.
+        properties = [source for source in code if "SET PROPERTY" in source]
+        self.assertEqual(len(properties), 1)
+        self.assertIn("with temporary_user(", properties[0])
+        resets = ["\n".join(ast.unparse(statement) for statement in node.finalbody)
+                  for node in ast.walk(ast.parse(properties[0])) if isinstance(node, ast.Try)]
+        self.assertTrue(any("'default_workload_group' = 'normal'" in reset for reset in resets))
 
         rule_cells = [source for source in code if "CREATE SQL_BLOCK_RULE" in source]
         self.assertEqual(len(rule_cells), 1)

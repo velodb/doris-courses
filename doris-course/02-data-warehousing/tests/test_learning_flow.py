@@ -15,17 +15,9 @@ sys.path.insert(0, str(ROOT))
 from dw_course import runtime
 from dw_course import wwi
 
-# The Labs in the course's Lab template: practices with a blank cell and a collapsed,
-# runnable reference solution, and an Expected result after every step. The Level 2
-# and Level 3 Labs join the list as they are rewritten.
-TEMPLATE_LABS = sorted((ROOT / "level1").glob("*/lab*.ipynb")) + [
-    ROOT / "level2/module08-views-materialized-views/lab08_views_and_materialized_views.ipynb",
-    ROOT / "level2/module09-modeling-and-joins/lab09_modeling_and_joins.ipynb",
-    ROOT / "level2/module10-metric-processing/lab10_metric_processing.ipynb",
-    ROOT / "level2/module11-bi-and-ai/lab11_bi_and_ai_delivery.ipynb",
-    ROOT / "level3/module12-publishing-permissions-audit/lab12_publishing_permissions_audit.ipynb",
-    ROOT / "level3/module13-storage-lifecycle/lab13_storage_and_lifecycle.ipynb",
-]
+# Every Lab follows the course's Lab template: practices with a blank cell and a
+# collapsed, runnable reference solution, and an Expected result after every step.
+TEMPLATE_LABS = sorted(ROOT.glob("level*/module*/lab*.ipynb"))
 
 
 class LearningFlowTest(unittest.TestCase):
@@ -246,7 +238,7 @@ class LearningFlowTest(unittest.TestCase):
         self.assertIn("label and group_commit can't be set at the same time", reading)
 
     def test_every_module_has_blank_exercise_and_folded_executable_solution(self):
-        self.assertEqual(len(list((ROOT / "level1").glob("*/lab*.ipynb"))), 7)
+        self.assertEqual(len(TEMPLATE_LABS), 14)
         for path in TEMPLATE_LABS:
             cells = json.loads(path.read_text())["cells"]
             solutions = [c for c in cells if "reference-solution" in c.get("metadata", {}).get("tags", [])]
