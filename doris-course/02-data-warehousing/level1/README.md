@@ -66,7 +66,7 @@ For example, sample means a small sample, current means current state, and raw m
 | orders_batch, orders_rowwise | Comparison tables holding the same orders written in batches and row by row, respectively |
 | orders_duplicate, orders_unique, orders_aggregate | Lab tables for comparing the three table models |
 | orders_partitioned | Order table for observing date partitioning and bucket pruning |
-| orders_from_lake, customers_sample | Lake table import results and customer sample for joins |
+| orders_from_lake, orders_from_file, customers_sample | Orders loaded from the lake table and from its data file, and the customer sample for joins |
 | wwi_orders, wwi_customers, and other wwi_ tables | Ten complete historical business tables retaining their WWI provenance |
 | orders_imported | Simulated new orders imported through Stream Load |
 | orders_raw, orders_classified | Raw order inputs and a classification view with validation results |

@@ -11,7 +11,7 @@ import requests
 from .docker_runtime import check_host_ports, compose_command, _run
 from .environment import LAKE_PORTS, port
 from .runtime import COURSE_ROOT, expect, identifier
-from .ui import WorkflowProgress
+from .ui import WorkflowProgress, in_notebook, show_sql
 from .wwi import HISTORY_COLUMNS, history_rows
 
 PROJECT = "doris-warehousing-lake"
@@ -53,7 +53,12 @@ def _execute_when_reachable(lab, statement, progress, *, timeout=60):
 
 
 def prepare_lakehouse(lab, *, start=False):
-    """Start with explicit consent; create a per-lab namespace and reuse matching data."""
+    """Start with explicit consent; create a per-lab namespace and reuse matching data.
+
+    Returns the lake table's full name. When it finishes, it shows the SQL that
+    it ran in Doris: the Catalog, the lake database and table, and the INSERT
+    of the ten orders on the first run.
+    """
     if not start:
         raise ValueError("Read the Lab 4 environment guide, then set start=True to start the course lakehouse services")
     namespace = identifier(lab.database)
@@ -94,14 +99,15 @@ def prepare_lakehouse(lab, *, start=False):
         if "course-warehouse" not in buckets:
             client.create_bucket(Bucket="course-warehouse")
         progress.advance(5)
-        lab.execute(f'''CREATE CATALOG IF NOT EXISTS {catalog} PROPERTIES (
-            "type"="iceberg", "iceberg.catalog.type"="rest",
-            "iceberg.rest.uri"="http://course-lake-rest:8181",
-            "warehouse"="s3://course-warehouse/",
-            "s3.endpoint"="http://course-lake-silo:9000", "s3.region"="us-east-1",
-            "s3.access_key"="{ACCESS_KEY}", "s3.secret_key"="{SECRET_KEY}",
-            "use_path_style"="true", "iceberg.rest.view-enabled"="false"
-        )''')
+        statements = [f'''CREATE CATALOG IF NOT EXISTS {catalog} PROPERTIES (
+    "type"="iceberg", "iceberg.catalog.type"="rest",
+    "iceberg.rest.uri"="http://course-lake-rest:8181",
+    "warehouse"="s3://course-warehouse/",
+    "s3.endpoint"="http://course-lake-silo:9000", "s3.region"="us-east-1",
+    "s3.access_key"="{ACCESS_KEY}", "s3.secret_key"="{SECRET_KEY}",
+    "use_path_style"="true", "iceberg.rest.view-enabled"="false"
+)''']
+        lab.execute(statements[-1])
         properties = dict(lab.query(f"SHOW CATALOG {catalog}"))
         expected_properties = {
             "type": "iceberg", "iceberg.catalog.type": "rest",
@@ -111,20 +117,29 @@ def prepare_lakehouse(lab, *, start=False):
         }
         if any(properties.get(key) != value for key, value in expected_properties.items()):
             raise ValueError("The existing catalog with this name points to another environment. Keep its configuration and use a new course lab database")
-        _execute_when_reachable(lab, f"CREATE DATABASE IF NOT EXISTS {catalog}.{namespace}", progress)
-        lab.execute(f'''CREATE TABLE IF NOT EXISTS {table} (
-            order_id BIGINT, customer_id BIGINT, order_date DATE,
-            order_amount DECIMAL(18,2), line_count INT, data_source STRING
-        )''')
+        statements.append(f"CREATE DATABASE IF NOT EXISTS {catalog}.{namespace}")
+        _execute_when_reachable(lab, statements[-1], progress)
+        statements.append(f'''CREATE TABLE IF NOT EXISTS {table} (
+    order_id BIGINT, customer_id BIGINT, order_date DATE,
+    order_amount DECIMAL(18,2), line_count INT, data_source STRING
+)''')
+        lab.execute(statements[-1])
         count = lab.query(f"SELECT COUNT(*) FROM {table}")[0][0]
         if count == 0:
             # Identifiers are fixed and validated above; values remain parameterized.
             placeholders = ",".join(["(%s,%s,%s,%s,%s,%s)"] * len(history_rows()))
-            lab.execute(f"INSERT INTO {table} ({','.join(HISTORY_COLUMNS)}) VALUES {placeholders}",
-                        tuple(value for row in history_rows() for value in row))
+            values = tuple(value for row in history_rows() for value in row)
+            insert = f"INSERT INTO {table} ({','.join(HISTORY_COLUMNS)}) VALUES {placeholders}"
+            with lab.connection.cursor() as cursor:
+                statements.append(cursor.mogrify(insert, values).replace("),(", "),\n("))
+            lab.execute(insert, values)
+        else:
+            statements.append(f"-- {table} already holds {count} rows: nothing inserted")
         progress.advance(6)
         expect(lab.query(f"SELECT order_id,customer_id,CAST(order_date AS STRING),order_amount,line_count,data_source FROM {table} ORDER BY order_id"), history_rows())
         progress.finish()
+        if in_notebook():
+            show_sql("The SQL that the preparation ran in Doris", ";\n\n".join(statements) + ";")
         return table
     except Exception as error:
         progress.fail(str(error))

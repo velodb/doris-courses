@@ -78,13 +78,16 @@ Iceberg metadata and data files ─ Catalog ┘      │
 
 "Query directly first" is an access choice, not a guarantee that all external queries are equally fast;
 "loading" saves the results of this query; it does not automatically create an ongoing synchronization task.
-Object-storage access through a file TVF is introduced in Module 5; this lab does not include a standalone-file experiment.
+
+### Read a file without its table: the S3 table function
+
+A table function returns rows like a table. `S3(...)` reads files in S3-compatible object storage: it takes the path of a file, or several with a `*`, the format, and the store's address and keys, and reads exactly those files; `DESC FUNCTION S3(...)` shows the columns it finds in a Parquet file. Lab 4 points it at the lake table's own data file, which the table's `$files` metadata lists, and loads the file into an internal table with `INSERT INTO ... SELECT`. The function does not read Iceberg snapshots: if the table later deleted rows in a new snapshot, the old file would still contain them, while a query through the Catalog reads only the current snapshot's files. Use the function for a fixed set of files, and the Catalog for a table.
 
 ### Which two types of addresses must be configured to connect to lake tables?
 
-The lab setup tool creates the Catalog automatically. The same REST connection configuration is shown below to explain what the tool does.
-**External environment example; do not rerun it alongside the lab.** Names and connection parameters are placeholders; the lab actually uses the lab database name
-to generate a separate Catalog, and the returned source is the entry point for this query. Do not create another entry point and mix up table names.
+Lab 4's preparation cell creates the Catalog with the course's addresses and shows the statement it ran, which you can copy.
+**External environment example; do not rerun it alongside the lab.** Below, the same statement with placeholders for your own services; the lab names its Catalog after
+the lab database, and the returned source is the entry point for this query. Do not create another entry point and mix up table names.
 
 <!-- external-service-example -->
 ```sql
@@ -183,15 +186,17 @@ to avoid different errors canceling each other out in the aggregate.
 **Lab requirements:** The course Doris instance is running, and Docker is available. The lab starts Silo and an Iceberg REST Catalog
 as two auxiliary containers and prepares the sample; see the [lake table environment notes](../../environments/lakehouse/README.md) for ports and data retention.
 
-## Hands-on Lab 4: Joining lake tables and internal tables
+## Hands-on Lab 4: Query an Iceberg Table and Its Files
 
 Before starting, complete Module 1–3 and continue using the course's isolated lab database.
 
 Open [Lab 4](lab04_query_iceberg.ipynb) and complete these steps in order:
 
-1. Run the setup step to start the lake table services and obtain the actual Iceberg table name.
-2. Query the ten orders in the lake directly and verify the amount of 12220.60.
-3. Join the internal customer table and check the row count, then load into an internal orders table for reconciliation.
+1. Run the setup step to start the lake table services, create the Catalog, and read the SQL it ran.
+2. Find the table with `SHOW CATALOGS`, `SHOW DATABASES FROM`, and `SHOW CREATE TABLE`, and read its `$snapshots` and `$files`.
+3. Query the ten orders in the lake directly and verify the amount of 12220.60.
+4. Join the internal customer table and check the row count, then load into an internal orders table for reconciliation.
+5. Read the table's data file with the S3 table function and load it into a second internal table.
 
 ### Data sources and notes
 
