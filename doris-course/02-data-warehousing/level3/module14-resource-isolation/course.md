@@ -208,7 +208,7 @@ Open [Lab 14: Separate Dashboard and Ad Hoc Resources](lab14_resource_isolation.
 5. Tell a queue timeout from an execution timeout.
 6. Route a temporary ordinary user with its account's default, and see it refused the ad hoc group.
 7. Reject a full scan with a SQL Block Rule.
-8. Remove the user, the rule, the role, and the groups in dependency order.
+8. Check that no policy or account default holds the groups, then revoke the grant and drop the role and the groups.
 9. Practice: check a resource plan, then apply it under trial names.
 
 You need only the course sandbox. Workload Groups, roles, users, and rules belong to the whole cluster; the Lab removes all of its own and leaves `normal` and root's account unchanged.

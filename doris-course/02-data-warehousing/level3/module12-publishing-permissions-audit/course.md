@@ -98,7 +98,7 @@ Three months after the release, a reviewer asks who changed what, why, and with 
 
 Lab 12's checks combine them. `SHOW ROLES` shows `course_bi_reader_l3` with `internal.<db>.bi_order_metrics_l2: Select_priv` in `TablePrivs` and nothing in `GlobalPrivs` or `DatabasePrivs`, where a grant would cover more. Then a temporary ordinary user, created with the role and dropped at the end, reads the view's two days and is refused both sources: `Access denied; you need (at least one of) the (Admin_priv,Select_priv) privilege(s) on table orders_fact_l2 for this operation`. Root's own queries prove nothing about a consumer: root may read everything.
 
-Doris's audit plugin writes every statement, with the user, the database, its state, and its error code, to the table `__internal_schema.audit_log`, and to the FE's log file `fe.audit.log`. SQL can read the table, at least a minute after the statement, because the plugin writes in batches:
+Doris's audit plugin writes every statement, with the user, the database, its state, and its error code, to the table `__internal_schema.audit_log`, and to the FE's log file `fe.audit.log`. SQL can read the table up to about a minute after the statement, because the plugin writes in batches:
 
 ```sql
 SELECT `user`, db, state, error_code, return_rows, stmt

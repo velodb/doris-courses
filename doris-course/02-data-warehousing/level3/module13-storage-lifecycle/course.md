@@ -160,7 +160,7 @@ The next operator needs more than "clear January". Write the runbook before the 
 | Checks before | The partition exists and holds 1 order of 100.00; the table holds 3; each partition's `PartitionId` and `VisibleVersion`; in production, an archive read back and an approval |
 | Change | `TRUNCATE TABLE ops_orders_l3 PARTITION (p202501)` |
 | Evidence after | 2 orders and 500.00 remain; only January has a new ID |
-| Recovery | Within a day, `RECOVER PARTITION p202501 <recorded id>`; afterward, reload from the archive |
+| Recovery | Within a day, check that the empty replacement has received no rows, drop it, and run `RECOVER PARTITION p202501 <recorded id> FROM ops_orders_l3`; afterward, reload from the archive |
 
 Test the recovery before the change: read the archive back and compare its rows with the partition, instead of finding out after a mistake that it cannot be read. Lab 13's practice checks a retention plan in SQL before it removes anything: from the maintenance date 2026-02-15 it computes the first month to keep, 2025-02-01, lists the partitions that end on or before it, drops them without `FORCE`, and checks that 13 months remain.
 

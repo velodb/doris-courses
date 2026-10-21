@@ -14,7 +14,7 @@ questions:
   - id: take_higher
     text: "Taking the higher of the two, because an average of averages always undercounts the larger regions"
   answer: write_contract
-  explanation: "The difference is a definition, not an error: averaging EAST's 144.00 and WEST's 120.00 gives 132.00, while 1200.00 over 9 orders gives 133.33. A contract that states the population, grain, measures, and ratio rule decides what the dashboards show. The same stored rows can still be averaged both ways. Rounding hides the difference without deciding it. Neither value is always higher: it depends on which group is larger."
+  explanation: "The difference is a definition, not an error: averaging EAST's 144.00 and WEST's 120.00 gives 132.00, while 1200.00 over 9 orders gives 133.33. A contract that states the population, grain, measures, and ratio rule decides what the dashboards show. The same stored rows can still be averaged both ways. Rounding hides the difference without deciding it. Neither value is always the higher one: the average of averages is lower here because the larger group, EAST, has the higher average."
 - id: rebuild_service
   objective: "Build a service table at a declared grain, and rebuild it instead of loading a batch twice."
   prompt: "A job inserts each day's totals into an Aggregate Key service table with SUM columns. After a retry, January 1 EAST shows 10 orders and 1440.00 instead of 5 and 720.00. What should the job do?"
@@ -59,7 +59,7 @@ questions:
   explanation: "The CTE makes the grain one row per day, and the window adds up from the first day to the current one without changing it. A window over the region rows keeps one row per region and day, not per day. Summing a daily total repeated on each order counts the day once per order. LAG returns the previous row's value only, not a running total."
 - id: paid_gmv
   objective: "Tell paid GMV, order amount, and net collections apart, and keep each ratio's numerator and denominator."
-  prompt: "The case's orders without the cancelled one are worth 800.00. Its payments in the window total 660.00, and one of the paid orders was later refunded 50.00. What are the window's paid GMV and net collections?"
+  prompt: "The case's orders without the cancelled one are worth 800.00. Its payments in the window total 660.00, and one of the paid orders was refunded 50.00 within the window. What are the window's paid GMV and net collections?"
   options:
   - id: paid_then_net
     text: "Paid GMV 660.00 from the payments themselves; net collections 610.00 after the refund"

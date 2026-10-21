@@ -70,7 +70,7 @@ questions:
   - id: concurrency_one
     text: "max_concurrency 1 on the analyst's group, so that only one of the scans runs at any one time"
   answer: block_rule
-  explanation: "A scan rule reads the plan before the query runs and rejects it, and the account property that ties it to the analyst can be set only by an administrator. A timeout cancels a query that already ran, and the analyst can change the session's value. A Workload Policy acts during execution, on elapsed time rather than scan scope. Concurrency limits how many queries run, not what each one scans."
+  explanation: "A scan rule reads the plan before the query runs and rejects it, and the account property that ties it to the analyst can be set only by an administrator. A timeout cancels a query that is already running, and the analyst can change the session's value. A Workload Policy acts during execution, on elapsed time rather than scan scope. Concurrency limits how many queries run, not what each one scans."
 - id: rollback_order
   objective: "Write a resource runbook with groups, routing, protection, observations, and a rollback in dependency order."
   prompt: "An ad hoc group is retired. Two accounts have it as their default, a Workload Policy references it, and a role that has no other purpose holds its USAGE_PRIV. In which order do you remove them?"

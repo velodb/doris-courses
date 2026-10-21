@@ -111,7 +111,7 @@ FULL OUTER JOIN serving s ON s.order_date = d.order_date AND s.region = d.region
 ORDER BY order_date, region;
 ```
 
-Join on the service table's grain, date and region. A `FULL OUTER JOIN` keeps a row that only one side has. Lab 10 compares a service table that lost January 2, as if that day's load had failed: an inner join shows the two days that both sides have, both equal, and the comparison passes; the full outer join shows 2026-01-02 EAST with 1 order and 110.00 in the detail and `NULL` in the service table. Keep the `NULL` until you know why it is there: a missing row is not a day with no orders. Check rows, amounts, dates, and the important dimensions before you tune anything: a faster query that returns the wrong answer only returns it sooner.
+Join on the service table's grain, date and region. A `FULL OUTER JOIN` keeps a row that only one side has. Lab 10 compares a service table that lost January 2, as if that day's load had failed: an inner join shows the two rows of January 1, EAST and WEST, both equal, and the comparison passes; the full outer join shows 2026-01-02 EAST with 1 order and 110.00 in the detail and `NULL` in the service table. Keep the `NULL` until you know why it is there: a missing row is not a day with no orders. Check rows, amounts, dates, and the important dimensions before you tune anything: a faster query that returns the wrong answer only returns it sooner.
 
 ## 10.4 Windows, Conditions, and Ratios
 

@@ -125,7 +125,7 @@ WHERE o.status <> 'CANCELLED'
 GROUP BY DATE(e.event_time);
 ```
 
-`BUILD IMMEDIATE` starts the first build when the view is created; `REFRESH AUTO` lets Doris decide how much to recompute; `ON MANUAL` means that only a `REFRESH MATERIALIZED VIEW` statement starts a refresh. The build runs as a task after `CREATE` returns. A successful `CREATE` only accepted the definition, so check three things afterward, each with its own question:
+`BUILD IMMEDIATE` starts the first build when the view is created; `REFRESH AUTO` lets Doris decide how much to recompute; `ON MANUAL` means that only a `REFRESH MATERIALIZED VIEW` statement starts a refresh. The build runs as a task after `CREATE` returns. A successful `CREATE` only accepted the definition, so check four things afterward, each with its own question:
 
 | Check | Where | Question |
 | --- | --- | --- |
@@ -151,7 +151,7 @@ A refresh answers two questions: when it runs, and how much it recomputes.
 | A new order in February 2's partition of the fact table | February 2 | One partition: `RefreshMode` PARTIAL |
 | Customer 1's region in an unpartitioned customer table | No date | Both partitions: `RefreshMode` COMPLETE |
 
-The second refresh recomputed February 1 although its numbers did not change: equal values before and after do not show how much was recomputed. The task's `NeedRefreshPartitions` does, and a partition that was published again gets a new `PartitionId`. If a day's amount changes from 200.00 to 180.00, a refresh recomputes the day from its current rows; it never adds 180.00 to 200.00.
+The second refresh recomputed February 2 although nothing in it changed: equal values before and after do not show how much was recomputed. The task's `NeedRefreshPartitions` does, and a partition that was published again gets a new `PartitionId`. If a day's amount changes from 200.00 to 180.00, a refresh recomputes the day from its current rows; it never adds 180.00 to 200.00.
 
 Lab 8 also shows the other side: a manual-refresh result after a write. Its regular view shows 2 orders and 150.00 at once; its materialized view keeps 1 order and 100.00 until the refresh. A synchronous materialized view has no such gap: the load updates it, and its cost moves into every load.
 
