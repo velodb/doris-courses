@@ -60,6 +60,25 @@ def plan_scans(lines):
     return scans, views
 
 
+def plan_joins(lines):
+    """The joins of a Doris EXPLAIN plan: the join type, how the rows meet, and the condition.
+
+    A join node prints "join op: INNER JOIN(BROADCAST)[]": the logical join, then in
+    parentheses the distribution: BROADCAST (one side is sent to every instance),
+    PARTITIONED (both sides are shuffled by the key), BUCKET_SHUFFLE, or COLOCATE.
+    """
+    joins = []
+    for line in lines:
+        text = line.strip().lstrip("|").strip()
+        if text.startswith("join op:"):
+            operation = text[len("join op:"):].strip()
+            kind, _, rest = operation.partition("(")
+            joins.append({"join": kind.strip(), "distribution": rest.split(")", 1)[0], "condition": ""})
+        elif joins and not joins[-1]["condition"] and text.startswith("equal join conjunct:"):
+            joins[-1]["condition"] = text[len("equal join conjunct:"):].strip()
+    return joins
+
+
 def identifier(value):
     if re.fullmatch(r"[a-z][a-z0-9_]*", value) is None:
         raise ValueError("Expected a lowercase SQL identifier")
@@ -234,6 +253,25 @@ class WarehouseLab:
         else:
             print("\n".join(lines))
         return scans, views
+
+    def explain_join(self, statement, *, title="How the plan joins the tables"):
+        """Show the joins and the scans of a query's plan, and return the joins.
+
+        Runs EXPLAIN, shows one row per join (the join type, the distribution, and
+        the condition) and one per scan, then the whole plan in a collapsed box.
+        """
+        clean = statement.strip().rstrip(";")
+        lines = [str(row[0]) for row in self.query("EXPLAIN " + clean)]
+        joins = plan_joins(lines)
+        scans, _ = plan_scans(lines)
+        if in_notebook():
+            show_sql(title, "EXPLAIN " + clean)
+            show_frame(f"{title} · {len(joins)} join(s)", pd.DataFrame(joins, columns=["join", "distribution", "condition"]))
+            show_frame(f"The scans · {len(scans)} scan(s)", pd.DataFrame(scans, columns=["table", "reads", "partitions", "tablets"]))
+            show_log("The whole plan", "\n".join(lines))
+        else:
+            print("\n".join(lines))
+        return joins
 
     def rowsets(self, table, *, title=None):
         """Show the rowsets of each tablet of ``table`` from the BE's compaction status, and return them.

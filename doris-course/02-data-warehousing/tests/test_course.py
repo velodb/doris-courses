@@ -613,6 +613,42 @@ class AlignmentTest(unittest.TestCase):
         report.assert_called_once()
         self.assertEqual(report.call_args.args[0], "Missing table")
 
+    def test_plans_name_their_scans_joins_and_materialized_views(self):
+        from dw_course.runtime import plan_joins, plan_scans
+        # Lines of 4.1.3 EXPLAIN plans of Labs 8 and 9, trimmed.
+        rewritten = """  0:VOlapScanNode(476)
+     TABLE: dw_course_l1_demo.orders_daily_mv_l2(orders_daily_mv_l2), PREAGGREGATION: ON
+     partitions=1/1 (orders_daily_mv_l2)
+     tablets=10/10, tabletList=1792571396305,1792571396307
+========== MATERIALIZATIONS ==========
+MaterializedViewRewriteSuccessAndChose:
+ CBO.internal.dw_course_l1_demo.orders_daily_mv_l2 chose
+MaterializedViewRewriteSuccessButNotChose:
+MaterializedViewRewriteFail:
+ CBO.internal.dw_course_l1_demo.orders_region_mv_l2 fail
+  FailInfo: View struct info is invalid, Rewrite compensate predicate by view fail
+========== STATISTICS ==========
+ CBO.internal.ignored after the statistics""".splitlines()
+        scans, views = plan_scans(rewritten)
+        self.assertEqual(scans, [{"table": "dw_course_l1_demo.orders_daily_mv_l2", "reads": "orders_daily_mv_l2",
+                                  "partitions": "1/1 (orders_daily_mv_l2)", "tablets": "10/10"}])
+        self.assertEqual(views, [
+            {"materialized_view": "orders_daily_mv_l2", "result": "chosen", "reason": ""},
+            {"materialized_view": "orders_region_mv_l2", "result": "not usable",
+             "reason": "View struct info is invalid, Rewrite compensate predicate by view fail"},
+        ])
+        joined = """  3:VHASH JOIN(238)
+  |  join op: INNER JOIN(BROADCAST)[]
+  |  equal join conjunct: (customer_id[#13] = customer_id[#5])
+  |----1:VEXCHANGE
+  2:VOlapScanNode(217)
+     TABLE: dw_course_l1_demo.orders_fact_l2(orders_fact_l2), PREAGGREGATION: ON
+  0:VOlapScanNode(222)
+     TABLE: dw_course_l1_demo.customers_dim_l2(customers_dim_l2), PREAGGREGATION: ON""".splitlines()
+        self.assertEqual(plan_joins(joined), [{"join": "INNER JOIN", "distribution": "BROADCAST",
+                                               "condition": "(customer_id[#13] = customer_id[#5])"}])
+        self.assertEqual([scan["reads"] for scan in plan_scans(joined)[0]], ["orders_fact_l2", "customers_dim_l2"])
+
     def test_compose_scope_and_persistence(self):
         from dw_course.docker_runtime import COMPOSE_FILE, PROJECT
         config = yaml.safe_load(COMPOSE_FILE.read_text())

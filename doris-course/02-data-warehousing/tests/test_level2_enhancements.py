@@ -28,11 +28,15 @@ class CaseLedgerTest(unittest.TestCase):
                 current[order] = dict(customer=customer, created=created, amount=value, status=status, version=version)
         self.assertEqual(valid, case['expected']['valid_deliveries'])
         self.assertEqual(len(current), case['expected']['clean_orders'])
-        self.assertEqual(sum(r['amount'] for r in current.values()), Decimal(case['expected']['order_amount']))
-        self.assertEqual(current[2102]['status'], 'REFUNDED')
+        self.assertEqual(sum(r['amount'] for r in current.values()), Decimal(case['expected']['clean_order_amount']))
+        self.assertEqual(current[2102]['status'], 'PARTIALLY_REFUNDED')
+        # Order totals leave out cancelled orders (the contract that Quiz 10 and the main line use).
+        reported = [row for row in current.values() if row['status'] != 'CANCELLED']
+        self.assertEqual(len(reported), case['expected']['reported_orders'])
+        self.assertEqual(sum(r['amount'] for r in reported), Decimal(case['expected']['order_amount']))
         regions = dict(case['customers'])
         daily = defaultdict(lambda: [0, Decimal(0)])
-        for row in current.values():
+        for row in reported:
             key = (row['created'][:10], regions[row['customer']])
             daily[key][0] += 1
             daily[key][1] += row['amount']

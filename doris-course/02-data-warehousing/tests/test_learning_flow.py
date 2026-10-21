@@ -20,6 +20,7 @@ from dw_course import wwi
 # and Level 3 Labs join the list as they are rewritten.
 TEMPLATE_LABS = sorted((ROOT / "level1").glob("*/lab*.ipynb")) + [
     ROOT / "level2/module08-views-materialized-views/lab08_views_and_materialized_views.ipynb",
+    ROOT / "level2/module09-modeling-and-joins/lab09_modeling_and_joins.ipynb",
 ]
 
 
