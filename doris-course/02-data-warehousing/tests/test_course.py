@@ -595,15 +595,82 @@ class AlignmentTest(unittest.TestCase):
         self.assertEqual(report.call_args.args[0], "Missing table")
 
     def test_compose_scope_and_persistence(self):
-        from dw_course.docker_runtime import COMPOSE_FILE, CONNECTION, PROJECT
+        from dw_course.docker_runtime import COMPOSE_FILE, PROJECT
         config = yaml.safe_load(COMPOSE_FILE.read_text())
         self.assertEqual(config["name"], PROJECT)
         self.assertEqual(set(config["services"]), {"doris"})
         service = config["services"]["doris"]
         self.assertEqual(service["image"], "apache/doris:all-in-one-4.1.3")
-        self.assertEqual(service["ports"], ["127.0.0.1:52030:9030", "127.0.0.1:51030:8030", "127.0.0.1:51040:8040"])
-        self.assertEqual(CONNECTION["DW_PORT"], "52030")
+        self.assertEqual(service["ports"], ["127.0.0.1:${DW_FE_QUERY_PORT:-52030}:9030",
+                                            "127.0.0.1:${DW_FE_HTTP_PORT:-51030}:8030",
+                                            "127.0.0.1:${DW_BE_HTTP_PORT:-51040}:8040"])
         self.assertEqual(set(config["volumes"]), {"fe-meta", "be-storage"})
+
+    def test_compose_files_and_runtime_use_the_same_port_variables(self):
+        from dw_course.environment import LAKE_PORTS, SANDBOX_PORTS
+        for name, ports in (("single-node", SANDBOX_PORTS), ("lakehouse", LAKE_PORTS)):
+            text = (COURSE_ROOT / "environments" / name / "compose.yml").read_text()
+            published = dict(re.findall(r'"127\.0\.0\.1:\$\{(DW_\w+):-(\d+)\}:\d+"', text))
+            with self.subTest(environment=name):
+                # Every host port is a variable, with the default of dw_course/environment.py.
+                self.assertEqual(published, {variable: str(default) for variable, (default, _) in ports.items()})
+                self.assertNotRegex(text, r'"127\.0\.0\.1:\d+:\d+"')
+
+    def test_port_variables_move_the_connection(self):
+        from dw_course.environment import connection_settings
+        with patch.dict("os.environ", {"DW_FE_QUERY_PORT": "62030", "DW_FE_HTTP_PORT": "61030",
+                                       "DW_BE_HTTP_PORT": "61040"}, clear=True):
+            settings = connection_settings()
+        self.assertEqual(settings["DW_PORT"], "62030")
+        self.assertEqual(settings["DW_FE_HTTP_URL"], "http://127.0.0.1:61030")
+        self.assertEqual(settings["DW_BE_HTTP_URL"], "http://127.0.0.1:61040")
+        with patch.dict("os.environ", {"DW_FE_QUERY_PORT": "port 9030"}, clear=True):
+            with self.assertRaises(ValueError):
+                connection_settings()
+
+    def test_busy_port_stops_before_any_container_starts(self):
+        from dw_course.docker_runtime import prepare_environment
+        from dw_course.onboarding import SetupRequired
+        with patch.dict("os.environ", {}, clear=True), patch("subprocess.run", return_value=Mock(stdout="")) as run, \
+                patch("dw_course.docker_runtime.port_in_use", side_effect=lambda number: number == 51040), \
+                patch("pymysql.connect") as connect:
+            with self.assertRaises(SetupRequired) as raised:
+                prepare_environment(start=True)
+        message = str(raised.exception)
+        self.assertIn("51040 (DW_BE_HTTP_PORT", message)
+        self.assertIn("lsof -nP -iTCP:51040 -sTCP:LISTEN", message)
+        self.assertIn("`DW_BE_HTTP_PORT=61040 .venv/bin/jupyter lab`", message)
+        commands = [call.args[0] for call in run.call_args_list]
+        self.assertFalse(any("up" in command for command in commands))
+        connect.assert_not_called()
+
+    def test_lake_statement_waits_only_while_doris_cannot_reach_the_services(self):
+        import pymysql
+        from dw_course.lakehouse import _execute_when_reachable
+        lab, progress = Mock(), Mock()
+        refused = pymysql.err.OperationalError(1105, "Connect to http://course-lake-rest:8181 failed: Connection refused")
+        lab.execute.side_effect = [refused, 1]
+        with patch("time.sleep") as sleep:
+            self.assertEqual(_execute_when_reachable(lab, "CREATE DATABASE IF NOT EXISTS lake.db", progress), 1)
+        sleep.assert_called_once_with(3)
+        # Any other error, or a refusal that outlasts the timeout, is a real failure.
+        lab.execute.side_effect = pymysql.err.OperationalError(1105, "Access denied")
+        with self.assertRaisesRegex(pymysql.err.OperationalError, "Access denied"):
+            _execute_when_reachable(lab, "CREATE DATABASE IF NOT EXISTS lake.db", progress)
+        lab.execute.side_effect = refused
+        with patch("time.sleep"), patch("time.monotonic", side_effect=[0, 61]):
+            with self.assertRaisesRegex(pymysql.err.OperationalError, "Connection refused"):
+                _execute_when_reachable(lab, "CREATE DATABASE IF NOT EXISTS lake.db", progress)
+
+    def test_ports_of_the_running_course_container_are_not_a_conflict(self):
+        from dw_course.docker_runtime import check_host_ports
+        from dw_course.environment import SANDBOX_PORTS
+        progress = Mock(logs=[])
+        with patch.dict("os.environ", {}, clear=True), \
+                patch("dw_course.docker_runtime.published_ports", return_value={52030, 51030, 51040}), \
+                patch("dw_course.docker_runtime.port_in_use", return_value=True):
+            check_host_ports(SANDBOX_PORTS, "doris-warehousing-course", progress)
+        self.assertIn("used by this course", progress.log.call_args_list[0].args[0])
 
     def test_object_storage_is_pinned_silo_reached_by_its_aliases(self):
         # minio/minio is no longer on Docker Hub; both helper environments run Silo.
@@ -632,7 +699,8 @@ class AlignmentTest(unittest.TestCase):
             run.assert_not_called()
 
     def test_docker_start_checks_health_before_connection(self):
-        from dw_course.docker_runtime import prepare_environment, CONNECTION, compose_command
+        from dw_course.docker_runtime import prepare_environment, compose_command
+        from dw_course.environment import connection_settings
         cursor = Mock()
         cursor.fetchone.side_effect = [(1,), (45,)]
         manager = Mock()
@@ -640,12 +708,14 @@ class AlignmentTest(unittest.TestCase):
         manager.__exit__ = Mock(return_value=False)
         connection = Mock()
         connection.cursor.return_value = manager
-        with patch.dict("os.environ", {"DW_START_SANDBOX": "yes"}, clear=True), patch("subprocess.run", return_value=Mock(stdout="")) as run, patch("pymysql.connect", return_value=connection):
-            self.assertEqual(prepare_environment(), CONNECTION)
+        with patch.dict("os.environ", {"DW_START_SANDBOX": "yes"}, clear=True), patch("subprocess.run", return_value=Mock(stdout="")) as run, \
+                patch("dw_course.docker_runtime.port_in_use", return_value=False), patch("pymysql.connect", return_value=connection):
+            self.assertEqual(prepare_environment(), connection_settings())
             self.assertEqual(run.call_args_list[2].args[0], compose_command("config", "--quiet"))
-            self.assertEqual(run.call_args_list[3].args[0], compose_command("pull", "--policy", "missing"))
-            self.assertEqual(run.call_args_list[4].args[0], compose_command("up", "-d", "--wait", "--wait-timeout", "300"))
-            self.assertEqual(run.call_args_list[5].args[0], compose_command("ps"))
+            self.assertEqual(run.call_args_list[3].args[0][:3], ["docker", "ps", "--quiet"])
+            self.assertEqual(run.call_args_list[4].args[0], compose_command("pull", "--policy", "missing"))
+            self.assertEqual(run.call_args_list[5].args[0], compose_command("up", "-d", "--wait", "--wait-timeout", "300"))
+            self.assertEqual(run.call_args_list[6].args[0], compose_command("ps"))
             self.assertEqual(cursor.execute.call_args_list[-1].args[0],
                              'SELECT SUM(number) FROM numbers("number"="10")')
             connection.close.assert_called_once()
@@ -664,17 +734,21 @@ class AlignmentTest(unittest.TestCase):
                 self.assertNotIn("prepare_environment(", code, path)
 
     def test_fresh_notebook_connection_uses_sandbox_not_stale_environment(self):
-        from dw_course.docker_runtime import CONNECTION, connect_sandbox
+        from dw_course.docker_runtime import connect_sandbox
+        from dw_course.environment import connection_settings
         import os
         for environment in ({}, {"DW_HOST": "another-server", "DW_PORT": "19030",
                                   "DW_BE_HTTP_URL": "http://another-server:8040",
-                                  "DW_USER": "another-user", "DW_PASSWORD": "not-a-real-password"}):
+                                  "DW_USER": "another-user", "DW_PASSWORD": "not-a-real-password"},
+                            {"DW_FE_QUERY_PORT": "62030"}):
             with patch.dict(os.environ, environment, clear=True), patch(
                 "dw_course.docker_runtime.WarehouseLab"
             ) as constructor, patch("subprocess.run") as run:
                 self.assertIs(connect_sandbox(), constructor.return_value)
                 constructor.assert_called_once_with(allow_writes=True)
-                self.assertEqual({key: os.environ[key] for key in CONNECTION}, CONNECTION)
+                expected = connection_settings()
+                self.assertEqual({key: os.environ[key] for key in expected}, expected)
+                self.assertEqual(os.environ["DW_PORT"], environment.get("DW_FE_QUERY_PORT", "52030"))
                 run.assert_not_called()
 
     def test_prerequisites_let_labs_reload_missing_wwi_tables(self):
@@ -717,7 +791,7 @@ class AlignmentTest(unittest.TestCase):
         connection.cursor.return_value.__enter__ = Mock(return_value=cursor)
         connection.cursor.return_value.__exit__ = Mock(return_value=False)
         with patch.dict("os.environ", {}, clear=True), patch("subprocess.run", return_value=Mock(stdout="")), patch(
-            "pymysql.connect", return_value=connection
+            "dw_course.docker_runtime.port_in_use", return_value=False), patch("pymysql.connect", return_value=connection
         ):
             prepare_environment(start=True)
         connection.close.assert_called_once()
@@ -726,8 +800,8 @@ class AlignmentTest(unittest.TestCase):
         from dw_course.docker_runtime import prepare_environment
         import subprocess
         with patch("subprocess.run", side_effect=[
-            *[Mock(stdout="") for _ in range(4)], subprocess.CalledProcessError(1, "up")
-        ]), patch(
+            *[Mock(stdout="") for _ in range(5)], subprocess.CalledProcessError(1, "up")
+        ]), patch("dw_course.docker_runtime.port_in_use", return_value=False), patch(
             "pymysql.connect"
         ) as connect:
             with self.assertRaises(subprocess.CalledProcessError):
@@ -744,7 +818,7 @@ class AlignmentTest(unittest.TestCase):
         connection.cursor.return_value.__exit__ = Mock(return_value=False)
         with patch.dict(os.environ, {"DW_PORT": "19030"}, clear=True), patch(
             "subprocess.run", return_value=Mock(stdout="")
-        ), patch("pymysql.connect", return_value=connection):
+        ), patch("dw_course.docker_runtime.port_in_use", return_value=False), patch("pymysql.connect", return_value=connection):
             with self.assertRaisesRegex(RuntimeError, "BE execution"):
                 prepare_environment(start=True)
             self.assertEqual(os.environ["DW_PORT"], "19030")
@@ -794,8 +868,8 @@ class AlignmentTest(unittest.TestCase):
         with patch("dw_course.ui.in_notebook", return_value=True), patch(
             "dw_course.ui.display"
         ) as display, patch("dw_course.ui.show_log") as log, patch(
-            "subprocess.run", side_effect=[*[Mock(stdout="") for _ in range(4)], error]
-        ), patch("pymysql.connect") as connect:
+            "subprocess.run", side_effect=[*[Mock(stdout="") for _ in range(5)], error]
+        ), patch("dw_course.docker_runtime.port_in_use", return_value=False), patch("pymysql.connect") as connect:
             with self.assertRaises(subprocess.CalledProcessError):
                 prepare_environment(start=True)
             panel = display.return_value.update.call_args.args[0].data
@@ -818,8 +892,8 @@ class AlignmentTest(unittest.TestCase):
         with patch("dw_course.ui.in_notebook", return_value=True), patch(
             "dw_course.ui.display"
         ) as display, patch("dw_course.ui.show_log"), patch(
-            "subprocess.run", side_effect=[*[Mock(stdout="") for _ in range(3)], error]
-        ), patch("pymysql.connect") as connect:
+            "subprocess.run", side_effect=[*[Mock(stdout="") for _ in range(4)], error]
+        ), patch("dw_course.docker_runtime.port_in_use", return_value=False), patch("pymysql.connect") as connect:
             with self.assertRaises(subprocess.TimeoutExpired):
                 prepare_environment(start=True)
             panel = display.return_value.update.call_args.args[0].data

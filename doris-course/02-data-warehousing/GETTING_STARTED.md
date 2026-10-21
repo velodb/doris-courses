@@ -69,3 +69,12 @@ docker compose --project-name doris-warehousing-course --file environments/singl
 ```
 
 For `command not found`, install Docker and open a new terminal. For a refused connection, start Lab 1's **Start and Connect** cell and wait for its health check. For missing prerequisite tables, return to the first Lab named in the message and complete it in the same course database.
+
+If **Start and Connect** reports that a port is in use, it names the port and its variable, such as `52030 (DW_FE_QUERY_PORT)`, and has started nothing. Find the program with `lsof -nP -iTCP:52030 -sTCP:LISTEN`. Stop it if it is yours; otherwise start Jupyter with other ports, for example:
+
+```bash
+DW_FE_QUERY_PORT=62030 DW_FE_HTTP_PORT=61030 DW_BE_HTTP_PORT=61040 \
+  .venv/bin/jupyter lab level1/module01-introduction/lab01_connect_and_query.ipynb
+```
+
+Every Lab reads the same variables, so start Jupyter with them each time. Lab 4's lake environment uses `DW_LAKE_S3_PORT` (51900) and `DW_LAKE_REST_PORT` (51818) the same way.
