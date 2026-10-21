@@ -11,6 +11,7 @@ import platform
 import re
 import socket
 import subprocess
+import textwrap
 import time
 import urllib.request
 import urllib.parse
@@ -36,7 +37,13 @@ from doris_labkit.docker import (
     wait_for_health,
 )
 from doris_labkit import docker as labkit_docker
-from doris_labkit.profiles import normalize_statement, profile_metric, profile_row_sum
+from doris_labkit.profiles import (
+    fetch_profile_text,
+    last_query_id,
+    normalize_statement,
+    profile_metric,
+    profile_row_sum,
+)
 from doris_labkit.results import result_frame, show_frame
 from doris_labkit.shell import run_shell
 from doris_labkit.ui import ReturnLater, card, progress_step, show_log, show_sql, workflow_html
@@ -532,6 +539,7 @@ class DorisLab:
             {"design choice": "Replica allocation", "resolved value": replicas},
         ])
         show_frame(title or f"{table_name} design summary", frame)
+        show_log(f"Complete SHOW CREATE TABLE {table_name} output", ddl)
         return frame
 
     def partition_layout_summary(
@@ -579,6 +587,10 @@ class DorisLab:
             {"partition metric": "Logical rows", "observed value": f"{row_count:,}"},
         ])
         show_frame(title or f"{table_name} partition summary", frame)
+        raw = pd.DataFrame(partitions)
+        columns = [c for c in ("PartitionName", "State", "Range", "DistributionKey", "Buckets", "RowCount")
+                   if c in raw.columns]
+        show_log(f"Complete SHOW PARTITIONS FROM {table_name} output", raw[columns].to_string(index=False))
         return frame
 
     def tablet_layout_summary(
@@ -620,6 +632,10 @@ class DorisLab:
             },
         ])
         show_frame(title or f"{table_name} tablet summary", frame)
+        raw = pd.DataFrame(tablets)
+        columns = [c for c in ("TabletId", "BackendId", "Version", "RowCount", "VersionCount", "LocalDataSize")
+                   if c in raw.columns]
+        show_log(f"Complete SHOW TABLETS FROM {table_name} output", raw[columns].to_string(index=False))
         return frame
 
     def tablet_replica_placement(
@@ -663,6 +679,7 @@ class DorisLab:
         frame = pd.DataFrame(rows)
         if show:
             show_frame(title or f"{table_name} tablet-to-replica placement", frame)
+            self.show_statements(f"SHOW TABLETS FROM {table_name}", "SHOW BACKENDS")
         return frame
 
     def tablet_replica_health_summary(
@@ -715,6 +732,7 @@ class DorisLab:
             ),
         }])
         show_frame(title or f"{table_name} replica health", frame)
+        self.show_statements(f"SHOW TABLETS FROM {self._safe_table_name(table_name)}", "SHOW BACKENDS")
         return frame
 
     def tablet_replica_backend_summary(
@@ -767,6 +785,7 @@ class DorisLab:
 
         frame = pd.DataFrame(rows)
         show_frame(title or f"{table_name} replica versions by BE", frame)
+        self.show_statements(f"SHOW TABLETS FROM {table_name}", "SHOW BACKENDS")
         return frame
 
     def wait_for_tablet_rows(
@@ -945,6 +964,7 @@ class DorisLab:
         ]
         if show:
             show_frame(title, frame)
+            self.show_statements("SHOW BACKENDS")
         return frame
 
     def environment_resource_summary(
@@ -1048,6 +1068,10 @@ class DorisLab:
             })
         frame = pd.DataFrame(rows)
         show_frame("Physical layout comparison", frame)
+        self.show_statements(*(
+            statement for name in table_names
+            for statement in (f"SHOW PARTITIONS FROM {name}", f"SHOW TABLETS FROM {name}")
+        ))
         return frame
 
     @staticmethod
@@ -1232,64 +1256,55 @@ class DorisLab:
 
     _normalize_statement = staticmethod(normalize_statement)
 
-    def _query_profiles(self) -> list[dict[str, object]]:
-        connection = self._require_connection()
-        with connection.cursor() as cursor:
-            cursor.execute("SHOW QUERY PROFILE")
-            return list(cursor.fetchall())
-
-    def _latest_profile_id(
-        self,
-        statement: str,
-        *,
-        exclude: set[str] | None = None,
-        timeout_seconds: int = 8,
-    ) -> str:
-        target = self._normalize_statement(statement)
-        excluded = exclude or set()
-        deadline = time.monotonic() + timeout_seconds
-        while time.monotonic() < deadline:
-            for profile in self._query_profiles():
-                profile_id = str(profile["Profile ID"])
-                candidate = str(profile.get("Sql Statement", ""))
-                if profile_id not in excluded and self._normalize_statement(candidate) == target:
-                    return profile_id
-            time.sleep(0.2)
-        raise RuntimeError("The newly completed query was not found in SHOW QUERY PROFILE.")
+    # Session settings for reading a query's scan work from its Query Profile:
+    # collect the Profile and stop the caches from answering without a scan.
+    PROFILE_SETTINGS = {
+        "enable_profile": "true",
+        "profile_level": "2",
+        "enable_sql_cache": "false",
+        "enable_query_cache": "false",
+        "enable_condition_cache": "false",
+    }
 
     _profile_metric = staticmethod(profile_metric)
 
     _profile_row_sum = staticmethod(profile_row_sum)
 
-    def _profile_text(self, profile_id: str, *, timeout_seconds: int = 20) -> str:
-        token = base64.b64encode(b"root:").decode("ascii")
-        url = (
-            f"http://{self._profile_http_host}:{self._profile_http_port}"
-            f"/rest/v2/manager/query/profile/text/{profile_id}"
+    def show_statements(self, *statements: str, title: str = "SQL behind this result") -> None:
+        """Show, folded, the statements a step ran, ready to paste into a MySQL client."""
+        text = "\n\n".join(
+            statement.strip().rstrip(";") + ";" for statement in statements if statement.strip()
         )
+        show_log(title, text)
+
+    def profile_command(self, profile_id: str) -> str:
+        """Return the curl command that prints one query's Profile text."""
+        return f'curl -u root: "{self.fe_http_url}/api/profile/text?query_id={profile_id}"'
+
+    def _profile_text(self, profile_id: str, *, timeout_seconds: int = 20) -> str:
+        """Return the Profile text of one finished query from the FE HTTP API.
+
+        The BEs report their part after the query ends, so the text is read
+        again until it contains a scan operator.
+        """
         deadline = time.monotonic() + timeout_seconds
         last_error: Exception | None = None
         while time.monotonic() < deadline:
             try:
-                request = urllib.request.Request(
-                    url,
-                    headers={"Authorization": f"Basic {token}"},
-                )
-                with urllib.request.urlopen(request, timeout=5) as response:
-                    payload = json.load(response)
-                profile = str(payload.get("data", {}).get("profile", ""))
+                profile = fetch_profile_text(self.fe_http_url, profile_id, timeout_seconds=0)
+            except (OSError, urllib.error.URLError, http.client.HTTPException) as exc:
+                last_error = exc
+            else:
                 if "OLAP_SCAN_OPERATOR" in profile:
                     return profile
-                if "Is Cached: Yes" in profile and "Total Instances Num: 0" in profile:
+                if "Is Cached: Yes" in profile:
                     raise RuntimeError(
                         "The query used SQL Cache, so Doris did not run a new BE scan operator."
                     )
-            except Exception as exc:  # profile materialization can lag the query briefly
-                last_error = exc
-                if "used SQL Cache" in str(exc):
-                    raise
             time.sleep(0.4)
-        raise RuntimeError(f"The Query Profile was not ready: {last_error or 'timed out'}")
+        raise RuntimeError(
+            f"The Query Profile {profile_id} was not ready: {last_error or 'no scan operator yet'}"
+        )
 
     def show_join_runtime_filter_profile(
         self,
@@ -1306,71 +1321,58 @@ class DorisLab:
             raise ValueError("A SELECT statement is required.")
 
         connection = self._require_connection()
-        settings = {
-            "enable_profile": "true",
-            "profile_level": "2",
-            "enable_condition_cache": "false",
-            "enable_query_cache": "false",
-            "enable_sql_cache": "false",
-        }
-        originals: dict[str, str] = {}
-        try:
-            with connection.cursor() as cursor:
-                for name, value in settings.items():
-                    cursor.execute(f"SHOW VARIABLES LIKE '{name}'")
-                    row = cursor.fetchone()
-                    if row is None:
-                        raise RuntimeError(f"Doris did not expose the session variable {name}.")
-                    originals[name] = str(row["Value"])
-                    cursor.execute(f"SET {name} = {value}")
-
-            existing_ids = {str(row["Profile ID"]) for row in self._query_profiles()}
+        with self.session_settings(self.PROFILE_SETTINGS):
             with connection.cursor() as cursor:
                 cursor.execute(query)
                 result = cursor.fetchone()
-
-            profile_id = self._latest_profile_id(query, exclude=existing_ids)
+            profile_id = last_query_id(connection)
             profile = self._profile_text(profile_id)
-            merged = profile.split("MergedProfile:", 1)[-1].split("DetailProfile", 1)[0]
-            scan_header = re.search(
-                rf"(?m)^\s*OLAP_SCAN_OPERATOR\([^\n]*table_name={re.escape(probe_table)}\(",
-                merged,
-            )
-            if scan_header is None:
-                raise RuntimeError(f"The Profile has no merged Scan for {probe_table}.")
+        merged = profile.split("MergedProfile:", 1)[-1].split("DetailProfile", 1)[0]
+        scan_header = re.search(
+            rf"(?m)^\s*OLAP_SCAN_OPERATOR\([^\n]*table_name={re.escape(probe_table)}\(",
+            merged,
+        )
+        if scan_header is None:
+            raise RuntimeError(f"The Profile has no merged Scan for {probe_table}.")
 
-            join_header = merged.rfind("HASH_JOIN_OPERATOR(", 0, scan_header.start())
-            join_block = merged[join_header:scan_header.start()] if join_header >= 0 else ""
-            next_operator = re.search(
-                r"(?m)^\s*[A-Z][A-Z_]+_OPERATOR\(",
-                merged[scan_header.end():],
-            )
-            scan_end = (
-                scan_header.end() + next_operator.start()
-                if next_operator else len(merged)
-            )
-            scan_block = merged[scan_header.start():scan_end]
-            join_lines = [
-                line for line in join_block.splitlines()
-                if "HASH_JOIN_OPERATOR(" in line or re.search(r"- ProbeRows:", line)
-            ]
-            scan_lines = [
-                line for line in scan_block.splitlines()
-                if "OLAP_SCAN_OPERATOR(" in line
-                or re.search(r"- (?:RowsProduced|ScanRows):", line)
-                or re.search(r"- RF\d+ (?:InputRows|FilterRows):", line)
-            ]
-            if not any(re.search(r"- RF\d+ FilterRows:", line) for line in scan_lines):
-                raise RuntimeError("The probe Scan Profile has no Runtime Filter row counters.")
-            excerpt = "\n".join(join_lines + scan_lines)
-            result_text = ", ".join(f"{name}={value}" for name, value in (result or {}).items())
-            print(f"Query result: {result_text}")
-            show_log(title, excerpt, opened=True)
-            return excerpt
-        finally:
-            with connection.cursor() as cursor:
-                for name, value in originals.items():
-                    cursor.execute(f"SET {name} = {value}")
+        join_header = merged.rfind("HASH_JOIN_OPERATOR(", 0, scan_header.start())
+        join_block = merged[join_header:scan_header.start()] if join_header >= 0 else ""
+        next_operator = re.search(
+            r"(?m)^\s*[A-Z][A-Z_]+_OPERATOR\(",
+            merged[scan_header.end():],
+        )
+        scan_end = (
+            scan_header.end() + next_operator.start()
+            if next_operator else len(merged)
+        )
+        scan_block = merged[scan_header.start():scan_end]
+        join_lines = [
+            line for line in join_block.splitlines()
+            if "HASH_JOIN_OPERATOR(" in line or re.search(r"- ProbeRows:", line)
+        ]
+        scan_lines = [
+            line for line in scan_block.splitlines()
+            if "OLAP_SCAN_OPERATOR(" in line
+            or re.search(r"- (?:RowsProduced|ScanRows):", line)
+            or re.search(r"- RF\d+ (?:InputRows|FilterRows):", line)
+        ]
+        if not any(re.search(r"- RF\d+ FilterRows:", line) for line in scan_lines):
+            raise RuntimeError("The probe Scan Profile has no Runtime Filter row counters.")
+        excerpt = "\n".join(join_lines + scan_lines)
+        result_text = ", ".join(f"{name}={value}" for name, value in (result or {}).items())
+        print(f"Query result: {result_text}")
+        show_log(title, excerpt, opened=True)
+        self._show_profile_statements(query, profile_id)
+        return excerpt
+
+    def _show_profile_statements(self, query: str, profile_id: str) -> None:
+        """Show the SQL and the command used to capture one query's Profile."""
+        settings = [f"SET {name} = {value}" for name, value in self.PROFILE_SETTINGS.items()]
+        self.show_statements(
+            *settings, query, "SELECT last_query_id()",
+            title="SQL run to capture this Profile; the settings then return to their earlier values",
+        )
+        show_log(f"Command that prints this Profile · {profile_id}", self.profile_command(profile_id))
 
     def compare_profiles(
         self,
@@ -1380,34 +1382,16 @@ class DorisLab:
     ) -> pd.DataFrame:
         """Run comparable queries and summarize only their OLAP scan evidence."""
         connection = self._require_connection()
-        controlled_settings = {
-            "enable_profile": "true",
-            "profile_level": "2",
-            "enable_condition_cache": "false",
-            "enable_query_cache": "false",
-            "enable_sql_cache": "false",
-        }
-        original_settings: dict[str, str] = {}
-        with connection.cursor() as cursor:
-            for name, value in controlled_settings.items():
-                cursor.execute(f"SHOW VARIABLES LIKE '{name}'")
-                row = cursor.fetchone()
-                if row is None:
-                    raise RuntimeError(f"Doris did not expose the required session variable {name}.")
-                original_settings[name] = str(row["Value"])
-                cursor.execute(f"SET {name} = {value}")
         rows: list[dict[str, object]] = []
-        profile_ids: list[str] = []
-        try:
+        commands: list[str] = []
+        executed: list[str] = []
+        with self.session_settings(self.PROFILE_SETTINGS):
             for label, statement in cases:
                 query = statement.strip().rstrip(";")
-                existing_profile_ids = {
-                    str(profile["Profile ID"]) for profile in self._query_profiles()
-                }
                 with connection.cursor() as cursor:
                     cursor.execute(query)
                     result = cursor.fetchone() or {}
-                profile_id = self._latest_profile_id(query, exclude=existing_profile_ids)
+                profile_id = last_query_id(connection)
                 profile = self._profile_text(profile_id)
                 merged = profile
                 if "MergedProfile:" in merged:
@@ -1422,14 +1406,16 @@ class DorisLab:
                     "rows_read": self._profile_row_sum(profile, "RowsRead"),
                     "scan_bytes": self._profile_metric(merged, "ScanBytes"),
                 })
-                profile_ids.append(f"{label}: {profile_id}")
-        finally:
-            with connection.cursor() as cursor:
-                for name, value in original_settings.items():
-                    cursor.execute(f"SET {name} = {value}")
+                executed += [f"-- {label}\n{textwrap.dedent(statement).strip()}", "SELECT last_query_id()"]
+                commands.append(f"# {label}\n{self.profile_command(profile_id)}")
         frame = pd.DataFrame(rows)
         show_frame(title, frame)
-        show_log("Profile IDs for optional inspection in the FE web UI", "\n".join(profile_ids))
+        self.show_statements(
+            *(f"SET {name} = {value}" for name, value in self.PROFILE_SETTINGS.items()),
+            *executed,
+            title="SQL run by this comparison; the settings then return to their earlier values",
+        )
+        show_log("Commands that print each Query Profile", "\n\n".join(commands))
         return frame
 
     def shell(self, script: str, *, title: str) -> subprocess.CompletedProcess[str]:
@@ -2134,21 +2120,26 @@ LIMIT 10
         show_sql("Content returned by ErrorURL", error_log)
         return error_log
 
-    def sync_mv_jobs(self, table, view, *, database="doris_course"):
-        """Return build jobs for one synchronous materialized view."""
+    def _sync_mv_jobs_sql(self, table, view, database="doris_course"):
         table = self._safe_table_name(table)
         view = self._safe_table_name(view)
         database = self._safe_table_name(database)
-        return [row for row in self._metadata_rows(
-            f"SHOW ALTER TABLE MATERIALIZED VIEW FROM `{database}`"
-        ) if row["TableName"] == table and row["RollupIndexName"] == view]
+        return (f"SHOW ALTER TABLE MATERIALIZED VIEW FROM `{database}`\n"
+                f"WHERE TableName = '{table}' AND RollupIndexName = '{view}'")
+
+    def _async_mv_tasks_sql(self, view, database="doris_course"):
+        view = self._safe_table_name(view)
+        database = self._safe_table_name(database)
+        return (f'SELECT * FROM tasks("type"="mv")\n'
+                f"WHERE MvDatabaseName = '{database}' AND MvName = '{view}'")
+
+    def sync_mv_jobs(self, table, view, *, database="doris_course"):
+        """Return build jobs for one synchronous materialized view."""
+        return self._metadata_rows(self._sync_mv_jobs_sql(table, view, database))
 
     def async_mv_tasks(self, view, *, database="doris_course"):
         """Return refresh tasks for one asynchronous materialized view."""
-        view = self._safe_table_name(view)
-        database = self._safe_table_name(database)
-        return self._metadata_rows(f"""SELECT * FROM tasks("type"="mv")
-            WHERE MvDatabaseName = '{database}' AND MvName = '{view}'""")
+        return self._metadata_rows(self._async_mv_tasks_sql(view, database))
 
     def capture_query(self, statement, *, settings=None):
         """Capture the result, plan and fresh runtime Profile on this lab session."""
@@ -2213,6 +2204,10 @@ LIMIT 10
             "Build state": row["State"],
         }]))
         show_log("Complete synchronous build task", json.dumps(row, indent=2, default=str))
+        self.show_statements(
+            self._sync_mv_jobs_sql(table, view, database),
+            title="SQL that reads the build job (repeated until the job finishes)",
+        )
         return row
 
     def wait_for_async_refresh(self, view, before, *, database="doris_course", timeout=120):
@@ -2227,6 +2222,10 @@ LIMIT 10
             "RefreshMode": row.get("RefreshMode"),
             "Progress": row.get("Progress"),
         }]))
+        self.show_statements(
+            self._async_mv_tasks_sql(view, database),
+            title="SQL that reads the refresh task (repeated until the task finishes)",
+        )
         return row
 
     def wait_for_mv_jobs(self, table, sync_view, async_view, *, database="doris_course", timeout=120):
@@ -2967,6 +2966,7 @@ LIMIT 10
         frame = pd.DataFrame(rows).sort_values("host").reset_index(drop=True)
         if show:
             show_frame(title or f"{table_name} replicas by BE", frame)
+            self.show_statements(f"SHOW REPLICA DISTRIBUTION FROM {table_name}", "SHOW BACKENDS")
         return frame
 
     def wait_for_replica_distribution(
@@ -3000,6 +3000,7 @@ LIMIT 10
             ):
                 if show:
                     show_frame(title or f"{table_name} replica placement is ready", frame)
+                    self.show_statements(f"SHOW REPLICA DISTRIBUTION FROM {table_name}", "SHOW BACKENDS")
                 return frame
             time.sleep(1)
         raise TimeoutError(
@@ -3036,6 +3037,7 @@ LIMIT 10
                         "stable": selected.get("IsStable"),
                     }])
                     show_frame(title, frame)
+                    self.show_statements('SHOW PROC "/colocation_group"')
                     return frame
             time.sleep(1)
         raise TimeoutError(
@@ -3352,6 +3354,13 @@ LIMIT 10
             row.pop("_reported_bytes", None)
         frame = pd.DataFrame(summary)
         show_frame(title, frame)
+        self.show_statements(
+            "SHOW FRONTEND CONFIG LIKE 'default_compression_type'",
+            *(statement for name in table_names for statement in (
+                f"SHOW CREATE TABLE {name}", f"SHOW DATA FROM {name}",
+                f"SHOW PARTITIONS FROM {name}", f"SHOW TABLETS FROM {name}",
+            )),
+        )
         return frame
 
     @contextmanager
@@ -3554,6 +3563,7 @@ LIMIT 10
             "ok" if state.upper() == "NORMAL" else "fail",
             title,
         )
+        self.show_statements("SHOW DYNAMIC PARTITION TABLES")
         if state.upper() != "NORMAL":
             details = "\n".join(
                 f"{key}: {row.get(key) or 'not reported'}"
@@ -3593,6 +3603,10 @@ LIMIT 10
             })
         frame = pd.DataFrame(rows)
         show_frame(title, frame)
+        self.show_statements(
+            f"SHOW PARTITIONS FROM {table_name} ORDER BY PartitionName",
+            *(f"SELECT COUNT(*) AS row_count FROM {table_name} PARTITION ({row['partition']})" for row in rows),
+        )
         return frame
 
     def expect_statement_error(
@@ -3643,4 +3657,5 @@ LIMIT 10
             )
         frame = pd.DataFrame(rows)[["Type", "Name", "PartitionId", "DropTime"]]
         show_frame(title, frame)
+        self.show_statements(f"SHOW CATALOG RECYCLE BIN WHERE NAME = '{partition_name}'")
         return frame
