@@ -8,9 +8,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-# The lessons written in the course template. Module 5 came first; the others follow.
-LESSONS = sorted(path for path in ROOT.glob("level1/module*/course.md")
-                 if "\n## Module structure\n" in path.read_text())
+LESSONS = sorted(ROOT.glob("level1/module*/course.md"))
 READING = ROOT / "level1/module05-ingestion/optional05_continuous_ingestion.md"
 
 
@@ -28,8 +26,8 @@ def quiz_for(path, text):
 
 
 class LessonTests(unittest.TestCase):
-    def test_lessons_in_the_template_exist(self):
-        self.assertIn(ROOT / "level1/module05-ingestion/course.md", LESSONS)
+    def test_every_level1_module_has_a_lesson(self):
+        self.assertEqual([lesson.parent for lesson in LESSONS], sorted(ROOT.glob("level1/module*")))
 
     def test_a_lesson_names_its_module_as_its_lab_and_quiz_do(self):
         for path in LESSONS:
@@ -85,7 +83,7 @@ class LessonTests(unittest.TestCase):
         for path in [*LESSONS, READING]:
             for url in re.findall(r"\((https://doris\.apache\.org/[^)]+)\)", path.read_text()):
                 with self.subTest(text=path.name, url=url):
-                    self.assertRegex(url, r"^https://doris\.apache\.org/docs/4\.x/")
+                    self.assertRegex(url, r"^https://doris\.apache\.org/(docs/4\.x|community)/")
 
 
 class OptionalReadingTests(unittest.TestCase):

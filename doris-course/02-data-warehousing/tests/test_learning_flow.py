@@ -76,7 +76,7 @@ class LearningFlowTest(unittest.TestCase):
                          '"use_path_style"="true"', '"iceberg.rest.view-enabled"="false"'):
             self.assertIn(fragment, reading)
             self.assertIn(fragment, fixture_source)
-        self.assertIn("External environment example; do not rerun it alongside the lab", reading)
+        self.assertIn("External environment example; do not run it alongside the Lab", reading)
 
     def test_ingestion_keeps_the_optional_accounting_reading(self):
         reading = self.reading("module05-ingestion")

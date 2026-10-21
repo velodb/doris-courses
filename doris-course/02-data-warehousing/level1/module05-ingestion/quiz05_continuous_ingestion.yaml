@@ -64,7 +64,7 @@ questions:
   - id: connector_sends_delete
     text: "When the connector sends it as a row marked for deletion, with sink.enable-delete on"
   - id: nightly_cleanup
-    text: "Never on its own: Doris only receives inserts and updates, so deletes need a nightly cleanup"
+    text: "Not through the job: it passes on inserts and updates, and a nightly cleanup removes the deletes"
   - id: next_snapshot
     text: "At the job's next snapshot, which reads the whole MySQL table again once a day by default"
   - id: compaction_removes_keys
@@ -80,7 +80,7 @@ questions:
   - id: both_by_arrival
     text: "Both, in the order they arrived, since the job watches for any new file"
   - id: only_006
-    text: "Only orders-006, because the job always fills the gaps in its names first"
+    text: "Only orders-006, because the job first goes back for the names that it missed"
   - id: neither_without_insert
     text: "Neither, until someone runs the job's INSERT INTO SELECT statement again"
   answer: only_008

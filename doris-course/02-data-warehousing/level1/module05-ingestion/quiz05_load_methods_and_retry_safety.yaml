@@ -62,9 +62,9 @@ questions:
   prompt: "An application sends ten single-order Stream Loads, one after another, with group_commit set to async_mode, to a table whose group_commit_interval_ms is 2000. Right after the tenth response, a dashboard counts the orders. What should the team expect?"
   options:
   - id: maybe_none_yet
-    text: "Possibly none yet: the answers came once the rows were in the write-ahead log; they appear when the group commits"
+    text: "Possibly none yet: each response came once its row reached the write-ahead log, before the group commits"
   - id: all_ten_visible
-    text: "All ten: each response reported Success, and a successful load is always visible as soon as its response returns"
+    text: "All ten: each response reported Success, and a load's rows are visible by the time its response returns"
   - id: ten_transactions
     text: "Ten transactions and ten new versions in the tablet, one per request, all visible before the responses arrived"
   - id: needs_commit_statement

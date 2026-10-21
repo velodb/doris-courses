@@ -188,12 +188,6 @@ class RuntimeTest(unittest.TestCase):
                     parquet_paths(directory)
 
 
-def old_format_readings():
-    """Level 1 lessons not yet written in the course template (tests/test_lessons.py checks the others)."""
-    return [path for path in (COURSE_ROOT / "level1").glob("*/course*.md")
-            if "\n## Module structure\n" not in path.read_text()]
-
-
 class MaterialsTest(unittest.TestCase):
     def test_learner_materials_use_module_labels(self):
         for path in COURSE_ROOT.rglob("*"):
@@ -216,19 +210,6 @@ class MaterialsTest(unittest.TestCase):
                 quiz = yaml.safe_load(quiz_path.read_text())
                 self.assertTrue(quiz["title"].startswith(f"Module {number} Quiz:"), quiz_path)
 
-    def test_reading_schedule_titles_match_sections(self):
-        for path in old_format_readings():
-            content = path.read_text()
-            schedule = content.split("## Module Schedule\n\n", 1)[1].split("\n## ", 1)[0]
-            listed = re.findall(r"^\| (\d+\.\d+ [^|]+) \|", schedule, re.MULTILINE)
-            sections = re.findall(r"^## (\d+\.\d+ .+)$", content, re.MULTILINE)
-            self.assertTrue(sections, path)
-            self.assertEqual(listed, sections, path)
-            module = int(re.match(r"module(\d+)", path.parent.name)[1])
-            self.assertEqual([section.split(" ", 1)[0] for section in sections],
-                             [f"{module}.{i}" for i in range(1, len(sections) + 1)], path)
-            self.assertNotRegex(content, r"D\d+-\d+")
-
     def test_learner_prose_excludes_author_status_notes(self):
         paths = list((COURSE_ROOT / "level1").glob("*/course*.md"))
         paths += list((COURSE_ROOT / "level1").glob("*/*.ipynb"))
@@ -243,29 +224,6 @@ class MaterialsTest(unittest.TestCase):
             content = "\n".join(c.source for c in notebook.cells if c.cell_type == "markdown")
             self.assertIn("### Load the Quiz", content, path)
             self.assertIn("## Start the Quiz", content, path)
-
-    def test_reading_information_and_schedules_are_consistent(self):
-        for path in old_format_readings():
-            content = path.read_text()
-            opening = content.split("## Module Goal", 1)[0]
-            fields = re.findall(r"^\| ([^|]+) \|", opening, re.MULTILINE)
-            self.assertEqual(fields, ["Course Information", "---", "Course", "Product Version", "Lab Version", "Estimated Time"], path)
-            schedule = content.split("## Module Schedule\n\n", 1)[1].split("\n## ", 1)[0]
-            self.assertIn("| Section | Learning Format | Suggested Time | Learning Outcome |", schedule, path)
-            minutes = [int(value) for value in re.findall(r"\| (\d+) minutes \|", schedule)]
-            total = int(re.search(r"\| Estimated Time \| About (\d+) minutes", opening)[1])
-            self.assertEqual(sum(minutes), total, path)
-            self.assertNotIn("Complete the lab below and check the results", schedule, path)
-
-    def test_quiz_objectives_cover_each_reading_goal(self):
-        for path in old_format_readings():
-            content = path.read_text()
-            goals = content.split("## Learning Objectives\n\n", 1)[1].split("\n## ", 1)[0]
-            objectives = re.findall(r"^\d+\. (.+)$", goals, re.MULTILINE)
-            quiz = yaml.safe_load(next(path.parent.glob("quiz*.yaml")).read_text())
-            self.assertEqual([q["objective"] for q in quiz["questions"]], objectives, path)
-            summary = content.split("## Module Summary\n\n", 1)[1].split("\n## ", 1)[0]
-            self.assertEqual(len(re.findall(r"^- ", summary, re.MULTILINE)), len(objectives), path)
 
     def test_readings_keep_examples_separate_from_lab_writes(self):
         for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
@@ -345,22 +303,6 @@ class MaterialsTest(unittest.TestCase):
         doubled = 2 * sum(Decimal(row["order_amount"]) for row in data["orders"])
         self.assertIn(f"twenty rows and an amount of {doubled:.2f}", intro)
 
-    def test_readings_follow_english_course_structure(self):
-        self.assertEqual(len(list((COURSE_ROOT / "level1").glob("*/course*.md"))), 7)
-        for path in old_format_readings():
-            content = path.read_text()
-            headings = re.findall(r"^## (.+)$", content, re.MULTILINE)
-            self.assertEqual(headings[:3], ["Module Goal", "Learning Objectives", "Module Schedule"], path)
-            self.assertRegex(headings[3], r"^\d+\.1 ")
-            self.assertTrue(headings[-4].startswith("Hands-on Lab "), path)
-            self.assertEqual(headings[-3], "Module Summary", path)
-            self.assertTrue(headings[-2].startswith("Knowledge Quiz "), path)
-            self.assertEqual(headings[-1], "Official References", path)
-            self.assertIn("| Course Information | Details |", content, path)
-            self.assertNotRegex(content, r"\]\(quiz[^)]+\.yaml\)")
-            references = content.split("## Official References", 1)[1]
-            self.assertGreaterEqual(len(re.findall(r"https://doris\.apache\.org/", references)), 2, path)
-
     def test_numbered_material_names(self):
         import runpy
         modules = sorted((COURSE_ROOT / "level1").glob("module*"))
@@ -406,8 +348,7 @@ class MaterialsTest(unittest.TestCase):
         self.assertEqual(len(paths), 8)
         for path in paths:
             data = yaml.safe_load(path.read_text())
-            # Five questions until each module's lesson moves to the course template, then six.
-            self.assertIn(len(data["questions"]), (5, 6), path)
+            self.assertEqual(len(data["questions"]), 6, path)
             ids = [q["id"] for q in data["questions"]]
             self.assertEqual(len(ids), len(set(ids)), path)
             for question in data["questions"]:
