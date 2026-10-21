@@ -1,5 +1,6 @@
 """Offline checks of the committed notebooks and of the data checks that the Labs rely on."""
 
+import ast
 import json
 import re
 import unittest
@@ -48,6 +49,23 @@ class NotebookTests(unittest.TestCase):
                     with self.subTest(notebook=path.name, cell=index):
                         self.assertEqual(cell["outputs"], [])
                         self.assertIsNone(cell["execution_count"])
+
+    def test_cells_do_not_show_a_helper_result_twice(self):
+        # The helpers show their own result; Jupyter would show the returned DataFrame or
+        # CompletedProcess again unless the cell ends with a semicolon (OB-18).
+        helpers = {"sql", "execute", "wait_for_rows", "profile_query", "scan_filters", "explain_scan", "tablet_rows",
+                   "show_create_table", "shell", "alert_instances", "wait_for_alert_state", "wait_for_email",
+                   "export_alert_rule", "provision_alert_rule_group", "grafana_dashboard", "wait_for_feature_flag",
+                   "litefuse_trace"}
+        for path in sorted(ROOT.glob("level*/module*/*.ipynb")):
+            for source in code_cells(path):
+                body = ast.parse(source).body
+                last = body[-1] if body else None
+                if not (isinstance(last, ast.Expr) and isinstance(last.value, ast.Call)
+                        and isinstance(last.value.func, ast.Attribute) and last.value.func.attr in helpers):
+                    continue
+                with self.subTest(notebook=path.name, call=last.value.func.attr):
+                    self.assertTrue(source.rstrip().endswith(";"), source.rstrip().splitlines()[-1])
 
     def test_module1_checks_the_demo_telemetry_in_doris(self):
         cells = code_cells(LAB1)
