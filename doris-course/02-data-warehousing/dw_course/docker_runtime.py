@@ -216,7 +216,7 @@ PREREQUISITES = {
     7: {"wwi_products": (227, 5), "customers": (663, 6), "orders_clean": (10, 6)},
     8: {"orders_current": (11, 7), "order_events": (18, 7)},
     9: {"customers": (663, 6), "orders_current": (11, 7), "order_events": (18, 7)},
-    10: {"orders_fact_l2": (11, 9)},
+    10: {"orders_fact_l2": (11, 9), "dwd_orders_l2": (8, 9), "dwd_payments_l2": (6, 9), "customers_case_dim_l2": (5, 9)},
     11: {"daily_order_metrics_l2": (3, 10)},
     12: {"orders_fact_l2": (11, 9), "bi_order_metrics_l2": (2, 11)},
 }

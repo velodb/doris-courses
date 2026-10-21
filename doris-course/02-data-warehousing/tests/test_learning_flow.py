@@ -21,6 +21,7 @@ from dw_course import wwi
 TEMPLATE_LABS = sorted((ROOT / "level1").glob("*/lab*.ipynb")) + [
     ROOT / "level2/module08-views-materialized-views/lab08_views_and_materialized_views.ipynb",
     ROOT / "level2/module09-modeling-and-joins/lab09_modeling_and_joins.ipynb",
+    ROOT / "level2/module10-metric-processing/lab10_metric_processing.ipynb",
 ]
 
 

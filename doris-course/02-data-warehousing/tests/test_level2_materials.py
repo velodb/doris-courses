@@ -11,7 +11,8 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 LEVEL2 = ROOT / "level2"
 # Labs rewritten in the course's Lab template; tests/test_learning_flow.py checks their form.
-REWRITTEN = {"lab08_views_and_materialized_views.ipynb", "lab09_modeling_and_joins.ipynb"}
+REWRITTEN = {"lab08_views_and_materialized_views.ipynb", "lab09_modeling_and_joins.ipynb",
+             "lab10_metric_processing.ipynb"}
 
 
 class Level2MaterialsTest(unittest.TestCase):
