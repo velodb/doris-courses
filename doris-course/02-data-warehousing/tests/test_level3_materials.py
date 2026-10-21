@@ -11,6 +11,8 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 LEVEL3 = ROOT / "level3"
+# Labs rewritten in the course's Lab template; tests/test_learning_flow.py checks their form.
+REWRITTEN = {"lab12_publishing_permissions_audit.ipynb"}
 
 
 class Level3MaterialsTest(unittest.TestCase):
@@ -89,7 +91,7 @@ class Level3MaterialsTest(unittest.TestCase):
 
     def test_labs_explain_verify_and_clean_up_the_work(self):
         required_markdown = ("What You Will Do", "Prerequisites", "Independent Exercise", "Reference Explanation", "Lab Review")
-        for path in sorted(LEVEL3.glob("module*/lab*.ipynb")):
+        for path in sorted(p for p in LEVEL3.glob("module*/lab*.ipynb") if p.name not in REWRITTEN):
             notebook = nbformat.read(path, as_version=4)
             nbformat.validate(notebook)
             markdown = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "markdown")
@@ -106,7 +108,7 @@ class Level3MaterialsTest(unittest.TestCase):
             self.assertIn("TODO:", source, path)
 
     def test_exercise_precedes_answer_and_reference(self):
-        for path in sorted(LEVEL3.glob("module*/lab*.ipynb")):
+        for path in sorted(p for p in LEVEL3.glob("module*/lab*.ipynb") if p.name not in REWRITTEN):
             notebook = nbformat.read(path, as_version=4)
             sources = [cell.source for cell in notebook.cells]
             prompt = next(i for i, source in enumerate(sources) if source.startswith("## Independent Exercise"))
@@ -120,7 +122,7 @@ class Level3MaterialsTest(unittest.TestCase):
             notebook = nbformat.read(path, as_version=4)
             source = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "code")
             self.assertIn("from dw_course.docker_runtime import connect_sandbox", source, path)
-            self.assertIn("lab = connect_sandbox()", source, path)
+            self.assertRegex(source, r"lab = connect_sandbox\((module=\d+)?\)", path)
 
     def test_operational_labs_keep_scope_explicit(self):
         for path in sorted(LEVEL3.glob("module*/*.ipynb")):
