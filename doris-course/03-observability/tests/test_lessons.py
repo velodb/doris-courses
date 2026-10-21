@@ -55,7 +55,7 @@ class LessonTests(unittest.TestCase):
                 self.assertRegex(quiz_section, r"Next(?: module)?: ")
 
     def test_each_quiz_question_tests_an_objective_of_its_lesson(self):
-        for path in (lesson for lesson in LESSONS if "level1" in lesson.parts):
+        for path in LESSONS:
             quiz = yaml.safe_load(next(path.parent.glob("quiz*.yaml")).read_text())
             used = [question["objective"] for question in quiz["questions"]]
             with self.subTest(lesson=path.parent.name):

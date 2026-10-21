@@ -330,8 +330,10 @@ class NotebookTests(unittest.TestCase):
         self.assertIn("keep **IS ABOVE**, and enter `90`", text)
         self.assertIn("**Pending period**: `1m`", text)
         self.assertIn("such as 10 minutes", text)
-        quiz = yaml.safe_load(QUIZ8.read_text())
-        self.assertIn("above 90% continuously for 10 minutes", quiz["questions"][1]["prompt"])
+        quiz = {question["id"]: question for question in yaml.safe_load(QUIZ8.read_text())["questions"]}
+        # The quiz asks about the pending period and the threshold that the Lab sets.
+        self.assertIn("a pending period of 1 minute", quiz["predict_pending_states"]["prompt"])
+        self.assertIn("1 and compare it with the threshold", quiz["choose_alert_expression"]["options"][3]["text"])
         # Every cell that reads a rule uses the name that the Lab gives it: in the form, or in the rule's JSON.
         self.assertIn("**1. Enter alert rule name**: `Host CPU busy`", text)
         self.assertIn('"title": "Failed orders",', "\n".join(code_cells(LAB8)))
