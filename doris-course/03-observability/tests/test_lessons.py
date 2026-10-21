@@ -18,9 +18,8 @@ def objectives(lesson):
 
 
 class LessonTests(unittest.TestCase):
-    def test_every_level1_module_has_a_lesson(self):
-        modules = sorted(ROOT.glob("level1/module*"))
-        self.assertEqual([lesson.parent for lesson in LESSONS if "level1" in lesson.parts], modules)
+    def test_every_module_has_a_lesson(self):
+        self.assertEqual([lesson.parent for lesson in LESSONS], sorted(ROOT.glob("level*/module*")))
 
     def test_a_lesson_names_its_module_as_its_lab_and_quiz_do(self):
         for path in LESSONS:
@@ -56,7 +55,7 @@ class LessonTests(unittest.TestCase):
                 self.assertRegex(quiz_section, r"Next(?: module)?: ")
 
     def test_each_quiz_question_tests_an_objective_of_its_lesson(self):
-        for path in LESSONS:
+        for path in (lesson for lesson in LESSONS if "level1" in lesson.parts):
             quiz = yaml.safe_load(next(path.parent.glob("quiz*.yaml")).read_text())
             used = [question["objective"] for question in quiz["questions"]]
             with self.subTest(lesson=path.parent.name):
