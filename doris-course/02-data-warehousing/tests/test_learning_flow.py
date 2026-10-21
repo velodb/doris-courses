@@ -24,6 +24,7 @@ TEMPLATE_LABS = sorted((ROOT / "level1").glob("*/lab*.ipynb")) + [
     ROOT / "level2/module10-metric-processing/lab10_metric_processing.ipynb",
     ROOT / "level2/module11-bi-and-ai/lab11_bi_and_ai_delivery.ipynb",
     ROOT / "level3/module12-publishing-permissions-audit/lab12_publishing_permissions_audit.ipynb",
+    ROOT / "level3/module13-storage-lifecycle/lab13_storage_and_lifecycle.ipynb",
 ]
 
 

@@ -12,7 +12,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 LEVEL3 = ROOT / "level3"
 # Labs rewritten in the course's Lab template; tests/test_learning_flow.py checks their form.
-REWRITTEN = {"lab12_publishing_permissions_audit.ipynb"}
+REWRITTEN = {"lab12_publishing_permissions_audit.ipynb", "lab13_storage_and_lifecycle.ipynb"}
 
 
 class Level3MaterialsTest(unittest.TestCase):
