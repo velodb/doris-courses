@@ -6,6 +6,7 @@
 | 文件 | 用途 |
 | --- | --- |
 | [quiz-alignment.md](quiz-alignment.md) | 每道测验题对应的学习目标、讲义小节和 Lab 中的证据（OB-08、OB-17）。改题目、讲义或 Lab 时同步更新 |
+| [dog-stack.md](dog-stack.md) | `environments/dog-stack/` 中各 override 文件的作用，改上游提交 `STACK_COMMIT` 后的核对方法，Litefuse 与 private endpoint（OB-15 从课程目录移来；学员需要的部分已并入课程 README） |
 
 ## 维护要点
 
