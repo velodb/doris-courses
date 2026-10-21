@@ -15,6 +15,13 @@ sys.path.insert(0, str(ROOT))
 from dw_course import runtime
 from dw_course import wwi
 
+# The Labs in the course's Lab template: practices with a blank cell and a collapsed,
+# runnable reference solution, and an Expected result after every step. The Level 2
+# and Level 3 Labs join the list as they are rewritten.
+TEMPLATE_LABS = sorted((ROOT / "level1").glob("*/lab*.ipynb")) + [
+    ROOT / "level2/module08-views-materialized-views/lab08_views_and_materialized_views.ipynb",
+]
+
 
 class LearningFlowTest(unittest.TestCase):
     def test_restore_session_reconnects_and_reapplies_sql_settings(self):
@@ -234,9 +241,8 @@ class LearningFlowTest(unittest.TestCase):
         self.assertIn("label and group_commit can't be set at the same time", reading)
 
     def test_every_module_has_blank_exercise_and_folded_executable_solution(self):
-        paths = list((ROOT / "level1").glob("*/lab*.ipynb"))
-        self.assertEqual(len(paths), 7)
-        for path in paths:
+        self.assertEqual(len(list((ROOT / "level1").glob("*/lab*.ipynb"))), 7)
+        for path in TEMPLATE_LABS:
             cells = json.loads(path.read_text())["cells"]
             solutions = [c for c in cells if "reference-solution" in c.get("metadata", {}).get("tags", [])]
             self.assertTrue(solutions, path)
@@ -262,7 +268,7 @@ class LearningFlowTest(unittest.TestCase):
                     self.assertNotIn("<details>", "".join(cell["source"]), path)
 
     def test_every_lab_step_ends_with_an_expected_result(self):
-        for path in (ROOT / "level1").glob("*/lab*.ipynb"):
+        for path in TEMPLATE_LABS:
             cells = json.loads(path.read_text())["cells"]
             for index, cell in enumerate(cells[:-1]):
                 if cell["cell_type"] != "code" or index < 3 or not ast.parse("".join(cell["source"])).body:
@@ -284,7 +290,7 @@ class LearningFlowTest(unittest.TestCase):
             run.assert_not_called()
 
     def test_notebooks_keep_connections_for_independent_work(self):
-        for path in (ROOT / "level1").glob("*/lab*.ipynb"):
+        for path in ROOT.glob("level*/*/lab*.ipynb"):
             for cell in json.loads(path.read_text())["cells"]:
                 if cell["cell_type"] != "code":
                     continue

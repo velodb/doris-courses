@@ -15,11 +15,49 @@ import requests
 from doris_labkit.profiles import fetch_profile_text, last_query_id, profile_metric, profile_row_sum
 
 from .environment import connection_settings
-from .ui import card, in_notebook, install_styles, report_sql_error, result_frame, show_frame, show_sql
+from .ui import card, in_notebook, install_styles, report_sql_error, result_frame, show_frame, show_log, show_sql
 
 COURSE_ROOT = Path(__file__).resolve().parents[1]
 # The row counters of a scan in the Query Profile: ScanRows = RowsRead + RowsVectorPredFiltered.
 SCAN_COUNTERS = ("ScanRows", "RowsRead", "RowsKeyRangeFiltered", "RowsStatsFiltered", "RowsVectorPredFiltered")
+# The sections in which an EXPLAIN plan lists the materialized views that Doris tried.
+VIEW_REWRITE_RESULTS = {
+    "MaterializedViewRewriteSuccessAndChose:": "chosen",
+    "MaterializedViewRewriteSuccessButNotChose:": "usable, not chosen",
+    "MaterializedViewRewriteFail:": "not usable",
+}
+
+
+def plan_scans(lines):
+    """The table scans and the materialized views that a Doris EXPLAIN plan lists.
+
+    A scan reads a table, or one of its materialized views, which TABLE: names in
+    parentheses; its partitions= and tablets= lines say how many it reads of how
+    many there are. Doris lists each materialized view that it considered under
+    one of VIEW_REWRITE_RESULTS, with the reason when it could not use it.
+    """
+    scans, views, result = [], [], None
+    for line in lines:
+        text = line.strip()
+        if "VOlapScanNode" in text:
+            scans.append({"table": "", "reads": "", "partitions": "", "tablets": ""})
+        elif scans and result is None and text.startswith("TABLE:"):
+            name = text[len("TABLE:"):].split(",")[0].strip()
+            scans[-1]["table"], _, index = name.partition("(")
+            scans[-1]["reads"] = index.rstrip(")")
+        elif scans and result is None and text.startswith("partitions="):
+            scans[-1]["partitions"] = text[len("partitions="):]
+        elif scans and result is None and text.startswith("tablets="):
+            scans[-1]["tablets"] = text[len("tablets="):].split(",")[0]
+        elif text in VIEW_REWRITE_RESULTS:
+            result = VIEW_REWRITE_RESULTS[text]
+        elif text.startswith("FailInfo:") and views:
+            views[-1]["reason"] = text[len("FailInfo:"):].strip()
+        elif result and text.startswith(("CBO.", "RBO.")):
+            views.append({"materialized_view": text.split()[0].rsplit(".", 1)[-1], "result": result, "reason": ""})
+        elif text.startswith("========== STATISTICS"):  # the plan and its materializations end here
+            break
+    return scans, views
 
 
 def identifier(value):
@@ -172,6 +210,30 @@ class WarehouseLab:
         return {"query": statement, "rows_returned": len(rows),
                 **{counter: profile_row_sum(text, counter) for counter in SCAN_COUNTERS},
                 "ScanBytes": profile_metric(text, "ScanBytes")}
+
+    def explain_scan(self, statement, *, title="What the plan reads"):
+        """Show what each table scan of a query reads, and the materialized views that Doris tried.
+
+        Runs EXPLAIN, which plans the query without running it, shows one row per
+        scan (the table, and in parentheses the table or materialized view that it
+        reads), then the materialized views that Doris considered, with the result
+        and the reason, and the whole plan in a collapsed box. Returns the scans
+        and the views as two lists of dicts.
+        """
+        clean = statement.strip().rstrip(";")
+        lines = [str(row[0]) for row in self.query("EXPLAIN " + clean)]
+        scans, views = plan_scans(lines)
+        if in_notebook():
+            show_sql(title, "EXPLAIN " + clean)
+            show_frame(f"{title} · {len(scans)} scan(s)",
+                       pd.DataFrame(scans, columns=["table", "reads", "partitions", "tablets"]))
+            if views:
+                show_frame("The materialized views that Doris considered",
+                           pd.DataFrame(views, columns=["materialized_view", "result", "reason"]))
+            show_log("The whole plan", "\n".join(lines))
+        else:
+            print("\n".join(lines))
+        return scans, views
 
     def rowsets(self, table, *, title=None):
         """Show the rowsets of each tablet of ``table`` from the BE's compaction status, and return them.

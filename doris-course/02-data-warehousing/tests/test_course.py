@@ -849,6 +849,28 @@ class AlignmentTest(unittest.TestCase):
                 self.assertIn(blocked, str(raised.exception))
                 self.assertIn(steps, str(raised.exception))
 
+    def test_level2_and_3_labs_name_the_lab_that_writes_their_input(self):
+        from dw_course.docker_runtime import PREREQUISITES, _check_prerequisites
+        from dw_course.onboarding import LABS, SetupRequired
+
+        lab = Mock(database="dw_course_l1_test")
+        lab.query.side_effect = lambda statement: [] if statement == "SHOW TABLES" else [(0,)]
+        for module, steps in ((8, "Complete Lab 7 (current state and replay) in"),
+                              (9, "Complete Lab 6 (quality checks), then Lab 7 (current state and replay) in"),
+                              (10, "Complete Lab 9 (modeling and joins) in"),
+                              (11, "Complete Lab 10 (metric processing) in"),
+                              (12, "Complete Lab 9 (modeling and joins), then Lab 11 (BI and AI consumers) in")):
+            with self.subTest(module=module):
+                with self.assertRaises(SetupRequired) as raised:
+                    _check_prerequisites(lab, module)
+                self.assertIn(steps, str(raised.exception))
+                # Every Lab named in a message has a link.
+                self.assertTrue(set(raised.exception.links[1:]) <= {(f"Open Lab {n}", LABS[n]) for n in LABS})
+        for number, path in LABS.items():
+            self.assertTrue((COURSE_ROOT / path).is_file(), path)
+        self.assertEqual(PREREQUISITES.get(13), None)
+        self.assertEqual(PREREQUISITES.get(14), None)
+
     def test_explicit_sandbox_start_and_be_readiness(self):
         from dw_course.docker_runtime import prepare_environment
         cursor = Mock()
