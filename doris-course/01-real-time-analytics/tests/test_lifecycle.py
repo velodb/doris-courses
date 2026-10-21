@@ -79,7 +79,7 @@ class LifecycleHelperTests(unittest.TestCase):
         lab._metadata_rows = Mock(side_effect=[
             [{"Tables_in_doris_course": "m10_retained_events"}],
             [{"event_time": "2026-10-19 22:06:05"}],
-            [{"server_now": "2026-10-20 01:06:06"}],
+            [{"server_now": "2026-10-20 01:06:06", "time_zone": "Asia/Shanghai"}],
         ])
         lab.wait_for_partition_removal = Mock()
         with patch.object(client, "card") as card:
@@ -101,7 +101,7 @@ class LifecycleHelperTests(unittest.TestCase):
         lab._metadata_rows = Mock(side_effect=[
             [{"Tables_in_doris_course": "m10_retained_events"}],
             [{"event_time": "2026-10-19 22:06:05"}],
-            [{"server_now": "2026-10-20 02:00:30"}],
+            [{"server_now": "2026-10-20 02:00:30", "time_zone": "Asia/Shanghai"}],
             [
                 {"PartitionName": "p2026101922",
                  "Range": "[types: [DATETIMEV2]; keys: [2026-10-19 22:00:00]; "

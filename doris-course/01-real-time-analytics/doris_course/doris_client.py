@@ -126,6 +126,40 @@ def install_styles() -> None:
     install_shared_styles(ACTIVITY_CSS)
 
 
+class EnvironmentNotReady(RuntimeError):
+    """A step stopped because the environment or its data is not ready.
+
+    The card shown before raising says why and what to do.
+    """
+
+    def _render_traceback_(self) -> list[str]:
+        return [f"Stopped: {self}"]
+
+
+class WaitTimedOut(TimeoutError):
+    """A bounded wait ended before Doris reached the expected state.
+
+    The card and table shown before raising describe the last state seen.
+    """
+
+    def _render_traceback_(self) -> list[str]:
+        return [f"Timed out: {self}"]
+
+
+# The tables each Lab reads from earlier Labs: table -> (rows when complete, the Lab that builds it).
+PREREQUISITES = {
+    2: {"events": (10_158_080, "Lab 1 (Start Doris and Build a Baseline Dataset)")},
+    4: {"events": (10_158_080, "Lab 1 (Start Doris and Build a Baseline Dataset)")},
+    5: {"events_modelled": (10_158_080, "Lab 4 (Model Data for Analytical Workloads)")},
+    6: {"events_modelled": (10_158_080, "Lab 4 (Model Data for Analytical Workloads)")},
+    8: {
+        "events_modelled": (10_158_080, "Lab 4 (Model Data for Analytical Workloads)"),
+        "dim_products": (204_231, "Lab 6 (Joining Data in Apache Doris)"),
+    },
+    10: {"events_modelled": (10_158_080, "Lab 4 (Model Data for Analytical Workloads)")},
+}
+
+
 def s3_tvf(config: Mapping[str, str]) -> str:
     """Return the S3 TVF that reads the course's public bucket without credentials.
 
@@ -201,6 +235,15 @@ class DorisLab:
         if log:
             show_log("Diagnostic details", log, opened=True)
 
+    @staticmethod
+    def _timed_out(title: str, message: str, last_state: pd.DataFrame | None = None,
+                   hint: str = "") -> WaitTimedOut:
+        """Show why a bounded wait ended and return the exception to raise."""
+        card(f"{message} {hint}".strip(), "fail", title)
+        if last_state is not None and not last_state.empty:
+            show_frame("Last state seen", last_state)
+        return WaitTimedOut(message)
+
     def _require_connection(self):
         if self.connection is None:
             try:
@@ -227,15 +270,28 @@ class DorisLab:
                 except pymysql.MySQLError:
                     pass
             except (OSError, pymysql.MySQLError) as exc:
-                raise RuntimeError(
-                    "No running Doris server is reachable on "
-                    f"{self._connection_host}:{self._connection_port}. "
-                    "Start this module's Doris environment if it is stopped, then rerun the "
-                    "Notebook initialization cell. A kernel restart clears the Python "
-                    "connection, but it does not delete Docker containers, named volumes, "
-                    "or imported tables."
-                ) from exc
+                self.connection = None
+                address = f"{self._connection_host}:{self._connection_port}"
+                card(
+                    f"Nothing answers on {address}. {self._start_hint()} "
+                    "A kernel restart clears only the Python connection; containers, "
+                    "volumes, and tables remain.",
+                    "fail",
+                    "Doris is not reachable",
+                )
+                raise EnvironmentNotReady(f"Doris is not reachable on {address}.") from exc
         return self.connection
+
+    def _start_hint(self) -> str:
+        """Say how to start the environment this Lab connects to."""
+        if self._connection_port == env.QUERY_PORT and self._connection_host == "127.0.0.1":
+            return (
+                f"Start the sandbox with the Restart cell at the end of any Lab, or run "
+                f"`docker start {env.DORIS_CONTAINER}`, then rerun this cell. A new sandbox "
+                "comes from Lab 1, Section 2. If you set DORIS_RTA_QUERY_PORT, start Jupyter "
+                "with the same value."
+            )
+        return "Start the Module 9 cluster with Section 1.1 of Lab 9, then rerun this cell."
 
     def sql(
         self,
@@ -830,10 +886,12 @@ class DorisLab:
             if metadata_rows == expected_rows:
                 return
             time.sleep(2)
-        raise TimeoutError(
-            f"{table_name} contains the expected {query_rows:,} committed rows, but "
-            f"Tablet metadata reported {metadata_rows}; expected {expected_rows:,} "
-            f"within {timeout_seconds} seconds."
+        raise self._timed_out(
+            "Tablet reports are late",
+            f"{table_name} has the expected {query_rows:,} committed rows, but after "
+            f"{timeout_seconds} seconds its tablets report {metadata_rows} rows instead of "
+            f"{expected_rows:,}.",
+            hint="Each BE reports tablet statistics about once a minute; rerun this cell.",
         )
 
     def wait_for_replica_health(
@@ -856,9 +914,12 @@ class DorisLab:
             ):
                 return placement
             time.sleep(1)
-        raise TimeoutError(
-            f"Replica health for {table_name} did not reach alive={expected_alive}, "
-            f"version_complete={expected_complete}; last placement={placement.to_dict('records')!r}"
+        raise self._timed_out(
+            "Replicas did not become healthy",
+            f"After {timeout_seconds} seconds, the tablets of {table_name} did not all have "
+            f"{expected_alive} alive and {expected_complete} up-to-date replicas.",
+            placement,
+            hint="Check the containers with `docker compose --file level3/module09-sharding-replication/compose.multinode.yml ps` and read the logs of the one that is not running.",
         )
 
     def wait_for_node_state(
@@ -915,11 +976,18 @@ class DorisLab:
                 break
             time.sleep(1)
         else:
-            raise TimeoutError(
-                f"{normalized} did not reach total={expected_total}, alive={expected_alive}, "
-                f"masters={expected_masters}, roles={expected_roles}, "
-                f"same_version={require_same_version}; last rows={rows!r}; "
-                f"last error={last_error!r}"
+            columns = ["Name", "Host", "Role", "IsMaster", "Alive", "Version", "BackendId"]
+            last = pd.DataFrame(rows)
+            last = last[[column for column in columns if column in last.columns]]
+            expected = f"{expected_alive} of {expected_total} alive"
+            if expected_masters is not None:
+                expected += f", {expected_masters} Master"
+            error = f" The last attempt failed: {last_error}." if last_error else ""
+            raise self._timed_out(
+                "The cluster did not reach the expected state",
+                f"After {timeout_seconds} seconds, {normalized} did not show {expected}.{error}",
+                last,
+                hint="Check the containers with `docker compose --file level3/module09-sharding-replication/compose.multinode.yml ps` and read the logs of the one that is not running.",
             )
         frame = pd.DataFrame(rows)
         columns = (
@@ -955,9 +1023,14 @@ class DorisLab:
                 break
             time.sleep(1)
         else:
-            raise TimeoutError(
-                f"Only {len(ready) if 'ready' in locals() else 0}/{expected_backends} BEs "
-                f"reported usable storage; last rows={rows!r}"
+            last = pd.DataFrame(rows)
+            last = last[[c for c in ("BackendId", "Host", "Alive", "AvailCapacity", "TotalCapacity")
+                         if c in last.columns]]
+            raise self._timed_out(
+                "BE storage is not ready",
+                f"After {timeout_seconds} seconds, not all {expected_backends} BEs reported usable storage.",
+                last,
+                hint="Check the containers with `docker compose --file level3/module09-sharding-replication/compose.multinode.yml ps` and read the logs of the one that is not running.",
             )
         frame = pd.DataFrame(rows)[
             ["BackendId", "Host", "Alive", "AvailCapacity", "TotalCapacity"]
@@ -1419,8 +1492,14 @@ class DorisLab:
         return frame
 
     def shell(self, script: str, *, title: str) -> subprocess.CompletedProcess[str]:
-        """Run learner-visible Bash from the course root with live progress."""
-        return run_shell(script, title=title, cwd=self.lab_dir)
+        """Run learner-visible Bash from the course root with live progress.
+
+        A failing script already shows its log, so the stop is one line.
+        """
+        try:
+            return run_shell(script, title=title, cwd=self.lab_dir)
+        except RuntimeError as exc:
+            raise EnvironmentNotReady(f"{title} failed; the log above shows why.") from exc
 
     def load_method_quiz(self) -> None:
         """Match visible workload requirements to load methods."""
@@ -1973,6 +2052,17 @@ LIMIT 10
                         temporary.write_bytes(response.read())
                     row_count = self._validate_fixture(temporary, kind)
                     os.replace(temporary, destination)
+                except OSError as exc:
+                    temporary.unlink(missing_ok=True)
+                    host = urllib.parse.urlsplit(remote_url).hostname
+                    card(
+                        f"Could not download {remote_url}: {getattr(exc, 'reason', exc)}. Check that this "
+                        f"computer can reach {host} over HTTPS (a proxy, VPN, or firewall can block it), "
+                        "then rerun this cell.",
+                        "fail",
+                        f"{label} was not downloaded",
+                    )
+                    raise EnvironmentNotReady(f"{label} was not downloaded.") from exc
                 except Exception:
                     temporary.unlink(missing_ok=True)
                     raise
@@ -2190,7 +2280,14 @@ LIMIT 10
                 if state in failures:
                     raise RuntimeError(f"Background job failed: {row}")
             time.sleep(0.5)
-        raise TimeoutError(f"Background job did not finish within {timeout}s. Last matching rows: {last}")
+        last_state = pd.DataFrame(last) if last else None
+        raise DorisLab._timed_out(
+            "The background job did not finish",
+            f"The background job did not finish within {timeout}s; its last state was "
+            f"{', '.join(str(row.get(state_key)) for row in last) or 'not listed yet'}.",
+            last_state,
+            hint="Rerun this cell to wait again.",
+        )
 
     def wait_for_sync_mv(self, table, view, before, *, database="doris_course", timeout=120):
         row = self._wait_mv_job(
@@ -2592,14 +2689,29 @@ LIMIT 10
 
         Without a name, this is the course's single-node Doris sandbox.
         """
-        state = labkit_docker.start_container(
-            container,
-            wait_for_healthy=wait_for_healthy,
-            timeout_seconds=timeout_seconds,
-            missing_hint=(
-                "Run that module's environment preparation before using its restart cell."
-            ),
+        creator = (
+            "Create it with Lab 1, Section 2 (Prepare the environment)."
+            if container == env.DORIS_CONTAINER
+            else "Create it with that module's environment preparation cell."
         )
+        try:
+            state = labkit_docker.start_container(
+                container,
+                wait_for_healthy=wait_for_healthy,
+                timeout_seconds=timeout_seconds,
+                missing_hint=creator,
+            )
+        except (RuntimeError, TimeoutError) as exc:
+            if "does not exist" in str(exc):
+                card(str(exc), "fail", "The container is missing")
+                raise EnvironmentNotReady(f"Container {container} does not exist.") from exc
+            card(
+                f"{exc} Check Docker Desktop (or Docker Engine on Linux) and `docker logs --tail 100 "
+                f"{container}`, then rerun this cell.",
+                "fail",
+                f"{container} did not start",
+            )
+            raise EnvironmentNotReady(f"{container} did not start.") from exc
         container_state = state.get("State", {})
         show_frame("Sandbox container", pd.DataFrame([{
             "container": container,
@@ -2621,19 +2733,96 @@ LIMIT 10
 
         Without arguments, this is the course's single-node Doris sandbox.
         """
-        wait_for_health(container, timeout_seconds=300, report=False)
+        self._connection_host = host
+        self._connection_port = port
+        state = container_inspect(container)
+        status = (state or {}).get("State", {}).get("Status")
+        if status != "running":
+            problem = "does not exist" if state is None else f"is {status}"
+            card(f"Container {container} {problem}. {self._start_hint()}", "fail",
+                 "The Doris container is not running")
+            raise EnvironmentNotReady(f"Container {container} {problem}.")
+        try:
+            wait_for_health(container, timeout_seconds=300, report=False)
+        except (RuntimeError, TimeoutError) as exc:
+            card(f"{exc}. Read `docker logs --tail 200 {container}`, then rerun this cell.",
+                 "fail", "Doris did not become healthy")
+            raise EnvironmentNotReady(f"{container} did not become healthy.") from exc
         if self.connection is not None:
             try:
                 self.connection.close()
             except Exception:
                 pass
         self.DORIS_CONTAINER = container
-        self._connection_host = host
-        self._connection_port = port
         self._profile_http_host = http_host or host
         self._profile_http_port = http_port
-        self.connection = connect_doris(host=host, port=port)
+        self.connection = None
+        try:
+            self.connection = connect_doris(host=host, port=port)
+        except (OSError, TimeoutError, pymysql.MySQLError) as exc:
+            card(f"{container} is healthy, but nothing answers on {host}:{port}. {self._start_hint()}",
+                 "fail", "Doris is not reachable")
+            raise EnvironmentNotReady(f"Doris is not reachable on {host}:{port}.") from exc
         return self.connection
+
+    def check_prerequisites(self, lab_number: int) -> pd.DataFrame:
+        """Check that the tables this Lab reads from earlier Labs are complete."""
+        rows = []
+        statements = []
+        for table, (expected, made_by) in PREREQUISITES[lab_number].items():
+            exists = bool(self._metadata_rows(f"SHOW TABLES LIKE '{table}'"))
+            count = None
+            if exists:
+                statement = f"SELECT COUNT(*) AS row_count FROM {table}"
+                statements.append(statement)
+                count = int(self._metadata_rows(statement)[0]["row_count"])
+            rows.append({
+                "table": table,
+                "rows": "missing" if count is None else f"{count:,}",
+                "expected rows": f"{expected:,}",
+                "built by": made_by,
+                "status": "missing" if count is None else ("ready" if count == expected else "incomplete"),
+            })
+        frame = pd.DataFrame(rows)
+        missing = frame.loc[frame["status"] != "ready"]
+        if not missing.empty:
+            show_frame(f"Tables Lab {lab_number} reads from earlier Labs", frame)
+            labs = list(dict.fromkeys(missing["built by"]))
+            card(
+                f"Complete {' and then '.join(labs)} in this sandbox, then rerun this cell. "
+                "Nothing has been changed.",
+                "fail",
+                f"Lab {lab_number} needs data from an earlier Lab",
+            )
+            raise EnvironmentNotReady(
+                f"{', '.join(missing['table'])} {'is' if len(missing) == 1 else 'are'} missing or incomplete."
+            )
+        card(
+            ", ".join(f"{row['table']} ({row['rows']} rows)" for row in rows),
+            "ok",
+            f"The tables Lab {lab_number} reads are ready",
+        )
+        self.show_statements(*statements)
+        return frame
+
+    def check_module9_stopped(self) -> None:
+        """Refuse to start the single-node sandbox while the Module 9 cluster runs."""
+        running = run(
+            ["docker", "ps", "--filter", f"label=com.docker.compose.project={env.M09_PROJECT}",
+             "--format", "{{.Names}}"],
+            check=False,
+        )
+        names = running.stdout.split()
+        if names:
+            card(
+                f"{len(names)} container(s) of the Module 9 cluster are still running. Together with "
+                f"the single-node sandbox they need more memory than the course minimum. Stop them "
+                f"with `docker compose --file level3/module09-sharding-replication/compose.multinode.yml "
+                f"stop` (or the Stop cell at the end of Lab 9), then rerun this cell.",
+                "fail",
+                "Stop the Module 9 cluster first",
+            )
+            raise EnvironmentNotReady("The Module 9 cluster is still running.")
 
     @property
     def fe_http_url(self) -> str:
@@ -3003,10 +3192,12 @@ LIMIT 10
                     self.show_statements(f"SHOW REPLICA DISTRIBUTION FROM {table_name}", "SHOW BACKENDS")
                 return frame
             time.sleep(1)
-        raise TimeoutError(
-            f"Replica distribution for {table_name} did not reach "
-            f"backends={expected_backends}, total={expected_total_replicas}, "
-            f"spread<={max_replica_spread}; last rows={frame.to_dict('records')!r}"
+        raise self._timed_out(
+            "Replicas were not rebalanced in time",
+            f"After {timeout_seconds} seconds, the {expected_total_replicas} replicas of {table_name} "
+            f"were not spread over {expected_backends} BEs.",
+            frame,
+            hint="Doris moves replicas in the background; rerun this cell to wait again. " + "Check the containers with `docker compose --file level3/module09-sharding-replication/compose.multinode.yml ps` and read the logs of the one that is not running.",
         )
 
     def wait_for_colocation_group(
@@ -3040,9 +3231,11 @@ LIMIT 10
                     self.show_statements('SHOW PROC "/colocation_group"')
                     return frame
             time.sleep(1)
-        raise TimeoutError(
-            f"Colocation Group {group_name!r} did not become stable within "
-            f"{timeout_seconds} seconds; last metadata={selected!r}"
+        raise self._timed_out(
+            "The Colocation Group is not stable yet",
+            f"After {timeout_seconds} seconds, Colocation Group {group_name} was not stable.",
+            pd.DataFrame([selected]) if selected else None,
+            hint="Doris is still moving replicas into the group; rerun this cell to wait again.",
         )
 
     @staticmethod
@@ -3129,9 +3322,12 @@ LIMIT 10
                     show_frame(title or f"HAProxy marks {server_name} {expected}", frame)
                 return frame
             time.sleep(1)
-        raise TimeoutError(
-            f"HAProxy did not mark {server_name} {expected}; "
-            f"last rows={frame.to_dict('records')!r}; last error={last_error!r}"
+        error = f" The last read failed: {last_error}." if last_error else ""
+        raise self._timed_out(
+            "HAProxy did not report the expected FE state",
+            f"After {timeout_seconds} seconds, HAProxy did not mark {server_name} {expected}.{error}",
+            frame,
+            hint="Check the containers with `docker compose --file level3/module09-sharding-replication/compose.multinode.yml ps` and read the logs of the one that is not running.",
         )
 
     def expect_current_connection_failure(
@@ -3273,9 +3469,13 @@ LIMIT 10
             if ready:
                 return
             time.sleep(2)
-        raise TimeoutError(
-            "Doris had not reported nonzero storage metadata for every table within "
-            f"{timeout_seconds} seconds. Last SHOW DATA rows: {last!r}"
+        raise self._timed_out(
+            "Storage reports are late",
+            f"After {timeout_seconds} seconds, SHOW DATA did not yet report all rows and a nonzero "
+            "size for every table.",
+            pd.DataFrame([{"table": name, "RowCount": row.get("RowCount"), "Size": row.get("Size")}
+                          for name, row in last.items()]),
+            hint="The BE reports sizes about once a minute; rerun this cell.",
         )
 
     def compression_storage_summary(
@@ -3418,9 +3618,11 @@ LIMIT 10
                 return pd.DataFrame(rows)
             time.sleep(1)
         names = [str(row.get("PartitionName", "")) for row in rows]
-        raise TimeoutError(
-            f"{table_name} exposed {len(rows)} partitions after {timeout_seconds} seconds; "
-            f"expected {expected_count}. Last names: {names!r}"
+        raise self._timed_out(
+            "Partitions were not created in time",
+            f"After {timeout_seconds} seconds, {table_name} had {len(rows)} partitions instead of "
+            f"{expected_count}: {', '.join(names) or 'none'}.",
+            hint="Read the table's row in SHOW DYNAMIC PARTITION TABLES for the scheduler's message.",
         )
 
     def wait_for_partition_removal(
@@ -3470,9 +3672,9 @@ LIMIT 10
                 return pd.DataFrame(rows)
             if elapsed >= timeout_seconds:
                 handle.update(timer_html(elapsed, names, "failure"))
-                raise TimeoutError(
-                    f"{partition_name} remains in {table_name} after "
-                    f"{timeout_seconds} seconds; online Partitions: {names!r}"
+                raise WaitTimedOut(
+                    f"{partition_name} is still in {table_name} after {timeout_seconds} seconds; "
+                    "rerun this cell to wait again."
                 )
             handle.update(timer_html(elapsed, names, "running"))
             time.sleep(min(5.0, timeout_seconds - elapsed))
@@ -3505,18 +3707,19 @@ LIMIT 10
 
         event_hour = pd.Timestamp(marker[0]["event_time"]).floor("h")
         expiry_at = event_hour + pd.Timedelta(hours=1 - start_offset)
-        clock = self._metadata_rows("SELECT NOW() AS server_now")
+        clock = self._metadata_rows("SELECT NOW() AS server_now, @@time_zone AS time_zone")
         server_now = pd.Timestamp(clock[0]["server_now"])
+        zone = clock[0]["time_zone"]
         if server_now < expiry_at:
             remaining = expiry_at - server_now
             minutes = max(1, int(remaining.total_seconds() // 60) + 1)
             card(f"Return at or after {expiry_at:%Y-%m-%d %H:%M:%S} "
-                 f"(Asia/Shanghai); about {minutes} minute(s) remain until the "
+                 f"({zone}); about {minutes} minute(s) remain until the "
                  "whole hour becomes ineligible. Keep the container running and "
                  "rerun this cell then; do not rerun Section 2.",
                  "info", "The hourly retention boundary has not arrived")
             raise ReturnLater(
-                f"rerun this cell at or after {expiry_at:%Y-%m-%d %H:%M} (Asia/Shanghai)."
+                f"rerun this cell at or after {expiry_at:%Y-%m-%d %H:%M} ({zone})."
             )
 
         partitions = self._metadata_rows(
@@ -3539,6 +3742,22 @@ LIMIT 10
             table_name, matches[0], timeout_seconds=timeout_seconds
         )
 
+    @staticmethod
+    def _session_time(value: str, system_zone: str, session_zone: str) -> str:
+        """Express a time that the FE writes in its system time zone in the session's time zone.
+
+        SHOW DYNAMIC PARTITION TABLES reports scheduler times in the FE's own
+        time zone, while partition bounds follow the table's time zone.
+        """
+        try:
+            moment = pd.Timestamp(value).tz_localize(system_zone).tz_convert(session_zone)
+        except (ValueError, TypeError, KeyError):
+            return f"{value} ({system_zone}, the FE's system time zone)"
+        if moment.utcoffset() == pd.Timestamp(value).tz_localize(system_zone).utcoffset():
+            return f"{moment:%Y-%m-%d %H:%M:%S} ({session_zone})"
+        return (f"{moment:%Y-%m-%d %H:%M:%S} {session_zone} "
+                f"(the FE reports {value} in its system time zone, {system_zone})")
+
     def dynamic_partition_status(
         self,
         table_name: str,
@@ -3558,12 +3777,19 @@ LIMIT 10
         row = rows[0]
         state = str(row.get("State") or "not reported")
         last_run = str(row.get("LastSchedulerTime") or "not reported")
+        zones = self._metadata_rows(
+            "SELECT @@system_time_zone AS system_time_zone, @@time_zone AS time_zone"
+        )[0]
         card(
-            f"State: {state} · Last scheduler run: {last_run}",
+            f"State: {state} · Last scheduler run: "
+            f"{self._session_time(last_run, zones['system_time_zone'], zones['time_zone'])}",
             "ok" if state.upper() == "NORMAL" else "fail",
             title,
         )
-        self.show_statements("SHOW DYNAMIC PARTITION TABLES")
+        self.show_statements(
+            "SHOW DYNAMIC PARTITION TABLES",
+            "SELECT @@system_time_zone AS system_time_zone, @@time_zone AS time_zone",
+        )
         if state.upper() != "NORMAL":
             details = "\n".join(
                 f"{key}: {row.get(key) or 'not reported'}"
