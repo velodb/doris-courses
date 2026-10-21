@@ -539,6 +539,36 @@ class ObservabilityLab:
             self._failure(f"{service} does not answer", f"Could not read {url} ({error}). {hint}")
             raise EnvironmentNotReady(f"{service} does not answer.")
 
+    def _send(self, method: str, url: str, body: Mapping | None = None, *, auth: tuple[str, str],
+              headers: Mapping[str, str] | None = None, missing_ok: bool = False) -> str | None:
+        """Send a request with a JSON body to Grafana as a signed-in user; stop with a card when Grafana refuses it.
+
+        With ``missing_ok``, a 404 answer returns None instead.
+        """
+        request_headers = {"Content-Type": "application/json", **(headers or {}),
+                           "Authorization": "Basic " + base64.b64encode(":".join(auth).encode()).decode()}
+        data = None if body is None else json.dumps(body).encode("utf-8")
+        request = urllib.request.Request(url, data=data, headers=request_headers, method=method)
+        try:
+            with urllib.request.urlopen(request, timeout=10) as response:
+                return response.read().decode("utf-8")
+        except urllib.error.HTTPError as error:
+            if missing_ok and error.code == 404:
+                return None
+            if error.code in (401, 403):
+                self._failure(
+                    "Grafana refused the admin password",
+                    f"Grafana answered {error.code}. Set GRAFANA_ADMIN_PASSWORD to the password of the user admin: "
+                    "admin, unless you set a new one when you first signed in. Then rerun this cell.",
+                )
+                raise EnvironmentNotReady("Grafana refused the admin password.")
+            detail = error.read().decode("utf-8", "replace")
+            self._failure(f"Grafana refused the request ({error.code})", f"{method} {url}: {detail}")
+            raise EnvironmentNotReady(f"Grafana refused the request ({error.code}).")
+        except (OSError, http.client.HTTPException) as error:
+            self._failure("Grafana does not answer", f"Could not reach {url} ({error}). {GRAFANA_HINT}")
+            raise EnvironmentNotReady("Grafana does not answer.")
+
     def _no_rule(self, rule: str) -> None:
         self._failure(
             f"Grafana has no alert rule named {rule!r}",
@@ -662,6 +692,47 @@ class ObservabilityLab:
         text = self._read(export, "Grafana", GRAFANA_HINT)
         show_log(f"The rule {rule!r} as provisioning YAML", text, opened=True)
         return text
+
+    def provision_alert_rule_group(self, folder: str, group: str, rules: Sequence[Mapping], *,
+                                   interval_seconds: int, admin_password: str) -> dict:
+        """Create or replace a Grafana alert rule group from code, with Grafana's provisioning API.
+
+        Finds the folder by its title, creating it when it is missing. A rule with
+        a fixed "uid" that Grafana does not have yet is created with POST, because
+        a group's PUT only updates the rules whose uid exists. Then the group is
+        sent with PUT: afterwards it holds exactly ``rules``, evaluated every
+        ``interval_seconds``, and a rerun updates the same rules. The header
+        X-Disable-Provenance keeps the rules editable in Grafana's web page.
+        Writing needs the admin's password; the requests are shown first, without it.
+        """
+        auth = ("admin", admin_password)
+        headers = {"X-Disable-Provenance": "true"}
+        folders_url = f"{self.grafana_url}/api/folders"
+        rules_url = f"{self.grafana_url}/api/v1/provisioning/alert-rules"
+        group_url = f"{self.grafana_url}/api/v1/provisioning/folder/<folder uid>/rule-groups/{group}"
+        show_sql(
+            f"Create or replace the rule group {group!r} in the folder {folder!r}",
+            f'curl -s -u admin:<password> "{folders_url}"\n'
+            f'curl -s -u admin:<password> -X POST -H "Content-Type: application/json" '
+            f'-H "X-Disable-Provenance: true" --data @rule.json "{rules_url}"   # once for each new rule\n'
+            f'curl -s -u admin:<password> -X PUT -H "Content-Type: application/json" '
+            f'-H "X-Disable-Provenance: true" --data @rule-group.json "{group_url}"',
+        )
+        folders = json.loads(self._send("GET", folders_url, auth=auth))
+        uid = next((item.get("uid") for item in folders if item.get("title") == folder), None)
+        if uid is None:
+            uid = json.loads(self._send("POST", folders_url, {"title": folder}, auth=auth))["uid"]
+        for rule in rules:
+            if rule.get("uid") and self._send("GET", f"{rules_url}/{rule['uid']}", auth=auth, missing_ok=True) is None:
+                self._send("POST", rules_url, {**rule, "folderUID": uid, "ruleGroup": group}, auth=auth, headers=headers)
+        body = {"title": group, "interval": interval_seconds, "rules": list(rules)}
+        answer = json.loads(self._send("PUT", group_url.replace("<folder uid>", uid), body, auth=auth, headers=headers))
+        show_frame(f"The rule group {group!r} in {folder!r}, evaluated every {interval_seconds} seconds", pd.DataFrame([
+            {"rule": rule.get("title"), "uid": rule.get("uid"), "pending_period": rule.get("for"),
+             "labels": ", ".join(f"{key}={value}" for key, value in sorted((rule.get("labels") or {}).items()))}
+            for rule in answer.get("rules") or []
+        ], columns=["rule", "uid", "pending_period", "labels"]))
+        return answer
 
     def grafana_dashboard(self, title: str) -> pd.DataFrame:
         """Show the panels of a saved Grafana dashboard, with the SQL of each, and return them.

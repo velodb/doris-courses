@@ -87,7 +87,7 @@ class NotebookTests(unittest.TestCase):
         self.assertIn("metric_name = 'traces.span.metrics.calls'", metric)
 
     def test_exercises_have_a_collapsed_reference_solution(self):
-        for path in (*LEVEL1_LABS, LAB4, LAB5, LAB6):
+        for path in sorted(ROOT.glob("level*/module*/lab*.ipynb")):
             cells = json.loads(path.read_text())["cells"]
             blank = [index for index, cell in enumerate(cells)
                      if cell["cell_type"] == "code" and "".join(cell["source"]).strip() == "# Your code here"]
@@ -332,11 +332,35 @@ class NotebookTests(unittest.TestCase):
         self.assertIn("such as 10 minutes", text)
         quiz = yaml.safe_load(QUIZ8.read_text())
         self.assertIn("above 90% continuously for 10 minutes", quiz["questions"][1]["prompt"])
-        # Every cell that reads the rule uses the name that the Lab tells the learner to give it.
+        # Every cell that reads a rule uses the name that the Lab gives it: in the form, or in the rule's JSON.
         self.assertIn("**1. Enter alert rule name**: `Host CPU busy`", text)
+        self.assertIn('"title": "Failed orders",', "\n".join(code_cells(LAB8)))
         for cell in code_cells(LAB8):
             for name in re.findall(r'lab\.(?:alert_instances|wait_for_alert_state|export_alert_rule)\(\s*"([^"]+)"', cell):
-                self.assertEqual(name, "Host CPU busy")
+                self.assertIn(name, ("Host CPU busy", "Failed orders"))
+
+    def test_module8_alerts_on_the_incident_and_ends_it(self):
+        cells = code_cells(LAB8)
+        rule = next(cell for cell in cells if "FAILED_ORDERS_RULE = {" in cell)
+        # A fixed uid, so that a rerun updates the same rule; the policy of section 5 routes it.
+        self.assertIn('"uid": "failed-orders"', rule)
+        self.assertIn('"labels": {"team": "doris-course", "severity": "critical"}', rule)
+        self.assertIn('"evaluator": {"type": "gt", "params": [10]}', rule)
+        # No order in the window means no failed order, not an alert.
+        self.assertIn('"noDataState": "OK"', rule)
+        self.assertIn('lab.provision_alert_rule_group("Doris course", "orders", [FAILED_ORDERS_RULE]', rule)
+        self.assertIn('GRAFANA_ADMIN_PASSWORD = "admin"', rule)
+        query = next(cell for cell in cells if "FAILED_ORDERS_QUERY = " in cell)
+        for condition in ("service_name = 'checkout'", "span_name = 'oteldemo.CheckoutService/PlaceOrder'",
+                          "end_time >= UTC_TIMESTAMP() - INTERVAL 5 MINUTE"):
+            self.assertIn(condition, query)
+        # The incident ends where it started: the flag page, then the alert resolves.
+        flag = next(index for index, cell in enumerate(cells) if 'lab.wait_for_feature_flag("paymentFailure", "off")' in cell)
+        resolve = next(index for index, cell in enumerate(cells) if '"Failed orders", "Normal"' in cell)
+        self.assertLess(cells.index(rule), flag)
+        self.assertLess(flag, resolve)
+        self.assertIn("after=flag_off", cells[resolve])
+        self.assertIn("http://127.0.0.1:28082/feature", markdown_text(LAB8))
 
     def test_module8_cpu_load_is_low_priority_and_stops_by_itself(self):
         load = next(cell for cell in code_cells(LAB8) if "docker run" in cell)
