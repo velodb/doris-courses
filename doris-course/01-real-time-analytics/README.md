@@ -5,6 +5,18 @@ datasets, and reusable runtime support for the three course levels. Levels 1
 and 2 are implemented. Level 3 includes executable Labs 8, 9, and 10; its
 course notes and quizzes are still planned.
 
+## Environment
+
+| | |
+| --- | --- |
+| Platforms | **macOS on Apple silicon** with Docker Desktop: the platform on which every lab of this release was run from start to finish. **Linux on x86_64** with Docker Engine: the labs accept it and use the same images, but this release has not been run on it. **Windows**: run the course inside a WSL 2 Linux distribution on x86_64 with Docker Desktop's WSL 2 integration, and start Jupyter there; inside WSL the labs see Linux on x86_64. This release has not been run on it either. |
+| Other platforms | Lab 1 stops at its first step on other combinations, such as an Intel Mac or Linux on arm64. The Doris, Kafka, and HAProxy images exist for both amd64 and arm64, but the course has not been run on those combinations, so Lab 1 does not continue there. |
+| Resources | Docker needs at least 4 CPUs, 8 GB of memory, and 20 GB of free disk. With 4 CPUs and 8 GB, the Doris container peaks at about 3.1 GiB during Lab 1's load. Module 9 runs three FEs, three BEs, and HAProxy within the same minimum; stop the single-node sandbox first. |
+| Downloads | Docker images: `apache/doris:all-in-one-4.1.3` (about 1.9 GB to download, 4.5 GB on disk), `apache/kafka:3.9.1` for Module 3 (0.2 GB), `haproxy:3.0-alpine` for Module 9 (20 MB), and `metabase/metabase:v0.59.6.3` for the optional Metabase lab (0.7 GB). Data: 72 MiB of Parquet files from AWS S3 in Lab 1 and again in Lab 3, a seven-hour slice of the same files in Lab 9, and three small files in Lab 3. Python packages from PyPI. |
+| Network | Docker Hub for the images; `s3.us-east-1.amazonaws.com` and `doris-courses-public-dataset.s3.us-east-1.amazonaws.com` over HTTPS for the data; PyPI for the packages. From some networks, including mainland China, Docker Hub and AWS `us-east-1` can be slow or unreachable: use the registry mirror or proxy that your network provides, and expect the loads in Labs 1 and 3 to take longer (22 seconds to 2 minutes in our runs). |
+| Accounts and keys | None. The dataset bucket is public and is read anonymously. |
+| Python | 3.9 to 3.13. If `python3 --version` reports 3.14 or later, create the virtual environment with a supported version, for example `python3.12 -m venv .venv`. |
+
 ## Repository structure
 
 ```text
@@ -96,7 +108,7 @@ fixtures, and local JAR files remain local runtime state.
 
 ## Python environment and shared helpers
 
-Run setup from this directory:
+Run setup from this directory with Python 3.9 to 3.13 (see [Environment](#environment)):
 
 ```bash
 python3 -m venv .venv
