@@ -1,9 +1,11 @@
 """Offline course checks. These tests do not connect to Doris."""
 
 import ast
+import io
 import json
 import re
 import sys
+import tokenize
 import unittest
 from collections import Counter
 from decimal import Decimal
@@ -19,6 +21,31 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from dw_course.runtime import COURSE_ROOT, WarehouseLab, expect, fixture, identifier
 from dw_course.schema import ORDER_COLUMNS, order_ddl, order_rows
 from dw_course.wwi import HISTORY_COLUMNS, history_ddl, history_rows, manifest, parquet_paths, sample
+
+
+def ends_with_bare_lab_call(source):
+    """Return True when a cell's last statement is a bare lab.<method>(...) call.
+
+    lab.close() returns None, so Jupyter shows nothing for it.
+    """
+    statements = ast.parse(source).body
+    if not statements or not isinstance(statements[-1], ast.Expr):
+        return False
+    call = statements[-1].value
+    return (
+        isinstance(call, ast.Call)
+        and isinstance(call.func, ast.Attribute)
+        and isinstance(call.func.value, ast.Name)
+        and call.func.value.id == "lab"
+        and call.func.attr != "close"
+    )
+
+
+def hides_trailing_result(source):
+    """Like IPython, skip trailing comments and blank lines, then look for a final ";"."""
+    skipped = {tokenize.COMMENT, tokenize.NL, tokenize.NEWLINE, tokenize.ENDMARKER}
+    tokens = [t for t in tokenize.generate_tokens(io.StringIO(source).readline) if t.type not in skipped]
+    return tokens[-1].type == tokenize.OP and tokens[-1].string == ";"
 
 
 class FixturesTest(unittest.TestCase):
@@ -341,6 +368,19 @@ class MaterialsTest(unittest.TestCase):
                     self.assertEqual(cell.outputs, [], path)
                     self.assertIsNone(cell.execution_count, path)
                     ast.parse(cell.source, filename=str(path))
+
+    def test_trailing_lab_calls_end_with_semicolon(self):
+        # Jupyter echoes a cell's last value: lab.sql() would show its table twice,
+        # lab.execute() would print a stray row count.
+        paths = sorted(path for path in COURSE_ROOT.glob("level*/**/*.ipynb") if not path.name.startswith("quiz"))
+        self.assertEqual(len(paths), 19)  # Level 1: seven Labs, 5A, 5B, three extensions; Level 2: four; Level 3: three.
+        for path in paths:
+            notebook = nbformat.read(path, as_version=4)
+            for cell in notebook.cells:
+                if cell.cell_type != "code" or not ends_with_bare_lab_call(cell.source):
+                    continue
+                with self.subTest(notebook=path.name, cell=cell.get("id")):
+                    self.assertTrue(hides_trailing_result(cell.source))
 
     def test_quiz_contract_and_shared_renderer(self):
         from dw_course.quiz import CourseQuiz
