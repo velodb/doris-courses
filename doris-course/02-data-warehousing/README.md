@@ -87,7 +87,10 @@ Nothing in the main path depends on these:
 
 Run the extensions after the main Labs that they name, one at a time; each one
 rebuilds only its own `ext_*` tables. Labs 11 and 13 run their optional
-sections only when you switch them on in the Lab.
+sections only when you switch them on in the Lab. Labs 5A and 5B recreate the
+Doris container with a 6 GiB memory limit, which leaves its BE 2.4 GiB: before
+you go back to the main Labs, run Lab 1's **Start and Connect**, which recreates
+the container without the limit and keeps its data.
 
 ### Lab dependencies
 
@@ -339,5 +342,6 @@ Afterward, `docker ps -a --filter name=doris-warehousing` and
 | A Lab says that another Lab must run first | Run the Lab that it names, in the same database, then rerun the cell. [Lab dependencies](#lab-dependencies) lists what each Lab needs. |
 | `pip install` fails, or a notebook cannot import `doris_labkit` or `dw_course` | Use Python 3.10 to 3.13, install in `doris-course/02-data-warehousing` of a complete repository, and choose the kernel of its `.venv`. |
 | The connection is refused, or Doris stops or restarts | Check `docker info`, then `docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml ps` and the same command with `logs --tail 100 doris`. Give Docker at least 8 GB of memory, and run Lab 1's **Start and Connect** again: it starts or reuses the sandbox. Do not remove the volumes to retry: they hold the tables of every Lab. |
+| A main Lab fails with `MEM_ALLOC_FAILED` | After Lab 5A or 5B, Doris still has their 6 GiB memory limit. Run Lab 1's **Start and Connect**, which recreates the container without it and keeps the data, then rerun the cell. |
 | The lake, the dashboard, or the backup store does not start | The message says whether an image could not be downloaded, which needs internet access, Docker ran out of memory, or the service did not become healthy. Read its log with `docker compose --project-name <project> --file environments/<directory>/compose.yml logs --tail 80`. |
 | Every scan of more than two partitions fails with `sql hits sql block rule: course_scan_guard_l3` | Lab 14 was interrupted and left its rule behind. Rerun Lab 14 from its first cell through step 2, which removes it. |
