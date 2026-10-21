@@ -42,8 +42,8 @@ objective 保存对应的学习目标原文，离线测试检查覆盖关系。
 export DW_DATABASE=dw_course_l1_validation
 export DW_ALLOW_WRITES=yes
 .venv/bin/python scripts/run_labs.py
-# 加入本地湖表实验，并执行所有折叠参考答案：
-.venv/bin/python scripts/run_labs.py --iceberg --solutions
+# 加入本地湖表实验（折叠的参考答案是代码单元，和 Run All 一样总会执行）：
+.venv/bin/python scripts/run_labs.py --iceberg
 # 单独选做持续接入；先读 environments/streaming/README.md，使用固定独立实验库：
 .venv/bin/python scripts/run_streaming_labs.py all
 ```

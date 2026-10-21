@@ -93,7 +93,7 @@ without modifying the current orders table. Each Lab rebuilds only the tables it
 1. Read each step's purpose and expected results, then run the code immediately following it.
 2. Compare the actual results and explain what the amounts, states, and row counts each represent.
 3. If results differ, inspect the details and execution order first; do not directly change the expected values.
-4. Complete the tasks in the blank code cells under “Independent Exercise,” then expand the reference answers to check your work. Running all code does not complete the independent exercises for you.
+4. Each Lab ends with one or two practices: write your code in the blank cell under the practice, then expand the collapsed reference solution after it to compare. Run All runs the reference solutions too, so run the cells one by one when you want to try first.
 5. Complete the five quiz questions to check your conceptual understanding and practical choices.
 
 After restarting the kernel, rerun that Notebook's initialization and connection cells.

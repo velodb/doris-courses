@@ -238,30 +238,38 @@ class LearningFlowTest(unittest.TestCase):
         self.assertEqual(len(paths), 7)
         for path in paths:
             cells = json.loads(path.read_text())["cells"]
-            hidden = [c for c in cells if "reference-solution" in c.get("metadata", {}).get("tags", [])]
-            if hidden:
-                # The form of the other courses: a blank cell, then a collapsed solution that runs.
-                for solution in hidden:
-                    index = cells.index(solution)
-                    work = "".join(cells[index - 2]["source"])
-                    self.assertEqual(cells[index - 2]["cell_type"], "code", path)
-                    self.assertEqual(ast.parse(work).body, [], path)  # comments only, such as a template
-                    self.assertTrue(solution["metadata"]["jupyter"]["source_hidden"], path)
-                continue
-            work = [c for c in cells if "course_exercise" in c.get("metadata", {}).get("tags", [])]
-            solutions = [c for c in cells if "course_solution" in c.get("metadata", {}).get("tags", [])]
-            self.assertEqual(len(work), 1, path)
-            self.assertEqual(ast.parse("".join(work[0]["source"])).body, [], path)
-            self.assertEqual(len(solutions), 1, path)
-            source = "".join(solutions[0]["source"])
-            self.assertIn("<details>", source)
-            self.assertNotIn("<details open", source)
-            blocks = re.findall(r"```python\n(.*?)```", source, re.DOTALL)
-            self.assertEqual(len(blocks), 1, path)
-            tree = ast.parse(blocks[0])
-            self.assertTrue(any(isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
-                                and n.func.id == "expect" for n in ast.walk(tree)), path)
-            self.assertLess(cells.index(work[0]), cells.index(solutions[0]))
+            solutions = [c for c in cells if "reference-solution" in c.get("metadata", {}).get("tags", [])]
+            self.assertTrue(solutions, path)
+            for solution in solutions:
+                # The form of the other courses: a blank cell, a pointer, then a collapsed
+                # solution that runs with Run All and checks its result.
+                index = cells.index(solution)
+                work, pointer = cells[index - 2], cells[index - 1]
+                self.assertEqual(work["cell_type"], "code", path)
+                self.assertEqual(ast.parse("".join(work["source"])).body, [], path)  # comments only
+                self.assertEqual("".join(pointer["source"]),
+                                 "The next cell is a reference solution; it is collapsed. Expand it to compare, or run it.")
+                self.assertEqual(solution["cell_type"], "code", path)
+                self.assertTrue(solution["metadata"]["jupyter"]["source_hidden"], path)
+                tree = ast.parse("".join(solution["source"]))
+                self.assertTrue(any(isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+                                    and n.func.id == "expect" for n in ast.walk(tree)), (path, solution["id"]))
+                # Each practice ends with what a run shows.
+                self.assertTrue("".join(cells[index + 1]["source"]).startswith("**Expected result"), (path, solution["id"]))
+            # No answer sits in plain sight in a Markdown cell.
+            for cell in cells:
+                if cell["cell_type"] == "markdown":
+                    self.assertNotIn("<details>", "".join(cell["source"]), path)
+
+    def test_every_lab_step_ends_with_an_expected_result(self):
+        for path in (ROOT / "level1").glob("*/lab*.ipynb"):
+            cells = json.loads(path.read_text())["cells"]
+            for index, cell in enumerate(cells[:-1]):
+                if cell["cell_type"] != "code" or index < 3 or not ast.parse("".join(cell["source"])).body:
+                    continue  # the setup cell, and the blank practice cells
+                following = "".join(cells[index + 1]["source"])
+                with self.subTest(lab=path.name, cell=cell["id"]):
+                    self.assertTrue(following.startswith("**Expected result"), following[:80])
 
     def test_ingestion_progresses_from_one_file_to_history(self):
         path = next((ROOT / "level1/module05-ingestion").glob("lab*.ipynb"))

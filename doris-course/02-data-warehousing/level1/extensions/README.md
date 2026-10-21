@@ -27,7 +27,7 @@ Maintainers can run the full regression from the course directory using Python w
 
 ```bash
 DW_ALLOW_WRITES=yes DW_DATABASE=dw_course_l1_extensions_check \
-  .venv/bin/python scripts/run_labs.py --iceberg --solutions --extensions
+  .venv/bin/python scripts/run_labs.py --iceberg --extensions
 ```
 
 If main-course results already exist, use `--extensions-only` instead. The script does not save notebook execution outputs.

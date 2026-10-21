@@ -564,7 +564,7 @@ class AlignmentTest(unittest.TestCase):
         source = "\n".join(cell.source for cell in notebook.cells)
         self.assertNotIn("10 million", source)
         self.assertNotIn("order_ddl(", source)
-        self.assertIn("Your turn", source)
+        self.assertIn("Practice:", source)
         self.assertIn("3944.20", source)
         self.assertIn("8276.40", source)
 
