@@ -43,7 +43,7 @@
 | `keep_spans_with_one_key` | Explain why raw logs, spans, and metric points belong in DUPLICATE tables. | 4.2 DUPLICATE: keep every event | 第 2 节 8 张表的模型，共用 key 的 span（`different_spans` 等于行数） |
 | `choose_summary_grain` | Choose the key of an AGGREGATE table at the grain of the questions that it answers. | 4.3 AGGREGATE: keep the counts | 第 3 节 `requests_per_minute` 的 key、按 `end_time` 所在分钟计数 |
 | `predict_repeated_load` | Predict the rows of an AGGREGATE table after overlapping or repeated loads. | 4.3（4 + 7 = 11，重复导入会重复计数） | 第 3 节两批导入后边界分钟的行变大、与 `otel_traces` 的 join 核对 |
-| `stable_alarm_identity` | Build an alarm identity that stays the same for every occurrence of an error. | 4.4「A stable identity」 | 第 4 节按告警标识分组，`normalized_message`（recommendation 的流每 10 分钟一次） |
+| `stable_alert_identity` | Build an alert identity that stays the same for every occurrence of an error. | 4.4「A stable identity」 | 第 4 节按告警标识分组，`normalized_message`（recommendation 的流每 10 分钟一次） |
 | `read_one_alert_row` | Predict which row a UNIQUE table keeps, and what one row says about occurrences. | 4.4「The row loaded last wins」「One row is not one occurrence」 | 第 4 节再次导入仍是同样的行数、resolved 后再导入变回 open 的说明、sequence 列 |
 
 ## Module 5: Partitioning and Bucketing for Observability Data

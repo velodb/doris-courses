@@ -21,7 +21,7 @@ After completing this module, you will be able to:
 2. Explain why raw logs, spans, and metric points belong in DUPLICATE tables.
 3. Choose the key of an AGGREGATE table at the grain of the questions that it answers.
 4. Predict the rows of an AGGREGATE table after overlapping or repeated loads.
-5. Build an alarm identity that stays the same for every occurrence of an error.
+5. Build an alert identity that stays the same for every occurrence of an error.
 6. Predict which row a UNIQUE table keeps, and what one row says about occurrences.
 
 ## Module structure
@@ -31,7 +31,7 @@ After completing this module, you will be able to:
 | 4.1 Keys and models | 4 min | What the key clause of a table decides |
 | 4.2 DUPLICATE: keep every event | 4 min | Why raw telemetry keeps every row |
 | 4.3 AGGREGATE: keep the counts | 6 min | A summary at the grain of its questions |
-| 4.4 UNIQUE: keep the current state | 6 min | One row per alarm, and what it means |
+| 4.4 UNIQUE: keep the current state | 6 min | One row per alert, and what it means |
 | 4.5 The exporter's UNIQUE table | 2 min | A job that may count the same minute twice |
 | 4.6 Choosing a model | 3 min | Matching the model to the question |
 | Lab 4 | 35 min | A summary of the incident per minute, and one alert per kind of error |
@@ -86,28 +86,28 @@ A load job adds one row per server span, with `requests = 1` and `failed_request
 
 Every failed order leaves error spans in several services: the payment service, the checkout service, the frontend, the proxy, and the load generator. An alerting job that raised an alert for each error span would send several alerts a minute about one problem. What the on-call engineer needs is one alert per kind of error, with its current status.
 
-A UNIQUE table keeps one row per key. With the day and an **alarm identity** as the key, each kind of error has one row per day, however often it occurs:
+A UNIQUE table keeps one row per key. With the day and an **alert identity** as the key, each kind of error has one row per day, however often it occurs:
 
 ```sql
 CREATE TABLE IF NOT EXISTS error_alerts (
-    alarm_date   DATE,
-    alarm_hash   VARCHAR(32),
+    alert_date   DATE,
+    alert_hash   VARCHAR(32),
     service_name VARCHAR(200),
     span_name    STRING,
     status       VARCHAR(16),
     message      STRING
 )
-UNIQUE KEY(alarm_date, alarm_hash)
-DISTRIBUTED BY HASH(alarm_hash) BUCKETS 1
+UNIQUE KEY(alert_date, alert_hash)
+DISTRIBUTED BY HASH(alert_hash) BUCKETS 1
 ```
 
 A UNIQUE table must be distributed by a hash of key columns, so that all rows with one key reach the same tablet. In Doris 4.x, UNIQUE tables are **Merge-on-Write** (MoW) by default: when a row arrives whose key exists, Doris marks the old row as deleted while it writes the new one, so queries read only the current row without merging at query time.
 
-**A stable identity.** The identity must be the same for every occurrence of a kind of error and differ between kinds. Lab 4 builds it from the service, the operation (`span_name`), and the status message of the error span, hashed with `MD5`. Messages often contain parts that change with every occurrence: times, addresses, ports, and IDs. Replacing every number with `0` before hashing makes `connect ECONNREFUSED 169.254.169.254:80` and the same message with another address one kind of error. The recommendation service's flag stream, for example, ends with `DEADLINE_EXCEEDED` every 10 minutes, with a message that contains the time: without the replacement, each occurrence would be a new alarm.
+**A stable identity.** The identity must be the same for every occurrence of a kind of error and differ between kinds. Lab 4 builds it from the service, the operation (`span_name`), and the status message of the error span, hashed with `MD5`. Messages often contain parts that change with every occurrence: times, addresses, ports, and IDs. Replacing every number with `0` before hashing makes `connect ECONNREFUSED 169.254.169.254:80` and the same message with another address one kind of error. The recommendation service's flag stream, for example, ends with `DEADLINE_EXCEEDED` every 10 minutes, with a message that contains the time: without the replacement, each occurrence would be a new alert.
 
-**The row loaded last wins.** Loading the same error spans again leaves the table unchanged, so the alerting job can run every minute without creating duplicates. To resolve an alarm, the job writes its row again with `status = 'resolved'`; a later load of the same key replaces it again. Loads that can arrive out of order need a **sequence column**: with `"function_column.sequence_col" = "last_seen"`, Doris keeps the row with the largest `last_seen`, whatever the load order, so an old open row loaded late cannot overwrite a newer resolved one.
+**The row loaded last wins.** Loading the same error spans again leaves the table unchanged, so the alerting job can run every minute without creating duplicates. To resolve an alert, the job writes its row again with `status = 'resolved'`; a later load of the same key replaces it again. Loads that can arrive out of order need a **sequence column**: with `"function_column.sequence_col" = "last_seen"`, Doris keeps the row with the largest `last_seen`, whatever the load order, so an old open row loaded late cannot overwrite a newer resolved one.
 
-**One row is not one occurrence.** The alarm of the payment service's charge has one row in `error_alerts` and one error span per failed order in `otel_traces`. A UNIQUE table keeps the current state, not a count. To know how often an error occurred, count its spans, or keep the count in an AGGREGATE table.
+**One row is not one occurrence.** The alert of the payment service's charge has one row in `error_alerts` and one error span per failed order in `otel_traces`. A UNIQUE table keeps the current state, not a count. To know how often an error occurred, count its spans, or keep the count in an AGGREGATE table.
 
 ## 4.5 The exporter's UNIQUE table
 
@@ -134,7 +134,7 @@ Open [Lab 4: Table Models for Observability Data](lab04_table_models.ipynb). You
 1. Check that orders are failing.
 2. List the models of the exporter's tables, and find spans that share a key.
 3. Build `requests_per_minute`, load it in two batches, check it against `otel_traces`, and read the incident's orders and charges from it.
-4. Build `error_alerts` from the error spans, load it twice, and resolve an alarm.
+4. Build `error_alerts` from the error spans, load it twice, and resolve an alert.
 5. Look at the exporter's `otel_traces_graph` and the job that fills it.
 6. Practice: build a daily summary of the logs, and see why the incident adds no error logs to it.
 
@@ -146,8 +146,8 @@ You need the DOG stack and the demo from Module 1, with the payment failure turn
 - Raw telemetry uses DUPLICATE: every log line, span, and metric point is an event of its own, even when several share a key. Repeated loads are kept too, so loaders must avoid them.
 - An AGGREGATE table's key is its grain, such as the minute and the service; it answers questions at that grain and coarser. Count each event in the period in which it reached its final state, such as the minute in which a request ended.
 - Rows with the same key combine by their functions: loads of 4 and 7 under `SUM` leave 11. A repeated or overlapping load is added again, without any error.
-- An alarm identity must ignore what changes between occurrences: Lab 4 hashes the service, the operation, and the message with every number replaced.
-- UNIQUE keeps the row loaded last, or with a sequence column the row with the largest sequence value. One row per alarm says nothing about how often the error occurred.
+- An alert identity must ignore what changes between occurrences: Lab 4 hashes the service, the operation, and the message with every number replaced.
+- UNIQUE keeps the row loaded last, or with a sequence column the row with the largest sequence value. One row per alert says nothing about how often the error occurred.
 
 ## Quiz 4
 

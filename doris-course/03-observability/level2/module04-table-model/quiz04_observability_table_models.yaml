@@ -1,6 +1,6 @@
 title: 'Module 4 Quiz: Table Models for Observability Data'
 description: Six questions check whether you can choose a table model from what happens to rows that share
-  a key, keep raw telemetry, choose the grain of a summary, predict its merges, build a stable alarm identity,
+  a key, keep raw telemetry, choose the grain of a summary, predict its merges, build a stable alert identity,
   and read a UNIQUE table.
 questions:
 - id: choose_model_for_recount
@@ -83,10 +83,10 @@ questions:
     detect that an INSERT repeats an earlier one, so a load job must load each source row exactly once.
     Rows with the same key combine into one, so there are not three rows, and keeping the last value is
     what UNIQUE or a REPLACE column does, not SUM.'
-- id: stable_alarm_identity
-  objective: Build an alarm identity that stays the same for every occurrence of an error.
+- id: stable_alert_identity
+  objective: Build an alert identity that stays the same for every occurrence of an error.
   prompt: recommendation's flag stream fails with DEADLINE_EXCEEDED every 10 minutes, and each status
-    message contains the time of the failure. Which alarm identity gives all of these failures one row
+    message contains the time of the failure. Which alert identity gives all of these failures one row
     per day in error_alerts?
   options:
   - id: normalized_hash
@@ -104,14 +104,14 @@ questions:
     different for every failure by design, so either would raise an alert for each one.
 - id: read_one_alert_row
   objective: Predict which row a UNIQUE table keeps, and what one row says about occurrences.
-  prompt: error_alerts has the key (alarm_date, alarm_hash) and no sequence column. The payment failure's
-    alarm has one row, open. A job writes it again as resolved; a minute later, another job loads all
+  prompt: error_alerts has the key (alert_date, alert_hash) and no sequence column. The payment failure's
+    alert has one row, open. A job writes it again as resolved; a minute later, another job loads all
     of today's error spans as open. What does the table show?
   options:
   - id: open_one_row
     text: One row, open again because that load came last; it does not say how often the error occurred
   - id: resolved_kept
-    text: One row, still resolved, because a resolved alarm cannot be opened again by a later load of
+    text: One row, still resolved, because a resolved alert cannot be opened again by a later load of
       older errors
   - id: two_rows
     text: Two rows, one open and one resolved, which together count the error's occurrences
@@ -122,4 +122,4 @@ questions:
     rows replaces the resolved one. A sequence column, such as the time of the last error, would keep
     the resolved row until a newer error arrives. Rows with the same key never stand side by side in a
     UNIQUE table, so there are neither two rows nor one per span, and the single row is a current state:
-    the payment alarm has one row while otel_traces has an error span for every failed order.'
+    the payment alert has one row while otel_traces has an error span for every failed order.'

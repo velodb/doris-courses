@@ -173,7 +173,7 @@ class NotebookTests(unittest.TestCase):
         self.assertIn("AGGREGATE KEY(request_minute, service_name)", text)
         self.assertRegex(text, r"request_minute\s+DATETIME,")
         self.assertRegex(text, r"failed_requests\s+BIGINT SUM")
-        self.assertIn("UNIQUE KEY(alarm_date, alarm_hash)", text)
+        self.assertIn("UNIQUE KEY(alert_date, alert_hash)", text)
         # REPLACE value columns would keep one arbitrary error message per key.
         self.assertNotIn("REPLACE", text.replace("REGEXP_REPLACE", ""))
 
@@ -184,7 +184,7 @@ class NotebookTests(unittest.TestCase):
         self.assertIn("span_kind = 'SPAN_KIND_SERVER'", load)
         self.assertIn("MAX(end_time) - INTERVAL 60 SECOND AS second_batch_start", load)
         self.assertNotIn("timestamp <", load)
-        # The alarms come from error spans: the incident leaves no error logs.
+        # The alerts come from error spans: the incident leaves no error logs.
         alerts = next(cell for cell in code_cells(LAB4) if "INSERT INTO error_alerts" in cell)
         self.assertIn("FROM otel_traces", alerts)
         self.assertIn("status_code = 'STATUS_CODE_ERROR'", alerts)
