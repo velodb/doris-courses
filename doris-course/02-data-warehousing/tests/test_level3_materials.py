@@ -102,15 +102,6 @@ class Level3MaterialsTest(unittest.TestCase):
                          sorted(setup.index(statement) for statement in order))
         self.assertLess(code.index(setup), code.index(rule_cells[0]))
 
-    def test_level3_root_links_exist(self):
-        readme = (LEVEL3 / "README.md").read_text()
-        for link in (
-            "module12-publishing-permissions-audit",
-            "module13-storage-lifecycle",
-            "module14-resource-isolation",
-        ):
-            self.assertIn(link, readme)
-
     def test_level3_local_links_resolve(self):
         for path in sorted(LEVEL3.rglob("*")):
             if path.suffix not in {".md", ".ipynb"} or ".ipynb_checkpoints" in path.parts:

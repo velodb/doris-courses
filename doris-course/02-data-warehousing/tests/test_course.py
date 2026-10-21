@@ -900,8 +900,10 @@ MaterializedViewRewriteFail:
                 with self.assertRaises(SetupRequired) as raised:
                     _check_prerequisites(lab, module)
                 self.assertIn(steps, str(raised.exception))
-                # Every Lab named in a message has a link.
+                # Every Lab named in a message has a link, and every link opens a file of the course.
                 self.assertTrue(set(raised.exception.links[1:]) <= {(f"Open Lab {n}", LABS[n]) for n in LABS})
+                for _, path in raised.exception.links:
+                    self.assertTrue((COURSE_ROOT / path).is_file(), path)
         for number, path in LABS.items():
             self.assertTrue((COURSE_ROOT / path).is_file(), path)
         self.assertEqual(PREREQUISITES.get(13), None)

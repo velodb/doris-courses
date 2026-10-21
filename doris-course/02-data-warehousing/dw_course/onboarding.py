@@ -24,7 +24,7 @@ class SetupRequired(RuntimeError):
 
     def __init__(self, message, *, labs=(), detail=""):
         super().__init__(message)
-        self.links = [("First-time setup", "GETTING_STARTED.md")]
+        self.links = [("Get started (course README)", "README.md")]
         self.links.extend((f"Open Lab {number}", LABS[number]) for number in labs)
         self.detail = detail
 

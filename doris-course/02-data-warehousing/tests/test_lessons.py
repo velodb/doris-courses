@@ -55,6 +55,26 @@ class LessonTests(unittest.TestCase):
                 self.assertIn(f'font-size:30px;line-height:1.3;font-weight:750;margin:0 0 10px">{name}</div>', quiz_header)
                 self.assertEqual(quiz_header.count("<div"), quiz_header.count("</div>"))
 
+    def test_the_course_readme_lists_every_module_and_port(self):
+        from dw_course.environment import BACKUP_PORTS, BI_PORTS, LAKE_PORTS, SANDBOX_PORTS
+
+        readme = (ROOT / "README.md").read_text()
+        for heading in ("Who this course is for", "What you will learn", "Course outline", "Environment",
+                        "Get started", "Dataset", "Clean up", "Troubleshooting"):
+            self.assertIn(f"\n## {heading}\n", readme)
+        outline = readme.split("## Course outline", 1)[1].split("\n## ", 1)[0]
+        rows = re.findall(r"^\| (\d) \| \[(Module \d+: [^\]]+)\]\(([^)]+)\) \| [^|]+ \| (\d+) min \|$", outline, re.M)
+        self.assertEqual([path for _, _, path, _ in rows], [str(path.relative_to(ROOT)) for path in LESSONS])
+        for level, heading, path, minutes in rows:
+            with self.subTest(module=heading):
+                lesson = (ROOT / path).read_text()
+                self.assertTrue(lesson.startswith(f"# {heading}\n"))
+                self.assertEqual(path.split("/")[0], f"level{level}")
+                self.assertIn(f"Estimated time | About {minutes} minutes:", lesson)
+        environment = readme.split("## Environment", 1)[1].split("\n## ", 1)[0]
+        for variable, (port, _) in {**SANDBOX_PORTS, **LAKE_PORTS, **BI_PORTS, **BACKUP_PORTS}.items():
+            self.assertRegex(environment, rf"\| {port} \| [^|]+ \| `{variable}` \|")
+
     def test_a_lesson_has_the_sections_of_the_course_template(self):
         for path in LESSONS:
             lesson = path.read_text()

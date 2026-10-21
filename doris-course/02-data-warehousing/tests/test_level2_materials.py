@@ -64,11 +64,6 @@ class Level2MaterialsTest(unittest.TestCase):
             self.assertRegex(source, r"lab = connect_sandbox\((module=\d+)?\)", path)
             self.assertNotIn("lab = WarehouseLab()", source, path)
 
-    def test_level2_root_links_exist(self):
-        readme = (LEVEL2 / "README.md").read_text()
-        for link in ("module08-views-materialized-views", "module09-modeling-and-joins", "module10-metric-processing", "module11-bi-and-ai"):
-            self.assertIn(link, readme)
-
 
 if __name__ == "__main__":
     unittest.main()
