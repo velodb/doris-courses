@@ -626,14 +626,61 @@ class AlignmentTest(unittest.TestCase):
         self.assertEqual(set(config["volumes"]), {"fe-meta", "be-storage"})
 
     def test_compose_files_and_runtime_use_the_same_port_variables(self):
-        from dw_course.environment import LAKE_PORTS, SANDBOX_PORTS
-        for name, ports in (("single-node", SANDBOX_PORTS), ("lakehouse", LAKE_PORTS)):
+        from dw_course.environment import BACKUP_PORTS, BI_PORTS, LAKE_PORTS, SANDBOX_PORTS
+        for name, ports in (("single-node", SANDBOX_PORTS), ("lakehouse", LAKE_PORTS),
+                            ("bi", BI_PORTS), ("backup", BACKUP_PORTS)):
             text = (COURSE_ROOT / "environments" / name / "compose.yml").read_text()
-            published = dict(re.findall(r'"127\.0\.0\.1:\$\{(DW_\w+):-(\d+)\}:\d+"', text))
+            published = dict(re.findall(r'["\']127\.0\.0\.1:\$\{(DW_\w+):-(\d+)\}:\d+["\']', text))
             with self.subTest(environment=name):
                 # Every host port is a variable, with the default of dw_course/environment.py.
                 self.assertEqual(published, {variable: str(default) for variable, (default, _) in ports.items()})
-                self.assertNotRegex(text, r'"127\.0\.0\.1:\d+:\d+"')
+                self.assertNotRegex(text, r'["\']127\.0\.0\.1:\d+:\d+["\']')
+
+    def test_optional_services_use_their_port_variables(self):
+        from dw_course import backup, bi
+        with patch.dict("os.environ", {"DW_BI_PORT": "61888", "DW_BACKUP_S3_PORT": "61910"}, clear=True):
+            self.assertEqual(bi.superset_url(), "http://127.0.0.1:61888")
+            self.assertEqual(backup.endpoint(), "http://127.0.0.1:61910")
+        with patch.dict("os.environ", {}, clear=True):
+            self.assertEqual(bi.superset_url(), "http://127.0.0.1:51888")
+            self.assertEqual(backup.endpoint(), "http://127.0.0.1:51910")
+
+    def test_busy_service_port_stops_before_the_service_starts(self):
+        from dw_course import sidecars
+        from dw_course.onboarding import SetupRequired
+        with patch.dict("os.environ", {}, clear=True), patch("subprocess.run", return_value=Mock(stdout="")) as run, \
+                patch("dw_course.docker_runtime.port_in_use", side_effect=lambda number: number == 51888):
+            with self.assertRaises(SetupRequired) as raised:
+                sidecars.start_service(Mock(), "bi", start=True)
+        self.assertIn("51888 (DW_BI_PORT", str(raised.exception))
+        self.assertIn("`DW_BI_PORT=61888 .venv/bin/jupyter lab`", str(raised.exception))
+        self.assertFalse(any("up" in call.args[0] for call in run.call_args_list))
+
+    def test_service_start_failure_names_its_likely_cause(self):
+        import subprocess
+        from dw_course import sidecars
+        from dw_course.onboarding import SetupRequired
+
+        def failing(output, state):
+            def run(command, **_):
+                if "up" in command:
+                    raise subprocess.CalledProcessError(1, command, output=output)
+                if command[:2] == ["docker", "inspect"]:
+                    return Mock(stdout=json.dumps(state))
+                return Mock(stdout="container-id\n")
+            return run
+
+        cases = [
+            ("failed to solve: apache/superset:4.1.2: failed to resolve source metadata", {}, "internet access"),
+            ("container doris-warehousing-bi-superset-1 is unhealthy", {"OOMKilled": True}, "ran out of memory"),
+            ("container doris-warehousing-bi-superset-1 is unhealthy", {"OOMKilled": False}, "did not become healthy"),
+        ]
+        for output, state, cause in cases:
+            with self.subTest(cause=cause), patch.object(sidecars, "check_host_ports"), \
+                    patch("subprocess.run", side_effect=failing(output, state)):
+                with self.assertRaises(SetupRequired) as raised:
+                    sidecars.start_service(Mock(), "bi", start=True)
+                self.assertIn(cause, str(raised.exception))
 
     def test_port_variables_move_the_connection(self):
         from dw_course.environment import connection_settings

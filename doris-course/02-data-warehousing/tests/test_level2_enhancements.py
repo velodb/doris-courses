@@ -121,17 +121,30 @@ class ServiceAndAPITest(unittest.TestCase):
     def test_attach_only_course_container_and_restore_session(self):
         lab = Mock()
         outputs = ['our-doris\n','our-superset\n',json.dumps({'doris-warehousing-bi_default':{}}),json.dumps({'original_default':{}})]
-        with patch.object(sidecars.subprocess,'check_output',side_effect=outputs), patch.object(sidecars.subprocess,'run') as run:
+        with patch.object(sidecars, 'check_host_ports') as ports, \
+             patch.object(sidecars.subprocess,'check_output',side_effect=outputs), \
+             patch.object(sidecars.subprocess,'run',return_value=Mock(stdout='')) as run:
             sidecars.start_service(lab,'bi',start=True)
+            self.assertEqual(ports.call_args.args[1], 'doris-warehousing-bi')
             self.assertEqual(run.call_args_list[-1].args[0], ['docker','network','connect','--alias','course-doris','doris-warehousing-bi_default','our-doris'])
             lab.restore_session.assert_called_once()
 
     def test_existing_network_does_not_duplicate_attachment(self):
         lab = Mock(); net={'doris-warehousing-bi_default':{}}
-        with patch.object(sidecars.subprocess,'check_output',side_effect=['ours','sidecar',json.dumps(net),json.dumps(net)]), patch.object(sidecars.subprocess,'run') as run:
+        with patch.object(sidecars, 'check_host_ports'), \
+             patch.object(sidecars.subprocess,'check_output',side_effect=['ours','sidecar',json.dumps(net),json.dumps(net)]), \
+             patch.object(sidecars.subprocess,'run',return_value=Mock(stdout='')) as run:
             sidecars.start_service(lab,'bi',start=True)
             self.assertEqual(run.call_count,1)
             lab.restore_session.assert_not_called()
+
+    def test_missing_course_container_points_to_lab_1(self):
+        from dw_course.onboarding import SetupRequired
+        with patch.object(sidecars, 'check_host_ports'), \
+             patch.object(sidecars.subprocess,'check_output',return_value=''), \
+             patch.object(sidecars.subprocess,'run',return_value=Mock(stdout='')):
+            with self.assertRaisesRegex(SetupRequired, 'Open Lab 1'):
+                sidecars.start_service(Mock(),'backup',start=True)
 
     def test_superset_error_does_not_echo_credentials(self):
         api=bi.SupersetAPI.__new__(bi.SupersetAPI);api.session=Mock()
