@@ -124,7 +124,7 @@ class ExtensionsTest(unittest.TestCase):
     def test_readings_separate_main_scope_and_optional_integrations(self):
         level = ROOT / "level1"
         expectations = {
-            "README.md": ("not required to set up external pipelines", "continuous ingestion Labs are all optional", "optional05_kafka_routine_load.ipynb", "optional05_flink_mysql_cdc.ipynb"),
+            "README.md": ("you do not have to set up a pipeline", "continuous-ingestion Labs 5A and 5B are optional", "optional05_kafka_routine_load.ipynb", "optional05_flink_mysql_cdc.ipynb"),
             "module05-ingestion/course.md": (
                 "Continuous ingestion, where data keeps arriving, is optional in this course",
                 "Nothing in Modules 6 and 7 depends on them"),

@@ -45,6 +45,8 @@ export DW_ALLOW_WRITES=yes
 .venv/bin/python scripts/run_labs.py
 # 加入本地湖表实验（折叠的参考答案是代码单元，和 Run All 一样总会执行）：
 .venv/bin/python scripts/run_labs.py --iceberg
+# 再加三份基础扩展（需要 .[extensions] 的 PyArrow）；主线结果已在库中时改用 --extensions-only：
+DW_DATABASE=dw_course_l1_extensions_check .venv/bin/python scripts/run_labs.py --iceberg --extensions
 # 单独选做持续接入；先读 environments/streaming/README.md，使用固定独立实验库：
 .venv/bin/python scripts/run_streaming_labs.py all
 ```

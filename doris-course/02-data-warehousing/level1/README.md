@@ -30,7 +30,7 @@ Follow Modules 1–7 in order. Module 6 completes data quality validation, and M
 
 ## Completion Requirements
 
-Complete the seven main Labs, independent exercises, and Quizzes. For Kafka, Flink CDC, CDC_STREAM, continuous file ingestion, and recovery from real source positions, you only need to understand the scenarios, architecture, configuration process, and caveats; you are not required to set up external pipelines. The three existing basic extension Notebooks and the two newly added continuous ingestion Labs are all optional; continuous concurrency validation is advanced material. Configuration-reading examples in the lessons and the fixed environments of the optional Labs are managed separately.
+Complete the seven Labs with their practices, and the seven Quizzes. For Kafka, Flink CDC, CDC_STREAM, continuous file ingestion, and recovery from a source's saved position, you need to understand the scenarios, the architecture, the configuration, and the caveats; you do not have to set up a pipeline. The three extension notebooks and the continuous-ingestion Labs 5A and 5B are optional. The configuration examples in the lessons are for reading; the optional Labs bring their own environment, described below.
 
 ## Optional: Real Continuous Ingestion
 
@@ -112,7 +112,7 @@ Connections remain available after you finish a Lab, so you can continue queryin
 
 ## Supplementary Activities
 
-After completing the main sequence, you can continue with the [Level 1 Extension Labs](extensions/README.md): scaling up data and Profile, batch file ingestion, defaults/generated columns, batch commit acknowledgment, schema changes, and deletes through ingestion. Extensions do not increase the video count; their dependencies and reset scopes are documented separately.
+After completing the main sequence, you can continue with the [Level 1 Extension Labs](extensions/README.md): scaling up data and Profile, batch file ingestion, defaults/generated columns, batch commit acknowledgment, schema changes, and deletes through ingestion. The extensions README lists what each one needs and which tables it resets.
 
 ## Next: Level 2
 
