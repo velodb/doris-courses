@@ -1013,9 +1013,14 @@ demo_compose ps
         )
 
     def stop_demo(self) -> None:
-        """Stop and remove the demo containers. The telemetry already in Doris stays, and so do its feature flags."""
-        # Compose finds a project's containers and networks by their labels, without the files.
-        self.shell(f"docker compose -p {env.DEMO_PROJECT} down", title="Stop the OpenTelemetry demo")
+        """Stop and remove the demo's containers and volumes.
+
+        The telemetry already in Doris stays, and so do the demo's feature flags.
+        """
+        # Compose finds a project's containers, networks, and volumes by their labels, without the files.
+        # The images of jaeger, kafka, and prometheus declare volumes that the demo's Compose file does
+        # not name, so Docker creates anonymous ones; the next start creates new ones instead of reusing them.
+        self.shell(f"docker compose -p {env.DEMO_PROJECT} down --volumes", title="Stop the OpenTelemetry demo")
 
     def _feature_flags(self, url: str) -> dict:
         """Every feature flag of the demo, as the flag service resolves it now."""
@@ -1278,7 +1283,8 @@ echo "[3/3] Show the model server"
         start_local_model() does not download the model again. Without it, the
         Module 2 log collector's read position goes too, since it describes how
         much of the FE log the removed Doris had loaded, and the demo's feature
-        flags go back to off.
+        flags go back to off. The demo's volumes go in either case, as in
+        stop_demo(): a later start does not reuse them.
         """
         volumes = "" if keep_data else " --volumes"
         state = f"{self.RUNTIME_DIRECTORY}/{self.COLLECTOR_STATE_DIRECTORY}"
@@ -1300,7 +1306,7 @@ fi"""
         script = f"""set -euo pipefail
 
 echo "[1/6] Remove the OpenTelemetry demo"
-docker compose -p {env.DEMO_PROJECT} down
+docker compose -p {env.DEMO_PROJECT} down --volumes
 
 echo "[2/6] Remove Litefuse"
 docker compose -p {env.LITEFUSE_PROJECT} down{volumes}

@@ -19,4 +19,5 @@
 - Lab 5 的分桶倾斜（按 `service_name` 分 10 桶时最大的 tablet 约 38%，有一两个几乎为空）取决于各服务名的哈希值和 demo 的流量构成，换 demo 版本后要重新跑一遍再改数字（讲义 5.6）。RANDOM 表每个 tablet 的占比在数据少时是 7%–13%，数据多了才接近 10%：4.1.3 的导入按批轮流写各个 tablet（`VTabletFinder` 的 `FIND_TABLET_EVERY_BATCH`，起点由 FE 的 `TabletLoadIndexRecorderMgr` 按分区轮转）。
 - Level 2 的 Expected 按数据最少的情况写（B4 干净环境：Lab 1 之后直接做 Lab 2–8，Lab 4 开始时只有 5 单）：数量写成「tens of thousands or more」这类下限，失败比例在单数少时加了「chance can put the share far from half」。改正文时用干净环境的输出再核对一遍。
 - Lab 8 第 10 节用 Grafana 的 provisioning API 建规则：带固定 uid 的规则第一次要先 POST `/api/v1/provisioning/alert-rules`，组的 PUT 只更新已有 uid 的规则（否则 500 "could not find alert rule"），`lab.provision_alert_rule_group()` 已处理；`X-Disable-Provenance: true` 让规则在网页中可改。升级 Grafana 后先核对这两点。
+- demo 的 jaeger（`/tmp`）、kafka（3 个）、prometheus（`/prometheus`）镜像声明了 demo 的 Compose 文件没有挂载的卷，Docker 为它们建匿名卷。下次启动不会复用这些卷，所以 `stop_demo()` 和 `teardown()` 删除 demo 时都加 `--volumes`（OB-20），`keep_data=True` 也一样。之前不带 `--volumes`，demo 每启动一次就留下 5 个卷。检查清理后有没有残留时，按名字过滤查不到匿名卷，要用 `docker volume ls -f dangling=true` 按创建时间比对；升级 demo 后照此再查一次。
 - 网页步骤的核对脚本（无头 Chrome）：Lab 1 第 5 节和 Lab 8 第 11 节的 flag 页面、Lab 3 第 2–8 节、Lab 8 第 4–6 节，用法见 plan-doc 的 handoff。

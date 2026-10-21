@@ -160,9 +160,10 @@ times in UTC and one partition per UTC day, kept for 7 days. Litefuse keeps its 
 
 ## Clean up
 
-- `lab.stop_demo()` stops and removes the demo's containers. The telemetry already in Doris stays,
-  and `lab.start_demo()` starts the demo again. The feature flags stay as you set them in the demo's
-  flag page; Module 8 sets `paymentFailure` back to `off`.
+- `lab.stop_demo()` stops and removes the demo's containers, with the volumes that Docker created for
+  them. The telemetry already in Doris stays, and `lab.start_demo()` starts the demo again. The
+  feature flags stay as you set them in the demo's flag page; Module 8 sets `paymentFailure` back to
+  `off`.
 - `lab.stop_litefuse()` stops and removes the Litefuse containers. Its user, keys, and traces stay in
   its volumes and in Doris, and `lab.start_litefuse()` starts it again with them.
 - `lab.stop_local_model()` stops the model server of the optional Lab 7A. The downloaded model stays
@@ -171,9 +172,9 @@ times in UTC and one partition per UTC day, kept for 7 days. Litefuse keeps its 
   the local model, the Module 2 collectors, the Module 8 CPU load if it still runs, and the DOG stack,
   with Grafana's volume, which holds the dashboard of Module 3 and the alerting of Module 8. It also
   removes `.runtime/collector-state/`, where the Module 2 log collector keeps its read position, and
-  turns the demo's feature flags off. `lab.teardown(keep_data=True)` keeps the volumes, the read
-  position, and the flags, so that a later `lab.prepare_environment()` and `lab.start_litefuse()`
-  continue with the same data.
+  turns the demo's feature flags off. `lab.teardown(keep_data=True)` keeps the volumes of the DOG
+  stack, Litefuse, and the local model, the read position, and the flags, so that a later
+  `lab.prepare_environment()` and `lab.start_litefuse()` continue with the same data.
 - The upstream checkout and the Doris FE logs stay in `.runtime/`. Delete that directory when you no
   longer need them.
 
