@@ -477,7 +477,7 @@ class MaterialsTest(unittest.TestCase):
 
 
     def test_notebook_markdown_links_and_covers(self):
-        for path in (COURSE_ROOT / "level1").glob("*/*.ipynb"):
+        for path in COURSE_ROOT.glob("level*/*/*.ipynb"):
             notebook = nbformat.read(path, as_version=4)
             self.assertIn("DATA WAREHOUSING WITH APACHE DORIS", notebook.cells[0].source)
             self.assertIn("border-top:4px solid #0f766e", notebook.cells[0].source)

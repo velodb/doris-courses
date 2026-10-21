@@ -43,6 +43,17 @@ class LessonTests(unittest.TestCase):
                 header = "".join(json.loads(lab.read_text())["cells"][0]["source"])
                 self.assertIn(f"**{heading}** · [Lesson](course.md) · [Quiz]({quiz_yaml.with_suffix('.ipynb').name})", header)
                 self.assertIn(f"]({lab.name})", lesson)
+                # The Lab's cover shows the title and the minutes that the lesson gives it.
+                lab_title = re.search(rf"^## Lab {number}: (.+)$", lesson, re.M)[1]
+                lab_minutes = re.search(r"Estimated time \| About \d+ minutes: reading \d+, Lab (\d+)", lesson)[1]
+                self.assertIn(f">LAB {number} · DATA WAREHOUSING WITH APACHE DORIS</div>", header)
+                self.assertIn(f'font-size:30px;line-height:1.3;font-weight:750;margin:0 0 10px">{lab_title}</div>', header)
+                self.assertIn(f"Plan about {lab_minutes} minutes", header)
+                self.assertEqual(header.count("<div"), header.count("</div>"))
+                quiz_header = "".join(json.loads(quiz_yaml.with_suffix(".ipynb").read_text())["cells"][0]["source"])
+                self.assertIn(f">QUIZ {int(number):02d} · DATA WAREHOUSING WITH APACHE DORIS</div>", quiz_header)
+                self.assertIn(f'font-size:30px;line-height:1.3;font-weight:750;margin:0 0 10px">{name}</div>', quiz_header)
+                self.assertEqual(quiz_header.count("<div"), quiz_header.count("</div>"))
 
     def test_a_lesson_has_the_sections_of_the_course_template(self):
         for path in LESSONS:
