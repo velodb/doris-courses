@@ -316,6 +316,11 @@ LIMIT 10;
 The `SELECT` reads remote objects while the query runs. It does not create an
 internal table and does not persist the result in Doris-managed storage.
 
+This example reads a private bucket, so it passes a read-only key pair. The
+course bucket in Lab 3 is public: there the two key properties are replaced by
+`"s3.credentials_provider_type" = "ANONYMOUS"`, which tells Doris to send
+unsigned requests instead of looking for credentials.
+
 ### Persist the result with `INSERT INTO SELECT`
 
 `INSERT INTO SELECT` saves the result of a query into a target internal table:

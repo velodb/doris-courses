@@ -113,48 +113,28 @@ def install_styles() -> None:
     install_shared_styles(ACTIVITY_CSS)
 
 
-def load_env_file(path: Path) -> Mapping[str, str]:
-    values: dict[str, str] = {}
-    if not path.exists():
-        raise FileNotFoundError(f"Missing secrets file: {path}")
-    for raw in path.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#"):
-            continue
-        key, separator, value = line.partition("=")
-        if not separator:
-            raise ValueError(f"Invalid line in {path.name}: {raw!r}")
-        values[key.strip()] = value.strip()
-    return values
+def s3_tvf(config: Mapping[str, str]) -> str:
+    """Return the S3 TVF that reads the course's public bucket without credentials.
 
-
-def s3_tvf(config: Mapping[str, str], access_key: str, secret_key: str) -> str:
+    ANONYMOUS stops the BE from trying the AWS default credential chain (for
+    example the EC2 metadata address) before it sends unsigned requests.
+    """
     properties = {
         "uri": config["uri"],
         "s3.endpoint": config["endpoint"],
         "s3.region": config["region"],
-        "s3.access_key": access_key,
-        "s3.secret_key": secret_key,
+        "s3.credentials_provider_type": "ANONYMOUS",
         "format": config["format"],
     }
     body = ",\n".join(f'    "{key}" = "{sql_string(value)}"' for key, value in properties.items())
     return f"S3(\n{body}\n)"
 
 
-def redacted_s3_config(config: Mapping[str, str]) -> pd.DataFrame:
-    rows = [{"property": key, "value": value} for key, value in config.items()]
-    rows.extend([
-        {"property": "s3.access_key", "value": "•••••••• (loaded from local secrets file)"},
-        {"property": "s3.secret_key", "value": "•••••••• (loaded from local secrets file)"},
-    ])
-    return pd.DataFrame(rows)
-
-
 class DorisLab:
     """Learner-facing façade shared by the Doris course notebooks.
 
     The notebook keeps the SQL visible while this class owns environment
-    branching, credentials, expected values, progress, and styled diagnostics.
+    branching, expected values, progress, and styled diagnostics.
     """
 
     DORIS_IMAGE = env.DORIS_IMAGE
@@ -162,8 +142,9 @@ class DorisLab:
     DORIS_NETWORK = env.DORIS_NETWORK
     FE_VOLUME = env.FE_VOLUME
     BE_VOLUME = env.BE_VOLUME
+    # The course's public bucket; datasets/events.yaml describes the same objects.
     S3_CONFIG = {
-        "uri": "s3://yy-glue-test-us-east-1/doris-course/events/v1/events-*.parquet",
+        "uri": "s3://doris-courses-public-dataset/doris-course/events/v1/events-*.parquet",
         "endpoint": "https://s3.us-east-1.amazonaws.com",
         "region": "us-east-1",
         "format": "parquet",
@@ -175,9 +156,6 @@ class DorisLab:
     EXPECTED_DISTINCT_PRODUCTS = 204_231
     EXPECTED_TOTAL_REVENUE = Decimal("39984455.64")
     EXPECTED_EVENT_COUNTS = {"view": 9_437_184, "cart": 589_824, "purchase": 131_072}
-    SOURCE_TOKEN = "{{COURSE_S3}}"
-    S3_ACCESS_KEY_TOKEN = "{{S3_READ_ONLY_ACCESS_KEY}}"
-    S3_SECRET_KEY_TOKEN = "{{S3_READ_ONLY_SECRET_KEY}}"
 
     def __init__(
         self,
@@ -196,14 +174,6 @@ class DorisLab:
         self._connection_port = connection_port
         self._profile_http_host = profile_http_host or connection_host
         self._profile_http_port = profile_http_port
-        self._source_tvf: str | None = None
-        self._s3_access_key: str | None = None
-        self._s3_secret_key: str | None = None
-        self._redacted_tvf = s3_tvf(
-            self.S3_CONFIG,
-            "{{S3_READ_ONLY_ACCESS_KEY}}",
-            "{{S3_READ_ONLY_SECRET_KEY}}",
-        )
         install_styles()
         card(
             ready_message,
@@ -215,10 +185,6 @@ class DorisLab:
         card(message, "fail", title)
         if log:
             show_log("Diagnostic details", log, opened=True)
-
-    def _secrets(self) -> tuple[str, ...]:
-        keys = (getattr(self, "_s3_access_key", None), getattr(self, "_s3_secret_key", None))
-        return tuple(key for key in keys if key)
 
     def _require_connection(self):
         if self.connection is None:
@@ -256,26 +222,6 @@ class DorisLab:
                 ) from exc
         return self.connection
 
-    def _expand_sql(self, statement: str) -> tuple[str, str]:
-        display_statement = statement.replace(self.SOURCE_TOKEN, self._redacted_tvf)
-        requires_s3_credentials = any(token in statement for token in (
-            self.SOURCE_TOKEN,
-            self.S3_ACCESS_KEY_TOKEN,
-            self.S3_SECRET_KEY_TOKEN,
-        ))
-        if not requires_s3_credentials:
-            return statement, display_statement
-        if (
-            self._source_tvf is None
-            or self._s3_access_key is None
-            or self._s3_secret_key is None
-        ):
-            raise RuntimeError("S3 credentials are not loaded. Complete Section 4 before continuing.")
-        executable = statement.replace(self.SOURCE_TOKEN, self._source_tvf)
-        executable = executable.replace(self.S3_ACCESS_KEY_TOKEN, self._s3_access_key)
-        executable = executable.replace(self.S3_SECRET_KEY_TOKEN, self._s3_secret_key)
-        return executable, display_statement
-
     def sql(
         self,
         statement: str,
@@ -302,7 +248,6 @@ class DorisLab:
                 return self.tablet_layout_summary(table_name, title=title)
             raise ValueError(f"Unknown metadata view: {metadata_view!r}")
         connection = self._require_connection()
-        executable, visible = self._expand_sql(statement.strip())
         normalized = " ".join(statement.upper().split())
         if columns is None and normalized == "SHOW FRONTENDS":
             columns = ["Name", "Host", "Role", "IsMaster", "Join", "Alive", "Version"]
@@ -312,25 +257,23 @@ class DorisLab:
             ]
         return sql(
             connection,
-            executable,
+            statement.strip(),
             title=title,
             show_statement=False,
             final=final,
             columns=columns,
-            display_statement=visible,
-            secrets=self._secrets(),
         )
 
     def query(self, statement: str):
         """Execute a SQL query and return all rows without displaying them."""
         connection = self._require_connection()
-        executable, visible = self._expand_sql(statement.strip())
+        statement = statement.strip()
         with connection.cursor() as cursor:
             try:
-                cursor.execute(executable)
+                cursor.execute(statement)
                 rows = cursor.fetchall() if cursor.description else []
             except pymysql.MySQLError as error:
-                report_sql_error(None, visible, error, secrets=self._secrets())
+                report_sql_error(None, statement, error)
                 raise
             if cursor.description is None:
                 raise ValueError("query() requires a statement that returns rows.")
@@ -405,15 +348,12 @@ class DorisLab:
 
     def execute(self, statement: str, *, show_errors: bool = True) -> int:
         connection = self._require_connection()
-        executable, visible = self._expand_sql(statement.strip())
         return sql(
             connection,
-            executable,
+            statement.strip(),
             show_statement=False,
             quiet_success=True,
-            display_statement=visible,
             show_errors=show_errors,
-            secrets=self._secrets(),
         )
 
     def insert(
@@ -421,32 +361,12 @@ class DorisLab:
         statement: str,
         *,
         title: str = "Insert completed",
-        low_memory_s3: bool = False,
         expected_rows: int | None = None,
         show: bool = True,
     ) -> int:
         """Run a learner-visible data insert and report its wall-clock duration."""
         started_at = time.perf_counter()
-        connection = self._require_connection()
-        previous_settings: dict[str, object] = {}
-        if low_memory_s3:
-            with connection.cursor() as cursor:
-                for variable, value in (
-                    ("parallel_pipeline_task_num", 1),
-                    ("max_file_scanners_concurrency", 2),
-                ):
-                    cursor.execute(f"SHOW VARIABLES LIKE '{variable}'")
-                    row = cursor.fetchone()
-                    if row:
-                        previous_settings[variable] = row.get("Value")
-                    cursor.execute(f"SET {variable} = {value}")
-        try:
-            affected = self.execute(statement)
-        finally:
-            if previous_settings:
-                with connection.cursor() as cursor:
-                    for variable, value in previous_settings.items():
-                        cursor.execute(f"SET {variable} = {int(value)}")
+        affected = self.execute(statement)
         if expected_rows is not None and affected != expected_rows:
             raise AssertionError(
                 f"{title} affected {affected:,} rows; expected {expected_rows:,}."
@@ -473,7 +393,6 @@ class DorisLab:
         *,
         expected_rows: int | None = None,
         title: str | None = None,
-        low_memory_s3: bool = False,
     ) -> int:
         """Populate a derived course table without duplicating rows on rerun."""
         table_name = self._safe_table_name(table_name)
@@ -507,7 +426,6 @@ class DorisLab:
         return self.insert(
             statement,
             title=title or f"Load {table_name}",
-            low_memory_s3=low_memory_s3,
             expected_rows=expected_rows,
         )
 
@@ -1245,9 +1163,8 @@ class DorisLab:
         if not normalized.upper().startswith("EXPLAIN"):
             raise ValueError("An EXPLAIN statement is required.")
         connection = self._require_connection()
-        executable, _visible = self._expand_sql(normalized)
         with connection.cursor() as cursor:
-            cursor.execute(executable)
+            cursor.execute(normalized)
             records = cursor.fetchall()
         plan = "\n".join(str(next(iter(record.values()))) for record in records)
         show_log(title, plan, opened=True)
@@ -1869,10 +1786,9 @@ class DorisLab:
     ) -> str:
         """Run an intentionally invalid query and render its expected diagnostic compactly."""
         connection = self._require_connection()
-        executable, _visible = self._expand_sql(statement.strip())
         try:
             with connection.cursor() as cursor:
-                cursor.execute(executable)
+                cursor.execute(statement.strip())
         except pymysql.MySQLError as exc:
             message = str(exc)
             if contains.lower() not in message.lower():
@@ -1948,11 +1864,10 @@ LIMIT 10
     def _validate_fixture(path: Path, kind: str) -> int:
         text = path.read_text(encoding="utf-8")
         lines = [line for line in text.splitlines() if line.strip()]
-        if kind in {"stream_csv", "stream_malformed_csv", "group_commit_csv"}:
+        if kind in {"stream_csv", "stream_malformed_csv"}:
             expected_rows = {
                 "stream_csv": 1024,
                 "stream_malformed_csv": 10,
-                "group_commit_csv": 2,
             }[kind]
             fields = [line.split("|") for line in lines]
             if len(fields) != expected_rows or any(len(row) != 7 for row in fields):
@@ -1964,13 +1879,11 @@ LIMIT 10
                     raise ValueError("The Stream Load fixture is not the authored Lab 1/2 sample.")
                 if any(row[6] == "not-a-number" for row in fields):
                     raise ValueError("The main Stream Load fixture must contain only valid rows.")
-            elif kind == "stream_malformed_csv":
+            else:
                 if fields[0][1] != "1" or fields[-1][1] != "10":
                     raise ValueError("The malformed fixture is not the authored ten-row sample.")
                 if sum(row[6] == "not-a-number" for row in fields) != 1:
                     raise ValueError("The malformed fixture must contain one invalid revenue value.")
-            elif {row[1] for row in fields} != {"10027009", "10027010"}:
-                raise ValueError("The Group Commit fixture contains unexpected event_id values.")
             return len(fields)
         if kind == "routine_json":
             if len(lines) != 1024:
@@ -1989,7 +1902,11 @@ LIMIT 10
         self,
         fixtures: Sequence[tuple[str, str, str, str]],
     ) -> pd.DataFrame:
-        """Download validated course fixtures using a same-directory atomic rename."""
+        """Download validated course fixtures using a same-directory atomic rename.
+
+        The files are public objects in the course bucket, so a plain HTTPS
+        GET is enough; no credentials are involved.
+        """
         rows: list[dict[str, str]] = []
         for label, remote_url, local_path, kind in fixtures:
             destination = (self.lab_dir / local_path).resolve()
@@ -2001,38 +1918,8 @@ LIMIT 10
                 action = "downloaded"
                 temporary = destination.with_name(destination.name + ".part")
                 try:
-                    if remote_url.startswith("s3://"):
-                        try:
-                            import boto3
-                        except ImportError as exc:
-                            raise RuntimeError(
-                                "boto3 is required for the private course S3 fixtures. "
-                                "Install requirements.txt and rerun this cell."
-                            ) from exc
-                        secrets = load_env_file(self.lab_dir / "course_secrets.env")
-                        access_key = secrets.get("S3_READ_ONLY_ACCESS_KEY", "")
-                        secret_key = secrets.get("S3_READ_ONLY_SECRET_KEY", "")
-                        if not access_key or not secret_key:
-                            raise RuntimeError(
-                                "Fill both read-only S3 credentials in course_secrets.env "
-                                "before downloading the Lab 3 fixtures."
-                            )
-                        parsed = urllib.parse.urlsplit(remote_url)
-                        client = boto3.client(
-                            "s3",
-                            endpoint_url=self.S3_CONFIG["endpoint"],
-                            region_name=self.S3_CONFIG["region"],
-                            aws_access_key_id=access_key,
-                            aws_secret_access_key=secret_key,
-                        )
-                        client.download_file(
-                            parsed.netloc,
-                            parsed.path.lstrip("/"),
-                            str(temporary),
-                        )
-                    else:
-                        with urllib.request.urlopen(remote_url, timeout=60) as response:
-                            temporary.write_bytes(response.read())
+                    with urllib.request.urlopen(remote_url, timeout=60) as response:
+                        temporary.write_bytes(response.read())
                     row_count = self._validate_fixture(temporary, kind)
                     os.replace(temporary, destination)
                 except Exception:
@@ -2052,7 +1939,7 @@ LIMIT 10
     def preview_fixture(self, local_path: str, kind: str, *, limit: int | None = 10) -> pd.DataFrame:
         path = (self.lab_dir / local_path).resolve()
         self._validate_fixture(path, kind)
-        if kind in {"stream_csv", "stream_malformed_csv", "group_commit_csv"}:
+        if kind in {"stream_csv", "stream_malformed_csv"}:
             columns = [
                 "event_time", "event_id", "user_id", "event_type",
                 "region", "product_id", "revenue",
@@ -2876,34 +2763,6 @@ LIMIT 10
         card("Environment ready: Doris is healthy and both FE and BE are available.", "ok")
         return self.connection
 
-    def load_s3_credentials(self, filename: str = "course_secrets.env") -> bool:
-        secret_path = self.lab_dir / filename
-        try:
-            secrets = load_env_file(secret_path)
-        except (FileNotFoundError, ValueError) as exc:
-            self._failure("S3 credential file is unavailable", str(exc))
-            return False
-        access_key = secrets.get("S3_READ_ONLY_ACCESS_KEY", "")
-        secret_key = secrets.get("S3_READ_ONLY_SECRET_KEY", "")
-        if not access_key or not secret_key:
-            self._failure(
-                "S3 credentials are incomplete",
-                f"Fill both credential fields in {secret_path.name}, then rerun this cell.",
-            )
-            return False
-        self._s3_access_key = access_key
-        self._s3_secret_key = secret_key
-        self._source_tvf = s3_tvf(self.S3_CONFIG, access_key, secret_key)
-        return True
-
-    def preview_s3(self, statement: str):
-        if not self.load_s3_credentials():
-            return None
-        result = self.sql(statement, title="Ten remote event rows")
-        if len(result) != 10:
-            raise AssertionError(f"Expected a 10-row preview; Doris returned {len(result)} rows.")
-        return result
-
     def load_events_once(self, statement: str):
         connection = self._require_connection()
         # This is a rerun guard, not a learner-facing query result.
@@ -3257,9 +3116,8 @@ LIMIT 10
             raise ValueError("expected_strategy must be 'bucket_shuffle' or 'colocate'.")
 
         connection = self._require_connection()
-        executable, _visible = self._expand_sql(normalized)
         with connection.cursor() as cursor:
-            cursor.execute(executable)
+            cursor.execute(normalized)
             records = cursor.fetchall()
         plan = "\n".join(str(next(iter(record.values()))) for record in records)
         if not re.search(strategy_patterns[expected_strategy], plan, re.IGNORECASE):

@@ -14,7 +14,6 @@ doris-course/
     ├── requirements.txt
     ├── pyproject.toml
     ├── .gitignore
-    ├── course_secrets.env.example
     ├── doris_course/
     │   ├── __init__.py
     │   ├── ui.py
@@ -92,9 +91,8 @@ that module. Python dependencies, notebook presentation, Docker/Doris access,
 S3 access, dataset contracts, and expected results are shared at the course
 root.
 
-Generated content is not committed: `.venv/`, `course_secrets.env`, notebook
-checkpoints, downloaded fixtures, and local JAR files remain local runtime
-state.
+Generated content is not committed: `.venv/`, notebook checkpoints, downloaded
+fixtures, and local JAR files remain local runtime state.
 
 ## Python environment and shared helpers
 
@@ -104,7 +102,6 @@ Run setup from this directory:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-cp course_secrets.env.example course_secrets.env
 ```
 
 `requirements.txt` also installs `doris_labkit`, the notebook runtime shared by the
@@ -226,8 +223,30 @@ level1/module02-architecture/quiz02_doris_architecture_and_physical_design.ipynb
 level1/module03-loading-data/quiz03_load_methods_and_retry_safety.ipynb
 ```
 
-Lab 1 loads 10,158,080 ecommerce event rows from the read-only course S3
-dataset. Lab 2 reuses `events` without accessing S3. Lab 3 downloads its CSV and
-JSON fixtures into the ignored
-`level1/module03-loading-data/downloads/` runtime cache and compares Stream
-Load, S3 TVF with `INSERT INTO SELECT`, and Kafka Routine Load.
+Lab 1 loads 10,158,080 ecommerce event rows from the course's public S3
+bucket (see [Dataset](#dataset)); no AWS account or credentials are needed.
+Lab 2 reuses `events` without accessing S3. Lab 3 downloads its CSV and JSON
+fixtures into the ignored `level1/module03-loading-data/downloads/` runtime
+cache and compares Stream Load, S3 TVF with `INSERT INTO SELECT`, and Kafka
+Routine Load.
+
+## Dataset
+
+The labs use a transformed copy of
+[eCommerce behavior data from multi category store](https://www.kaggle.com/datasets/mkechinov/ecommerce-behavior-data-from-multi-category-store/data),
+published by Michael Kechinov and provided by the
+[REES46 Marketing Platform](https://rees46.com/en/datasets). The course copy keeps
+`event_time`, `event_type`, `product_id`, and `user_id`, adds a stable
+`event_id`, assigns each user one of eight synthetic `region` values, and keeps
+the price as `revenue` only for purchases. Module 1 describes the
+transformation and attribution in full.
+
+| | |
+| --- | --- |
+| Rows | 10,158,080 events from 2019-12-01 00:00:12 to 2020-03-11 04:53:08 (26 days in December 2019 and March 2020) |
+| Files | 40 Parquet files, about 72 MiB, in the public bucket `doris-courses-public-dataset` (AWS `us-east-1`): `s3://doris-courses-public-dataset/doris-course/events/v1/events-*.parquet` |
+| Lab 3 samples | Three small files (about 250 KB in total) under `https://doris-courses-public-dataset.s3.us-east-1.amazonaws.com/doris-course/lab3/v2/`, downloaded into `level1/module03-loading-data/downloads/` |
+| Access | Public and read-only. Doris reads the bucket with the S3 TVF and `"s3.credentials_provider_type" = "ANONYMOUS"`; no AWS account or key is needed. |
+
+`datasets/events.yaml` records the same locations, the schema, and the expected
+row count and time range.
