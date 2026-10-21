@@ -174,6 +174,12 @@ class RuntimeTests(unittest.TestCase):
             # The flag page edits a file of the upstream checkout; teardown restores the pinned version.
             reset = f"git -C .runtime/ai-observe-stack checkout -- {FLAGS_FILE}"
             self.assertEqual(reset in script[core:], volumes)
+            # Doris wrote its logs as root. Once it is gone, they go to the owner of their directory,
+            # with the image that ran Doris, so that the learner can delete them on Linux too.
+            handback = script.index("docker run --rm --entrypoint chown", core)
+            self.assertIn(f"docker image inspect {environment.DORIS_IMAGE}", script[core:handback])
+            self.assertIn(f'-v "$(pwd -P)/.runtime/doris-logs:/logs" {environment.DORIS_IMAGE} '
+                          "-R --reference=/logs /logs", script[handback:])
 
     def test_stop_demo_removes_its_anonymous_volumes(self):
         lab = object.__new__(ObservabilityLab)

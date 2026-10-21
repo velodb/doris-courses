@@ -1284,17 +1284,19 @@ echo "[3/3] Show the model server"
         Module 2 log collector's read position goes too, since it describes how
         much of the FE log the removed Doris had loaded, and the demo's feature
         flags go back to off. The demo's volumes go in either case, as in
-        stop_demo(): a later start does not reuse them.
+        stop_demo(): a later start does not reuse them. The Doris logs stay in
+        .runtime/, given to the learner's user so that they can be deleted.
         """
         volumes = "" if keep_data else " --volumes"
         state = f"{self.RUNTIME_DIRECTORY}/{self.COLLECTOR_STATE_DIRECTORY}"
         stack = f"{self.RUNTIME_DIRECTORY}/{self.STACK_DIRECTORY}"
+        logs = f"{self.RUNTIME_DIRECTORY}/{self.DORIS_LOG_DIRECTORY}"
         if keep_data:
-            forget = ('echo "[6/6] Keep the Module 2 log collector\'s read position and the demo\'s feature flags"\n'
+            forget = ('echo "[7/7] Keep the Module 2 log collector\'s read position and the demo\'s feature flags"\n'
                       f'echo "Kept {state}/ and the flags for the next start."')
         else:
             # The flag page saves the flags to a file of the upstream checkout; the pinned commit has them all off.
-            forget = f"""echo "[6/6] Forget where the Module 2 log collector stopped reading, and turn the demo's feature flags off"
+            forget = f"""echo "[7/7] Forget where the Module 2 log collector stopped reading, and turn the demo's feature flags off"
 rm -rf {state}
 if [ -d {stack}/.git ]; then
   git -C {stack} checkout -- {FLAGS_FILE}
@@ -1303,18 +1305,24 @@ fi"""
         # Compose finds each project's containers, networks, and volumes by their labels,
         # so this also works after .runtime/ was deleted. The demo Collector, Litefuse,
         # and the Module 2 collectors are attached to the doris-obs network: remove them first.
+        # Step 6 gives the files that Doris wrote as root in the bind mount of its FE logs to the
+        # owner of the directory, which prepare_environment() created as the learner. With Docker
+        # Engine on Linux, they would otherwise stay root's, and the learner could not delete
+        # .runtime/ without sudo; Docker Desktop already shows them as the learner's. --reference,
+        # rather than the learner's uid, also leaves them alone with rootless Docker, where the
+        # directory is root's inside the container. The Doris image is there whenever Doris ran.
         script = f"""set -euo pipefail
 
-echo "[1/6] Remove the OpenTelemetry demo"
+echo "[1/7] Remove the OpenTelemetry demo"
 docker compose -p {env.DEMO_PROJECT} down --volumes
 
-echo "[2/6] Remove Litefuse"
+echo "[2/7] Remove Litefuse"
 docker compose -p {env.LITEFUSE_PROJECT} down{volumes}
 
-echo "[3/6] Remove the local model of Module 7's optional lab"
+echo "[3/7] Remove the local model of Module 7's optional lab"
 docker compose -p {env.LOCAL_MODEL_PROJECT} down{volumes}
 
-echo "[4/6] Remove the Module 2 collectors and the Module 8 CPU load"
+echo "[4/7] Remove the Module 2 collectors and the Module 8 CPU load"
 for name in {containers}; do
   if docker container inspect "$name" >/dev/null 2>&1; then
     # Stop first, so that the log collector saves its read position.
@@ -1324,8 +1332,14 @@ for name in {containers}; do
   fi
 done
 
-echo "[5/6] Remove the DOG core services"
+echo "[5/7] Remove the DOG core services"
 docker compose -p {env.PROJECT} down{volumes}
+
+echo "[6/7] Give the Doris logs in {logs}/ to your user, so that you can delete them"
+# Doris writes them as root; on Linux, they would stay root's files on this computer.
+if [ -d {logs} ] && docker image inspect {env.DORIS_IMAGE} >/dev/null 2>&1; then
+  docker run --rm --entrypoint chown -v "$(pwd -P)/{logs}:/logs" {env.DORIS_IMAGE} -R --reference=/logs /logs
+fi
 
 {forget}
 """
