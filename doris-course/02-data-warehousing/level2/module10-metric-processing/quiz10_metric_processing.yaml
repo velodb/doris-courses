@@ -12,7 +12,7 @@ questions:
   - id: round_both
     text: "Rounding both to whole numbers, since the difference comes from decimal arithmetic"
   - id: take_higher
-    text: "Taking the higher of the two, because an average of averages always undercounts the larger regions"
+    text: "Taking the higher of the two, because an average of averages undercounts the larger regions"
   answer: write_contract
   explanation: "The difference is a definition, not an error: averaging EAST's 144.00 and WEST's 120.00 gives 132.00, while 1200.00 over 9 orders gives 133.33. A contract that states the population, grain, measures, and ratio rule decides what the dashboards show. The same stored rows can still be averaged both ways. Rounding hides the difference without deciding it. Neither value is always the higher one: the average of averages is lower here because the larger group, EAST, has the higher average."
 - id: rebuild_service
@@ -80,7 +80,7 @@ questions:
   - id: hll_matched
     text: "HLL for Finance, since an exact match on a sample shows that its error is zero"
   - id: timing_enough
-    text: "Accept the smaller table now, since a faster query always reads fewer rows than the slower one"
+    text: "Accept the smaller table now, since its faster query shows that it read fewer rows"
   - id: bitmap_strings
     text: "A Bitmap of the customers' names, which counts any kind of column exactly"
   answer: exact_and_prove

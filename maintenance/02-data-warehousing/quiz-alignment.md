@@ -2,7 +2,7 @@
 
 每道题考一个学习目标（`objective` 与讲义「Learning objectives」的原文相同，`tests/test_lessons.py` 检查，选读材料 `optional05_continuous_ingestion.md` 也一样）。「讲义」是给出概念的小节，「Lab」是学员亲手得到证据的地方。Level 1 在 B5 写成，Level 2–3（Module 8–14）在 B6 写成。
 
-答案分布由 `tools/check_quiz_balance.py --strict doris-course/02-data-warehousing` 检查（CI 中也运行）。B6 完成时：Level 1 共 48 题，正确项最长 25%，同一位置最多 27%（各位置 11 / 12 / 13 / 12）；Level 2 共 24 题，21%、29%（6 / 5 / 6 / 7）；Level 3 共 18 题，17%、28%（4 / 5 / 5 / 4）。
+答案分布由 `tools/check_quiz_balance.py --strict doris-course/02-data-warehousing` 检查（CI 中也运行）。B6 完成时：Level 1 共 48 题，正确项最长 25%，同一位置最多 27%（各位置 11 / 12 / 13 / 12）；Level 2 共 24 题，29%、29%（6 / 5 / 6 / 7）；Level 3 共 18 题，17%、28%（4 / 5 / 5 / 4）。Level 2–3 的错误选项不用 always、never、guarantees、proves 这类绝对化的词（B6 最后一次修改）。
 
 ## Module 1: Meet Doris and Analyze Your First Orders
 

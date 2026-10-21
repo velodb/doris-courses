@@ -24,7 +24,7 @@ questions:
   - id: one_date_both
     text: "Only the changed date both times, since AUTO adds each changed row to the stored sums"
   - id: all_both
-    text: "Every partition both times, because AUTO always recomputes the whole result"
+    text: "Every partition both times, because AUTO recomputes the whole result on each refresh"
   - id: nothing
     text: "Nothing either time, because a partitioned materialized view follows its tables at once"
   answer: one_date_then_all
@@ -40,7 +40,7 @@ questions:
   - id: fast_query
     text: "That a query of it is fast, because a fast answer shows that the build read all the rows"
   - id: definition_text
-    text: "That SHOW CREATE shows the definition, which proves that the stored rows follow it"
+    text: "That SHOW CREATE shows the definition, since the stored rows follow from it"
   answer: state_and_rows
   explanation: "The build runs as a task after CREATE returns: RefreshState says whether it succeeded, and comparing the stored rows with the same totals from the base tables shows that they are right. A successful CREATE only accepted the definition. Speed says nothing about completeness. The definition says what should be stored, not what was."
 - id: explain_rewrite

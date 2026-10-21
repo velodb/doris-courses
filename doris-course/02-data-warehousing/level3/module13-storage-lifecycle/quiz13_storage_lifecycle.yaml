@@ -66,7 +66,7 @@ questions:
   - id: recover_by_name
     text: "RECOVER PARTITION p202501 FROM the table, which brings back the one with data"
   - id: restore_needed
-    text: "Only a backup can, since a truncated partition never goes to the recycle bin"
+    text: "Only a backup can, since a truncated partition does not go to the recycle bin"
   - id: truncate_again
     text: "TRUNCATE the partition a second time, which swaps the old one back from the recycle bin"
   answer: drop_then_recover_id

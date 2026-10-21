@@ -52,7 +52,7 @@ questions:
   - id: no_row
     text: "No row, since the semantic view has no row that day and a missing row means no orders"
   - id: zero_average
-    text: "A row with 0 orders and an average of 0.00, so that the model never reads a NULL"
+    text: "A row with 0 orders and an average of 0.00, so that the model reads a number instead of a NULL"
   - id: proves_accuracy
     text: "A row with the flag set, which shows that the model will predict the days without orders correctly"
   answer: zero_row
@@ -68,7 +68,7 @@ questions:
   - id: correct
     text: "The numbers are right, because Doris checked the definition that the chart applies"
   - id: tool_free
-    text: "The BI tool needs no checks of its own, since Doris guarantees the numbers that each chart shows"
+    text: "The BI tool needs no checks of its own, since Doris has checked the numbers that each chart shows"
   answer: speed_only
   explanation: "Latency is one promise. Freshness depends on refreshes, late data, and the BI tool's cache, and accuracy on the metric's definition and the chart's filters, each with its owner. A fast answer may come from a cache. Doris runs the SQL; it does not check that a chart applies the right definition. The BI tool owns its filters, its cache, and its own users."
 - id: mcp_boundary

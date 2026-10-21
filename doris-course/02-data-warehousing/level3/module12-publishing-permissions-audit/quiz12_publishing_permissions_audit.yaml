@@ -68,7 +68,7 @@ questions:
   - id: yes_retained
     text: "Yes: swap = true kept the old table, and Doris keeps it in step with the published one"
   - id: never
-    text: "Never: once a table is swapped in and published, it cannot be swapped back"
+    text: "No: once a table is swapped in and published, it cannot be swapped back"
   answer: not_blindly
   explanation: "The rollback was safe while the writer was paused; after the first write the retained table misses that write, and swapping it back would lose it. Atomic means that readers see one table or the other, not that the old one has the new writes. A retained table does not follow the published one. The swap can be repeated; the data is what makes it unsafe."
 - id: rows_columns

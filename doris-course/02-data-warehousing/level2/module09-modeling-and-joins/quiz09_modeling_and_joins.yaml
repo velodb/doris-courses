@@ -8,7 +8,7 @@ questions:
   - id: grains
     text: "That a fact row is one order and a payment row one payment, so an order paid twice matches twice"
   - id: join_type
-    text: "That the join must be a LEFT JOIN, which never changes the number of rows of its left table"
+    text: "That the join must be a LEFT JOIN, which keeps the number of rows of its left table"
   - id: distinct_sum
     text: "That SUM(DISTINCT order_amount) is needed, which counts each order's amount once whatever the join returns"
   - id: more_buckets
@@ -64,7 +64,7 @@ questions:
   - id: broadcast_plan
     text: "Doris plans to send the customers to each instance that scans orders; a Profile shows the run"
   - id: measured_fast
-    text: "The join ran fast, because a broadcast join is always faster than a shuffle of both tables"
+    text: "The join ran fast, because a broadcast join is faster than a shuffle of both tables"
   - id: colocated
     text: "The tables are colocated, because both of them are bucketed by a hash of customer_id"
   - id: keeps_unmatched
