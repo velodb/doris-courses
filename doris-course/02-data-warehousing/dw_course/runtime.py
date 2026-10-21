@@ -8,12 +8,18 @@ from contextvars import ContextVar
 from decimal import Decimal
 from pathlib import Path
 
+import pandas as pd
 import pymysql
 import requests
 
+from doris_labkit.profiles import fetch_profile_text, last_query_id, profile_metric, profile_row_sum
+
+from .environment import connection_settings
 from .ui import card, in_notebook, install_styles, report_sql_error, result_frame, show_frame, show_sql
 
 COURSE_ROOT = Path(__file__).resolve().parents[1]
+# The row counters of a scan in the Query Profile: ScanRows = RowsRead + RowsVectorPredFiltered.
+SCAN_COUNTERS = ("ScanRows", "RowsRead", "RowsKeyRangeFiltered", "RowsStatsFiltered", "RowsVectorPredFiltered")
 
 
 def identifier(value):
@@ -142,6 +148,62 @@ class WarehouseLab:
             frame = frame.loc[:, [column for column in columns if column in frame.columns]]
         if in_notebook():
             show_frame(title, frame)
+        else:
+            print(frame.to_string(index=False))
+        return frame
+
+    def scan_profile(self, statement, *, title="Run the query, then read its Query Profile"):
+        """Run a query and return how many rows its scans read and skipped, from its Query Profile.
+
+        The session needs enable_profile = true. The Profile ID of a query is its
+        query ID, which SELECT last_query_id() returns right after the query; the
+        FE serves the Profile's text at /api/profile/text. The statements and the
+        request are shown first.
+        """
+        rows = self.query(statement)
+        query_id = last_query_id(self.connection)
+        endpoint = (os.environ.get("DW_FE_HTTP_URL") or connection_settings()["DW_FE_HTTP_URL"]).rstrip("/")
+        if in_notebook():
+            show_sql(title, f"{statement};\nSELECT last_query_id();  -- {query_id}\n"
+                            f"-- curl -u root: '{endpoint}/api/profile/text?query_id={query_id}'")
+        # The BE reports its counters after the query ends; read until the scan's are there.
+        text = fetch_profile_text(endpoint, query_id, user=self.user, password=self.password,
+                                  ready=lambda profile: "ScanRows" in profile)
+        return {"query": statement, "rows_returned": len(rows),
+                **{counter: profile_row_sum(text, counter) for counter in SCAN_COUNTERS},
+                "ScanBytes": profile_metric(text, "ScanBytes")}
+
+    def rowsets(self, table, *, title=None):
+        """Show the rowsets of each tablet of ``table`` from the BE's compaction status, and return them.
+
+        SHOW TABLETS gives each tablet's CompactionStatus URL with the BE's own
+        address in the container, 127.0.0.1:8040; the same path is read from the
+        host's BE HTTP port. ``rowsets`` are the ones that queries read; a rowset
+        that compaction merged stays under ``stale_rowsets`` until the BE deletes it.
+        """
+        table = identifier(table)
+        endpoint = (os.environ.get("DW_BE_HTTP_URL") or connection_settings()["DW_BE_HTTP_URL"]).rstrip("/")
+        with self.connection.cursor() as cursor:
+            cursor.execute(f"SHOW TABLETS FROM {table}")
+            names = [column[0] for column in cursor.description]
+            tablets = [dict(zip(names, row)) for row in cursor.fetchall()]
+        rows = []
+        for tablet in tablets:
+            url = tablet["CompactionStatus"]
+            url = endpoint + url[url.index("/api/"):]
+            if in_notebook():
+                show_sql(title or f"The rowsets of {table}", f"SHOW TABLETS FROM {table};  -- CompactionStatus column\n"
+                                                             f"-- curl '{url}'")
+            status = requests.get(url, timeout=10).json()
+            for state, key in (("current", "rowsets"), ("stale: merged by compaction", "stale_rowsets")):
+                for entry in status.get(key, []):
+                    # "[2-11] 1 DATA NONOVERLAPPING <rowset id> 2.83 KB": versions, segments, ..., size.
+                    versions, segments, _, overlap, _, *size = entry.split()
+                    rows.append({"tablet": str(tablet["TabletId"]), "rowset": state, "versions": versions,
+                                 "segments": int(segments), "overlap": overlap, "size": " ".join(size)})
+        frame = pd.DataFrame(rows, columns=["tablet", "rowset", "versions", "segments", "overlap", "size"])
+        if in_notebook():
+            show_frame(title or f"The rowsets of {table}", frame)
         else:
             print(frame.to_string(index=False))
         return frame

@@ -52,20 +52,21 @@ class LearningFlowTest(unittest.TestCase):
                          "Lightweight Schema Change", "Heavyweight Schema Change"):
             self.assertIn(fragment, quality)
 
-    def test_profile_example_restores_session_and_explains_fields(self):
-        reading = self.reading("module02-architecture")
-        source = re.search(r"```python\n(.*?)```", reading, re.DOTALL)[1]
+    def test_profile_step_restores_session_and_lesson_explains_fields(self):
+        source = self.notebook_cells("module02-architecture")["profile"]
         lab = Mock()
-        for previous in (True, False):
+        for previous in ((1, 0), (0, 1)):
             lab.reset_mock()
-            lab.query.return_value = [(previous,)]
-            exec(compile(source, "profile-reading", "exec"), {"lab": lab})
-            lab.execute.assert_any_call("SET enable_profile = %s", (previous,))
-        lab.sql.side_effect = RuntimeError("query failed")
+            lab.query.return_value = [previous]
+            exec(compile(source, "lab2-profile", "exec"), {"lab": lab, "show_records": Mock()})
+            lab.execute.assert_any_call("SET enable_profile = true, enable_sql_cache = false")
+            self.assertEqual(lab.execute.call_args.args, ("SET enable_profile = %s, enable_sql_cache = %s", previous))
+        lab.scan_profile.side_effect = RuntimeError("query failed")
         with self.assertRaisesRegex(RuntimeError, "query failed"):
-            exec(compile(source, "profile-reading", "exec"), {"lab": lab})
-        self.assertEqual(lab.execute.call_args.args, ("SET enable_profile = %s", (False,)))
-        for field in ("VersionCount", "CompactionStatus", "TabletId", "SHOW QUERY PROFILE"):
+            exec(compile(source, "lab2-profile", "exec"), {"lab": lab, "show_records": Mock()})
+        self.assertEqual(lab.execute.call_args.args, ("SET enable_profile = %s, enable_sql_cache = %s", (0, 1)))
+        reading = self.reading("module02-architecture")
+        for field in ("VersionCount", "CompactionStatus", "TabletId", "last_query_id()", "RowsKeyRangeFiltered"):
             self.assertIn(field, reading)
 
     def test_catalog_reading_matches_fixture_properties(self):
@@ -245,6 +246,14 @@ class LearningFlowTest(unittest.TestCase):
         self.assertEqual(len(paths), 7)
         for path in paths:
             cells = json.loads(path.read_text())["cells"]
+            hidden = [c for c in cells if "reference-solution" in c.get("metadata", {}).get("tags", [])]
+            if hidden:
+                # The form of the other courses: a blank cell, then a collapsed solution that runs.
+                self.assertEqual(len(hidden), 1, path)
+                solution = cells.index(hidden[0])
+                self.assertEqual("".join(cells[solution - 2]["source"]), "# Your code here", path)
+                self.assertTrue(hidden[0]["metadata"]["jupyter"]["source_hidden"], path)
+                continue
             work = [c for c in cells if "course_exercise" in c.get("metadata", {}).get("tags", [])]
             solutions = [c for c in cells if "course_solution" in c.get("metadata", {}).get("tags", [])]
             self.assertEqual(len(work), 1, path)

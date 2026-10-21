@@ -5,7 +5,7 @@
 | Course | Data Warehousing with Apache Doris · Level 1 |
 | Product Version | Apache Doris 4.x |
 | Lab Version | Apache Doris 4.1.3 |
-| Estimated Time | About 60 minutes, including reading, the hands-on lab, and the quiz |
+| Estimated Time | About 50 minutes, including reading, the hands-on lab, and the quiz |
 
 [Course contents](../README.md) · [Open Lab 2](lab02_observe_storage.ipynb) · [Open Quiz 2](quiz02_storage_and_write_batches.ipynb)
 
@@ -32,7 +32,7 @@ After completing this module, you should be able to:
 | 2.1 Columnar Storage and the Query Path | Query flow diagram | 5 minutes | Trace an order query to explain FE, BE, and columnar reads |
 | 2.2 Tablet, Rowset, Segment, and Compaction | Hierarchy diagram and examples | 8 minutes | Distinguish shards, write versions, and columnar files |
 | 2.3 Write Batches and Visibility | Comparative analysis and status inspection | 12 minutes | Explain why different transaction counts produce the same business results |
-| Lab 2 | Hands-on practice | 30 minutes | Complete both write methods and verify ten rows and 12220.60 |
+| Lab 2 | Hands-on practice | 20 minutes | Write the orders both ways, verify ten rows and 12220.60, and read versions, rowsets, and scan counters |
 | Quiz 2 | Interactive quiz | 5 minutes | Check the query path, storage hierarchy, and observation methods |
 
 ## 2.1 Columnar Storage and the Query Path
@@ -181,41 +181,31 @@ For example, if one sample shows a higher VersionCount for the row-by-row table 
 uncompacted Rowsets. This number alone cannot tell you how much slower a query is. Metadata reporting and background compaction have their own timing;
 record the sampling time, and do not expect identical counts on every run.
 
-The following shows the command format; replace the angle-bracketed placeholder with the value returned in this run:
+A tablet's rowsets are listed by the BE that stores it. `SHOW TABLET <TabletId>` returns a `DetailCmd`, a `SHOW PROC` statement that lists the tablet's replicas, and each replica has a `CompactionStatus` URL on its BE. Lab 2 follows this path and reads the URL for both tables:
 
-```text
-SHOW TABLET <TabletId>;
-Execute the returned DetailCmd (SHOW PROC ...)
-Read the returned CompactionStatus URL to inspect rowsets
-```
+| Table | Rowsets right after the writes | After cumulative compaction |
+| --- | --- | --- |
+| orders_batch | `[0-1]` (empty start) and `[2-2]` (the ten rows) | Unchanged: one load rowset has nothing to merge |
+| orders_rowwise | `[0-1]` and `[2-2]` … `[11-11]`, one per write | `[0-1]` and `[2-11]`, with the ten old rowsets listed as stale until the BE deletes them |
 
-Version ranges in the Rowset list help you understand which batches have been compacted. For example, `[2-4]` covers that range of versions,
-not three orders. This is only an illustration of how to read the list, not a fixed output for this lab.
-URLs returned by the course container may use an internal container IP. When viewing them from the host, replace only this course BE's address with
-`http://127.0.0.1:51040`, keeping the `/api/compaction/show?tablet_id=...` path.
-Only read status here; do not trigger Compaction or modify storage files.
+A version range such as `[2-11]` covers versions 2 to 11, not ten orders. On this sandbox, cumulative compaction usually merges the ten small rowsets within seconds, so what you see depends on when you look; the business result does not.
+Only read the status here; do not trigger compaction or modify storage files.
 [Tablet status access](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/tablet-local-debug/)
 
-### How Can You Obtain a Profile for a Real Query?
+### What Does a Query Actually Read?
 
-After completing Lab 2, run the following observation code in a temporary code cell in the same Notebook.
-It enables Profile collection only for this session, does not rebuild tables, and restores the original setting afterward:
+EXPLAIN shows what a query plans to read; the **Query Profile** records what it did. With `enable_profile = true` in a session, Doris keeps a Profile for each query; `SELECT last_query_id()` right after a query returns its query ID, which is also its Profile ID, and the FE serves the Profile's text and shows it on the QueryProfile page of its Web UI. Lab 2 turns Profiles on for its session, also turns off the SQL cache so that a repeated query really scans, compares three queries on `orders_batch`, and restores both settings afterwards.
 
-```python
-previous_profile = lab.query("SELECT @@enable_profile")[0][0]
-try:
-    lab.execute("SET enable_profile = true")
-    lab.sql("SELECT order_id, order_amount FROM orders_batch WHERE order_id = 1")
-    lab.sql("SHOW QUERY PROFILE")
-finally:
-    lab.execute("SET enable_profile = %s", (previous_profile,))
-```
+A scan's row counters tell how it found its rows:
 
-Find the query you just ran by database name, SQL, and start time; do not use someone else's query for comparison.
-Profile collection may finish slightly later. Check the list again, or open the details on the QueryProfile page of the course FE Web UI.
-First find the scan operator's row count, bytes read, and elapsed time, then inspect the output after filtering: this query returns one row,
-but that does not mean it read only one row underneath. When comparing column pruning, keep the filter conditions the same and change only the SELECT columns.
-This section does not require tuning; full slow-query analysis is covered in Level 2, Module 10.
+| Counter | What it counts |
+| --- | --- |
+| ScanRows | Rows the scan read from its segments |
+| RowsKeyRangeFiltered | Rows the sort key's index let it skip without reading |
+| RowsVectorPredFiltered | Rows it read and then dropped with the filter |
+| RowsRead | Rows that passed the filter |
+
+All three of Lab 2's queries return order 1, but `WHERE order_id = 1` reads one row, because `order_id` is the sort key and its index narrows the range, while `WHERE customer_id = 832` reads all ten rows and drops nine. Selecting all columns instead of two, with the same filter, reads more bytes: a column store reads only the columns a query uses. On ten rows these counters describe the kind of work, not its speed.
 [Configuring and viewing Profiles](https://doris.apache.org/docs/4.x/query-acceleration/query-profile/)
 
 ### How Should You Interpret Observations?
@@ -238,9 +228,10 @@ Before starting, complete Module 1, be able to connect to the lab instance and v
 
 Open [Lab 2](lab02_observe_storage.ipynb) and complete these steps in order:
 
-1. Create identically structured tables for batch and row-by-row writes.
-2. Apply both write methods to the same order sample and observe Tablet metadata.
-3. Verify that both tables contain ten rows and 12220.60, and record sampling times and the effects of background compaction.
+1. Create identically structured tables and write the same ten orders in one batch and in ten single-row writes.
+2. Verify that both tables contain ten rows and 12220.60.
+3. Read the partitions' and tablets' versions, then the rowsets of each tablet and what compaction did with them.
+4. Compare a query's plan with the scan counters of its Query Profile.
 
 ### Data Source and Notes
 
