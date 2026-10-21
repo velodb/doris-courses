@@ -118,8 +118,12 @@ class WarehouseLab:
             cursor.execute(sql, params)
             return list(cursor.fetchall())
 
-    def sql(self, statement, params=None, *, title="Query result"):
-        """Display named columns like course 01; query() remains assertion-friendly."""
+    def sql(self, statement, params=None, *, title="Query result", columns=None):
+        """Display named columns like course 01; query() remains assertion-friendly.
+
+        ``columns`` limits the shown and returned result to those columns, for
+        statements such as SHOW TABLETS that return many.
+        """
         with self.connection.cursor() as cursor:
             visible = statement
             if in_notebook():
@@ -132,8 +136,10 @@ class WarehouseLab:
                 if in_notebook():
                     report_sql_error(title, visible, error)
                 raise
-            columns = [column[0] for column in cursor.description]
-        frame = result_frame(rows, columns)
+            names = [column[0] for column in cursor.description]
+        frame = result_frame(rows, names)
+        if columns:
+            frame = frame.loc[:, [column for column in columns if column in frame.columns]]
         if in_notebook():
             show_frame(title, frame)
         else:

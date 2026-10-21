@@ -36,12 +36,12 @@ Complete the seven main Labs, independent exercises, and Quizzes. For Kafka, Fli
 
 After completing the main sequence, you can separately start the [Continuous Ingestion Environment](../environments/streaming/README.md):
 
-| Lab | Content | Suggested Time |
-|---|---|---|
-| [Lab 5A: Kafka and Routine Load](module05-ingestion/optional05_kafka_routine_load.ipynb) | Send orders, inspect progress, pause to build a backlog, resume, and update | 25–40 minutes |
-| [Lab 5B: MySQL and Flink CDC](module05-ingestion/optional05_flink_mysql_cdc.ipynb) | Single-table snapshot, inserts/deletes/updates, Checkpoint and Savepoint recovery; reusable in Module 7 | 35–50 minutes |
+| Lab | Content | Suggested Time | Docker memory and CPUs | First download |
+|---|---|---|---|---|
+| [Lab 5A: Kafka and Routine Load](module05-ingestion/optional05_kafka_routine_load.ipynb) | Send orders, inspect progress, pause to build a backlog, resume, update, and a message that the table rejects | 30 minutes | 8 GiB, 4 CPUs | About 640 MB |
+| [Lab 5B: MySQL and Flink CDC](module05-ingestion/optional05_flink_mysql_cdc.ipynb) | Single-table snapshot, inserts/deletes/updates, Checkpoint and Savepoint recovery; reusable in Module 7 | 40 minutes | 10 GiB, 4 CPUs | About 1.6 GB |
 
-These two Labs use separate demonstration databases, do not change the main sequence's data baseline, and do not increase the video count. CDC_STREAM and continuous file ingestion remain introductory topics only.
+These two Labs use separate demonstration databases and do not change the main sequence's data baseline. Each step shows its Expected result, so you can read a Lab that your machine cannot run. CDC_STREAM and continuous file ingestion remain introductory topics only.
 
 ## How Does Data Carry Through Level 1?
 

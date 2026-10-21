@@ -56,7 +56,7 @@ After a kernel restart, rerun that Notebook's initialization and connection cell
 
 ## Optional Kafka and Flink labs
 
-The optional Lab 5A Kafka notebook needs Docker-visible capacity of at least 14 GiB RAM and 4 CPUs. The optional Lab 5B Flink CDC notebook needs 18 GiB RAM and 4 CPUs. Set Docker Desktop's **Resources** before running either notebook; the notebook checks capacity before it starts any streaming containers. A 16 GiB Mac can run Lab 5A after allocating about 15 GiB to Docker, but it cannot meet the CDC profile's 18 GiB requirement. These optional labs are independent of the seven main Labs.
+The optional Lab 5A Kafka notebook needs Docker with at least 8 GiB of memory and 4 CPUs; the optional Lab 5B Flink CDC notebook needs 10 GiB and 4 CPUs. Doris runs with a 6 GiB memory limit in both, and the requirement adds the peak memory of Kafka, or of MySQL and Flink, measured in these Labs. Set Docker Desktop's **Resources** before running either notebook; the notebook checks capacity before it starts any streaming containers. A 16 GB Mac can give Docker the 8 GiB of Lab 5A. These optional labs are independent of the seven main Labs.
 
 ## If setup fails
 

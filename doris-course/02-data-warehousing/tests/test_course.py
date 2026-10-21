@@ -570,6 +570,22 @@ class AlignmentTest(unittest.TestCase):
         self.assertEqual(frame.iloc[0]["amount"], Decimal("100.00"))
         show.assert_called_once()
 
+    def test_sql_can_limit_the_columns_it_shows_and_returns(self):
+        lab = WarehouseLab.__new__(WarehouseLab)
+        cursor = Mock()
+        cursor.description = [("TabletId",), ("Version",), ("MetaUrl",)]
+        cursor.fetchall.return_value = [(1, 11, "http://127.0.0.1:8040/api/meta/header/1")]
+        manager = Mock()
+        manager.__enter__ = Mock(return_value=cursor)
+        manager.__exit__ = Mock(return_value=False)
+        lab.connection = Mock()
+        lab.connection.cursor.return_value = manager
+        with patch("dw_course.runtime.in_notebook", return_value=True), patch("dw_course.runtime.show_sql"), \
+                patch("dw_course.runtime.show_frame") as show:
+            frame = lab.sql("SHOW TABLETS FROM orders_batch", columns=["TabletId", "Version", "Missing"])
+        self.assertEqual(list(frame.columns), ["TabletId", "Version"])
+        self.assertEqual(list(show.call_args.args[1].columns), ["TabletId", "Version"])
+
     def test_sql_keeps_nullable_integers_and_reports_errors(self):
         import pymysql
 
