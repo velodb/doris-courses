@@ -10,9 +10,6 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 LEVEL2 = ROOT / "level2"
-# Labs rewritten in the course's Lab template; tests/test_learning_flow.py checks their form.
-REWRITTEN = {"lab08_views_and_materialized_views.ipynb", "lab09_modeling_and_joins.ipynb",
-             "lab10_metric_processing.ipynb"}
 
 
 class Level2MaterialsTest(unittest.TestCase):
@@ -102,28 +99,6 @@ class Level2MaterialsTest(unittest.TestCase):
             for section in required_sections:
                 self.assertIn(section, guide, module)
             self.assertGreaterEqual(len(guide), 4000, module)
-
-    def test_level2_labs_explain_and_verify_the_work(self):
-        required_markdown = ("What You Will Do", "Prerequisites", "Independent Exercise", "Reference Explanation", "Lab Review")
-        for path in sorted(p for p in LEVEL2.glob("module*/lab*.ipynb") if p.name not in REWRITTEN):
-            notebook = nbformat.read(path, as_version=4)
-            markdown = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "markdown")
-            source = "\n".join(cell.source for cell in notebook.cells if cell.cell_type == "code")
-            for section in required_markdown:
-                self.assertIn(section, markdown, path)
-            self.assertGreaterEqual(markdown.count("## "), 5, path)
-            self.assertIn("expect(", source, path)
-            self.assertIn("TODO:", source, path)
-
-    def test_level2_exercise_precedes_answer_and_reference(self):
-        for path in sorted(p for p in LEVEL2.glob("module*/lab*.ipynb") if p.name not in REWRITTEN):
-            notebook = nbformat.read(path, as_version=4)
-            sources = [cell.source for cell in notebook.cells]
-            prompt = next(i for i, source in enumerate(sources) if source.startswith("## Independent Exercise"))
-            answer = next(i for i, source in enumerate(sources) if "# TODO:" in source)
-            reference = next(i for i, source in enumerate(sources) if source.startswith("<details>\n<summary>Reference Explanation"))
-            self.assertLess(prompt, answer, path)
-            self.assertLess(answer, reference, path)
 
 
 if __name__ == "__main__":
