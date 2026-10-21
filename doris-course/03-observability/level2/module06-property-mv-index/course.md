@@ -69,7 +69,7 @@ To compare two algorithms, change nothing else. Lab 6 creates two tables that di
 - **Different layouts.** A table that has received thousands of small loads, such as `otel_logs`, stores its rows differently from a table loaded once, and it holds indexes too: comparing it with a fresh copy compares much more than the algorithm.
 - **Unreported sizes.** `SHOW DATA` and `information_schema.tables` show the sizes that the BEs report, every minute or so. Right after a load, they still show 0. Wait until both tables report all of their rows.
 
-In Lab 6, the same 79,000 log rows took 6.7 MB with ZSTD and 10.5 MB with LZ4: LZ4 needed about 1.6 times the space. That holds for those rows and that layout. Other data compresses differently, and the result says nothing about speed.
+In one run of Lab 6, the same 79,000 log rows took 6.7 MB with ZSTD and 10.5 MB with LZ4: LZ4 needed about 1.6 times the space; in a fresh environment, 27,000 rows took 2.2 MB and 3.3 MB, 1.5 times. That holds for those rows and that layout. Other data compresses differently, and the result says nothing about speed.
 
 ## 6.4 Inverted indexes for log search
 
@@ -170,7 +170,7 @@ You need the DOG stack and the demo from Module 1, with the payment failure turn
 
 - `SHOW CREATE TABLE` shows a table's definition but leaves out default values: the exporter's `compression = zstd` is missing because ZSTD is the 4.x default.
 - Every load adds a rowset, and compaction merges them; the time-series policy merges appended data about once. Group commit collects small loads into one, but only for loads that use it, by a header or by the table's `group_commit_mode`.
-- A fair comparison of compression changes only the algorithm, loads the same rows the same way, and waits for the BEs to report sizes. On the course's logs, LZ4 took about 1.6 times the space of ZSTD.
+- A fair comparison of compression changes only the algorithm, loads the same rows the same way, and waits for the BEs to report sizes. On the course's logs, LZ4 took 1.5 to 1.6 times the space of ZSTD.
 - An inverted index with a parser lists, for each token, the rows that contain it; `MATCH_ANY`, `MATCH_ALL`, and `MATCH_PHRASE` compare tokens, and phrases need `support_phrase`. Without the index, or with `LIKE`, Doris reads every row's text.
 - A Query Profile's row counters show where each row of a scan went in this query: skipped by zone maps or the index, read and dropped, or read and kept. They are not a measure of speed.
 - A synchronous materialized view is built by a job, then updated with every load, and stored as an AGGREGATE index of its table. Doris uses it when the query's expressions, filters, and aggregates can be computed from it, which `EXPLAIN` shows.

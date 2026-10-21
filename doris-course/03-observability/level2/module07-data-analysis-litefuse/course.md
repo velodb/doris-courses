@@ -52,7 +52,7 @@ The usual summary of a service is three numbers per operation, sometimes called 
 
 The same failures show in four places with very different rates. Every order makes one charge, and a failed charge fails its order, so `PlaceOrder` and `Charge` fail equally. The frontend's `POST` also covers the storefront's other POST requests, and the proxy's `ingress` covers every request of the store: the failure of one operation disappears in the rate of a gateway. Break rates down by operation before you judge them.
 
-Durations need care with their unit and with their meaning. The Doris exporter stores `duration` in microseconds, so Lab 7 divides by 1,000 for milliseconds. And faster is not always healthier: the failed orders of this incident took a median of about 6 ms, the successful ones about 11 ms, because a failed order stops at the charge, while a successful one goes on to ship the order, empty the cart, send the confirmation email, and publish the order to Kafka. An alert on latency alone would not see this incident.
+Durations need care with their unit and with their meaning. The Doris exporter stores `duration` in microseconds, so Lab 7 divides by 1,000 for milliseconds. And faster is not always healthier: in one run of Lab 7, the failed orders took a median of about 6 ms, the successful ones about 11 ms, because a failed order stops at the charge, while a successful one goes on to ship the order, empty the cart, send the confirmation email, and publish the order to Kafka. An alert on latency alone would not see this incident.
 
 ## 7.2 Percentiles
 

@@ -129,7 +129,7 @@ Lab 5 copies the spans of `otel_traces` into a table bucketed by `HASH(service_n
 
 So choose a bucket column only when most queries filter on it with `=` or `IN`, and when it spreads the rows evenly: many distinct values, none dominant. The trace ID is such a column for a table that is read trace by trace: every lookup of one trace reads one tablet, and the tablets stay even, which is why Litefuse buckets its tables by trace ID. Raw telemetry is read in many ways, mostly by time, and its services are uneven, so RANDOM is the safer default; the inverted index of `service_name` finds the rows of one service inside the tablets (Module 6).
 
-With RANDOM bucketing, a load normally spreads its rows over the tablets of a partition. A Stream Load with the header `load_to_single_tablet: true` writes all of its rows to one tablet, chosen at random, so that each load creates fewer and larger files, which helps tables that receive many loads. The exporter does not set it.
+With RANDOM bucketing, a load sends each batch of rows to one tablet and the next batch to the next tablet, so its rows spread over the tablets of a partition, and the tablets come closer to even as batches add up. A Stream Load with the header `load_to_single_tablet: true` writes all of its rows to one tablet, and the next load to the next tablet, so that each load creates fewer and larger files, which helps tables that receive many loads. The exporter does not set it.
 
 ## 5.7 How many buckets
 
