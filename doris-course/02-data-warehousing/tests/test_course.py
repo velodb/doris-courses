@@ -229,7 +229,7 @@ class MaterialsTest(unittest.TestCase):
             else:
                 content = path.read_text()
             self.assertNotRegex(content, r"(?<![A-Za-z0-9_])D0?[1-7](?![A-Za-z0-9_])", path)
-        for module in (COURSE_ROOT / "level1").glob("module*"):
+        for module in COURSE_ROOT.glob("level*/module*"):
             number = int(re.match(r"module(\d+)", module.name)[1])
             reading = next(module.glob("course*.md")).read_text()
             self.assertTrue(reading.startswith(f"# Module {number}:"), module)
@@ -238,15 +238,15 @@ class MaterialsTest(unittest.TestCase):
                 self.assertTrue(quiz["title"].startswith(f"Module {number} Quiz:"), quiz_path)
 
     def test_learner_prose_excludes_author_status_notes(self):
-        paths = list((COURSE_ROOT / "level1").glob("*/course*.md"))
-        paths += list((COURSE_ROOT / "level1").glob("*/*.ipynb"))
+        paths = list(COURSE_ROOT.glob("level*/*/course*.md"))
+        paths += list(COURSE_ROOT.glob("level*/*/*.ipynb"))
         for path in paths:
             content = path.read_text()
             if path.suffix == ".ipynb":
                 notebook = nbformat.read(path, as_version=4)
                 content = "\n".join(c.source for c in notebook.cells if c.cell_type == "markdown")
             self.assertNotRegex(content, r"(?i)candidate experiment|candidate lab|not yet tested|initial lab draft|acceptance evidence|do not mark unexecuted steps as complete|maintenance/.*/VALIDATION\.md", path)
-        for path in (COURSE_ROOT / "level1").glob("*/quiz*.ipynb"):
+        for path in COURSE_ROOT.glob("level*/*/quiz*.ipynb"):
             notebook = nbformat.read(path, as_version=4)
             content = "\n".join(c.source for c in notebook.cells if c.cell_type == "markdown")
             self.assertIn("### Load the Quiz", content, path)
@@ -384,8 +384,8 @@ class MaterialsTest(unittest.TestCase):
 
     def test_quiz_contract_and_shared_renderer(self):
         from dw_course.quiz import CourseQuiz
-        paths = list((COURSE_ROOT / "level1").glob("*/quiz*.yaml"))
-        self.assertEqual(len(paths), 8)
+        paths = list(COURSE_ROOT.glob("level*/*/quiz*.yaml"))
+        self.assertEqual(len(paths), 15)  # One per module, and one for Module 5's optional reading.
         for path in paths:
             data = yaml.safe_load(path.read_text())
             self.assertEqual(len(data["questions"]), 6, path)
@@ -412,7 +412,7 @@ class MaterialsTest(unittest.TestCase):
     def test_quiz_four_choices_and_feedback_render(self):
         from dw_course.quiz import CourseQuiz
 
-        for path in (COURSE_ROOT / "level1").glob("*/quiz*.yaml"):
+        for path in COURSE_ROOT.glob("level*/*/quiz*.yaml"):
             quiz = CourseQuiz.from_yaml(path)
             for index, question in enumerate(quiz.questions):
                 for option in question.options:

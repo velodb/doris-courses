@@ -8,7 +8,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-LESSONS = sorted(ROOT.glob("level1/module*/course.md"))
+LESSONS = sorted(ROOT.glob("level*/module*/course.md"))
 READING = ROOT / "level1/module05-ingestion/optional05_continuous_ingestion.md"
 
 
@@ -26,8 +26,9 @@ def quiz_for(path, text):
 
 
 class LessonTests(unittest.TestCase):
-    def test_every_level1_module_has_a_lesson(self):
-        self.assertEqual([lesson.parent for lesson in LESSONS], sorted(ROOT.glob("level1/module*")))
+    def test_every_module_has_a_lesson(self):
+        self.assertEqual([lesson.parent for lesson in LESSONS], sorted(ROOT.glob("level*/module*")))
+        self.assertEqual(len(LESSONS), 14)
 
     def test_a_lesson_names_its_module_as_its_lab_and_quiz_do(self):
         for path in LESSONS:
@@ -78,6 +79,25 @@ class LessonTests(unittest.TestCase):
                 # One question per objective, in the lesson's own words.
                 self.assertEqual(sorted(question["objective"] for question in quiz["questions"]),
                                  sorted(objectives(text)))
+
+    def test_level2_and_3_lessons_label_the_statements_that_write(self):
+        # Level 1's examples have their own rules in test_course.py.
+        for path in LESSONS:
+            if path.parts[-3] == "level1":
+                continue
+            lesson = path.read_text()
+            blocks = re.findall(r"(?:^((?:[^\n]+\n)?[^\n]+)\n\n(<!-- reading-only-example -->)\n)?^```sql\n(.*?)^```",
+                                lesson, re.M | re.S)
+            self.assertTrue(blocks, path)
+            for label, marker, block in blocks:
+                with self.subTest(lesson=path.parent.name, block=block.split("\n", 1)[0]):
+                    if marker:
+                        # A statement that writes shows what the Lab runs, or that nothing runs it.
+                        self.assertRegex(label, r"^(?:.+\n)?\*\*SQL reading example: .+\.\*\*")
+                        self.assertRegex(label, r"Do not (?:rerun it after|run (?:it|them) outside) the Lab|not executed in the Lab")
+                        continue
+                    for statement in (s.strip() for s in block.split(";") if s.strip()):
+                        self.assertRegex(statement, r"^(SELECT|WITH|EXPLAIN|SHOW)\b")
 
     def test_external_links_point_at_versioned_doris_documentation(self):
         for path in [*LESSONS, READING]:

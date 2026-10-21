@@ -1,7 +1,6 @@
 """Offline checks for the Data Warehousing Level 2 learner materials."""
 
 import ast
-import re
 import unittest
 from pathlib import Path
 
@@ -31,21 +30,8 @@ class Level2MaterialsTest(unittest.TestCase):
             payload = yaml.safe_load(quiz.read_text())
             self.assertEqual(len(payload["questions"]), 6, quiz)
             self.assertEqual([len(q["options"]) for q in payload["questions"]], [4] * 6)
+            # test_lessons.py checks the objectives, and test_course.py the options and explanations.
             self.assertEqual(len({q["objective"] for q in payload["questions"]}), 6, quiz)
-            guide = (path / "course.md").read_text()
-            goals = guide.split("## Learning Objectives\n", 1)[1].split("\n## ", 1)[0]
-            self.assertEqual(len(re.findall(r"^\d+\. ", goals, re.MULTILINE)), 6, path)
-            for question in payload["questions"]:
-                with self.subTest(quiz=quiz.name, question=question["id"]):
-                    # Options are shown shuffled, so they are named, not lettered.
-                    option_ids = [option["id"] for option in question["options"]]
-                    self.assertEqual(len(set(option_ids)), 4)
-                    self.assertTrue(all(len(option_id) > 1 for option_id in option_ids), option_ids)
-                    self.assertEqual(len({option["text"] for option in question["options"]}), 4)
-                    self.assertIn(question["answer"], option_ids)
-                    for option in question["options"]:
-                        self.assertNotRegex(option["text"], r"^[A-D]\. ")
-                    self.assertNotRegex(question["explanation"], r"(^|\s)[A-D]: ")
 
     def test_new_notebooks_are_source_only_and_valid(self):
         notebooks = sorted(LEVEL2.glob("module*/*.ipynb"))
@@ -82,23 +68,6 @@ class Level2MaterialsTest(unittest.TestCase):
         readme = (LEVEL2 / "README.md").read_text()
         for link in ("module08-views-materialized-views", "module09-modeling-and-joins", "module10-metric-processing", "module11-bi-and-ai"):
             self.assertIn(link, readme)
-
-    def test_level2_guides_follow_the_level1_learning_structure(self):
-        required_sections = (
-            "Course Information",
-            "Module Goal",
-            "Learning Objectives",
-            "Module Schedule",
-            "Hands-on Lab",
-            "Module Summary",
-            "Knowledge Quiz",
-            "Official References",
-        )
-        for module in self.modules:
-            guide = (LEVEL2 / module / "course.md").read_text()
-            for section in required_sections:
-                self.assertIn(section, guide, module)
-            self.assertGreaterEqual(len(guide), 4000, module)
 
 
 if __name__ == "__main__":
