@@ -3722,6 +3722,13 @@ LIMIT 10
                 f"rerun this cell at or after {expiry_at:%Y-%m-%d %H:%M} ({zone})."
             )
 
+        partition = self._partition_containing(table_name, event_hour, event_id)
+        self.wait_for_partition_removal(
+            table_name, partition, timeout_seconds=timeout_seconds
+        )
+
+    def _partition_containing(self, table_name: str, moment: pd.Timestamp, event_id: int) -> str:
+        """Return the one Range Partition whose half-open bounds hold ``moment``."""
         partitions = self._metadata_rows(
             f"SHOW PARTITIONS FROM `{table_name}` ORDER BY PartitionName"
         )
@@ -3731,16 +3738,31 @@ LIMIT 10
                 r"\b\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\b",
                 str(partition.get("Range", "")),
             )
-            if len(bounds) >= 2 and pd.Timestamp(bounds[0]) <= event_hour < pd.Timestamp(bounds[1]):
+            if len(bounds) >= 2 and pd.Timestamp(bounds[0]) <= moment < pd.Timestamp(bounds[1]):
                 matches.append(str(partition["PartitionName"]))
         if len(matches) != 1:
             raise RuntimeError(
-                f"Expected one Partition containing event {event_id} at {event_hour}; "
+                f"Expected one Partition containing event {event_id} at {moment}; "
                 f"found {matches!r}. Inspect SHOW PARTITIONS before continuing."
             )
-        self.wait_for_partition_removal(
-            table_name, matches[0], timeout_seconds=timeout_seconds
-        )
+        return matches[0]
+
+    def partition_holding_event(self, table_name: str, *, event_id: int) -> str | None:
+        """Show and return the Partition that holds one event, or None when the event is gone."""
+        table_name = self._safe_table_name(table_name)
+        if not isinstance(event_id, int) or event_id < 0:
+            raise ValueError("event_id must be a nonnegative integer.")
+        lookup = f"SELECT event_time FROM {table_name} WHERE event_id = {event_id}"
+        marker = self._metadata_rows(lookup)
+        if not marker:
+            card(f"Event {event_id} is no longer in {table_name}.", "skip", "The event is already gone")
+            return None
+        event_time = pd.Timestamp(marker[0]["event_time"])
+        partition = self._partition_containing(table_name, event_time, event_id)
+        card(f"Event {event_id} at {event_time} is in Partition {partition}.", "info",
+             "The Partition to watch")
+        self.show_statements(lookup, f"SHOW PARTITIONS FROM {table_name} ORDER BY PartitionName")
+        return partition
 
     @staticmethod
     def _session_time(value: str, system_zone: str, session_zone: str) -> str:
