@@ -126,7 +126,10 @@ class ExtensionsTest(unittest.TestCase):
         expectations = {
             "README.md": ("not required to set up external pipelines", "continuous ingestion Labs are all optional", "optional05_kafka_routine_load.ipynb", "optional05_flink_mysql_cdc.ipynb"),
             "module05-ingestion/course.md": (
-                "Sections 5.6–5.9 are introductions", "continuous concurrency validation is not a completion requirement"),
+                "Continuous ingestion, where data keeps arriving, is optional in this course",
+                "Nothing in Modules 6 and 7 depends on them"),
+            "module05-ingestion/optional05_continuous_ingestion.md": (
+                "This reading is optional", "Modules 6 and 7 and the main quiz do not depend on it"),
             "module07-state-changes/course.md": (
                 "does not require real CDC setup", "Lab 7 uses simulated events", "controlled Savepoint"),
         }

@@ -188,6 +188,12 @@ class RuntimeTest(unittest.TestCase):
                     parquet_paths(directory)
 
 
+def old_format_readings():
+    """Level 1 lessons not yet written in the course template (tests/test_lessons.py checks the others)."""
+    return [path for path in (COURSE_ROOT / "level1").glob("*/course*.md")
+            if "\n## Module structure\n" not in path.read_text()]
+
+
 class MaterialsTest(unittest.TestCase):
     def test_learner_materials_use_module_labels(self):
         for path in COURSE_ROOT.rglob("*"):
@@ -205,12 +211,13 @@ class MaterialsTest(unittest.TestCase):
         for module in (COURSE_ROOT / "level1").glob("module*"):
             number = int(re.match(r"module(\d+)", module.name)[1])
             reading = next(module.glob("course*.md")).read_text()
-            quiz = yaml.safe_load(next(module.glob("quiz*.yaml")).read_text())
             self.assertTrue(reading.startswith(f"# Module {number}:"), module)
-            self.assertTrue(quiz["title"].startswith(f"Module {number} Quiz:"), module)
+            for quiz_path in module.glob("quiz*.yaml"):
+                quiz = yaml.safe_load(quiz_path.read_text())
+                self.assertTrue(quiz["title"].startswith(f"Module {number} Quiz:"), quiz_path)
 
     def test_reading_schedule_titles_match_sections(self):
-        for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
+        for path in old_format_readings():
             content = path.read_text()
             schedule = content.split("## Module Schedule\n\n", 1)[1].split("\n## ", 1)[0]
             listed = re.findall(r"^\| (\d+\.\d+ [^|]+) \|", schedule, re.MULTILINE)
@@ -238,7 +245,7 @@ class MaterialsTest(unittest.TestCase):
             self.assertIn("## Start the Quiz", content, path)
 
     def test_reading_information_and_schedules_are_consistent(self):
-        for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
+        for path in old_format_readings():
             content = path.read_text()
             opening = content.split("## Module Goal", 1)[0]
             fields = re.findall(r"^\| ([^|]+) \|", opening, re.MULTILINE)
@@ -251,7 +258,7 @@ class MaterialsTest(unittest.TestCase):
             self.assertNotIn("Complete the lab below and check the results", schedule, path)
 
     def test_quiz_objectives_cover_each_reading_goal(self):
-        for path in (COURSE_ROOT / "level1").glob("*/course*.md"):
+        for path in old_format_readings():
             content = path.read_text()
             goals = content.split("## Learning Objectives\n\n", 1)[1].split("\n## ", 1)[0]
             objectives = re.findall(r"^\d+\. (.+)$", goals, re.MULTILINE)
@@ -339,9 +346,8 @@ class MaterialsTest(unittest.TestCase):
         self.assertIn(f"twenty rows and an amount of {doubled:.2f}", intro)
 
     def test_readings_follow_english_course_structure(self):
-        readings = list((COURSE_ROOT / "level1").glob("*/course*.md"))
-        self.assertEqual(len(readings), 7)
-        for path in readings:
+        self.assertEqual(len(list((COURSE_ROOT / "level1").glob("*/course*.md"))), 7)
+        for path in old_format_readings():
             content = path.read_text()
             headings = re.findall(r"^## (.+)$", content, re.MULTILINE)
             self.assertEqual(headings[:3], ["Module Goal", "Learning Objectives", "Module Schedule"], path)
@@ -372,17 +378,19 @@ class MaterialsTest(unittest.TestCase):
             self.assertTrue((module / "course.md").is_file())
             self.assertEqual(list(module.glob("course?*.md")), [])
             self.assertEqual(len(list(module.glob(f"lab{number}_*.ipynb"))), 1)
-            self.assertEqual(len(list(module.glob(f"quiz{number}_*.yaml"))), 1)
-            self.assertEqual(len(list(module.glob(f"quiz{number}_*.ipynb"))), 1)
-            quiz_path = next(module.glob(f"quiz{number}_*.ipynb"))
-            quiz_source = "\n".join(cell.source for cell in nbformat.read(quiz_path, as_version=4).cells)
-            yaml_path = next(module.glob(f"quiz{number}_*.yaml"))
-            self.assertIn(str(yaml_path.relative_to(COURSE_ROOT)), quiz_source)
+            # Module 5 has a second quiz, for its optional reading on continuous ingestion.
+            quizzes = 2 if module.name == "module05-ingestion" else 1
+            self.assertEqual(len(list(module.glob(f"quiz{number}_*.yaml"))), quizzes)
+            self.assertEqual(len(list(module.glob(f"quiz{number}_*.ipynb"))), quizzes)
+            for yaml_path in module.glob(f"quiz{number}_*.yaml"):
+                quiz_path = yaml_path.with_suffix(".ipynb")
+                quiz_source = "\n".join(cell.source for cell in nbformat.read(quiz_path, as_version=4).cells)
+                self.assertIn(str(yaml_path.relative_to(COURSE_ROOT)), quiz_source)
             self.assertFalse((module / "quiz.ipynb").exists())
 
     def test_notebooks_are_valid_clean_and_compilable(self):
         paths = list((COURSE_ROOT / "level1").glob("*/*.ipynb"))
-        self.assertEqual(len(paths), 19)  # Seven Lab/Quiz pairs, three extensions, two streaming Labs.
+        self.assertEqual(len(paths), 20)  # Seven Lab/Quiz pairs, three extensions, two streaming Labs, one reading quiz.
         for path in paths:
             notebook = nbformat.read(path, as_version=4)
             nbformat.validate(notebook)
@@ -395,10 +403,11 @@ class MaterialsTest(unittest.TestCase):
     def test_quiz_contract_and_shared_renderer(self):
         from dw_course.quiz import CourseQuiz
         paths = list((COURSE_ROOT / "level1").glob("*/quiz*.yaml"))
-        self.assertEqual(len(paths), 7)
+        self.assertEqual(len(paths), 8)
         for path in paths:
             data = yaml.safe_load(path.read_text())
-            self.assertEqual(len(data["questions"]), 5, path)
+            # Five questions until each module's lesson moves to the course template, then six.
+            self.assertIn(len(data["questions"]), (5, 6), path)
             ids = [q["id"] for q in data["questions"]]
             self.assertEqual(len(ids), len(set(ids)), path)
             for question in data["questions"]:

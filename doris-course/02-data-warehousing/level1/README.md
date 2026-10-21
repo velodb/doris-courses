@@ -104,8 +104,8 @@ Course Labs rebuild only their own tables; the exact scope is stated at the begi
 Running the Module 4 Lab starts two helper containers on demand to prepare real Iceberg lake tables.
 The first start requires image downloads; see [Lake Table Environment](../environments/lakehouse/README.md) for ports and shutdown instructions.
 
-The Module 5 Lab practices Stream Load using files in the repository; the historical package is automatically extracted and validated on first read.
-The Kafka, CDC, object storage, and Group Commit sections in the lesson teach ingestion choices and operating mechanisms.
+The Module 5 Lab practices Stream Load and Group Commit using files in the repository; the historical package is automatically extracted and validated on first read.
+Kafka, CDC, and Streaming Jobs are in the optional reading [Continuous Ingestion](module05-ingestion/optional05_continuous_ingestion.md), with its own quiz and the optional Labs 5A and 5B.
 Modules 2 and 3 use ten orders to explain storage and models; performance evaluation requires separately prepared data volumes and workloads appropriate to the evaluation.
 
 Connections remain available after you finish a Lab, so you can continue querying. When you finish studying, shut down that Notebook's kernel to release the connections; course data in the database is retained.

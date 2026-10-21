@@ -78,10 +78,8 @@ class LearningFlowTest(unittest.TestCase):
             self.assertIn(fragment, fixture_source)
         self.assertIn("External environment example; do not rerun it alongside the lab", reading)
 
-    def test_ingestion_keeps_cdc_boundary_and_optional_accounting(self):
+    def test_ingestion_keeps_the_optional_accounting_reading(self):
         reading = self.reading("module05-ingestion")
-        cdc = reading.split("## 5.8 Streaming Job and CDC_STREAM", 1)[1].split("## 5.9", 1)[0]
-        self.assertIn("Experimental", cdc.split("###", 1)[0])
         self.assertIn('DEFAULT "CREATED"', reading)
         self.assertIn("optional05_invoice_and_receipts.md", reading)
         cells = self.notebook_cells("module05-ingestion")
@@ -227,19 +225,13 @@ class LearningFlowTest(unittest.TestCase):
             lab.query.assert_called_with(
                 "SELECT COUNT(*) - COUNT(DISTINCT order_id) FROM orders_clean")
 
-    def test_external_examples_have_explicit_scope_and_observation(self):
-        path = next((ROOT / "level1/module05-ingestion").glob("course*.md"))
-        content = path.read_text()
-        examples = re.findall(r"### Reading example:(.*?)(?=\n## |\Z)", content, re.DOTALL)
-        self.assertEqual(len(examples), 4)
-        for example in examples:
-            self.assertIn("External-environment example; not executed in the lab", example)
-            self.assertIn("<!-- external-service-example -->\n```sql", example)
-            self.assertIn("SELECT", example)
-            self.assertRegex(example, "[Ee]xpect|should (?:become|contain|show)")
-        self.assertIn("SHOW ROUTINE LOAD FOR orders_kafka_job", content)
-        self.assertIn("Name = 'orders_mysql_job'", content)
-        self.assertIn("Name = 'orders_files_job'", content)
+    def test_group_commit_step_sends_single_rows_without_labels(self):
+        source = self.notebook_cells("module05-ingestion")["group-commit"]
+        self.assertIn('if mode == "off_mode":\n        headers["label"]', source)
+        self.assertIn('("orders_group_commit", "async_mode")', source)
+        self.assertIn('"group_commit_interval_ms" = "2000"', source)
+        reading = self.reading("module05-ingestion")
+        self.assertIn("label and group_commit can't be set at the same time", reading)
 
     def test_every_module_has_blank_exercise_and_folded_executable_solution(self):
         paths = list((ROOT / "level1").glob("*/lab*.ipynb"))
@@ -249,10 +241,12 @@ class LearningFlowTest(unittest.TestCase):
             hidden = [c for c in cells if "reference-solution" in c.get("metadata", {}).get("tags", [])]
             if hidden:
                 # The form of the other courses: a blank cell, then a collapsed solution that runs.
-                self.assertEqual(len(hidden), 1, path)
-                solution = cells.index(hidden[0])
-                self.assertEqual("".join(cells[solution - 2]["source"]), "# Your code here", path)
-                self.assertTrue(hidden[0]["metadata"]["jupyter"]["source_hidden"], path)
+                for solution in hidden:
+                    index = cells.index(solution)
+                    work = "".join(cells[index - 2]["source"])
+                    self.assertEqual(cells[index - 2]["cell_type"], "code", path)
+                    self.assertEqual(ast.parse(work).body, [], path)  # comments only, such as a template
+                    self.assertTrue(solution["metadata"]["jupyter"]["source_hidden"], path)
                 continue
             work = [c for c in cells if "course_exercise" in c.get("metadata", {}).get("tags", [])]
             solutions = [c for c in cells if "course_solution" in c.get("metadata", {}).get("tags", [])]
