@@ -23,6 +23,7 @@ from typing import Mapping, Sequence
 
 import pandas as pd
 import pymysql
+import yaml
 from IPython.display import HTML, Javascript, display
 
 from doris_labkit.db import connect_doris, report_sql_error, sql, sql_string
@@ -47,6 +48,11 @@ from . import environment as env
 # Every notebook uses the course root as its runtime workspace, even when the
 # notebook file itself lives several module directories below it.
 LAB_DIR = Path(__file__).resolve().parent.parent
+
+
+def expected_results() -> dict:
+    """Return datasets/expected_results.yaml: the numbers the Labs check."""
+    return yaml.safe_load((LAB_DIR / "datasets/expected_results.yaml").read_text(encoding="utf-8"))
 
 # Styles for the components only this course uses: the cover, flow diagrams,
 # and the load-method matching activity. doris_labkit styles everything else.
@@ -156,6 +162,8 @@ class DorisLab:
     EXPECTED_DISTINCT_PRODUCTS = 204_231
     EXPECTED_TOTAL_REVENUE = Decimal("39984455.64")
     EXPECTED_EVENT_COUNTS = {"view": 9_437_184, "cart": 589_824, "purchase": 131_072}
+    # The 1,024 records that Lab 3 loads with Stream Load and with Routine Load.
+    LAB3_SAMPLE = expected_results()["lab3_sample"]
 
     def __init__(
         self,
@@ -1864,10 +1872,11 @@ LIMIT 10
     def _validate_fixture(path: Path, kind: str) -> int:
         text = path.read_text(encoding="utf-8")
         lines = [line for line in text.splitlines() if line.strip()]
+        sample = DorisLab.LAB3_SAMPLE
         if kind in {"stream_csv", "stream_malformed_csv"}:
             expected_rows = {
-                "stream_csv": 1024,
-                "stream_malformed_csv": 10,
+                "stream_csv": sample["rows"],
+                "stream_malformed_csv": sample["malformed_rows"],
             }[kind]
             fields = [line.split("|") for line in lines]
             if len(fields) != expected_rows or any(len(row) != 7 for row in fields):
@@ -1879,24 +1888,80 @@ LIMIT 10
                     raise ValueError("The Stream Load fixture is not the authored Lab 1/2 sample.")
                 if any(row[6] == "not-a-number" for row in fields):
                     raise ValueError("The main Stream Load fixture must contain only valid rows.")
+                DorisLab._check_sample(
+                    path.name,
+                    [row[1] for row in fields],
+                    [row[0] for row in fields],
+                    [Decimal(row[6]) for row in fields],
+                )
             else:
                 if fields[0][1] != "1" or fields[-1][1] != "10":
                     raise ValueError("The malformed fixture is not the authored ten-row sample.")
-                if sum(row[6] == "not-a-number" for row in fields) != 1:
+                if sum(row[6] == "not-a-number" for row in fields) != sample["malformed_filtered_rows"]:
                     raise ValueError("The malformed fixture must contain one invalid revenue value.")
             return len(fields)
         if kind == "routine_json":
-            if len(lines) != 1024:
-                raise ValueError(f"{path.name} must contain 1024 JSON messages.")
+            if len(lines) != sample["rows"]:
+                raise ValueError(f"{path.name} must contain {sample['rows']} JSON messages.")
             records = [json.loads(line) for line in lines]
             if records[0]["meta"]["event_id"] != 1 or records[-1]["meta"]["event_id"] != 10027072:
                 raise ValueError("The Routine Load fixture is not the authored Lab 1/2 sample.")
-            if len({record["meta"]["event_id"] for record in records}) != 1024:
-                raise ValueError("The Routine Load fixture must contain 1024 distinct event IDs.")
             if any(not isinstance(record["event"]["revenue"], (int, float)) for record in records):
                 raise ValueError("The Routine Load fixture must contain only valid numeric revenue values.")
+            DorisLab._check_sample(
+                path.name,
+                [record["meta"]["event_id"] for record in records],
+                [record["meta"]["occurred_at"].replace("T", " ") for record in records],
+                [Decimal(str(record["event"]["revenue"])) for record in records],
+            )
             return len(records)
         raise ValueError(f"Unknown fixture kind: {kind!r}")
+
+    @staticmethod
+    def _check_sample(name: str, event_ids: list, event_times: list[str], revenues: list[Decimal]) -> None:
+        """Require a Lab 3 file to hold exactly the records in datasets/expected_results.yaml."""
+        sample = DorisLab.LAB3_SAMPLE
+        observed = {
+            "distinct events": (len(set(event_ids)), sample["distinct_events"]),
+            "earliest event time": (min(event_times), sample["min_event_time"]),
+            "latest event time": (max(event_times), sample["max_event_time"]),
+            "total revenue": (sum(revenues, Decimal("0")), Decimal(sample["total_revenue"])),
+        }
+        wrong = [
+            f"{label} {actual}, expected {expected}"
+            for label, (actual, expected) in observed.items() if actual != expected
+        ]
+        if wrong:
+            raise ValueError(f"{name} is not the Lab 3 sample: " + "; ".join(wrong) + ".")
+
+    def verify_lab3_sample(self, statement: str, *, title: str) -> pd.DataFrame:
+        """Run the visible validation query and compare it with the Lab 3 sample."""
+        result = self.sql(statement, title=title)
+        row = result.iloc[0]
+        sample = self.LAB3_SAMPLE
+        observed = {
+            "loaded_rows": (int(row["loaded_rows"]), sample["rows"]),
+            "distinct_events": (int(row["distinct_events"]), sample["distinct_events"]),
+            "min_event_time": (str(row["min_event_time"]), sample["min_event_time"]),
+            "max_event_time": (str(row["max_event_time"]), sample["max_event_time"]),
+            "total_revenue": (Decimal(str(row["total_revenue"])), Decimal(sample["total_revenue"])),
+        }
+        wrong = [
+            f"{column} is {actual}, expected {expected}"
+            for column, (actual, expected) in observed.items() if actual != expected
+        ]
+        if wrong:
+            raise AssertionError(
+                "The loaded rows differ from the sample in datasets/expected_results.yaml: "
+                + "; ".join(wrong) + "."
+            )
+        card(
+            f"{sample['rows']:,} rows from {sample['min_event_time']} to {sample['max_event_time']}, "
+            f"total revenue {Decimal(sample['total_revenue']):,}",
+            "ok",
+            "The loaded rows match the 1,024-record sample",
+        )
+        return result
 
     def fetch_fixtures(
         self,
