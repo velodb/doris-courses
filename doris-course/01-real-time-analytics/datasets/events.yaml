@@ -2,11 +2,15 @@ name: events
 database: doris_course
 # The course copy lives in a public, read-only bucket. Doris reads it with the
 # S3 TVF and "s3.credentials_provider_type" = "ANONYMOUS"; no account or key is needed.
+# The two timeouts (milliseconds) replace Doris's defaults of 1000 and 3000, which
+# fail over a slow network or a proxy.
 source:
   uri: s3://doris-courses-public-dataset/doris-course/events/v1/events-*.parquet
   endpoint: https://s3.us-east-1.amazonaws.com
   region: us-east-1
   credentials_provider_type: ANONYMOUS
+  connection_timeout_ms: 10000
+  request_timeout_ms: 30000
   format: parquet
   files: 40
   bytes: 75555348

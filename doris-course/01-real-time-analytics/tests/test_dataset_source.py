@@ -54,6 +54,14 @@ class DatasetSourceTests(unittest.TestCase):
         self.assertNotIn("s3.access_key", properties)
         self.assertNotIn("s3.secret_key", properties)
 
+    def test_course_tvf_raises_the_s3_timeouts(self):
+        # Doris's defaults (1000 and 3000 ms) fail over a slow network or a proxy.
+        properties = s3_properties(client.s3_tvf(DorisLab.S3_CONFIG))[0]
+        self.assertEqual(properties["s3.connection.timeout"], str(DATASET["source"]["connection_timeout_ms"]))
+        self.assertEqual(properties["s3.connection.request.timeout"], str(DATASET["source"]["request_timeout_ms"]))
+        self.assertGreater(int(properties["s3.connection.timeout"]), 1000)
+        self.assertGreater(int(properties["s3.connection.request.timeout"]), 3000)
+
     def test_every_lab_writes_the_same_complete_s3_call(self):
         expected = s3_properties(client.s3_tvf(DorisLab.S3_CONFIG))[0]
         for relative_path in S3_LABS:
@@ -68,17 +76,21 @@ class DatasetSourceTests(unittest.TestCase):
         used = set(re.findall(r'"(https://[^"]+/lab3/[^"]+)"', lab3_code))
         self.assertEqual(used, described)
 
-    def test_no_course_file_refers_to_credentials_or_the_old_bucket(self):
+    def test_every_bucket_named_in_the_course_is_the_public_one(self):
+        # course-bucket is the placeholder of Module 3's private-bucket example.
+        allowed = {"doris-courses-public-dataset", "course-bucket"}
         for path in ROOT.rglob("*"):
             if ".venv" in path.parts or "__pycache__" in path.parts or not path.is_file():
                 continue
             if path.suffix not in {".ipynb", ".py", ".md", ".yaml", ".yml", ".txt", ".toml"}:
                 continue
-            if path.name == Path(__file__).name:
-                continue
             text = path.read_text(encoding="utf-8")
-            for forbidden in ("course_secrets", "yy-glue", "{{COURSE_S3}}", "S3_READ_ONLY"):
-                self.assertNotIn(forbidden, text, f"{path.relative_to(ROOT)}: {forbidden}")
+            buckets = set(re.findall(r"s3://([a-z0-9.-]+)/", text))
+            buckets |= set(re.findall(r"https://([a-z0-9.-]+)\.s3\.[a-z0-9-]+\.amazonaws\.com", text))
+            self.assertLessEqual(buckets, allowed, path.relative_to(ROOT))
+            if path.name != Path(__file__).name:
+                for credential in ("course_secrets", "{{COURSE_S3}}", "S3_READ_ONLY"):
+                    self.assertNotIn(credential, text, f"{path.relative_to(ROOT)}: {credential}")
 
 
 class FixtureDownloadTests(unittest.TestCase):

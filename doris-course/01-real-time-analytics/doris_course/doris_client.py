@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import html
-import base64
 import csv
 import http.client
 import io
@@ -164,13 +163,17 @@ def s3_tvf(config: Mapping[str, str]) -> str:
     """Return the S3 TVF that reads the course's public bucket without credentials.
 
     ANONYMOUS stops the BE from trying the AWS default credential chain (for
-    example the EC2 metadata address) before it sends unsigned requests.
+    example the EC2 metadata address) before it sends unsigned requests. The
+    two timeouts replace Doris's defaults (1 s to connect, 3 s without data),
+    which fail over a slow network or a proxy with "curlCode: 28".
     """
     properties = {
         "uri": config["uri"],
         "s3.endpoint": config["endpoint"],
         "s3.region": config["region"],
         "s3.credentials_provider_type": "ANONYMOUS",
+        "s3.connection.timeout": "10000",
+        "s3.connection.request.timeout": "30000",
         "format": config["format"],
     }
     body = ",\n".join(f'    "{key}" = "{sql_string(value)}"' for key, value in properties.items())

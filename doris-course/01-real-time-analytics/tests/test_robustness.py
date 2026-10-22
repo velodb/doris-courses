@@ -1,7 +1,6 @@
 """Offline checks that a Lab stops with a readable reason and a next step."""
 
 import ast
-import io
 import json
 import subprocess
 import tempfile

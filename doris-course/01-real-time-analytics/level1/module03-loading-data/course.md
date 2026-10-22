@@ -321,6 +321,13 @@ course bucket in Lab 3 is public: there the two key properties are replaced by
 `"s3.credentials_provider_type" = "ANONYMOUS"`, which tells Doris to send
 unsigned requests instead of looking for credentials.
 
+The course's S3 calls also set `"s3.connection.timeout" = "10000"` and
+`"s3.connection.request.timeout" = "30000"` (milliseconds). By default Doris
+gives up on a connection that takes more than 1 second to open, or on a read
+that receives no data for 3 seconds. A slow network or a proxy can exceed both,
+and the query then fails with `curlCode: 28, Timeout was reached`. With the
+longer timeouts, the same network only makes the read slower.
+
 ### Persist the result with `INSERT INTO SELECT`
 
 `INSERT INTO SELECT` saves the result of a query into a target internal table:
