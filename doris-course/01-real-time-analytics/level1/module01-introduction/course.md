@@ -411,6 +411,22 @@ The course copy is 40 Parquet files (about 72 MiB, 10,158,080 rows) in the
 public bucket `doris-courses-public-dataset` in AWS `us-east-1`. The bucket
 allows anonymous reads, so the lab needs no AWS account or credentials.
 
+### What the data looks like
+
+A few features of the data explain results that you will see in later
+modules:
+
+| Feature | Value |
+| --- | --- |
+| Time range | 26 days in two months: 2019-12-01 to 2019-12-15 and 2020-03-01 to 2020-03-11; January and February 2020 have no events |
+| Event types | 9,437,184 `view`, 589,824 `cart`, and 131,072 `purchase` events |
+| Days with purchases | Seven: 2019-12-01 to 2019-12-04 and 2020-03-01 to 2020-03-03. The other 19 days have views and cart events only, so their revenue is 0.00 |
+| Regions | Eight synthetic values, `region_01` to `region_08`, each with about 1.27 million events |
+| Users and products | 1,580,057 users and 204,231 products |
+
+The course copy is a subset of the original publication, so its counts are not
+those of the original dataset.
+
 ## Summary
 
 - Apache Doris is an open-source database for real-time analytics and search:

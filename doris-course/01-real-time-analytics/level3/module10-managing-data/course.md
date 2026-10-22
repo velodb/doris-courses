@@ -756,6 +756,32 @@ It has six single-choice questions and needs no running environment.
 
 Next: this is the last module of the course.
 
+## Where the course leaves you
+
+Across ten modules, one event dataset took you through the work of a real-time
+analytics system on Doris:
+
+- **Level 1** started a sandbox, separated the FE's planning from the BE's
+  storage and execution, and loaded data with Stream Load, the S3 TVF, and
+  Routine Load, checking each load and making its retry safe.
+- **Level 2** modeled the events into detail and summary tables, analyzed them
+  in stages with functions and windows, joined them with a product dimension,
+  and kept the current state of orders correct through updates and deletes.
+- **Level 3** accelerated queries without changing their answers, spread one
+  table over a cluster that survived a failed FE and a stopped BE, and gave the
+  data a lifecycle with a tested way back.
+
+Throughout, every result was checked three ways: the business answer, the plan
+that `EXPLAIN` shows, and the work that the Query Profile records. Keep that
+habit: it is what lets you trust a Doris design on your own data.
+
+When you are done, remove the containers, volumes, and network of the course
+with the commands in the Clean up section of the [course README](../../README.md).
+To go further, the [Apache Doris documentation](https://doris.apache.org/docs/4.x/gettingStarted/what-is-apache-doris/)
+covers every feature of this course in depth. The other courses in this
+repository, on data warehousing, observability, and AI integrations, build on
+the same Doris skills in other scenarios; each one stands on its own.
+
 ## References
 
 - Compression: [Data Compression](https://doris.apache.org/docs/4.x/table-design/column-compression/), [FE Configuration](https://doris.apache.org/docs/4.x/admin-manual/config/fe-config/), and [`SHOW DATA`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/table-and-view/data-and-status-management/SHOW-DATA/)

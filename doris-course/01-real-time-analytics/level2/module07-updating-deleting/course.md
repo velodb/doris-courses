@@ -15,6 +15,15 @@ Keep the current state of changing business entities correct in Doris: choose
 the operation from how changes arrive, and check what a query sees after each
 one.
 
+Modules 4 to 6 worked on the event history, which only grows: an event that
+happened is never updated, and the 10,158,080 rows of `events_modelled` stay as
+they are. Updates and deletes belong to tables that hold a current state, such
+as orders whose status changes. This module therefore leaves the events alone
+and uses small order tables with a few rows each, so that you can see what
+every operation does to every row: an order platform sends complete order
+images, logistics patches, corrections, and deletion records, and a daily
+Partition can expire or need a full backfill.
+
 ## Learning objectives
 
 After completing this module, you will be able to:
