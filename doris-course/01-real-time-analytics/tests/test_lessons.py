@@ -139,5 +139,34 @@ class LessonTests(unittest.TestCase):
                     self.assertIn("/blob/4.1.3/", url)
 
 
+class ReadmeTests(unittest.TestCase):
+    README = (ROOT / "README.md").read_text()
+
+    def test_readme_has_the_sections_of_the_course_template(self):
+        self.assertEqual(re.findall(r"^## (.+)$", self.README, re.M), [
+            "Who this course is for", "What you will learn", "Course outline", "Environment", "Get started",
+            "Dataset", "Clean up", "Troubleshooting",
+        ])
+
+    def test_readme_outline_leads_to_every_lesson_with_its_time(self):
+        outline = self.README.split("## Course outline", 1)[1].split("\n## ", 1)[0]
+        rows = re.findall(r"^\| (\d) \| \[(Module \d+: [^\]]+)\]\(([^)]+)\) \| [^|]+ \| (\d+) min \|$", outline, re.M)
+        self.assertEqual([row[2] for row in rows], [lesson.relative_to(ROOT).as_posix() for lesson in LESSONS])
+        for level, name, path, minutes in rows:
+            with self.subTest(module=name):
+                # The outline uses the lesson's own name, level, and total time.
+                lesson = (ROOT / path).read_text()
+                self.assertTrue(lesson.startswith(f"# {name}\n"))
+                self.assertEqual(path.split("/")[0], f"level{level}")
+                self.assertIn(f"Estimated time | About {minutes} minutes:", lesson)
+
+    def test_readme_lists_every_port_variable(self):
+        variables = set(re.findall(r'env_port\("(DORIS_RTA_\w+)"', (ROOT / "doris_course/environment.py").read_text()))
+        self.assertTrue(variables)
+        for variable in sorted(variables):
+            with self.subTest(variable=variable):
+                self.assertIn(f"`{variable}`", self.README)
+
+
 if __name__ == "__main__":
     unittest.main()
