@@ -167,6 +167,21 @@ class NotebookTests(unittest.TestCase):
         self.assertEqual(deletion.count('columns=["TabletId", "Version"]'), 2)
         self.assertNotIn("VersionCount", deletion)
 
+    def test_labs_reuse_an_image_that_docker_already_has(self):
+        # A rerun must not need Docker Hub: it can be slow, blocked, or offline.
+        pulls = 0
+        for path in sorted(ROOT.glob("level*/module*/*.ipynb")):
+            for cell_id, source in code_cells(path).items():
+                for line in source.splitlines():
+                    command = line.strip()
+                    if "docker pull" not in command or command.startswith("echo"):
+                        continue
+                    pulls += 1
+                    with self.subTest(notebook=path.name, cell=cell_id):
+                        image = command.split("docker pull", 1)[1].strip()
+                        self.assertIn(f"docker image inspect {image} >/dev/null 2>&1 || docker pull {image}", command)
+        self.assertGreaterEqual(pulls, 4)
+
     def test_cells_do_not_show_a_returned_value_twice(self):
         for path in sorted(ROOT.glob("level*/module*/*.ipynb")):
             for cell_id, source in code_cells(path).items():
