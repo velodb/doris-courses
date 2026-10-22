@@ -782,7 +782,7 @@ habit: it is what lets you trust a Doris design on your own data.
 
 When you are done, remove the containers, volumes, and network of the course
 with the commands in the Clean up section of the [course README](../../README.md).
-To go further, the [Apache Doris documentation](https://doris.apache.org/docs/4.x/gettingStarted/what-is-apache-doris/)
+To go further, the [Apache Doris documentation](https://doris.apache.org/docs/4.x/getting-started/what-is-apache-doris/)
 covers every feature of this course in depth. The other courses in this
 repository, on data warehousing, observability, and AI integrations, build on
 the same Doris skills in other scenarios; each one stands on its own.

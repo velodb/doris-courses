@@ -337,7 +337,8 @@ corresponding positions of array values across rows.
 These are useful when the data product genuinely contains mergeable aggregate
 states or positionally meaningful arrays. They are unnecessary for an ordinary
 revenue total. Prefer the direct and readable `SUM(revenue)` until the
-specialized requirement exists. See the current [Combinators catalog](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/)
+specialized requirement exists. See [STATE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/state/),
+[MERGE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/merge/), and [FOREACH](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/foreach/)
 for supported combinations and type constraints.
 
 ## 5.5 Use a Table Function to Expand Values into Rows
@@ -373,7 +374,8 @@ explicit retention decision; consult the chosen Table Function's contract.
 
 Table Functions suit row-dependent parsing or expansion. Examples include
 array expansion and splitting a delimited value. Doris commonly uses them with
-`LATERAL VIEW`. See [Table Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-functions/).
+`LATERAL VIEW`. See [EXPLODE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-functions/explode/); the
+documentation lists the other Table Functions beside it.
 
 > **Table Function and TVF are different categories.** A Table Function such
 > as `EXPLODE(tags)` runs against each current input row and produces zero to
@@ -383,8 +385,8 @@ array expansion and splitting a delimited value. Doris commonly uses them with
 > already used the S3 TVF to expose external files as a temporary relation.
 > Lab 5 uses `NUMBERS("number" = "4")` only as a small, self-contained contrast
 > and does not revisit S3 access or persistence. See
-> [Table-Valued Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/)
-> and [NUMBERS](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/numbers/).
+> [NUMBERS](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/numbers/)
+> and [S3](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/).
 
 ## 5.6 Use CTEs to Express the Stages of a Complex Analysis
 
@@ -667,8 +669,8 @@ Next module: [Module 6: Joining Data in Apache Doris](../module06-joining/course
 
 ## References
 
-- Function categories: [SQL Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/), [Scalar Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/scalar-functions/), [Aggregate Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/aggregate-functions/), [Combinators](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/), and [AI Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/ai-functions/overview/).
-- Row-producing functions: [Table Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-functions/), [Table-Valued Functions](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/), and [NUMBERS](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/numbers/).
+- Function families: the combinators [STATE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/state/), [MERGE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/merge/), and [FOREACH](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/foreach/), and the [AI Functions overview](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/ai-functions/overview/). [SHOW FUNCTIONS](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/function/SHOW-FUNCTIONS/) lists a database's own functions, and `SHOW BUILTIN FUNCTIONS` the built-in ones.
+- Row-producing functions: the Table Function [EXPLODE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-functions/explode/) and the TVFs [NUMBERS](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/numbers/) and [S3](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/).
 - Analytical query structure: [SELECT](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/SELECT/), [Common Table Expressions](https://doris.apache.org/docs/4.x/query-data/cte/), and [Analytic (Window) Functions](https://doris.apache.org/docs/4.x/query-data/window-function/).
 - Grouping and higher-order behavior: [ANY_VALUE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/aggregate-functions/any-value/), [ARRAY_MAP](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/scalar-functions/array-functions/array-map/), and [ARRAY_FILTER](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/scalar-functions/array-functions/array-filter/).
 - Reusable extensions: [Alias Function](https://doris.apache.org/docs/4.x/query-data/udf/alias-function/), [Java UDF, UDAF, UDWF, and UDTF](https://doris.apache.org/docs/4.x/query-data/udf/java-user-defined-function/), [Python UDF family](https://doris.apache.org/docs/4.x/query-data/udf/python-user-defined-function/), and [CREATE FUNCTION](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/function/CREATE-FUNCTION/).

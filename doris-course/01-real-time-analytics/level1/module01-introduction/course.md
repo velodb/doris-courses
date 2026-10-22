@@ -101,7 +101,7 @@ supports large scans, filtering, joins, and aggregations.
 > for analytical workloads.
 
 The [Apache Doris project README](https://github.com/apache/doris) and
-[Apache Doris overview](https://doris.apache.org/docs/4.x/gettingStarted/what-is-apache-doris/)
+[Apache Doris overview](https://doris.apache.org/docs/4.x/getting-started/what-is-apache-doris/)
 are the source of truth for the current product definition and capabilities.
 
 ## 1.2 OLAP and OLTP Workloads
@@ -465,7 +465,7 @@ Next module: [Module 2: Deep Dive into Apache Doris Architecture](../module02-ar
 ## References
 
 - [Apache Doris source repository and project overview](https://github.com/apache/doris)
-- [What is Apache Doris?](https://doris.apache.org/docs/4.x/gettingStarted/what-is-apache-doris/)
+- [What is Apache Doris?](https://doris.apache.org/docs/4.x/getting-started/what-is-apache-doris/)
 - [System Architecture](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)
 - [Customer-Facing Analytics](https://doris.apache.org/use-cases/customer-facing-analytics/)
 - [Observability with Doris](https://doris.apache.org/docs/4.x/observability/overview/)
