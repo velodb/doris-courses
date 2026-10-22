@@ -704,6 +704,11 @@ Do not use single-BE elapsed time to rank multi-node distribution strategies.
 Preserve `events_modelled` for the analytical flow; Module 6 owns and may
 rebuild only its dimension and controlled Join tables.
 
+The Lab ends with a practice: predict the rows of an Outer Join when a condition
+moves from `ON` to `WHERE`. Predict the result first, then write the code in the
+empty cell; the collapsed reference solution after it also runs with Run All and
+leaves the Lab's tables as they were.
+
 ## Summary
 
 - A Join returns one row for every matching pair: a key that repeats on both

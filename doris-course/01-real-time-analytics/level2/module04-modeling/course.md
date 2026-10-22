@@ -658,6 +658,11 @@ Run the optional stop and restart cells only when you want to release and then
 restore sandbox resources. Docker named volumes preserve the baseline and Lab
 4 tables. `events_modelled` must remain available for Modules 5 and 6.
 
+The Lab ends with a practice: reconcile one day of the summary with the detail.
+Predict the result first, then write the code in the empty cell; the collapsed
+reference solution after it also runs with Run All and leaves the Lab's tables
+as they were.
+
 ## Summary
 
 - A table's grain comes from its source contract: one accepted event, one

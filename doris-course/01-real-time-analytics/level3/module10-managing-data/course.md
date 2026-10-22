@@ -723,6 +723,11 @@ Only the optional clock-dependent step can span two Notebook sessions. There,
 do not rerun the setup after the boundary, because rebuilding the table would
 replace the evidence with a new window.
 
+The Lab ends with a practice: predict a daily Dynamic Partition window before
+you create it. Predict the result first, then write the code in the empty cell;
+the collapsed reference solution after it also runs with Run All and leaves the
+Lab's tables as they were.
+
 ## Summary
 
 - Doris encodes each column's values, for example with a dictionary or

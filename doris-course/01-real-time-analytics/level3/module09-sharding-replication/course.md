@@ -773,6 +773,11 @@ containers, the data stored in them, and their network; the single-node
 `doris-rta` container is not affected. The next run imports the seven-hour sample
 again. Use the same command to remove the cluster when you finish the course.
 
+The Lab ends with a practice: count the Tablets and replicas of two tables
+before you look at them. Predict the result first, then write the code in the
+empty cell; the collapsed reference solution after it also runs with Run All and
+leaves the Lab's tables as they were.
+
 ## Summary
 
 - A table has one logical Tablet per Bucket in each Partition, and replication

@@ -644,6 +644,11 @@ uses the same 10,158,080-row Parquet dataset introduced in Lab 1. Separate
 tables isolate the load methods; the event semantics remain consistent across
 the Level 1 course.
 
+The Lab ends with a practice: predict what `max_filter_ratio:0.1` does with the
+same bad batch. Predict the result first, then write the code in the empty cell;
+the collapsed reference solution after it also runs with Run All and leaves the
+Lab's tables as they were.
+
 ## Summary
 
 - Choose a load method from the complete workload contract, not from a file

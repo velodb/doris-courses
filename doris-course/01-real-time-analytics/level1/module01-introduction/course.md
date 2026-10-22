@@ -392,6 +392,11 @@ Open the notebook:
 
 [Lab 1 — Start Doris and Build a Baseline Dataset](lab01_start_doris_and_build_baseline.ipynb)
 
+The Lab ends with a practice: find the day with the most purchase revenue.
+Predict the result first, then write the code in the empty cell; the collapsed
+reference solution after it also runs with Run All and leaves the Lab's tables
+as they were.
+
 ### Dataset source and attribution
 
 The lab uses a transformed course copy of **eCommerce behavior data from

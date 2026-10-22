@@ -107,6 +107,28 @@ class LessonTests(unittest.TestCase):
             with self.subTest(quiz=quiz.name):
                 self.assertEqual(re.findall(r"^\d+\. (.+)$", purpose, re.M), objectives(path.read_text()))
 
+    def test_every_lab_ends_with_a_practice_and_a_collapsed_reference_solution(self):
+        for path in LESSONS:
+            lab = next(path.parent.glob("lab*.ipynb"))
+            cells = json.loads(lab.read_text())["cells"]
+            ids = [cell.get("id") for cell in cells]
+            with self.subTest(lab=lab.name):
+                start = ids.index("practice-task")
+                self.assertEqual(ids[start:start + 5], ["practice-task", "practice-work", "practice-solution-md",
+                                                        "practice-solution", "practice-expected"])
+                task, work, _, solution, expected = cells[start:start + 5]
+                self.assertRegex("".join(task["source"]), r"^## \d+\. Practice: ")
+                self.assertIn("predict", "".join(task["source"]).lower())
+                self.assertEqual("".join(work["source"]), "# Your code here")
+                self.assertTrue(solution["metadata"]["jupyter"]["source_hidden"])
+                self.assertIn("reference-solution", solution["metadata"]["tags"])
+                self.assertTrue("".join(expected["source"]).startswith("**Expected result**"))
+                # The practice comes before the optional stop and restart cells.
+                stop = next(index for index, cell in enumerate(cells)
+                            if re.match(r"### Stop the (Doris sandbox|Kafka sandbox|Module 9 cluster)",
+                                        "".join(cell["source"])))
+                self.assertLess(start, stop)
+
     def test_external_links_point_at_versioned_doris_documentation(self):
         for path in LESSONS:
             for url in re.findall(r"\((https://doris\.apache\.org/[^)]+)\)", path.read_text()):

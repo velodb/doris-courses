@@ -707,6 +707,11 @@ compares scan work, not cold or distributed speed.
 The final Stop and Restart controls release and restore the sandbox's
 resources; the named Docker volumes keep the Module 8 objects.
 
+The Lab ends with a practice: ask the asynchronous materialized view for a grain
+that it does not store. Predict the result first, then write the code in the
+empty cell; the collapsed reference solution after it also runs with Run All and
+leaves the Lab's tables as they were.
+
 ## Summary
 
 - A regular view reuses a definition and stores no result; a manual summary

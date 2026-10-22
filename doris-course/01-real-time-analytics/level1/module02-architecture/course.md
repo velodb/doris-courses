@@ -551,6 +551,11 @@ Open the notebook:
 
 [Lab 2 — Make Doris Scan Less Data](lab02_scan_less_data.ipynb)
 
+The Lab ends with a practice: predict which Partitions and Tablets a region
+filter can prune. Predict the result first, then write the code in the empty
+cell; the collapsed reference solution after it also runs with Run All and
+leaves the Lab's tables as they were.
+
 ## Summary
 
 - The FE parses and analyzes SQL, prunes from metadata, creates and optimizes a

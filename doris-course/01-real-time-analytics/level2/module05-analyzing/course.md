@@ -629,6 +629,11 @@ what one row represents and which events contribute to the chosen metric. A
 different date grain, event filter, or measure produces a different business
 answer even when every query runs successfully.
 
+The Lab ends with a practice: find the region that grew most from one day to the
+next, in stages with `LAG` and `RANK`. Predict the result first, then write the
+code in the empty cell; the collapsed reference solution after it also runs with
+Run All and leaves the Lab's tables as they were.
+
 ## Summary
 
 - Scalar functions derive one value per row, aggregate functions summarize a

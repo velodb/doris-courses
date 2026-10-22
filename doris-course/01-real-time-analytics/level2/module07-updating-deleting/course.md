@@ -335,6 +335,11 @@ Module 7 tables:
 
 No external CDC system, object store, or downloaded dataset is involved.
 
+The Lab ends with a practice: patch orders through a partial-update Stream Load.
+Predict the result first, then write the code in the empty cell; the collapsed
+reference solution after it also runs with Run All and leaves the Lab's tables
+as they were.
+
 ## Summary
 
 - Choose the change path from the source: full-row upsert for complete states,
