@@ -86,9 +86,9 @@ changes anything and names the Lab to run.
 | 1 | Docker | The running sandbox and `events`, 10,158,080 rows |
 | 2 | `events` from Lab 1 | Nothing; it builds `events_v2`, `events_v3`, and three small table-model tables |
 | 3 | The sandbox; it starts a Kafka broker | Nothing; it builds `events_stream`, `events_s3`, and `events_routine` |
-| 4 | `events` from Lab 1 | `events_modelled`, the event table of Modules 5, 6, 8, and 10, and `daily_event_metrics` |
+| 4 | `events` from Lab 1 | `events_modelled`, the event table of Modules 5, 6, 8, and 10; it also builds `modeling_raw_events`, `modeling_typed_events`, and `daily_event_metrics` |
 | 5 | `events_modelled` from Lab 4 | Nothing |
-| 6 | `events_modelled` from Lab 4 | `dim_products`, 204,231 rows, for Module 8 |
+| 6 | `events_modelled` from Lab 4 | `dim_products`, 204,231 rows, for Module 8; it also builds `join_event_cases` and `join_product_cases` |
 | 7 | The sandbox | Nothing; it builds small `order_*` tables |
 | 8 | `events_modelled` from Lab 4 and `dim_products` from Lab 6 | Nothing; its objects start with `m08_` |
 | 9 | Docker, with the sandbox stopped; it starts its own cluster | Nothing for later Labs; its objects start with `m09_` |
@@ -100,9 +100,9 @@ changes anything and names the Lab to run.
 | --- | --- |
 | Platforms | **macOS on Apple silicon** with Docker Desktop: the platform on which every lab of this release was run from start to finish. **Linux on x86_64** with Docker Engine: the labs accept it and use the same images, but this release has not been run on it. **Windows**: run the course inside a WSL 2 Linux distribution on x86_64 with Docker Desktop's WSL 2 integration, and start Jupyter there; inside WSL the labs see Linux on x86_64. This release has not been run on it either. |
 | Other platforms | Lab 1 stops at its first step on other combinations, such as an Intel Mac or Linux on arm64. The Doris, Kafka, and HAProxy images exist for both amd64 and arm64, but the course has not been run on those combinations, so Lab 1 does not continue there. |
-| Resources | Docker needs at least 4 CPUs, 8 GB of memory, and 20 GB of free disk. With 4 CPUs and 8 GB, the Doris container peaks at about 3.1 GiB during Lab 1's load. Module 9 runs three FEs, three BEs, and HAProxy within the same minimum (6.4 GB in all at its peak in our run); stop the single-node sandbox first. |
+| Resources | Docker needs at least 4 CPUs, 8 GB of memory, and 20 GiB of free disk. With 4 CPUs and 8 GB, the Doris container peaks at about 3.1 GiB during Lab 1's load. Module 9 runs three FEs, three BEs, and HAProxy within the same minimum (about 6.4 GiB in all at its peak in the tested run); stop the single-node sandbox first. |
 | Downloads | Docker images: `apache/doris:all-in-one-4.1.3` (about 1.9 GB to download, 4.5 GB on disk), `apache/kafka:3.9.1` for Module 3 (0.2 GB), `haproxy:3.0-alpine` for Module 9 (20 MB), and `metabase/metabase:v0.59.6.3` for the optional Metabase lab (0.7 GB); a lab reuses an image that Docker already has. The optional Metabase lab also downloads the Doris driver for Metabase (19 KB) from GitHub. Data: 72 MiB of Parquet files from AWS S3 in Lab 1 and again in Lab 3; on its first run, Lab 9 reads a seven-hour slice of the same files, and because those rows are spread over all 40 files, Doris reads about 59 MB to find them; three small files in Lab 3. Python packages from PyPI. |
-| Network | Docker Hub for the images; `s3.us-east-1.amazonaws.com` and `doris-courses-public-dataset.s3.us-east-1.amazonaws.com` over HTTPS for the data; PyPI for the packages; GitHub for the optional Metabase lab's driver. From some networks, including mainland China, Docker Hub and AWS `us-east-1` can be slow or unreachable: use the registry mirror or proxy that your network provides. The labs give Doris longer S3 timeouts than its defaults (Module 3 explains them), so a slow connection makes a load slower instead of failing it: the 72 MiB load of Labs 1 and 3 took 11 seconds to 2 minutes over direct connections in our runs, and 22 minutes through a proxy that delivered about 60 KB/s; through the same proxy, Lab 9's first load took 13 minutes. |
+| Network | Docker Hub for the images; `s3.us-east-1.amazonaws.com` and `doris-courses-public-dataset.s3.us-east-1.amazonaws.com` over HTTPS for the data; PyPI for the packages; GitHub for the optional Metabase lab's driver. From some networks, including mainland China, Docker Hub and AWS `us-east-1` can be slow or unreachable: use the registry mirror or proxy that your network provides. The labs give Doris longer S3 timeouts than its defaults (Module 3 explains them), so a slow connection makes a load slower instead of failing it: the 72 MiB load of Labs 1 and 3 took 11 seconds to 2 minutes over direct connections in the tested runs, and 22 minutes through a proxy that delivered about 60 KB/s; through the same proxy, Lab 9's first load took 13 minutes. |
 | Accounts and keys | None. The dataset bucket is public and is read anonymously. |
 | Python | 3.9 to 3.13. If `python3 --version` reports 3.14 or later, create the virtual environment with a supported version, for example `python3.12 -m venv .venv`. |
 
@@ -201,7 +201,8 @@ transformation and attribution in full.
 row count and time range.
 
 Module 1 describes the shape of the data: 26 days in December 2019 and March
-2020, purchases on only seven of them, and eight synthetic regions.
+2020, event types that cover different days (purchases on only seven of them),
+and eight synthetic regions.
 
 ## Clean up
 

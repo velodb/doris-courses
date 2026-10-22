@@ -486,13 +486,14 @@ query. In an OLAP scan, look for evidence such as:
 
 ```text
 partitions=1/26
-tablets=1/260
+tablets=1/10
 PREDICATES: event_time >= ... AND user_id = ...
 ```
 
 - `partitions=1/26` means FE selected one of 26 Partitions.
-- `tablets=1/260` means FE selected a smaller Tablet set from the Table's
-  physical layout. Exact denominator presentation can vary by version.
+- `tablets=1/10` means FE selected one of the 10 Tablets of that Partition.
+  The denominator counts only the Tablets of the selected Partitions: a
+  user-only filter on all 26 days shows `tablets=26/260`.
 - `PREDICATES` shows scan-side predicate evaluation; it is separate from the
   selected/total pruning ratios.
 
@@ -576,7 +577,7 @@ leaves the Lab's tables as they were.
   by a key, the sort key orders rows inside each Tablet, and the Prefix Index
   over its leading columns narrows the rows a scan reads.
 - `EXPLAIN` shows the planned scope, such as `partitions=1/26` and
-  `tablets=1/260`; the Query Profile shows what the scan read; and predicate
+  `tablets=1/10`; the Query Profile shows what the scan read; and predicate
   pushdown is not the same as pruning.
 
 ## Quiz 2: Deep Dive into Apache Doris Architecture

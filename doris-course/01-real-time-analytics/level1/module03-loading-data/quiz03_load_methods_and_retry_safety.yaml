@@ -91,9 +91,10 @@ questions:
     explanation: >-
       The S3 TVF reads and parses the remote objects for the current query
       without storing them; INSERT INTO SELECT creates the load transaction
-      that writes the result into an internal table. The statement has no
-      client label, so a blind rerun loads the rows again, and a production
-      workflow records its object set and uses an idempotent target design.
+      that writes the result into an internal table. Without a label (WITH
+      LABEL), a blind rerun loads the rows again, so a production workflow
+      labels the statement, or records its object set and uses an idempotent
+      target design.
 
   - id: reason_about_routine_load
     objective: "Explain when a Routine Load job fits continuous Kafka consumption, and how it tracks its progress."

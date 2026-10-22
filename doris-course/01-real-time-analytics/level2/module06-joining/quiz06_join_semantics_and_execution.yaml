@@ -31,9 +31,9 @@ questions:
   - id: return_missing_relationships
     objective: "Choose Inner, Outer, Semi, Anti, Cross, or ASOF Join from the rows that the answer must retain."
     prompt: >-
-      Support needs every shipment whose non-NULL customer_id has no match in
-      customers, with shipment columns only. The customer table can repeat an
-      identifier. Which Join fits directly?
+      Every shipment has a customer_id. Support needs the shipments whose
+      customer_id has no match in customers, with shipment columns only. The
+      customer table can repeat an identifier. Which Join fits directly?
     options:
       - id: left_semi
         text: "shipments LEFT SEMI JOIN customers ON the customer_id"

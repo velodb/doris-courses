@@ -371,7 +371,7 @@ independently.
 ## Lab 1: Start Doris and Build a Baseline Dataset
 
 Lab 1 creates the persistent environment and baseline dataset used by the next
-modules. You need Docker with at least 4 CPUs, 8 GB of memory, and 20 GB of free
+modules. You need Docker with at least 4 CPUs, 8 GB of memory, and 20 GiB of free
 disk; the course README lists the platforms and downloads. Plan about 30
 minutes; the first run also downloads the Doris image, about 1.9 GB.
 
@@ -425,12 +425,18 @@ modules:
 | --- | --- |
 | Time range | 26 days in two months: 2019-12-01 to 2019-12-15 and 2020-03-01 to 2020-03-11; January and February 2020 have no events |
 | Event types | 9,437,184 `view`, 589,824 `cart`, and 131,072 `purchase` events |
-| Days with purchases | Seven: 2019-12-01 to 2019-12-04 and 2020-03-01 to 2020-03-03. The other 19 days have views and cart events only, so their revenue is 0.00 |
+| Days with purchases | Seven: 2019-12-01 to 2019-12-04 and 2020-03-01 to 2020-03-03; the other 19 days have a revenue of 0.00 |
+| Days with views | Thirteen: 2019-12-05 to 2019-12-11 and 2020-03-03 to 2020-03-08 |
+| Days with cart events | Fifteen: 2019-12-01 to 2019-12-04, 2019-12-12 to 2019-12-15, 2020-03-01 to 2020-03-03, and 2020-03-08 to 2020-03-11 |
 | Regions | Eight synthetic values, `region_01` to `region_08`, each with about 1.27 million events |
 | Users and products | 1,580,057 users and 204,231 products |
 
 The course copy is a subset of the original publication, so its counts are not
-those of the original dataset.
+those of the original dataset, and its event types barely overlap in time:
+only 2020-03-03 has views, cart events, and purchases, and the purchase days
+before it have no views. A daily ratio from views to purchases therefore
+means nothing in this data; the Labs compare event types, regions, and days
+without such a ratio.
 
 ## Summary
 

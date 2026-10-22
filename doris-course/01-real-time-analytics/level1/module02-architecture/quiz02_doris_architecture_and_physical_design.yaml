@@ -119,7 +119,7 @@ questions:
   - id: interpret_explain_profile
     objective: "Use `EXPLAIN` and the Query Profile to tell planned pruning from the scan work actually done."
     prompt: >-
-      EXPLAIN reports partitions=1/26, tablets=1/260, and a scan predicate, and
+      EXPLAIN reports partitions=1/26, tablets=1/10, and a scan predicate, and
       the query's Query Profile reports fewer scanned rows than before. Which
       conclusion is justified?
     options:
@@ -134,7 +134,7 @@ questions:
     answer: pruning_and_runtime
     explanation: >-
       The ratios in EXPLAIN describe the plan: the FE excluded 25 of 26
-      Partitions and all but one Tablet. The Query Profile records what the BE
-      scan actually read. A scan predicate is evaluated close to storage,
-      which is related to pruning but not the same, and less work must still
-      return the same result.
+      Partitions and all but one of the selected day's 10 Tablets. The Query
+      Profile records what the BE scan actually read. A scan predicate is
+      evaluated close to storage, which is related to pruning but not the
+      same, and less work must still return the same result.

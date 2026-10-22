@@ -612,7 +612,9 @@ The Bucket Shuffle and Colocate queries must keep the same:
 - output grouping and measures; and
 - complete expected result.
 
-Only the durable user-table layout and group membership should change. The
+Only the user table changes: its layout becomes `HASH(user_id)` in the
+Colocation Group, and its key becomes a Unique Key on `user_id`. Every user
+already has one row, so the key does not change the Join's input. The
 Colocate plan should report:
 
 ```text
@@ -718,8 +720,8 @@ Check the environment before you start:
 - The Lab runs three FEs, three BEs, and an HAProxy container on one Docker
   host. Docker needs at least 4 CPUs, 8 GB of memory, and 20 GiB of free disk
   space. The first Lab cell checks these values before it starts any Module 9
-  container and stops with an explanation if one is too low. The running
-  cluster uses about 1 GiB of memory per FE and 1.2 GiB per BE.
+  container and stops with an explanation if one is too low. In the tested
+  run, the seven containers used about 6.4 GiB of memory at their peak.
 - Stop the single-node sandbox first with `docker stop doris-rta`. The Lab checks
   for it and stops instead of stopping it for you.
 - With the Doris image already downloaded, the first start takes about one
@@ -729,11 +731,12 @@ Check the environment before you start:
 The first complete run imports a read-only, bounded seven-hour course sample
 when no reusable local baseline exists. Its 12,062 rows are spread over all
 40 course files, so Doris reads about 59 MB of them: on a slow network this
-load takes about as long as the full load in Lab 1. Later runs can preserve only the 12,062
-committed logical event rows as a temporary local source, then rebuild the
-controlled physical event table. Other Module 9 business objects are rebuilt
-by the sections that own them. This avoids repeated S3 reads while ensuring the
-two-BE placement experiment starts from the intended DDL.
+load can take more than half as long as the full load in Lab 1. Later runs can
+preserve only the 12,062 committed logical event rows as a temporary local
+source, then rebuild the controlled physical event table. Other Module 9
+business objects are rebuilt by the sections that own them. This avoids
+repeated S3 reads while ensuring the two-BE placement experiment starts from
+the intended DDL.
 
 | Lab section | What you do | What the result establishes |
 | --- | --- | --- |

@@ -626,8 +626,8 @@ uses four Module 4 target tables and does not replace or delete the baseline:
 
 - `modeling_raw_events` contains a five-row permissive landing sample.
 - `modeling_typed_events` contains the four valid typed sample rows.
-- `events_modelled` contains the complete event-detail model for Modules 5 and
-  6.
+- `events_modelled` contains the complete event-detail model for Modules 5, 6,
+  8, and 10.
 - `daily_event_metrics` contains the daily reporting summary.
 
 The five numbered lab steps provide these observations:
@@ -656,7 +656,7 @@ In Step 5, distinguish three quantities:
 
 Run the optional stop and restart cells only when you want to release and then
 restore sandbox resources. Docker named volumes preserve the baseline and Lab
-4 tables. `events_modelled` must remain available for Modules 5 and 6.
+4 tables. `events_modelled` must remain available for Modules 5, 6, 8, and 10.
 
 The Lab ends with a practice: reconcile one day of the summary with the detail.
 Predict the result first, then write the code in the empty cell; the collapsed

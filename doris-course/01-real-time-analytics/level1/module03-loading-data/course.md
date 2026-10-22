@@ -376,16 +376,19 @@ casts.
 ### Completion and retry state
 
 `INSERT INTO SELECT` is synchronous: the SQL client receives the statement
-outcome. Unlike Stream Load, this workflow does not expose a client-supplied
-label in the statement. Blindly rerunning a successful statement is a new
-load transaction. On a Duplicate Key model target, it can append another copy
-of every row.
+outcome. The Lab's statement has no label, so blindly rerunning a successful
+statement is a new load transaction: on a Duplicate Key model target, it
+appends another copy of every row. `INSERT INTO <table> WITH LABEL <label>
+SELECT ...` gives the statement a label, as a Stream Load request has one.
+Doris then rejects a second load with a label that a successful load has
+already used (`Label [...] has already been used`), so a retry of the same
+batch with the same label cannot load its rows twice.
 
-A production batch workflow should record the exact object set and statement
-outcome, then use an idempotent design appropriate to its availability
-requirements. Examples include loading into a run-specific staging table,
-atomically replacing a target Partition, or using a table model and business
-key whose repeated-key semantics match the data.
+A production batch workflow should also record the exact object set and
+statement outcome, then use an idempotent design appropriate to its
+availability requirements. Examples include loading into a run-specific
+staging table, atomically replacing a target Partition, or using a table model
+and business key whose repeated-key semantics match the data.
 
 Use read-only object-storage credentials and keep secret values outside the
 notebook or SQL source. The official [S3 TVF](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)
@@ -561,7 +564,7 @@ validation.
 | Load method | Primary completion evidence | Data-level validation | Retry state |
 | --- | --- | --- | --- |
 | Stream Load | Synchronous JSON response with status, label, transaction, and quality counts | Target count, totals, boundaries, and sampled rows | Reuse the same label for the same uncertain batch |
-| S3 TVF with `INSERT INTO SELECT` | SQL statement outcome | Compare source and target counts, aggregates, and expected transformations | Orchestrator records the object set and statement outcome; use an idempotent target design |
+| S3 TVF with `INSERT INTO SELECT` | SQL statement outcome | Compare source and target counts, aggregates, and expected transformations | Reuse the statement's `WITH LABEL` label for the same uncertain batch; the orchestrator records the object set and statement outcome |
 | Routine Load | `SHOW ROUTINE LOAD` state, progress, statistics, and error information | Query committed target rows and business totals | Doris-managed job state and committed Kafka offsets |
 | Group Commit | Mode-specific acknowledgement | Query visible target rows at the point promised by the selected mode | Depends on the underlying write and acknowledgement mode |
 

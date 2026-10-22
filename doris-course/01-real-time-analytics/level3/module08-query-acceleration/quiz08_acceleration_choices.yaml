@@ -128,11 +128,11 @@ questions:
   - id: worth_the_cost
     objective: "Decide whether the read savings of a structure justify its storage, write, and refresh cost."
     prompt: >-
-      A report runs four times a day and already meets its latency objective.
-      Its base table receives continuous writes. A candidate asynchronous
-      materialized view would add significant storage and refresh load, and
-      the business requires near-current data. What does the evidence
-      support?
+      A report runs four times a day and already met its latency objective
+      before an asynchronous materialized view was built for it. Its base
+      table receives continuous writes, the view adds significant storage and
+      refresh load, and the business requires near-current data. What does
+      the evidence support?
     options:
       - id: drop_the_mv
         text: "Drop the view: its rare read benefit does not pay for the refresh and the storage"
@@ -144,8 +144,8 @@ questions:
         text: "Replace the base table with the view, so that its write and storage costs disappear"
     answer: drop_the_mv
     explanation: >-
-      The report already meets its objective and runs rarely, while the view
-      would add recurring refresh work, storage, and a freshness risk on a
-      write-heavy table. One faster run does not outweigh that. Record the
+      The report met its objective without the view and runs rarely, while
+      the view adds recurring refresh work, storage, and a freshness risk on
+      a write-heavy table. One faster run does not outweigh that. Record the
       decision with its assumptions: a higher query frequency, a stricter
       latency target, or a cheaper refresh would change it.
