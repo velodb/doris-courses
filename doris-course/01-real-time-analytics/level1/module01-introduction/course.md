@@ -29,21 +29,21 @@ After completing this module, you will be able to:
    customer-facing analytics, observability, lakehouse analytics, and
    change data capture (CDC)-driven reporting.
 4. Summarize the responsibilities of Frontend (FE) and Backend (BE) nodes.
-5. Distinguish the integrated storage-compute architecture from the decoupled
-   storage-compute architecture.
+5. Distinguish the integrated storage and compute architecture from the decoupled
+   storage and compute architecture.
 6. Connect to Doris through the MySQL-compatible protocol, create a basic table, load
    sample data, and execute an aggregation query.
 
 ## Module structure
 
-| Section | Format | Time | Outcome |
-| --- | --- | ---: | --- |
-| 1.1 What Is Apache Doris? | Reading/video | 7 min | Describe Doris in terms of workload, interface, and execution model |
-| 1.2 OLAP and OLTP Workloads | Reading/visual | 8 min | Classify workloads using query and write characteristics |
-| 1.3 Where Doris Fits | Scenario walkthrough | 7 min | Identify suitable Doris use cases and system boundaries |
-| 1.4 A First Look at Doris Architecture | Reading/visual | 9 min | Explain FE, BE, and the two deployment architectures |
-| Lab 1 | Hands-on | 25 min | Start Doris and build the persistent baseline dataset |
-| Quiz 1 | Interactive knowledge check | 5 min | Check the Module 1 workload and architecture mental models |
+| Section | Time | Outcome |
+| --- | ---: | --- |
+| 1.1 What Is Apache Doris? | 7 min | Describe Doris in terms of workload, interface, and execution model |
+| 1.2 OLAP and OLTP Workloads | 8 min | Classify workloads using query and write characteristics |
+| 1.3 Where Doris Fits | 7 min | Identify suitable Doris use cases and system boundaries |
+| 1.4 A First Look at Doris Architecture | 9 min | Explain FE, BE, and the two deployment architectures |
+| Lab 1 | 25 min | Start Doris and build the persistent baseline dataset |
+| Quiz 1 | 5 min | Check the Module 1 workload and architecture mental models |
 
 ---
 
@@ -139,13 +139,19 @@ classifying a product by name alone.
 | Example | Place order `91827` | Revenue by region during the last 24 hours |
 
 The number of result rows is not the deciding factor. An analytical query may
-return one number while scanning millions of rows:
+return one number while scanning millions of rows. On the course data, this
+query reads the 4,768,620 events of December 2019 and returns one value,
+18,134,559.98:
 
 ```sql
 SELECT SUM(revenue)
 FROM events
-WHERE event_time >= NOW() - INTERVAL 1 DAY;
+WHERE event_time >= '2019-12-01 00:00:00'
+  AND event_time <  '2020-01-01 00:00:00';
 ```
+
+The course data comes from 2019 and 2020, so the course's queries use fixed
+dates; a query relative to `NOW()` would find no rows.
 
 Conversely, returning many rows is not automatically analytical. Exporting
 1,000 orders by their known identifiers can still be an operational access
@@ -286,7 +292,7 @@ component a clear responsibility.
 
 The first workflow depends on two component boundaries: FE accepts and plans
 SQL, while BE executes the assigned work and manages internal-table data in an
-integrated storage-compute deployment.
+integrated storage and compute deployment.
 
 ### Frontend (FE)
 
@@ -309,7 +315,7 @@ mean a graphical web interface.
 ### Backend (BE)
 
 The BE executes the assigned plan fragments using the vectorized execution
-engine. In the integrated storage-compute architecture, it also stores
+engine. In the integrated storage and compute architecture, it also stores
 internal-table data on local storage. Across a production cluster, multiple
 BEs can scan and aggregate different pieces of a table in parallel.
 
@@ -330,9 +336,9 @@ Backend (BE)
 The official [system architecture documentation](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)
 provides the complete FE and BE responsibility model.
 
-### Integrated storage-compute architecture
+### Integrated storage and compute architecture
 
-In the integrated storage-compute architecture, a BE is stateful: it executes
+In the integrated storage and compute architecture, a BE is stateful: it executes
 queries and stores internal-table data on local disks. Storage capacity and
 compute capacity therefore scale together as BE nodes are added.
 
@@ -346,11 +352,12 @@ The Lab 1 All-in-One environment uses this architecture, but with only one FE,
 one BE, and one replica. It is a **single-node integrated Doris sandbox**, not a
 production-ready cluster.
 
-### Decoupled storage-compute architecture
+### Decoupled storage and compute architecture
 
-In the decoupled storage-compute architecture, persistent table data lives in
-shared storage such as object storage or HDFS. BE nodes act as stateless
-compute nodes and use local storage as a cache. Compute Groups can scale and
+In the decoupled storage and compute architecture, which some Doris
+documentation calls Shared Storage, persistent table data lives in shared
+storage such as object storage or HDFS. BE nodes act as stateless compute nodes
+and use local storage as a cache. Compute Groups can scale and
 isolate workloads without creating a full independent copy of the persistent
 data.
 
@@ -366,7 +373,7 @@ This architecture is a strong fit when:
 
 ### Compare the two architectures
 
-| Question | Integrated storage-compute architecture | Decoupled storage-compute architecture |
+| Question | Integrated storage and compute architecture | Decoupled storage and compute architecture |
 | --- | --- | --- |
 | Where is persistent table data stored? | BE local storage | Shared storage layer |
 | What does a BE do? | Stores data and executes queries | Executes queries and caches hot data |
@@ -395,8 +402,8 @@ You will:
 5. Create `doris_course.events` as the baseline internal table.
 6. Load and validate 10,158,080 ecommerce event rows.
 7. Run a grouped event and revenue query.
-8. Stop and restart the container to confirm that Docker named volumes preserve
-   FE metadata and BE table data.
+8. Optionally, stop and restart the container to confirm that Docker named
+   volumes preserve FE metadata and BE table data.
 
 Open the notebook:
 
@@ -433,9 +440,9 @@ allows anonymous reads, so the lab needs no AWS account or credentials.
 - FE accepts and analyzes SQL, creates and optimizes a distributed query plan,
   and assigns its plan fragments to BE nodes.
 - BE nodes execute the assigned plan fragments; in the integrated
-  storage-compute architecture they also store internal-table data.
-- Integrated storage-compute favors a simple stateful FE/BE deployment, while
-  decoupled storage-compute enables shared persistent storage and independently
+  storage and compute architecture they also store internal-table data.
+- Integrated storage and compute favors a simple stateful FE/BE deployment, while
+  decoupled storage and compute enables shared persistent storage and independently
   scalable compute.
 - A first Doris workflow is straightforward: connect, inspect, create, load,
   query, and validate.

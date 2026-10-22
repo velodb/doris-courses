@@ -71,7 +71,7 @@ Each section turns one part of that requirement into a Join decision:
 | **6.7 Reuse a Bucket layout** | One input is already Hash bucketed compatibly with the Join condition. | Keep that Bucket layout and redistribute only the other input when all strategy requirements are met. | The accepted `[shuffle]` comparison plan reports `shuffleBucket` in Doris 4.1.3. |
 | **6.8 Pre-colocate recurring inputs** | Two large tables repeatedly join on a stable shared Key. | Place matching Buckets together through a compatible Colocation Group and verify that the group is stable. | Use the layout scenario in the course; Lab does not create a Colocation Group. |
 | **6.9 Reduce probe candidates at the Scan** | A large event input joins only the small set of products that remain after a selective category filter. | Use build-side Join Keys as a Runtime Filter on the probe-side Scan; recognize when the filter is likely to help and when it may add little value. | Relate the `category_1` predicate to the product Keys that can reject event candidates before the Hash Join. |
-| **6.10 Separate plan from runtime evidence** | A plan contains Runtime Filter producers and consumers, but the team needs to know whether rows were actually filtered. | Read `EXPLAIN` for planned work and Query Profile counters for executed work; use hints only for evidence-driven comparison. | Inspect raw Runtime Profile counters for the `events_modelled` probe-side Scan and Hash Join. |
+| **6.10 Separate plan from runtime evidence** | A plan contains Runtime Filter producers and consumers, but the team needs to know whether rows were actually filtered. | Read `EXPLAIN` for planned work and Query Profile counters for executed work; use hints only for evidence-driven comparison. | Inspect raw Query Profile counters for the `events_modelled` probe-side Scan and Hash Join. |
 
 The sequence is deliberate. Section 6.1 defines the relationship and expected
 grain. Sections 6.2–6.3 define the **logical Join result**, independent of the
@@ -208,9 +208,8 @@ specified comparison direction; it does not mean the smallest absolute time
 difference. ASOF Left Join keeps an event with no qualifying history row and
 fills right-side columns with `NULL`; ASOF Inner Join discards it.
 
-This syntax and behavior were verified with a read-only example in the course's
-Doris 4.1.3 environment. Lab 6 uses a current product lookup and does not add a
-second historical dimension. See [ASOF Join](https://doris.apache.org/docs/4.x/query-data/asof-join/)
+Lab 6 uses a current product lookup and does not add a second historical
+dimension. See [ASOF Join](https://doris.apache.org/docs/4.x/query-data/asof-join/)
 for supported temporal types, comparison directions, and restrictions.
 
 ## 6.3 Define What Missing Keys and Predicates Mean
@@ -728,7 +727,7 @@ It performs no external download and does not read Amazon S3.
 | 4 | Join one event to duplicate product-version Keys | A Join emits every matching pair and can repeat a measure |
 | 5 | Compare `=` with `<=>` for a `NULL` event Key | Ordinary equality creates no NULL-to-NULL pair; NULL-safe equality creates one under the fixture contract |
 | 6 | Compare equi and pure non-equi plans | The equi-condition uses Hash Join and the pure range condition uses Nested Loop Join in the tested plan |
-| 7 | Compare distribution plans and inspect a Runtime Profile | The default plan uses Broadcast, the accepted comparison reports Bucket Shuffle, and Profile counters show actual probe-side filtering |
+| 7 | Compare distribution plans and inspect a Query Profile | The default plan uses Broadcast, the accepted comparison reports Bucket Shuffle, and Profile counters show actual probe-side filtering |
 
 The Lab executes only bounded logical cases. Right, Full, Cross, NULL-aware
 Anti, ASOF, general Partition Shuffle routing, and Colocate are explained in

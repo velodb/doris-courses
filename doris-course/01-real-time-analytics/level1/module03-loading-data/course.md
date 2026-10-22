@@ -39,16 +39,16 @@ After completing this module, you will be able to:
 
 ## Module structure
 
-| Section | Format | Time | Outcome |
-| --- | --- | ---: | --- |
-| 3.1 Select a Load Method from a Workload Contract | Decision walkthrough | 7 min | Match source and service-level requirements to a load method |
-| 3.2 Push a Bounded File with Stream Load | Request/response walkthrough | 8 min | Explain CSV parsing, mapping, quality counts, and label-based retry protection |
-| 3.3 Read S3 Objects and Persist a SQL Result | SQL walkthrough | 7 min | Separate S3 TVF access from an `INSERT INTO SELECT` load transaction |
-| 3.4 Continuously Load Kafka Data with Routine Load | Streaming walkthrough | 8 min | Explain jobs, tasks, micro-batches, committed offsets, and job state |
-| 3.5 Reduce Small-Write Pressure with Group Commit | Architecture comparison | 5 min | Distinguish write grouping from a standalone source connector |
-| 3.6 Validate Results and Design Safe Retries | Evidence comparison | 5 min | Choose the correct completion, quality, and retry evidence |
-| Lab 3 | Hands-on | 25 min | Load CSV, Parquet, and Kafka JSON through three independent methods |
-| Quiz 3 | Interactive knowledge check | 5 min | Check load-method selection, quality evidence, persistence boundaries, and retry safety |
+| Section | Time | Outcome |
+| --- | ---: | --- |
+| 3.1 Select a Load Method from a Workload Contract | 7 min | Match source and service-level requirements to a load method |
+| 3.2 Push a Bounded File with Stream Load | 8 min | Explain CSV parsing, mapping, quality counts, and label-based retry protection |
+| 3.3 Read S3 Objects and Persist a SQL Result | 7 min | Separate S3 TVF access from an `INSERT INTO SELECT` load transaction |
+| 3.4 Continuously Load Kafka Data with Routine Load | 8 min | Explain jobs, tasks, micro-batches, committed offsets, and job state |
+| 3.5 Reduce Small-Write Pressure with Group Commit | 5 min | Distinguish write grouping from a standalone source connector |
+| 3.6 Validate Results and Design Safe Retries | 5 min | Choose the correct completion, quality, and retry evidence |
+| Lab 3 | 25 min | Load CSV, Parquet, and Kafka JSON through three independent methods |
+| Quiz 3 | 5 min | Check load-method selection, quality evidence, persistence boundaries, and retry safety |
 
 ---
 
@@ -463,17 +463,18 @@ Kafka messages often contain nested JSON rather than flat table columns:
 {
   "meta": {"occurred_at": "2019-12-01T03:08:44", "event_id": 1},
   "actor": {"user_id": 520569166},
-  "event": {"type": "CART"},
+  "event": {"type": "CART", "revenue": 0.0},
   "geo": {"region": "region_07"},
-  "product_id": 1005115,
-  "revenue": 0.00
+  "product_id": 1005115
 }
 ```
 
 In `CREATE ROUTINE LOAD`:
 
 - `format=json` selects the JSON parser;
-- `jsonpaths` extracts nested values in a declared order;
+- `jsonpaths` extracts nested values in a declared order, such as
+  `$.meta.occurred_at`, `$.event.type`, and `$.event.revenue` for the message
+  above;
 - `COLUMNS` assigns those extracted values to temporary names or target
   columns;
 - expressions convert timestamps, normalize strings, or convert numeric
@@ -622,7 +623,7 @@ offsets—not the fact that two requests happen to contain identical text.
 
 ---
 
-## Lab 3: Load Data through Three Source Contracts
+## Lab 3: Load Data from a File, S3, and Kafka
 
 The lab reuses the `doris_course` Database and the ecommerce event schema from
 Labs 1 and 2. It creates independent target tables so that each load method
@@ -653,7 +654,7 @@ You will:
 
 Open the notebook:
 
-[Lab 3 — Load Data into Apache Doris](lab03_load_data.ipynb)
+[Lab 3 — Load Data from a File, S3, and Kafka](lab03_load_data.ipynb)
 
 ### Shared dataset
 

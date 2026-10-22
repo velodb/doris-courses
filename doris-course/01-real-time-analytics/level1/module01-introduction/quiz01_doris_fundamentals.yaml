@@ -76,7 +76,7 @@ questions:
     explanation: >-
       FE accepts and analyzes SQL, creates and optimizes a distributed query
       plan, then assigns its plan fragments. BE nodes execute the assigned plan
-      fragments; in the integrated storage-compute architecture they also
+      fragments; in the integrated storage and compute architecture they also
       store internal-table data.
 
   - id: choose_architecture
@@ -87,16 +87,16 @@ questions:
       architecture matches those requirements?
     options:
       - id: decoupled
-        text: "Decoupled storage-compute architecture"
+        text: "Decoupled storage and compute architecture"
       - id: integrated
-        text: "Integrated storage-compute architecture"
+        text: "Integrated storage and compute architecture"
       - id: oltp_replica
         text: "A read replica of the OLTP database"
       - id: single_file
         text: "A standalone Parquet file without Doris"
     answer: decoupled
     explanation: >-
-      In the decoupled storage-compute architecture, persistent data lives in
+      In the decoupled storage and compute architecture, persistent data lives in
       shared storage, and compute groups can scale and isolate workloads
-      independently. In the integrated storage-compute architecture, stateful
+      independently. In the integrated storage and compute architecture, stateful
       BE nodes store data locally and scale storage and compute together.

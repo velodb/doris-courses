@@ -82,7 +82,7 @@ Each section turns one requirement into a modeling decision:
 | **4.4 Choose column types** | Reports join identifiers, filter by time, total money exactly, and group bounded categories; a landing amount may still be text. | Select integer or string identifiers, temporal types, `DECIMAL`, and bounded `VARCHAR` from meaning and operations. | Compare permissive text with typed values and observe `DOUBLE` versus `DECIMAL` arithmetic. |
 | **4.5 Resolve missing and invalid values** | A missing product is permitted, an omitted region maps to `unknown`, and malformed revenue is invalid. | Use nullable columns, `NOT NULL`, `DEFAULT`, and conversion checks for distinct business states. | Preserve one `NULL` product, apply one region default, and count one invalid amount before typed ingestion. |
 | **4.6 Partition by lifecycle range** | Queries and retention use calendar periods while new time ranges arrive continuously. | Choose time Range Partitions and decide whether Auto Partitioning or explicit Partition management fits the lifecycle. | Create and inspect monthly Auto Range Partitions for the source months that actually occur. |
-| **4.7 Distribute each Partition into Buckets** | Each monthly range must be divided into physical shards without concentrating a skewed three-value region. | Hash on a sufficiently distributed field and choose Bucket count from volume, cluster resources, and parallelism needs. | Observe `HASH(user_id)`, 10 Buckets per Partition, and 20 Tablets across two Partitions. |
+| **4.7 Distribute each Partition into Buckets** | Each monthly range must be divided into physical shards, and `region` has only eight values. | Hash on a sufficiently distributed field and choose Bucket count from volume, cluster resources, and parallelism needs. | Observe `HASH(user_id)`, 10 Buckets per Partition, and 20 Tablets across two Partitions. |
 | **4.8 Align the sort key** | Most event queries begin with a time range and then identify event detail. | Place commonly useful filtering columns early while respecting the Table Model's Key semantics. | Inspect `DUPLICATE KEY(event_time, event_id, user_id)` without making a timing claim. |
 | **4.9 Represent nested attributes** | An event may carry tags, fixed device fields, dynamic campaign properties, or an evolving payload. | Map application shape to `ARRAY`, `STRUCT`, `MAP`, `JSON`, or `VARIANT`; promote stable analytical fields to typed columns. | Use the decision framework and current official references; Lab 4 creates no complex-type table. |
 
@@ -549,21 +549,26 @@ With Hash distribution, Doris hashes the selected distribution columns to
 choose a Bucket inside the row's Partition. The key should have enough distinct
 and sufficiently distributed values for the workload.
 
-The module scenario offers two candidates:
+The course data offers two candidates:
 
-| Candidate | Data shape | Likely distribution consequence |
+| Candidate | Data shape | Distribution consequence |
 | --- | --- | --- |
-| `region` | Only a few values with heavy skew | Many rows can concentrate in the Buckets reached by dominant values |
-| `user_id` | Numerous values distributed across the event population | Hash values can use the available Buckets more evenly |
+| `region` | Eight synthetic values, each with about 1.27 million events | At most eight of a Partition's ten Buckets receive rows, and all of a region's rows in that Partition land in one Tablet, however much the region grows |
+| `user_id` | About 1.58 million users across the event population | Hash values spread the rows over every Bucket |
 
 This is why `events_modelled` uses `HASH(user_id)`. It does not promise exactly
 the same number of rows in every Tablet. Hash distribution controls the mapping
-rule; the source frequency distribution still affects the outcome.
+rule; the source frequency distribution still affects the outcome. A key with
+few values limits distribution even when those values are evenly used, as here;
+skewed values make it worse, because the Buckets of the dominant values grow
+fastest.
 
 Random distribution can spread rows without preserving a key-based placement
-relationship. In the current Doris 4.x contract, Random distribution applies
-to Duplicate Key tables, while Unique Key and Aggregate Key use Hash
-distribution. Hash distribution is useful when stable placement by selected
+relationship. In Doris 4.x it applies to Duplicate Key tables and to Aggregate
+Key tables whose value columns do not use `REPLACE` or `REPLACE_IF_NOT_NULL`;
+Unique Key tables, and Aggregate Key tables with such columns, must use Hash
+distribution, and Doris rejects `DISTRIBUTED BY RANDOM` for them when the table
+is created. Hash distribution is useful when stable placement by selected
 columns benefits filtering or Join layouts. Module 6 explains how compatible
 distribution may affect Join strategies; do not select a Hash key solely from
 one future Join without considering overall skew and workload.
@@ -684,6 +689,7 @@ and [VARIANT](https://doris.apache.org/docs/4.x/sql-manual/basic-element/sql-dat
 documentation. Lab 4 does not create complex-type columns; Lab 5 uses a small
 array literal to demonstrate row and element operations without changing the
 event schema.
+
 ---
 
 ## Lab 4: Model Data for Analytical Workloads

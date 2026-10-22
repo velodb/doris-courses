@@ -37,16 +37,16 @@ After completing this module, you will be able to:
 
 ## Module structure
 
-| Section | Format | Time | Outcome |
-| --- | --- | ---: | --- |
-| 2.1 From SQL to Distributed Pipelines | Reading/visual | 7 min | Trace FE planning and BE execution through one query |
-| 2.2 Columnar and Vectorized Processing | Reading/visual | 6 min | Explain why Doris reads columns and processes values in batches |
-| 2.3 How Doris Organizes Stored Data | Animated walkthrough | 9 min | Relate the logical namespace to the physical storage hierarchy |
-| 2.4 Load Transactions and Compaction | Reading/visual | 6 min | Connect load transactions, Rowsets, Segments, visibility, and Compaction |
-| 2.5 Table Models and Repeated Keys | Scenario comparison | 6 min | Predict the result of repeated keys in all three table models |
-| 2.6 How Doris Skips Work | SQL walkthrough | 7 min | Separate partition, tablet, and in-table scan reduction |
-| Lab 2 | Hands-on | 20 min | Compare sort keys, pruning, runtime scan evidence, and table models |
-| Quiz 2 | Interactive knowledge check | 5 min | Check the Module 2 architecture, storage, physical-design, and diagnostic mental models |
+| Section | Time | Outcome |
+| --- | ---: | --- |
+| 2.1 From SQL to Distributed Pipelines | 7 min | Trace FE planning and BE execution through one query |
+| 2.2 Columnar and Vectorized Processing | 6 min | Explain why Doris reads columns and processes values in batches |
+| 2.3 How Doris Organizes Stored Data | 9 min | Relate the logical namespace to the physical storage hierarchy |
+| 2.4 Load Transactions and Compaction | 6 min | Connect load transactions, Rowsets, Segments, visibility, and Compaction |
+| 2.5 Table Models and Repeated Keys | 6 min | Predict the result of repeated keys in all three table models |
+| 2.6 How Doris Skips Work | 7 min | Separate partition, tablet, and in-table scan reduction |
+| Lab 2 | 20 min | Compare sort keys, pruning, runtime scan evidence, and table models |
+| Quiz 2 | 5 min | Check the Module 2 architecture, storage, physical-design, and diagnostic mental models |
 
 ---
 
@@ -249,6 +249,12 @@ Partitioning supports two main responsibilities:
 Partitioning is optional. An unpartitioned table still has one default
 Partition.
 
+Partitions can be declared in advance or created from the data. Lab 2 uses
+**Auto Partitioning**: with `AUTO PARTITION BY RANGE (date_trunc(event_time,
+'day'))`, Doris creates a daily Partition the first time a loaded row needs
+that day, so a table loaded with 26 days of events gets 26 Partitions. Module 4
+(Modeling Data in Apache Doris) compares the ways to create Partitions.
+
 ### Bucket and Tablet
 
 Each Partition is divided by a bucketing rule. A **Bucket** is a slot produced
@@ -261,7 +267,7 @@ Random bucketing distributes incoming rows without a bucket key, so it cannot
 provide the same key-based bucket (tablet) pruning.
 
 A Tablet is the basic unit of data distribution, balancing, and parallel scan.
-In the integrated storage-compute architecture, a Tablet may have replicas on
+In the integrated storage and compute architecture, a Tablet may have replicas on
 BE nodes. The single-node sandbox uses one replica. A production deployment
 chooses its replica count from availability and storage requirements.
 
