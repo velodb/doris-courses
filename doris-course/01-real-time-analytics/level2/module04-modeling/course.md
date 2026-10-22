@@ -106,46 +106,42 @@ not replace the declared meaning of a row.
 
 For example, a duplicated `event_id` may indicate bad source data, an event
 identifier scoped to another field, or a legitimate repeated delivery. Only
-the source contract says which interpretation is correct. Lab 4 therefore uses
-`COUNT(*)` to confirm the baseline and schema metadata to inspect its columns;
-it does not claim that a full-table `COUNT(DISTINCT ...)` defines the grain.
+the source contract says which interpretation is correct. Lab 4 therefore
+confirms the baseline with `COUNT(*)` and reads its column metadata; the grain
+itself comes from the contract.
 
 ## 4.2 Choose a Table Model from Repeated-Key Semantics
 
-After defining the grain, ask what an accepted row should do when its Key values
-match values already present. Apache Doris provides three main Table Models for
-three different answers.
+Module 2 (Deep Dive into Apache Doris Architecture) showed what each Table
+Model does when a row arrives with a key that already exists: Duplicate Key
+keeps both rows, Unique Key keeps the latest, and Aggregate Key combines the
+value columns. Modeling asks the reverse question: which behavior does each
+data product need?
 
-| Repeated-Key requirement | Table Model | Visible logical result |
+| Data product | What a repeated key must do | Table Model |
 | --- | --- | --- |
-| Preserve every accepted row | Duplicate Key | Matching-Key rows remain available |
-| Expose one current row per business Key | Unique Key | A new row upserts the current Key state |
-| Combine measure contributions per reporting Key | Aggregate Key | Value columns merge with declared aggregate functions |
+| Event history | Keep every accepted row | Duplicate Key |
+| Current state | Replace the visible state of the business key | Unique Key |
+| Summary metrics | Combine measure contributions per reporting key | Aggregate Key |
 
-The model expresses row meaning and change semantics. Choose it before chasing
-a perceived performance advantage. Doris does not directly convert an existing
-table from one Table Model to another; a changed contract normally requires a
-new table and a controlled data transition. See the [Table Model overview](https://doris.apache.org/docs/4.x/table-design/data-model/intro/)
+Choose the model from row meaning before thinking about performance. Doris
+cannot convert an existing table to another Table Model; a changed contract
+needs a new table and a controlled transition. See the [Table Model overview](https://doris.apache.org/docs/4.x/table-design/data-model/intro/)
 and [Table Model best practices](https://doris.apache.org/docs/4.x/table-design/data-model/tips/).
 
-### Preserve an append-style history with Duplicate Key
+### Event history: Duplicate Key
 
-An event log or audit trail usually requires every accepted observation. A
-user can create many events, and two events may even share all declared Key
-values if the source contract permits it. A Duplicate Key table retains those
-rows rather than using the Key as a uniqueness constraint.
-
-In this model, Key columns primarily establish the sort key. The declaration
+An event log keeps every accepted observation, even two events that share all
+their key values. In this model the key columns set the sort key, so
 
 ```sql
 DUPLICATE KEY(event_time, event_id, user_id)
 ```
 
-does not mean “one row per `(event_time, event_id, user_id)`.” The grain of
-`events_modelled` remains one accepted source event. Repeated Key values are
-not automatically replaced or aggregated. See the [Duplicate Key model](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/).
+does not mean "one row per `(event_time, event_id, user_id)`": the grain of
+`events_modelled` stays one accepted source event. See the [Duplicate Key model](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/).
 
-### Expose current state with Unique Key
+### Current state: Unique Key
 
 An order-state table has a different contract:
 
@@ -154,26 +150,22 @@ An order-state table has a different contract:
 | 7842 | `paid` | Earlier accepted state |
 | 7842 | `shipped` | New current state for the same order |
 
-If ordinary queries should expose one current logical row for `order_id = 7842`,
-`order_id` belongs in a Unique Key. New records for that Key perform an upsert.
-Doris 4.x uses the Merge-on-Write implementation by default for Unique Key
-tables, so the write path establishes current logical visibility for later
-queries.
-
-Arrival order is not always business order. Change Data Capture (CDC) events
-can arrive late or be retried. A Sequence column can make a source version or
-event time decide which state wins. Module 7 demonstrates full-row upsert,
-partial column update, Sequence-column behavior, and deletion. Module 4 only
-establishes why a current-state requirement selects Unique Key. See the
+If ordinary queries should see one current row for `order_id = 7842`,
+`order_id` is the Unique Key, and each new record for it is an upsert. Doris
+4.x creates Unique Key tables with Merge-on-Write by default, so the write
+itself makes the new state the visible one. Arrival order is not always
+business order, because CDC events can arrive late or be retried: a Sequence
+column lets a source version decide which state wins. Module 7 builds current
+state with upserts, partial updates, Sequence columns, and deletes. See the
 [Unique Key model](https://doris.apache.org/docs/4.x/table-design/data-model/unique/)
 and [Merge-on-Write](https://doris.apache.org/docs/4.x/table-design/data-model/merge-on-write/).
 
-### Combine measure contributions with Aggregate Key
+### Summary metrics: Aggregate Key
 
-A reporting pipeline may receive several contributions for the same
-`(event_date, region, event_type)` combination. If `event_count` and
-`total_revenue` should be added, an Aggregate Key table declares those
-dimensions as Key columns and the measures as Value columns with `SUM`:
+A reporting pipeline may deliver several contributions for the same
+`(event_date, region, event_type)`. If `event_count` and `total_revenue` should
+be added, the dimensions are the Aggregate Key and the measures are value
+columns declared `SUM`:
 
 ```text
 (2026-09-15, east, purchase, event_count=4, total_revenue=90.00)
@@ -183,15 +175,11 @@ dimensions as Key columns and the measures as Value columns with `SUM`:
 one logical group representing event_count=7 and total_revenue=155.00
 ```
 
-Aggregate Key columns define both the aggregation group and the sort key.
-Value columns define how contributions merge. Different Value columns can use
-different supported aggregate methods when their contracts require it.
-
-This model is not a general replacement for event detail. Once individual
-event identifiers and timestamps are absent, the table cannot reconstruct
-them. It is also not a retry-deduplication mechanism: inserting the same metric
-contribution twice can add it twice. Load identity and retry safety still need
-the contracts introduced in Module 3. See the [Aggregate Key model](https://doris.apache.org/docs/4.x/table-design/data-model/aggregate/).
+The key columns are both the aggregation group and the sort key, and each value
+column declares how contributions merge. Such a table keeps no event
+identifiers or timestamps, so it cannot replace the detail, and a contribution
+that is loaded twice is added twice: retry safety still comes from the load
+contracts of Module 3. See the [Aggregate Key model](https://doris.apache.org/docs/4.x/table-design/data-model/aggregate/).
 
 ## 4.3 Derive a Summary Model from the Reporting Requirement
 
@@ -248,9 +236,8 @@ Declaring `SUM` is a semantic promise, not just column syntax.
 | `events_modelled` | Event-detail rows | One event |
 | `daily_event_metrics` | Date-region-event type groups | `event_count` events |
 
-Lab 4 observes 10,158,080 visible detail rows and 280 visible summary rows. The
-280 is the number of SQL-visible summary groups. It is not a physical count of
-Rows in Segments or Rowsets.
+Lab 4 sees 10,158,080 detail rows and 280 summary rows: 280 is the number of
+summary groups that SQL returns.
 
 Reconcile the models using measures that both can represent:
 
@@ -264,12 +251,10 @@ SUM(revenue) from events_modelled
         = 39,984,455.64 represented revenue
 ```
 
-Matching totals verifies the declared additive measures for this load. It does
-not prove that the summary can answer every detail question, that Aggregate Key
-merged several separate batches, or that the summary has a particular
-performance advantage. The lab truncates the target and performs one
-pre-grouped insert, so repeated-Key merging across batches is an official
-mechanism explanation rather than an observed lab result.
+> **Evidence boundary:** matching totals verify the declared additive measures
+> for this load. Lab 4 writes the summary with one pre-grouped insert, so the
+> merge of separate batches is described here, not observed, and the Lab
+> measures no speed.
 
 ## 4.4 Choose Data Types from Business Meaning
 
@@ -288,13 +273,9 @@ calculation cost:
 | Opaque identifiers or categorical labels | Bounded `VARCHAR` | Preserves formatting and nonnumeric identity but should not be used as a substitute for a number that every query must parse |
 | Calendar date or event timestamp | `DATE` or `DATETIME(p)` | Precision and time-zone meaning must match the source and reporting boundaries |
 
-Fixed-width and lower-precision numeric operations can be cheaper than wider
-high-precision arithmetic, so `DOUBLE` may outperform a sufficiently wide
-`DECIMAL` for some calculations. That is a workload-dependent performance
-question, not a data-correctness rule. Do not store money as `DOUBLE` merely on
-the assumption that it is faster. First decide whether approximation is valid;
-then benchmark representative expressions and data volumes if the performance
-difference matters.
+`DOUBLE` arithmetic can be cheaper than wide `DECIMAL` arithmetic. That is a
+performance question to measure on representative data, not a reason to store
+money approximately: first decide whether approximation is valid at all.
 
 ### Keep identifiers consistent
 
@@ -434,10 +415,9 @@ the table.
 
 ### Treat Partition as a value range that contains Tablets
 
-A Partition is often called a logical range because a rule such as
-`[2020-03-01, 2020-04-01)` decides membership. That does not mean the Partition
-has no physical consequence. Each Partition contains Buckets represented by
-Tablets. The two levels answer different questions:
+Module 2 introduced the hierarchy: a rule such as `[2020-03-01, 2020-04-01)`
+decides which rows belong to a Partition, and each Partition holds one Tablet
+per Bucket. For `events_modelled`, the two levels answer different questions:
 
 ```text
 events_modelled
@@ -453,10 +433,9 @@ events_modelled
             +-- Tablet 10
 ```
 
-Partitioning supports metadata-based range exclusion when a query predicate
-matches the Partition key, and it provides a unit for lifecycle operations such
-as dropping or replacing a period. Lab 4 inspects the generated ranges; it does
-not run a pruning benchmark because Module 2 already demonstrates pruning.
+The Partition is what a time filter lets the FE skip, and what retention or a
+backfill drops or replaces as a whole. Module 2 measured the pruning, so Lab 4
+only inspects the generated ranges.
 
 ### Choose a useful time grain
 
@@ -483,15 +462,14 @@ it. The lab declaration uses:
 AUTO PARTITION BY RANGE (date_trunc(event_time, 'month'))
 ```
 
-The current source has events in December 2019 and March 2020. Doris therefore
-creates those two monthly ranges. It does not create empty January and February
-Partitions merely to fill the gap. This observed result follows the loaded
-values and monthly expression; another dataset can produce different ranges.
+The course data has events in December 2019 and March 2020, so Doris creates
+those two monthly ranges; January and February have no events and get no
+Partition.
 
 Choose explicit Partition management when boundaries require advance approval,
 special names, or a tightly controlled lifecycle process. Auto Partitioning
-automates range creation. It does not choose the Table Model, validate grain,
-select the Bucket key, or define the sort key. See [Auto Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/auto-partitioning/).
+creates ranges; the Table Model, the grain, the Bucket key, and the sort key
+remain your decisions. See [Auto Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/auto-partitioning/).
 
 ## 4.7 Use Buckets to Distribute Data Within Every Partition
 
@@ -512,9 +490,9 @@ The course data offers two candidates:
 | `region` | Eight synthetic values, each with about 1.27 million events | At most eight of a Partition's ten Buckets receive rows, and all of a region's rows in that Partition land in one Tablet, however much the region grows |
 | `user_id` | About 1.58 million users across the event population | Hash values spread the rows over every Bucket |
 
-This is why `events_modelled` uses `HASH(user_id)`. It does not promise exactly
-the same number of rows in every Tablet. Hash distribution controls the mapping
-rule; the source frequency distribution still affects the outcome. A key with
+This is why `events_modelled` uses `HASH(user_id)`. Hashing decides which
+Bucket a key goes to; how many rows each Tablet gets still depends on how often
+each key occurs. A key with
 few values limits distribution even when those values are evenly used, as here;
 skewed values make it worse, because the Buckets of the dominant values grow
 fastest.
@@ -525,9 +503,9 @@ Key tables whose value columns do not use `REPLACE` or `REPLACE_IF_NOT_NULL`;
 Unique Key tables, and Aggregate Key tables with such columns, must use Hash
 distribution, and Doris rejects `DISTRIBUTED BY RANDOM` for them when the table
 is created. Hash distribution is useful when stable placement by selected
-columns benefits filtering or Join layouts. Module 6 explains how compatible
-distribution may affect Join strategies; do not select a Hash key solely from
-one future Join without considering overall skew and workload.
+columns benefits filtering or Join layouts. Module 6 explains how a compatible
+distribution can help a Join; still choose the Hash key from the whole
+workload and its skew, not from one future Join.
 
 ### Choose Bucket count as a capacity decision
 
@@ -538,9 +516,9 @@ Bucket count affects Tablet size, scheduling, and available parallel work:
   scheduling overhead.
 
 Consider rows and bytes per Partition, cluster size, expected growth,
-concurrency, compaction pressure, and the useful degree of parallelism. The ten
-Buckets in Lab 4 make the two-level layout visible and fit the course data; they
-are not a production recommendation.
+concurrency, compaction pressure, and the useful degree of parallelism. Lab 4
+uses ten Buckets because they fit the course data and keep the layout easy to
+read.
 
 For the observed table:
 
@@ -549,10 +527,9 @@ For the observed table:
 20 Tablets × 1 replica in the sandbox = 20 Tablet replicas
 ```
 
-A production cluster would place replicas across eligible BE nodes according
-to its allocation policy. The single-BE lab can verify Tablet count and row
-distribution metadata, but it cannot demonstrate multi-node placement or
-parallel speed. See [Data Bucketing](https://doris.apache.org/docs/4.x/table-design/data-partitioning/data-bucketing/).
+> **Evidence boundary:** the single-BE sandbox shows the Tablet count and how
+> the rows are spread, not multi-node placement or parallel speed; Module 9
+> runs a cluster with several BEs. See [Data Bucketing](https://doris.apache.org/docs/4.x/table-design/data-partitioning/data-bucketing/).
 
 ## 4.8 Align the Sort Key with the Main Access Path
 
@@ -574,9 +551,8 @@ Most queries over `events_modelled` first restrict `event_time`. The sort key
 DUPLICATE KEY(event_time, event_id, user_id)
 ```
 
-therefore begins with time, followed by stable detail identifiers. This is
-compatible with the event-history contract because Duplicate Key does not use
-those columns to remove matching rows.
+therefore begins with time, followed by stable detail identifiers; in a
+Duplicate Key table, these columns only order the rows.
 
 Ordering should follow real access patterns, not an attempt to include every
 possible filter column. A leading low-selectivity field can weaken the usefulness
@@ -591,14 +567,10 @@ queries may not justify an early position.
 | Bucket / Tablet | Which shard inside that Partition receives the row? |
 | Sort key | In what column order is data organized within the table's storage? |
 
-Putting `event_time` in the sort key does not create monthly ranges. Partitioning
-by time does not order every row or decide its Hash Bucket. Hashing `user_id`
-does not make it a uniqueness constraint. The three choices cooperate, but
-each implements a different part of the workload contract.
-
-Lab 4 inspects the declaration and generated layout. It does not compare query
-times between alternative sort keys. A performance conclusion would require
-equivalent data, controlled queries, and Query Profile evidence.
+The three choices cooperate, but each answers its own question: a sort key
+creates no Partitions, a time Partition orders no rows, and a Hash key enforces
+no uniqueness. Lab 4 inspects the declaration and the layout; Lab 2 compared the
+scan work of two sort keys with the Query Profile.
 
 ## 4.9 Map Complex Types from the Application Structure
 
@@ -669,11 +641,9 @@ The five numbered lab steps provide these observations:
 | 5 | Build and reconcile `daily_event_metrics` | 280 visible groups represent all 10,158,080 events and the same 39,984,455.64 revenue |
 
 In Step 4, the two generated Partitions reflect only source months that occur:
-December 2019 and March 2020. The metadata does not show empty January and
-February ranges because Auto Partitioning did not need to create them. The
-Tablet summary is direct metadata evidence of the current layout. It does not
-show multi-node placement performance, Partition pruning, Rowsets, Segments, or
-Compaction.
+December 2019 and March 2020; January and February have no events, so Auto
+Partitioning created no ranges for them. The Tablet summary is metadata about
+the current layout.
 
 In Step 5, distinguish three quantities:
 

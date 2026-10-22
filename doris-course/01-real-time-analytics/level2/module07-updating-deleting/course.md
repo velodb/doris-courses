@@ -125,11 +125,47 @@ a requested value for a nullable column and is invalid for a `NOT NULL` column
 unless transformed before the write. A default is not a universal repair for a
 supplied invalid value.
 
-All Key columns must be available so Doris can locate the row. Also define what
-happens when a partial record carries a new Key: there is no old row from which
-to preserve missing values. Current behavior depends on update mode, defaults,
-nullability, and settings. Consult the current [Column Update](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/)
-contract for production loading and flexible column sets.
+### Turn on partial updates for SQL or for a load
+
+Partial column update works on Unique Key tables with Merge-on-Write, the 4.x
+default. It is off unless the write asks for it, and the two common paths ask
+differently:
+
+- **`INSERT INTO` with a column list.** Without a setting, an `INSERT` that
+  names only some columns is still a full-row upsert. Set the session variable
+  `enable_unique_key_partial_update` to `true` first; Lab 7 does this and sets
+  it back afterwards:
+
+  ```sql
+  SET enable_unique_key_partial_update = true;
+  INSERT INTO order_state (order_id, status, updated_at)
+  VALUES (1003, 'shipped', '2026-09-12 10:30:00');
+  ```
+
+- **Stream Load.** Send the header `partial_columns:true` and list the columns
+  in the file with the `columns` header; Broker Load and Routine Load take the
+  same property:
+
+  ```bash
+  curl --location-trusted -u root: \
+    -H "Expect:100-continue" \
+    -H "partial_columns:true" \
+    -H "column_separator:," \
+    -H "columns:order_id,status" \
+    -T status_patch.csv \
+    -X PUT http://127.0.0.1:18030/api/doris_course/order_state/_stream_load
+  ```
+
+Every row must carry all the Key columns, so that Doris can find the row to
+patch, and all the rows of one write update the same set of columns. A row
+whose key does not exist yet has no old values to keep: by default
+(`partial_update_new_key_behavior = APPEND`) Doris inserts it and fills the
+other columns with their defaults or `NULL`, and fails the write if a `NOT
+NULL` column has no default. Set the variable, or the load property of the same
+name, to `ERROR` when a patch must never create an order; the write then fails
+with "Can't append new rows in partial update". The [Column Update](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/)
+page also covers flexible column updates, in which each JSON row of a load can
+patch different columns.
 
 ## 7.4 Correct a Small Selected Set with SQL UPDATE
 
@@ -161,7 +197,9 @@ A staging relation may contain mixed change types:
 | 4002 | DELETE | Delete an existing order |
 | 4004 | UPSERT | Insert a new order |
 
-`MERGE INTO` joins that relation to a Unique Key target:
+`MERGE INTO` joins that relation to a target table, which must be a Unique Key
+table with Merge-on-Write; on any other table Doris rejects the statement
+("merge into command only support MOW unique key olapTable"):
 
 ```sql
 MERGE INTO order_merge_target AS t
@@ -179,6 +217,21 @@ VALUES
     (s.order_id, s.status, s.amount, s.shipping_region, s.updated_at);
 ```
 
+Doris evaluates the `WHEN` clauses in order and applies the first one whose
+condition holds:
+
+- `WHEN MATCHED` clauses handle source rows whose key exists in the target;
+  each one either updates the named columns, with values from the source or
+  the target, or deletes the row.
+- `WHEN NOT MATCHED` clauses handle source rows without a target row; each one
+  inserts a new row from the source's values.
+- A clause without an `AND` condition must be the last of its kind, because
+  any clause after it could never run.
+
+A target row without a source row is left alone: in the Lab, order 4003 is
+in the target but not in the change set, so it keeps its state. Running the statement needs
+`SELECT_PRIV` on the target and the source, and `LOAD_PRIV` on the target.
+
 This fits a set-based batch already represented as a table or subquery. It adds
 conditional matched and not-matched actions that a simple upsert cannot express.
 It is a Data Manipulation Language statement, not a substitute for a continuous
@@ -186,10 +239,12 @@ high-throughput streaming load.
 
 ### Require deterministic source matching
 
-Doris 4.x does not detect duplicate Join rows for `MERGE INTO`; multiple source
-rows driving one target row can yield undefined behavior. Deduplicate by an
-authoritative sequence or reject the batch first. Lab 7 compares total source
-rows with distinct source Keys before executing the merge.
+Doris 4.x does not detect when several source rows match the same target row.
+If they do, the result is undefined: as with an `INSERT`, a Sequence column
+decides which write wins, and without one any of them may. Deduplicate the
+batch by an authoritative sequence, or reject it, before the merge. Lab 7
+compares the number of source rows with the number of distinct source keys
+before it runs the statement.
 
 ## 7.6 Choose How Deleted Rows Are Identified
 

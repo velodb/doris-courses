@@ -384,9 +384,8 @@ Do not hard-code:
 - exact per-BE scan rows; or
 - that every available BE must participate.
 
-Several BE hosts in the scan Profile establish distributed work. A single
-Docker host still cannot provide a meaningful production network or scaling
-benchmark.
+Several BE hosts in the scan Profile establish that the work was distributed;
+9.7 states what a single Docker host cannot test.
 
 For the plan hierarchy, see [Product Concepts](https://doris.apache.org/docs/4.x/features-architecture/product-concepts/)
 and [`EXPLAIN`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/EXPLAIN/).
@@ -632,10 +631,9 @@ can remain compatible.
 See [Colocation Join](https://doris.apache.org/docs/4.x/query-acceleration/colocation-join/).
 
 The two plans answer the same business question but use different placement
-contracts. Their Join-local `VEXCHANGE` evidence explains which input moves; a
-single shared host still cannot establish a production network or latency
-advantage. The team must now state precisely what every topology, plan, and
-runtime observation supports.
+contracts, and the `VEXCHANGE` next to each Join shows which input moves. The
+team must now state precisely what every topology, plan, and runtime
+observation supports.
 
 ## 9.7 State the Availability and Performance Boundary
 

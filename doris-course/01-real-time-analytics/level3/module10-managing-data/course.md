@@ -248,8 +248,7 @@ If one table was loaded twice, has more replicas, or produced more Segments,
 its total size is not a controlled comparison with the others.
 
 Reusing the same deterministic `INSERT ... SELECT` and confirming equal row
-counts supports the intended comparison. Equal counts alone are not an
-independent row-by-row equality proof.
+counts supports the intended comparison.
 
 ### Design data that exposes two different patterns
 
@@ -274,10 +273,9 @@ FROM compression_example
 GROUP BY event_type;
 ```
 
-If `distinct_contexts = event_count`, complete messages are unique. This does
-not prove that one column produced a particular number of saved bytes. It only
-explains why compression can still find structure even without duplicate
-complete strings.
+If `distinct_contexts = event_count`, complete messages are unique. That
+explains why compression can still find structure in unique strings; it says
+nothing about how many bytes either column saved.
 
 ### Read the storage report conservatively
 
@@ -563,9 +561,7 @@ Partition can begin on SSD and move to HDD after a cooldown time. The choice
 uses Partition storage properties such as `storage_medium` and
 `storage_cooldown_time`.
 
-This requires the BE to have correctly configured media. Two directories on
-the same Docker filesystem do not demonstrate migration between independent
-SSD and HDD devices.
+This requires BEs with correctly configured SSD and HDD storage paths.
 
 ### Local and remote tiering
 
@@ -585,10 +581,9 @@ The decoupled storage and compute architecture has its own storage and cache
 model. Do not mix its assumptions with this Lab, which runs integrated storage
 and compute.
 
-Lab 10 does not access Amazon S3, create a Resource or Storage Policy, or claim
-that its single Docker disk contains distinct hot and cold media. The course
-therefore describes this as a deployment choice rather than manufacturing
-misleading local evidence.
+Lab 10 runs on one Docker disk with no object storage, so it cannot show data
+moving between tiers; this section therefore treats tiering as a deployment
+choice, without a Lab step.
 
 Tiering can lower the cost of data that remains part of the live table, but it
 does not preserve an earlier business state. The final lifecycle decision is

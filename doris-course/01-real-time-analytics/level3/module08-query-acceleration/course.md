@@ -254,9 +254,8 @@ After a successful build:
 6. Verify the exact business-result change and the selected index separately.
 
 The last check demonstrates the defining freshness property: supported source
-writes and the synchronous view become visible together. It does not make an
-unsupported definition valid, and it does not remove the write and storage
-cost of maintaining another representation.
+writes and the synchronous view become visible together. The price is the
+write and storage cost of maintaining a second representation.
 
 This solves the current single-table regional aggregation. The next request is
 different: category revenue needs a product attribute from another table. That
@@ -288,9 +287,9 @@ An asynchronous view has at least three contracts:
 | Refresh trigger | Manual, scheduled, or another supported trigger |
 | Refresh computation | Complete recomputation or a supported incremental/partition strategy |
 
-The Lab chooses a deferred build, manual trigger, and complete refresh because
-that combination makes every state transition visible. It is not a universal
-production recommendation.
+The Lab chooses a deferred build, a manual trigger, and complete refresh
+because that combination makes every state transition visible; a production
+view chooses them from its own freshness and cost.
 
 ### Direct query and transparent rewrite are different paths
 
@@ -535,9 +534,8 @@ To isolate an index, indexed and unindexed test tables should keep the same:
 - query predicate and projection.
 
 Then verify the complete answer before comparing the scan operators. In the
-indexed run, counters such as `RowsInvertedIndexFiltered` can establish that
-the index rejected rows in that execution. They do not promise a fixed latency
-ratio on a larger system.
+indexed run, counters such as `RowsInvertedIndexFiltered` establish that the
+index rejected rows in that execution, for that data.
 
 Historical coverage also matters. An index declared before loading can be built
 with new data. Adding an index to existing data may require the documented
@@ -549,10 +547,9 @@ See [Inverted Index](https://doris.apache.org/docs/4.x/key-features/inverted-ind
 and [Index Optimization](https://doris.apache.org/docs/4.x/query-acceleration/tuning/tuning-plan/optimizing-table-index/).
 
 Creating the index makes a new access path available, just as building a
-materialized view makes a stored result available. Availability still does not
-guarantee selection. If the expected path is absent from the plan, the next
-step is to check semantic eligibility and the optimizer's inputs before
-forcing a choice.
+materialized view makes a stored result available; the optimizer still decides
+whether to use it. If the expected path is absent from the plan, check
+semantic eligibility and the optimizer's inputs before forcing a choice.
 
 ## 8.7 Give the Optimizer Reliable Inputs
 
@@ -703,13 +700,12 @@ Read the Lab evidence in this order:
 4. Job and task tables establish that the current build or refresh completed.
 
 The Lab temporarily enables detailed Profile capture and disables selected
-session caches, restoring the settings afterward. It does not flush storage,
-operating-system, or inverted-index caches. It also runs on one BE, so it does
-not measure distributed speedup.
+session caches, restoring the settings afterward. Storage, operating-system,
+and inverted-index caches stay warm, and the sandbox has one BE, so the Lab
+compares scan work, not cold or distributed speed.
 
-The final Stop and Restart controls preserve the named Docker volumes and
-Module 8 objects. They release or restore sandbox resources; they are not a
-backup or disaster-recovery demonstration.
+The final Stop and Restart controls release and restore the sandbox's
+resources; the named Docker volumes keep the Module 8 objects.
 
 ## Summary
 
