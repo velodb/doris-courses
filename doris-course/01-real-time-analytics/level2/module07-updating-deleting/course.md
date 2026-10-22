@@ -2,68 +2,44 @@
 
 | Course information | Value |
 | --- | --- |
-| Course | Real-time Analytics with Apache Doris — Level 2 |
-| Product baseline | Apache Doris 4.x |
-| Lab version | Apache Doris 4.1.3 |
-| Estimated time | Approximately 75 minutes, including the guided lab |
+| Course | Real-time Analytics with Apache Doris · Level 2 |
+| Doris | Apache Doris 4.1.3 |
+| Environment | The course sandbox from Lab 1 |
+| Estimated time | About 65 minutes: reading 30, Lab 25, quiz 10 |
+
+[Course README](../../README.md) · [Open Lab 7](lab07_update_delete_data.ipynb) · [Open Quiz 7](quiz07_state_changes_and_deletion.ipynb)
 
 ## Module goal
 
-This module explains how to keep analytical current state synchronized as
-business entities change, correct existing data, remove selected records, and
-replace complete lifecycle ranges. Begin with the change contract: what
-identifies a row, whether the source supplies a complete state or a patch, how
-source order is established, and how much data the operation affects.
-
-Module 4 selected a Table Model from repeated-Key semantics. This module focuses
-on current-state workloads, so most examples use Unique Key. It also identifies
-operations available to other Table Models and explains why appending another
-row to a Duplicate Key table does not update current state.
+Keep the current state of changing business entities correct in Doris: choose
+the operation from how changes arrive, and check what a query sees after each
+one.
 
 ## Learning objectives
 
 After completing this module, you will be able to:
 
-1. Separate append-only history from current state and define the final visible
-   state expected after a sequence of changes.
-2. Choose full-row upsert, partial column update, or SQL `UPDATE` from the form,
-   frequency, and ownership of incoming changes.
-3. Predict whether a Unique Key write inserts a new logical row or replaces an
-   existing visible state.
-4. Use a Sequence column so source order, rather than arrival order, decides
-   which state wins.
-5. Distinguish omitted columns in full-row and partial writes from an explicitly
-   supplied `NULL`.
-6. Use `MERGE INTO` for conditional matched updates/deletes and not-matched
-   inserts from a source relation.
-7. Choose predicate `DELETE` or Delete Sign from how deleted rows are identified.
-8. Choose `TRUNCATE TABLE/PARTITION` or `INSERT OVERWRITE` for complete scopes.
-9. Distinguish logical visibility from later physical cleanup by Compaction.
-10. Explain why ambiguous source order and repeated single-row transactions are
-    operational design problems.
+1. Choose full-row upsert, partial column update, SQL `UPDATE`, or `MERGE INTO` from the form and ownership of incoming changes.
+2. Use a Sequence column so that source order, not arrival order, decides which state wins.
+3. Predict what full-row and partial writes do to omitted columns, and how omission differs from `NULL`.
+4. Choose predicate `DELETE` or the Delete Sign from how the deleted rows are identified.
+5. Choose `TRUNCATE` or `INSERT OVERWRITE` to remove or replace a complete Partition.
+6. Separate the visibility of a published change from the later physical cleanup by Compaction.
 
-## Scenario-led content outline
+## Module structure
 
-An order platform sends complete images, logistics patches, corrections, and
-deletion records to Doris. A daily Partition can also expire or require a full
-backfill. Each section derives an operation from one need.
-
-| Section | Requirement scenario | Decision developed | Lab 7 evidence |
-| --- | --- | --- | --- |
-| **7.1 Define the state contract** | History must remain, while reports need one current row per order. | Separate history from state and locate each Table Model's boundary. | Use independent Module 7 tables without changing event data. |
-| **7.2 Synchronize complete states** | Full order images may arrive out of order. | Use Unique Key upsert and an explicit Sequence column. | Update `1001`, insert `1004`, and reject an older delayed state. |
-| **7.3 Apply field-owned patches** | Logistics owns status but must preserve amount and region. | Use partial update; distinguish omission, defaults, and `NULL`. | Compare full-row and partial writes with omitted columns. |
-| **7.4 Correct selected rows** | A small incorrect set is described by a predicate. | Use SQL `UPDATE` for an occasional Value-column correction. | Correct one shipping region. |
-| **7.5 Merge staged changes** | One relation contains inserts, updates, and deletes. | Use `MERGE INTO` with deterministic source matching. | Update `4001`, delete `4002`, and insert `4004`. |
-| **7.6 Remove selected rows** | A rule selects bad rows; CDC supplies deleted Keys. | Choose predicate `DELETE` or Delete Sign. | Delete `2003` by predicate and `2002` by Key. |
-| **7.7 Replace a lifecycle scope** | One date expires; another has a complete correction. | Use `TRUNCATE PARTITION` or `INSERT OVERWRITE`. | Remove `p20260910` and replace `p20260911`. |
-| **7.8 Separate visibility from cleanup** | Queries show new state while storage versions remain. | Bound conclusions from queries, hidden markers, and metadata. | Compare visible rows and Tablet versions. |
-
-Lab 7 supplies bounded Doris 4.1.3 evidence. It does not connect to an external
-Change Data Capture (CDC) system, benchmark writes, inspect Rowsets or Segments,
-display an internal delete bitmap, or wait for Compaction.
-
----
+| Section | Time | Outcome |
+| --- | ---: | --- |
+| 7.1 Define the State Contract Before Choosing an Operation | 4 min | Separate history from current state, and each Table Model's role |
+| 7.2 Synchronize Complete States with Unique Key Upsert | 4 min | Upsert complete states and let a Sequence column order them |
+| 7.3 Preserve Unowned Fields with Partial Column Update | 5 min | Patch some columns and keep the others |
+| 7.4 Correct a Small Selected Set with SQL UPDATE | 3 min | Correct the rows that a predicate selects |
+| 7.5 Apply Conditional Actions with MERGE INTO | 5 min | Update, delete, and insert from one staged change set |
+| 7.6 Choose How Deleted Rows Are Identified | 3 min | Delete by predicate or by incoming keys |
+| 7.7 Match the Operation to a Complete Lifecycle Scope | 3 min | Truncate or overwrite a whole Partition |
+| 7.8 Separate Logical Visibility from Physical Cleanup | 3 min | Read what queries, hidden markers, and metadata show |
+| Lab 7 | 25 min | Upsert, patch, correct, merge, delete, and replace on small order tables |
+| Quiz 7 | 10 min | Six questions on these objectives |
 
 ## 7.1 Define the State Contract Before Choosing an Operation
 
@@ -273,12 +249,11 @@ Tablet `RowCount` is not `COUNT(*)`. Frequent tiny writes can also create
 transaction, version, and Rowset pressure, so batch continuous changes and use
 Partition-level operations for whole ranges.
 
----
-
 ## Lab 7: Maintain Current State and Remove Data Safely
 
-Open [Lab 7 — Maintain Current State and Remove Data Safely](lab07_update_delete_data.ipynb).
-It creates only Module 7 tables:
+Open [Lab 7 — Maintain Current State and Remove Data Safely](lab07_update_delete_data.ipynb)
+and plan about 25 minutes. It needs only the course sandbox and creates only
+Module 7 tables:
 
 - `order_state` for upsert, Sequence, partial update, and SQL correction;
 - `order_merge_target` and `order_merge_changes` for local `MERGE INTO`;
@@ -296,27 +271,32 @@ It creates only Module 7 tables:
 
 No external CDC system, object store, or downloaded dataset is involved.
 
-## Module summary
+## Summary
 
-Choose a change path from the source contract. Full-row upsert fits complete
-primary-key images; Sequence protects source order. Partial update fits
-field-owned patches; SQL `UPDATE` fits predicate corrections; `MERGE INTO` fits
-a staged relation requiring conditional actions.
-
-Predicate DELETE fits a SQL-defined set, Delete Sign fits incoming Unique Keys,
-and `TRUNCATE` or `INSERT OVERWRITE` fits complete lifecycle scopes. Published
-changes affect query visibility before Compaction necessarily reclaims storage.
+- Choose the change path from the source: full-row upsert for complete states,
+  partial column update for patches that own some columns, SQL `UPDATE` for an
+  occasional correction selected by a predicate, and `MERGE INTO` for a staged
+  set that needs updates, deletes, and inserts together.
+- A Sequence column makes the source's version decide which state of a key
+  wins, so a delayed older state does not replace a newer one.
+- A full-row upsert fills omitted value columns from their defaults or `NULL`;
+  a partial column update keeps their existing values; and an explicit `NULL`
+  is a value, not an omission.
+- Predicate `DELETE` removes the rows that a SQL condition selects; the Delete
+  Sign deletes keys that arrive as data, for example from CDC.
+- `TRUNCATE` removes a complete table or Partition, and `INSERT OVERWRITE`
+  replaces a complete scope with corrected data in one atomic switch.
+- After a change is published, new queries see the new state at once, while
+  old physical versions can remain until background Compaction reclaims them.
 
 ## Quiz 7: Updating and Deleting Data in Apache Doris
 
-Complete the interactive knowledge check after finishing the module and
-Lab 7. It runs without a Doris sandbox.
-
-[Open Quiz 7 — Updating and Deleting Data in Apache Doris](quiz07_state_changes_and_deletion.ipynb)
+Open [Quiz 7: Updating and Deleting Data in Apache Doris](quiz07_state_changes_and_deletion.ipynb).
+It has six single-choice questions and needs no running environment.
 
 Next: this is the last module of Level 2. Level 3 starts with [Module 8: Accelerating Queries in Apache Doris](../../level3/module08-query-acceleration/course.md).
 
-## Official references
+## References
 
 - [Data Update and Delete](https://doris.apache.org/docs/4.x/key-features/data-update-delete/) and [Unique Key](https://doris.apache.org/docs/4.x/key-features/unique-key/)
 - [Load-Based Updates for the Unique Model](https://doris.apache.org/docs/4.x/data-operate/update/update-of-unique-model/) and [Column Update](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/)

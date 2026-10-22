@@ -2,97 +2,53 @@
 
 | Course information | Value |
 | --- | --- |
-| Course | Real-time Analytics with Apache Doris — Level 2 |
-| Product baseline | Apache Doris 4.x |
-| Lab version | Apache Doris 4.1.3 |
-| Estimated time | Approximately 75 minutes, including the guided lab |
+| Course | Real-time Analytics with Apache Doris · Level 2 |
+| Doris | Apache Doris 4.1.3 |
+| Environment | The course sandbox and the `events` table from Lab 1 |
+| Estimated time | About 90 minutes: reading 50, Lab 30, quiz 10 |
+
+[Course README](../../README.md) · [Open Lab 4](lab04_model_data.ipynb) · [Open Quiz 4](quiz04_schema_and_modeling_choices.ipynb)
 
 ## Module goal
 
-This module explains how to translate source data and analytical requirements
-into an Apache Doris table schema. You will begin with what one row means and
-what should happen when the same Key appears again. You will then choose column
-contracts, missing-value rules, Partitions, Buckets, and a sort key from the
-workload they must serve.
+Turn the course's source events and its reporting needs into Doris tables:
+decide what one row means, what a repeated key does, which types and missing
+values each column allows, and how Partitions, Buckets, and the sort key lay
+the rows out.
 
-Level 1 established the persistent `doris_course` Database and its `events`
-baseline. Module 2 explained the storage hierarchy and distributed execution;
-Module 3 explained how data crosses an ingestion boundary. Module 4 uses those
-foundations to build two data products: `events_modelled`, which preserves event
-detail, and `daily_event_metrics`, which represents a defined daily summary.
+The scenario is an ecommerce analytics platform with three needs at once: it
+keeps every browsing, cart, and purchase event; it exposes the current state
+of changing entities such as orders; and it serves a dashboard at daily,
+regional, and event-type grain. Lab 4 builds two of these data products,
+`events_modelled` for event detail and `daily_event_metrics` for the daily
+summary; Module 7 builds current state.
 
 ## Learning objectives
 
 After completing this module, you will be able to:
 
-1. Define a table's grain from its source contract and the questions it must
-   answer.
-2. Select Duplicate Key, Unique Key, or Aggregate Key from the required
-   repeated-key behavior, and explain the role of Key columns in each model.
-3. Choose types for identifiers, time, money, categories, and semi-structured
-   values from their meaning and required operations.
-4. Explain why analytical money normally uses `DECIMAL` instead of an
-   approximate floating-point or text representation.
-5. Distinguish `NULL`, `NOT NULL`, and `DEFAULT`, including omitted values,
-   explicit `NULL`, and failed conversion.
-6. Recognize repeated runtime casts, unstable identifier types, oversized
-   strings, unnecessary nullability, and mixed grain as modeling problems.
-7. Design Partition, Bucket, and sort-key choices from time filtering,
-   lifecycle boundaries, data distribution, and expected volume.
-8. Recognize when `ARRAY`, `MAP`, `STRUCT`, `JSON`, or `VARIANT` fits an
-   application structure and when ordinary typed columns remain preferable.
-9. Derive a summary grain and additive measures from a reporting requirement.
-10. Reconcile detail and summary models with grain-appropriate counts and
-    totals while keeping logical query evidence separate from physical-storage
-    or performance claims.
+1. Define a table's grain from its source contract, and keep detail and summary grains in separate tables.
+2. Choose the Duplicate Key, Unique Key, or Aggregate Key model from the behavior that a repeated key requires.
+3. Derive a summary's dimensions and additive measures from a reporting requirement, and reconcile it with the detail.
+4. Choose types for identifiers, time, money, categories, and nested values from their meaning and the operations they need.
+5. Distinguish `NULL`, `NOT NULL`, and `DEFAULT` for values that are missing, omitted, or invalid.
+6. Design a table's Partitions, Buckets, and sort key from its time filters, lifecycle, distribution, and volume.
 
-## Scenario-led content outline
+## Module structure
 
-Imagine an ecommerce analytics platform with three simultaneous needs. It must
-retain every browsing, cart, and purchase event; expose the current state of
-changing entities such as orders; and serve a recurring dashboard at daily,
-regional, and event-type grain. New months arrive continuously, most analysis
-starts with a time range, and different fields have different missing-value
-rules.
-
-Course and Lab use several tables because each table represents a different
-stage or data product. Learn their contracts here; Lab 4 supplies the DDL and
-observable results.
-
-| Table | Grain and role | Why the course needs it |
-| --- | --- | --- |
-| `events` | One source event; persistent Level 1 baseline | Supplies the complete source contract and the detail population to reconcile |
-| `modeling_raw_events` | One received sample record with permissive text fields | Isolates the landing-stage need to preserve malformed and missing input before a validation policy accepts it |
-| `modeling_typed_events` | One accepted sample event with typed columns | Shows what changes when conversion, nullability, and defaults become an analytical contract |
-| `events_modelled` | One accepted event from the complete baseline | Provides query-ready event detail for this module and for Modules 5–6 |
-| `daily_event_metrics` | One `(event_date, region, event_type)` summary group | Provides a separate reporting product with additive event-count and revenue measures |
-
-`modeling_raw_events` and `modeling_typed_events` are small teaching boundary
-tables. They are not additional production copies that every Doris design must
-create. `events_modelled` and `daily_event_metrics` coexist because they answer
-questions at different grains, not because one table replaces the other.
-
-Each section turns one requirement into a modeling decision:
-
-| Section | Requirement scenario | Decision developed in this module | Lab 4 evidence |
-| --- | --- | --- | --- |
-| **4.1 Define one row** | Analysts need event history, current entity state, and daily totals. | Give each data product one explicit grain; do not mix detail and summary rows. | Confirm the `events` source contract and later reconcile detail with summary. |
-| **4.2 Choose repeated-key meaning** | Repeated log keys must remain, repeated order keys must replace current state, and repeated metric keys must combine measures. | Choose Duplicate Key, Unique Key, or Aggregate Key from repeated-key semantics. | Build Duplicate Key `events_modelled` and Aggregate Key `daily_event_metrics`; defer Unique Key updates to Module 7. |
-| **4.3 Build a valid summary** | A dashboard repeatedly needs daily event counts and revenue by region and event type. | Define the summary grain, store additive measures, identify lost detail, and reconcile represented totals. | Build 280 logical summary rows that represent 10,158,080 events and the same revenue. |
-| **4.4 Choose column types** | Reports join identifiers, filter by time, total money exactly, and group bounded categories; a landing amount may still be text. | Select integer or string identifiers, temporal types, `DECIMAL`, and bounded `VARCHAR` from meaning and operations. | Compare permissive text with typed values and observe `DOUBLE` versus `DECIMAL` arithmetic. |
-| **4.5 Resolve missing and invalid values** | A missing product is permitted, an omitted region maps to `unknown`, and malformed revenue is invalid. | Use nullable columns, `NOT NULL`, `DEFAULT`, and conversion checks for distinct business states. | Preserve one `NULL` product, apply one region default, and count one invalid amount before typed ingestion. |
-| **4.6 Partition by lifecycle range** | Queries and retention use calendar periods while new time ranges arrive continuously. | Choose time Range Partitions and decide whether Auto Partitioning or explicit Partition management fits the lifecycle. | Create and inspect monthly Auto Range Partitions for the source months that actually occur. |
-| **4.7 Distribute each Partition into Buckets** | Each monthly range must be divided into physical shards, and `region` has only eight values. | Hash on a sufficiently distributed field and choose Bucket count from volume, cluster resources, and parallelism needs. | Observe `HASH(user_id)`, 10 Buckets per Partition, and 20 Tablets across two Partitions. |
-| **4.8 Align the sort key** | Most event queries begin with a time range and then identify event detail. | Place commonly useful filtering columns early while respecting the Table Model's Key semantics. | Inspect `DUPLICATE KEY(event_time, event_id, user_id)` without making a timing claim. |
-| **4.9 Represent nested attributes** | An event may carry tags, fixed device fields, dynamic campaign properties, or an evolving payload. | Map application shape to `ARRAY`, `STRUCT`, `MAP`, `JSON`, or `VARIANT`; promote stable analytical fields to typed columns. | Use the decision framework and current official references; Lab 4 creates no complex-type table. |
-
-The requirement comes first in every section. A `CREATE TABLE` statement is the
-implementation of those decisions, not the source of them. Lab 4 makes selected
-Doris 4.1.3 behavior observable. It does not benchmark schema alternatives,
-inspect Rowsets or Segments, demonstrate a delete bitmap, or infer a production
-Bucket count from the single-Backend sandbox.
-
----
+| Section | Time | Outcome |
+| --- | ---: | --- |
+| 4.1 Define What One Row Represents | 5 min | Give each data product one explicit grain |
+| 4.2 Choose a Table Model from Repeated-Key Semantics | 6 min | Choose Duplicate, Unique, or Aggregate Key from what a repeated key must do |
+| 4.3 Derive a Summary Model from the Reporting Requirement | 6 min | Store additive measures at a declared grain and reconcile them with the detail |
+| 4.4 Choose Data Types from Business Meaning | 7 min | Choose identifier, time, money, and category types from their operations |
+| 4.5 Give Missing, Omitted, and Invalid Values Different Rules | 6 min | Use nullability, defaults, and conversion checks for different states |
+| 4.6 Choose Time Partitions from Query and Lifecycle Boundaries | 6 min | Choose a Partition grain and decide when Auto Partitioning fits |
+| 4.7 Use Buckets to Distribute Data Within Every Partition | 5 min | Choose a Hash key and a Bucket count |
+| 4.8 Align the Sort Key with the Main Access Path | 4 min | Start the sort key with the common range filter |
+| 4.9 Map Complex Types from the Application Structure | 5 min | Choose `ARRAY`, `MAP`, `STRUCT`, `JSON`, or `VARIANT`, or ordinary columns |
+| Lab 4 | 30 min | Build `events_modelled` and `daily_event_metrics` and reconcile them |
+| Quiz 4 | 10 min | Six questions on these objectives |
 
 ## 4.1 Define What One Row Represents
 
@@ -690,13 +646,11 @@ documentation. Lab 4 does not create complex-type columns; Lab 5 uses a small
 array literal to demonstrate row and element operations without changing the
 event schema.
 
----
-
 ## Lab 4: Model Data for Analytical Workloads
 
 Open [Lab 4 — Model Data for Analytical Workloads](lab04_model_data.ipynb) after
-the Level 1 `events` baseline is available. The Notebook uses four Module 4
-target tables and does not replace or delete the baseline:
+the Level 1 `events` baseline is available. Plan about 30 minutes. The Notebook
+uses four Module 4 target tables and does not replace or delete the baseline:
 
 - `modeling_raw_events` contains a five-row permissive landing sample.
 - `modeling_typed_events` contains the four valid typed sample rows.
@@ -734,36 +688,38 @@ Run the optional stop and restart cells only when you want to release and then
 restore sandbox resources. Docker named volumes preserve the baseline and Lab
 4 tables. `events_modelled` must remain available for Modules 5 and 6.
 
-## Module summary
+## Summary
 
-A Doris schema begins with row meaning and repeated-Key meaning. Duplicate Key
-retains accepted history, Unique Key exposes current state, and Aggregate Key
-combines declared measures at a reporting grain. Identifiers, time, money,
-categories, missing values, and nested structures each need a contract based on
-valid values and required operations.
-
-Partition, Bucket, and sort key make three separate layout decisions. A
-Partition maps a row to a value and lifecycle range; a Hash Bucket maps it to a
-Tablet inside that Partition; the sort key defines stored column order and also
-serves the Table Model's Key semantics. Auto Partitioning creates required
-ranges from incoming values but does not make the remaining choices.
-
-A summary is useful only for questions its grain and measures preserve. Reconcile
-detail and summary with represented counts and compatible totals, not by
-assuming that their `COUNT(*)` values should match. Module 5 now uses the
-complete `events_modelled` table to build analytical results whose grain remains
-explicit at every stage.
+- A table's grain comes from its source contract: one accepted event, one
+  current entity, or one declared group of dimensions. Detail and summary rows
+  belong in separate tables, or a `SUM` counts the same activity twice.
+- The Duplicate Key model keeps every accepted row, the Unique Key model
+  exposes one current row per key, and the Aggregate Key model combines value
+  columns with their declared function; the key columns also form the sort
+  key.
+- A summary declares its dimensions as Aggregate Key columns and stores only
+  measures that combine correctly, such as counts and totals;
+  `daily_event_metrics` represents all 10,158,080 events and 39,984,455.64 in
+  280 rows.
+- Types follow meaning: integers or strings for identifiers, `DATE` or
+  `DATETIME` for time, `DECIMAL` for money, bounded `VARCHAR` for categories,
+  and complex types only for attributes whose nested shape belongs to one row.
+- `NULL` is a valid absence in a nullable column, `NOT NULL` makes a value
+  required, `DEFAULT` applies only when a column is omitted, and a value that
+  cannot convert is invalid and needs its own count and policy.
+- Partitions follow time filters and the lifecycle, Hash Buckets on a key with
+  many values spread each Partition over Tablets, and the sort key starts with
+  the common range filter; Lab 4's two monthly Partitions with ten Buckets give
+  20 Tablets.
 
 ## Quiz 4: Modeling Data in Apache Doris
 
-Complete the interactive knowledge check after finishing the module and
-Lab 4. It runs without a Doris sandbox.
-
-[Open Quiz 4 — Modeling Data in Apache Doris](quiz04_schema_and_modeling_choices.ipynb)
+Open [Quiz 4: Modeling Data in Apache Doris](quiz04_schema_and_modeling_choices.ipynb).
+It has six single-choice questions and needs no running environment.
 
 Next module: [Module 5: Analyzing Data in Apache Doris](../module05-analyzing/course.md).
 
-## Official references
+## References
 
 - Table design workflow: [Table Design Guide](https://doris.apache.org/docs/4.x/table-design/overview/) and [Table Model Best Practices](https://doris.apache.org/docs/4.x/table-design/data-model/tips/).
 - Repeated-Key semantics: [Table Model Overview](https://doris.apache.org/docs/4.x/table-design/data-model/intro/), [Duplicate Key](https://doris.apache.org/docs/4.x/table-design/data-model/duplicate/), [Unique Key](https://doris.apache.org/docs/4.x/table-design/data-model/unique/), [Merge-on-Write](https://doris.apache.org/docs/4.x/table-design/data-model/merge-on-write/), and [Aggregate Key](https://doris.apache.org/docs/4.x/table-design/data-model/aggregate/).

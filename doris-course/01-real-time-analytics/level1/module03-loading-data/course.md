@@ -2,55 +2,46 @@
 
 | Course information | Value |
 | --- | --- |
-| Course | Real-time Analytics with Apache Doris — Level 1 |
-| Product baseline | Apache Doris 4.x |
-| Lab version | Apache Doris 4.1.3 |
-| Estimated time | Approximately 70 minutes, including the guided lab and quiz |
+| Course | Real-time Analytics with Apache Doris · Level 1 |
+| Doris | Apache Doris 4.1.3 |
+| Environment | The course sandbox from Lab 1; Lab 3 also starts a Kafka broker |
+| Estimated time | About 85 minutes: reading 45, Lab 30, quiz 10 |
+
+[Course README](../../README.md) · [Open Lab 3](lab03_load_data.ipynb) · [Open Quiz 3](quiz03_load_methods_and_retry_safety.ipynb)
 
 ## Module goal
 
-This module explains how to choose and operate the main Apache Doris load
-methods. The goal is not to memorize every command. It is to match a source
-and its service-level requirements to an appropriate load method, then verify
-the result and make retries safe.
+Choose a load method from what the source and its consumers require, then
+check every load's result and make its retry safe.
 
-By the end of the module, you will be able to reason about a load as a
-contract: where the data is, whether it is bounded or continuous, how quickly
-it must become visible, which transformations are required, what completion
-evidence the client receives, and which state prevents a retry from producing
-duplicate data.
+A load is a contract: where the data is, whether it is bounded or continuous,
+how quickly it must become visible, which transformations it needs, what
+evidence of completion the client receives, and which state stops a retry
+from loading the same data twice.
 
 ## Learning objectives
 
 After completing this module, you will be able to:
 
-1. Select a Doris load method from the source, volume, latency, delivery
-   semantics, transformation, and retry requirements.
-2. Explain the roles of Stream Load, `INSERT INTO SELECT`, the S3
-   table-valued function (S3 TVF), Routine Load, and Group Commit.
-3. Load a local CSV file with Stream Load and interpret its synchronous JSON
-   response.
-4. Query Parquet objects with an S3 TVF and persist selected rows with
-   `INSERT INTO SELECT`.
-5. Explain when a Routine Load job is appropriate for continuous Kafka
-   consumption.
-6. Validate loaded and filtered row counts, recognize a rejected load
-   transaction, then perform a deliberate safe retry.
+1. Select a Doris load method from the source, volume, latency, transformation, and retry requirements of a workload.
+2. Explain the roles of Stream Load, `INSERT INTO SELECT` with the S3 TVF, Routine Load, and Group Commit.
+3. Load a local CSV file with Stream Load and read its synchronous JSON response.
+4. Query Parquet objects with the S3 TVF and persist them with `INSERT INTO SELECT`.
+5. Explain when a Routine Load job fits continuous Kafka consumption, and how it tracks its progress.
+6. Validate loaded and filtered row counts, recognize a rejected load, and retry a batch safely.
 
 ## Module structure
 
 | Section | Time | Outcome |
 | --- | ---: | --- |
-| 3.1 Select a Load Method from a Workload Contract | 7 min | Match source and service-level requirements to a load method |
-| 3.2 Push a Bounded File with Stream Load | 8 min | Explain CSV parsing, mapping, quality counts, and label-based retry protection |
-| 3.3 Read S3 Objects and Persist a SQL Result | 7 min | Separate S3 TVF access from an `INSERT INTO SELECT` load transaction |
-| 3.4 Continuously Load Kafka Data with Routine Load | 8 min | Explain jobs, tasks, micro-batches, committed offsets, and job state |
-| 3.5 Reduce Small-Write Pressure with Group Commit | 5 min | Distinguish write grouping from a standalone source connector |
-| 3.6 Validate Results and Design Safe Retries | 5 min | Choose the correct completion, quality, and retry evidence |
-| Lab 3 | 25 min | Load CSV, Parquet, and Kafka JSON through three independent methods |
-| Quiz 3 | 5 min | Check load-method selection, quality evidence, persistence boundaries, and retry safety |
-
----
+| 3.1 Select a Load Method from a Workload Contract | 7 min | Match the source and its requirements to a load method |
+| 3.2 Push a Bounded File with Stream Load | 10 min | Explain parsing, mapping, quality counts, and label-based retry protection |
+| 3.3 Read S3 Objects and Persist a SQL Result | 7 min | Separate reading S3 through the S3 TVF from the `INSERT INTO SELECT` that stores the rows |
+| 3.4 Continuously Load Kafka Data with Routine Load | 10 min | Explain jobs, tasks, micro-batches, committed offsets, and job state |
+| 3.5 Reduce Small-Write Pressure with Group Commit | 5 min | Distinguish grouping small writes from a source connector |
+| 3.6 Validate Results and Design Safe Retries | 6 min | Choose the completion, quality, and retry evidence of each method |
+| Lab 3 | 30 min | Load a CSV file, Parquet objects, and Kafka JSON with three methods |
+| Quiz 3 | 10 min | Six questions on these objectives |
 
 ## 3.1 Select a Load Method from a Workload Contract
 
@@ -113,8 +104,6 @@ producer rather than forcing every source through the same interface.
 
 See the official [Load Overview](https://doris.apache.org/docs/4.x/data-operate/import/load-manual/)
 for the complete load-method matrix.
-
----
 
 ## 3.2 Push a Bounded File with Stream Load
 
@@ -285,8 +274,6 @@ batches.
 See the official [Stream Load documentation](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)
 for the complete request headers, response fields, and label states.
 
----
-
 ## 3.3 Read S3 Objects and Persist a SQL Result
 
 The **S3 table-valued function (S3 TVF)** exposes files in S3-compatible object
@@ -405,8 +392,6 @@ notebook or SQL source. The official [S3 TVF](https://doris.apache.org/docs/4.x/
 and [`INSERT INTO SELECT`](https://doris.apache.org/docs/4.x/data-operate/import/import-way/insert-into-manual/)
 documentation provide the complete options.
 
----
-
 ## 3.4 Continuously Load Kafka Data with Routine Load
 
 A Kafka topic is a durable, ordered message stream divided into Partitions.
@@ -519,8 +504,6 @@ managed consumer's lifecycle.
 See [Routine Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/routine-load-manual/)
 and [Routine Load Principles and Best Practices](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/routine-load-best-practices/).
 
----
-
 ## 3.5 Reduce Small-Write Pressure with Group Commit
 
 Many applications send frequent tiny `INSERT INTO VALUES` statements or
@@ -566,8 +549,6 @@ offsets, or replace application-level data semantics.
 
 See the official [Group Commit documentation](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)
 for supported statements, modes, flush triggers, and fallback conditions.
-
----
 
 ## 3.6 Validate Results and Design Safe Retries
 
@@ -621,14 +602,13 @@ Retry safety comes from persistent identity and progress state. The mechanism
 is a Stream Load label, an orchestrator's batch record, or committed Kafka
 offsets—not the fact that two requests happen to contain identical text.
 
----
-
 ## Lab 3: Load Data from a File, S3, and Kafka
 
 The lab reuses the `doris_course` Database and the ecommerce event schema from
 Labs 1 and 2. It creates independent target tables so that each load method
 can be observed without mixing its rows or completion evidence with another
-method.
+method. It needs the course sandbox from Lab 1, and it starts a Kafka broker
+(`apache/kafka:3.9.1`, about 0.2 GB to download). Plan about 30 minutes.
 
 You will:
 
@@ -664,37 +644,37 @@ uses the same 10,158,080-row Parquet dataset introduced in Lab 1. Separate
 tables isolate the load methods; the event semantics remain consistent across
 the Level 1 course.
 
-## Module summary
+## Summary
 
 - Choose a load method from the complete workload contract, not from a file
-  extension alone.
-- Stream Load pushes one bounded client-side batch and returns a synchronous
-  JSON response containing transaction, quality, and label evidence.
-- A Stream Load label identifies one batch. Reusing the same label protects an
-  uncertain retry; using a different label represents a new load transaction.
-- A filtered row fails the row-level quality contract. If the filtered-row
-  ratio exceeds `max_filter_ratio`, Doris rejects the complete load
-  transaction.
-- An S3 TVF exposes remote objects as a temporary relation.
-  `INSERT INTO SELECT` persists the query result in an internal table.
-- A Routine Load job is a Doris-managed, long-running Kafka consumer job. Its
-  micro-batch transactions commit target rows and Kafka offset progress
-  together.
-- Group Commit combines compatible high-frequency small writes into fewer
-  server-side load transactions; it is not a standalone source connector.
-- Completion evidence differs by method. Always pair control-plane status with
-  target-table validation.
+  extension: a client batch, objects in S3, a Kafka topic, and many tiny writes
+  each have a starting point.
+- Stream Load pushes one bounded client batch; the S3 TVF exposes remote
+  objects as a temporary relation, which `INSERT INTO SELECT` persists; a
+  Routine Load job consumes Kafka continuously; Group Commit groups compatible
+  small writes into fewer load transactions.
+- A Stream Load request declares how to parse its bytes, and its synchronous
+  JSON response reports the transaction and the total, loaded, filtered, and
+  unselected rows.
+- Querying an S3 TVF reads the files without storing them; `INSERT INTO
+  SELECT` writes the query result into an internal table in one load
+  transaction, and rerunning it blindly loads the rows again.
+- A Routine Load job maps nested JSON with `jsonpaths` and `COLUMNS`, and each
+  micro-batch commits its rows together with the Kafka offsets it reached, so
+  pause and resume continue where it stopped.
+- Every load needs data-level validation, such as counts, distinct
+  identifiers, time ranges, and totals; a filtered-row ratio above
+  `max_filter_ratio` rejects the whole transaction, and the same Stream Load
+  label makes the retry of an uncertain batch safe.
 
 ## Quiz 3: Loading Data into Apache Doris
 
-Complete the interactive knowledge check after finishing the module and
-Lab 3. It runs without Doris, Kafka, or S3 credentials.
-
-[Open Quiz 3 — Loading Data into Apache Doris](quiz03_load_methods_and_retry_safety.ipynb)
+Open [Quiz 3: Loading Data into Apache Doris](quiz03_load_methods_and_retry_safety.ipynb).
+It has six single-choice questions and needs no running environment.
 
 Next: this is the last module of Level 1. Level 2 starts with [Module 4: Modeling Data in Apache Doris](../../level2/module04-modeling/course.md).
 
-## Official references
+## References
 
 - [Apache Doris source repository](https://github.com/apache/doris)
 - [Load Overview](https://doris.apache.org/docs/4.x/data-operate/import/load-manual/)

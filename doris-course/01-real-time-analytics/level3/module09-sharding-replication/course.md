@@ -2,98 +2,53 @@
 
 | Course information | Value |
 | --- | --- |
-| Course | Real-time Analytics with Apache Doris — Level 3 |
-| Product baseline | Apache Doris 4.x |
-| Lab version | Apache Doris 4.1.3 |
-| Estimated time | Approximately 100 minutes, including the guided lab |
+| Course | Real-time Analytics with Apache Doris · Level 3 |
+| Doris | Apache Doris 4.1.3 |
+| Environment | A cluster of three FEs, three BEs, and HAProxy that Lab 9 starts; Docker with 4 CPUs and 8 GB of memory, with the single-node sandbox stopped |
+| Estimated time | About 145 minutes: reading 65, Lab 70, quiz 10 |
+
+[Course README](../../README.md) · [Open Lab 9](lab09_observe_sharding_and_replication.ipynb) · [Open Quiz 9](quiz09_distribution_and_availability.ipynb)
 
 ## Module goal
 
-An ecommerce event service has outgrown the single-FE, single-BE teaching
-topology used earlier in the course. New client sessions must be able to avoid
-one failed FE, operators need to add BE capacity without changing the table's
-logical shards, writes must continue through a supported replica failure, and
-a recurring event–user report should avoid unnecessary network movement.
+See how Doris spreads one table over several BEs and keeps it available: how
+Tablets and their replicas are placed, what happens when a BE joins, an FE
+fails, or a BE stops during a write, and which rows a distributed Join moves.
 
-This module follows that service as its topology and workload change. You will
-separate three different problems:
-
-- giving clients a healthy FE query entry point;
-- placing and recovering Tablet replicas across BEs; and
-- moving intermediate rows only where a distributed query requires it.
-
-The module first expands a two-BE replica layout onto a third BE, then stops
-the FE that a client is connected to and reconnects through a proxy. It follows
-one query from logical Tablets to actual BE scan tasks, observes replica
-versions during a controlled BE outage, and compares Bucket Shuffle and
-Colocate for the same event–user Join.
-
-Module 8 reduced work inside a query by selecting a materialized result or a
-secondary index. Module 9 asks where the selected data lives, which copy Doris
-reads, where each plan fragment runs, and which rows must move between nodes.
+An ecommerce event service has outgrown the single-FE, single-BE sandbox of
+the earlier modules. Operators need to add BE capacity without changing the
+table's shards, new client sessions must be able to avoid a failed FE, writes
+must continue through a supported replica failure, and a recurring
+event–user report should avoid unnecessary network movement. Three problems
+stay separate throughout: giving clients a healthy FE entry point, placing
+and recovering Tablet replicas across BEs, and moving intermediate rows only
+where a query requires it.
 
 ## Learning objectives
 
 After completing this module, you will be able to:
 
-1. Distinguish FE metadata availability, client-side query-entry availability,
-   BE data availability, and distributed query execution.
-2. Explain the relationship among a Partition, Bucket, logical Tablet, physical
-   replica, and BE placement.
-3. Predict when every BE must contain every Tablet and when different BEs can
-   hold different Tablet subsets.
-4. Explain why adding a BE can rebalance existing replicas without changing
-   the table's Partition or Bucket count.
-5. Trace a query from Partition pruning through Tablet-replica selection,
-   Fragment Instances, PipelineTasks, Exchanges, and the final result.
-6. Distinguish stored replica placement from the replicas actually selected for
-   one query execution.
-7. Apply the default majority-write rule and interpret relative replica
-   versions during outage and recovery.
-8. Explain how Bucket Shuffle routes one input to an existing `user_id` Bucket
-   layout and how a stable Colocation Group can avoid that Join input movement.
-9. Bound conclusions from a multi-container lab that still shares one physical
-   Docker host.
+1. Explain how Partitions, Buckets, Tablets, and replicas relate, and count them for a table.
+2. Explain why adding a BE moves existing replicas without changing the table's Partitions or Buckets.
+3. Separate FE metadata election from the client connection that must be reopened after its FE fails.
+4. Trace a query from Tablet selection to the BE scan tasks that a Query Profile records.
+5. Apply the default majority-write rule, and tell a live BE from a current replica after an outage.
+6. Explain how Bucket Shuffle and Colocate Join reduce the data that a distributed Join moves.
 
-## Follow One Growing Distributed Service
+## Module structure
 
-The team does not add every distributed feature at once. Each operational
-change exposes the next decision:
-
-```text
-identify the client, FE, BE, and proxy responsibilities
-    -> add a third BE and observe existing replica placement rebalance
-    -> lose the directly connected FE and establish a new healthy session
-    -> trace one SQL statement to the BE replicas that actually scan
-    -> keep writing during one supported BE outage and wait for version recovery
-    -> compare Bucket Shuffle and Colocate on the restored stable layout
-    -> state what the shared-host experiment does and does not establish
-    -> separate online replica health from long-term data lifecycle
-```
-
-The same event service connects these stages. FE election protects metadata
-service, a proxy or driver gives new client sessions a healthy FE target,
-Tablet replicas protect online data, and Fragments and Exchanges distribute
-query work. These mechanisms cooperate, but none substitutes for the others.
-
-| Section | Requirement scenario | Decision developed | Lab 9 evidence |
-| --- | --- | --- | --- |
-| **9.1 Identify each distributed role** | A single-node sandbox cannot expose election, replica placement, or cross-BE work. | Separate client, FE, BE, and proxy responsibilities. | Start three FEs with exactly two live BEs in an isolated cluster. |
-| **9.2 Expand replica placement** | Two BEs need capacity from a third BE. | Add a placement target and observe automatic replica balancing without changing logical shards. | Existing event replicas move onto the new BE while logical rows and total replica count remain constant. |
-| **9.3 Separate FE election from client routing** | A connected FE stops while other FEs remain healthy. | Use FE quorum for metadata availability and a client/proxy mechanism for new connections. | The direct session fails; HAProxy establishes replacement sessions only to healthy FEs. |
-| **9.4 Trace distributed scan work** | Several BEs store eligible replicas, but the team needs to know which ones execute a query. | Follow Tablet selection, Fragment Instances, and PipelineTasks through plan and Profile evidence. | A regional aggregation displays planned Tablet scope and actual BE scan tasks. |
-| **9.5 Recover a lagging replica** | One BE is unavailable while a write arrives. | Use a replica count that can form a majority, then distinguish heartbeat recovery from version recovery. | Two replicas commit a business event; the returning replica catches up to the current version. |
-| **9.6 Compare Join data movement** | The same event–user relationship is joined repeatedly after the layout is stable. | First preserve the event layout with Bucket Shuffle; then pre-position both inputs with Colocate. | The same answer reports `BUCKET_SHUFFLE` with one Join-input Exchange and `COLOCATE` without it. |
-| **9.7 Bound the evidence** | Container failure, replica recovery, and local Join plans succeeded, but production needs a defensible conclusion. | Separate storage placement, query execution, service availability, and shared-host limitations. | Metadata, `EXPLAIN`, and Profile each support a different conclusion; no single-host timing claim is added. |
-| **9.8 Continue into lifecycle policy** | All online replicas are healthy, but incorrect or obsolete data can still exist on every copy. | Separate replication from retention, recycle-bin recovery, and independent backup. | Replica health closes the availability scenario and exposes the lifecycle questions addressed in Module 10. |
-
-Lab 9 provides bounded Doris 4.1.3 evidence from an isolated multi-container
-cluster. All FEs, BEs, HAProxy, and Docker storage still share one physical
-host. Fixed service names, IP addresses, Tablet IDs, replica versions, and scan
-row counts belong to the Lab. The course develops mechanisms and decisions that
-remain valid when those values change.
-
----
+| Section | Time | Outcome |
+| --- | ---: | --- |
+| 9.1 Identify the Roles in a Distributed Doris Request | 7 min | Separate the client, FE, BE, and proxy responsibilities |
+| 9.2 Relate Partitions, Buckets, Tablets, and Replicas | 10 min | Count logical Tablets and replicas, and read placement after expansion |
+| 9.3 Separate FE Election from Client Load Balancing | 9 min | Keep metadata available, and reconnect clients through another FE |
+| 9.4 Follow a Query from SQL to BE Scan Tasks | 9 min | Read the planned Tablet scope and the scan tasks that actually ran |
+| 9.5 Commit Through a Majority and Recover the Lagging Replica | 8 min | Apply the majority rule, and tell heartbeat recovery from version recovery |
+| 9.6 Compare Bucket Shuffle and Colocate Join Data Movement | 12 min | Move one Join input, or none, by reusing a Bucket layout |
+| 9.7 State the Availability and Performance Boundary | 6 min | Say what each observation supports, and what one host cannot test |
+| 9.8 Move from Replica Health to Data Lifecycle | 4 min | Separate replication from retention, recovery, and backup |
+| Lab 9 | 70 min | Expand a cluster, fail an FE, stop a BE during a write, and compare two Joins |
+| Quiz 9 | 10 min | Six questions on these objectives |
 
 ## 9.1 Identify the Roles in a Distributed Doris Request
 
@@ -753,13 +708,12 @@ history keeps growing, how should the team control storage cost, remove whole
 time ranges from the online table, handle late data, and recover from an
 eligible mistaken deletion?
 
----
-
 ## Lab 9: Observe Sharding, Replication, and Distributed Execution
 
 Open [Lab 9 — Observe Sharding, Replication, and Distributed Execution](lab09_observe_sharding_and_replication.ipynb)
-after completing Lab 8. It uses an isolated Module 9 Compose project rather
-than the single-node `doris-rta` container from Modules 1–8.
+after completing Lab 8, and plan about 70 minutes, a little more on a slow
+network. It uses an isolated Module 9 Compose project rather than the
+single-node `doris-rta` container from Modules 1–8.
 
 Check the environment before you start:
 
@@ -821,42 +775,38 @@ containers, the data stored in them, and their network; the single-node
 `doris-rta` container is not affected. The next run imports the seven-hour sample
 again. Use the same command to remove the cluster when you finish the course.
 
-## Module summary
+## Summary
 
-FE availability, client routing, and BE data availability are separate layers.
-A surviving FE majority can elect a Master, but an application must open a new
-session through another address or proxy after its connected FE fails. HAProxy
-health and connection counters describe TCP session routing, not Doris query
-execution.
-
-A Bucket creates a logical Tablet within each Partition; replication creates
-physical copies of that Tablet. Adding a BE expands the set of placement
-targets and can rebalance replicas without adding Buckets or changing logical
-rows. A query selects one healthy replica per needed Tablet, dispatches Fragment
-Instances to BEs, and uses PipelineTasks and Exchanges to complete distributed
-work. The Profile, not replica placement alone, identifies actual scan hosts.
-
-Default writes require a majority of replicas. A returning BE can become alive
-before its replicas reach the current version. Replica convergence protects
-online data availability; it does not undo replicated mistakes or replace a
-backup.
-
-Bucket Shuffle preserves one compatible Bucket layout and routes the other
-Join input to it. Colocate makes both physical layouts compatible and stable in
-advance. These strategies change where rows meet, not which rows belong in the
-logical answer. Module 10 next defines how long those rows remain online and
-what recovery boundary exists after data is deliberately removed.
+- A table has one logical Tablet per Bucket in each Partition, and replication
+  stores copies of every Tablet: two Partitions of six Buckets with two
+  replicas are 12 Tablets and 24 replicas, and SQL still returns each row
+  once.
+- Adding a BE adds a placement target: the Tablet scheduler moves some
+  existing replicas onto it and keeps the replica count, while the
+  Partitions, the Buckets, and the logical Tablets stay as they are.
+- When an FE fails, the surviving FE majority can elect a Master, but the
+  client's session to the failed FE ends; a new session through a proxy or a
+  multi-address driver reaches a healthy FE, and HAProxy's counters describe
+  TCP sessions, not Doris queries.
+- The FE selects one healthy replica of each Tablet that a query needs and
+  sends Fragment Instances to the BEs; the plan shows the planned Tablet
+  scope, and only the Profile shows which BEs scanned which Tablets.
+- By default a load commits when more than half of the replicas succeed, so
+  three replicas tolerate one stopped BE and two do not; a returning BE is
+  alive before its replicas reach the current version, and replication is not
+  a backup.
+- Bucket Shuffle keeps one compatible bucketed input in place and routes the
+  other input to it; Colocate places both inputs' matching Buckets together in
+  advance, so the Join needs no Exchange for its inputs.
 
 ## Quiz 9: Sharding, Replication, and Distributed Execution in Apache Doris
 
-Complete the interactive knowledge check after finishing the module and
-Lab 9. It runs without a Doris sandbox.
-
-[Open Quiz 9 — Sharding, Replication, and Distributed Execution in Apache Doris](quiz09_distribution_and_availability.ipynb)
+Open [Quiz 9: Sharding, Replication, and Distributed Execution in Apache Doris](quiz09_distribution_and_availability.ipynb).
+It has six single-choice questions and needs no running environment.
 
 Next module: [Module 10: Controlling Storage Cost and Data Lifecycle in Apache Doris](../module10-managing-data/course.md).
 
-## Official references
+## References
 
 - Architecture and execution: [Product Concepts](https://doris.apache.org/docs/4.x/features-architecture/product-concepts/) and [`EXPLAIN`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/EXPLAIN/)
 - FE entry points: [FE Load Balancing](https://doris.apache.org/docs/4.x/admin-manual/cluster-management/load-balancing/)

@@ -2,104 +2,54 @@
 
 | Course information | Value |
 | --- | --- |
-| Course | Real-time Analytics with Apache Doris — Level 3 |
-| Product baseline | Apache Doris 4.x |
-| Lab version | Apache Doris 4.1.3 |
-| Estimated time | Approximately 95 minutes; the lab's optional real-clock part adds a wait of up to about an hour |
+| Course | Real-time Analytics with Apache Doris · Level 3 |
+| Doris | Apache Doris 4.1.3 |
+| Environment | The course sandbox and `events_modelled` from Lab 4, with the Module 9 cluster stopped |
+| Estimated time | About 115 minutes: reading 60, Lab 45, quiz 10; the Lab's optional real-clock part adds a wait of up to about an hour |
+
+[Course README](../../README.md) · [Open Lab 10](lab10_manage_data.ipynb) · [Open Quiz 10](quiz10_data_lifecycle_and_recovery.ipynb)
 
 ## Module goal
 
+Give one growing event table a lifecycle: store the rows that must stay
+online in fewer bytes, remove complete old time ranges on a schedule, and know
+how to recover data that was removed by mistake.
+
 An online commerce service has kept every event since launch. Its dashboards
-mostly read recent events, storage use keeps growing, some events arrive late,
+mostly read recent events, storage keeps growing, some events arrive late,
 and an accidental deletion must not become an unrecoverable incident. The
-team therefore needs one lifecycle policy for the same event dataset rather
-than a disconnected list of storage features.
-
-You will help the team make four related decisions:
-
-- how Doris should compress stored Pages;
-- how event time should define manageable Partition ranges;
-- when complete old ranges should leave the online table; and
-- which recovery mechanism applies after data is removed.
-
-The team first reduces the cost of rows that must remain online. Compression
-cannot stop an indefinitely growing table, so it next makes event time a
-manageable Partition boundary and defines a daily rolling window. After that,
-it must verify what the scheduler has actually changed, decide whether colder
-but still-online data needs another storage tier, and establish how an
-accidental removal would be recovered.
-
-Module 9 used replicas to keep current data available during a Backend (BE)
-failure. Module 10 addresses a different question: what happens when the
-system intentionally removes old data, or when a valid delete operation was a
-business mistake?
+team makes four related decisions: how Doris compresses stored Pages, how
+event time defines Partitions that can be managed, when complete old ranges
+leave the online table, and which recovery mechanism applies after data is
+removed. Module 9 used replicas to keep current data available during a BE
+failure; this module asks what happens when old data is removed on purpose,
+or when a valid delete was a business mistake.
 
 ## Learning objectives
 
 After completing this module, you will be able to:
 
-1. Explain the separate roles of column encoding and Page compression.
-2. Choose a table-level compression algorithm from storage, I/O, and CPU
-   requirements rather than from an algorithm name alone.
-3. Design a controlled compression comparison with identical logical input,
-   table layout, load count, and replica count.
-4. Distinguish Manual Partitioning, Auto Partitioning, and Dynamic
-   Partitioning by what causes a Partition to be created or removed.
-5. Interpret a Dynamic Partition window from `time_unit`, `start`, `end`, time
-   zone, and historical-retention settings.
-6. Explain how the window affects late events and why expiry applies to a
-   complete Partition rather than to each row independently.
-7. Separate accepted configuration, scheduler status, SQL-visible data,
-   catalog recovery, and physical storage reclamation.
-8. Decide when the recycle bin is sufficient and when an independent backup
-   or authoritative-source replay is required.
-9. Describe tiered-storage choices without treating one local Docker
-   filesystem as evidence of storage migration.
+1. Explain the separate roles of column encoding and Page compression, and choose a compression algorithm from the constrained resource.
+2. Design a fair compression comparison that keeps the input, layout, loads, and replicas equal.
+3. Choose Manual, Auto, or Dynamic Partitioning from what creates and what removes Partitions.
+4. Read a Dynamic Partition window from its time unit, offsets, and time zone, and predict what happens to late data.
+5. Separate an accepted configuration, scheduler action, SQL visibility, and storage reclamation when a Partition expires.
+6. Decide when the recycle bin is enough and when an independent backup or a replay from the source is needed.
 
-## Follow One Event Dataset Through Its Lifecycle
+## Module structure
 
-The scenario advances through one chain of decisions:
-
-```text
-define cost, retention, late-data, and recovery requirements
-        |
-        v
-reduce the bytes used by rows that must stay online
-        |
-        v
-organize event time into removable business ranges
-        |
-        v
-advance a daily online window and handle late events
-        |
-        v
-verify scheduler action and logical disappearance separately
-        |
-        v
-place retained cold data deliberately and prepare recovery
-```
-
-Each step leaves a question that the next step answers. This keeps compression,
-retention, tiering, and recovery in one lifecycle without treating them as
-interchangeable solutions.
-
-| Section | Requirement scenario | Decision developed | Lab 10 evidence |
-| --- | --- | --- | --- |
-| **10.1 Define the lifecycle** | The event table grows indefinitely. | Define heat, retention, late-data, Recovery Point Objective (RPO), and Recovery Time Objective (RTO) requirements before selecting syntax. | Use a bounded event day and isolated Module 10 objects. |
-| **10.2 Understand compression layers** | Required online events consume increasing storage and read I/O. | Relate column encoding to Page compression, then identify what the table property controls. | Inspect two low-cardinality event types and unique messages with a shared prefix. |
-| **10.3 Compare algorithms fairly** | The team is considering a change from the default compression setting. | Hold logical data and physical layout constant; compare reported storage without inferring CPU speed. | Load identical `NO_COMPRESSION`, `LZ4F`, and `ZSTD` tables. |
-| **10.4 Choose a Partition mode** | Compression reduces bytes, but old time ranges still accumulate. | Choose Manual, Auto, or Dynamic Partitioning according to what creates ranges and who removes them. | Create an hourly Dynamic Partition table separate from the recovery table. |
-| **10.5 Define a rolling window** | Keep seven calendar-day ranges online, prepare tomorrow, and decide how to handle late events. | Interpret half-open ranges, clock offsets, time zone, historical exceptions, and missing-Partition behavior. | Map the same mechanism to hours so expiry can be observed during the Lab. |
-| **10.6 Verify scheduled expiry** | The rule is accepted, but the oldest Partition remains visible. | Distinguish configuration, scheduler observation, catalog and SQL visibility, and later physical cleanup. | Move the window forward by one hour, or wait for the real boundary, and watch the scheduler remove the range without issuing `DROP`. |
-| **10.7 Place cold data intentionally** | Old data is still needed but local high-performance storage is expensive. | Choose local tiering, remote tiering, or another deployment mode only when the required media exist. | Course discussion only; the single-disk Lab does not simulate migration. |
-| **10.8 Establish recovery boundaries** | A Partition was dropped accidentally. | Use the recycle bin for an eligible recent drop and use independent backup or replay for broader failures. | Drop without `FORCE`, inspect the recycle bin, and recover the most recent matching Partition. |
-
-Lab 10 supplies bounded evidence from a single-node Doris 4.1.3 container. Its
-fixed row counts, object names, timestamps, and reported storage sizes belong
-to the Lab. The decisions in this course must remain valid when those values
-change.
-
----
+| Section | Time | Outcome |
+| --- | ---: | --- |
+| 10.1 Define the Lifecycle Before Choosing a Feature | 6 min | State heat, retention, late-data, and recovery requirements first |
+| 10.2 Understand Where Doris Compresses Data | 9 min | Relate column encoding to Page compression, and choose from the constrained resource |
+| 10.3 Compare Compression Choices with Controlled Input | 8 min | Hold input and layout equal, and read the storage report conservatively |
+| 10.4 Choose How Partitions Are Created and Removed | 7 min | Choose Manual, Auto, or Dynamic Partitioning |
+| 10.5 Define a Rolling Window and Its Late-Data Policy | 9 min | Read a window's ranges, and decide what happens to late events |
+| 10.6 Separate Configuration, Scheduling, Visibility, and Reclamation | 8 min | Verify an expiry in four layers |
+| 10.7 Treat Tiered Storage as a Deployment Decision | 5 min | Place retained cold data only on real tiers |
+| 10.8 Establish the Recovery Boundary Before Data Is Removed | 8 min | Use the recycle bin, a backup, or a replay for the failure at hand |
+| Lab 10 | 45 min | Compare three compression settings, expire an hourly Partition, and recover a dropped one |
+| Quiz 10 | 10 min | Six questions on these objectives |
 
 ## 10.1 Define the Lifecycle Before Choosing a Feature
 
@@ -743,12 +693,11 @@ See [Restore from Recycle Bin](https://doris.apache.org/docs/4.x/admin-manual/da
 [`RECOVER`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/recycle/RECOVER/),
 and [Backup and Restore](https://doris.apache.org/docs/4.x/admin-manual/data-admin/backup-restore/overview/).
 
----
-
 ## Lab 10: Compare Compression and Verify a Partition Lifecycle
 
 Open [Lab 10 — Compare Compression and Verify a Partition Lifecycle](lab10_manage_data.ipynb)
-after completing Lab 9.
+after completing Lab 9, and plan about 45 minutes; its optional real-clock part
+needs you to come back after the next whole hour.
 The Lab returns to the single-node `doris-rta` container from Modules 1–8 and the
 `doris_course` Database. It reads one bounded day from `events_modelled`, does
 not modify that source, and creates only Module 10 objects. It does not access
@@ -779,46 +728,40 @@ Only the optional clock-dependent step can span two Notebook sessions. There,
 do not rerun the setup after the boundary, because rebuilding the table would
 replace the evidence with a new window.
 
-## Module summary
+## Summary
 
-Compression and retention reduce different costs. Doris can encode values
-within each column and then compress encoded bytes by Page. The table-level
-compression property selects the Page-compression algorithm, while the storage
-engine still chooses internal encodings. Repeated complete values can help
-encoding, and unique strings can remain compressible when their byte structure
-repeats.
-
-A fair compression comparison keeps schema, Table Model, Partition, Buckets,
-replicas, input rows, and load shape equal. Doris's reported size can establish
-a storage difference for that controlled sample. It cannot isolate one
-column's contribution or establish query CPU and latency.
-
-Manual Partitioning gives explicit control, Auto Partitioning creates ranges
-from incoming values, and Dynamic Partitioning advances a clock-defined
-window. The production scenario uses daily boundaries; the Lab maps the same
-rule to hours so a learner can observe expiry within the Lab. Dynamic expiry removes
-a complete Range Partition after a boundary and a scheduler check. Accepted
-properties, scheduler health, visible Partitions, SQL rows, and physical
-storage cleanup are separate evidence.
-
-Online replicas protect current data from node failure. The recycle bin can
-restore an eligible recent object drop performed without `FORCE`, but its
-retention is limited and it remains part of the same cluster. Independent
-backup or authoritative-source replay is required for stronger recovery
-boundaries. Tiered storage can lower the cost of retained cold data only when
-the deployment provides real destination media and satisfies the current
-feature constraints.
+- Doris encodes each column's values, for example with a dictionary or
+  run-length encoding, and then compresses the encoded bytes Page by Page with
+  the table's algorithm; choose the algorithm from the constrained resource,
+  ZSTD by default, LZ4 or Snappy when decompression CPU is the bottleneck.
+- A fair comparison changes only the `compression` property: the same rows
+  and load batches, the same Table Model, Partitions, Buckets, and replicas;
+  its storage report then shows a difference for that sample, not a query
+  speed.
+- Manual Partitioning keeps creation and removal under explicit control, Auto
+  Partitioning creates ranges from incoming values and can keep the newest N
+  with `partition.retention_count`, and Dynamic Partitioning keeps a window
+  relative to the current time and creates future ranges in advance.
+- A Dynamic Partition window is a set of half-open ranges counted from
+  `start` to `end` in its `time_unit` and `time_zone`; a row leaves with its
+  whole range, and a late event outside every range fails to load unless a
+  late-data path handles it.
+- An accepted `ALTER` sets the rule, the scheduler applies it at its next
+  check, `SHOW PARTITIONS` and a query show what is online, and none of them
+  shows when the BE has reclaimed the bytes.
+- The recycle bin can restore a recent drop made without `FORCE`, for a
+  limited time and inside the same cluster; replicas copy deletions too, so a
+  dropped range with `FORCE`, an expired window, or a lost cluster needs an
+  independent backup or a replay from the source.
 
 ## Quiz 10: Controlling Storage Cost and Data Lifecycle in Apache Doris
 
-Complete the interactive knowledge check after finishing the module and
-Lab 10. It runs without a Doris sandbox.
-
-[Open Quiz 10 — Controlling Storage Cost and Data Lifecycle in Apache Doris](quiz10_data_lifecycle_and_recovery.ipynb)
+Open [Quiz 10: Controlling Storage Cost and Data Lifecycle in Apache Doris](quiz10_data_lifecycle_and_recovery.ipynb).
+It has six single-choice questions and needs no running environment.
 
 Next: this is the last module of the course.
 
-## Official references
+## References
 
 - Compression: [Data Compression](https://doris.apache.org/docs/4.x/table-design/column-compression/), [FE Configuration](https://doris.apache.org/docs/4.x/admin-manual/config/fe-config/), and [`SHOW DATA`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/table-and-view/data-and-status-management/SHOW-DATA/)
 - Partition modes: [Manual Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/manual-partitioning/), [Auto Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/auto-partitioning/), and [Dynamic Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/dynamic-partitioning/)
