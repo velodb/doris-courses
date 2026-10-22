@@ -493,7 +493,7 @@ The query path has two levels of data reduction:
 1. **FE pruning:** while creating the distributed query plan, FE uses metadata
    to exclude Partitions and Tablets.
 2. **BE scan reduction:** while executing assigned plan fragments, BE uses the
-   sort key, Prefix Index, Min/Max metadata, and applicable secondary indexes
+   sort key, Prefix Index, Min/Max metadata (the ZoneMap), and applicable secondary indexes
    to skip smaller data ranges inside selected Tablets.
 
 This wording matters. **Predicate pushdown** means that BE evaluates a

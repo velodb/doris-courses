@@ -22,10 +22,11 @@ separate three different problems:
 - placing and recovering Tablet replicas across BEs; and
 - moving intermediate rows only where a distributed query requires it.
 
-The module begins with FE election and client reconnection, expands a two-BE
-replica layout onto a third BE, follows one query from logical Tablets to actual
-BE scan tasks, and observes replica versions during a controlled BE outage. It
-then compares Bucket Shuffle and Colocate for the same event–user Join.
+The module first expands a two-BE replica layout onto a third BE, then stops
+the FE that a client is connected to and reconnects through a proxy. It follows
+one query from logical Tablets to actual BE scan tasks, observes replica
+versions during a controlled BE outage, and compares Bucket Shuffle and
+Colocate for the same event–user Join.
 
 Module 8 reduced work inside a query by selecting a materialized result or a
 secondary index. Module 9 asks where the selected data lives, which copy Doris
@@ -61,8 +62,8 @@ change exposes the next decision:
 
 ```text
 identify the client, FE, BE, and proxy responsibilities
-    -> lose the directly connected FE and establish a new healthy session
     -> add a third BE and observe existing replica placement rebalance
+    -> lose the directly connected FE and establish a new healthy session
     -> trace one SQL statement to the BE replicas that actually scan
     -> keep writing during one supported BE outage and wait for version recovery
     -> compare Bucket Shuffle and Colocate on the restored stable layout
@@ -78,8 +79,8 @@ query work. These mechanisms cooperate, but none substitutes for the others.
 | Section | Requirement scenario | Decision developed | Lab 9 evidence |
 | --- | --- | --- | --- |
 | **9.1 Identify each distributed role** | A single-node sandbox cannot expose election, replica placement, or cross-BE work. | Separate client, FE, BE, and proxy responsibilities. | Start three FEs with exactly two live BEs in an isolated cluster. |
-| **9.2 Separate FE election from client routing** | A connected FE stops while other FEs remain healthy. | Use FE quorum for metadata availability and a client/proxy mechanism for new connections. | The direct session fails; HAProxy establishes replacement sessions only to healthy FEs. |
-| **9.3 Expand replica placement** | Two BEs need capacity from a third BE. | Add a placement target and observe automatic replica balancing without changing logical shards. | Existing event replicas move onto the new BE while logical rows and total replica count remain constant. |
+| **9.2 Expand replica placement** | Two BEs need capacity from a third BE. | Add a placement target and observe automatic replica balancing without changing logical shards. | Existing event replicas move onto the new BE while logical rows and total replica count remain constant. |
+| **9.3 Separate FE election from client routing** | A connected FE stops while other FEs remain healthy. | Use FE quorum for metadata availability and a client/proxy mechanism for new connections. | The direct session fails; HAProxy establishes replacement sessions only to healthy FEs. |
 | **9.4 Trace distributed scan work** | Several BEs store eligible replicas, but the team needs to know which ones execute a query. | Follow Tablet selection, Fragment Instances, and PipelineTasks through plan and Profile evidence. | A regional aggregation displays planned Tablet scope and actual BE scan tasks. |
 | **9.5 Recover a lagging replica** | One BE is unavailable while a write arrives. | Use a replica count that can form a majority, then distinguish heartbeat recovery from version recovery. | Two replicas commit a business event; the returning replica catches up to the current version. |
 | **9.6 Compare Join data movement** | The same event–user relationship is joined repeatedly after the layout is stable. | First preserve the event layout with Bucket Shuffle; then pre-position both inputs with Colocate. | The same answer reports `BUCKET_SHUFFLE` with one Join-input Exchange and `COLOCATE` without it. |
@@ -163,86 +164,13 @@ Keep these health questions separate:
 | SQL query succeeds | This new or retained client path completed that query |
 | Replica is current | A particular Tablet copy has the complete current version |
 
-No single row in one of these views answers all five questions.
+Each row answers only its own question; none of them answers the other five.
 
-The responsibilities are now separate, but the application is still directly
-connected to one FE. Stopping that FE tests the first unresolved boundary:
-whether Doris metadata election also preserves the client's existing network
-session.
+The responsibilities are now separate. The data layer begins with two BEs and
+two replicas; the first change adds a third BE without redefining the event
+table's Partition or Bucket layout.
 
-## 9.2 Separate FE Election from Client Load Balancing
-
-Suppose three Follower FEs form the voting group and the client directly
-connects to the current Master. If that FE stops, the remaining majority can
-elect another Master and preserve FE metadata service availability.
-
-The existing MySQL TCP session still terminates:
-
-```text
-client ===== TCP session ===== failed FE
-                                   X
-
-new Master elected elsewhere does not move that TCP session
-```
-
-The application must establish a new session through another address or a
-stable entry point.
-
-### Choose an entry mechanism
-
-| Mechanism | Where target selection happens | Main operating consideration |
-| --- | --- | --- |
-| JDBC load-balance URL | In each Java client | Every application and connection pool must use the correct driver configuration |
-| Nginx TCP proxy | In a general-purpose proxy | Fits existing Nginx operations; requires stream/TCP health and forwarding configuration |
-| HAProxy | In a dedicated TCP load balancer | Provides rich health checks and connection statistics |
-| ProxySQL | In a MySQL-aware proxy | Adds protocol-aware connection and routing features with more operating surface |
-
-Lab 9 uses HAProxy because the Notebook client is Python rather than JDBC and
-the experiment needs visible TCP health and connection counters. This is an
-environment choice, not a Doris requirement or a universal recommendation.
-
-### Understand what HAProxy counts
-
-A proxied MySQL session has two TCP legs:
-
-```text
-Python client ---> HAProxy listening port ---> selected FE query port
-```
-
-The Lab's statistics use these fields:
-
-| Field | Meaning | Do not interpret it as |
-| --- | --- | --- |
-| `active connections` | Sessions currently forwarded from HAProxy to that FE | Number of running SQL queries |
-| `total connections` | Sessions assigned to that FE since this HAProxy process started | Lifetime Doris query count |
-| `L4OK` | The TCP health check connected successfully to the FE port | Successful authentication, SQL execution, or Master identity |
-
-Round-robin distributes newly created sessions, not individual statements
-inside one persistent session. A connection pool can therefore make statement
-counts look uneven even when new sessions were distributed as configured.
-
-### Use distinct evidence for distinct behavior
-
-A controlled FE failure should establish four facts separately:
-
-1. The directly connected FE was identified before it was stopped.
-2. The old connection failed rather than migrating invisibly.
-3. The surviving FEs retained a voting majority and one became Master.
-4. A newly created proxy session avoided the failed target and completed a
-   business query.
-
-This supports “new connections can be re-established around one failed FE.” It
-does not support “in-flight queries migrate” or “the system has zero
-interruption.” One HAProxy container is also a single proxy failure point.
-
-See [FE Load Balancing](https://doris.apache.org/docs/4.x/admin-manual/cluster-management/load-balancing/).
-
-After the failed FE returns, the service again has a complete FE voting group
-and a stable client entry. The next constraint is storage and execution
-capacity. The data layer begins with two BEs and two replicas, then adds a third
-BE without redefining the event table's Partition or Bucket layout.
-
-## 9.3 Relate Partitions, Buckets, Tablets, and Replicas
+## 9.2 Relate Partitions, Buckets, Tablets, and Replicas
 
 Module 4 introduced Partition and Bucket design. A multi-BE cluster makes the
 physical consequences visible.
@@ -335,10 +263,80 @@ of forcing a manual move and calling it automatic balancing.
 See [Elastic Expansion](https://doris.apache.org/docs/4.x/admin-manual/cluster-management/elastic-expansion/)
 and [Data Replica Management](https://doris.apache.org/docs/4.x/admin-manual/maint-monitor/tablet-repair-and-balance/).
 
-Expansion changes where replicas can live, but placement metadata still does
-not reveal which copy serves a particular query. With the third BE available,
-the team can now follow one regional aggregation from the FE plan to the actual
-BE scan tasks.
+Expansion changes where replicas can live. The application, however, is still
+connected directly to one FE. Stopping that FE tests the next boundary: whether
+Doris metadata election also preserves the client's existing network session.
+
+## 9.3 Separate FE Election from Client Load Balancing
+
+Suppose three Follower FEs form the voting group and the client directly
+connects to the current Master. If that FE stops, the remaining majority can
+elect another Master and preserve FE metadata service availability.
+
+The existing MySQL TCP session still terminates:
+
+```text
+client ===== TCP session ===== failed FE
+                                   X
+
+new Master elected elsewhere does not move that TCP session
+```
+
+The application must establish a new session through another address or a
+stable entry point.
+
+### Choose an entry mechanism
+
+| Mechanism | Where target selection happens | Main operating consideration |
+| --- | --- | --- |
+| JDBC load-balance URL | In each Java client | Every application and connection pool must use the correct driver configuration |
+| Nginx TCP proxy | In a general-purpose proxy | Fits existing Nginx operations; requires stream/TCP health and forwarding configuration |
+| HAProxy | In a dedicated TCP load balancer | Provides rich health checks and connection statistics |
+| ProxySQL | In a MySQL-aware proxy | Adds protocol-aware connection and routing features with more operating surface |
+
+Lab 9 uses HAProxy because the Notebook client is Python rather than JDBC and
+the experiment needs visible TCP health and connection counters. This is an
+environment choice, not a Doris requirement or a universal recommendation.
+
+### Understand what HAProxy counts
+
+A proxied MySQL session has two TCP legs:
+
+```text
+Python client ---> HAProxy listening port ---> selected FE query port
+```
+
+The Lab's statistics use these fields:
+
+| Field | Meaning | Do not interpret it as |
+| --- | --- | --- |
+| `active connections` | Sessions currently forwarded from HAProxy to that FE | Number of running SQL queries |
+| `total connections` | Sessions assigned to that FE since this HAProxy process started | Lifetime Doris query count |
+| `L4OK` | The TCP health check connected successfully to the FE port | Successful authentication, SQL execution, or Master identity |
+
+Round-robin distributes newly created sessions, not individual statements
+inside one persistent session. A connection pool can therefore make statement
+counts look uneven even when new sessions were distributed as configured.
+
+### Use distinct evidence for distinct behavior
+
+A controlled FE failure should establish four facts separately:
+
+1. The directly connected FE was identified before it was stopped.
+2. The old connection failed rather than migrating invisibly.
+3. The surviving FEs retained a voting majority and one became Master.
+4. A newly created proxy session avoided the failed target and completed a
+   business query.
+
+This supports “new connections can be re-established around one failed FE.” It
+does not support “in-flight queries migrate” or “the system has zero
+interruption.” One HAProxy container is also a single proxy failure point.
+
+See [FE Load Balancing](https://doris.apache.org/docs/4.x/admin-manual/cluster-management/load-balancing/).
+
+After the failed FE returns, the service again has a complete FE voting group,
+a stable client entry, and replicas on all three BEs. The team can now follow
+one regional aggregation from the FE plan to the actual BE scan tasks.
 
 ## 9.4 Follow a Query from SQL to BE Scan Tasks
 

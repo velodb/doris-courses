@@ -83,7 +83,7 @@ Each section turns one requirement into a decision:
 | **8.4 Store a multi-table result** | A repeated event–product report can tolerate refresh delay. | Use an asynchronous materialized view with an explicit refresh and freshness contract. | A dimension change leaves the stored result stale until a complete refresh succeeds. |
 | **8.5 Test transparent rewrite eligibility** | The view exists, but only some queries can be derived from it. | Compare requested dimensions and measure state with what the view preserved. | Additive totals rewrite; a distinct-buyer query continues to scan source tables. |
 | **8.6 Add a selective secondary index** | `product_id` is not the leading sort field, but investigations use equality predicates. | Add an inverted index without replacing the time-oriented table layout. | Indexed and unindexed copies return the same answer; the indexed scan records index filtering. |
-| **8.7 Give the optimizer usable inputs** | A suitable structure exists but is not selected. | Check query shape and statistics before forcing a plan. | Analyze only Module 8 objects and inspect the selected scan. |
+| **8.7 Give the optimizer usable inputs** | A suitable structure exists but is not selected. | Check query shape and statistics before forcing a plan. | Analyze only Module 8 objects, read their statistics, and compare a Join's estimated rows with the actual rows. |
 | **8.8 Decide whether the structure is worth maintaining** | Read work falls, but storage and maintenance rise. | Evaluate correctness, freshness, work reduction, and lifecycle cost together. | Compare bounded Profile counters while preserving the cache and single-node evidence limits. |
 
 Lab 8 supplies bounded Doris 4.1.3 evidence. The course explains general
@@ -541,7 +541,7 @@ matches.
 | Structure | Main role | Appropriate starting point | Important limit |
 | --- | --- | --- | --- |
 | Prefix Index | Built from the leading Key prefix | Frequent filters aligned with the sort Key | Changing Key order generally requires rebuilding the table |
-| ZoneMap | Min/max and related block metadata | Range exclusion when blocks have useful value separation | Overlapping ranges reduce pruning |
+| ZoneMap | The Min/Max metadata of Module 2: minimum, maximum, and related metadata of each block | Range exclusion when blocks have useful value separation | Overlapping ranges reduce pruning |
 | Inverted Index | Value/term to Row ID postings | Selective equality, range, `IN`, array membership, or supported full-text predicates | Adds storage and write/build work; broad matches may save little |
 | BloomFilter Index | Probabilistic block-level membership test | Selective equality or `IN`, often on high-cardinality fields | False positives can keep blocks; it does not return exact row positions |
 | NGram BloomFilter | N-gram membership for strings | Supported substring-style filtering such as leading-wildcard `LIKE` | N-gram size and false-positive settings affect cost and effectiveness |
@@ -630,7 +630,18 @@ When an expected structure is not selected, check in this order:
 
 Collect statistics for the tables and columns involved in the decision. Do not
 turn a query investigation into an unbounded maintenance operation over a
-shared Database.
+shared Database. `ANALYZE TABLE ... WITH SYNC` collects them and returns when
+collection has finished; `SHOW COLUMN STATS` shows what Doris recorded for each
+column: the row count, the number of distinct values (`ndv`), `NULL` values,
+and the minimum and maximum.
+
+Statistics summarize a column; they do not describe every predicate. Lab 8
+shows a typical gap: the copied day has two event types, so `ndv` is 2, and
+without the frequency of each value the optimizer assumes that half of the
+rows are purchases. Its Join estimate is about twice the actual count. The plan
+is still sound, because the product side is small enough to broadcast either
+way, but the gap explains why an estimate in `EXPLAIN` is a hypothesis to
+compare with the Query Profile, not a measurement.
 
 Hints can be useful for a controlled comparison or emergency diagnosis, but a
 hint does not repair an ineligible definition, missing data, or stale
@@ -726,6 +737,7 @@ error.
 | **4. Build and refresh an asynchronous materialized view** | Store the event–product category report, reclassify one product, observe stale stored groups, and refresh again. | Source and stored results can diverge between refreshes and reconcile after the new complete refresh succeeds. |
 | **5. Test transparent rewrite** | Compare rewrite disabled and enabled for additive category totals, then request distinct buyers. | Additive totals use the async view; the missing distinct-user state keeps the second query on source tables. |
 | **6. Isolate an inverted index** | Load identical indexed and unindexed event copies and run the same selective product predicate. | Results remain equal; the indexed run records index filtering and reduced relevant scan work. |
+| **7. Read the statistics behind the chosen plan** | Collect statistics for the two tables of the category report, read their column statistics, and compare the Join's estimated rows in `EXPLAIN` with the rows that actually leave it. | Statistics feed estimates, not observations: the optimizer expects about twice as many purchases as there are and still chooses a Broadcast Join. |
 
 Read the Lab evidence in this order:
 

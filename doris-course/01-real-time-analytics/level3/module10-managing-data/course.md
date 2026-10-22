@@ -241,22 +241,28 @@ PROPERTIES (
 ```
 
 The property applies the selected compression algorithm to the table's column
-Pages. It is not a ClickHouse-style per-column `CODEC(...)` declaration. A
+Pages. It is not a per-column codec declaration. A
 table can still use column-specific internal encodings, but this DDL does not
 let the course assign a different compression algorithm to every column.
 
 Apache Doris supports `none`, `LZ4`, `LZ4F`, `LZ4HC`, `ZSTD`, `Snappy`, and
 `Zlib`. The local Doris 4.1.3 build used by the Lab accepts and displays the
-no-Page-compression setting as `NO_COMPRESSION`. From Doris 4.0.3 onward, the
-documented Frontend (FE) default is ZSTD; confirm the effective value in the
-target build because an administrator can change `default_compression_type`.
+no-Page-compression setting as `NO_COMPRESSION`. In Doris 4.x the Frontend
+(FE) default is ZSTD; confirm the effective value in the target build because
+an administrator can change `default_compression_type`.
 
 ### Choose from the constrained resource
+
+The candidates below follow the quick-selection guide of Doris's Data
+Compression page. Its algorithm table describes LZ4 as extremely fast with a
+moderate ratio, LZ4F as fast with a moderate ratio, and ZSTD as a high ratio
+with fast decompression; the guide lists LZ4F next to ZSTD for the balance of
+storage cost and query performance.
 
 | Need | Candidate to test | Reason to test it | Evidence still required |
 | --- | --- | --- | --- |
 | Fast decompression for frequent reads | LZ4 or Snappy | Designed for low decompression overhead | Query CPU, I/O, concurrency, and latency on the real workload |
-| Balance storage and query cost | ZSTD or LZ4F | Intended to balance ratio and decompression speed | Stored bytes and workload measurements |
+| Balance storage and query cost | ZSTD or LZ4F | Listed together by the guide for this balance; ZSTD is the default recommendation | Stored bytes and workload measurements |
 | Storage efficiency for colder data | ZSTD, Zlib, or LZ4HC | Can favor compression ratio | Load CPU, read latency, and operating cost |
 | Establish a Page-compression baseline | No compression | Separates the observed effect of Page compression | Remember that encoding and table overhead still remain |
 
@@ -380,19 +386,25 @@ Three Partition modes answer different creation questions:
 | Mode | What creates a Partition? | Appropriate scenario | Lifecycle consequence |
 | --- | --- | --- | --- |
 | Manual Partitioning | Explicit table DDL or `ALTER TABLE` | Stable or business-defined ranges requiring precise control | Application or operator also manages later additions and removals |
-| Auto Partitioning | An incoming Partition value during data ingestion | Sparse, unpredictable, or data-driven values | Creates missing ranges on demand; does not itself roll old ranges out by the clock |
+| Auto Partitioning | An incoming Partition value during data ingestion | Sparse, unpredictable, or data-driven values | Creates missing ranges on demand; with `partition.retention_count = N`, the scheduler also keeps only the N newest historical ranges |
 | Dynamic Partitioning | A scheduler interpreting current time and table properties | Predictable time-series window with future pre-creation and rolling expiry | Creates and removes complete time ranges according to offsets |
 
 Auto Partitioning is the recommended general approach for automatic creation
 in current Doris documentation. Dynamic Partitioning remains the relevant
 choice when the requirement specifically includes a clock-driven rolling
-retention window.
+window: ranges counted back from the current time, with future ranges created
+in advance.
 
 ### Keep Partition creation and retention separate
 
 Suppose late files can contain arbitrary historical dates. Auto Partitioning
 can create ranges from those incoming values. That solves unpredictable
-creation. It does not by itself say when those ranges must be deleted.
+creation. Retention is a separate setting: an Auto Range Partition table can
+set `partition.retention_count`, and the same FE scheduler that runs Dynamic
+Partitioning then keeps only that many historical ranges, the ones with the
+latest values, and always keeps the current and future ranges. That rule
+counts ranges; it does not define a window of days relative to today, and it
+cannot be combined with Dynamic Partitioning on one table.
 
 Suppose the commerce event table must always contain the last seven
 calendar-day ranges and prepare tomorrow's Partition. Dynamic Partitioning
@@ -410,9 +422,8 @@ Dynamic Partitioning supports:
 - one `DATE` or `DATETIME` Partition Key; and
 - `HOUR`, `DAY`, `WEEK`, `MONTH`, or `YEAR` scheduling units.
 
-It does not calculate an independent expiry timestamp for every row. There is
-no minute-level Dynamic Partition unit and no Doris Lab equivalent of
-ClickHouse row TTL plus `MATERIALIZE TTL`.
+It does not calculate an independent expiry timestamp for every row: there is
+no per-row time to live and no minute-level Dynamic Partition unit.
 
 See [Manual Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/manual-partitioning/),
 [Auto Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/auto-partitioning/),
@@ -597,7 +608,7 @@ while changing where it is stored.
 
 ### Local SSD and HDD tiering
 
-In a storage-compute coupled deployment with actual SSD and HDD data paths, a
+In an integrated storage and compute deployment with actual SSD and HDD data paths, a
 Partition can begin on SSD and move to HDD after a cooldown time. The choice
 uses Partition storage properties such as `storage_medium` and
 `storage_cooldown_time`.
@@ -608,7 +619,7 @@ SSD and HDD devices.
 
 ### Local and remote tiering
 
-In storage-compute coupled mode, a Storage Policy can move colder data to an
+In the integrated storage and compute architecture, a Storage Policy can move colder data to an
 S3-compatible object store or HDFS while hot data remains local. This can
 reduce local storage cost, but it adds remote-storage availability, network,
 security, and query-latency considerations.
@@ -620,8 +631,9 @@ Remote tiering is different from backup:
 - storage-policy tables have backup/restore restrictions that must be checked
   for the current Doris release.
 
-Storage-compute separation is another architecture with its own storage and
-cache model. Do not mix its assumptions with the storage-compute coupled Lab.
+The decoupled storage and compute architecture has its own storage and cache
+model. Do not mix its assumptions with this Lab, which runs integrated storage
+and compute.
 
 Lab 10 does not access Amazon S3, create a Resource or Storage Policy, or claim
 that its single Docker disk contains distinct hot and cold media. The course
@@ -718,7 +730,7 @@ in independent remote storage and can support accidental deletion recovery,
 cross-cluster migration, or disaster recovery.
 
 Current Doris backup/restore documentation also lists limits that affect this
-course sequence: storage-compute separation and tables using Storage Policies
+course sequence: the decoupled storage and compute architecture and tables using Storage Policies
 are not supported by this backup path; asynchronous materialized views must be
 rebuilt; `colocate_with` is not retained; and Dynamic Partitioning must be
 re-enabled after restore. Recheck the target release before writing a recovery
@@ -735,7 +747,8 @@ and [Backup and Restore](https://doris.apache.org/docs/4.x/admin-manual/data-adm
 
 ## Lab 10: Compare Compression and Verify a Partition Lifecycle
 
-Open [Lab 10 — Manage Data](lab10_manage_data.ipynb) after completing Lab 9.
+Open [Lab 10 — Compare Compression and Verify a Partition Lifecycle](lab10_manage_data.ipynb)
+after completing Lab 9.
 The Lab returns to the single-node `doris-rta` container from Modules 1–8 and the
 `doris_course` Database. It reads one bounded day from `events_modelled`, does
 not modify that source, and creates only Module 10 objects. It does not access
@@ -743,20 +756,12 @@ Amazon S3.
 
 | Lab section | What you do | What the result establishes |
 | --- | --- | --- |
-| **Initialize** | Locate the course root and create the shared `DorisLab` object. | Python kernel state is separate from the persisted Doris container and volumes. |
-| **1A Check the source** | Start or reuse Doris and confirm the bounded source day is available. | All compression tables can use the intended input range. |
-| **1B–1D Build controlled copies** | Rebuild and load identical `NO_COMPRESSION`, `LZ4F`, and `ZSTD` tables. | Layout, rows, load shape, and replica count remain controlled while the Page-compression setting changes. |
-| **1E Inspect value shape** | Group by `event_type` and compare event count with distinct generated contexts. | Complete messages are unique while low-cardinality values and shared message bytes provide different compression opportunities. |
-| **1F Compare storage reports** | Wait for nonzero metadata and display effective compression, rows, layout, size, and savings against the baseline. | Doris reports a whole-table storage difference for this sample; the result does not isolate one column or rank CPU performance. |
-| **2A Create an hourly window** | Rebuild a Dynamic Partition table with `HOUR`, `start=-3`, `end=1`, history creation, and `Asia/Shanghai`. | Five complete hourly ranges represent the rolling rule. |
-| **2B Record the boundary** | Insert events three hours ago, two hours ago, and now; display the oldest event's next eligible boundary and actual Partition ranges. | A row remains online with its complete hour until the window advances and the scheduler acts. |
-| **3A Move the window** | Narrow `start` from `-3` to `-2`, set the FE check interval to 10 seconds, wait for the oldest hour to disappear, and restore the interval. | The scheduler removes every complete range older than `start`; narrowing `start` makes the change that one hour of clock time makes. No manual drop is issued. |
-| **3B Verify visibility** | Repeat the focused SQL and inspect current scheduler and Partition state. | The oldest event and its range are no longer online; this does not prove immediate physical byte reclamation. |
-| **3C Test late arrival** | Insert an event outside the current window and require the missing-Partition error. | Dynamic Partitioning does not silently recreate arbitrary expired history. |
-| **3D Optional: wait for the clock** | Rebuild the Section 2 window, skip 3A, and return after the printed boundary for a bounded scheduler wait. | Natural expiry removes the oldest range without any change to the rule; the wait reports scheduling delay rather than row-TTL precision. |
-| **4A Build a recovery sample** | Create a separate manually partitioned table with known rows. | The recovery example is isolated from the Dynamic Partition scheduler. |
-| **4B Drop without `FORCE`** | Remove one Partition, query the changed online answer, and inspect matching recycle-bin entries. | The manual drop removes the range from the table and leaves eligible recovery metadata with identity and time fields. |
-| **4C Recover by name** | Recover the most recently deleted matching Partition and rerun the business summary. | Name-only recovery can restore the just-dropped object in this controlled case; IDs remain necessary when names are ambiguous. |
+| **1. Compare compression choices on structured event logs** | Check the bounded source day, load identical `NO_COMPRESSION`, `LZ4F`, and `ZSTD` copies, compare event count with distinct generated messages, and wait for the storage reports. | Layout, rows, load shape, and replica count stay equal while the Page-compression setting changes; Doris reports a whole-table storage difference for this sample, which does not isolate one column or rank CPU performance. |
+| **2. Create an hourly Dynamic Partition window** | Rebuild a Dynamic Partition table with `HOUR`, `start=-3`, `end=1`, history creation, and `Asia/Shanghai`; insert events three hours ago, two hours ago, and now. | Five complete hourly ranges represent the rolling rule, and a row stays online with its complete hour until the window advances and the scheduler acts. |
+| **3. Move the window forward and observe automatic expiry** | Narrow `start` from `-3` to `-2`, set the FE check interval to 10 seconds, wait for the oldest hour to disappear, restore the interval, and repeat the focused SQL. | The scheduler, not a manual drop, removes every complete range older than `start`; the oldest event leaves the online table, which does not prove that its bytes were already reclaimed. |
+| **Try an event outside the current window** | Insert an event older than the window and require the missing-Partition error. | Dynamic Partitioning does not silently recreate expired history. |
+| **Optional: watch the same expiry on the real clock** | Rebuild the Section 2 window, skip Section 3, and return after the printed boundary for a bounded scheduler wait. | Natural expiry removes the oldest range without any change to the rule; the wait reports scheduling delay rather than row-TTL precision. |
+| **4. Recover a manually dropped Partition without a pre-recorded ID** | Create a separate manually partitioned table, drop one Partition without `FORCE`, inspect the recycle bin, recover by name, and rerun the business summary. | The recovery example is isolated from the scheduler; name-only recovery restores the just-dropped object in this controlled case, while IDs remain necessary when names are ambiguous. |
 | **Stop and Restart** | Optionally stop the container, restart it, reconnect, and count the Lab-owned tables. | Named-volume persistence retains the local objects; it does not prove backup or cross-cluster recovery. |
 
 Read the evidence in this order:
