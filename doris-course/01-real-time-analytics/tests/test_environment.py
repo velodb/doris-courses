@@ -60,7 +60,9 @@ class PlatformTests(unittest.TestCase):
                     "| Network |", "| Accounts and keys |", "| Python |"):
             self.assertIn(row, section)
         for fact in ("Apple silicon", "Linux on x86_64", "WSL 2", "4 CPUs, 8 GB of memory, and 20 GiB",
-                     "apache/doris:all-in-one-4.1.3", "s3.us-east-1.amazonaws.com", "mainland China"):
+                     "apache/doris:all-in-one-4.1.3", "s3.us-east-1.amazonaws.com", "mainland China",
+                     "sha256:82a5cabc7900ebcd3d080412d636c0cebd6602799fffe2605c652b2ea7d42609",
+                     "doris-4.1.3-rc02-7126cf65d96"):
             self.assertIn(fact, section)
 
     def test_lab1_accepts_only_the_platforms_the_readme_names(self):
