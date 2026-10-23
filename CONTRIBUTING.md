@@ -64,3 +64,7 @@ What each course depends on, what to recheck after changing its data, its Doris 
 ## Continuous integration
 
 GitHub Actions runs the checks above and the offline tests of the shared runtime and every course on each pull request and on `main` (`.github/workflows/ci.yml`).
+
+## License
+
+The repository is licensed under the [Apache License 2.0](LICENSE). As section 5 of the license says, a contribution that you submit for inclusion is licensed under the same terms, unless you explicitly state otherwise.

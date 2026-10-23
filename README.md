@@ -122,3 +122,16 @@ and how to remove only that course's containers, volumes, and networks.
   recheck after a change, and what to do before a release.
 
 To change a course, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+This repository, with its lessons, notebooks, quizzes, and code, is licensed
+under the [Apache License 2.0](LICENSE). [NOTICE](NOTICE) names the copyright
+holders and the third-party material in the repository, which keeps its own
+license, such as the part of Microsoft's Wide World Importers sample in Data
+Warehousing (MIT). What the courses download when they run keeps its own terms
+too: the software and container images, and the REES46 eCommerce data of
+Real-time Analytics, whose source its README credits.
+
+Apache, Apache Doris, and Doris are trademarks of The Apache Software
+Foundation. These courses are not a project of The Apache Software Foundation.
