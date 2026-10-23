@@ -29,13 +29,14 @@ Each course lists its modules in `course.yaml`: the order, titles, times, and th
 
 ## Checks
 
-Run the repository checks from the repository root. The quiz and manifest checks and the tests of the checks need PyYAML: install `tools/requirements.txt`, or run them with a course virtual environment.
+Run the repository checks from the repository root. The quiz, manifest and image checks and the tests of the checks need PyYAML: install `tools/requirements.txt`, or run them with a course virtual environment.
 
 ```bash
 python3 tools/check_links.py doris-course maintenance README.md CONTRIBUTING.md  # relative links and images
 python3 tools/check_notebook_outputs.py --strict   # no outputs, errors, local paths or run state in notebooks
 python3 tools/check_quiz_balance.py                # quiz structure, and how the answers are spread
 python3 tools/check_course_manifests.py            # each course.yaml against the lessons, quizzes and README
+python3 tools/check_image_digests.py --offline     # maintenance/images.md lists every image the courses name
 python3 tools/check_sensitive_info.py              # secrets, local paths and personal email addresses
 python3 -m unittest discover -s tools/tests        # tests of the checks themselves
 ```

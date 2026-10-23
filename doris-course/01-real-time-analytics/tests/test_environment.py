@@ -34,8 +34,9 @@ class EnvironmentTests(unittest.TestCase):
         self.assertGreaterEqual(len(seen), 12)
 
     def test_images_name_an_exact_version_and_match_the_readme(self):
-        # A tag such as haproxy:3.0-alpine moves to each new 3.0 release. The course names the
-        # release that it was verified with, and the README lists the images that the Labs pull.
+        # A tag that names only a minor version, such as HAProxy's 3.0-alpine, moves to each new
+        # release. The course names the release that it was verified with, and the README lists the
+        # images that the Labs pull.
         pulled = set()
         for path in sorted(ROOT.glob("level*/module*/compose*.yml")):
             for image in re.findall(r"^\s*image: (\S+)", path.read_text(), re.M):

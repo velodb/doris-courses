@@ -161,7 +161,7 @@ class EnvironmentTests(unittest.TestCase):
         self.assertEqual(services["otel-collector"]["networks"], ["default", "dog"])
 
     def test_demo_valkey_names_an_exact_version(self):
-        # Upstream's .env names valkey/valkey:8.1-alpine, a tag that moves to each new 8.1 release.
+        # Upstream's .env names Valkey's tag 8.1-alpine, which moves to each new 8.1 release.
         services = load_compose(ENVIRONMENT_DIR / "compose.demo.yml")["services"]
         self.assertRegex(services["valkey-cart"]["image"], r"^valkey/valkey:\d+\.\d+\.\d+-alpine\d+\.\d+$")
 
