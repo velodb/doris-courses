@@ -23,14 +23,19 @@ Each module's quiz YAML file is the only source of its questions. The structure 
 - do not start option text with a letter such as "A. ";
 - do not refer to options by letter in explanations; name the option instead.
 
+## Course manifests
+
+Each course lists its modules in `course.yaml`: the order, titles, times, and the lesson, Lab, quiz and optional parts of each module, for a course catalog to publish. When you add, rename or retime a module, change `course.yaml`, the lesson's heading and "Estimated time" row, the quiz title and the course README's outline together. The structure is described at the top of `tools/check_course_manifests.py`, which checks that they agree and that every Lab, quiz and optional part in the course is listed.
+
 ## Checks
 
-Run the repository checks from the repository root. The quiz check and the tests of the checks need PyYAML: install `tools/requirements.txt`, or run them with a course virtual environment.
+Run the repository checks from the repository root. The quiz and manifest checks and the tests of the checks need PyYAML: install `tools/requirements.txt`, or run them with a course virtual environment.
 
 ```bash
 python3 tools/check_links.py                       # relative links and images in Markdown and notebooks
 python3 tools/check_notebook_outputs.py --strict   # no outputs, errors, local paths or run state in notebooks
 python3 tools/check_quiz_balance.py                # quiz structure, and how the answers are spread
+python3 tools/check_course_manifests.py            # each course.yaml against the lessons, quizzes and README
 python3 tools/check_sensitive_info.py              # secrets, local paths and personal email addresses
 python3 -m unittest discover -s tools/tests        # tests of the checks themselves
 ```

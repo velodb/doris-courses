@@ -38,6 +38,8 @@ jobs:
           python tools/check_quiz_balance.py --strict doris-course/03-observability
           python tools/check_quiz_balance.py --strict doris-course/02-data-warehousing
           python tools/check_quiz_balance.py --strict doris-course/01-real-time-analytics
+      - name: Course manifests
+        run: python tools/check_course_manifests.py
       - name: Secrets, local paths and email addresses
         run: python tools/check_sensitive_info.py
       - name: Tests of the checks
