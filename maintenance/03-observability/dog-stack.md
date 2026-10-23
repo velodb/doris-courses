@@ -29,7 +29,8 @@ The files in `environments/dog-stack/` are layered on the upstream Compose files
   and labels them with `host.name`, which Module 8's alert groups by.
 - `compose.demo.yml` (Compose project `doris-obs-demo`) renames the 23 demo
   containers, publishes only the storefront, and connects the demo Collector to
-  the `doris-obs` network.
+  the `doris-obs` network. It also names an exact version for Valkey, whose tag
+  in the upstream `.env` moves to each new 8.1 release.
 - `demo-collector-extras.yml` makes the demo Collector forward its telemetry to
   the DOG Collector over that network. Upstream sends it to port 4317 on the
   host instead.
