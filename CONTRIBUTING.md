@@ -32,7 +32,7 @@ Each course lists its modules in `course.yaml`: the order, titles, times, and th
 Run the repository checks from the repository root. The quiz and manifest checks and the tests of the checks need PyYAML: install `tools/requirements.txt`, or run them with a course virtual environment.
 
 ```bash
-python3 tools/check_links.py                       # relative links and images in Markdown and notebooks
+python3 tools/check_links.py doris-course maintenance README.md CONTRIBUTING.md  # relative links and images
 python3 tools/check_notebook_outputs.py --strict   # no outputs, errors, local paths or run state in notebooks
 python3 tools/check_quiz_balance.py                # quiz structure, and how the answers are spread
 python3 tools/check_course_manifests.py            # each course.yaml against the lessons, quizzes and README
@@ -56,6 +56,10 @@ python3.12 -m venv .venv
 For the shared runtime, run the same `unittest` command in `doris-course/common` with any course's virtual environment. Changes to `doris-course/common` affect every course, so run the tests of all of them.
 
 The offline tests do not replace running the labs: when you change a lab or its environment, run it from a clean environment as the course README describes.
+
+## Notes for maintainers
+
+What each course depends on, what to recheck after changing its data, its Doris version or an upstream environment, and what to do before a release are in [maintenance/](maintenance/README.md).
 
 ## Continuous integration
 

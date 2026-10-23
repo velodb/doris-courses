@@ -26,7 +26,7 @@ jobs:
       - name: Install the check dependencies
         run: python -m pip install -r tools/requirements.txt
       - name: Links
-        run: python tools/check_links.py doris-course README.md CONTRIBUTING.md
+        run: python tools/check_links.py doris-course maintenance README.md CONTRIBUTING.md
       - name: Notebook outputs
         run: python tools/check_notebook_outputs.py --strict
       - name: Quiz structure
