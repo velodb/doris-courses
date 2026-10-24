@@ -1853,7 +1853,9 @@ class DorisLab:
               root.querySelector('[data-score]').textContent = String(cards.filter(item => item.dataset.solved === 'true').length);
             }} else {{
               card.classList.add('wrong');
-              feedback.textContent = 'Not this expression. Compare the input, output row shape, and whether the operation depends on an existing input row or an external service.';
+              feedback.textContent = selected === 'SUM(revenue)' && card.dataset.answer === 'LOWER(event_type)'
+                ? 'SUM combines multiple input rows into one value per group. This task must keep every event row and return one normalized value for each row.'
+                : 'Not this expression. Compare the input, output row shape, and whether the operation depends on an existing input row or an external service.';
             }}
           }};
           methods.forEach(button => {{
