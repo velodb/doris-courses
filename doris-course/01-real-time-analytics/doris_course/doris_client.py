@@ -2289,6 +2289,14 @@ LIMIT 10
         from .profiles import capture_query
         return capture_query(self, statement, settings=settings)
 
+    @staticmethod
+    def show_lookup_comparison(evidence):
+        """Show captured lookup counters, with one row per DetailProfile scan task."""
+        from .profiles import lookup_scan_summary
+        frame = lookup_scan_summary(evidence)
+        show_frame("Lookup comparison (one row per DetailProfile scan task)", frame)
+        return frame
+
     def verify_query_change(
         self,
         statement: str,
