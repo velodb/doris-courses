@@ -1969,6 +1969,12 @@ LIMIT 10
         run_button.on_click(run_query)
         display(widgets.VBox([
             widgets.HTML("<b>Choose the reporting grain, input rows, and metric.</b> The generated SQL remains visible."),
+            widgets.HTML(
+                "<b>Fixed input range:</b> 2020-03-01 00:00:00 (included) to "
+                "2020-03-09 00:00:00 (excluded). Changing Grain keeps this input range. "
+                "Week labels are Monday week starts, which can precede March 1; "
+                "Month summarizes only the part of March inside the range."
+            ),
             widgets.HBox([grain, event_filter, metric]),
             run_button,
             output,
