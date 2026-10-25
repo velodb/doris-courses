@@ -61,11 +61,16 @@ class WorkflowProgress:
             print("\n".join(self.logs), flush=True)
 
 
-def show_records(title, rows, *, columns=None):
+def show_records(title, rows, *, columns=None, collapsed=False):
     """Display structured observations without changing their values or returning duplicate output."""
     frame = pd.DataFrame(rows, columns=columns)
     if in_notebook():
-        show_frame(title, frame)
+        if collapsed:
+            table = frame.to_html(index=False, classes="doris-table", border=0, escape=True)
+            display(HTML('<details class="doris-log"><summary>' + html.escape(title) +
+                         '</summary><div class="doris-result-table-wrap">' + table + '</div></details>'))
+        else:
+            show_frame(title, frame)
         if {"query_id", "profile_url"}.issubset(frame.columns):
             links = [f'<a href="{html.escape(str(row.profile_url))}" target="_blank" rel="noopener">'
                      f'{html.escape(str(row.query_id))}</a>'
