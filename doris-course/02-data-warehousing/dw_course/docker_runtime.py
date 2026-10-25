@@ -264,6 +264,7 @@ RELOADABLE_TABLES = {"wwi_customers", "wwi_products"}
 
 # The tables each Lab reads from earlier Labs: (rows when complete, the Lab that writes them).
 PREREQUISITES = {
+    "extension67": {"orders_clean": (10, 6)},
     6: {"wwi_customers": (663, 5)},
     7: {"wwi_products": (227, 5), "customers": (663, 6), "orders_clean": (10, 6)},
     8: {"orders_current": (11, 7), "order_events": (18, 7)},
@@ -290,9 +291,10 @@ def _check_prerequisites(lab, module):
             missing.append(table)
             upstream.add(source)
     if missing:
+        label = "The Module 6–7 extension" if module == "extension67" else f"Lab {module}"
         verb = "is" if len(missing) == 1 else "are"
         raise SetupRequired(
-            f"Lab {module} needs data in {lab.database}: {', '.join(missing)} {verb} missing or incomplete. "
+            f"{label} needs data in {lab.database}: {', '.join(missing)} {verb} missing or incomplete. "
             f"Complete {', then '.join(LAB_STEPS[number] for number in sorted(upstream))} "
             "in this same database. Return here and rerun this cell. No lab tables have been reset.",
             labs=tuple(sorted(upstream)),
