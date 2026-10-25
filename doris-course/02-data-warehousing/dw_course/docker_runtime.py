@@ -20,7 +20,7 @@ STARTUP_STEPS = {
     1: "Check Docker and Compose",
     2: "Validate the course configuration and its host ports",
     3: "Prepare the Doris image",
-    4: "Start or reuse the container and volumes, then wait for health",
+    4: "Start or reuse the container, wait for health, and restore its service networks",
     5: "Verify the FE connection and BE execution",
     6: "Inspect the running course container",
 }
@@ -124,6 +124,56 @@ def _verify_sql(settings):
         connection.close()
 
 
+# These optional projects attach Doris dynamically. Compose does not retain
+# those attachments when the streaming memory overlay recreates its container.
+AUXILIARY_NETWORKS = {
+    "doris-warehousing-lake_default",
+    "doris-warehousing-bi_default",
+    "doris-warehousing-backup_default",
+}
+
+
+def _docker_output(command):
+    return subprocess.run(command, check=True, timeout=30, text=True,
+                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.strip()
+
+
+def _course_networks():
+    """Inspect only this project's Doris, including a paused container."""
+    container = _docker_output(compose_command("ps", "--all", "--quiet", "doris"))
+    if not container:
+        return "", {}
+    attached = json.loads(_docker_output(
+        ["docker", "inspect", "--format", "{{json .NetworkSettings.Networks}}", container]) or "{}")
+    return container, {name: details for name, details in attached.items() if name in AUXILIARY_NETWORKS}
+
+
+def _restore_course_networks(previous, progress):
+    """Restore existing course attachments and aliases after a possible recreate."""
+    if not previous:
+        return
+    container, attached = _course_networks()
+    if not container:
+        raise SetupRequired("The course Doris container is missing. Rerun Lab 1's Start and Connect.", labs=(1,))
+    existing = set(_docker_output(["docker", "network", "ls", "--format", "{{.Name}}"]).splitlines())
+    for network, details in previous.items():
+        if network in attached or network not in existing:
+            continue
+        aliases = list(dict.fromkeys(["course-doris", *(details.get("Aliases") or [])]))
+        command = ["docker", "network", "connect"]
+        for alias in aliases:
+            command.extend(["--alias", alias])
+        command.extend([network, container])
+        try:
+            _run(command, progress)
+        except subprocess.CalledProcessError as error:
+            raise SetupRequired(
+                f"Doris restarted, but Docker could not restore its connection to {network}. "
+                "The database volumes are intact. Run the network connect command in the startup logs, "
+                "then rerun Lab 1's Start and Connect and the affected service's connection check.",
+                labs=(1,), detail=str(error.output or error)) from None
+
+
 def prepare_environment(*, start=False, streaming=False, streaming_profile=None):
     """Start on explicit opt-in and report each completed or failed step."""
     if not start and os.environ.get("DW_START_SANDBOX") != "yes":
@@ -146,10 +196,12 @@ def prepare_environment(*, start=False, streaming=False, streaming_profile=None)
         check_host_ports(SANDBOX_PORTS, PROJECT, progress)
         progress.advance(3)
         _run(command("pull", "--policy", "missing"), progress, timeout=1800)
+        _, previous_networks = _course_networks()
         progress.advance(4)
         # The pinned image supplies the container healthcheck.
         _run(command("up", "-d", "--wait", "--wait-timeout", "300"),
              progress, timeout=1800)
+        _restore_course_networks(previous_networks, progress)
         progress.advance(5)
         _verify_sql(settings)
         progress.log("SELECT 1 = 1; BE SUM(number) = 45")

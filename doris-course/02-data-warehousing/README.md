@@ -90,7 +90,8 @@ rebuilds only its own `ext_*` tables. Labs 11 and 13 run their optional
 sections only when you switch them on in the Lab. Labs 5A and 5B recreate the
 Doris container with a 6 GiB memory limit, which leaves its BE 2.4 GiB: before
 you go back to the main Labs, run Lab 1's **Start and Connect**, which recreates
-the container without the limit and keeps its data.
+the container without the limit, keeps its data, and restores its existing
+connections to the lake, dashboard, and backup networks.
 
 ### Lab dependencies
 
