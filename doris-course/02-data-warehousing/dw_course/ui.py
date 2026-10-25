@@ -45,6 +45,14 @@ class WorkflowProgress:
     def log(self, text):
         self.logs.append(text)
 
+    def update(self, detail):
+        """Show the latest observation while an asynchronous step is running."""
+        self.log(detail)
+        if self.notebook:
+            self._render("running", detail)
+        else:
+            print(detail, flush=True)
+
     def finish(self):
         if self.notebook:
             self._render("success")
