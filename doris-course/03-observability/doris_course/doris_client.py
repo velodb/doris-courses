@@ -783,6 +783,10 @@ class ObservabilityLab:
         uid = found[0]["uid"]
         dashboard = json.loads(self._read(f"{self.grafana_url}/api/dashboards/uid/{uid}", "Grafana",
                                           GRAFANA_HINT)).get("dashboard") or {}
+        saved_time = dashboard.get("time") or {}
+        show_frame(f"The saved default time range of {title}", pd.DataFrame([
+            {"from": saved_time.get("from"), "to": saved_time.get("to")}
+        ]))
         rows = [
             {"panel": panel.get("title"), "visualization": panel.get("type"),
              "format": target.get("format"), "sql": target.get("rawSql", "")}
