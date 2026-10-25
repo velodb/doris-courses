@@ -1,10 +1,11 @@
 """Notebook display for the order-domain course, built on the shared doris_labkit components."""
 
+import html
 import json
 
 import pandas as pd
 from IPython import get_ipython
-from IPython.display import display
+from IPython.display import HTML, display
 
 from doris_labkit.db import report_sql_error
 from doris_labkit.results import result_frame, show_frame
@@ -65,6 +66,11 @@ def show_records(title, rows, *, columns=None):
     frame = pd.DataFrame(rows, columns=columns)
     if in_notebook():
         show_frame(title, frame)
+        if {"query_id", "profile_url"}.issubset(frame.columns):
+            links = [f'<a href="{html.escape(str(row.profile_url))}" target="_blank" rel="noopener">'
+                     f'{html.escape(str(row.query_id))}</a>'
+                     for row in frame.itertuples() if str(row.profile_url).startswith(("http://", "https://"))]
+            display(HTML('<p>Open the corresponding FE Profile: ' + ' · '.join(links) + '</p>'))
     else:
         print(title)
         print(frame.to_string(index=False))
