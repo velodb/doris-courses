@@ -232,7 +232,7 @@ extensions start with `ext_`.
    .venv/bin/jupyter lab
    ```
 
-3. Open the lesson
+3. Jupyter may open a Markdown file as source text. Right-click in its editor and choose **Show Markdown Preview** to read the page and follow its links. Open the lesson
    [Module 1: Meet Doris and Analyze Your First Orders](level1/module01-introduction/course.md)
    and its Lab, `level1/module01-introduction/lab01_connect_and_query.ipynb`.
    Run **Initialize the Lab Tools**, read the reset notice, then run **Start
