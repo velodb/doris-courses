@@ -61,6 +61,10 @@ The signals complement each other:
 
 An investigation usually moves between them: a metric shows that something changed, a log or a trace shows a request where it happened, and the trace shows which service caused it. Module 3 makes this move in Grafana.
 
+![Metrics reveal a change, logs give event details, and traces locate the failing service along a request.](images/01-three-telemetry-signals.png)
+
+*Each signal answers a different question, so an investigation moves between them.*
+
 ### Severity, and the OpenTelemetry scale
 
 Each log record has two severity fields. `severity_text` is the label that the source wrote, such as `ERROR`, `Error`, or `WARN`; it differs between programming languages and libraries. `severity_number` puts every source on the same OpenTelemetry scale: 1 to 4 is TRACE, 5 to 8 DEBUG, 9 to 12 INFO, 13 to 16 WARN, 17 to 20 ERROR, and 21 to 24 FATAL. A record without a severity, such as an access log line, has `severity_number` 0.
@@ -89,6 +93,10 @@ The trace ID and the parent span ID join the spans into a tree. When checkout ca
 
 Logs can join in too. An OpenTelemetry SDK stamps each log record with the trace ID and span ID of the request that the service was working on. A log line and the spans of its request then share a trace ID, so either one leads to the other.
 
+![A checkout server span starts a client span, whose ID becomes the parent of the payment server span; all spans and its associated log share a trace ID.](images/02-trace-context-propagation.png)
+
+*Context propagation preserves the trace ID and the parent link across service boundaries.*
+
 ## 1.4 The DOG stack and the demo
 
 This course uses the **DOG stack**: **D**oris, the OpenTelemetry Collector, and **G**rafana, from the open-source [ai-observe-stack](https://github.com/ai-observe/ai-observe-stack) project. Each part has one job:
@@ -105,7 +113,9 @@ Doris is an analytical database: it stores data by column, compresses it, and ru
 
 The system under observation is the [OpenTelemetry demo](https://opentelemetry.io/docs/demo/), the Astronomy Shop: an online store of telescopes made of more than a dozen services written in Go, Java, .NET, Node.js, Python, PHP, Ruby, Rust, and C++. Each service uses the OpenTelemetry SDK of its language. A **load generator** keeps browsing the store and placing orders, so the services keep producing telemetry while you work.
 
-![On your computer, a browser opens the storefront and its flag page on port 28082 and Grafana on port 23000, and the Jupyter notebooks send SQL to Doris on port 29030. In the OpenTelemetry demo, requests pass through the storefront proxy to services that use the OpenTelemetry SDK; flagd serves their feature flags. The services send spans, logs, and metrics over OTLP to the demo's Collector, which adds span, host, and container metrics and forwards everything over OTLP to the DOG Collector. The DOG Collector adds the Docker host's metrics, and its Doris exporter loads the rows into the otel database of Doris with Stream Load. Grafana reads them from Doris with SQL.](images/dog-data-path.svg)
+![Services send telemetry through the demo Collector and DOG Collector; the Doris exporter loads it into Doris tables, and Grafana queries them with SQL.](images/03-dog-telemetry-data-path.png)
+
+*The Collectors transport telemetry, Doris stores it, and Grafana reads it.*
 
 The path of the store's telemetry:
 

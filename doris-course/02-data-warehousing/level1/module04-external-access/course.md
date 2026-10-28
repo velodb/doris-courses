@@ -50,11 +50,9 @@ Suppose historical orders are already in a data lake, and the customers are in D
 
 Parquet describes the columns and rows in one file; Iceberg turns many files into one table that can change. A query of an Iceberg table therefore needs both its metadata and its files.
 
-```text
-Files in object storage ── S3 table function ─────┐
-                                                 ├─ SQL results ── INSERT INTO ... SELECT ──> Doris internal table
-Iceberg metadata and data files ── Catalog ───────┘
-```
+![A file function or External Catalog returns query rows, which INSERT INTO SELECT can copy into an internal table.](images/01-external-read-and-load-paths.png)
+
+*External SQL reads in place; INSERT stores returned rows.*
 
 ## 4.2 Connect a Catalog and Find a Table
 
@@ -102,6 +100,10 @@ With the course's ten orders, expect five orders and 3944.20 on the first day an
 
 Each commit to an Iceberg table, such as an `INSERT`, writes new data files and a new **snapshot**: the list of files that make up the table at that moment. A query of the table reads the files of its current snapshot. Doris exposes Iceberg's metadata as tables named after the table with a suffix:
 
+![An Iceberg query follows metadata to the current snapshot and reads only its listed data files.](images/02-iceberg-snapshot-files.png)
+
+*Iceberg metadata selects the files of the current table snapshot.*
+
 | Metadata table | What it lists |
 | --- | --- |
 | `<table>$snapshots` | Each snapshot: its time, its parent, and its operation, such as `append` |
@@ -131,12 +133,9 @@ Lab 4 points the function at the lake table's own data file, which `$files` list
 
 If a customer has two rows in a dimension table, an order of 100.00 joins twice and sums to 200.00: a correct join can give a wrong amount. A customer missing from the dimension makes an order disappear from an inner join.
 
-```text
-Order: order_id=1, customer_id=832, amount=2300.00
-          │ join on customer_id
-          ├─ customer row A → one result row
-          └─ customer row B → a second result row (a duplicate)
-```
+![One order matches two customer rows and therefore appears twice in the joined amount.](images/03-duplicate-dimension-join.png)
+
+*A repeated dimension key doubles a matched order's amount.*
 
 Lab 4's customer table is a Unique Key table, so each order matches at most one customer. Check row counts and amounts before and after a join, and compare loaded tables field by field.
 

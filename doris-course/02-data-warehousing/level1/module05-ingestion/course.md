@@ -177,17 +177,19 @@ Each load transaction has a fixed cost: a commit, and a new version in every tab
 
 A group commits when it has waited `group_commit_interval_ms`, a table property of 10,000 ms by default, or when it holds `group_commit_data_bytes`, 128 MB by default. Lab 5 sets the interval of its table to 2 seconds and sends the ten orders as ten single-row loads, once with `off_mode` and once with `async_mode`. With `off_mode`, ten loads make ten transactions and the tablet's version reaches 11. With `async_mode`, all ten responses carry the same transaction ID, the tablet reaches version 2, and right after the last response a query still finds none of the ten rows: they appear when the group commits, about 2 seconds later.
 
+![Independent small loads commit separately, while async Group Commit acknowledges WAL writes before the shared commit.](images/01-group-commit-visibility.png)
+
+*An async acknowledgement precedes the group's visible commit.*
+
 Two consequences. First, `sync_mode` merges only loads that are in flight at the same time: one client that waits for each answer before sending the next gets a commit per load, each taking up to the interval. Second, a Group Commit request cannot carry your label; Doris answers `label and group_commit can't be set at the same time`. Retrying such a load by label is therefore not possible, and the response's `GroupCommit` field and its generated label tell you which path the load took. See [Group Commit](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/).
 
 ## 5.5 Files in object storage
 
 When the files are already in S3 or another S3-compatible store, Doris can read them there, in two ways:
 
-```text
-Fixed files in object storage ── S3 table function ── SELECT: look at the rows
-                                                    └─ INSERT INTO ... SELECT: keep them
-Fixed files in object storage ── Broker Load job ─── wait for FINISHED, then check the table
-```
+![Object-storage files can be inspected through SQL, copied by INSERT INTO SELECT, or loaded by a finished Broker Load job.](images/02-object-storage-load-choices.png)
+
+*A query reads files immediately; a Broker Load job must finish.*
 
 The `S3` table function reads the files you name as rows of a query; `SELECT` alone stores nothing, and `INSERT INTO ... SELECT` writes the rows into a table in the same statement. Lab 4 does exactly this with the lake table's data file. Broker Load submits an asynchronous job: the statement returns at once, and the load is done only when `SHOW LOAD` reports `FINISHED`.
 
@@ -212,11 +214,9 @@ Before loading the same files again, decide what a second load should do: append
 
 ## 5.6 Two kinds of data, two grains
 
-```text
-WWI history in Parquet ── Stream Load ──> wwi_* (ten business tables, 701,846 rows)
-Simulated new orders (CSV) ── Stream Load ──> orders_imported (ten orders, practice target)
-Raw new orders (JSON, with three errors) ── Stream Load in Module 6 ──> orders_raw ──> orders_clean ──> Module 7
-```
+![WWI history, CSV loading practice, and raw JSON quality inputs flow into distinct tables and later modules.](images/03-course-data-lineage.png)
+
+*History, loading practice, and validated new orders have different roles.*
 
 `orders_imported` is only the practice table for loading, retrying, and rejecting in Lab 5. Module 6 loads the same new orders again, this time with three wrong inputs, into its own raw table and produces `orders_clean`. Module 7 builds `orders_current` and `order_events` from the clean orders; Level 2 starts from that current state and history. The WWI tables are the history: Module 6 reads its customer dimension from `wwi_customers` and Module 7 its products from `wwi_products`.
 

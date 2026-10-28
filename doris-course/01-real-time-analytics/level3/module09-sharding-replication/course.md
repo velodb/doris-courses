@@ -59,9 +59,6 @@ client submitting SQL does not connect directly to every BE. It opens a MySQL
 protocol session to an FE query port, or to a proxy that selects an FE for that
 session.
 
-![The client, proxy, FE, and BE responsibilities in one distributed Doris request](images/01-distributed-request-roles.png)
-
-*The client reaches one FE session; the FE plans and coordinates work that selected BEs execute.*
 
 ### Frontend responsibilities
 
@@ -123,22 +120,14 @@ physical consequences visible.
 
 For the base index of a table with a fixed Bucket count per Partition:
 
-![Logical Tablet count and physical replica movement after a BE is added](images/02-tablets-replicas-expansion.png)
-
-*Adding a BE creates another placement target; it does not change the logical shard definition.*
 
 For example, a two-Partition table with six Buckets per Partition has twelve
 logical Tablets in its base index. With two replicas, Doris maintains two
 physical copies of each logical Tablet.
 
-```text
-Partition A                       Partition B
-  Bucket 0 -> Tablet A0             Bucket 0 -> Tablet B0
-  Bucket 1 -> Tablet A1             Bucket 1 -> Tablet B1
-  ...                               ...
+![Two Partitions with six Buckets have twelve logical Tablets, and adding BE C moves representative replicas without changing the configured copy count.](images/01-tablets-replicas-expansion.png)
 
-Tablet A0 replicas: copy on one BE + copy on another BE
-```
+*Expansion changes replica placement while logical shards and business rows stay the same.*
 
 SQL reads the logical rows represented by Tablet A0 once. Replication does not
 double the business answer.
@@ -159,15 +148,7 @@ After adding a third BE while keeping two replicas per Tablet, Doris has more
 placement targets than copies. The Tablet scheduler can move some existing
 replicas to the new BE while keeping the configured replica count:
 
-```text
-before expansion
-    Tablet T1 -> BE A, BE B
-    Tablet T2 -> BE A, BE B
-
-after balancing
-    Tablet T1 -> BE A, BE C
-    Tablet T2 -> BE A, BE B
-```
+The expansion visual above shows a representative Tablet copy moving from BE B to BE C while the other Tablet’s placement stays unchanged.
 
 The exact balanced distribution depends on scheduler state, disk usage,
 placement constraints, and cluster load. A new BE reporting `Alive=true` means
@@ -220,7 +201,7 @@ elect another Master and preserve FE metadata service availability.
 
 The existing MySQL TCP session still terminates:
 
-![FE Master election preserving metadata service while a failed client session must be reopened](images/03-fe-election-client-session.png)
+![FE Master election preserving metadata service while a failed client session must be reopened](images/02-fe-election-client-session.png)
 
 *Election can preserve the FE service, but the application must create a new session through a healthy entry point.*
 
@@ -244,9 +225,9 @@ environment choice, not a Doris requirement or a universal recommendation.
 
 A proxied MySQL session has two TCP legs:
 
-```text
-Python client ---> HAProxy listening port ---> selected FE query port
-```
+![The client, proxy, FE, and BE responsibilities in one distributed Doris request](images/03-distributed-request-roles.png)
+
+*The client reaches one FE session; the FE plans and coordinates work that selected BEs execute.*
 
 The Lab's statistics use these fields:
 
@@ -298,16 +279,9 @@ ORDER BY region;
 
 The simplified distributed path is:
 
-```text
-1. connected FE parses and optimizes the SQL
-2. predicates prune Partitions and determine required Tablets
-3. FE selects one healthy replica for each required Tablet
-4. physical plan is split into Plan Fragments at Exchange boundaries
-5. Fragment Instances are assigned to selected BEs
-6. each BE builds PipelineTasks and scans its local selected Tablets
-7. local partial results travel through Exchanges
-8. an upper/root Fragment merges results and returns them to the client
-```
+![FE selects one healthy replica per required Tablet and assigns Fragment Instances whose PipelineTasks scan local copies before results cross Exchanges.](images/04-sql-to-tablet-scan-tasks.png)
+
+*Placement identifies possible copies; the executed scan uses selected replicas and scheduled tasks.*
 
 ### Distinguish the execution units
 
@@ -407,9 +381,9 @@ assume the default majority rule when an environment overrides it.
 
 ### Follow the commit and recovery states
 
-![A three-replica majority commit followed by heartbeat recovery and version catch-up](images/04-majority-commit-recovery.png)
+![Two of three replicas publish version V+1 while one BE is unavailable, and its returning replica catches up after heartbeat recovery.](images/05-majority-commit-recovery.png)
 
-*Two of three replicas can commit the write; the returning BE is alive before its replica is necessarily current.*
+*A live BE and a current Tablet replica are separate recovery milestones.*
 
 The exact numbers do not matter. Compare versions relative to each other.
 During the outage, FE metadata can retain the stopped replica's last known
@@ -448,9 +422,6 @@ The restored cluster repeatedly joins event measures to user segments on
 `user_id`. The logical Inner Join and its business answer stay fixed. The
 decision is how much Join input should move across the distributed execution.
 
-![Bucket Shuffle moving one Join input compared with Colocate moving neither Join input](images/05-bucket-shuffle-vs-colocate.png)
-
-*The logical Join stays the same; the storage and placement contract determines which input moves.*
 
 ### Reuse the Event-Side Layout with Bucket Shuffle
 
@@ -475,10 +446,7 @@ Because the event table is Hash distributed by `user_id`, the per-user
 aggregation can preserve an existing `user_id` Bucket layout. The first user
 dimension deliberately uses RANDOM distribution:
 
-```text
-event-side state for user 1001 -> event Bucket selected by hash(user_id)
-user row for 1001             -> arbitrary RANDOM user Tablet
-```
+The following Bucket Shuffle visual shows the event state in its retained Bucket and the user row arriving from a RANDOM-distributed Tablet.
 
 The matching rows may not initially be at the same Join execution location.
 
@@ -487,19 +455,9 @@ The matching rows may not initially be at the same Join execution location.
 Bucket Shuffle keeps the compatible event-side layout. The Join-side Exchange
 routes each user row according to the event Bucket mapping:
 
-```text
-RANDOM user row
-    (1001, returning)
-           |
-           | hash and route with retained event Bucket mapping
-           v
-Fragment Instance responsible for that event Bucket
-    event state (1001, count, revenue)
-    user row    (1001, returning)
-           |
-           v
-        local Hash Join
-```
+![A RANDOM-distributed user row crosses an Exchange into the retained event Bucket’s Fragment Instance, where it joins local per-user event state.](images/06-bucket-shuffle-user-routing.png)
+
+*Bucket Shuffle moves the user input while preserving the compatible event-side intermediate layout.*
 
 The user side moves; the retained event-side intermediate rows do not need a
 general repartition. A Bucket number is a logical position in the retained
@@ -547,11 +505,9 @@ join on a stable Key, the table design can make the relationship durable.
 A Colocation Group gives participating tables a compatible Bucket sequence and
 replica placement. For the event–user relationship:
 
-```text
-BE A: event Bucket 0 replicas + user Bucket 0 replicas
-BE B: event Bucket 1 replicas + user Bucket 1 replicas
-BE C: event Bucket 2 replicas + user Bucket 2 replicas
-```
+![Corresponding event and user Bucket replicas share BEs in a stable Colocation Group and feed local Hash Joins.](images/07-colocate-event-user-layout.png)
+
+*Colocate removes Join-input exchange through a compatible stored placement contract.*
 
 Rows with the same `user_id` map to corresponding Buckets, and the replicas of
 those Buckets are placed on compatible BEs. The Hash Join can run locally at

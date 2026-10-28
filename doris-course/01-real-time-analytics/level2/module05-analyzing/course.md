@@ -81,9 +81,9 @@ independently on each date.
 
 The query can be understood as a sequence of row shapes:
 
-![The report grain from event-detail rows through filtering, grouping, windows, and ordering](images/01-trace-report-grain.png)
+![Event detail is filtered and enriched, grouped into date-region rows, extended with windows, and finally ordered for display.](images/01-trace-report-grain.png)
 
-*Trace the meaning and row shape of the result through every analytical stage.*
+*Grouping changes the grain; windows retain it and ordering changes presentation.*
 
 Filtering can remove rows. Grouping usually reduces many detail rows to fewer
 grouped rows. Window calculation retains the rows it receives and adds a value
@@ -142,18 +142,7 @@ element rows. Section 5.6 then gives those transformations explicit stages,
 and Section 5.7 uses a window of related rows to calculate one value for every
 retained result row:
 
-```text
-event rows
-   |  Scalar: derive event_date
-   v
-enriched event rows
-   |  Aggregate: group by event_date, region
-   v
-daily-region rows
-   |  Window: compare related daily-region rows
-   v
-the same daily-region rows, now with previous values, totals, or ranks
-```
+The row-shape visual above follows the same progression: derive values on event rows, aggregate to daily-region groups, then add window values without changing that grain.
 
 ### Some categories describe different dimensions
 
@@ -541,21 +530,9 @@ that matches its input and output contract:
 
 A Java scalar UDF illustrates the deployment boundary:
 
-```text
-implement the Java method and its type contract
-        |
-        v
-package the implementation in a Java Archive (JAR)
-        |
-        v
-make the artifact available to the required Doris nodes
-        |
-        v
-register the SQL signature and implementation with CREATE FUNCTION
-        |
-        v
-invoke the registered function in a query
-```
+![A Java implementation becomes a JAR, is made available to Doris nodes, is registered with CREATE FUNCTION, and is executed by BE when called.](images/05-java-udf-deployment.png)
+
+*Registering a SQL signature and deploying executable code are separate responsibilities.*
 
 `CREATE FUNCTION` registers metadata that points to the implementation; the
 statement does not contain the algorithm. The contract includes argument and

@@ -114,14 +114,9 @@ FROM orders_classified WHERE reject_reason IS NOT NULL;
 
 `IS NULL` and `IS NOT NULL` split the same classification into two groups that do not overlap: ten accepted and three rejected. The two writes are not one transaction across both tables: if the work stops between them, the first write's success does not mean the batch is done. To redo the Lab, recreate the result tables and run both writes again.
 
-```text
-13 raw inputs in orders_raw
-          │ rules, with the independent customer dimension
-          ▼
-the view orders_classified (with reject_reason)
-          ├─ NULL reason → orders_clean: 10 rows
-          └─ a reason    → orders_rejected: 3 rows, with their input_id
-```
+![Thirteen raw inputs and the customer dimension feed one classification that routes ten accepted and three rejected rows.](images/01-quality-routing.png)
+
+*One classification routes all inputs into accepted or rejected rows.*
 
 ### Trace a rejection back to its input
 
@@ -135,6 +130,10 @@ ORDER BY r.input_id;
 ```
 
 The result is rows 11, 12, and 13 of the table in 6.2. The rejected table keeps identifiers and reasons, the raw table the original text, joined by `input_id`. A load's `ErrorURL` expires; these tables can be queried as long as you keep them. A rule can be tried with a plain `SELECT` with `CASE` before it routes anything: Lab 6's practice does that.
+
+![Rejected identifiers and reasons join to preserved raw text through input_id.](images/02-rejection-traceability.png)
+
+*Stable input IDs preserve the original evidence for each rejection.*
 
 ## 6.4 Check More Than Totals
 
@@ -173,11 +172,9 @@ A check that has never failed may not check anything. Lab 6 breaks the accepted 
 1. Append a copy of an existing order: the uniqueness check must fail.
 2. Restore, then change the second order's ID to the first order's ID: still ten rows and 1400.00, but one order twice and another missing. The uniqueness check must fail again.
 
-```text
-Correct input → checks pass
-A duplicate, or a duplicate with the same totals → the uniqueness check fails, as expected
-Restore from the classified input → checks pass again → Module 7
-```
+![A deliberate duplicate causes the uniqueness check to fail and restoration makes it pass again.](images/03-prove-validation-checks.png)
+
+*A validation check is proven by catching a known error.*
 
 The expected values come from the fixed input and the rules, and the restore reclassifies the raw input, so the checks have an independent reference even after the accepted table was written wrongly.
 

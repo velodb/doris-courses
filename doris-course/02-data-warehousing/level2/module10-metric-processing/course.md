@@ -113,6 +113,10 @@ ORDER BY order_date, region;
 
 Join on the service table's grain, date and region. A `FULL OUTER JOIN` keeps a row that only one side has. Lab 10 compares a service table that lost January 2, as if that day's load had failed: an inner join shows the two rows of January 1, EAST and WEST, both equal, and the comparison passes; the full outer join shows 2026-01-02 EAST with 1 order and 110.00 in the detail and `NULL` in the service table. Keep the `NULL` until you know why it is there: a missing row is not a day with no orders. Check rows, amounts, dates, and the important dimensions before you tune anything: a faster query that returns the wrong answer only returns it sooner.
 
+![A full outer join compares date-region groups and exposes a service-table day that is present only in the detail.](images/01-detail-service-reconciliation.png)
+
+*Full outer reconciliation reveals groups missing from either side.*
+
 ## 10.4 Windows, Conditions, and Ratios
 
 `GROUP BY` folds rows into groups. A **window function** computes over related rows and keeps each row: `SUM(...) OVER (ORDER BY order_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)` adds up from the first row to the current one, and `LAG(...) OVER (ORDER BY order_date)` takes the previous row's value. Give the window the grain that you want first:
@@ -136,6 +140,10 @@ A **conditional aggregate** puts slices of a group side by side: `SUM(CASE WHEN 
 
 The ratio rule matters on real data. On January 1, EAST has 5 orders and 720.00, an average of 144.00, and WEST 4 orders and 480.00, an average of 120.00. The average of the two averages is 132.00; the day's average order amount is 1200.00 / 9 = 133.33. The first weighs WEST's 4 orders as much as EAST's 5. With larger differences, such as one order of 100 against 100 orders worth 1000, the error grows: 55.00 against 10.89.
 
+![Combining 720.00 and 480.00 across nine orders yields 133.33 rather than the unweighted average 132.00.](images/02-ratio-from-sums.png)
+
+*Combine a ratio's sums before dividing at the reporting grain.*
+
 ## 10.5 Order Amount Is Not Paid GMV
 
 Order amount says what was ordered. **Gross merchandise value (GMV)** here means the value of the paid orders, from the payments themselves, not from an order status: a refunded order was still paid once. The warehouse case of Module 9 has the payments, and Lab 10 writes their contract:
@@ -158,6 +166,10 @@ Order amount says what was ordered. **Gross merchandise value (GMV)** here means
 | Repeat-buyer rate | 2 of 3 customers: 0.66666 |
 
 A payment ID that arrives twice counts once, and the payment of January 5 is outside the window. The cohort counts the cancelled order as created and not converted, which is why its contract says so: the order metrics leave cancelled orders out, the cohort does not. Distinct counts do not add up either: the paying customers of each day add up to 4, but the window has 3, because one customer paid on two days. Each ratio keeps its numerator and denominator in the published row, so a reader can check it.
+
+![Deduplicated payments in the reporting window total 660.00, and subtracting 50.00 of refunds gives 610.00 net collections.](images/03-payments-window-contract.png)
+
+*Payment timing and deduplication define paid GMV; refunds define net collections.*
 
 ## 10.6 Exact Counts, Sketches, and Measured Work
 

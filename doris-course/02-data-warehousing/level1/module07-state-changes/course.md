@@ -49,13 +49,17 @@ A dashboard needs what is true now; a refund investigation needs what happened. 
 
 One order has several events, and one event can be delivered several times; `delivery_id` identifies a delivery of a message, not a parcel. Module 6's `orders_clean` gives the ten accepted orders, the first current state and the first history; all are `COURSE_SIMULATION`, and the `wwi_*` tables are not changed.
 
+![One order has several distinct events, and a single event can have several deliveries recorded with different keys.](images/01-three-record-grains.png)
+
+*Orders, events, and deliveries require different identifiers.*
+
 ## 7.2 Versions Against Arrival Order
 
 The business flow of order 900001 is:
 
-```text
-Version 1 CREATED → version 2 PAID → version 3 SHIPPED → version 4 DELIVERED
-```
+![Version 4 remains the current order state even when versions 3 and 2 arrive later or repeat.](images/02-business-version-order.png)
+
+*Sequence keeps the highest business version despite arrival order.*
 
 Version 1 is the starting state; the later events arrive deliberately out of order, and one twice:
 
@@ -164,15 +168,9 @@ The last query returns 900001, true, CREATED. Lab 7 does not run a load deletion
 
 Lab 7 interrupts its own steps, not the database:
 
-```text
-Record the first delivery → write it to the history → [interruption] → the current table is not written yet
-                                              │
-                    Redeliver the whole batch ←┘
-                         │
-                         ├─ record every delivery again
-                         ├─ the history keeps each event_id once
-                         └─ the current table keeps the highest version per order_id
-```
+![A whole-batch replay completes an interrupted current-state write while retaining distinct events and every delivery.](images/03-interrupted-write-replay.png)
+
+*Replay all events so an interrupted current-state write is completed.*
 
 The three tables are written in separate steps, not in one transaction. So recovery must not skip events that are already in the history: that would also skip the current-table writes that never happened. Replaying the whole batch is safe because each table is written idempotently. The three counts after two replays:
 

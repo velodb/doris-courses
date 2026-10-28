@@ -81,9 +81,9 @@ that its reports do not need.
 Suppose two purchase events have revenue 12.00 and 18.00. A daily summary for
 those events contains revenue 30.00:
 
-![Three separate data products and the boundary between event detail and daily summary](images/01-three-data-product-grains.png)
+![Event history, current state, and summary metrics have distinct grains, and two detail revenues sum to one separate daily summary.](images/01-three-data-product-grains.png)
 
-*Keep event history, current state, and summary metrics at separate declared grains.*
+*Keeping detail and summary in separate tables prevents counting the same activity twice.*
 
 If all three rows are placed in one table and a query simply calculates
 `SUM(revenue)`, the result is 60.00. The same activity has been represented once
@@ -126,9 +126,6 @@ cannot convert an existing table to another Table Model; a changed contract
 needs a new table and a controlled transition. See the [Table Model overview](https://doris.apache.org/docs/4.x/table-design/data-model/intro/)
 and [Table Model best practices](https://doris.apache.org/docs/4.x/table-design/data-model/tips/).
 
-![Duplicate, Unique, and Aggregate Key behavior when a key repeats](images/02-table-model-repeated-key-semantics.png)
-
-*Choose a Table Model from the result that a repeated key must produce.*
 
 ### Event history: Duplicate Key
 
@@ -168,13 +165,9 @@ A reporting pipeline may deliver several contributions for the same
 be added, the dimensions are the Aggregate Key and the measures are value
 columns declared `SUM`:
 
-```text
-(2026-09-15, east, purchase, event_count=4, total_revenue=90.00)
-(2026-09-15, east, purchase, event_count=3, total_revenue=65.00)
-                                      |
-                                      v
-one logical group representing event_count=7 and total_revenue=155.00
-```
+![Duplicate Key retains rows, Unique Key replaces the current state, and Aggregate Key combines four and three event contributions into seven.](images/02-table-model-repeated-key-semantics.png)
+
+*Repeated-key behavior must match the data product’s row contract.*
 
 The key columns are both the aggregation group and the sort key, and each value
 column declares how contributions merge. Such a table keeps no event
@@ -424,19 +417,9 @@ Module 2 introduced the hierarchy: a rule such as `[2020-03-01, 2020-04-01)`
 decides which rows belong to a Partition, and each Partition holds one Tablet
 per Bucket. For `events_modelled`, the two levels answer different questions:
 
-```text
-events_modelled
-    |
-    +-- December 2019 Partition: which time range?
-    |       +-- Tablet 1: which hash bucket?
-    |       +-- ...
-    |       +-- Tablet 10
-    |
-    +-- March 2020 Partition: which time range?
-            +-- Tablet 1: which hash bucket?
-            +-- ...
-            +-- Tablet 10
-```
+![An event selects a monthly Partition, hashes user_id to one of ten Tablets, and is organized by the event_time-leading sort key.](images/04-partition-bucket-sort-layout.png)
+
+*Time range, shard placement, and row ordering answer three different layout questions.*
 
 The Partition is what a time filter lets the FE skip, and what retention or a
 backfill drops or replaces as a whole. Module 2 measured the pruning, so Lab 4
@@ -577,9 +560,6 @@ creates no Partitions, a time Partition orders no rows, and a Hash key enforces
 no uniqueness. Lab 4 inspects the declaration and the layout; Lab 2 compared the
 scan work of two sort keys with the Query Profile.
 
-![How Partition, Bucket, and sort key place and organize one row](images/04-partition-bucket-sort-layout.png)
-
-*Partition selects the time range, Hash selects the Tablet, and the sort key orders data within storage.*
 
 ## 4.9 Map Complex Types from the Application Structure
 

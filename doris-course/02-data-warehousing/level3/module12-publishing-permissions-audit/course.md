@@ -82,6 +82,10 @@ GRANT SELECT_PRIV ON internal.dw_course_l1_demo.bi_order_metrics_l2 TO ROLE 'cou
 
 The Lab writes your own database's name. A member of the role can read the view without any privilege on its sources, `daily_order_metrics_l2` and `orders_fact_l2`: Doris checks the privilege on the object that the query names. The course runs the change as root, the sandbox's administrator; in production an approved administrator does, and consumers get accounts of their own with a host scope and managed credentials.
 
+![Consumer users inherit a shared role's SELECT privilege on one published view while its source tables remain inaccessible directly.](images/01-role-scoped-publication.png)
+
+*A role grants the published view without opening its sources.*
+
 A privilege granted to a user directly, as Module 11's optional dashboard did, works too, but no review of the roles finds it, and the next account for the same purpose needs the grant again. Doris keeps a user's own privileges in a hidden role of the user, `default_role_rbac_<user>@<host>`. Lab 12 moves the dashboard's direct grant to a role in an order that never cuts it off: grant the role the privilege, grant the user the role, then revoke the user's own privilege.
 
 ## 12.3 Evidence
@@ -135,9 +139,17 @@ ALTER TABLE published_orders_l3 REPLACE WITH TABLE candidate_orders_l3 PROPERTIE
 
 The swap is atomic: queries see either the old table or the new one, never half of each. `swap = true` keeps the old version under the candidate's name, ready for a rollback. Doris does not backfill, reconcile, or catch up the writes for you: that is the procedure around the swap. Lab 12 pauses its simulated writer, applies the final delta to both tables, compares every row, swaps, rehearses the rollback while the writer is still paused, swaps again, and resumes writing. After one more write, the retained old version lacks it: 3 orders and 205.00 against the published 4 and 230.00. A rollback is safe only until the published table receives its first write; afterward, the old version must catch up before it can come back.
 
+![A writer pause and row comparison precede the atomic swap, while the next write makes the retained old table stale.](images/02-validated-table-cutover.png)
+
+*Atomic swapping names does not synchronize later writes into the old table.*
+
 ## 12.6 Rows and Columns
 
 Two new requirements arrive: the EAST team may read only EAST orders, and only Finance may see what was paid and refunded. Table privileges cover every row and column, so neither fits:
+
+![A row policy limits records to EAST while column privileges limit the selected fields.](images/03-row-column-access.png)
+
+*Row policies select records; column privileges select fields.*
 
 | Requirement | Mechanism | Check |
 | --- | --- | --- |

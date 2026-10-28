@@ -65,14 +65,18 @@ The course's single-container sandbox runs one **Frontend** (FE) and one **Backe
 Think of a query as: **the client submits SQL → the FE plans the work → the BE reads and computes → the result returns.**
 Module 2 follows this path in more detail.
 
+![A SQL client sends work through Frontend planning to Backend storage and computation before receiving a result.](images/01-fe-be-roles.png)
+
+*FE plans while BE stores and computes.*
+
 ## 1.2 Doris in an Order Data Warehouse
 
 In this course, a business system handles transactions such as placing orders, and Doris receives copies of the order data for analysts and reports to query.
 An order data warehouse brings orders and the data needed to analyze them together, so that queries and summaries are easy to run again and again.
 
-```text
-Orders in the business system → loading → Doris → SQL analysis and reports
-```
+![Business-system orders are loaded into Apache Doris for SQL analysis and reports.](images/02-warehouse-role.png)
+
+*Doris receives copies for recurring analysis.*
 
 For order analysis, Doris helps you:
 
@@ -190,6 +194,10 @@ The result changes from one row per order to one row per date:
 | Total | 10 | 12220.60 |
 
 The SQL returns the two daily rows; the "Total" row is for checking by hand. This answers the question of 1.1.
+
+![Ten individual orders are grouped by date into two daily rows with five orders each.](images/03-orders-to-daily-summary.png)
+
+*Aggregation changes one row per order to one row per date.*
 
 ### Check the result, and what it means
 

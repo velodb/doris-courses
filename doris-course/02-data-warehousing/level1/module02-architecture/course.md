@@ -48,18 +48,9 @@ WHERE order_id = 1;
 
 Expect one row: order 1, 2300.00. The client sends one SQL statement; inside Doris, the work is split:
 
-```text
-Notebook or SQL client
-        │ SQL
-        ▼
-FE: parse the statement → optimize it → build and send the execution plan
-        │ plan fragments
-        ▼
-BE: scan the needed columns → filter on the order ID → return the amount
-        │
-        ▼
-Client: show the result
-```
+![The client sends SQL to FE planning, which sends execution fragments to BE scanning and filtering.](images/01-query-execution-path.png)
+
+*FE plans; BE executes.*
 
 The FE decides what work to do; each BE does its share. A large query can scan and aggregate on several BEs and combine their results; the course's single node shows the roles, not scaling. Planning and executing are separate stages: a query that the FE planned can still fail while a BE runs its part.
 
@@ -71,13 +62,9 @@ The order table also holds the customer, the date, the line count, and the sourc
 
 When rows reach Doris, the table's partitioning and bucketing decide which tablet stores each row, and the BE writes them into columnar files.
 
-```text
-Table: a table in SQL
-└── Partition: a range of rows, such as one day
-    └── Bucket = Tablet: one shard of a partition, stored by a BE
-        └── Rowset: the versioned set of rows that one write (or one compaction) produced
-            └── Segment: an immutable columnar file of a rowset
-```
+![A table contains partitions, each partition contains tablets, and tablets hold rowsets of columnar segments.](images/02-storage-hierarchy.png)
+
+*Rows are organized into tablets and versioned columnar files.*
 
 | Layer | In the order tables | Not to be confused with |
 | --- | --- | --- |
@@ -96,12 +83,9 @@ A write is a load transaction. Once it commits and is published as a new **versi
 
 Many small writes leave many small rowsets, and a query of the tablet has to read and merge all of them. **Compaction** merges rowsets in the background into fewer, larger ones:
 
-```text
-Within one tablet:
-Write A → rowset [2-2] ┐
-Write B → rowset [3-3] ├─ cumulative compaction → rowset [2-4]
-Write C → rowset [4-4] ┘
-```
+![Published writes are queryable while background compaction merges three versioned rowsets into one.](images/03-visibility-and-compaction.png)
+
+*Published rows are queryable before compaction merges rowsets.*
 
 Compaction changes how the rows are stored, never which rows a query returns: whether a load is visible and whether its files were compacted are two separate questions. When a load seems to be missing, check its transaction first, then its files. The merged-away rowsets stay listed as **stale** for a while before the BE deletes them. See [Compaction principles](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction-principles/).
 

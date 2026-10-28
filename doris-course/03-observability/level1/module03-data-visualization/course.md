@@ -65,6 +65,10 @@ Two consequences:
 
 The Traces page's waterfall shows times in the browser's time zone, so the same span can show 19:37 in Discover and 20:37 in the waterfall on a computer in UTC+1.
 
+![Doris App relative ranges compare browser-local text with UTC timestamps; absolute UTC ranges align them, while dashboard panels pass exact instants and convert their display.](images/01-grafana-time-range-paths.png)
+
+*Use absolute UTC ranges in the Doris App; Grafana dashboard panels handle the time-zone conversion.*
+
 ## 3.3 Searching logs
 
 Discover offers two ways to write a search, set by its **Mode**.
@@ -106,6 +110,10 @@ Every access log line carries the trace ID of its request, so a failed checkout'
 
 The **Traces** page searches whole traces. Its **Service** and **Operation** filters select traces by their first span, the root, which for the load generator's orders is its own `POST`, not a span of checkout. **Tags** select by the attributes of any span: `http.status_code=500` finds the traces in which some span recorded HTTP status 500, which includes failed checkouts but can also include unrelated requests, such as the demo's startup GET requests. Inspect the root operation and the services in a trace before attributing it to the payment incident. An order placed in your browser can have a `frontend-web` root instead of `load-generator:POST`. The page shows each trace as a dot by start time and duration, and lists them with their spans and services.
 
+![A failed checkout access log supplies the trace ID, and the nested spans lead from propagated frontend and checkout errors to the payment Charge error.](images/02-log-to-failure-origin.png)
+
+*Follow the trace ID to distinguish the originating payment error from errors reported by its callers.*
+
 ## 3.6 Measuring a host's CPU
 
 Before blaming the application, rule out the machine: an overloaded host makes many services fail at once. The DOG Collector measures the CPU of the Docker host every 15 seconds, as the metric `system.cpu.utilization` in `otel_metrics_gauge`. The Docker host is Docker Desktop's Linux virtual machine on macOS and Windows, and your computer on Linux.
@@ -125,6 +133,10 @@ WHERE metric_name = 'system.cpu.utilization'
 ```
 
 Several programs report a metric of this name, among them the demo's Collector and two Python services; the last two conditions keep the DOG Collector's measurements, which carry the host's name. In this incident the host stays 5 to 15 percent busy, before and after the failures began, so the host is not the cause. Module 8 builds an alert on this query, at 90 percent.
+
+![Idle-state rows from the DOG host metrics receiver are averaged over the host cores and converted to host busy percent as one minus average idle share.](images/03-host-cpu-from-idle-samples.png)
+
+*A large idle value means a quiet core; average idle samples before calculating host busy CPU.*
 
 ## 3.7 Dashboards
 

@@ -47,6 +47,10 @@ When the payment failures began, the questions narrowed to a time window and to 
 
 Inside a tablet, Doris keeps rows sorted by the key in segments, with the zone maps and indexes that Module 6 measures. Partitions and buckets decide which tablets a query opens at all.
 
+![A time filter selects the matching daily partition, and an equality filter on a HASH bucket column narrows that partition to one tablet.](images/01-partitions-tablets-and-pruning.png)
+
+*Time selects partitions; a suitable hash key can narrow the scan again to one tablet per selected partition.*
+
 ## 5.2 Time partitions for telemetry
 
 The exporter creates each telemetry table with `PARTITION BY RANGE(timestamp)` and **dynamic partitioning** by day. Its settings from Module 2 become the table's properties:
@@ -63,6 +67,10 @@ The exporter creates each telemetry table with `PARTITION BY RANGE(timestamp)` a
 A scheduler in the FE applies these settings every 10 minutes (the FE setting `dynamic_partition_check_interval_seconds`, 600 by default): it creates the partitions that are missing up to `end`, and drops the ones before `start`. Retention therefore works a day at a time, and costs nothing: Doris deletes a whole partition's files. `start` also limits loads: a row older than the oldest partition has no partition to go to, and Doris rejects it.
 
 `history_partition_num` cannot reach past `start`: a table with `start = -7` and `history_partition_num = 10` still creates only the partitions of 7 past days. So right after the exporter created `otel_traces`, it had five partitions: the 3 past days, today, and tomorrow. Lab 5 lists them with `SHOW PARTITIONS` and `SHOW DYNAMIC PARTITION TABLES`.
+
+![The FE scheduler drops daily partitions before start -7 and creates partitions through tomorrow; initial creation includes only three past days, today, and tomorrow.](images/02-dynamic-partition-retention.png)
+
+*Retention advances in whole UTC days, while initial history creation and the allowed retention window are different settings.*
 
 ## 5.3 Partition pruning
 
@@ -130,6 +138,10 @@ Lab 5 copies the spans of `otel_traces` into a table bucketed by `HASH(service_n
 So choose a bucket column only when most queries filter on it with `=` or `IN`, and when it spreads the rows evenly: many distinct values, none dominant. The trace ID is such a column for a table that is read trace by trace: every lookup of one trace reads one tablet, and the tablets stay even, which is why Litefuse buckets its tables by trace ID. Raw telemetry is read in many ways, mostly by time, and its services are uneven, so RANDOM is the safer default; the inverted index of `service_name` finds the rows of one service inside the tablets (Module 6).
 
 With RANDOM bucketing, a load sends each batch of rows to one tablet and the next batch to the next tablet, so its rows spread over the tablets of a partition, and the tablets come closer to even as batches add up. A Stream Load with the header `load_to_single_tablet: true` writes all of its rows to one tablet, and the next load to the next tablet, so that each load creates fewer and larger files, which helps tables that receive many loads. The exporter does not set it.
+
+![Hashing service names lets an equality lookup read one bucket but can create skew, while RANDOM spreads rows evenly and requires all buckets for the same filter.](images/03-hash-versus-random-buckets.png)
+
+*A hash key earns pruning only when its values also distribute the rows evenly.*
 
 ## 5.7 How many buckets
 

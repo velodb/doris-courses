@@ -99,9 +99,9 @@ operators such as scan, filter, exchange, and aggregate. An **Exchange** moves
 intermediate data between plan fragments when the next operation requires rows
 to be repartitioned or gathered.
 
-![A MySQL-compatible client sends SQL into Apache Doris, which plans fragments for parallel BE execution and exchanges partial results before returning the final answer.](images/01-sql-to-distributed-plan-fragments.png)
+![FE plans and assigns fragments to parallel BEs, whose partial aggregates cross an Exchange before the final result returns.](images/01-sql-to-distributed-plan-fragments.png)
 
-*One SQL statement becomes coordinated plan fragments that BE nodes execute in parallel.*
+*A distributed query separates FE planning from BE fragment execution and intermediate data exchange.*
 
 This is **Massively Parallel Processing (MPP)**: work is distributed across BE
 nodes. Within one BE, the **Pipeline execution engine** schedules operators as
@@ -158,13 +158,9 @@ of interpreting one complete row at a time. Filtering a batch of
 `event_type` values or summing a batch of `revenue` values reduces per-row
 overhead and can use CPU vector instructions where applicable.
 
-```text
-Columnar Segment
-       |
-       | batch of selected columns
-       v
-Vectorized scan -> vectorized filter -> vectorized aggregate
-```
+![A scan reads batches of selected columns from a columnar Segment and passes them through vectorized filtering and aggregation.](images/02-column-batches-through-operators.png)
+
+*Column selection reduces storage reads; vectorized operators process the selected values in batches.*
 
 Columnar storage and vectorized execution solve related but different
 problems. Columnar storage reduces and organizes the bytes read from storage;
@@ -180,11 +176,7 @@ has storage and write-cost tradeoffs. See the official
 
 Doris first names data through a logical namespace:
 
-```text
-Internal Catalog
-└── Database
-    └── Table
-```
+The logical namespace contains an Internal Catalog, its Databases, and their Tables.
 
 The examples use `internal.doris_course.events`:
 
@@ -194,7 +186,7 @@ The examples use `internal.doris_course.events`:
 
 Inside an internal Table, data is organized physically:
 
-![An Apache Doris table contains partitions, buckets and tablets, rowsets, and immutable columnar segments.](images/02-storage-hierarchy.png)
+![An Apache Doris table contains partitions, buckets and tablets, rowsets, and immutable columnar segments.](images/03-storage-hierarchy.png)
 
 *The hierarchy separates lifecycle boundaries, physical distribution, version units, and immutable files.*
 
@@ -278,16 +270,9 @@ At a high level, the integrated write path is:
 5. The load transaction commits and publishes its visible version.
 6. Queries can read the newly committed data.
 
-```text
-One load transaction
-       |
-       +--> Tablet A --> new Rowset --> Segment(s)
-       +--> Tablet B --> new Rowset --> Segment(s)
-       +--> Tablet C --> new Rowset --> Segment(s)
-       |
-       v
-commit and publish -> new data becomes visible
-```
+![A load transaction publishes rowsets across affected tablets, while background Compaction rewrites several rowsets within one tablet into fewer larger rowsets without changing the logical result.](images/04-load-transaction-and-compaction.png)
+
+*Publishing makes a transaction visible; later Compaction reduces read amplification within each Tablet.*
 
 The precise number of Rowsets and Segments is a storage-engine result, not a
 number the application should infer from the count of SQL statements alone.
@@ -306,9 +291,6 @@ model, Compaction also applies repeated-key semantics and obsolete-data
 cleanup. It does not merge data across unrelated Tablets, and it does not
 change the logical query result.
 
-![A load transaction publishes rowsets across affected tablets, while background Compaction rewrites several rowsets within one tablet into fewer larger rowsets without changing the logical result.](images/03-load-transaction-and-compaction.png)
-
-*Publishing makes a transaction visible; later Compaction reduces read amplification within each Tablet.*
 
 Compaction balances two forms of work: extra background I/O when Rowsets are
 rewritten, and less read amplification for later queries. That is why a healthy
@@ -454,7 +436,7 @@ predicate in the scan operator close to storage instead of passing every row to
 a later Filter operator. It does not necessarily mean that FE pruned a
 Partition or Tablet.
 
-![FE pruning excludes whole partitions and tablets from metadata, while BE scan reduction skips ranges inside the selected tablets.](images/04-pruning-and-scan-reduction.png)
+![FE pruning excludes whole partitions and tablets from metadata, while BE scan reduction skips ranges inside the selected tablets.](images/05-pruning-and-scan-reduction.png)
 
 *FE reduces the planned scan scope; BE reduces the ranges read inside that scope.*
 

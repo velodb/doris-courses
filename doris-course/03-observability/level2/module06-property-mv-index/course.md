@@ -60,6 +60,10 @@ How it merges is the table's `compaction_policy`:
 
 **Group commit** attacks the same problem from the other side: when many clients send small loads, Doris can collect them into one transaction and one rowset on the BE. A load asks for it, for example with the Stream Load header `group_commit: async_mode`; since Doris 4.1, a table can also make it the default for its loads with the property `group_commit_mode`, which `SHOW CREATE TABLE` shows unless it is `off_mode`. The table's `group_commit_interval_ms` (10 seconds) and `group_commit_data_bytes` (128 MB) then decide when the collected data is committed. These two settings appear in every table's definition, but they apply only to loads that use group commit. The exporter's tables do not: they have no `group_commit_mode`, and the exporter sends no such header, because its `batch` processor already collects up to 10,000 records into one Stream Load.
 
+![Separate loads create separate rowsets that compaction later merges; group commit combines participating small loads into one transaction and rowset before writing.](images/01-rowsets-compaction-and-group-commit.png)
+
+*Compaction merges existing rowsets, while group commit prevents some small rowsets from being created.*
+
 ## 6.3 Compression
 
 Doris compresses each column of each page before it writes it to disk, with the algorithm of the table's `compression` property. In Doris 4.x the default is **ZSTD**, which compresses well at a higher CPU cost. **LZ4** (and its variant LZ4F) is fast, with a moderate compression ratio. Telemetry is written once, kept for days, and read in small parts, so the space that ZSTD saves usually matters more than the CPU it costs, and the Doris documentation recommends it for logs. The algorithm is set when a table is created; changing it means creating a new table and copying the data.
@@ -88,6 +92,10 @@ An **inverted index** maps each value of a column to the rows that contain it. F
 | `body MATCH_PHRASE 'POST /api/checkout'` | the tokens next to each other, in this order |
 
 With the index, Doris looks up the tokens and their positions, and reads only the rows that match. Without it, Doris must read every row's text, tokenize it, and compare. `LIKE '%...%'` always works that way: it compares characters, and no inverted index can answer it. The other columns' indexes have no parser: they keep each value whole and answer `=`, `IN`, and ranges, such as `service_name = 'cart'`.
+
+![The parser converts log text to lowercase tokens and positions; a phrase search uses the inverted index to select adjacent ordered tokens and read only matching rows.](images/02-inverted-index-token-lookup.png)
+
+*Phrase search compares indexed tokens in order, while LIKE must inspect the message text.*
 
 ## 6.5 Measuring a search with a Query Profile
 
@@ -152,6 +160,10 @@ The matching is structural: Doris compares the query's expressions, filters, and
 | The same summary, queried often, always current | A synchronous materialized view |
 | A summary with its own retention, or loaded from several sources | An AGGREGATE table and a load job |
 | Less disk for the same rows | Compression, chosen when the table is created |
+
+![Loads update the raw table and its synchronous minute-level view in one transaction; matching count queries use the view, while a duration query must use raw data.](images/03-synchronous-mv-lifecycle-and-rewrite.png)
+
+*A synchronous view stays current with its table and serves queries whose required information it retains.*
 
 ## Lab 6: Compression, Materialized Views, and Inverted Indexes
 

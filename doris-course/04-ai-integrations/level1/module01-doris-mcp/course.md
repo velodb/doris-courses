@@ -103,7 +103,9 @@ Model Context Protocol (MCP) gives an AI Host a standard way to discover and
 call tools. It does not merge the Host, the model, the tool server, and the
 database into one trusted process.
 
-![The MCP Host and its MCP Client, the Doris MCP Server, and the Doris sandbox all run on your computer. The Client talks to the Server over stdio, and the Server reaches Doris on 127.0.0.1 ports 39030, 38030, and 38040. Only the Host's connection to its model provider leaves the computer.](images/mcp-local-architecture.svg)
+![The Host contains an MCP Client that reaches a local Doris MCP Server over stdio; only the Host connects to an external model provider.](images/01-local-mcp-boundaries.png)
+
+*The database route stays on your computer, while prompts and tool results reach the Host's model provider.*
 
 All four layers run on your computer, and no layer opens a network service for
 the others: the Host reaches the Server through a child process's standard
@@ -137,6 +139,10 @@ schemas, whether each one is callable now, and a `manifest_version`. The Host
 then calls the same domain again with one `child_tool`, its `arguments`, and
 that `manifest_version`. The Host builds both calls from the published schemas;
 you never type them. Section 1.6 shows real ones.
+
+![The Host discovers a domain manifest before selecting a child with its arguments and manifest version; unavailable children retain their reason.](images/02-hierarchical-tool-discovery.png)
+
+*Discover the current child schema and availability before constructing a call.*
 
 | Domain | What its children do | Example question |
 | --- | --- | --- |
@@ -342,6 +348,10 @@ Several Hosts share the launcher, the Server version, and the Doris route, but
 each starts its own Server process. A second Doris would need a second launcher
 and a second Server entry; one process never switches between them.
 
+![Two Hosts use the same protected launcher and environment file but start separate MCP Server processes that read the same Doris target.](images/03-shared-launcher-separate-processes.png)
+
+*A shared launcher standardizes configuration; each Host still owns a separate Server process.*
+
 ## 1.5 Connect an MCP Host to the Doris Target
 
 Connect at least one of the four Hosts below; the others are optional. Each
@@ -398,7 +408,9 @@ Save the file and reload Cursor. In Cursor Settings, open the MCP page, then
 **Configure doris**: the project source is enabled, **Local** shows
 **Connected**, and **Tools** lists the Doris domains.
 
-![Cursor shows the project-scoped Doris MCP Server connected locally](images/cursor-doris-mcp-connected.png)
+![Cursor shows the project-scoped Doris MCP Server connected locally](images/04-cursor-doris-mcp-connected.png)
+
+*Cursor confirms a local Server connection and discovered domains; individual child capabilities still need checking.*
 
 Cursor lists the domains under **Reads** because the Server marks its tools as
 read-only. The selector next to the group, **Allow all** in the screenshot,
@@ -429,7 +441,9 @@ run **MCP: List Servers** from the Command Palette and start `doris`. In
 **View > Output**, select **MCP: doris**: the log shows **Connection state:
 Running** and **Discovered 8 tools**. You do not need to send a chat message.
 
-![VS Code MCP output shows the Doris Server running with eight discovered tools](images/vscode-doris-mcp-running.png)
+![VS Code MCP output shows the Doris Server running with eight discovered tools](images/05-vscode-doris-mcp-running.png)
+
+*VS Code verifies that the Server is running and has published its eight domains before any analytical conversation.*
 
 ### Connect Codex CLI and the desktop app
 
@@ -776,6 +790,10 @@ result, and the prose agree. A fluent answer without the required call, a
 successful call with altered numbers, or a monitoring summary that drops
 warnings does not pass.
 
+![Tool arguments lead to structured Doris evidence, an independent run of decisive SQL, and an explanation that must agree with those checks.](images/06-answer-evidence-chain.png)
+
+*Accept the explanation only after the trace, the structured result, and the independent check agree.*
+
 ## 1.7 Keep the Connection Safe and Diagnosable
 
 The integration has four separate boundaries. Keep all four rather than relying
@@ -851,14 +869,9 @@ show scoped grants, column privileges, and row policies for consumers.
 Check one layer at a time, in this order; changing several at once makes the
 evidence hard to read:
 
-```text
-Docker and ports
-    -> Doris, the account, and the data
-    -> the launcher and logs/doris_mcp_server_error.log
-    -> the Host's connection state and its log
-    -> the domain's children and their availability
-    -> the prompt and the interpretation of the answer
-```
+![Troubleshooting proceeds from Docker and Doris through the launcher, Host, child availability, and finally the prompt and interpretation.](images/07-troubleshoot-from-doris-outward.png)
+
+*Diagnose each dependency before changing the layer that depends on it.*
 
 | Symptom | First check | Correct direction |
 | --- | --- | --- |

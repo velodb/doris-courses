@@ -79,6 +79,10 @@ The view's contract writes down what consumers rely on:
 
 The view's implementation can change, Lab 10's table can gain columns, as long as its columns keep their names and meanings. A new question at a new grain, such as a filter by region, gets a second view, as Lab 11's practice publishes, while the first keeps its consumers.
 
+![A service table feeds a stable daily semantic view for dashboards and features, with a separate view for a regional grain.](images/01-consumer-semantic-interface.png)
+
+*Consumers share stable meanings at one declared grain.*
+
 ## 11.2 Check the Interface Before Publication
 
 Before a dashboard or a model reads the view, check what they rely on:
@@ -141,13 +145,17 @@ ORDER BY c.feature_date;
 
 January 3 appears with 0 orders, no average, and `zero_order_flag` 1. The flag cannot say whether the day had no orders or its orders have not arrived yet: the freshness check and the pipeline's records can. A feature projection prepares consistent, checked inputs; it proves nothing about a model's accuracy, does not prevent target leakage, and does not make training and serving data agree by itself: the AI application owns those, with its own evaluation. Doris also offers vector columns and indexes for similarity search; they do not turn a measure into a good feature either.
 
+![A calendar left join adds January 3 with zero additive measures, a NULL average, and a zero-order flag.](images/02-calendar-feature-projection.png)
+
+*A calendar supplies absent dates without inventing an average.*
+
 ## 11.5 Bound What an AI Tool Can Read
 
 The [Apache Doris MCP Server](https://doris.apache.org/docs/4.x/key-features/mcp-server/) lets AI tools that speak the Model Context Protocol (MCP) explore schemas and run read queries on Doris. It is a separate service, not a statement of the FE; it connects through the MySQL protocol as a named Doris user:
 
-```text
-MCP client (an AI tool) → Doris MCP Server → Doris, as one read-only database user
-```
+![An AI client reaches Apache Doris through a separate MCP server and a read-only user restricted to published views.](images/03-bounded-mcp-access.png)
+
+*MCP server limits add to a database user's view privileges.*
 
 The server's own limits, such as allowed tools, timeouts, result sizes, and its log, add to the Doris account's privileges; they do not replace them. A safe setup gives the server an account that can read only the published views (Module 12), keeps its password out of notebooks and prompts, reviews the SQL that the tool generates, especially for sensitive columns and wide scans, limits rows and time ranges, treats text that comes back from tables as untrusted input, and keeps the audit records (Module 12). Never connect it as root, and never take a model's confidence for a check of a metric.
 

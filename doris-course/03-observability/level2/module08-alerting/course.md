@@ -86,6 +86,10 @@ The pending period trades speed for quiet. Lab 8 uses 1 minute so that you can w
 
 A value that hovers around the threshold makes an instance **flap**: firing, resolved, firing again. A **recovery threshold** on the Threshold expression helps: for example, fire above 90, but resolve only below 80.
 
+![An instance enters Pending when its condition becomes true, fires after the full pending period, and returns to Normal on a false evaluation, resetting any pending timer.](images/01-alert-instance-state-transitions.png)
+
+*The condition must remain true through every evaluation of the pending period before the alert fires.*
+
 ## 8.4 Contact points and notification policies
 
 A **contact point** says how to send: Lab 8's `doris-course-email` sends email to `oncall@example.com` through Mailpit, a local mail server that the DOG stack starts, so no email leaves your computer. Grafana needs SMTP settings to send email at all; the DOG stack sets them with `GF_SMTP_*` environment variables. The contact point's **Test** sends a test notification: it proves that Grafana can deliver to that address, once. It does not prove that a rule fires when it should, that its alerts take this route, or that a resolved notification follows; Lab 8 checks each of those separately.
@@ -103,11 +107,19 @@ The rule decides what fires, the policy where and when it goes, and the contact 
 
 Two more tools keep notifications in check. A **silence** suppresses the notifications of alerts that match its labels for a time, for example while someone works on the problem; the email of every alert has a link to create one. A **mute timing** suppresses notifications of a policy during recurring times, such as a weekly maintenance window. Both stop notifications only: Grafana keeps evaluating the rules, and the instances keep their states.
 
+![Grafana evaluates a SQL result from Doris, routes the labeled alert through a notification policy, and delivers email with a contact point to the local Mailpit inbox.](images/02-rule-policy-contact-point.png)
+
+*The rule chooses what fires, labels guide policy routing, and the contact point delivers the notification.*
+
 ## 8.5 When data stops
 
 The CPU query returns nothing when the host stops reporting. Without rows, there is no value to compare with 90, and the rule's setting **Alert state if no data or all values are null** decides what happens. With the default, **No Data**, the rule reports no data, and Grafana raises a separate alert, `DatasourceNoData`, labeled with the data source and the query instead of a host, through the same policy. Lab 8 stops the DOG Collector to watch it. **Alert state if execution error or timeout**, `Error` by default, does the same when the query itself fails.
 
 No Data applies only when the query returns nothing at all. If one of several hosts stopped reporting, the query would still return the others: the silent host's instance would disappear after two evaluations without a notification. Missing telemetry is not a low value, and it is not proof of health; watch it with a query of its own, such as the seconds since each host's newest sample, as the exercise of Lab 8 does. Choose the no data state by what a missing value means: for the CPU of a host, a problem; for the share of failed orders when no order arrived, nothing failed, so that rule uses `OK`.
+
+![An empty query result invokes rule-level No Data handling, but a query that still returns Host A does not detect a silent Host B without a separate freshness check.](images/03-no-data-versus-missing-host.png)
+
+*Missing telemetry needs its own check when other sources keep the alert query nonempty.*
 
 ## 8.6 Rules as code
 

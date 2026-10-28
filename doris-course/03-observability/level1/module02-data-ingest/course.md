@@ -105,6 +105,10 @@ A receiver either waits for data or fetches it.
 - **Rotation.** The FE renames `fe.log` when it gets large and starts a new `fe.log`. Lab 2 mounts the log *directory* into the collector's container, so the receiver sees the new file. A mount of the single file would keep pointing at the renamed old file.
 - **Read position.** `start_at: beginning` reads a new file from its first line. Without storage, a restarted receiver does not know what it already read and loads the whole file again, which duplicates every row in Doris. The `file_storage` extension saves the position of each file, so a restart continues where the last run stopped.
 
+![OTLP receives pushed telemetry, Prometheus requests metric samples, and filelog reads files with its read position kept in file_storage.](images/01-collector-receiver-paths.png)
+
+*Choose the receiver from how the source exposes its telemetry.*
+
 ## 2.3 Processing on the way
 
 Processors run in the order that the pipeline lists them.
@@ -123,6 +127,10 @@ When Doris or the network fails, two settings decide what happens to the data:
 - **`retry_on_failure`** retries a failed export after `initial_interval`, then after longer and longer waits up to `max_interval`, and gives up after `max_elapsed_time`.
 
 Together they ride out a short outage. They do not make the pipeline durable: the queue lives in memory, so a crash or a restart of the Collector loses what is in it, and a long outage ends in dropped data once the retries give up or the queue fills.
+
+![Records leave the batch processor when size or timeout is reached, wait in an in-memory queue, and are sent to Doris by Stream Load with bounded retries.](images/02-batch-queue-stream-load.png)
+
+*Batching and retries tolerate short outages, while queued batches remain vulnerable to a Collector restart.*
 
 ### Creating the tables
 
@@ -156,6 +164,10 @@ The exporter maps the parts of each OTLP record to columns. For a log record:
 Spans map the same way to `otel_traces`, with `span_name`, `span_kind`, `parent_span_id`, `end_time`, `duration` (in microseconds), `status_code`, `status_message`, `span_attributes`, and `events`. Metrics go to one table per type: `otel_metrics_gauge`, `otel_metrics_sum`, `otel_metrics_histogram`, `otel_metrics_exponential_histogram`, and `otel_metrics_summary`, each with `metric_name`, `attributes`, and the value columns of its type.
 
 The attribute columns are of type `VARIANT`: Doris stores each key that appears in them as a column of its own, typed by its values, so that a query on one key reads only that key. A key with dots, such as `log.file.name`, is stored as a nested path, and `log_attributes['log.file.name']` reads it, as Lab 2 does to find the FE log's rows.
+
+![An OTLP log record maps its time, source identity, trace context, and attributes into columns of otel_logs, with attributes stored as VARIANT paths.](images/03-otlp-record-to-columns.png)
+
+*The schema separates common fields from nested attributes that SQL can read individually.*
 
 ## 2.6 What proves that a record arrived
 
