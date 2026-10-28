@@ -507,7 +507,8 @@ not charge, and left out the battery complaint and the happy customer.
 
 To pause, run the stop cell in the last section of the Lab, or
 `docker stop doris-ai-llm doris-ai`. Both keep their data, and the model file stays
-in its volume; `lab.start()` and `lab.start_model()` start them again.
+in its volume; `lab.start()` and `lab.start_model()` start them again. With your
+own Doris, the Lab's stop and start cells act only on the model server.
 
 To remove everything that the course created, set `REMOVE_EVERYTHING = True` in the
 last section of the Lab and run the cell. It deletes the containers `doris-ai` and
@@ -574,5 +575,5 @@ Hybrid Search, and Lakehouse federated retrieval.
 | Model | `qwen2.5-1.5b-instruct-q4_k_m.gguf`, Hugging Face commit `91cad51170dc346986eccefdc2dd33a9da36ead9`, SHA-256 `6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e` | 2026-10-28: downloaded through a mirror with `DORIS_AI_LLM_MODEL_URL`, same SHA-256 |
 | Computer | macOS on Apple Silicon, Docker Desktop 4.83.0 with 18 CPUs and 15.6 GiB | 2026-10-28 |
 | Hosted provider | `openai` provider type, with a made-up key | 2026-10-28: how `SHOW RESOURCES`, the audit log, and privileges treat the key and the Resource; no request was sent |
-| Your own Doris | Doris 4.1.3 in another Docker container on the same computer, on its own network, with a root password | 2026-10-28: sections 1 to 11, without the optional section 9, with `DORIS_AI_LLM_ENDPOINT` set to `http://host.docker.internal:38080/v1/chat/completions`; without the variable, `create_resource()` stopped before any SQL and named it |
-| Not run end to end | Linux on x86-64; WSL 2; section 12 with your own Doris; a hosted provider with a real key | — |
+| Your own Doris | Doris 4.1.3 in another Docker container on the same computer, on its own network, with a root password | 2026-10-28: every Lab section except the optional section 9, without the course's sandbox, with `DORIS_AI_LLM_ENDPOINT` set to `http://host.docker.internal:38080/v1/chat/completions`; without the variable, `create_resource()` stopped before any SQL and named it |
+| Not run end to end | Linux on x86-64; WSL 2; a hosted provider with a real key | — |

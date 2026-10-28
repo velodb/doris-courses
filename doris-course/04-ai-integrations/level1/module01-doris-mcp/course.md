@@ -1043,6 +1043,7 @@ It uses the same Doris sandbox, so you can keep it running.
 | Component | Version | What was checked, on 2026-10-20 |
 | --- | --- | --- |
 | Apache Doris | 4.1.3, `apache/doris:all-in-one-4.1.3` | The whole Lab, on macOS on Apple Silicon with Docker 29.6.2 |
+| Your own Doris | Doris 4.1.3 in another Docker container on the same computer, on its own network, with a root password | On 2026-10-28: the whole Lab without the course's sandbox, with the launcher, the reference trace, and both audit logs; no Host was connected |
 | Apache Doris MCP Server | 1.0.0 | Every tool call and error in this lesson, through the launcher, with the MCP Python SDK 2.0.1 as the client |
 | Codex CLI | 0.163.0 | `codex mcp add`, `get`, and `remove` with the launcher, and the three questions of section 1.6 in one session (`codex exec`): the tool calls and rows matched the reference traces, and the query appeared in the Doris audit table |
 | Claude Desktop, Cursor, VS Code | — | The configuration formats and log locations follow each vendor's documentation as of October 2026. The Cursor and VS Code screenshots come from connections made with Doris MCP Server 1.0.0 in October 2026. |

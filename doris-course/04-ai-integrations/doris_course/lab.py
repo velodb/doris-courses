@@ -212,10 +212,15 @@ class AiIntegrationsLab:
                     password=env.ADMIN_PASSWORD, connect_timeout=5,
                 )
             except (OSError, pymysql.MySQLError) as error:
+                remedy = (
+                    "Run lab.prepare_environment() (or lab.start() after lab.stop()), then rerun this cell."
+                    if self.uses_sandbox else
+                    "Check that your Doris is running and that the DORIS_AI_* variables you set before starting "
+                    "Jupyter give its address and account, then rerun this cell."
+                )
                 self._failure(
                     "Doris is not reachable",
-                    f"No Doris FE accepted {env.ADMIN_USER} on {env.HOST}:{env.QUERY_PORT}. Run "
-                    "lab.prepare_environment() (or lab.start() after lab.stop()), then rerun this cell.",
+                    f"No Doris FE accepted {env.ADMIN_USER} on {env.HOST}:{env.QUERY_PORT}. {remedy}",
                     str(error),
                 )
                 raise EnvironmentNotReady("Doris is not reachable.") from error
@@ -880,6 +885,10 @@ FROM {env.DATABASE}.{env.TABLE}""")
 
     def stop(self) -> None:
         """Stop the sandbox container and keep its data."""
+        if not self.uses_sandbox:
+            card(f"The labs use your own Doris at {env.HOST}:{env.QUERY_PORT}, and the course does not stop it. "
+                 "This step stops nothing.", "skip", "Sandbox not used")
+            return
         if container_inspect(env.DORIS_CONTAINER) is None:
             card(f"There is no {env.DORIS_CONTAINER} container.", "skip", "Nothing to stop")
             return
@@ -890,6 +899,10 @@ FROM {env.DATABASE}.{env.TABLE}""")
 
     def start(self) -> None:
         """Start the stopped sandbox again with the same data."""
+        if not self.uses_sandbox:
+            card(f"The labs use your own Doris at {env.HOST}:{env.QUERY_PORT}, and the course does not start it. "
+                 "This step starts nothing.", "skip", "Sandbox not used")
+            return
         labkit_docker.start_container(env.DORIS_CONTAINER,
                                       missing_hint="Run lab.prepare_environment() to create it.")
         self.connection = None

@@ -14,6 +14,7 @@ from doris_course import lab as lab_module
 from doris_course.lab import (
     MASK,
     AiIntegrationsLab,
+    EnvironmentNotReady,
     generate_password,
     masked_env_text,
     read_env_file,
@@ -118,6 +119,61 @@ class DatasetLoadTests(unittest.TestCase):
         self.assertEqual(values, "('2026-03-01 00:10:30', 1, 50758, 'purchase', 'US', 1132, 12.50)")
         with self.assertRaises(ValueError):
             AiIntegrationsLab._values(["2026-03-01 00:10:30", "1; DROP", "1", "view", "US", "1", "0"])
+
+
+class OwnDorisTests(unittest.TestCase):
+    """With your own Doris, the sandbox steps leave Docker alone and say so."""
+
+    SANDBOX = ("127.0.0.1", "root", "")
+    OWN_DORIS = (("doris.example.com", "root", ""), ("127.0.0.1", "root", "a-password"), ("127.0.0.1", "admin", ""))
+
+    def run_steps(self, account, *steps):
+        host, user, password = account
+        lab = AiIntegrationsLab.__new__(AiIntegrationsLab)
+        lab.connection = None
+        cards = []
+        with mock.patch.multiple(lab_module.env, HOST=host, ADMIN_USER=user, ADMIN_PASSWORD=password), \
+                mock.patch.object(lab_module, "card",
+                                  lambda message, kind="info", title=None: cards.append((kind, title))), \
+                mock.patch.object(lab_module, "run") as run, \
+                mock.patch.object(lab_module, "container_inspect", return_value=None) as inspect, \
+                mock.patch.object(lab_module.labkit_docker, "start_container") as start_container:
+            for step in steps:
+                getattr(lab, step)()
+        return cards, [run, inspect, start_container]
+
+    def test_stop_and_start_leave_docker_alone_with_your_own_doris(self):
+        for account in self.OWN_DORIS:
+            with self.subTest(account=account):
+                cards, docker_calls = self.run_steps(account, "stop", "start")
+                self.assertEqual(cards, [("skip", "Sandbox not used")] * 2)
+                for call in docker_calls:
+                    call.assert_not_called()
+
+    def test_with_the_sandbox_they_still_use_its_container(self):
+        cards, (run, inspect, start_container) = self.run_steps(self.SANDBOX, "stop", "start")
+        inspect.assert_called_once_with("doris-ai")
+        run.assert_not_called()
+        self.assertEqual(start_container.call_args.args, ("doris-ai",))
+        self.assertEqual(cards, [("skip", "Nothing to stop"), ("ok", "Sandbox started")])
+
+    def test_an_unreachable_doris_gets_advice_that_fits_it(self):
+        for account in (self.SANDBOX, *self.OWN_DORIS):
+            with self.subTest(account=account):
+                host, user, password = account
+                lab = AiIntegrationsLab.__new__(AiIntegrationsLab)
+                lab.connection = None
+                failures = []
+                with mock.patch.multiple(lab_module.env, HOST=host, ADMIN_USER=user, ADMIN_PASSWORD=password), \
+                        mock.patch.object(lab_module, "connect_doris", side_effect=OSError("refused")), \
+                        mock.patch.object(lab, "_failure", lambda title, message, log="": failures.append(message)):
+                    with self.assertRaises(EnvironmentNotReady):
+                        lab.query("SELECT 1")
+                if account == self.SANDBOX:
+                    self.assertIn("lab.prepare_environment()", failures[0])
+                else:
+                    self.assertNotIn("lab.", failures[0])
+                    self.assertIn("your Doris is running", failures[0])
 
 
 class ResultDisplayTests(unittest.TestCase):
