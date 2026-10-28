@@ -19,6 +19,11 @@ running a Lab: requirements can install the shared runtime from `../common`.
   `slug` names its source directory; `order` controls display numbering. Never
   regenerate IDs from order. Keep removed identities with `status: retired`,
   `required: false` and an empty `requirements` list.
+- Course publication controls access to all of its modules. A `draft` course
+  remains in the catalog as a disabled Coming soon card, while its lessons,
+  Labs and quizzes stay closed even if individual modules are published.
+  `preview` and `published` courses are accessible; `retired` courses are
+  hidden. Changing a course status preserves its content and learner data.
 - `published` modules have a lesson. Their requirements explicitly select
   `course_read`, `lab_opened`, `lab_declared_complete` and/or `quiz_passed`;
   each selected requirement needs its corresponding asset. Planned modules

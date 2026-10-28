@@ -1,4 +1,4 @@
-# AI Integrations with Apache Doris (Preview)
+# AI Integrations with Apache Doris
 
 Connect AI to Apache Doris in both directions, safely. In the first module you
 give an MCP Host, such as Claude Desktop, Cursor, VS Code with GitHub Copilot, or
@@ -9,8 +9,9 @@ language model from SQL with its AI functions, and you learn to bound, measure,
 check, and store what the model answers. Everything runs on your own computer,
 against a Doris sandbox and a small open model that the course starts for you.
 
-> **Preview.** The course has two modules so far. They are complete and tested,
-> and more modules are planned; see [Roadmap](#roadmap).
+> **Not yet open on the website.** The course has two completed modules so far,
+> and more modules are planned; see [Roadmap](#roadmap). The content remains in
+> this repository while the course's website entry is disabled.
 
 ## Who this course is for
 
