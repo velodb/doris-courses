@@ -4,6 +4,7 @@ description: Six questions check whether you can read the parts of a Collector p
   an export call proves, and explain which services send which signals.
 questions:
 - id: name_the_pipeline_parts
+  type: single_choice
   objective: Describe what the receivers, processors, exporters, and extensions of a Collector pipeline
     do.
   prompt: The rows of Lab 2's log collector arrive in Doris with service_name doris-fe, although fe.log
@@ -24,6 +25,7 @@ questions:
     not invent a service name. The file_storage extension only keeps the receiver's read position; it
     is not on the data path.
 - id: distinguish_pull_and_push
+  type: single_choice
   objective: Choose a receiver for a source that pushes its telemetry and for one that must be pulled.
   prompt: The Doris FE and BE publish their metrics at /metrics and wait to be asked. A Python program
     sends its spans over OTLP. Which receivers does a collector need?
@@ -43,6 +45,7 @@ questions:
     over OTLP, a prometheus receiver cannot fetch spans from a program, and writing both to a file would
     add a step that neither source needs.
 - id: predict_batch_export_timing
+  type: single_choice
   objective: Predict when a batch processor sends its data, and what a sending queue and retries guarantee.
   prompt: A batch processor has send_batch_size 10000 and timeout 10s. A program sends one span, and nothing
     else arrives. When does the collector export the span?
@@ -62,6 +65,7 @@ questions:
     not wait for 10,000 spans when its timeout has passed. Batches stay in memory; nothing is written
     to disk, which is also why a sending queue does not survive a crash.
 - id: table_settings_apply_at_creation
+  type: single_choice
   objective: Explain which settings of the Doris exporter apply only when it creates a table.
   prompt: 'otel_logs exists, with daily partitions kept for 7 days. You set history_days: 30 and create_schema:
     true in a collector''s Doris exporter and restart the collector. What happens to otel_logs?'
@@ -80,6 +84,7 @@ questions:
     its 7 days. The exporter does not alter tables, never drops them, and does not compare its settings
     with the table''s, so the collector starts normally.'
 - id: judge_flush_evidence
+  type: single_choice
   objective: Judge what a successful export call shows and what only a query in Doris shows.
   prompt: Python code ends a span, calls provider.force_flush(), and prints Flushed the span. A query
     for its trace ID in otel_traces returns no row. Which conclusion is best supported?
@@ -99,6 +104,7 @@ questions:
     query again. A flush does not raise an exception on failure, a successful flush does not put the row
     in Doris at once, and Grafana has no part in loading data.'
 - id: explain_missing_payment_logs
+  type: single_choice
   objective: Find the evidence of one request in each signal, and tell which services send which signals.
   prompt: A failed order's trace has error spans in payment and checkout. otel_logs has the proxy's access
     log line with the order's trace ID, but no row from payment or checkout. What is the best explanation?
@@ -116,3 +122,4 @@ questions:
     docker logs shows them, and send no logs to a Collector; the proxy and services such as cart and currency
     do. The Doris exporter loads every log record whatever its severity, logs are not held back until
     a trace is complete, and a log record goes to otel_logs whether or not it has a trace ID.
+passing_score_percent: 80

@@ -4,6 +4,7 @@ description: Six questions check whether you can explain partitions, buckets, an
   the number of buckets.
 questions:
 - id: count_tablets
+  type: single_choice
   objective: Explain how Doris divides a table into partitions, buckets, and tablets.
   prompt: otel_traces has 5 daily partitions of 10 buckets each, with one replica. How many tablets does
     it have, and which of them does a scan of one partition read?
@@ -22,6 +23,7 @@ questions:
     in parallel. Buckets divide each partition; they are not shared between partitions, and a partition
     is not a single tablet unless it has one bucket.'
 - id: predict_partition_pruning
+  type: single_choice
   objective: Predict which partitions a query reads from its filter on the partition column.
   prompt: In a fresh environment, EXPLAIN shows partitions=1/5 for a query of otel_traces with timestamp
     >= a time an hour ago, and also partitions=1/5 for the same query without any filter on time. What
@@ -42,6 +44,7 @@ questions:
     the first would still read one. The first plan did apply its filter; the partitions are by time, not
     by service; and the SQL cache keeps results of repeated identical queries, not plans for others.
 - id: predict_dynamic_partitions
+  type: single_choice
   objective: Predict which partitions dynamic partitioning creates and drops.
   prompt: A table is created with dynamic partitioning by DAY, start = -7, end = 1, and history_partition_num
     = 10. Which partitions does it have right after it is created?
@@ -60,6 +63,7 @@ questions:
     Afterwards, the scheduler creates and drops partitions every 10 minutes. Partitions that arriving
     data creates are AUTO PARTITION''s behavior, and end = 1 creates tomorrow''s partition before midnight.'
 - id: choose_partitioning
+  type: single_choice
   objective: Choose a partition grain and a partitioning method for a retention period and a query pattern.
   prompt: A service writes about 2 GB of logs a day. Queries cover the last minutes to hours, and the
     logs are kept for 30 days. Which partitioning fits best?
@@ -80,6 +84,7 @@ questions:
     filtered by day, but each query reads the whole month to find the day, and retention drops a month
     at a time. A DELETE rewrites data and costs far more than dropping a partition.
 - id: choose_bucketing
+  type: single_choice
   objective: Choose HASH or RANDOM bucketing from a table's filters and the distribution of its data.
   prompt: Bucketed by HASH(service_name) into 10 buckets, a copy of the spans reads one tablet for service_name
     = 'payment', but one tablet holds 38% of the rows and another none. Its users mostly look up whole
@@ -101,6 +106,7 @@ questions:
     a service: all rows with one value hash to one bucket. RANDOM keeps tablets even but cannot prune
     any bucket. One bucket per partition does read one tablet, but that tablet is the whole partition.'
 - id: explain_auto_buckets
+  type: single_choice
   objective: Explain how Doris sets the number of buckets of each partition.
   prompt: The exporter's otel_traces says DISTRIBUTED BY RANDOM BUCKETS AUTO, and the course's partitions
     hold a few megabytes each, yet every partition has 10 buckets. Why?
@@ -122,3 +128,4 @@ questions:
     and when an estimate is below half of the previous partition's number, Doris keeps the previous number.
     BUCKETS AUTO works for RANDOM tables too; the estimate is about one bucket up to 100 MB and one per
     5 GB beyond, not one per megabyte; and the cluster's disks only cap the number.
+passing_score_percent: 80

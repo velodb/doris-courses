@@ -4,6 +4,7 @@ description: Six questions check whether you can read a table's storage properti
   and predict a synchronous materialized view.
 questions:
 - id: read_missing_compression
+  type: single_choice
   objective: Read the storage properties of a table from `SHOW CREATE TABLE`, including the ones that
     it leaves out.
   prompt: The exporter creates otel_logs with "compression" = "zstd", but SHOW CREATE TABLE otel_logs
@@ -26,6 +27,7 @@ questions:
     unset: every table compresses its data. Compression is a property of the table, set when it is created,
     not of each partition.'
 - id: fair_compression_test
+  type: single_choice
   objective: Design a comparison of compression algorithms that changes only the algorithm.
   prompt: You want to know how much disk LZ4 needs for the course's logs compared with ZSTD. Which measurement
     isolates the effect of the algorithm?
@@ -49,6 +51,7 @@ questions:
     much else and says nothing about space. And Doris 4.1.3 rejects an ALTER of compression: it is set
     when a table is created.'
 - id: match_phrase_tokens
+  type: single_choice
   objective: Explain how the inverted index of a text column answers `MATCH_ANY`, `MATCH_ALL`, and `MATCH_PHRASE`.
   prompt: idx_body uses the unicode parser with lower_case and support_phrase. Which condition finds the
     access-log line "POST /api/checkout?currencyCode=USD HTTP/1.1" 500?
@@ -69,6 +72,7 @@ questions:
     so post does not match POST, and it reads every row. MATCH_ALL needs every word, and currency is not
     one: the word in the line is currencycode.'
 - id: read_scan_counters
+  type: single_choice
   objective: Interpret the row counters of a Query Profile without claiming more than they show.
   prompt: For the search of the failed checkouts, the profile without the index shows RowsExprPredFiltered
     79,840 and RowsRead 27; with the index, RowsInvertedIndexFiltered 79,840 and RowsRead 27. Which conclusion
@@ -90,6 +94,7 @@ questions:
     out words in a text, as RowsStatsFiltered 0 shows. And the numbers belong to this query on this data:
     another search skips other rows.'
 - id: view_lifecycle
+  type: single_choice
   objective: Explain how a synchronous materialized view is built, kept up to date, and stored.
   prompt: CREATE MATERIALIZED VIEW server_minutes_mv on otel_traces has just returned. Which description
     of the view is right?
@@ -110,6 +115,7 @@ questions:
     belong to asynchronous materialized views. A synchronous view is stored as an index of its table,
     AGG_KEYS in DESC ... ALL, and queries keep naming the table.
 - id: predict_view_rewrite
+  type: single_choice
   objective: Predict whether Doris can answer a query from a materialized view.
   prompt: server_minutes_mv groups the server spans by date_trunc(end_time, 'minute') and service_name,
     with COUNT and SUM columns. Which query can Doris answer from it?
@@ -128,3 +134,4 @@ questions:
     and adding up the minutes of each service is a coarser grain. The view keeps the minute, not end_time,
     so a filter on end_time cannot be applied to its rows. It holds only server spans, so it cannot count
     the others. And it keeps counts and sums, not durations, so no maximum can be derived from it.'
+passing_score_percent: 80

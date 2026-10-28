@@ -4,6 +4,7 @@ description: Six questions check whether you can write an alert query, predict a
   rules as code.
 questions:
 - id: choose_alert_expression
+  type: single_choice
   objective: Write an alert query that measures what the alert is about.
   prompt: Operators must be notified when the CPU of a host stays busy. The DOG Collector stores host
     CPU in otel_metrics_gauge as system.cpu.utilization, with one row per CPU core and state (idle, user,
@@ -27,6 +28,7 @@ questions:
     host. Comparing every row fires on idle cores; the average of all states is the same for every host;
     and the number of rows measures how often the Collector reports, not how busy the host is.
 - id: predict_pending_states
+  type: single_choice
   objective: Predict how an alert instance moves between Normal, Pending, and Alerting, and back.
   prompt: A rule is evaluated every 30 seconds and has a pending period of 1 minute. Its condition is
     true at 10:00:00 and 10:00:30, false at 10:01:00, and true again from 10:01:30 on. When does its instance
@@ -47,6 +49,7 @@ questions:
     at 10:01:00, true evaluations are not added up across a false one, and a false evaluation does not
     disable a rule: it keeps being evaluated.'
 - id: find_the_routing_problem
+  type: single_choice
   objective: Separate what a contact point, a notification policy, and an alert rule each decide.
   prompt: The Test of the contact point doris-course-email delivered an email. Later, the rule Host CPU
     busy fires, but no email reaches oncall@example.com, and the default contact point's address receives
@@ -68,6 +71,7 @@ questions:
     label and the rule''s labels. The test proved that the contact point delivers, once; a rule does not
     name recipients; and tests and alerts use the same SMTP settings.'
 - id: preserve_host_dimension
+  type: single_choice
   objective: Keep the labels that an alert needs to be acted on.
   prompt: CPU alerts must tell operators which host is affected, and the alert query can return the host
     name. Which alert configuration preserves that requirement?
@@ -86,6 +90,7 @@ questions:
     and a silence can use. A generic message, a host name written into the rule, or one value for all
     hosts each lose the information that an operator needs, even when the threshold is right.
 - id: distinguish_missing_data_from_low_value
+  type: single_choice
   objective: Decide how a rule treats missing data, and detect a source that stops reporting.
   prompt: A host's CPU series stops reporting for several minutes while other hosts continue. The alert
     threshold is value > 90%. Which handling is most defensible?
@@ -106,6 +111,7 @@ questions:
     others still report needs a check of its own, such as the time since its newest sample. Reusing the
     last value hides the silence, and 0% or 100% invent a measurement.
 - id: provision_rule_with_uid
+  type: single_choice
   objective: Keep alert rules as code, and send them to Grafana.
   prompt: 'A team keeps the rule Failed orders as JSON with a fixed uid, and sends it with PUT /api/v1/provisioning/folder/{folder
     uid}/rule-groups/orders. On a new Grafana, the request fails with 500: could not find alert rule.
@@ -129,3 +135,4 @@ questions:
     does. X-Disable-Provenance only keeps the rules editable in the web page. Exporting reads a rule from
     one Grafana and registers nothing on another. The API takes the admin''s credentials with each request,
     so signing in to the web page changes nothing for it.'
+passing_score_percent: 80

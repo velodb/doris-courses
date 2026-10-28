@@ -2,6 +2,7 @@ title: "Module 14 Quiz: Resource Isolation and Query Protection"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: routing_order
+  type: single_choice
   objective: "Explain the order in which Doris selects a query's Workload Group."
   prompt: "An account's default group is course_dashboard_l3, and it may use both course groups. Its session runs SET workload_group = 'course_adhoc_l3', then a query without a hint. Which group runs the query?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: session_group
   explanation: "Doris takes a hint in the query first, then the session's group when it is not empty, then the account's default, then normal; the account may use the session's group, so it runs the query. The account's default comes after the session. Disagreement causes no fallback. Capacity decides what happens inside the chosen group, not which group is chosen."
 - id: no_queue
+  type: single_choice
   objective: "Predict from max_concurrency, max_queue_size, and queue_timeout whether a query runs, waits, or is rejected."
   prompt: "A group has max_concurrency 2 and max_queue_size 0. Two queries of a minute run on one FE, and a third arrives at the same FE. What happens to the third?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: rejected
   explanation: "Both slots of this FE are taken and the group has no queue, so the query is rejected at once. A queue size of 0 means that nothing waits. A query does not change groups when its group is full. With no place in the queue there is nothing to time out."
 - id: cpu_cgroup
+  type: single_choice
   objective: "Explain where memory and CPU limits apply and what CPU enforcement requires."
   prompt: "A BE has no doris_cgroup_cpu_path. The ad hoc group has max_cpu_percent 10 and max_memory_percent 30, and its queries alone use all of the CPU. Why?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: no_cgroup
   explanation: "CPU limits need the BE's CPU cgroup; without doris_cgroup_cpu_path, max_cpu_percent is a setting that nothing enforces, while memory limits use Doris's own accounting on each BE. A restart of the FE adds no cgroup to a BE. Queue properties control waiting; CPU limits apply to running queries. The limits apply on each BE, and an enforced maximum holds even when the CPU is idle."
 - id: route_and_bypass
+  type: single_choice
   objective: "Route an account to a group with USAGE_PRIV and default_workload_group, and explain why bypass_workload_group is not an isolation boundary."
   prompt: "An analyst's account may use only the ad hoc group, which is also its default. The group's slots and queue are full, and the analyst sets bypass_workload_group = true. What happens to the next query?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: skips_queue
   explanation: "The setting skips the FE's queue only: the group stays the same, its usage check applies, and so do the BE's memory limits, which is why the queue is not a boundary that an ordinary user cannot cross. Any user may set it for its session. It does not change the group. Selecting a group without USAGE_PRIV still fails when the query runs."
 - id: block_before_run
+  type: single_choice
   objective: "Tell query_timeout, Workload Policy, and SQL Block Rule apart by when and where they act."
   prompt: "An analyst's scans of more than two partitions must be rejected before they run, and the analyst must not be able to lift the restriction. Which mechanism fits?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: block_rule
   explanation: "A scan rule reads the plan before the query runs and rejects it, and the account property that ties it to the analyst can be set only by an administrator. A timeout cancels a query that is already running, and the analyst can change the session's value. A Workload Policy acts during execution, on elapsed time rather than scan scope. Concurrency limits how many queries run, not what each one scans."
 - id: rollback_order
+  type: single_choice
   objective: "Write a resource runbook with groups, routing, protection, observations, and a rollback in dependency order."
   prompt: "An ad hoc group is retired. Two accounts have it as their default, a Workload Policy references it, and a role that has no other purpose holds its USAGE_PRIV. In which order do you remove them?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "The policy and the group, keeping the role's grant for a later group of the same name"
   answer: dependency_order
   explanation: "Doris refuses to drop a group that a policy references or that is an account's default, and dropping a group leaves the grants of its usage, so the references go first, then the grant and the role, then the group, each checked with its SHOW statement. Dropping the group first fails while the references exist. The policy stays a dependency, and the old grant would come back with a group of the same name, which is also why keeping it is a mistake."
+passing_score_percent: 80

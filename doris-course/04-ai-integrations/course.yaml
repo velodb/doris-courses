@@ -9,6 +9,15 @@ doris_version: "4.1.3"
 estimated_minutes: 175
 modules:
   - slug: doris-mcp
+    id: module-1
+    summary: Connect an AI client to Apache Doris through MCP and reason about safe tool access.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 1
     title: Connect AI Agents to Apache Doris with MCP
@@ -17,6 +26,15 @@ modules:
     quiz: level1/module01-doris-mcp/quiz01_doris_mcp.yaml
     estimated_minutes: 90
   - slug: doris-ai-functions
+    id: module-2
+    summary: Use Doris AI Functions for governed, small-batch text enrichment.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 2
     title: Call Language Models from SQL with AI Functions
@@ -24,3 +42,41 @@ modules:
     lab: level1/module02-doris-ai-functions/lab02_doris_ai_functions.ipynb
     quiz: level1/module02-doris-ai-functions/quiz02_doris_ai_functions.yaml
     estimated_minutes: 85
+  - id: module-3
+    slug: hybrid-search-lakehouse
+    level: 1
+    order: 3
+    title: Hybrid Search + Lakehouse
+    summary: Combine hybrid retrieval with lakehouse data through Apache Doris.
+    status: planned
+    estimated_minutes: 0
+    required: false
+    requirements: []
+short_title: AI Integrations
+description: Connect Apache Doris to AI agents, AI Functions, hybrid search, and lakehouse data.
+presentation:
+  theme: orange
+  badge_label: AI + DATA
+lab_setup:
+  python_version: '3.12'
+  requirements: requirements.txt
+  supported_platforms:
+  - macos
+  - linux
+  - wsl2
+  guide: README.md
+  dependencies:
+  - Git
+  - Docker Engine or Docker Desktop with Compose v2
+  - Python and JupyterLab
+  - Provider credentials explicitly listed by the Lab
+completion:
+  enabled: false
+  strategy: all_required_modules
+  quiz_credit_policy: preserve_passed
+certificate:
+  enabled: false
+  code: AI
+  template: course_completion
+levels:
+  '1': Connect Doris to AI tools

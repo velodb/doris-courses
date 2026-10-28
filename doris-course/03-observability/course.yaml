@@ -9,6 +9,15 @@ doris_version: "4.1.3"
 estimated_minutes: 640
 modules:
   - slug: observability-introduction
+    id: module-1
+    summary: Apply observability foundations to an Apache Doris observability workflow.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 1
     title: Observability Foundations in the DOG Stack
@@ -17,6 +26,15 @@ modules:
     quiz: level1/module01-observability-introduction/quiz01_observability_foundations.yaml
     estimated_minutes: 70
   - slug: data-ingest
+    id: module-2
+    summary: Apply ingesting observability data to an Apache Doris observability workflow.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 2
     title: Ingesting Observability Data
@@ -25,6 +43,15 @@ modules:
     quiz: level1/module02-data-ingest/quiz02_ingesting_observability_data.yaml
     estimated_minutes: 70
   - slug: data-visualization
+    id: module-3
+    summary: Apply observability visualization to an Apache Doris observability workflow.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 3
     title: Visualizing Observability Data
@@ -33,6 +60,15 @@ modules:
     quiz: level1/module03-data-visualization/quiz03_observability_visualization.yaml
     estimated_minutes: 85
   - slug: table-model
+    id: module-4
+    summary: Apply table models to an Apache Doris observability workflow.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 4
     title: Table Models for Observability Data
@@ -41,6 +77,15 @@ modules:
     quiz: level2/module04-table-model/quiz04_observability_table_models.yaml
     estimated_minutes: 70
   - slug: partition-bucket
+    id: module-5
+    summary: Apply partition and bucket choices to an Apache Doris observability workflow.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 5
     title: Partitioning and Bucketing for Observability Data
@@ -49,6 +94,15 @@ modules:
     quiz: level2/module05-partition-bucket/quiz05_partition_and_bucket_choices.yaml
     estimated_minutes: 75
   - slug: property-mv-index
+    id: module-6
+    summary: Apply properties, materialized views, and indexes to an Apache Doris observability workflow.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 6
     title: Table Properties, Materialized Views, and Indexes
@@ -57,6 +111,15 @@ modules:
     quiz: level2/module06-property-mv-index/quiz06_properties_mv_and_indexes.yaml
     estimated_minutes: 85
   - slug: data-analysis-litefuse
+    id: module-7
+    summary: Apply analysis and litefuse to an Apache Doris observability workflow.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 7
     title: Trace Analysis and Litefuse
@@ -68,6 +131,15 @@ modules:
       - title: "Optional Lab 7A: Trace a Real Model with Litefuse"
         path: level2/module07-data-analysis-litefuse/optional07_trace_a_real_model.ipynb
   - slug: alerting
+    id: module-8
+    summary: Apply alerting rules to an Apache Doris observability workflow.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 8
     title: Alerting with Grafana
@@ -75,3 +147,33 @@ modules:
     lab: level2/module08-alerting/lab08_alerting.ipynb
     quiz: level2/module08-alerting/quiz08_alerting_rules.yaml
     estimated_minutes: 95
+short_title: Observability
+description: Build workflows for logs, metrics, traces, visualization, analysis, and alerting.
+presentation:
+  theme: green
+  badge_label: OBSERVE
+lab_setup:
+  python_version: '3.12'
+  requirements: requirements.txt
+  supported_platforms:
+  - macos
+  - linux
+  - wsl2
+  guide: README.md
+  dependencies:
+  - Git
+  - Docker Engine or Docker Desktop with Compose v2
+  - Python 3.11 or newer
+  - JupyterLab
+  - The Dog Stack services described by the notebook
+completion:
+  enabled: true
+  strategy: all_required_modules
+  quiz_credit_policy: preserve_passed
+certificate:
+  enabled: true
+  code: OBS
+  template: course_completion
+levels:
+  '1': Build the observability foundation
+  '2': Model, analyze, and alert

@@ -5,6 +5,7 @@ description: >-
   objective.
 questions:
   - id: trace_query_execution
+    type: single_choice
     objective: "Trace a query from FE planning, through its plan fragments, to its execution on BE nodes."
     prompt: "Which statement traces an analytical query through Doris correctly?"
     options:
@@ -25,6 +26,7 @@ questions:
       the FE does not scan the data itself.
 
   - id: columnar_and_vectorized
+    type: single_choice
     objective: "Explain how columnar storage and vectorized execution reduce the work of an analytical scan."
     prompt: >-
       A query sums revenue for one day from a table of seven columns and
@@ -49,6 +51,7 @@ questions:
       advance, or keeps rows together.
 
   - id: storage_hierarchy_compaction
+    type: single_choice
     objective: "Explain the hierarchy from Table to Partition, Tablet, Rowset, and Segment, and why Compaction merges Rowsets."
     prompt: >-
       Which description connects the storage hierarchy of a Doris table, a load
@@ -72,6 +75,7 @@ questions:
       query results.
 
   - id: choose_table_model
+    type: single_choice
     objective: "Describe how the Duplicate Key, Unique Key, and Aggregate Key models treat repeated keys."
     prompt: >-
       Three tables each receive a second row with the same key values. Which
@@ -94,6 +98,7 @@ questions:
       uniqueness constraint like a MySQL PRIMARY KEY.
 
   - id: choose_physical_design
+    type: single_choice
     objective: "Distinguish partitioning, bucketing, the sort key, and the Prefix Index by the problem each one solves."
     prompt: >-
       An event table is queried with a one-day time range and an exact
@@ -117,6 +122,7 @@ questions:
       Partitions.
 
   - id: interpret_explain_profile
+    type: single_choice
     objective: "Use `EXPLAIN` and the Query Profile to tell planned pruning from the scan work actually done."
     prompt: >-
       EXPLAIN reports partitions=1/26, tablets=1/10, and a scan predicate, and
@@ -138,3 +144,4 @@ questions:
       Profile records what the BE scan actually read. A scan predicate is
       evaluated close to storage, which is related to pruning but not the
       same, and less work must still return the same result.
+passing_score_percent: 80

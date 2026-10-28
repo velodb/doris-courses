@@ -4,6 +4,7 @@ name: CI
 
 on:
   pull_request:
+  merge_group:
   push:
     branches: [main]
 
@@ -40,6 +41,8 @@ jobs:
           python tools/check_quiz_balance.py --strict doris-course/01-real-time-analytics
       - name: Course manifests
         run: python tools/check_course_manifests.py
+      - name: Content contract
+        run: python tools/check_content_contract.py
       - name: Image list
         # Only whether maintenance/images.md lists the images that the courses
         # name; comparing their digests with the registries needs the network.

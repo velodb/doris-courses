@@ -4,6 +4,7 @@ description: Six questions check whether you can choose a table model from what 
   and read a UNIQUE table.
 questions:
 - id: choose_model_for_recount
+  type: single_choice
   objective: Choose DUPLICATE, AGGREGATE, or UNIQUE from what must happen to rows that share a key.
   prompt: Every 10 minutes, a job counts the calls between each pair of services for each of the last
     10 minutes. Each run therefore writes the minute in which the previous run started a second time,
@@ -24,6 +25,7 @@ questions:
     count to the complete one and overcount the minute. DUPLICATE would keep two rows, and every query
     would have to choose between them. MIN would keep the partial count, which is too low.'
 - id: keep_spans_with_one_key
+  type: single_choice
   objective: Explain why raw logs, spans, and metric points belong in DUPLICATE tables.
   prompt: 'In otel_traces, whose key is service_name and timestamp, twelve frontend spans share one key:
     they started in the same millisecond and have twelve different span IDs. What would a UNIQUE table
@@ -44,6 +46,7 @@ questions:
     whole row; it replaces rows instead of rejecting the load; and no model lists the values of combined
     rows: AGGREGATE combines them by the functions of its value columns.'
 - id: choose_summary_grain
+  type: single_choice
   objective: Choose the key of an AGGREGATE table at the grain of the questions that it answers.
   prompt: A dashboard shows each service's requests and failed requests per minute. Which key gives an
     AGGREGATE table with SUM columns one row per service and minute?
@@ -64,6 +67,7 @@ questions:
     summary. With service_name alone, every minute of a service combines into one row, and a sum of minutes
     means nothing.'
 - id: predict_repeated_load
+  type: single_choice
   objective: Predict the rows of an AGGREGATE table after overlapping or repeated loads.
   prompt: requests_per_minute has the key (request_minute, service_name) and requests BIGINT SUM. One
     INSERT loads 4 requests of cart at 10:05, and a second INSERT loads 7 more. By mistake, the second
@@ -84,6 +88,7 @@ questions:
     Rows with the same key combine into one, so there are not three rows, and keeping the last value is
     what UNIQUE or a REPLACE column does, not SUM.'
 - id: stable_alert_identity
+  type: single_choice
   objective: Build an alert identity that stays the same for every occurrence of an error.
   prompt: recommendation's flag stream fails with DEADLINE_EXCEEDED every 10 minutes, and each status
     message contains the time of the failure. Which alert identity gives all of these failures one row
@@ -103,6 +108,7 @@ questions:
     new alert. Replacing the numbers keeps the words that name the problem. A span ID and a trace ID are
     different for every failure by design, so either would raise an alert for each one.
 - id: read_one_alert_row
+  type: single_choice
   objective: Predict which row a UNIQUE table keeps, and what one row says about occurrences.
   prompt: error_alerts has the key (alert_date, alert_hash) and no sequence column. The payment failure's
     alert has one row, open. A job writes it again as resolved; a minute later, another job loads all
@@ -123,3 +129,4 @@ questions:
     the resolved row until a newer error arrives. Rows with the same key never stand side by side in a
     UNIQUE table, so there are neither two rows nor one per span, and the single row is a current state:
     the payment alert has one row while otel_traces has an error span for every failed order.'
+passing_score_percent: 80

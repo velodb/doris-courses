@@ -5,6 +5,7 @@ description: >-
   any answer before continuing.
 questions:
   - id: separate_grains
+    type: single_choice
     objective: "Define a table's grain from its source contract, and keep detail and summary grains in separate tables."
     prompt: >-
       One sales table mixes three rows in its amount column. Two rows are
@@ -31,6 +32,7 @@ questions:
       the event history.
 
   - id: duplicate_key_columns
+    type: single_choice
     objective: "Choose the Duplicate Key, Unique Key, or Aggregate Key model from the behavior that a repeated key requires."
     prompt: >-
       A sensor-history table uses DUPLICATE KEY(observed_at, sensor_id). Two
@@ -54,6 +56,7 @@ questions:
       rejects a repeated key.
 
   - id: additive_summary
+    type: single_choice
     objective: "Derive a summary's dimensions and additive measures from a reporting requirement, and reconcile it with the detail."
     prompt: >-
       A daily summary must keep one row per (day, store). Two separate batches
@@ -79,6 +82,7 @@ questions:
       measures, not through COUNT(*).
 
   - id: decimal_and_varchar
+    type: single_choice
     objective: "Choose types for identifiers, time, money, categories, and nested values from their meaning and the operations they need."
     prompt: >-
       A supplier sends amounts with exactly two decimal places, all below one
@@ -103,6 +107,7 @@ questions:
       of the table.
 
   - id: omission_and_null
+    type: single_choice
     objective: "Distinguish `NULL`, `NOT NULL`, and `DEFAULT` for values that are missing, omitted, or invalid."
     prompt: >-
       An optional delivery note uses VARCHAR(100) NULL DEFAULT 'not provided'.
@@ -125,6 +130,7 @@ questions:
       would reject parcel B's insert instead of inventing a note.
 
   - id: layout_from_workload
+    type: single_choice
     objective: "Design a table's Partitions, Buckets, and sort key from its time filters, lifecycle, distribution, and volume."
     prompt: >-
       A table appends temperature readings from devices. Data is kept and
@@ -148,3 +154,4 @@ questions:
       with the time matches the common range filter. Three skewed regions
       would concentrate the rows in a few Buckets. The Bucket count still
       depends on data volume and resources.
+passing_score_percent: 80

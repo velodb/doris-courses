@@ -2,6 +2,7 @@ title: "Module 2 Quiz: Doris Storage Architecture and Write Mechanisms"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: planning_then_execution
+  type: single_choice
   objective: "Trace a query to explain FE planning and BE execution."
   prompt: "EXPLAIN of an order query returns a plan, but running the query fails while a Backend (BE) scans its tablets. What does this show about the Frontend (FE) and BE stages?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: planned_then_failed_on_be
   explanation: "The FE parses and plans the query, and the BEs then run their parts of the plan; a plan can be correct while its execution fails on a BE. Planning is the FE's work and scanning the BE's, not the other way round. EXPLAIN builds a plan without running it, so it proves nothing about scans. Queries read published rowsets whether or not compaction has run."
 - id: tablets_rowsets_segments
+  type: single_choice
   objective: "Explain the hierarchy of table, partition, tablet, rowset, and segment."
   prompt: "A new table has three partitions and five buckets per partition, and no materialized views or rollups. Ignoring replicas, which layout should an operator expect?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: fifteen_tablets
   explanation: "Each bucket of each partition is a tablet, so 3 × 5 = 15 tablets; a tablet holds the rowsets that writes and compactions produced, and a rowset holds segment files. Partitions do not share tablets. Buckets divide a partition into shards; replicas are copies of a tablet, a different thing. The number of rowsets and segments changes with every write and compaction."
 - id: visibility_and_compaction
+  type: single_choice
   objective: "Explain when loaded rows become visible, and what compaction changes afterward."
   prompt: "A load's transaction has been published, and a SELECT already returns its rows, but no compaction has run on the tablet yet. Should a dashboard wait for compaction before it reads those rows?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: published_rows_queryable
   explanation: "Rows are visible once their transaction is published; compaction merges rowsets in the background afterward and never changes which rows a query returns. Queries already read several rowsets correctly, so waiting for a merge gains nothing. A tablet may hold many rowsets, and that does not make a query inconsistent. Compaction changes how the rows are stored, not the query results, so the dashboard's numbers stay the same."
 - id: compare_one_thing_at_a_time
+  type: single_choice
   objective: "Compare batch and row-by-row writes with everything else held constant."
   prompt: "A team compares loading orders in batches of 100 and of 10,000 rows. Both runs give the same results, but the second run also used more buckets. How should they interpret the timings?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: control_then_repeat
   explanation: "When two things change at once, neither can be credited with the difference: hold the bucket count, the data, and the settings fixed, and change only the batch size. Matching results are a precondition, not evidence about speed. The shortest time of each run still mixes both changes. The bucket count changes how rows are spread over tablets, so the rowset counts of the two runs are not comparable either."
 - id: versions_and_rowsets
+  type: single_choice
   objective: "Read a tablet's versions and rowsets, and explain what they show about write batches and compaction."
   prompt: "After ten single-row writes to a table with one tablet, SHOW TABLETS shows Version 11, and the tablet's compaction status lists a current rowset [2-11] and ten stale rowsets. What happened?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: ten_loads_then_merged
   explanation: "An empty tablet starts at version 1, and each load adds one, so ten loads end at version 11; [2-11] is the rowset that cumulative compaction made from versions 2 to 11, and the ten original rowsets stay listed as stale until the BE deletes them. A version is a load, not an order, and [2-11] is a range of versions. Stale rowsets are the merged inputs of a successful compaction, not a failure. Replicas are copies of a tablet on other BEs, not rowsets."
 - id: plan_and_profile
+  type: single_choice
   objective: "Use EXPLAIN for what a query plans and the Query Profile for what its scan read."
   prompt: "On a ten-row table sorted by order_id, the query WHERE customer_id = 832 returns one row, and its plan reads 1 of 1 tablets. Its Query Profile shows ScanRows 10 and RowsVectorPredFiltered 9. What does this tell you?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "The query deleted nine rows, since RowsVectorPredFiltered counts the rows that it removed"
   answer: read_ten_dropped_nine
   explanation: "The plan says which tablets the scan will read; the Profile says what it did: ScanRows 10 and RowsVectorPredFiltered 9 mean that it read every row and the filter dropped nine, because customer_id is not part of the sort key. Rows skipped by the sort key's index would appear as RowsKeyRangeFiltered, as they do for WHERE order_id = 1. The plan was right: one tablet, and reading all of its rows is how this filter works. RowsVectorPredFiltered counts rows that a filter dropped from the result, not rows deleted from the table."
+passing_score_percent: 80

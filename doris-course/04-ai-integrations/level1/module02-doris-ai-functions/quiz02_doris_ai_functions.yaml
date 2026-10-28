@@ -4,6 +4,7 @@ description: Six questions check whether you can tell which address an AI Resour
   makes, check an extracted fact, and keep model calls out of reports.
 questions:
 - id: which_address_the_resource_uses
+  type: single_choice
   objective: Explain how an AI function reaches a model, which Doris process sends the request, which address
     it needs, and what Doris adds to your text.
   prompt: The Doris sandbox runs in the container doris-ai. The model server runs in the container doris-ai-llm,
@@ -25,6 +26,7 @@ questions:
     published port 38080 nor port 8080 on 127.0.0.1 reaches the model server; from the BE, both fail to connect.
     The FE checks that the Resource exists and plans the query, but it never calls the model.
 - id: protect_a_hosted_provider_key
+  type: single_choice
   objective: Create an AI Resource for a local, OpenAI-compatible model server, test it with one call, and
     explain what changes, and what to protect, with a hosted provider.
   prompt: Your team wants to use a hosted model on Doris 4.1.3, and an administrator will create the AI Resource
@@ -47,6 +49,7 @@ questions:
     notebook ends up in a file that is saved and shared, and every statement that creates a Resource with it is
     in the audit log as well.
 - id: function_for_one_label_from_a_list
+  type: single_choice
   objective: Choose the AI function whose answer fits a task, and say what Doris returns for it.
   prompt: A support team wants every ticket to get exactly one value from a fixed list of five labels (refund,
     shipping, quality, account, and product_question). Which function fits, and what does the team still have to do?
@@ -67,6 +70,7 @@ questions:
     the model finds, which need not come from any list. AI_FILTER returns one BOOLEAN per call, and nothing makes
     exactly one of five separate calls true; with the Lab's model it often returns no usable answer at all.
 - id: requests_for_two_functions
+  type: single_choice
   objective: Predict and measure the model requests that a statement makes, and control batching with
     ai_context_window_size.
   prompt: After SET ai_context_window_size = 1, one statement selects AI_CLASSIFY and AI_SENTIMENT for each of
@@ -88,6 +92,7 @@ questions:
     answer must be an array of 14 strings or the statement fails. No setting sends a whole statement as one
     request.
 - id: extracted_value_not_in_the_text
+  type: single_choice
   objective: Check a model's answers before you use them, against the allowed labels, the source text, and the
     labels that people gave.
   prompt: AI_EXTRACT returns order_id=A-2049 for a ticket whose text says "My last order was A-2048". The
@@ -108,6 +113,7 @@ questions:
     runs at 0. Doris does not compare extracted values with the text. Two answers that agree can be wrong in the
     same way, so agreement is not a check against the source.
 - id: report_that_calls_the_model
+  type: single_choice
   objective: Store checked answers once, with the model and prompt that produced them, so that reports and reruns
     do not call the model again.
   prompt: A dashboard runs a query that calls AI_CLASSIFY on every ticket and counts the tickets per topic, on
@@ -128,3 +134,4 @@ questions:
     rerunning the anti-join insert made 0 requests as well. A window of 1 byte means more requests on every
     refresh, not fewer. default_ai_resource only saves naming the Resource. A temperature of 0 does not make
     answers repeatable, and the dashboard would still call the model on every refresh.
+passing_score_percent: 80

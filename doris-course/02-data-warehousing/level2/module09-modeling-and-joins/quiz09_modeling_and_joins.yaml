@@ -2,6 +2,7 @@ title: "Module 9 Quiz: Warehouse Modeling and Joins"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: declare_grain
+  type: single_choice
   objective: "State the grain of a fact table and a dimension table before joining them."
   prompt: "An analyst joins the order fact with the payments table to show each order's paid amount, and the order amount of some orders doubles. What should have been stated first?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: grains
   explanation: "The grains differ: one row per order against one row per payment, so an order with two payments appears twice and its amount counts twice. A left join keeps unmatched orders and still repeats an order that matches twice. SUM(DISTINCT) would also merge two different orders of the same amount. Buckets decide how data is stored, not which rows a join returns."
 - id: model_for_source
+  type: single_choice
   objective: "Choose a table model and key from whether a source appends records or replaces current state."
   prompt: "A CRM sends each customer's whole current record again whenever it changes, and the warehouse must keep one current row per customer. Which table fits?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: unique_customer
   explanation: "The source replaces state, so a Unique Key table on the business key keeps one current row per customer. A Duplicate Key table keeps every row that it receives; its key only sorts them, so a changed customer would match an order twice. Attributes such as a name or a region are not additive. Counting distinct customers in reports hides the duplicates without fixing the joins that they double."
 - id: three_join_checks
+  type: single_choice
   objective: "Check a join for lost and duplicated rows with row counts, distinct keys, and amounts."
   prompt: "After an inner join of the 11 orders with a customer dimension, the result has 11 rows. Is the join right?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: not_yet
   explanation: "Lab 9's faulty dimension gives an inner join of 11 rows, the fact's own number, with 10 distinct orders and 1410.00 instead of 1510.00: one order lost and another doubled. Equal row counts can hide two errors that offset each other. An inner join also multiplies a row whose key matches twice. The distribution decides how rows move, not which rows the join returns."
 - id: find_missing
+  type: single_choice
   objective: "Find facts whose dimension row is missing with a left join or an anti-join."
   prompt: "Some orders may reference customers that the dimension does not have yet. Which query lists those orders?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: left_is_null
   explanation: "A left join keeps every order and fills the dimension's columns with NULL where no customer matches, so those rows are the orders without a customer: an anti-join. An inner join drops exactly those orders. The two tables' row counts measure different things, 11 orders and 663 customers. A left join from the dimension finds customers without orders, the other direction."
 - id: read_join_plan
+  type: single_choice
   objective: "Read a join's type and distribution in EXPLAIN without taking a plan for a measurement."
   prompt: "EXPLAIN of the order fact joined with the customer dimension shows join op: INNER JOIN(BROADCAST)[]. What does that say?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: broadcast_plan
   explanation: "The join node shows the logical join, INNER JOIN, and the planned distribution, BROADCAST: one side is sent to the instances that scan the other. A plan is a choice, not a measurement; a Query Profile records what an execution did. No strategy is always fastest: broadcasting a large table is costly. Colocation needs a colocation group, not just matching hash columns, and would show COLOCATE. The distribution says nothing about which rows survive."
 - id: layers_rebuild
+  type: single_choice
   objective: "Keep raw deliveries, validated detail, and aggregates in separate layers that can be rebuilt."
   prompt: "A batch arrives with a malformed amount, a repeated payment, and an older version of an order. Which design keeps the evidence and gives the same report when the batch is processed again?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "A summary computed straight from the deliveries, counting each delivery as one order"
   answer: rebuild_layers
   explanation: "ODS keeps what arrived, including the bad amount, so a rule can be fixed and rerun; DWD resolves orders by version and payments by ID; DWS and ADS rebuilt from DWD give the same rows again. Appending totals counts a rerun batch twice and keeps no evidence. Correcting raw records loses what the source sent. Counting deliveries counts the repeated and the older deliveries as orders."
+passing_score_percent: 80

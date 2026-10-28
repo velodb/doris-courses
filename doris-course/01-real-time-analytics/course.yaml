@@ -9,6 +9,15 @@ doris_version: "4.1.3"
 estimated_minutes: 950
 modules:
   - slug: introduction
+    id: module-1
+    summary: Start Doris and build the shared event baseline.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 1
     title: Introduction to Apache Doris
@@ -20,6 +29,15 @@ modules:
       - title: "Lab 1 Optional: Connect Metabase and Build a Dashboard"
         path: level1/module01-introduction/optional01_metabase_dashboard.ipynb
   - slug: architecture
+    id: module-2
+    summary: Connect FE planning, BE execution, Partition, Bucket, and Tablet choices to scan work.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 2
     title: Deep Dive into Apache Doris Architecture
@@ -28,6 +46,15 @@ modules:
     quiz: level1/module02-architecture/quiz02_doris_architecture_and_physical_design.yaml
     estimated_minutes: 75
   - slug: loading-data
+    id: module-3
+    summary: Choose a load path from latency, source, replay, and retry requirements.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 3
     title: Loading Data into Apache Doris
@@ -36,6 +63,15 @@ modules:
     quiz: level1/module03-loading-data/quiz03_load_methods_and_retry_safety.yaml
     estimated_minutes: 85
   - slug: modeling
+    id: module-4
+    summary: Translate event detail, latest state, and summaries into Table Model choices.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 4
     title: Modeling Data in Apache Doris
@@ -44,6 +80,15 @@ modules:
     quiz: level2/module04-modeling/quiz04_schema_and_modeling_choices.yaml
     estimated_minutes: 90
   - slug: analyzing
+    id: module-5
+    summary: Move from scalar transformations to aggregates and table functions.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 5
     title: Analyzing Data in Apache Doris
@@ -52,6 +97,15 @@ modules:
     quiz: level2/module05-analyzing/quiz05_analytical_query_semantics.yaml
     estimated_minutes: 90
   - slug: joining
+    id: module-6
+    summary: Separate logical Join semantics, physical implementation, and distribution strategy.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 6
     title: Joining Data in Apache Doris
@@ -60,6 +114,15 @@ modules:
     quiz: level2/module06-joining/quiz06_join_semantics_and_execution.yaml
     estimated_minutes: 95
   - slug: updating-deleting
+    id: module-7
+    summary: Choose between upsert, partial update, delete, and MERGE INTO.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 7
     title: Updating and Deleting Data in Apache Doris
@@ -68,6 +131,15 @@ modules:
     quiz: level2/module07-updating-deleting/quiz07_state_changes_and_deletion.yaml
     estimated_minutes: 65
   - slug: query-acceleration
+    id: module-8
+    summary: Choose among logical views, materialized views, query rewrite, and secondary indexes.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 3
     order: 8
     title: Accelerating Queries in Apache Doris
@@ -76,6 +148,15 @@ modules:
     quiz: level3/module08-query-acceleration/quiz08_acceleration_choices.yaml
     estimated_minutes: 120
   - slug: sharding-replication
+    id: module-9
+    summary: Reason about distribution, replica placement, Join movement, and availability.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 3
     order: 9
     title: Sharding, Replication, and Distributed Execution in Apache Doris
@@ -84,6 +165,15 @@ modules:
     quiz: level3/module09-sharding-replication/quiz09_distribution_and_availability.yaml
     estimated_minutes: 145
   - slug: managing-data
+    id: module-10
+    summary: Make lifecycle choices for compression, retention, partitions, and recoverable deletion.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 3
     order: 10
     title: Controlling Storage Cost and Data Lifecycle in Apache Doris
@@ -91,3 +181,33 @@ modules:
     lab: level3/module10-managing-data/lab10_manage_data.ipynb
     quiz: level3/module10-managing-data/quiz10_data_lifecycle_and_recovery.yaml
     estimated_minutes: 115
+short_title: Real-time Analytics
+description: Build fresh analytical datasets, model them for real queries, and interpret distributed execution evidence.
+presentation:
+  theme: blue
+  badge_label: REAL-TIME
+lab_setup:
+  python_version: '3.12'
+  requirements: requirements.txt
+  supported_platforms:
+  - macos
+  - linux
+  - wsl2
+  guide: README.md
+  dependencies:
+  - Git
+  - Docker Engine or Docker Desktop with Compose v2
+  - Python 3.11 or newer
+  - JupyterLab
+completion:
+  enabled: true
+  strategy: all_required_modules
+  quiz_credit_policy: preserve_passed
+certificate:
+  enabled: true
+  code: RTA
+  template: course_completion
+levels:
+  '1': Build the foundation
+  '2': Design and query with intent
+  '3': Operate for performance and resilience

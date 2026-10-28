@@ -2,6 +2,7 @@ title: "Module 1 Quiz: Meet Doris and Analyze Your First Orders"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: transaction_or_analysis
+  type: single_choice
   objective: "Distinguish completing a transaction from analyzing a batch of orders."
   prompt: "A retailer separates checkout requests from a report on last month's orders. Which request belongs to the analytical workload?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: summarize_orders_by_date
   explanation: "Reading many orders and summarizing them by date is analysis, even when the result is a few rows. Submitting an order and deducting inventory completes one transaction. Looking up one order's address uses SELECT, but it serves the customer's transaction, not an analysis across orders. Recording a payment and updating an order's status changes one business object, which is also transaction work."
 - id: doris_between_systems
+  type: single_choice
   objective: "Explain Doris's role between business databases and analytics users."
   prompt: "An online shop must keep checkout fast while analysts explore hourly sales trends over two years of orders. Which division of work fits?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: source_transactions_doris_analytics
   explanation: "The business database keeps doing the transactions, and Doris receives the order data and does the analytical work, so heavy analysis does not slow checkout. Doris is an analytical database, not a replacement for the checkout database. Analysts querying the shop's database directly is exactly the load that slows checkout, and a backup copy answers no query. Doris computes on the data it stores; the trends are its work, not the source database's."
 - id: fe_and_be_roles
+  type: single_choice
   objective: "Explain what the Frontend (FE) and the Backend (BE) do in an integrated storage and compute deployment."
   prompt: "A SQL client sends an order aggregation to the course's sandbox, which uses the integrated storage and compute architecture. Which split of the work between the Frontend (FE) and the Backend (BE) should the team expect?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: fe_plans_be_executes
   explanation: "The FE receives the SQL, manages the metadata, and plans and coordinates the query, while the BE stores the tables' data and scans, filters, and aggregates it; in the integrated storage and compute architecture the BE does both storing and computing. The FE manages metadata but does not scan the data. The client only sends SQL: the FE builds the distributed plan. The tables' data lives on the BE, not on the FE."
 - id: what_the_mysql_protocol_gives
+  type: single_choice
   objective: "Explain what connecting with the MySQL protocol gives you, and what it does not."
   prompt: "A team connects its MySQL client and a BI tool with a MySQL driver to Doris, and both work. SELECT VERSION() returns 5.7.99. Which conclusion is right?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: tools_send_sql_only
   explanation: "The MySQL protocol lets MySQL clients and drivers connect and send SQL; loading or synchronization still has to bring the data in, and Doris's SQL, table models, and settings are its own. A connection copies no data, so nothing is mirrored. 5.7.99 is the protocol version that Doris reports to MySQL clients, not a promise of MySQL 5.7 behavior; the Doris version is in SHOW FRONTENDS and SHOW BACKENDS. Connecting to Doris changes nothing about the MySQL server or its tables."
 - id: filter_and_group_by_date
+  type: single_choice
   objective: "Write SQL that filters orders and summarizes them by date."
   prompt: "Each row of orders_sample is one order. Which query returns, for each date, the number of orders of at least 300 and their total amount, sorted by date?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: where_then_group_by_date
   explanation: "WHERE keeps the orders of at least 300 before grouping, GROUP BY order_date makes one row per date, COUNT(*) counts the orders because the table has one row per order, SUM totals their amounts, and ORDER BY sorts the dates. Grouping by order_id keeps one row per order, not per date. ORDER BY alone only sorts; it does not combine a day's orders into one row. AVG gives the average order amount, not the total."
 - id: what_an_amount_shows
+  type: single_choice
   objective: "Tell what an order's pre-tax amount measures, and what the total of a sample can and cannot show."
   prompt: "A store exports 20 sampled orders whose pre-tax amounts total 8,600.00. The export has no payment fields. Which conclusion does the data support?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "The store received 8,600.00 from these customers for the orders"
   answer: sample_pre_tax_total
   explanation: "The data supports a statement about the sample and about its pre-tax order amounts: what was ordered, before tax. A sample of 20 orders says nothing about the store's other orders that day. A missing payment field does not mean that the orders are unpaid: the export simply holds no payment data. An order amount is what was ordered, not money received; payments need payment or account data."
+passing_score_percent: 80
