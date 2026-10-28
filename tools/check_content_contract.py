@@ -2,12 +2,16 @@
 """Validate contract v1 and preserve published identities across pull requests."""
 import argparse
 import json
+import re
 import subprocess
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 import yaml
 from jsonschema import Draft7Validator
+from markdown_it import MarkdownIt
 
 REPO = Path(__file__).resolve().parents[1]
 SCHEMA = REPO / "contracts/v1/schema.json"
@@ -42,6 +46,61 @@ def safe_file(root, relative):
     if not resolved.is_relative_to(root.resolve()) or not resolved.is_file():
         raise ValueError(f"missing file or path outside content root: {relative}")
     return resolved
+
+
+def check_markdown(root, lesson):
+    """Validate the same file/protocol/media boundary used by the publisher."""
+    problems = []
+    parser = MarkdownIt()
+    parser.validateLink = lambda value: True  # Inspect, rather than silently discard, unsupported protocols.
+    blocked = {"script", "style", "iframe", "object", "embed", "form", "input", "link", "meta", "base"}
+
+    def url(value, image=False):
+        if value.startswith("#"):
+            return
+        parsed = urlsplit(value)
+        if parsed.scheme in ("http", "https") or (parsed.scheme == "mailto" and not image):
+            return
+        if parsed.scheme or (image and value.startswith("/")):
+            problems.append(f"{lesson}: unsupported content URL: {value}")
+            return
+        if value.startswith("/"):
+            return
+        try:
+            target = safe_file(root, (lesson.parent / unquote(parsed.path)).relative_to(root).as_posix())
+            if image:
+                if target.suffix.lower() not in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"}:
+                    raise ValueError(f"unsupported image format: {value}")
+                if target.suffix.lower() == ".svg" and re.search(r"<script|\bon\w+\s*=|<foreignObject|javascript:", target.read_text(), re.I):
+                    raise ValueError(f"unsafe SVG: {value}")
+        except (OSError, ValueError) as error:
+            problems.append(f"{lesson}: {error}")
+
+    class Html(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            if tag.lower() in blocked:
+                problems.append(f"{lesson}: unsupported raw HTML element: {tag}")
+            if tag == "img" and not any(name == "src" and value for name, value in attrs):
+                problems.append(f"{lesson}: an image requires a non-empty src")
+            for name, value in attrs:
+                if name.lower().startswith("on") or name.lower() in {"style", "srcdoc"}:
+                    problems.append(f"{lesson}: unsupported raw HTML attribute: {name}")
+                if value is not None and ((tag == "img" and name == "src") or (tag == "a" and name == "href")):
+                    url(value, tag == "img")
+
+    def tokens(items):
+        for token in items:
+            if token.type == "image":
+                url(token.attrGet("src"), True)
+            elif token.type == "link_open":
+                url(token.attrGet("href"))
+            elif token.type in {"html_block", "html_inline"}:
+                Html().feed(token.content)
+            if token.children:
+                tokens(token.children)
+
+    tokens(parser.parse(lesson.read_text()))
+    return problems
 
 
 def validate(root, base_ref=None):
@@ -119,10 +178,12 @@ def validate(root, base_ref=None):
                     continue
                 asset_path = (course_root / asset).as_posix()
                 try:
-                    safe_file(root, asset_path)
+                    asset_file = safe_file(root, asset_path)
                 except ValueError as error:
                     problems.append(f"{at}: {error}")
                     continue
+                if kind == "course":
+                    problems.extend(check_markdown(root, asset_file))
                 if kind == "quiz":
                     quiz = document(asset_path, "quiz")
                     if quiz:

@@ -34,7 +34,7 @@ Each course lists its modules in `course.yaml`: the order, titles, times, and th
 
 ## Checks
 
-Run the repository checks from the repository root. The quiz, manifest and image checks and the tests of the checks need PyYAML: install `tools/requirements.txt`, or run them with a course virtual environment.
+Run the repository checks from the repository root. Install `tools/requirements.txt` in your check environment, including when using a course virtual environment: the content contract checks also require JSON Schema and Markdown parsing dependencies.
 
 ```bash
 python3 tools/check_links.py doris-course maintenance README.md CONTRIBUTING.md  # relative links and images

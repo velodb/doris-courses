@@ -107,6 +107,39 @@ class ContentContractTests(unittest.TestCase):
         self.quiz["questions"].append(copy.deepcopy(self.quiz["questions"][0]))
         self.assertIn("duplicate question", self.problems())
 
+    def test_reference_images_and_missing_lesson_links(self):
+        lesson = self.manifest.parent / self.course["modules"][0]["course"]
+        lesson.write_text("![diagram][figure]\n\n[figure]: missing.png\n")
+        self.assertIn("missing file", self.problems())
+        lesson.write_text("[Lab](missing.ipynb)\n")
+        self.assertIn("missing file", self.problems())
+
+    def test_media_formats_and_svg_handlers_are_rejected(self):
+        lesson = self.manifest.parent / self.course["modules"][0]["course"]
+        (lesson.parent / "diagram.avif").write_text("image")
+        lesson.write_text("![diagram](diagram.avif)")
+        self.assertIn("unsupported image format", self.problems())
+        (lesson.parent / "diagram.svg").write_text('<svg onload="bad()"></svg>')
+        lesson.write_text("![diagram](diagram.svg)")
+        self.assertIn("unsafe SVG", self.problems())
+
+    def test_raw_scripts_are_rejected_but_fenced_examples_are_text(self):
+        lesson = self.manifest.parent / self.course["modules"][0]["course"]
+        lesson.write_text('<script src="https://example.com/code.js"></script>')
+        self.assertIn("unsupported raw HTML", self.problems())
+        lesson.write_text('```html\n<script>example()</script>\n```\n')
+        self.assertEqual(self.problems(), "")
+
+    def test_image_symlinks_and_unsupported_protocols(self):
+        lesson = self.manifest.parent / self.course["modules"][0]["course"]
+        (lesson.parent / "image.png").symlink_to(lesson)
+        lesson.write_text('![diagram](image.png)\n')
+        self.assertIn("symlinks", self.problems())
+        lesson.write_text('<a href="file:///etc/passwd">file</a>\n')
+        self.assertIn("unsupported content URL", self.problems())
+        lesson.write_text('[bad](javascript:alert)\n')
+        self.assertIn("unsupported content URL", self.problems())
+
     def test_unsupported_question_type_and_passing_score(self):
         self.quiz["questions"][0]["type"] = "javascript"
         self.quiz["passing_score_percent"] = 101

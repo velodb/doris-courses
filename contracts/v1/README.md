@@ -38,6 +38,13 @@ running a Lab: requirements can install the shared runtime from `../common`.
   `details`/`summary` disclosure blocks are supported. No JSX, executable
   expressions, scripts or author-provided CSS is part of the contract. The
   website must sanitize HTML and treat code blocks as text.
+  Use double-dollar delimiters for mathematics; single-dollar text remains
+  ordinary prose, including currency amounts.
+- Local images support PNG, JPEG, GIF, WebP and SVG. Keep paths relative to
+  their lesson; reference-style images are supported. SVG scripts, event
+  handlers and foreignObject content are rejected by both producer and
+  consumer. The admission check resolves lesson links and images, including
+  encoded paths, and excludes fenced/inline code from HTML interpretation.
 - Lab `python_version`, `requirements`, `guide`, platforms and dependencies
   describe the learner's environment. Deployment must not execute Lab code,
   install Python requirements or run commands supplied by the content package.
@@ -62,7 +69,7 @@ The dedicated **Content contract** PR check validates every manifest, asset,
 quiz and Program reference, rejects unknown fields/types, and compares stable
 IDs and certificate codes with the PR base. The existing CI also validates the
 package. Maintainers must require the Content contract check in main's branch
-protection for it to be a merge gate.
+protection, together with Repository checks, for it to be a merge gate.
 
 Schema v1 is immutable after its initial introduction. A change that requires
 a new field, interaction, question type or completion strategy needs a new
