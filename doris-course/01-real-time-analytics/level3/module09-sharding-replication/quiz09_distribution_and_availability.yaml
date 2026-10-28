@@ -6,6 +6,7 @@ description: >-
   each learning objective.
 questions:
   - id: tablets_and_replicas
+    type: single_choice
     objective: "Explain how Partitions, Buckets, Tablets, and replicas relate, and count them for a table."
     prompt: >-
       A table has two Partitions, four Buckets per Partition, replication_num
@@ -29,6 +30,7 @@ questions:
       indexes of the table would have Tablets of their own.
 
   - id: expansion_moves_replicas
+    type: single_choice
     objective: "Explain why adding a BE moves existing replicas without changing the table's Partitions or Buckets."
     prompt: >-
       A two-Partition table with six Buckets per Partition and two replicas
@@ -53,6 +55,7 @@ questions:
       that balancing has already finished.
 
   - id: fe_failure_and_reconnect
+    type: single_choice
     objective: "Separate FE metadata election from the client connection that must be reopened after its FE fails."
     prompt: >-
       Three Follower FEs form the voting group. A client has a direct TCP
@@ -78,6 +81,7 @@ questions:
       failure.
 
   - id: replicas_and_scan_tasks
+    type: single_choice
     objective: "Trace a query from Tablet selection to the BE scan tasks that a Query Profile records."
     prompt: >-
       Metadata shows logical Tablet T7 stored on BE-A and BE-B. One Query
@@ -101,6 +105,7 @@ questions:
       run can choose another copy.
 
   - id: majority_and_recovery
+    type: single_choice
     objective: "Apply the default majority-write rule, and tell a live BE from a current replica after an outage."
     prompt: >-
       Under the default majority rule, one BE is stopped. Table A has two
@@ -125,6 +130,7 @@ questions:
       min_load_replica_num would change the rule.
 
   - id: bucket_shuffle_or_colocate
+    type: single_choice
     objective: "Explain how Bucket Shuffle and Colocate Join reduce the data that a distributed Join moves."
     prompt: >-
       Events are HASH distributed by user_id into eight Buckets. A first user
@@ -148,3 +154,4 @@ questions:
       same stable Colocation Group with compatible distribution and replicas;
       matching DDL alone does not place the Buckets together. These strategies
       change where rows meet, not the logical Join type.
+passing_score_percent: 80

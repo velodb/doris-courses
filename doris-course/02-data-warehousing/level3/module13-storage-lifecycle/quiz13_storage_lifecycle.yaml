@@ -2,6 +2,7 @@ title: "Module 13 Quiz: Storage and Lifecycle Management"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: partition_key
+  type: single_choice
   objective: "Choose partition boundaries that match a retention rule and the time that queries filter on."
   prompt: "Orders are kept for the current calendar month and the 12 before it, and January's orders sometimes arrive in February. How should the table be partitioned?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: monthly_order_date
   explanation: "The time that decides expiry and that queries filter on is the order date, in the rule's unit, calendar months: a late order goes to its own month, and each expired month is one partition. The load time puts late orders into the wrong month. A DELETE in a yearly partition leaves a predicate that every query of the year applies until compaction. 365 days is a different rule from 13 calendar months."
 - id: tablet_count
+  type: single_choice
   objective: "Explain how a row belongs to a partition, a tablet, a replica, a rowset, and a segment."
   prompt: "A table keeps 13 monthly partitions with 8 buckets each and 3 replicas. How many rows does SHOW TABLETS list for the table?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: replicas_312
   explanation: "Each partition has one tablet per bucket, 13 times 8 is 104 tablets, and each tablet has 3 replicas, each one row: 312. Replicas are listed, which is why a partition clause helps on a real table. A partition holds as many tablets as it has buckets. Buckets belong to each partition, not to the table as a whole."
 - id: lagging_count
+  type: single_choice
   objective: "Record before-and-after evidence of a maintenance change with SHOW PARTITIONS, SHOW TABLETS, and SHOW CREATE TABLE."
   prompt: "Right after a load, SHOW PARTITIONS shows RowCount -1 for January although its VisibleVersion went up. How do you count January's rows now?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: count_partition
   explanation: "VisibleVersion changes when the load commits; RowCount and DataSize come from the BE's periodic report, about a minute later, so a query of the partition counts its rows now. -1 means not reported yet, not empty. RowCount in SHOW TABLETS waits for the same report. SHOW CREATE TABLE shows the definition, not rows."
 - id: truncate_stages
+  type: single_choice
   objective: "Tell query visibility, metadata changes, and reclaimed space apart, and say where compaction fits."
   prompt: "TRUNCATE TABLE ... PARTITION (p202501) has just returned. What has changed at that moment?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: visible_and_id
   explanation: "Truncation replaces the partition with a new, empty one of the same name, so queries change at once and the ID is new; the old partition waits in the recycle bin, and its files go after the retention. Space is not freed at once. Compaction concerns rowsets and delete predicates, not truncation. The partition is replaced, not emptied in place."
 - id: recover_by_id
+  type: single_choice
   objective: "Recover a dropped or truncated partition from the recycle bin, and say when only a backup or an archive can help."
   prompt: "January was truncated by mistake an hour ago, and its empty replacement has received no rows. How do you bring January back?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: drop_then_recover_id
   explanation: "The truncated partition is in the recycle bin for a day. The replacement of the same name blocks a RECOVER, and once the replacement is dropped too, two partitions of that name are in the bin, so the recorded ID picks the right one. By name, Doris refuses while the replacement exists and afterwards recovers the newest one, the empty replacement. A backup is needed after FORCE or the retention, not within the hour. A second truncation only puts another empty partition in the bin."
 - id: runbook
+  type: single_choice
   objective: "Write a maintenance runbook with its scope, checks, evidence, and a recovery path tested beforehand."
   prompt: "Which runbook for removing January 2025 under the 13-month rule is complete?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "DELETE the orders before February 2025, check that the disk usage fell, and keep no archive"
   answer: complete
   explanation: "A runbook names the scope, records the evidence before and checks it after, and tests the way back before the change by reading the archive. FORCE skips the recycle bin, so it cannot be relied on afterwards. Truncating the whole table touches 13 months that must stay. A DELETE does not free space at once, and without an archive a wrong condition cannot be undone."
+passing_score_percent: 80

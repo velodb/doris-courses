@@ -9,6 +9,15 @@ doris_version: "4.1.3"
 estimated_minutes: 1311
 modules:
   - slug: introduction
+    id: module-1
+    summary: Apply introduction to apache doris to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 1
     title: Meet Doris and Analyze Your First Orders
@@ -17,6 +26,15 @@ modules:
     quiz: level1/module01-introduction/quiz01_doris_fundamentals.yaml
     estimated_minutes: 55
   - slug: architecture
+    id: module-2
+    summary: Apply doris architecture to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 2
     title: Doris Storage Architecture and Write Mechanisms
@@ -25,6 +43,15 @@ modules:
     quiz: level1/module02-architecture/quiz02_storage_and_write_batches.yaml
     estimated_minutes: 55
   - slug: table-design
+    id: module-3
+    summary: Apply models, partitioning, and bucketing to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 3
     title: Doris Table Models, Partitioning, and Bucketing
@@ -36,6 +63,15 @@ modules:
       - title: "Module 2–3 Extension Lab: Batches, Partitions, and Profile"
         path: level1/extensions/extension23_physical_design.ipynb
   - slug: external-access
+    id: module-4
+    summary: Apply querying external data to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 4
     title: Querying External Data and Joining Lake Tables
@@ -44,6 +80,15 @@ modules:
     quiz: level1/module04-external-access/quiz04_internal_files_and_lake_tables.yaml
     estimated_minutes: 65
   - slug: ingestion
+    id: module-5
+    summary: Apply batch and streaming ingestion to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 5
     title: Batch and Continuous Data Ingestion
@@ -64,6 +109,15 @@ modules:
       - title: "Module 4–5 Extension Lab: Direct File Queries, Batch Loading, and Group Commit Acknowledgments"
         path: level1/extensions/extension45_files_and_group_commit.ipynb
   - slug: data-quality
+    id: module-6
+    summary: Apply data quality and schema validation to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 6
     title: Data Quality and Schema Validation
@@ -72,6 +126,15 @@ modules:
     quiz: level1/module06-data-quality/quiz06_data_quality_and_rejection.yaml
     estimated_minutes: 70
   - slug: state-changes
+    id: module-7
+    summary: Apply updates, deletes, and replay to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 1
     order: 7
     title: Data Updates, Deletion, and Event Replay
@@ -83,6 +146,15 @@ modules:
       - title: "Module 6–7 Extension Lab: Schema Changes, Load-Based Deletion, and Conflict Detection"
         path: level1/extensions/extension67_schema_and_delete.ipynb
   - slug: views-materialized-views
+    id: module-8
+    summary: Apply views and materialized views to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 8
     title: Views and Materialized Views
@@ -91,6 +163,15 @@ modules:
     quiz: level2/module08-views-materialized-views/quiz08_views_and_materialized_views.yaml
     estimated_minutes: 117
   - slug: modeling-and-joins
+    id: module-9
+    summary: Apply modeling and joins to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 9
     title: Warehouse Modeling and Joins
@@ -99,6 +180,15 @@ modules:
     quiz: level2/module09-modeling-and-joins/quiz09_modeling_and_joins.yaml
     estimated_minutes: 112
   - slug: metric-processing
+    id: module-10
+    summary: Apply metric processing to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 10
     title: Metric Processing and Delivery
@@ -107,6 +197,15 @@ modules:
     quiz: level2/module10-metric-processing/quiz10_metric_processing.yaml
     estimated_minutes: 146
   - slug: bi-and-ai
+    id: module-11
+    summary: Apply bi and ai delivery to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 2
     order: 11
     title: Interfaces and Boundaries for BI and AI Consumers
@@ -115,6 +214,15 @@ modules:
     quiz: level2/module11-bi-and-ai/quiz11_bi_and_ai.yaml
     estimated_minutes: 120
   - slug: publishing-permissions-audit
+    id: module-12
+    summary: Apply publishing, permissions, and audit to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 3
     order: 12
     title: Publishing, Permissions, and Audit
@@ -123,6 +231,15 @@ modules:
     quiz: level3/module12-publishing-permissions-audit/quiz12_publishing_permissions_audit.yaml
     estimated_minutes: 123
   - slug: storage-lifecycle
+    id: module-13
+    summary: Apply storage and lifecycle to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 3
     order: 13
     title: Storage and Lifecycle Management
@@ -131,6 +248,15 @@ modules:
     quiz: level3/module13-storage-lifecycle/quiz13_storage_lifecycle.yaml
     estimated_minutes: 108
   - slug: resource-isolation
+    id: module-14
+    summary: Apply resource isolation to a dependable analytical warehouse.
+    status: published
+    required: true
+    requirements:
+    - course_read
+    - lab_opened
+    - lab_declared_complete
+    - quiz_passed
     level: 3
     order: 14
     title: Resource Isolation and Query Protection
@@ -138,3 +264,34 @@ modules:
     lab: level3/module14-resource-isolation/lab14_resource_isolation.ipynb
     quiz: level3/module14-resource-isolation/quiz14_resource_isolation.yaml
     estimated_minutes: 100
+short_title: Data Warehousing
+description: Design a dependable analytical warehouse from ingestion and modeling through lifecycle and isolation.
+presentation:
+  theme: purple
+  badge_label: WAREHOUSING
+lab_setup:
+  python_version: '3.12'
+  requirements: requirements.txt
+  supported_platforms:
+  - macos
+  - linux
+  - wsl2
+  guide: README.md
+  dependencies:
+  - Git
+  - Docker Engine or Docker Desktop with Compose v2
+  - Python 3.11 or newer
+  - JupyterLab
+  - Any external service named by the selected notebook
+completion:
+  enabled: true
+  strategy: all_required_modules
+  quiz_credit_policy: preserve_passed
+certificate:
+  enabled: true
+  code: DW
+  template: course_completion
+levels:
+  '1': Build the warehouse foundation
+  '2': Model and deliver analytics
+  '3': Govern and operate the platform

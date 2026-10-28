@@ -5,6 +5,7 @@ description: >-
   evidence, and business results, one question for each learning objective.
 questions:
   - id: reuse_a_definition
+    type: single_choice
     objective: "Distinguish a regular view, a manually populated summary table, a synchronous materialized view, and an asynchronous materialized view."
     prompt: >-
       Several dashboards must share one reviewed SQL definition of purchase
@@ -29,6 +30,7 @@ questions:
       for the plan and the Profile.
 
   - id: choose_materialization
+    type: single_choice
     objective: "Choose synchronous or asynchronous materialization from the SQL scope, the freshness requirement, and the write or refresh cost."
     prompt: >-
       A category dashboard joins event facts to a product dimension and then
@@ -54,6 +56,7 @@ questions:
       holds only while the refresh really meets five minutes.
 
   - id: stored_grain
+    type: single_choice
     objective: "Determine whether a materialized result preserves the dimensions and measure state needed to answer another query."
     prompt: >-
       A stored summary has one row per (event_hour, region) with event_count
@@ -77,6 +80,7 @@ questions:
       finer stored grain helps only when it keeps what the new query needs.
 
   - id: choose_an_index
+    type: single_choice
     objective: "Choose an inverted index, a BloomFilter index, or an NGram BloomFilter index from the predicate it must serve."
     prompt: >-
       An event table is sorted by event_time. Investigators often need the
@@ -102,6 +106,7 @@ questions:
       columns, not product_id.
 
   - id: estimates_and_actuals
+    type: single_choice
     objective: "Separate build state, plan selection, statistics, and runtime evidence when you check an acceleration structure."
     prompt: >-
       After ANALYZE collects fresh statistics, a Join's EXPLAIN shows
@@ -126,6 +131,7 @@ questions:
       selected scan in the plan shows whether a materialized view was used.
 
   - id: worth_the_cost
+    type: single_choice
     objective: "Decide whether the read savings of a structure justify its storage, write, and refresh cost."
     prompt: >-
       A report runs four times a day and already met its latency objective
@@ -149,3 +155,4 @@ questions:
       a write-heavy table. One faster run does not outweigh that. Record the
       decision with its assumptions: a higher query frequency, a stricter
       latency target, or a cheaper refresh would change it.
+passing_score_percent: 80

@@ -5,6 +5,7 @@ description: >-
   and revise any answer before continuing.
 questions:
   - id: merge_staged_changes
+    type: single_choice
     objective: "Choose full-row upsert, partial column update, SQL `UPDATE`, or `MERGE INTO` from the form and ownership of incoming changes."
     prompt: >-
       A staging table holds one row per order_id with a change_type of UPSERT
@@ -31,6 +32,7 @@ questions:
       for one target row give undefined results.
 
   - id: sequence_order
+    type: single_choice
     objective: "Use a Sequence column so that source order, not arrival order, decides which state wins."
     prompt: >-
       A Unique Key table package_status keeps one row per package_id and
@@ -56,6 +58,7 @@ questions:
       function_column.sequence_col.
 
   - id: omitted_columns
+    type: single_choice
     objective: "Predict what full-row and partial writes do to omitted columns, and how omission differs from `NULL`."
     prompt: >-
       Two copies of an existing Unique Key row hold balance 75.00 and note
@@ -80,6 +83,7 @@ questions:
       no old row exists.
 
   - id: identify_deleted_rows
+    type: single_choice
     objective: "Choose predicate `DELETE` or the Delete Sign from how the deleted rows are identified."
     prompt: >-
       A CDC batch carries the keys of deleted customers for a Unique Key table.
@@ -103,6 +107,7 @@ questions:
       test rows keeps the wrong rows, and truncating removes whole Partitions.
 
   - id: replace_partition
+    type: single_choice
     objective: "Choose `TRUNCATE` or `INSERT OVERWRITE` to remove or replace a complete Partition."
     prompt: >-
       One daily Partition must be rebuilt from a complete corrected dataset.
@@ -126,6 +131,7 @@ questions:
       and after; the atomic switch is documented behavior.
 
   - id: visibility_and_cleanup
+    type: single_choice
     objective: "Separate the visibility of a published change from the later physical cleanup by Compaction."
     prompt: >-
       A delete on a Unique Key Merge-on-Write table has been published. A new
@@ -147,3 +153,4 @@ questions:
       on disk until background Compaction rewrites the Rowsets. A query does
       not run Compaction, and the input Delete Sign is not the internal delete
       bitmap of Merge-on-Write.
+passing_score_percent: 80

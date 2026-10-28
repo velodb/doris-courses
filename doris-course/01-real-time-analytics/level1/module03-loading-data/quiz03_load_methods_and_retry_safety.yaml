@@ -5,6 +5,7 @@ description: >-
   each learning objective.
 questions:
   - id: choose_load_method
+    type: single_choice
     objective: "Select a Doris load method from the source, volume, latency, transformation, and retry requirements of a workload."
     prompt: >-
       Every hour, a job must copy a fixed set of Parquet objects that already
@@ -28,6 +29,7 @@ questions:
       Group Commit groups many small writes but does not read S3.
 
   - id: choose_group_commit_mode
+    type: single_choice
     objective: "Explain the roles of Stream Load, `INSERT INTO SELECT` with the S3 TVF, Routine Load, and Group Commit."
     prompt: >-
       An application has 30 workers that send frequent tiny Stream Load
@@ -53,6 +55,7 @@ questions:
       are visible. The S3 TVF and Routine Load serve other sources.
 
   - id: interpret_quality_rejection
+    type: single_choice
     objective: "Load a local CSV file with Stream Load and read its synchronous JSON response."
     prompt: >-
       A ten-row Stream Load request sets strict_mode:true and
@@ -76,6 +79,7 @@ questions:
       Unselected rows are valid rows that a where header excludes.
 
   - id: distinguish_s3_tvf_insert
+    type: single_choice
     objective: "Query Parquet objects with the S3 TVF and persist them with `INSERT INTO SELECT`."
     prompt: "Which statement about the S3 TVF and INSERT INTO SELECT is correct?"
     options:
@@ -97,6 +101,7 @@ questions:
       target design.
 
   - id: reason_about_routine_load
+    type: single_choice
     objective: "Explain when a Routine Load job fits continuous Kafka consumption, and how it tracks its progress."
     prompt: >-
       A Kafka topic keeps receiving nested JSON messages. Which design and
@@ -119,6 +124,7 @@ questions:
       TVF, a Stream Load label, and Group Commit do not consume Kafka.
 
   - id: retry_stream_load
+    type: single_choice
     objective: "Validate loaded and filtered row counts, recognize a rejected load, and retry a batch safely."
     prompt: >-
       A client sends 1,024 rows with a Stream Load label but loses the HTTP
@@ -141,3 +147,4 @@ questions:
       label starts a new transaction that appends the rows again to a
       Duplicate Key table, and neither INSERT INTO SELECT nor Kafka recognizes
       the earlier batch.
+passing_score_percent: 80

@@ -2,6 +2,7 @@ title: "Module 4 Quiz: Querying External Data and Joining Lake Tables"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: files_tables_catalogs
+  type: single_choice
   objective: "Distinguish Doris internal tables, Parquet files, Iceberg tables, and External Catalogs."
   prompt: "A teammate finds Parquet files in object storage and assumes that they already form an Iceberg table, which Doris will then store once an External Catalog exists. Which note corrects this?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: format_table_entry
   explanation: "A Parquet file holds columnar data; an Iceberg table is metadata and snapshots that list such files; an External Catalog is Doris's entry to another system's tables, and it copies nothing. Files without Iceberg metadata are not an Iceberg table, whatever their format. A Catalog reads existing metadata; it creates no table from files. Querying through a Catalog stores nothing in Doris; loading does."
 - id: catalog_database_table
+  type: single_choice
   objective: "Find a lake table through a Catalog and name it as catalog.database.table."
   prompt: "Two External Catalogs, lake_prod and lake_test, both contain reporting.orders. The session's current Catalog is internal, and a report must read the production table. Which name selects it?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: three_part_name
   explanation: "A table in another Catalog has a three-part name: catalog, database, table, so lake_prod.reporting.orders picks the production copy. A two-part name is resolved in the current Catalog, here internal, not searched in every Catalog. A file location is not a table name, and a query of the files would bypass the table's metadata. internal holds Doris's own tables, not the lake's."
 - id: snapshots_and_files
+  type: single_choice
   objective: "Read an Iceberg table's snapshots and files, and explain which files a query of the table reads."
   prompt: "An Iceberg table's $snapshots lists an append and then an overwrite that replaced all of its rows; $files lists one data file. What does a query of the table through its Catalog read?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: current_snapshot_files
   explanation: "A snapshot lists the files that make up the table at that moment, and a query reads the current snapshot's files, the ones that $files lists. The older snapshot's file is still in object storage until it is cleaned up, but it is no longer part of the table. The first snapshot was replaced by the overwrite. Iceberg's metadata, not the directory's contents, decides which files belong to the table."
 - id: query_in_place_or_load
+  type: single_choice
   objective: "Choose between querying external data in place and loading it into an internal table."
   prompt: "Historical orders are in the lake. An analyst explores a question for the first time; later, a daily report will read the same history many times a day. What is a sound approach?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: explore_then_load
   explanation: "Querying in place needs no copy, which suits exploring; a report that reads the same data again and again can gain from an internal table, and that copy needs a refresh plan, because a load copies one moment. Lake tables can be joined with Doris tables, so nothing forces a load before exploring. A load does not follow later changes in the lake. Deleting the lake would lose the history that other systems still write."
 - id: s3_function_and_load
+  type: single_choice
   objective: "Read files in object storage with the S3 table function and load them with INSERT INTO SELECT."
   prompt: "Three Parquet files of last month's orders are in object storage, and no more will be added. A team wants to look at them with SQL first and then keep the rows in Doris. What fits?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: s3_select_then_insert
   explanation: "The S3 table function reads exactly the files that it is given, so the team can look first, and INSERT INTO ... SELECT from the same function keeps the rows in an internal table. Files without Iceberg metadata are not an Iceberg table. Routine Load consumes a message stream such as Kafka, not files. A SELECT returns rows and stores nothing."
 - id: join_fanout_and_missing
+  type: single_choice
   objective: "Find duplicate or missing dimension rows by comparing results before and after a join."
   prompt: "After a LEFT JOIN with the customer table, 100 lake orders become 103 rows, and the total amount grows. What should the team do next?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "Accept the larger total, since a LEFT JOIN keeps every order and so cannot overstate amounts"
   answer: check_join_key_matches
   explanation: "More rows than orders after a join means that some orders matched several dimension rows: find the customer keys with duplicates and the orders that they multiplied. An INNER JOIN multiplies the same rows, and it also drops orders without a customer. The extra rows came from the join with the dimension, not from the lake table. A LEFT JOIN keeps every order but still multiplies an order that matches several rows."
+passing_score_percent: 80

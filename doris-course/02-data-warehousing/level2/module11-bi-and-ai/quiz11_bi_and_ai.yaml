@@ -2,6 +2,7 @@ title: "Module 11 Quiz: Interfaces and Boundaries for BI and AI Consumers"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: semantic_view
+  type: single_choice
   objective: "Design a semantic view with stable names, one declared grain, and measures whose meaning is written down."
   prompt: "The BI team will build a dashboard of daily orders. Which interface should it get?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: semantic_view
   explanation: "A semantic view publishes one grain and named measures with written meanings, so every chart reads the same definition. The fact makes every chart repeat the contract's filter and aggregation. Rows per region are not days: a chart that reads them as days counts each day once per region. A view per order is detail, at another grain than the dashboard's."
 - id: ratio_over_days
+  type: single_choice
   objective: "Tell dimensions, additive measures, and ratios apart in a dashboard."
   prompt: "A dashboard shows average_order_amount per day: 133.33 on January 1 with 9 orders, 110.00 on January 2 with 1. What is the average of the two days together?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: recompute
   explanation: "A ratio is not additive: add its numerator and denominator over the days and divide again, 1310.00 over 10 orders. Averaging the daily averages gives January 2's one order as much weight as January 1's nine. Adding averages has no meaning. A ratio can be combined, from its components."
 - id: checks_fail_on_purpose
+  type: single_choice
   objective: "Check an interface's rows, nulls, dates, and totals, and make its contract and freshness checks fail on purpose."
   prompt: "The publication checks of a semantic view always pass. Why does Lab 11 also check a broken copy and a freshness date of January 9?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: prove_checks
   explanation: "A contract check that rejects a copy without a column and a freshness check that rejects a seven-day lag prove that both checks work; the published view stays as it is. The broken copy is dropped, not published. Speed is not what these checks test. January 9 is a fixed teaching date; a real check uses the business's clock and its declared rule."
 - id: calendar_features
+  type: single_choice
   objective: "Prepare feature inputs over a calendar without claiming anything about a model's accuracy."
   prompt: "A model reads daily features, and January 3 had no orders. What should the feature projection give for January 3?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: zero_row
   explanation: "Starting from a calendar makes the day a row, with counts of 0, a NULL ratio, and the flag; the projection prepares checked inputs, and the model's owner evaluates its accuracy. A missing row is no input at all, and it may also mean that the day's orders have not arrived yet. An average of 0.00 invents a value where there is none. A feature proves nothing about predictions."
 - id: who_checks_what
+  type: single_choice
   objective: "State what Doris guarantees and what a BI tool or an AI application must check itself."
   prompt: "A dashboard query returns in 200 ms. Which conclusion is right?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: speed_only
   explanation: "Latency is one promise. Freshness depends on refreshes, late data, and the BI tool's cache, and accuracy on the metric's definition and the chart's filters, each with its owner. A fast answer may come from a cache. Doris runs the SQL; it does not check that a chart applies the right definition. The BI tool owns its filters, its cache, and its own users."
 - id: mcp_boundary
+  type: single_choice
   objective: "Bound an AI tool's access to Doris with a separate MCP server and a read-only account scoped to published views."
   prompt: "A team connects an AI assistant to Doris through the Doris MCP Server. Which setup bounds what the assistant can read?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "The assistant's prompt lists the tables it may read, so no database account has to change"
   answer: readonly_account
   explanation: "The Doris account's privileges are the boundary: an account limited to the published views cannot read more, whatever SQL the assistant generates, and the server's limits add to that. Tool filters on a root connection miss whatever they were not written for, and root can change everything. The MCP Server is a separate service that connects through the MySQL protocol. A prompt is not an access control."
+passing_score_percent: 80

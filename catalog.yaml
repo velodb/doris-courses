@@ -1,0 +1,17 @@
+schema_version: 1
+title: Apache Doris Courses
+description: Free, hands-on Apache Doris courses for real-time analytics, data warehousing,
+  observability, and AI integrations.
+courses:
+- doris-course/01-real-time-analytics/course.yaml
+- doris-course/02-data-warehousing/course.yaml
+- doris-course/03-observability/course.yaml
+- doris-course/04-ai-integrations/course.yaml
+programs:
+- id: apache-doris-program
+  title: Apache Doris Learning Program
+  required_courses:
+  - real-time-analytics
+  - data-warehousing
+  - observability
+  - ai-integrations

@@ -6,6 +6,7 @@ description: >-
   objective.
 questions:
   - id: compression_goal
+    type: single_choice
     objective: "Explain the separate roles of column encoding and Page compression, and choose a compression algorithm from the constrained resource."
     prompt: >-
       A hot event table is scanned continuously. Query CPUs are saturated, but
@@ -30,6 +31,7 @@ questions:
       comes before Page compression.
 
   - id: fair_comparison
+    type: single_choice
     objective: "Design a fair compression comparison that keeps the input, layout, loads, and replicas equal."
     prompt: >-
       Two Duplicate Key tables hold the same rows. events_lz4f has one
@@ -55,6 +57,7 @@ questions:
       batches.
 
   - id: partition_modes
+    type: single_choice
     objective: "Choose Manual, Auto, or Dynamic Partitioning from what creates and what removes Partitions."
     prompt: >-
       Match three requirements to a Partition mode: (1) an administrator
@@ -81,6 +84,7 @@ questions:
       for a late value.
 
   - id: hourly_window
+    type: single_choice
     objective: "Read a Dynamic Partition window from its time unit, offsets, and time zone, and predict what happens to late data."
     prompt: >-
       At 10:30 in Asia/Shanghai, a table uses time_unit = HOUR, start = -2,
@@ -104,6 +108,7 @@ questions:
       scheduler check; rows do not expire one by one.
 
   - id: expiry_evidence
+    type: single_choice
     objective: "Separate an accepted configuration, scheduler action, SQL visibility, and storage reclamation when a Partition expires."
     prompt: >-
       An operator narrows dynamic_partition.start from -3 to -2 on an hourly
@@ -130,6 +135,7 @@ questions:
       its bytes can stay on disk for a while.
 
   - id: recovery_boundary
+    type: single_choice
     objective: "Decide when the recycle bin is enough and when an independent backup or a replay from the source is needed."
     prompt: >-
       A daily Dynamic Partition policy keeps 30 days. After the window
@@ -154,3 +160,4 @@ questions:
       FORCE, or a lost cluster needs an independent backup or a replay from the
       source. Replicas copy deletions too, and the recycle bin belongs to the
       same cluster.
+passing_score_percent: 80

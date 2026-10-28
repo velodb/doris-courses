@@ -5,6 +5,7 @@ description: >-
   answer before continuing.
 questions:
   - id: predict_multiplication
+    type: single_choice
     objective: "Predict a Join's result grain and multiplicity from the grain and key cardinality of both inputs."
     prompt: >-
       Two sales are (sale_id, product_id, amount) = (1, 7, 30) and (2, 8, 50).
@@ -29,6 +30,7 @@ questions:
       intended version, before summing enriched facts.
 
   - id: return_missing_relationships
+    type: single_choice
     objective: "Choose Inner, Outer, Semi, Anti, Cross, or ASOF Join from the rows that the answer must retain."
     prompt: >-
       Every shipment has a customer_id. Support needs the shipments whose
@@ -51,6 +53,7 @@ questions:
       also keeps the matched shipments.
 
   - id: on_or_where
+    type: single_choice
     objective: "Decide how `NULL` keys match and whether a right-side condition belongs in `ON` or `WHERE`."
     prompt: >-
       A report must keep every event and attach only active products. Query 1
@@ -75,6 +78,7 @@ questions:
       placements answer different questions.
 
   - id: hash_or_nested_loop
+    type: single_choice
     objective: "Explain when Doris uses a Hash Join or a Nested Loop Join, and what the build and probe sides do."
     prompt: >-
       Join 1 uses a.account_id = b.account_id AND a.event_time > b.start_time.
@@ -98,6 +102,7 @@ questions:
       Hash Join.
 
   - id: choose_distribution
+    type: single_choice
     objective: "Compare Broadcast, Partition Shuffle, Bucket Shuffle, and Colocate Join by the data each moves and the layout each needs."
     prompt: >-
       A large orders table is distributed by HASH(customer_id) into 16
@@ -122,6 +127,7 @@ questions:
       the same stable Colocation Group with matching Buckets.
 
   - id: runtime_filter_plan
+    type: single_choice
     objective: "Read the Join strategy and Runtime Filters in `EXPLAIN` separately from what the Query Profile records."
     prompt: >-
       EXPLAIN shows RF000 built at an Inner Hash Join and applied at the fact
@@ -142,3 +148,4 @@ questions:
       how many rows it removed is runtime evidence in the Query Profile. A
       Runtime Filter removes candidates, the Join still checks equality, and a
       plan alone says nothing about speed.
+passing_score_percent: 80
