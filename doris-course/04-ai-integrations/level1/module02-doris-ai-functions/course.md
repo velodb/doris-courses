@@ -574,4 +574,5 @@ Hybrid Search, and Lakehouse federated retrieval.
 | Model | `qwen2.5-1.5b-instruct-q4_k_m.gguf`, Hugging Face commit `91cad51170dc346986eccefdc2dd33a9da36ead9`, SHA-256 `6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e` | 2026-10-28: downloaded through a mirror with `DORIS_AI_LLM_MODEL_URL`, same SHA-256 |
 | Computer | macOS on Apple Silicon, Docker Desktop 4.83.0 with 18 CPUs and 15.6 GiB | 2026-10-28 |
 | Hosted provider | `openai` provider type, with a made-up key | 2026-10-28: how `SHOW RESOURCES`, the audit log, and privileges treat the key and the Resource; no request was sent |
-| Not run end to end | Linux on x86-64; WSL 2; your own Doris; a hosted provider with a real key | — |
+| Your own Doris | Doris 4.1.3 in another Docker container on the same computer, on its own network, with a root password | 2026-10-28: sections 1 to 11, without the optional section 9, with `DORIS_AI_LLM_ENDPOINT` set to `http://host.docker.internal:38080/v1/chat/completions`; without the variable, `create_resource()` stopped before any SQL and named it |
+| Not run end to end | Linux on x86-64; WSL 2; section 12 with your own Doris; a hosted provider with a real key | — |
