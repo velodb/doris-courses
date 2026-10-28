@@ -59,7 +59,7 @@ from doris_labkit.quizbank import structure_problems  # noqa: E402
 COURSE_KEYS = ("slug", "title", "status", "language", "doris_version", "estimated_minutes", "modules")
 MODULE_KEYS = ("slug", "level", "order", "title", "course", "lab", "quiz", "estimated_minutes")
 OPTIONAL_PART_KEYS = ("title", "path")
-STATUSES = ("draft", "preview", "published")
+STATUSES = ("draft", "preview", "published", "retired")
 LANGUAGES = ("en",)
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 VERSION = re.compile(r"^\d+\.\d+\.\d+$")
@@ -167,7 +167,7 @@ class Course:
         if not isinstance(manifest, dict):
             self.problem("must contain a mapping with " + ", ".join(COURSE_KEYS))
             return
-        self.keys(manifest, COURSE_KEYS, (), "")
+        self.keys(manifest, COURSE_KEYS, ("short_title", "description", "presentation", "lab_setup", "completion", "certificate", "levels"), "")
         slug = re.sub(r"^\d\d-", "", self.directory.name)
         if manifest.get("slug") != slug:
             self.problem(f"slug is '{manifest.get('slug')}', expected '{slug}', the directory name without its number")
@@ -185,10 +185,11 @@ class Course:
         if not isinstance(modules, list) or not modules:
             self.problem("'modules' must be a non-empty list")
             return
-        outline = self.check_readme(title, status, len(modules))
-        for order, module in enumerate(modules, start=1):
+        published = [m for m in modules if not isinstance(m, dict) or m.get("status") != "planned"]
+        outline = self.check_readme(title, status, len(published))
+        for order, module in enumerate(published, start=1):
             self.check_module(order, module, outline)
-        minutes = [module.get("estimated_minutes") for module in modules if isinstance(module, dict)]
+        minutes = [module.get("estimated_minutes") for module in published if isinstance(module, dict)]
         if not is_count(manifest.get("estimated_minutes")):
             self.problem("estimated_minutes must be a positive whole number")
         elif all(is_count(value) for value in minutes) and manifest["estimated_minutes"] != sum(minutes):
@@ -226,7 +227,7 @@ class Course:
         if not isinstance(module, dict):
             self.problem(f"{where}each module must be a mapping")
             return
-        self.keys(module, MODULE_KEYS, ("optional",), where)
+        self.keys(module, MODULE_KEYS, ("optional", "id", "summary", "status", "required", "requirements"), where)
         slug, level, title, minutes = (module.get(key) for key in ("slug", "level", "title", "estimated_minutes"))
         if not isinstance(slug, str) or not SLUG.match(slug):
             self.problem(f"{where}slug must be lowercase words joined by hyphens")

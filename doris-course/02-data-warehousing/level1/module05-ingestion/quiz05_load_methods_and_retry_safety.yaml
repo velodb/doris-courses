@@ -2,6 +2,7 @@ title: "Module 5 Quiz: Batch and Continuous Data Ingestion"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: choose_a_load_method
+  type: single_choice
   objective: "Choose a load method for a local file, files in object storage, a message stream, a database's changes, or many small writes."
   prompt: "A team has three new sources: a CSV file exported once to an analyst's laptop, a month of Parquet files in object storage that they want to inspect with SQL before keeping, and an application that writes one order at a time, many per second. Which plan fits?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: stream_s3_group_commit
   explanation: "A finite local file fits Stream Load, a fixed set of files in object storage fits the S3 table function, which lets you look before INSERT INTO SELECT keeps the rows, and many tiny writes fit Group Commit, which merges them into fewer transactions. Broker Load suits large batches of files in object storage, not a file on a laptop, and a job per order would pay a job's cost for every order. Routine Load consumes a message stream such as Kafka, not files. An External Catalog reads another system's tables, not a CSV on a laptop, and one INSERT per order commits one transaction per order."
 - id: map_fields_to_columns
+  type: single_choice
   objective: "Map CSV positions, Parquet fields, and default values to the columns of a target table."
   prompt: "A headerless CSV lists customer_id, order_id, amount, but the target table starts with order_id. A Parquet file of history has named fields. No source sends a payment status for new orders. Which approach loads correct rows?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: columns_names_and_no_payment_default
   explanation: "columns names, in the file's order, the column that each CSV value fills, so the two IDs land in the right columns; Parquet carries field names, and a default may fill a missing column only when the business rule says what the missing value means, which is not true of a payment. Without columns, the swapped IDs still convert, so the type check cannot catch the swap. A default of PAID invents a payment that no source reported. A Parquet file is not a delimited text file: separators and positions do not apply to it."
 - id: judge_a_load
+  type: single_choice
   objective: "Judge a load from its response and from the rows, relationships, and amounts in the target table."
   prompt: "A 100-row load returns HTTP 200, and its JSON says Status Success, NumberLoadedRows 98, NumberFilteredRows 2. The task requires every order to be loaded. What should you conclude?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: two_rows_missing
   explanation: "Status Success with NumberFilteredRows 2 means that the load committed, without two rows that it rejected; when every order must be loaded, find those rows through the response's ErrorURL, correct them, and check the table's rows and amounts. HTTP 200 only says that the request was received and answered. Success with a filter ratio that allows rejected rows still leaves those rows out. Filtered rows are rows that failed a check, such as a type conversion, not duplicates."
 - id: retry_with_the_label
+  type: single_choice
   objective: "Retry a load batch safely with its label, and tell a batch retry from business deduplication."
   prompt: "A Stream Load of ten new orders into a Duplicate Key table timed out on the client, so nobody knows whether it committed. Which retry keeps the table correct?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: same_label_soon
   explanation: "Doris remembers a Stream Load's label for 12 hours after the load finishes: a retry with the same label is answered with Label Already Exists if the batch committed, and loads it once if it did not. A new label is a new batch, so if the first attempt had committed, the table would hold the ten orders twice. After two days the label is forgotten, and the same label loads the batch again. A Group Commit request cannot carry a label at all. None of this deduplicates business events that arrive in different batches: that needs business keys and versions."
 - id: group_commit_visibility
+  type: single_choice
   objective: "Explain what Group Commit changes for many small loads, and when their rows become visible."
   prompt: "An application sends ten single-order Stream Loads, one after another, with group_commit set to async_mode, to a table whose group_commit_interval_ms is 2000. Right after the tenth response, a dashboard counts the orders. What should the team expect?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: maybe_none_yet
   explanation: "In async_mode, Doris answers once a load's rows are in its write-ahead log and commits the collected loads together when the group's interval or size is reached, so the ten rows become visible together, about 2 seconds later, in one transaction and one new version. A successful response in async_mode does not mean the rows are visible yet. Ten transactions and ten versions are what off_mode produces for ten loads. No COMMIT statement is involved: the group commits on its own."
 - id: grains_and_definitions
+  type: single_choice
   objective: "Distinguish the grain and amount definitions of WWI historical orders, account receipts, and the simulated new orders."
   prompt: "An analyst wants one daily sales series built from WWI order lines, WWI customer-account receipts, and the course's simulated orders. Several lines belong to one order, receipts are recorded per customer account, and the simulated orders are generated. Which treatment keeps each source's meaning?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "Sum lines into orders, then drop the source column so that WWI and simulated orders form one longer history"
   answer: lines_by_order_receipts_apart
   explanation: "Order lines become orders by summing quantity times unit price per order and counting distinct order IDs; account receipts belong to accounts, not to orders, so they cannot be placed on an order; and the simulated orders stay marked COURSE_SIMULATION. Counting lines counts products, not orders, and placing a receipt on a guessed order invents a link. Splitting a receipt evenly also invents per-order payments. Dropping the source mixes generated data into the real history."
+passing_score_percent: 80

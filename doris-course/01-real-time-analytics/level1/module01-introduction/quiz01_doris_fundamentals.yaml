@@ -4,6 +4,7 @@ description: >-
   of Module 1, one question for each learning objective.
 questions:
   - id: define_doris
+    type: single_choice
     objective: "Define Apache Doris as an open-source, real-time analytics and search database built on an MPP architecture."
     prompt: "Which statement best describes Apache Doris?"
     options:
@@ -24,6 +25,7 @@ questions:
       an analytical add-on.
 
   - id: identify_olap
+    type: single_choice
     objective: "Distinguish OLAP from OLTP by the work that a request does, not by the product that runs it."
     prompt: "Which request is the clearest example of an OLAP workload?"
     options:
@@ -43,6 +45,7 @@ questions:
       small transaction, which is the work of OLTP, whichever product runs it.
 
   - id: choose_cdc_reporting
+    type: single_choice
     objective: "Recognize workloads that suit Doris, such as real-time dashboards, customer-facing analytics, observability, lakehouse analytics, and CDC-driven reporting."
     prompt: >-
       An ecommerce company must keep its OLTP database as the system of record,
@@ -66,6 +69,7 @@ questions:
       a query engine do not answer the dashboards.
 
   - id: fe_be_responsibilities
+    type: single_choice
     objective: "Summarize what the Frontend (FE) and the Backend (BE) each do with a query."
     prompt: "Which description follows a query through Doris correctly?"
     options:
@@ -86,6 +90,7 @@ questions:
       "Frontend" does not mean a graphical interface.
 
   - id: choose_architecture
+    type: single_choice
     objective: "Distinguish the integrated storage and compute architecture from the decoupled storage and compute architecture."
     prompt: >-
       A team wants its persistent data in shared object storage, and separate
@@ -109,6 +114,7 @@ questions:
       transactional read replica and bare files offer neither.
 
   - id: check_the_load
+    type: single_choice
     objective: "Connect to Doris through its MySQL-compatible protocol, create a table, load data, and check the result with an aggregation query."
     prompt: >-
       In Lab 1, INSERT INTO events SELECT ... FROM S3(...) reports 10,158,080
@@ -130,3 +136,4 @@ questions:
       04:53:08, the values that Lab 1 checks. The S3 TVF reads the files in S3,
       not the table, and SHOW BACKENDS and the container's health show that
       Doris runs, not what the table contains.
+passing_score_percent: 80

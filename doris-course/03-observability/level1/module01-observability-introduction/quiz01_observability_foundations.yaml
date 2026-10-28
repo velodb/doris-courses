@@ -4,6 +4,7 @@ description: Six questions check whether you can choose a telemetry signal, read
   that it arrived, and confirm the payment failure.
 questions:
 - id: choose_signal_for_failing_step
+  type: single_choice
   objective: Choose logs, metrics, or traces for an operational question.
   prompt: Customers report that some orders fail. For one failed order, the engineer on call needs to
     see which services the request passed through and which step returned the error. Which signal answers
@@ -24,6 +25,7 @@ questions:
     in the demo the payment and checkout services send none. A dashboard shows what its queries return;
     it does not join the spans of a request by itself.'
 - id: join_spans_by_their_ids
+  type: single_choice
   objective: Explain how the trace ID and the parent span ID join the spans of one request.
   prompt: In otel_traces, span A has the span ID 7f3a and no parent span ID. Span B has the same trace
     ID as A and the parent span ID 7f3a. Span C has a different trace ID. What do these fields say?
@@ -44,6 +46,7 @@ questions:
     service: context propagation carries the trace ID from service to service. The parent span ID says
     nothing about errors; the status code does.'
 - id: assign_dog_responsibilities
+  type: single_choice
   objective: Assign collection, storage, and visualization to the parts of the DOG stack.
   prompt: A team adopts the DOG stack for the logs, metrics, and traces of many services. Which division
     of work matches the stack?
@@ -65,6 +68,7 @@ questions:
     the Collector''s exporter loads the data into it. The services do not keep their telemetry: they send
     it to a Collector.'
 - id: follow_demo_telemetry_path
+  type: single_choice
   objective: Trace the path that the demo's telemetry takes from a service to a table in Doris.
   prompt: The demo's own Collector stops, while the DOG Collector and Doris keep running. What happens
     to the telemetry in Doris?
@@ -85,6 +89,7 @@ questions:
     the Collector that they are configured for and do not switch to another. Doris does not pull telemetry
     from the services: the exporter pushes it, and data that never reached a Collector is lost.'
 - id: prove_demo_telemetry_reached_doris
+  type: single_choice
   objective: Judge what evidence shows that telemetry reached Doris.
   prompt: After you start the demo, which observation best shows that its traces reached Doris?
   options:
@@ -103,6 +108,7 @@ questions:
     A ready Collector can receive data, but its log does not show that any spans passed through it or
     that Doris loaded them.'
 - id: confirm_payment_failure
+  type: single_choice
   objective: Start a failure with a feature flag and confirm it in the telemetry.
   prompt: You set the demo's flag paymentFailure to 50% and saved it. Which observation confirms that
     the failure is happening?
@@ -122,3 +128,4 @@ questions:
     the setting that you saved, not its effect. The payment service writes its errors only to its container''s
     output, so no error rows arrive in otel_logs. The failure adds no CPU load: the payment service rejects
     the charge at once and retries nothing.'
+passing_score_percent: 80

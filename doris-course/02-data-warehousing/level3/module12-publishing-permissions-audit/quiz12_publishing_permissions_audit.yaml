@@ -2,6 +2,7 @@ title: "Module 12 Quiz: Publishing, Permissions, and Audit"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: contract_first
+  type: single_choice
   objective: "Write a consumer contract and choose the object to publish before granting any privilege."
   prompt: "The BI team asks for an account before Monday's dashboard launch. What comes before the GRANT?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: contract_object
   explanation: "The grant's object and scope follow from the contract: one semantic view, read only, with owners who approve changes. Root lets the dashboard's users change and drop anything, and its audit records cannot tell them apart. A global SELECT reads every table, also those created later. The detail makes every chart repeat the contract and lets consumers bypass it."
 - id: role_select
+  type: single_choice
   objective: "Grant only the needed object privilege through a role, and tell read privileges from administrative ones."
   prompt: "Five people of the BI team must read bi_order_metrics_l2. Which grant fits?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: role_select
   explanation: "SELECT_PRIV is the read privilege and the one view is the scope; a role gives one grant to review and one membership to change per person, and its members can read the view without privileges on its sources. ADMIN_PRIV gives far more than reading. GRANT_PRIV lets an account grant privileges; it does not read data. A database scope covers every table, the view's sources and later tables too."
 - id: kinds_of_evidence
+  type: single_choice
   objective: "Tell what SHOW GRANTS, SHOW ROLES, a consumer's queries, a change record, and the audit table each prove."
   prompt: "A reviewer asks whether the dashboard's account actually read the order detail last week. Which evidence answers that?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: audit_table
   explanation: "The audit table records what ran, who ran it, and with what outcome, so it answers what the account did. SHOW GRANTS lists what an account may do, its own and its roles' privileges merged, not what it did. A change record documents a change and its reason; it records no queries. SHOW ROLES shows configuration, not execution."
 - id: retire_one
+  type: single_choice
   objective: "Retire access by revoking a membership or a role's privilege, and verify the effect as the consumer."
   prompt: "Dashboards A and B read through the same role, and A is retired. What should be revoked, and how is it checked?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: membership
   explanation: "Revoking A's membership affects A alone, and queries as A and as B show the effect on each. Revoking the role's privilege or dropping the role cuts off B too. Root can read everything, so a query as root proves nothing about either consumer."
 - id: rollback_window
+  type: single_choice
   objective: "Release a table with a validated cutover, and say when its rollback stops being safe."
   prompt: "A candidate table was reconciled while the writer was paused and swapped in with swap = true. Then the writer resumed and wrote one order. Can the team swap back to the old table now?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: not_blindly
   explanation: "The rollback was safe while the writer was paused; after the first write the retained table misses that write, and swapping it back would lose it. Atomic means that readers see one table or the other, not that the old one has the new writes. A retained table does not follow the published one. The swap can be repeated; the data is what makes it unsafe."
 - id: rows_columns
+  type: single_choice
   objective: "Choose between table privileges, column privileges, a Row Policy, and masking for a restriction."
   prompt: "The EAST team may read only EAST orders of orders_fact_l2 and must not see paid_amount or refund_amount. Which combination fits?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "Masking of the two payment columns, which also hides the orders of the WEST region from the team"
   answer: policy_and_columns
   explanation: "A RESTRICTIVE Row Policy for the role keeps only the EAST rows in every query of its members, and column privileges leave out the two payment columns, so that SELECT * and COUNT(*) are refused too. A dashboard filter is not enforced: a query can still ask for WEST. A table privilege covers every row and column. Masking hides parts of values; it filters no rows."
+passing_score_percent: 80

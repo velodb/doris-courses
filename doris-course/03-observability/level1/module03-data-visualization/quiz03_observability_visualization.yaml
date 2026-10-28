@@ -4,6 +4,7 @@ description: Six questions check whether you can search logs in Discover, explai
   Grafana's time macros.
 questions:
 - id: search_failed_checkouts
+  type: single_choice
   objective: Search logs in the Discover page of the Doris App with Lucene and with SQL conditions.
   prompt: The load generator sends POST /api/checkout, and the storefront page sends POST /api/checkout?currencyCode=USD.
     Which Discover search finds the checkouts of both that ended with HTTP status 500, and only those?
@@ -23,6 +24,7 @@ questions:
     and usd break it. OR finds every checkout and every response with status 500. The access log has no
     severity, so a severity condition finds none of these lines.'
 - id: explain_quiet_error_search
+  type: single_choice
   objective: Explain why a search by severity misses failures that a service does not log as errors.
   prompt: During the incident, severity_number:>=17 over the last hour finds only a few errors of the
     Doris FE, none about payments. Which explanation is best supported?
@@ -42,6 +44,7 @@ questions:
     shows the same rows to every visitor, and severity_number puts all sources on one OpenTelemetry scale,
     on which 17 to 20 is ERROR.
 - id: fix_empty_time_range
+  type: single_choice
   objective: Set a time range that matches how Doris stores time.
   prompt: On a computer in UTC+8, Discover shows no hits for Last 15 minutes, while a SQL query finds
     rows stamped one minute ago. What explains it, and what fixes it?
@@ -60,6 +63,7 @@ questions:
     future. An absolute range typed in UTC finds the rows. Rows are searchable seconds after they load,
     Grafana does not cache this result, and the SQL query has just found the rows, so they were not deleted.
 - id: find_error_origin
+  type: single_choice
   objective: Follow a trace from a log line to the span where an error starts.
   prompt: In a failed checkout's waterfall, error icons mark load-generator POST, frontend-proxy ingress,
     frontend POST, checkout PlaceOrder, checkout's call to payment, and payment's Charge server span.
@@ -80,6 +84,7 @@ questions:
     not where it failed; the number of children says nothing about errors; and the charge span has no
     error status.'
 - id: measure_host_cpu
+  type: single_choice
   objective: Measure a host's CPU from per-core, per-state samples.
   prompt: Each row of system.cpu.utilization holds the share of time, from 0 to 1, that one CPU core spent
     in one state. Which calculation gives the share of time that the host was busy in the last minute?
@@ -99,6 +104,7 @@ questions:
     0.9 are mostly the idle rows of idle cores, which is why a filter such as value > 0.9 finds idle cores
     rather than busy ones.
 - id: use_time_macros
+  type: single_choice
   objective: Build dashboard panels from SQL with Grafana's time macros.
   prompt: A panel's SQL uses $__timeFilter(timestamp) and $__timeGroupAlias(timestamp, 1m), and its Format
     is Time series. What do the two macros do?
@@ -116,3 +122,4 @@ questions:
     passed as exact moments, and $__timeGroupAlias(timestamp, 1m) with the start of each row's minute,
     named time. The stored timestamps stay in UTC; Grafana converts only the times that it displays. The
     query returns every minute of the range, and the macros belong to SQL, not to Lucene.
+passing_score_percent: 80

@@ -86,9 +86,9 @@ def _text(value: Any) -> str | None:
     return text or None
 
 
-def _keys(mapping: dict, expected: tuple[str, ...], where: str) -> list[str]:
+def _keys(mapping: dict, expected: tuple[str, ...], where: str, optional: tuple[str, ...] = ()) -> list[str]:
     problems = [f"{where}missing '{key}'" for key in expected if key not in mapping]
-    problems += [f"{where}unknown key '{key}'" for key in mapping if key not in expected]
+    problems += [f"{where}unknown key '{key}'" for key in mapping if key not in expected and key not in optional]
     return problems
 
 
@@ -104,7 +104,10 @@ def structure_problems(document: Any) -> list[str]:
     """List every way a loaded quiz document breaks the quiz structure."""
     if not isinstance(document, dict):
         return ["the file must contain a mapping with title, description and questions"]
-    problems = _keys(document, QUIZ_KEYS, "")
+    problems = _keys(document, QUIZ_KEYS, "", ("passing_score_percent",))
+    percent = document.get("passing_score_percent", 80)
+    if isinstance(percent, bool) or not isinstance(percent, int) or not 1 <= percent <= 100:
+        problems.append("passing_score_percent must be an integer from 1 to 100")
     for key in ("title", "description"):
         if key in document and _text(document[key]) is None:
             problems.append(f"'{key}' must be non-empty text")
@@ -121,7 +124,9 @@ def structure_problems(document: Any) -> list[str]:
         if not isinstance(question, dict):
             problems.append(f"{where}each question must be a mapping")
             continue
-        problems += _keys(question, QUESTION_KEYS, where)
+        problems += _keys(question, QUESTION_KEYS, where, ("type",))
+        if question.get("type", "single_choice") != "single_choice":
+            problems.append(f"{where}type must be single_choice")
         if "id" in question:
             id_problems = _id_problems(question["id"], where, "question")
             problems += id_problems

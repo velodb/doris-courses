@@ -5,6 +5,7 @@ description: >-
   any answer before continuing.
 questions:
   - id: table_function_and_tvf
+    type: single_choice
     objective: "Choose a function category, such as scalar, aggregate, window, Table Function, or TVF, from its inputs, outputs, and row-count behavior."
     prompt: >-
       Query A uses LATERAL VIEW EXPLODE(tags) on an events table. Query B
@@ -28,6 +29,7 @@ questions:
       rows into groups, and scalar functions produce one value per row.
 
   - id: where_and_having
+    type: single_choice
     objective: "Define the population of each measure with conditional aggregates, and filter input rows with `WHERE` and groups with `HAVING`."
     prompt: >-
       The rows (store, status, amount) are (A, paid, 60), (A, pending, 70), and
@@ -50,6 +52,7 @@ questions:
       the paid population.
 
   - id: any_value_meaning
+    type: single_choice
     objective: "Use `ANY_VALUE` only when any representative value satisfies the meaning of the group."
     prompt: >-
       A report groups sales by store across several days. It selects
@@ -73,6 +76,7 @@ questions:
       the same thing, such as the date after a one-day filter.
 
   - id: cte_and_missing_dates
+    type: single_choice
     objective: "Name each stage of an analysis with a CTE and state the grain of its result."
     prompt: >-
       A CTE named daily groups sales by date. It returns rows for July 1 and
@@ -95,6 +99,7 @@ questions:
       needs a calendar relation and an explicit rule for days without sales.
 
   - id: rank_and_row_number
+    type: single_choice
     objective: "Choose window partitions, ordering, frames, and ranking functions for previous-value, cumulative, and ranking questions."
     prompt: >-
       On one date, East and West both have revenue 100 and North has 80. A
@@ -119,6 +124,7 @@ questions:
       in one partition.
 
   - id: reusable_logic
+    type: single_choice
     objective: "Choose between built-in functions, Lambda expressions, Alias Functions, and user-defined functions for missing reusable logic."
     prompt: >-
       A team needs three things: double each element of an array in one
@@ -141,3 +147,4 @@ questions:
       Java UDF with its deployment. A Lambda registers nothing, a CTE lasts
       one statement, and deploying UDFs for built-in work adds cost for
       nothing.
+passing_score_percent: 80

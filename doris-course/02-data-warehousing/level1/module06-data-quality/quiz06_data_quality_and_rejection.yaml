@@ -2,6 +2,7 @@ title: "Module 6 Quiz: Data Quality and Schema Validation"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: type_check_or_business_rule
+  type: single_choice
   objective: "Distinguish type checks from business quality rules."
   prompt: "A new order has order_amount = -15.00. The value converts to DECIMAL, but the contract for this batch requires an amount that is not negative. How should the input be handled?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: reject_under_amount_rule
   explanation: "The value passes the type check but breaks a business rule of the contract, so it is rejected with its reason, and its original input stays traceable. A valid type says nothing about the business meaning. Changing the sign invents a value that the source did not send. Dropping it without a record makes the rejection impossible to explain or correct later."
 - id: stage_raw_text_with_input_id
+  type: single_choice
   objective: "Stage raw input as text so that every rejected row can be traced to its source."
   prompt: "Two weeks after a load, support asks why one particular input was rejected. The load's ErrorURL has expired. Which design still answers the question?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: raw_text_input_id_reason
   explanation: "Text columns accept every input exactly as it was sent, input_id identifies each arrival, and the rejected table names its reason, so a join on input_id answers the question at any time. A typed staging table loses the bad input at the door, so nothing is left to explain. The accepted table contains no rejected input. An ErrorURL points to a log that Doris deletes after a while; the copied link would lead nowhere."
 - id: route_with_independent_dimension
+  type: single_choice
   objective: "Route accepted and rejected rows with explicit rules and an independent customer dimension."
   prompt: "Of 50 new order inputs, 2 have customer IDs that are not in the independent customer dimension; all the others meet every rule. Customers must exist. How should the inputs be routed?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: route_48_and_2
   explanation: "Each input is routed by the rules: 48 meet them and are accepted, 2 fail the customer rule and are rejected with their reason, and all 50 stay in the raw table. Building the dimension from the inputs would make every unknown customer known. Rejecting the batch throws away 48 valid orders for a problem of 2. Setting the customer to NULL changes the input to pass a rule, and hides the problem."
 - id: totals_are_not_details
+  type: single_choice
   objective: "Check input coverage, uniqueness, amounts, and row-by-row results together."
   prompt: "A new accepted table has four rows that total 100, exactly as in the source. A reviewer suspects that one order is missing and another was loaded twice with the same amount. What evidence settles it?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: compare_ids_and_fields
   explanation: "A missing order and a duplicated one with the same amount leave the row count and the total unchanged; only comparing order IDs and fields row by row, and counting each ID, finds them. Matching totals are a first check, not proof. Counting again gives the same four rows. A duplicate with the average amount, or two errors that cancel, leave the average unchanged too."
 - id: break_the_checks_on_purpose
+  type: single_choice
   objective: "Prove that a check works by making it fail on a known error."
   prompt: "A tester adds a copy of one source order and reruns the checks; another check compares event times with a fixed cutoff for this batch. Which outcome shows that the checks mean what the team claims?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: duplicate_fails_restore_passes
   explanation: "A check is shown to work when a known error makes it fail and the corrected data makes it pass again; a fixed cutoff checks one offline batch and measures no freshness of a running pipeline. Checks that pass with a known error in place do not detect it. A cutoff in the past cannot say whether today's data arrived. A copy with the same amount may not change the total at all, which is exactly why the uniqueness check is called directly."
 - id: schema_change_effects
+  type: single_choice
   objective: "Check what a schema change affects before and after you make it."
   prompt: "A team adds a nullable column order_channel to a table that a daily job loads with INSERT INTO ... VALUES, without naming the columns. What should they check?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "That the table is rebuilt first, because Doris rewrites all data files for any new column"
   answer: positional_writes_break
   explanation: "An INSERT without a column list must supply a value for every column in order, so after the change the job's writes no longer fit; naming the columns, and checking SELECT * downstream, keeps them right. Adding a value column can be a lightweight change of metadata, but that is about how Doris stores it, not about who depends on the column list. Old rows keep NULL in the new column; no load fills them in. Doris rewrites files only for heavyweight changes, such as some type changes."
+passing_score_percent: 80

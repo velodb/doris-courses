@@ -25,6 +25,11 @@ Each module's quiz YAML file is the only source of its questions. The structure 
 
 ## Course manifests
 
+The website publication contract starts at [catalog.yaml](catalog.yaml).
+See [contract v1](contracts/v1/README.md) for its schema, permanent module IDs,
+completion rules, Lab metadata and quiz format. Register new courses in the
+catalog and preserve existing IDs when moving or renaming content.
+
 Each course lists its modules in `course.yaml`: the order, titles, times, and the lesson, Lab, quiz and optional parts of each module, for a course catalog to publish. When you add, rename or retime a module, change `course.yaml`, the lesson's heading and "Estimated time" row, the quiz title and the course README's outline together. The structure is described at the top of `tools/check_course_manifests.py`, which checks that they agree and that every Lab, quiz and optional part in the course is listed.
 
 ## Checks
@@ -36,6 +41,7 @@ python3 tools/check_links.py doris-course maintenance README.md CONTRIBUTING.md 
 python3 tools/check_notebook_outputs.py --strict   # no outputs, errors, local paths or run state in notebooks
 python3 tools/check_quiz_balance.py                # quiz structure, and how the answers are spread
 python3 tools/check_course_manifests.py            # each course.yaml against the lessons, quizzes and README
+python3 tools/check_content_contract.py            # complete website package contract
 python3 tools/check_image_digests.py --offline     # maintenance/images.md lists every image the courses name
 python3 tools/check_sensitive_info.py              # secrets, local paths and personal email addresses
 python3 -m unittest discover -s tools/tests        # tests of the checks themselves

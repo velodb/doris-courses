@@ -2,6 +2,7 @@ title: "Module 10 Quiz: Metric Processing and Delivery"
 description: "Six single-choice questions; no database connection required. View explanations after submitting."
 questions:
 - id: metric_contract
+  type: single_choice
   objective: "Define a metric's population, grain, measures, time rule, and ratio rule before writing its SQL."
   prompt: "Two dashboards show the average order value of January 1: one 132.00, the other 133.33. Both queries are correct SQL. What resolves the difference?"
   options:
@@ -16,6 +17,7 @@ questions:
   answer: write_contract
   explanation: "The difference is a definition, not an error: averaging EAST's 144.00 and WEST's 120.00 gives 132.00, while 1200.00 over 9 orders gives 133.33. A contract that states the population, grain, measures, and ratio rule decides what the dashboards show. The same stored rows can still be averaged both ways. Rounding hides the difference without deciding it. Neither value is always the higher one: the average of averages is lower here because the larger group, EAST, has the higher average."
 - id: rebuild_service
+  type: single_choice
   objective: "Build a service table at a declared grain, and rebuild it instead of loading a batch twice."
   prompt: "A job inserts each day's totals into an Aggregate Key service table with SUM columns. After a retry, January 1 EAST shows 10 orders and 1440.00 instead of 5 and 720.00. What should the job do?"
   options:
@@ -30,6 +32,7 @@ questions:
   answer: rebuild
   explanation: "An Aggregate Key table adds up the rows with the same key, so a repeated batch doubles its sums; the table cannot tell a retry from new orders, so the job must, by rebuilding from the detail or recording which batches it loaded. Aggregate Key does not drop repeats; a Unique Key table would replace them. A stored average cannot be added up to other grains. Dividing assumes that every row was retried the same number of times."
 - id: full_outer_reconcile
+  type: single_choice
   objective: "Reconcile a service table with the detail through a full outer join."
   prompt: "A reconciliation joins the detail's totals with the service table's on date and region with an INNER JOIN, and every row matches. The service table's load of January 2 had failed. What does the reconciliation show?"
   options:
@@ -44,6 +47,7 @@ questions:
   answer: misses_day
   explanation: "An inner join returns only the rows that both sides have, so a lost day leaves the comparison and the comparison passes; a full outer join keeps it, with NULL on the service side. Neither join invents a zero. A missing match is not an error. The NULL row is what a full outer join shows, not an inner one."
 - id: window_grain
+  type: single_choice
   objective: "Use window functions and conditional aggregation without changing the grain of a result."
   prompt: "A report needs one row per day with the day's amount and the amount so far. Which query gives it?"
   options:
@@ -58,6 +62,7 @@ questions:
   answer: cte_then_window
   explanation: "The CTE makes the grain one row per day, and the window adds up from the first day to the current one without changing it. A window over the region rows keeps one row per region and day, not per day. Summing a daily total repeated on each order counts the day once per order. LAG returns the previous row's value only, not a running total."
 - id: paid_gmv
+  type: single_choice
   objective: "Tell paid GMV, order amount, and net collections apart, and keep each ratio's numerator and denominator."
   prompt: "The case's orders without the cancelled one are worth 800.00. Its payments in the window total 660.00, and one of the paid orders was refunded 50.00 within the window. What are the window's paid GMV and net collections?"
   options:
@@ -72,6 +77,7 @@ questions:
   answer: paid_then_net
   explanation: "Paid GMV comes from the deduplicated payments in the window, 660.00; the refund is a separate fact, so net collections are 660.00 minus 50.00, 610.00. Order amount also counts orders that were never paid. Taking refunds out of GMV turns it into net collections. A status of PARTIALLY_REFUNDED does not undo the payment: the order was paid once."
 - id: distinct_and_proof
+  type: single_choice
   objective: "Choose exact or approximate distinct counts, and verify an optimization with equal results and measured work."
   prompt: "Finance reconciles distinct paying customers to the unit, and a team proposes HLL because it matched exactly on a sample. Separately, a smaller service table answered in 3.7 ms instead of 7.2 ms. What should be done?"
   options:
@@ -85,3 +91,4 @@ questions:
     text: "A Bitmap of the customers' names, which counts any kind of column exactly"
   answer: exact_and_prove
   explanation: "A reconciliation to the unit needs COUNT(DISTINCT) or a Bitmap of integer IDs; HLL estimates, and one match is not an error bound. An optimization is accepted when it returns the same rows and the Profile shows the work it saved; timings come last and belong to their conditions. A timing alone shows neither, and reading less is not always faster. A Bitmap takes non-negative integer IDs, not arbitrary strings."
+passing_score_percent: 80
