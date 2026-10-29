@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+umask 077
+# Runtime fingerprint: ${runtime_hash}. No deployment credentials are present.
+install -d -m 0700 /var/log/doris-workshop
+exec >> /var/log/doris-workshop/cloud-init.log 2>&1
+
+cat > /etc/systemd/system/doris-workshop-expire.service <<'EOF'
+[Unit]
+Description=End the temporary EC2 acceptance instance
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/shutdown -h now
+EOF
+cat > /etc/systemd/system/doris-workshop-expire.timer <<'EOF'
+[Unit]
+Description=Temporary EC2 acceptance expiry
+[Timer]
+OnCalendar=${replace(replace(expires_at, "T", " "), "Z", " UTC")}
+Persistent=true
+[Install]
+WantedBy=timers.target
+EOF
+systemctl daemon-reload
+systemctl enable --now doris-workshop-expire.timer
+
+if command -v snap >/dev/null 2>&1 && snap list amazon-ssm-agent >/dev/null 2>&1; then
+    snap start --enable amazon-ssm-agent
+elif systemctl list-unit-files amazon-ssm-agent.service --no-legend | grep -q amazon-ssm-agent; then
+    systemctl enable --now amazon-ssm-agent.service
+else
+    echo 'The selected Ubuntu image has no SSM Agent; choose an SSM-ready Canonical image.' >&2
+    exit 2
+fi

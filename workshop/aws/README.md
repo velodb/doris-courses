@@ -2,9 +2,10 @@
 
 This directory defines the configuration and planning manifest for temporary
 AWS course environments. The current tool validates local files and pinned
-course metadata. A [host runtime bundle and installer](runtime/README.md) is
-also available for local testing; target EC2 validation is pending. Terraform
-deployment, AWS preflight, browser access and AMI building are separate steps.
+course metadata. A [host runtime bundle and installer](runtime/README.md) and
+[single-instance Terraform scripts](terraform/README.md) are available. Target
+EC2 integration validation, live AWS preflight, browser access and AMI building
+remain separate steps.
 
 ## Try the offline tool
 

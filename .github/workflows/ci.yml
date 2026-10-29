@@ -65,6 +65,28 @@ jobs:
       - name: Bundle, kernel restart and local Jupyter authentication
         run: python -m unittest discover -s tools/tests -p test_workshop_runtime.py -v
 
+  workshop-terraform:
+    name: Workshop Terraform (${{ matrix.module }}, mocked AWS)
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        module: [bootstrap, pilot]
+    defaults:
+      run:
+        working-directory: workshop/aws/terraform/${{ matrix.module }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+        with:
+          terraform_version: "1.17.1"
+          terraform_wrapper: false
+      - name: Format, schema and provider-mock tests
+        run: |
+          terraform fmt -check -recursive
+          terraform init -backend=false -input=false -lockfile=readonly
+          terraform validate
+          terraform test
+
   tests:
     name: Offline tests (${{ matrix.package }})
     runs-on: ubuntu-24.04
