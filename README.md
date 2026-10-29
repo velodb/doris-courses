@@ -118,6 +118,8 @@ and how to remove only that course's containers, volumes, and networks.
 - `doris-course/common/`: `doris_labkit`, the notebook runtime that every
   course installs.
 - `tools/`: the repository checks, which CI runs on every pull request.
+- `workshop/aws/`: [AWS workshop configuration](workshop/aws/README.md), with
+  offline validation and planning manifests. Cloud deployment is not yet implemented.
 - `maintenance/`: notes for maintainers: what each course depends on, what to
   recheck after a change, and what to do before a release.
 

@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "runtime": {
+    "os": "linux",
+    "architecture": "x86_64",
+    "python_version": "3.12",
+    "repository_root": "/opt/doris-courses"
+  },
+  "profiles": {
+    "rta-main": {
+      "course_dir": "doris-course/01-real-time-analytics",
+      "kernel": "doris-rta",
+      "requires": [],
+      "conflicts": [],
+      "module_ids": null,
+      "optional_paths": [],
+      "requires_browser_host": false
+    },
+    "rta-metabase": {
+      "course_dir": "doris-course/01-real-time-analytics",
+      "kernel": "doris-rta",
+      "requires": [
+        "rta-main"
+      ],
+      "conflicts": [],
+      "module_ids": [],
+      "optional_paths": [
+        "level1/module01-introduction/optional01_metabase_dashboard.ipynb"
+      ],
+      "requires_browser_host": false
+    },
+    "dw-main": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "requires": [],
+      "conflicts": [],
+      "module_ids": null,
+      "optional_paths": [],
+      "requires_browser_host": false
+    },
+    "dw-kafka": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "requires": [
+        "dw-main"
+      ],
+      "conflicts": [],
+      "module_ids": [],
+      "optional_paths": [
+        "level1/module05-ingestion/optional05_kafka_routine_load.ipynb"
+      ],
+      "requires_browser_host": false
+    },
+    "dw-cdc": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "requires": [
+        "dw-main"
+      ],
+      "conflicts": [],
+      "module_ids": [],
+      "optional_paths": [
+        "level1/module05-ingestion/optional05_flink_mysql_cdc.ipynb"
+      ],
+      "requires_browser_host": false
+    },
+    "dw-bi": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "requires": [
+        "dw-main"
+      ],
+      "conflicts": [],
+      "module_ids": [],
+      "optional_paths": [],
+      "requires_browser_host": false
+    },
+    "dw-backup": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "requires": [
+        "dw-main"
+      ],
+      "conflicts": [],
+      "module_ids": [],
+      "optional_paths": [],
+      "requires_browser_host": false
+    },
+    "dw-extensions": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "requires": [
+        "dw-main"
+      ],
+      "conflicts": [],
+      "module_ids": [],
+      "optional_paths": [
+        "level1/extensions/extension23_physical_design.ipynb",
+        "level1/extensions/extension45_files_and_group_commit.ipynb",
+        "level1/extensions/extension67_schema_and_delete.ipynb"
+      ],
+      "requires_browser_host": false
+    },
+    "obs-main": {
+      "course_dir": "doris-course/03-observability",
+      "kernel": "doris-obs",
+      "requires": [],
+      "conflicts": [],
+      "module_ids": null,
+      "optional_paths": [],
+      "requires_browser_host": false
+    },
+    "obs-local-model": {
+      "course_dir": "doris-course/03-observability",
+      "kernel": "doris-obs",
+      "requires": [
+        "obs-main"
+      ],
+      "conflicts": [
+        "obs-openai"
+      ],
+      "module_ids": [],
+      "optional_paths": [
+        "level2/module07-data-analysis-litefuse/optional07_trace_a_real_model.ipynb"
+      ],
+      "requires_browser_host": false
+    },
+    "obs-openai": {
+      "course_dir": "doris-course/03-observability",
+      "kernel": "doris-obs",
+      "requires": [
+        "obs-main"
+      ],
+      "conflicts": [
+        "obs-local-model"
+      ],
+      "module_ids": [],
+      "optional_paths": [
+        "level2/module07-data-analysis-litefuse/optional07_trace_a_real_model.ipynb"
+      ],
+      "requires_browser_host": false
+    },
+    "ai-mcp": {
+      "course_dir": "doris-course/04-ai-integrations",
+      "kernel": "doris-ai",
+      "requires": [],
+      "conflicts": [],
+      "module_ids": [
+        "module-1"
+      ],
+      "optional_paths": [],
+      "requires_browser_host": true
+    },
+    "ai-functions": {
+      "course_dir": "doris-course/04-ai-integrations",
+      "kernel": "doris-ai",
+      "requires": [],
+      "conflicts": [],
+      "module_ids": [
+        "module-2"
+      ],
+      "optional_paths": [],
+      "requires_browser_host": false
+    }
+  }
+}

@@ -1,0 +1,5 @@
+# Local activity configuration and operational records.
+events/
+.local/
+*.local.yaml
+*.local.json

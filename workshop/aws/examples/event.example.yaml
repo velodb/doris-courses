@@ -1,0 +1,30 @@
+# Offline example only. Replace all activity, account, image and access values.
+schema_version: 1
+event_id: example-rta
+owner_id: workshop-team
+aws_partition: aws
+aws_account_id: '000000000000'
+aws_profile: workshop-admin
+region: ap-southeast-1
+network_mode: public-egress
+domain: workshops.example.com
+auth:
+  mode: temporary
+  config_ref: example-auth
+course_ref: ca89b019067036f66cbe03577dd2fbb0bed602f4
+course_profiles:
+  - rta-main
+allow_draft_courses: false
+image:
+  mode: base
+  ami_id: ami-00000000000000000
+  architecture: x86_64
+  region: ap-southeast-1
+  owner_account_id: '000000000000'
+instance_type: r7i.xlarge
+disk_gib: 100
+learner_ids:
+  - s001
+spare_count: 0
+expires_at: '2030-01-01T12:00:00+08:00'
+budget_usd: 50

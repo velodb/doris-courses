@@ -37,7 +37,7 @@ Each course lists its modules in `course.yaml`: the order, titles, times, and th
 Run the repository checks from the repository root. Install `tools/requirements.txt` in your check environment, including when using a course virtual environment: the content contract checks also require JSON Schema and Markdown parsing dependencies.
 
 ```bash
-python3 tools/check_links.py doris-course maintenance README.md CONTRIBUTING.md  # relative links and images
+python3 tools/check_links.py doris-course maintenance workshop README.md CONTRIBUTING.md  # relative links and images
 python3 tools/check_notebook_outputs.py --strict   # no outputs, errors, local paths or run state in notebooks
 python3 tools/check_quiz_balance.py                # quiz structure, and how the answers are spread
 python3 tools/check_course_manifests.py            # each course.yaml against the lessons, quizzes and README

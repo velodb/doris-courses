@@ -1,0 +1,496 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "kind": {
+      "type": "string",
+      "const": "aws-workshop-plan"
+    },
+    "status": {
+      "type": "string",
+      "const": "planned"
+    },
+    "generated_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "maxLength": 32
+        },
+        "owner_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "maxLength": 32
+        },
+        "aws_partition": {
+          "type": "string",
+          "enum": [
+            "aws",
+            "aws-cn",
+            "aws-us-gov"
+          ]
+        },
+        "aws_account_id": {
+          "type": "string",
+          "pattern": "^[0-9]{12}$"
+        },
+        "region": {
+          "type": "string",
+          "pattern": "^[a-z]{2}(?:-[a-z0-9]+)+-[0-9]+$"
+        }
+      },
+      "required": [
+        "event_id",
+        "owner_id",
+        "aws_partition",
+        "aws_account_id",
+        "region"
+      ],
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "type": "string",
+          "const": "event"
+        },
+        "key": {
+          "type": "string",
+          "pattern": "^aws-workshop/[a-z-]+/[0-9]{12}/[a-z0-9-]+/[a-z0-9-]+/terraform\\.tfstate$"
+        }
+      },
+      "required": [
+        "scope",
+        "key"
+      ],
+      "additionalProperties": false
+    },
+    "versions": {
+      "type": "object",
+      "properties": {
+        "course_ref": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "deployment": {
+          "type": "object",
+          "properties": {
+            "git_sha": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "tool_version": {
+              "type": "string",
+              "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+            },
+            "tooling_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "working_tree_dirty": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "git_sha",
+            "tool_version",
+            "tooling_sha256",
+            "working_tree_dirty"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "course_ref",
+        "deployment"
+      ],
+      "additionalProperties": false
+    },
+    "runtime": {
+      "const": {
+        "os": "linux",
+        "architecture": "x86_64",
+        "python_version": "3.12",
+        "repository_root": "/opt/doris-courses"
+      }
+    },
+    "desired": {
+      "type": "object",
+      "properties": {
+        "expires_at": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:Z|[+-]\\d{2}:\\d{2})$"
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "base",
+                "prebuilt"
+              ]
+            },
+            "ami_id": {
+              "type": "string",
+              "pattern": "^ami-(?:[0-9a-f]{8}|[0-9a-f]{17})$"
+            },
+            "architecture": {
+              "type": "string",
+              "const": "x86_64"
+            },
+            "region": {
+              "type": "string",
+              "pattern": "^[a-z]{2}(?:-[a-z0-9]+)+-[0-9]+$"
+            },
+            "owner_account_id": {
+              "type": "string",
+              "pattern": "^[0-9]{12}$"
+            },
+            "course_ref": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "course_profiles": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "rta-main",
+                  "rta-metabase",
+                  "dw-main",
+                  "dw-kafka",
+                  "dw-cdc",
+                  "dw-bi",
+                  "dw-backup",
+                  "dw-extensions",
+                  "obs-main",
+                  "obs-local-model",
+                  "obs-openai",
+                  "ai-mcp",
+                  "ai-functions"
+                ]
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            "release_ref": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+              "maxLength": 32
+            }
+          },
+          "required": [
+            "mode",
+            "ami_id",
+            "architecture",
+            "region",
+            "owner_account_id"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "mode": {
+                    "const": "prebuilt"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "course_ref",
+                  "course_profiles",
+                  "release_ref"
+                ]
+              },
+              "else": {
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "course_ref"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "course_profiles"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "release_ref"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "instance_type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*\\.[a-z0-9]+$"
+        },
+        "disk_gib": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "budget_usd": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "network_mode": {
+          "type": "string",
+          "enum": [
+            "public-egress",
+            "private-egress"
+          ]
+        },
+        "domain": {
+          "type": "string",
+          "pattern": "^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$",
+          "maxLength": 253
+        },
+        "auth": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "oidc",
+                "temporary"
+              ]
+            },
+            "config_ref": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+              "maxLength": 32
+            }
+          },
+          "required": [
+            "mode",
+            "config_ref"
+          ],
+          "additionalProperties": false
+        },
+        "profiles": {
+          "type": "object",
+          "minProperties": 1,
+          "properties": {
+            "rta-main": {
+              "$ref": "#/$defs/profile"
+            },
+            "rta-metabase": {
+              "$ref": "#/$defs/profile"
+            },
+            "dw-main": {
+              "$ref": "#/$defs/profile"
+            },
+            "dw-kafka": {
+              "$ref": "#/$defs/profile"
+            },
+            "dw-cdc": {
+              "$ref": "#/$defs/profile"
+            },
+            "dw-bi": {
+              "$ref": "#/$defs/profile"
+            },
+            "dw-backup": {
+              "$ref": "#/$defs/profile"
+            },
+            "dw-extensions": {
+              "$ref": "#/$defs/profile"
+            },
+            "obs-main": {
+              "$ref": "#/$defs/profile"
+            },
+            "obs-local-model": {
+              "$ref": "#/$defs/profile"
+            },
+            "obs-openai": {
+              "$ref": "#/$defs/profile"
+            },
+            "ai-mcp": {
+              "$ref": "#/$defs/profile"
+            },
+            "ai-functions": {
+              "$ref": "#/$defs/profile"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "expires_at",
+        "image",
+        "instance_type",
+        "disk_gib",
+        "budget_usd",
+        "network_mode",
+        "domain",
+        "auth",
+        "profiles"
+      ],
+      "additionalProperties": false
+    },
+    "allocations": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+        "maxLength": 32
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "terraform_key": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+            "maxLength": 32
+          },
+          "owner_key": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+/[a-z0-9-]+$"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "learner",
+              "spare"
+            ]
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "terraform_key",
+          "owner_key",
+          "role",
+          "active"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "status",
+    "generated_at",
+    "config_sha256",
+    "event",
+    "state",
+    "versions",
+    "runtime",
+    "desired",
+    "allocations"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AWS workshop local planning manifest v1",
+  "$defs": {
+    "profile": {
+      "type": "object",
+      "properties": {
+        "course_dir": {
+          "type": "string",
+          "enum": [
+            "doris-course/01-real-time-analytics",
+            "doris-course/02-data-warehousing",
+            "doris-course/03-observability",
+            "doris-course/04-ai-integrations"
+          ]
+        },
+        "course_status": {
+          "type": "string",
+          "enum": [
+            "published",
+            "draft",
+            "preview"
+          ]
+        },
+        "kernel": {
+          "type": "string",
+          "enum": [
+            "doris-rta",
+            "doris-dw",
+            "doris-obs",
+            "doris-ai"
+          ]
+        },
+        "working_directory": {
+          "type": "string",
+          "pattern": "^/opt/doris-courses/doris-course/[a-z0-9-]+$"
+        },
+        "modules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^module-[0-9]+$"
+              },
+              "course": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_./-]+$"
+              },
+              "lab": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_./-]+$"
+              },
+              "quiz": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_./-]+$"
+              }
+            },
+            "required": [
+              "id",
+              "course",
+              "lab",
+              "quiz"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "optional_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_./-]+$"
+          },
+          "uniqueItems": true
+        },
+        "requires_browser_host": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "course_dir",
+        "course_status",
+        "kernel",
+        "working_directory",
+        "modules",
+        "optional_paths",
+        "requires_browser_host"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
