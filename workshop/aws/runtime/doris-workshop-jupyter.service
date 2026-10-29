@@ -1,0 +1,30 @@
+[Unit]
+Description=Doris workshop JupyterLab (loopback only)
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+User=workshop
+Group=workshop
+SupplementaryGroups=docker
+WorkingDirectory=/opt/doris-courses
+Environment=PATH=/opt/doris-workshop/server-venv/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONNOUSERSITE=1
+Environment=JUPYTER_CONFIG_DIR=/etc/doris-workshop
+Environment=JUPYTER_DATA_DIR=/var/lib/doris-workshop/home/jupyter-data
+Environment=JUPYTER_RUNTIME_DIR=/run/doris-workshop
+Environment=JUPYTER_PATH=/usr/local/share/doris-workshop/jupyter
+RuntimeDirectory=doris-workshop
+RuntimeDirectoryMode=0700
+UMask=0077
+ExecStart=/opt/doris-workshop/server-venv/bin/python -I /usr/local/lib/doris-workshop/serve.py
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillMode=control-group
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

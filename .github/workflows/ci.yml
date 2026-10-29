@@ -52,6 +52,19 @@ jobs:
       - name: Tests of the checks
         run: python -m unittest discover -s tools/tests -v
 
+  workshop-runtime:
+    name: Workshop runtime isolation (offline)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Install runtime test dependencies
+        run: python -m pip install -r workshop/aws/runtime/test-requirements.txt
+      - name: Bundle, kernel restart and local Jupyter authentication
+        run: python -m unittest discover -s tools/tests -p test_workshop_runtime.py -v
+
   tests:
     name: Offline tests (${{ matrix.package }})
     runs-on: ubuntu-24.04

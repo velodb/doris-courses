@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "platform": "ubuntu-24.04-amd64",
+  "repository": "https://download.docker.com/linux/ubuntu",
+  "versions_checked_at": "2026-10-29",
+  "docker_apt": {
+    "docker-ce": "5:29.9.2-1~ubuntu.24.04~noble",
+    "docker-ce-cli": "5:29.9.2-1~ubuntu.24.04~noble",
+    "containerd.io": "2.4.2-3~ubuntu.24.04~noble",
+    "docker-buildx-plugin": "0.38.1-1~ubuntu.24.04~noble",
+    "docker-compose-plugin": "2.40.3-1~ubuntu.24.04~noble"
+  },
+  "server_pip": ["jupyterlab==4.4.10", "ipykernel==6.29.5"]
+}

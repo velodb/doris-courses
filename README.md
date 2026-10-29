@@ -119,7 +119,8 @@ and how to remove only that course's containers, volumes, and networks.
   course installs.
 - `tools/`: the repository checks, which CI runs on every pull request.
 - `workshop/aws/`: [AWS workshop configuration](workshop/aws/README.md), with
-  offline validation and planning manifests. Cloud deployment is not yet implemented.
+  offline validation, planning manifests and a [host runtime installer](workshop/aws/runtime/README.md).
+  Cloud deployment and EC2 runtime validation are not yet implemented.
 - `maintenance/`: notes for maintainers: what each course depends on, what to
   recheck after a change, and what to do before a release.
 
