@@ -1,0 +1,12 @@
+# Cost assumptions only. Confirm them for the real run; paths are repository-relative.
+schema_version: 1
+state_bucket_name: replace-with-a-globally-unique-state-bucket
+runtime_bundle_dir: workshop/aws/.local/runtime-bundle
+max_run_hours: 4
+cleanup_buffer_hours: 1
+internet_egress_gb: 5
+# Includes retained/versioned foundation state after activity destroy.
+s3_storage_gb_months: 1
+s3_write_requests: 10000
+s3_read_requests: 10000
+contingency_usd: 5

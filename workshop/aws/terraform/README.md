@@ -54,6 +54,12 @@ created with [the runtime builder](../runtime/README.md).
 
 ## Real deployment sequence
 
+Use the [first-run runbook](../first-run.md) and `tools/workshop_preflight.py`
+for live checks and saved-plan application. That gate generates explicit vars,
+isolates each run's Terraform data/backend, verifies immutable inputs and reruns
+live checks before apply. Failed checks never invoke Terraform. Its first-run
+scope is one learner, a new VPC, public egress and an official base AMI.
+
 The following is the intended operator sequence. It is not an executed result.
 Account/profile/Region, owner, budget, expiry and course selection must first be
 provided and checked. Clear unintended environment credentials, use an explicit
@@ -80,7 +86,8 @@ Unknown or failed checks must block apply.
    the same Terraform backend and vars and reconcile the remaining resources.
 
 No deployment identity or learning-record backend is sent to the instance.
-The formal one-command wrapper and live preflight are not implemented here yet.
+The full create/install/readiness wrapper remains separate work. The live
+preflight and saved-plan gate are implemented; real AWS results are still pending.
 Do not use examples or mock results as evidence of a real account check.
 
 ## Expiry and cleanup boundaries

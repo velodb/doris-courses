@@ -4,8 +4,10 @@ This directory defines the configuration and planning manifest for temporary
 AWS course environments. The current tool validates local files and pinned
 course metadata. A [host runtime bundle and installer](runtime/README.md) and
 [single-instance Terraform scripts](terraform/README.md) are available. Target
-EC2 integration validation, live AWS preflight, browser access and AMI building
-remain separate steps.
+EC2 integration validation, browser access and AMI building remain separate
+steps. The [deployment architecture](architecture.md) and
+[first real Terraform runbook](first-run.md) describe the live preflight and
+saved-plan gate for the first SSM-only host.
 
 ## Try the offline tool
 

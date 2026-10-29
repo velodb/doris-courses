@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "First AWS integration run inputs",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "state_bucket_name", "runtime_bundle_dir", "max_run_hours", "cleanup_buffer_hours", "internet_egress_gb", "s3_storage_gb_months", "s3_write_requests", "s3_read_requests", "contingency_usd"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "state_bucket_name": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$"},
+    "runtime_bundle_dir": {"type": "string", "minLength": 1},
+    "max_run_hours": {"type": "number", "exclusiveMinimum": 0, "maximum": 24},
+    "cleanup_buffer_hours": {"type": "number", "minimum": 1},
+    "internet_egress_gb": {"type": "number", "minimum": 1},
+    "s3_storage_gb_months": {"type": "number", "minimum": 1},
+    "s3_write_requests": {"type": "integer", "minimum": 1000},
+    "s3_read_requests": {"type": "integer", "minimum": 1000},
+    "contingency_usd": {"type": "number", "minimum": 1}
+  }
+}
