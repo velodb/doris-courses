@@ -56,6 +56,10 @@ A **Workload Group** applies limits to the queries that run in it, on two levels
 
 Separate groups keep ad hoc queries out of the dashboard's slots and bound what each group uses on a BE. They share one BE process, with its caches and threads, so they reduce interference rather than isolate completely; workloads that must not affect each other at all need separate nodes.
 
+![Separate FE admission groups feed a shared BE process with group-specific execution budgets.](images/01-fe-be-control-boundaries.png)
+
+*FE controls admission; each BE controls its groups' execution resources.*
+
 Doris selects a query's group in this order:
 
 1. A hint in the query: `SET_VAR(workload_group = ...)`.
@@ -73,6 +77,10 @@ For a query in a group, its FE decides:
 4. It waits longer than its time allows: it fails with `query queue timeout`.
 
 Lab 14's ad hoc group has one slot and one place in the queue. Of three slow queries, the first runs, the second waits, and the third is rejected at once: `query waiting queue is full, queue capacity=1, waiting num=1`. The defaults matter:
+
+![With one execution slot and one queue place, the first query runs, the second waits, and the third is rejected.](images/02-fe-admission-control.png)
+
+*Each FE admits queries into slots, queues overflow, and rejects a full queue.*
 
 | Property | Default | Meaning |
 | --- | --- | --- |
@@ -126,6 +134,10 @@ Any user can set `bypass_workload_group = true` for its session. That skips the 
 ## 14.5 Stop an Excessive Query
 
 A group bounds what all of its queries use together; one query also needs bounds of its own. Doris has three, which act at different times:
+
+![A SQL Block Rule acts before execution while a timeout or Workload Policy can cancel running work.](images/03-query-protection-stages.png)
+
+*Block rules reject before scanning; timeouts and policies cancel running work.*
 
 | Mechanism | When it acts | On which queries | What happens |
 | --- | --- | --- | --- |

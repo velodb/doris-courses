@@ -291,9 +291,10 @@ class NotebookTests(unittest.TestCase):
         self.assertIn("body MATCH_PHRASE 'HTTP/1.1 500'", query)
         # A COUNT(*) alone is answered from the index (COUNT_ON_INDEX) and reads no rows.
         self.assertIn("GROUP BY service_name", query)
-        # The plans and the screenshots of them are cells now.
-        self.assertFalse((LAB6.parent / "images").exists())
-        self.assertNotIn("<img", markdown_text(LAB6))
+        # The Lab generates plans in its cells; course illustrations may share its images directory.
+        lab_markdown = markdown_text(LAB6)
+        self.assertNotIn("<img", lab_markdown)
+        self.assertNotRegex(lab_markdown, r"!\[[^\]]*\]\(")
 
     def test_module6_builds_the_view_before_relying_on_it(self):
         cells = code_cells(LAB6)

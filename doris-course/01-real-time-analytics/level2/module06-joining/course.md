@@ -134,9 +134,9 @@ syntax.
 | Return only events for which no product exists | `LEFT ANTI JOIN` | Return unmatched left rows |
 | Generate every combination intentionally | `CROSS JOIN` | Return the Cartesian product |
 
-![Inner, Left Outer, Left Semi, and Left Anti Join row-retention behavior](images/02-join-row-retention.png)
+![Inner Join returns matching pairs, Left Outer also retains unmatched left rows, Semi returns matched left rows, and Anti returns unmatched left rows.](images/02-join-row-retention.png)
 
-*Choose the logical Join form from the matched and unmatched rows the answer must retain.*
+*Join semantics choose which rows and columns survive.*
 
 With 100 left rows and 20 right rows, a Cross Join has 2,000 combinations
 before later filtering. Use it only when every combination belongs to the
@@ -276,9 +276,9 @@ e.product_id = d.product_id
 Doris can build an in-memory hash table from the physical right-side input and
 stream physical left-side rows through it:
 
-![The build and probe roles of an equality Hash Join](images/03-hash-join-build-probe.png)
+![Product keys build a hash lookup, event keys probe it, and only keys present on both sides produce matching pairs.](images/03-hash-join-build-probe.png)
 
-*The build side creates the key lookup; the probe side streams candidates through it.*
+*The build input creates the lookup that the probe input uses.*
 
 **Build side** and **probe side** are roles inside a Join operator. They are not
 permanent properties of a fact or dimension table, and they do not mean one BE
@@ -329,19 +329,14 @@ receives the corresponding row from the other input.
 
 Suppose three BEs initially hold these unrelated pieces:
 
-```text
-BE 1: events product_id {10, 20}       products product_id {30}
-BE 2: events product_id {30}           products product_id {10}
-BE 3: events product_id {10, 40}       products product_id {20, 40}
-```
+![Event and product keys start on different BEs, so matching keys are not necessarily available to the same local Join.](images/04-initial-join-placement.png)
+
+*Shared Join keys do not imply compatible physical placement.*
 
 A local-only Join would miss valid matches: the product row for Key 10 is on
 BE 2 while event rows with Key 10 are on BE 1 and BE 3. The distributed plan
 must therefore make matching Keys meet:
 
-![Broadcast, Partition Shuffle, Bucket Shuffle, and Colocate Join distribution](images/04-join-distribution-strategies.png)
-
-*The four strategies differ in which input data moves and which existing layout can be reused.*
 
 These choices balance network transfer, per-instance memory, skew, and the
 ability to reuse an existing layout:
@@ -373,16 +368,9 @@ same Join execution location. Broadcast keeps the physical left/probe input in
 place and sends the complete physical right/build input to every node
 participating in the Join.
 
-```text
-small filtered build relation
-        rows {10, 20}
-          /    |    \
-         v     v     v
-      Join A Join B Join C
-        ^      ^      ^
-        |      |      |
-local probe partitions remain in place
-```
+![The complete small build relation is copied to every Join participant while each local probe partition remains in place.](images/05-broadcast-build-input.png)
+
+*Broadcast replicates the build input to each participating execution location.*
 
 The large fact input is not copied to every BE in this strategy. The replicated
 data is the build relation. Every participating instance needs its own complete
@@ -427,11 +415,9 @@ The two rows with Key 10 meet in P1, and the rows with Key 20 meet in P2,
 regardless of which source BE originally stored them. Each target Join instance
 then builds and probes its local partition.
 
-```text
-left input ---- hash(join_key) ----\
-                                  +--> matching execution partitions
-right input --- hash(join_key) ----/
-```
+![Both Join inputs hash their keys and route matching rows into the same execution partitions.](images/06-partition-shuffle-both-inputs.png)
+
+*Partition Shuffle moves both inputs so matching keys meet.*
 
 These are execution partitions created for data exchange. They are not the
 monthly table Partitions introduced in Module 4. A table Partition decides a
@@ -457,12 +443,9 @@ those locations.
 
 For a hypothetical event table bucketed by `product_id`:
 
-```text
-existing event Bucket 0  <--- dimension rows whose product_id maps to 0
-existing event Bucket 1  <--- dimension rows whose product_id maps to 1
-existing event Bucket 2  <--- dimension rows whose product_id maps to 2
-existing event Bucket 3  <--- dimension rows whose product_id maps to 3
-```
+![Dimension rows hash to matching existing event Buckets while the compatible event input stays in place.](images/07-bucket-shuffle-one-input.png)
+
+*Bucket Shuffle reuses one input layout and redistributes the other input.*
 
 Compared with general Partition Shuffle, only one input needs redistribution.
 That reduction is available only when the retained side's Bucket column and
@@ -495,11 +478,9 @@ that repeatedly perform a large-to-large Join on the same stable Key can be
 placed in one Colocation Group. Compatible Buckets are stored together so each
 local execution location already has the matching rows.
 
-```text
-BE 1: orders Bucket 0 + customers Bucket 0  --> local Join
-BE 2: orders Bucket 1 + customers Bucket 1  --> local Join
-BE 3: orders Bucket 2 + customers Bucket 2  --> local Join
-```
+![Corresponding orders and customers Buckets already share each BE and feed local Joins without cross-BE input exchange.](images/08-colocate-local-joins.png)
+
+*A stable colocation contract pre-positions both Join inputs.*
 
 The tables must satisfy the current colocation contract, including compatible
 distribution columns and types, Bucket count, replica allocation, and group
@@ -576,7 +557,7 @@ Broadcast Join and a Runtime Filter.
 For a Hash Join, Doris can derive a Runtime Filter from build-side Join values
 and apply it to the probe-side Scan when Join semantics allow:
 
-![A Runtime Filter built from product keys reducing event-scan candidates before a Hash Join](images/05-runtime-filter.png)
+![A Runtime Filter built from product keys reducing event-scan candidates before a Hash Join](images/09-runtime-filter.png)
 
 *Runtime Filters reduce probe candidates; the final Join condition still determines the result.*
 

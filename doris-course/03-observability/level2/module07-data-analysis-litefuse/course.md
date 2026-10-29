@@ -86,6 +86,10 @@ GROUP BY s.service_name, s.span_name
 
 In Lab 7 the result is one row: `payment`'s `Charge`, for every failed order. The checkout service, the frontend, and the proxy each have a failed call of their own in each trace, so `NOT EXISTS` leaves them out. The query leaves out the orders of the last minute, whose spans may not all have reached Doris yet: a trace whose payment span is still on its way would have no starting service at all.
 
+![Frontend and checkout each have a failed server span and a failed client call; payment has a failed server span without a failed outgoing call and remains the origin.](images/01-find-origin-with-service-calls.png)
+
+*Compare failures within each service to exclude callers that only propagate another service's error.*
+
 ## 7.4 Window functions
 
 A `GROUP BY` collapses rows into one per group. A **window function** computes a value for each row from a set of rows related to it, the window, and keeps every row. Its `OVER` clause says which rows:
@@ -95,6 +99,10 @@ A `GROUP BY` collapses rows into one per group. A **window function** computes a
 - `PARTITION BY` starts the window again for each group. `ROW_NUMBER() OVER (PARTITION BY service_name ORDER BY duration DESC)` numbers each service's spans from the slowest, and a filter `<= 3` on that number keeps the three slowest of each service, with their trace IDs. A global `ORDER BY ... LIMIT 3` would keep the three slowest of all services together.
 
 With one to four orders a minute, a single minute's share of failed orders jumps between 0 and 100%. Lab 7 computes the share among the last ten orders for every order instead: it stays around 0.5 while the payment failure lasts. Module 8 alerts on such a share.
+
+![A frame covering the current order and nine preceding orders computes a failed share for that order and moves forward one row for the next order.](images/02-window-functions-keep-each-order.png)
+
+*Window functions preserve each order while computing its value from nearby ordered rows.*
 
 ## 7.5 Traces of an LLM application
 
@@ -114,6 +122,10 @@ Two details of this setup:
 - When the first trace of a project arrives, Litefuse creates the project's tables, named after its ID: `spans_llm_app`, one row per observation, and `traces_scalar_llm_app`, one row per trace.
 
 Their design uses Modules 4 to 6. `spans_llm_app` is a DUPLICATE table keyed on `trace_id`, `start_time`, and `span_id`, so that the observations of a trace are stored together. `traces_scalar_llm_app` is a UNIQUE table, because Litefuse writes a trace's row again as its observations arrive. Both are partitioned by day with AUTO PARTITION and bucketed by the trace ID with `BUCKETS AUTO`: a lookup of one trace reads one tablet of each partition that it scans. `spans_llm_app` has a synchronous materialized view of the tokens and costs of each trace by day, and inverted indexes on 14 columns, including `input` and `output` with the `unicode` parser, so that `input MATCH_ANY 'litefuse'` finds the prompts that mention Litefuse. A query on these tables, such as the tokens and the cost by user, uses the same SQL as any other table in Doris.
+
+![The Langfuse SDK sends observations to Litefuse, whose API stores batches in Silo and queues work in Redis; the worker loads Doris, and the UI and API query the stored traces.](images/03-litefuse-llm-data-path.png)
+
+*Litefuse adds LLM observations to the shared Doris database through a queued batch-loading path.*
 
 ## Lab 7: Analyze Traces with SQL and Litefuse
 

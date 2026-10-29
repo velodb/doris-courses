@@ -41,6 +41,10 @@ After completing this module, you will be able to:
 
 An order table holds two years of data, and the retention rule keeps **the current calendar month and the 12 months before it**. Maintenance in February 2026 keeps February 2025 to February 2026 and removes the months before. A colleague runs `DELETE FROM orders WHERE order_date < '2025-02-01'`: the statement returns quickly, the old orders disappear from queries, and the disk barely changes, because the rows stay in their files until compaction; and if the condition was wrong, there is no way back. Before cleanup SQL, answer four questions:
 
+![February 2026 maintenance expires January 2025 and retains the thirteen calendar months from February 2025 onward.](images/01-monthly-retention-boundary.png)
+
+*Calendar retention aligns partition boundaries with business order dates.*
+
 | Question | Answer for the order table |
 | --- | --- |
 | What is one row? | One order |
@@ -119,6 +123,10 @@ TRUNCATE TABLE ops_orders_l3 PARTITION (p202501);
 
 `TRUNCATE` replaces the partition with a new, empty one of the same name and range; it neither deletes rows one by one nor records a delete predicate, so it does not wait for compaction. The recycle bin keeps the old partition for `catalog_trash_expire_second`, 86400 seconds by default: one day. `TRUNCATE ... FORCE` skips the recycle bin.
 
+![TRUNCATE exposes a new empty partition while the old partition and files remain temporarily in the recycle bin.](images/02-truncate-visibility-storage.png)
+
+*TRUNCATE changes query visibility immediately and reclaims old files later.*
+
 **Compaction** merges a tablet's rowsets into fewer, larger ones in the background, and removes the rows of delete predicates as it goes; that is why the colleague's `DELETE` changed the queries before the disk. It has nothing to do with whether a truncation succeeded. Watch its pressure with `VersionCount` and the load and query rates, not with one small sample.
 
 ## 13.5 Ways Back
@@ -138,6 +146,10 @@ RECOVER PARTITION p202501 <the recorded PartitionId> FROM ops_orders_l3;
 ```
 
 January comes back with its original ID and its order: 3 orders and 600.00. Without the ID, measured on Doris 4.1.3, `RECOVER PARTITION p202501 FROM ops_orders_l3` recovers the newest `p202501` in the recycle bin, the empty replacement, and January stays empty. A `DROP PARTITION` without `FORCE`, as on Lab 13's second table, comes back with a `RECOVER` by name, because only one `p202501` of that table is there.
+
+![Recovery removes the checked empty replacement and selects the original partition by its recorded ID.](images/03-recover-truncated-partition.png)
+
+*Use the recorded partition ID to recover the intended January version.*
 
 The recycle bin is a short way back. The durable ones are prepared before the change:
 

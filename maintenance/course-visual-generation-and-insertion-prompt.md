@@ -1,6 +1,16 @@
 # Course Visual Generation and Insertion Prompt
 
-Use the prompt below to design, generate, and insert instructional visuals into additional module course Markdown files. It captures the placement criteria, subject matter, visual language, and Markdown conventions validated for `real-time-analytics / level-1 / module-1`.
+Use the prompt below to design, generate, and insert instructional visuals into additional module course Markdown files. The visual reference below is the original illustration from `real-time-analytics / level-1 / module-1`, before the card-template redraw. It defines the visual language for every course illustration. Matching only its black background and blue palette is not enough.
+
+## Authoritative Visual Reference
+
+![Original course illustration: condensed uppercase headings, cyan accents, thin outlined panels, event rows, selected columns, compact BE workers, and an analytical chart.](visual-references/fresh-data-to-analytical-answers.png)
+
+Reference file: `maintenance/visual-references/fresh-data-to-analytical-answers.png`.
+
+This is the immutable style reference, copied without pixel changes from the original course illustration at commit `c66cec2`. Do not use a later replacement at the module image path as the style reference.
+
+Use the `imagegen` skill and its built-in image-generation tool. Supply this actual image as a reference for every generation or edit call. Do not substitute SVG, Pillow drawing, HTML/CSS, or a generic flowchart renderer for the requested raster illustrations. Raster resizing and PNG compression are allowed after visual approval. If the built-in tool fails, follow the skill's explicit fallback policy; do not silently change generation methods.
 
 ## Reusable Prompt
 
@@ -12,6 +22,11 @@ Target course Markdown:
 
 Module identifier:
 <MODULE_ID>
+
+Style reference image:
+maintenance/visual-references/fresh-data-to-analytical-answers.png
+
+Use the imagegen skill and the built-in image-generation tool. Inspect and attach the style reference on every call. When redrawing an existing course image, also inspect and attach it as a separate content reference/edit target. Image 1 controls style; the target image and the course text control technical meaning. Do not copy the target's generic card-template styling, or copy the style reference's subject matter into unrelated lessons.
 
 Read the entire target Markdown file, then complete the full workflow: analyze candidate locations, generate the visuals, insert them into the Markdown, and verify the result. Do not infer the course content from the title alone, and do not rewrite unrelated course text.
 
@@ -36,31 +51,46 @@ Read the entire target Markdown file, then complete the full workflow: analyze c
    - Suggested filename and aspect ratio.
 6. Every fact, component name, and arrow direction must be supported by the course text. Do not introduce capabilities, performance figures, deployment components, or causal claims that the course does not teach.
 
-2. Follow one visual language
+2. Match the reference's complete visual language
 
-All images must use the restrained, clear, engineering-oriented visual language of the dark technical flow diagrams on the VeloDB website. Do not create marketing posters or generic AI illustrations.
+The target is a polished dark technical illustration with compact, meaningful pictograms and data structures, matching the supplied reference. It must look like another illustration in the same series, not a new family of generic presentation cards.
 
-Mandatory requirements:
+Mandatory style requirements:
 
-- Use a solid black background. Do not use textures, photographs, background grids, gradients, or decorative light effects.
-- Render every Apache Doris core node as a solid dark-blue rectangular block.
-- Put only `APACHE DORIS` inside a Doris block. Do not use the Apache Doris logo, write `VELODB ENGINE`, or add any other logo.
-- Do not apply gradients, glass effects, perspective, or complex textures to Doris blocks.
-- Use black or very dark-gray cards, thin outlines, and simple line icons for other systems, data sources, clients, tables, nodes, and results.
-- Use VeloDB electric blue for the primary flow arrows and important connections. Use low-contrast blue-gray for secondary borders.
-- Use white or near-white for primary text, cool gray for supporting text, and blue sparingly for emphasis.
-- Use a flat, front-facing, two-dimensional composition. Do not use 3D, isometric views, character illustrations, photorealistic devices, or photographs.
-- Keep borders thin, corner radii subtle, and whitespace generous. Avoid large shadows, glow, neon, and excessive decoration.
-- Compose each image for embedding in course content. The primary flow must remain legible both at desktop width and when the image is scaled down.
-- Prefer approximately 16:9 for ordinary concept diagrams and approximately 2.5:1 for horizontal flows or side-by-side comparisons. Do not combine several images into a montage.
+- Use a solid black canvas and black or nearly black panel interiors. No background grid, photographic texture, vignette, or atmospheric lighting.
+- Use thin electric-blue/cyan panel outlines, subtle small corner radii, and crisp blue-to-cyan directional connections. Match the reference's restrained line weights.
+- Use a condensed, squared technical sans-serif appearance for the main title. Main titles and panel headings are uppercase with controlled letter spacing. Keep the title compact; it must not dominate the diagram.
+- Use white title text with a short, meaningful cyan accent phrase when appropriate, as in the reference's title. Use cool blue-gray or pale cyan for secondary labels. Preserve exact spelling and readable typography.
+- Keep the palette to white, cool gray, cyan, and blue. Do not introduce red, green, orange, or yellow for status indicators. Distinguish success, failure, exclusion, or pending states with short labels, check/X/stop shapes, line treatment, and cyan or cool-gray emphasis.
+- Draw the concept itself: event rows, selected columns, tablets, rowsets, miniature tables, posting lists, paired records, timelines, trace spans, node groups, or a suitable result chart. The subject determines these structures.
+- Use small, consistent technical line icons to explain responsibilities: for example a scan/storage symbol, filter funnel, aggregation symbol, document, table, queue, key, or result plot. Every icon must clarify a taught role; avoid decorative icon collections.
+- Keep related components inside a meaningful outlined group. For example, an MPP EXECUTION panel can contain compact BE 01 / BE 02 / BE 03 worker panels, each showing scan, filter, and aggregate icons.
+- FE and BE are named roles inside the appropriate Doris boundary. Label them FE / BE or Frontend / Backend as the lesson requires. Do not turn each FE or BE into a large repeated APACHE DORIS plaque.
+- When a standalone Apache Doris system block is needed, APACHE DORIS may label that system once. An understated deep-blue fill is optional. Do not apply an obligatory deep-blue brand block to every internal node, table, operation, or process.
+- Avoid logos and invented brands, including VELODB ENGINE. Exact system names from the lesson are sufficient.
+- Use cyan highlights to distinguish selected columns, matching rows, active stages, and important connections. Small cyan-to-blue fills in data bars or marks are allowed when they match the reference; do not use decorative gradients across cards or the canvas.
+- Maintain a flat, front-facing technical composition. No 3D, isometric objects, glass effects, photorealism, people, neon halos, or large shadows.
+- Match the reference's compact information density and balanced use of space. Use clear margins and separation without leaving most of the canvas empty. The illustration should communicate through shapes, grouping, and visual structure as well as labels.
+- Prefer 16:9 for ordinary concept illustrations and about 2.5:1 for genuinely horizontal flows or comparisons. Preserve an existing useful composition when restyling it. Do not make a montage.
 
-Text requirements:
+Reject these regressions even if the colors are correct:
 
-- Use English labels and match the terminology in the English course text.
-- Keep labels short and explicit. Prefer noun phrases or verb phrases; do not place long paragraphs inside an image.
-- Verify every technical term, capitalization choice, and spelling, including `APACHE DORIS`, `Frontend (FE)`, `Backend (BE)`, `CDC`, and `SQL`.
-- Do not include garbled text, pseudo-text, clipped text, duplicate labels, or meaningless fine print.
-- Do not add image numbers, filenames, watermarks, page numbers, or the word “Figure” to the canvas.
+- Oversized ordinary Arial-like headings and large rounded boxes containing only text.
+- A row of generic cards used for every topic, with the actual data structures or operations removed.
+- Repeated large APACHE DORIS blocks standing in for individual BE/FE roles.
+- Losing the column illustration, execution grouping, scan/filter/aggregate symbols, or analytical output merely to simplify the drawing.
+- Huge empty regions, excessive padding, overly thick arrows, or a small diagram floating in a large black canvas.
+- Unrelated toy records, invented SQL fields, fake performance figures, decorative charts, or additional arrows not supported by the lesson.
+
+Text and technical accuracy requirements:
+
+- Use English labels, short noun/verb phrases, and terminology from the course. Panel headings can use uppercase while SQL identifiers and field names preserve their required case.
+- Supply a whitelist of exact labels for each image. Do not add explanatory sentences, sample IDs, fields, statuses, or numerical claims outside that whitelist.
+- Keep body labels compact and legible. Do not place prose paragraphs inside the illustration.
+- Represent data visually where useful; do not reduce a columnar-storage example to a card saying COLUMNAR DATA or a result visualization to a card saying ANALYTICAL RESULT.
+- Schematic data marks may illustrate a relationship, but must be clearly illustrative and internally consistent. A chart must not imply measured values or a performance comparison unless the course supplies them.
+- Verify every technical name, arrow, example row, join match, version, and calculation against the course. Do not copy example labels from the style reference into a different topic.
+- Do not include garbled text, pseudo-text, misspellings, clipped labels, repeated accidental labels, watermarks, filenames, page numbers, or the word Figure.
 
 3. Organize each diagram
 
@@ -69,13 +99,15 @@ Text requirements:
 3. For comparisons, use clear left/right or top/bottom regions and keep both sides at the same visual scale.
 4. In architecture diagrams, distinguish clients, coordination and planning, execution, storage, and results. Avoid crossing arrows and ambiguous connections.
 5. For data-organization concepts, show relationships among columns, shards, partitions, tablets, nodes, or stages instead of relying on decorative abstract shapes.
-6. A short title and subtitle may clarify the purpose of a diagram. Omit them when the surrounding text already provides enough context and use the space for the structure itself.
-7. The main nodes, direction, and conclusion must remain immediately recognizable after the image is scaled to the course content width.
+6. Use the reference's compact condensed uppercase title treatment. A short subtitle is optional; devote most of the image to the visual explanation.
+7. The main nodes, direction, and conclusion must remain immediately recognizable after scaling to course width.
+8. For restyling work, preserve each existing image's teaching objective, meaningful detail, and correct relationships. Reconstruct those relationships in the reference style rather than deleting them to fit a shared template.
+9. Genuine software screenshots are evidence, not conceptual illustrations. Preserve their actual UI and pixels unless the user explicitly requests replacing the screenshots; do not generate fictitious application screenshots.
 
 4. Save the files and insert them into Markdown
 
 1. Generate each visual as a separate, full-quality PNG source file.
-2. Keep all generated source files and intermediate compression attempts outside the repository. Use the operating system's temporary directory, for example:
+2. The built-in tool initially saves images under its own generated-images directory. Copy working sources and compression attempts to an external task directory, for example:
    `/tmp/doris-course-visuals/<MODULE_ID>/`
    Do not generate uncompressed source files directly under the target module.
 3. After visual review and compression, copy only the final web-ready files into the target module at:
@@ -95,7 +127,7 @@ Text requirements:
 9. Normally place a visual after one or two paragraphs have introduced the relevant concept and before the next subsection heading. Do not place it between a heading and its opening paragraph unless it is genuinely an overview of the entire subsection.
 10. If the source contains an ASCII or text diagram expressing the same relationship, replace that code block with the image and one caption while retaining the explanatory prose around it.
 11. If no ASCII diagram exists, add only the image and caption. Do not delete or rewrite the course text.
-12. Do not modify labs, quizzes, notebooks, course logic, or files outside the target course.
+12. Do not modify labs, quizzes, notebooks, course logic, or unrelated files. Updating this prompt and its immutable reference is allowed when the user requests a style-definition update.
 13. Do not edit the synchronized copy under `apps/web/app/courses/content/` in the website repository. Modify only the Markdown and image assets in the course source repository.
 14. Delete the temporary source and intermediate files only after the compressed assets, Markdown paths, and rendered result have been verified. Never commit temporary or uncompressed variants.
 
@@ -104,27 +136,29 @@ Text requirements:
 Follow the Apache Doris Website [Image Compression Guide](https://github.com/apache/doris-website/blob/master/doc-tools/prompts/img-compression-guide.md).
 
 1. Target approximately 100 KB per final image. Aim for 80–120 KB; allow up to 150 KB only when further compression would make labels, thin lines, or arrows difficult to read.
-2. These course diagrams rely on a solid black background, sharp text, and line art. Following the guide's solid-color-image rule, retain PNG and compress it with [TinyPNG](https://tinypng.com/).
+2. Retain PNG for the black background, technical line art, cyan accents, and sharp labels. Prefer TinyPNG where available. If the service returns a rate limit or is unavailable, stop requests and use local PNG optimization; record the method. Do not bypass limits or replace imagegen with a drawing script.
 3. If an exceptional image does not rely on a solid-color or transparent background, it may be converted to JPEG with Pillow using `convert('RGB')`, `quality=85`, and `optimize=True`, as specified by the guide. Use a `.jpg` filename and update the Markdown path accordingly.
-4. If a TinyPNG-compressed PNG remains above 120 KB, reduce its pixel dimensions proportionally and compress it again. Preserve the required aspect ratio and do not stretch or crop the diagram.
+4. If a compressed PNG remains above 120 KB, first optimize its palette without dithering, then proportionally reduce dimensions if needed and compress again. Preserve cyan accents, readable labels, aspect ratio, and all content. Do not stretch or crop.
 5. Compare the compressed result with the reviewed source at the intended course-content width. The compressed version must preserve readable labels, clean arrows, accurate colors, and an apparently solid black background.
 6. Record the final byte size of every asset. Only the compressed final file may be copied to `images/` and committed. Keep screenshots, generated diagrams, and other course illustrations together in this module-local directory.
 
 6. Verify image quality
 
-Inspect every generated image and confirm:
+Inspect the reference, the generated source, and the compressed final image side by side. Confirm both STYLE and CONTENT, not only palette and spelling:
 
-- The background is solid black.
-- Every Apache Doris node is a solid dark-blue block containing only `APACHE DORIS`.
-- No Doris logo, VeloDB logo, or `VELODB ENGINE` label appears.
-- Technical names, arrow directions, and causal relationships agree with the course.
-- There is no misspelling, pseudo-text, overlap, clipping, or text that is too small to read.
-- Line widths, colors, card shapes, and spacing are consistent across the set.
-- The visual genuinely reduces the effort required to understand the passage.
-- The final asset is approximately 100 KB, normally within the 80–120 KB target range.
-- Every Markdown relative path is correct and resolves to an existing file.
-- Image order, file numbering, alt text, and captions correspond to one another.
-- No uncompressed source, intermediate attempt, or backup image is present in the repository.
+- The title treatment, line icons, thin blue/cyan borders, compact labeling, grouped composition, and information density resemble the immutable original reference.
+- Data and operations are drawn as meaningful structures or pictograms; the image has not become a generic text-card flowchart.
+- The background is black, cyan is used purposefully, and there is no 3D, decorative glow, or photographic texture.
+- Status markers also follow the white/cool-gray/cyan/blue palette; no red, green, orange, or yellow remains in failure or success highlights.
+- Doris is represented at the correct system boundary; FE/BE workers are not mislabeled as separate APACHE DORIS systems.
+- No logos, invented fields, extra nodes, unsupported arrows, fake measurements, or meaningless fine print appear.
+- Technical names, examples, arrow directions, calculations, and responsibilities agree with the course and label whitelist.
+- Text is spelled correctly and remains readable at the intended course width. Nothing overlaps or clips.
+- The source and compressed final image retain the same useful detail, cyan highlights, clean lines, and apparently solid black background.
+- The image advances its stated teaching objective and remains recognizably part of the reference series.
+- The final PNG normally targets 80–120 KB, allowing up to 150 KB when readability needs it. Do not pad a smaller clear image to meet a minimum.
+- Relative paths, sequential filenames, objective alt text, and italic captions remain correct.
+- Only final compressed course assets are in module images directories. Sources, trials, and compression attempts stay outside the repository, except the intentionally committed immutable style reference.
 
 Regenerate any image that fails these checks. Do not repair it by covering text in post-processing, stretching the image, or explaining an error in the Markdown.
 
@@ -136,7 +170,9 @@ At completion, provide:
 2. The section where each image was inserted and its teaching purpose.
 3. The path of every modified course Markdown file.
 4. A statement identifying any ASCII or text diagram that was replaced.
-5. A statement identifying related files that were deliberately left unchanged, such as labs, quizzes, and other modules.
+5. A statement identifying related files that were deliberately left unchanged, such as labs, quizzes, and screenshots.
+6. The prompt set, the immutable reference used, the imagegen mode, and per-image compression method.
+7. A style-review statement confirming comparison against the original reference, including typography, icons, data structures, grouping, and density.
 ```
 
 ## Addendum for Generating One Image at a Time
@@ -161,7 +197,15 @@ Forbidden or unsupported content:
 Output aspect ratio:
 <16:9_OR_WIDE>
 
-Reminder: use a solid black background. Render every Apache Doris node as a solid dark-blue rectangular block containing only `APACHE DORIS`, with no logo. Keep all other components consistent with the dark technical flow-diagram style of the VeloDB website.
+Required input image:
+maintenance/visual-references/fresh-data-to-analytical-answers.png
+Role: authoritative STYLE reference, not a source of subject matter.
+
+Optional second input image:
+<CURRENT_COURSE_IMAGE_PATH>
+Role: CONTENT reference/edit target. Preserve the correct teaching relationships while replacing its typography, icons, grouping, and visual treatment.
+
+Reminder: use the built-in imagegen tool with the actual reference attached. Match the reference's condensed uppercase headings, white-and-cyan title treatment, thin blue/cyan outlines, compact technical line icons, visible data structures, and grouped execution panels. Keep FE/BE roles inside a meaningful system grouping. Do not substitute generic text-only SVG cards or repeated APACHE DORIS plaques. Generate one separate full-quality PNG.
 ```
 
 ## Usage Notes

@@ -81,9 +81,9 @@ A **bounded source** has a known end: one client file, one request body, or one
 fixed set of objects. A **continuous source** can receive new records after the
 load starts.
 
-![Four source contracts map to Stream Load, S3 TVF with INSERT INTO SELECT, Routine Load, and Group Commit.](images/01-load-method-selection.png)
+![A bounded client batch uses Stream Load, S3 objects use a TVF with INSERT INTO SELECT, Kafka uses Routine Load, and tiny writes can use Group Commit.](images/01-load-method-selection.png)
 
-*Choose the load method from the source and control contract rather than forcing every source through one path.*
+*Source and completion contracts select independent load paths.*
 
 All four mechanisms can participate in transactional writes, but they expose
 different control and completion models. Select the model that matches the
@@ -103,9 +103,6 @@ port. FE authenticates and redirects the request to a Backend (BE). The BE
 parses and writes the rows, and the load transaction is committed through FE.
 The client receives one synchronous JSON response.
 
-![A client pushes a bounded CSV batch through FE and BE, receives a synchronous JSON result, and reuses the same label for a safe retry.](images/02-stream-load-request-and-retry.png)
-
-*Stream Load combines a synchronous batch response with label-based protection for an uncertain retry.*
 
 `curl --location-trusted` follows the authenticated FE-to-BE redirect. In a
 secured environment, use TLS and an appropriately scoped Doris account rather
@@ -234,17 +231,9 @@ succeeded, while `RUNNING` means the client should wait for its outcome. A
 different label represents a new load transaction and can append the same rows
 again to a Duplicate Key model table.
 
-```text
-First request
-  bytes A + label L ----> transaction commits
-  response is lost
+![FE redirects a Stream Load request to BE, and retrying the same bytes with the same successful label avoids a second commit.](images/02-stream-load-request-and-retry.png)
 
-Safe retry
-  bytes A + label L ----> existing successful label; no second commit
-
-New write
-  bytes A + label M ----> new transaction
-```
+*The label preserves batch identity when the first response is lost.*
 
 This provides label-based At-Most-Once duplicate protection for one Stream
 Load batch. It does not identify semantic duplicates across different source
@@ -474,9 +463,9 @@ work while BE storage accumulates version pressure.
 writes to the same table into a shared load transaction. It is not simply
 “concurrent writing,” and it is not a standalone connector for S3 or Kafka.
 
-![Compatible tiny writes enter the Apache Doris Group Commit queue and leave as fewer grouped load transactions and Rowsets.](images/05-group-commit-small-writes.png)
+![Compatible tiny writes share a Group Commit queue and transaction, with sync acknowledgement after commit and async acknowledgement after durable BE WAL.](images/05-group-commit-small-writes.png)
 
-*Group Commit changes the transaction unit and acknowledgement timing without becoming a new source connector.*
+*Group Commit reduces new transaction and Rowset overhead; its mode defines when a caller receives acknowledgement.*
 
 Group Commit layers on top of compatible `INSERT INTO VALUES`, JDBC prepared
 statements, or Stream Load requests. It reduces per-write planning,

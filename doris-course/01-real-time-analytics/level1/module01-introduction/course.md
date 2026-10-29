@@ -96,9 +96,9 @@ Its vectorized execution engine processes batches of column values rather than m
 row at a time through every operator. Together with MPP execution, this design
 supports large scans, filtering, joins, and aggregations.
 
-![Fresh event data is stored by column, processed in parallel across BE nodes, and reduced to an analytical result.](images/01-fresh-data-to-analytical-answers.png)
+![Fresh events enter columnar storage before parallel BE workers scan, filter, and aggregate them into an analytical result.](images/01-fresh-data-to-analytical-answers.png)
 
-*Fresh rows become analytical answers through columnar storage and parallel execution.*
+*Data freshness and query latency cover different parts of the path to an analytical answer.*
 
 > **Mental model:** Doris is not “a faster MySQL.” It presents a familiar SQL
 > and MySQL-compatible protocol, but its storage and execution engine are built
@@ -164,9 +164,9 @@ Imagine an ecommerce checkout:
 The order commit is OLTP. The dashboard queries are OLAP. They are connected,
 but they optimize for different units of work.
 
-![An operational request is committed in an OLTP database, delivered through CDC, and served analytically by Apache Doris.](images/02-one-business-process-two-workloads.png)
+![A customer request commits in an OLTP database, crosses a CDC stream, and reaches Apache Doris for analytical serving.](images/02-one-business-process-two-workloads.png)
 
-*One business process connects OLTP and OLAP while keeping their responsibilities separate.*
+*CDC connects operational commits to analytical queries while each system keeps its own responsibility.*
 
 Doris supports transactions, updates, and deletes, but those capabilities do
 not turn every operational workload into a good Doris workload. The right
@@ -235,13 +235,9 @@ Data may already live in object storage and open table formats. Doris can query
 external data through catalogs and table-valued functions, or load selected
 data into internal tables for predictable analytical serving.
 
-```text
-Object storage / lakehouse
-          |
-          | federated query or selected load
-          v
-     Apache Doris --------> BI, SQL clients, analytical applications
-```
+![Apache Doris reads lakehouse data directly or loads selected data into internal tables before serving analytical clients.](images/04-lakehouse-query-and-load.png)
+
+*Federated access and selected loading are separate ways to bring external data into an analytical workflow.*
 
 **Fit signal:** teams want one SQL layer across external lakehouse data and
 fresh internal tables, or they need to accelerate queries over open formats.
@@ -302,9 +298,9 @@ engine. In the integrated storage and compute architecture, it also stores
 internal-table data on local storage. Across a production cluster, multiple
 BEs can scan and aggregate different pieces of a table in parallel.
 
-![A MySQL-compatible client sends SQL to FE, which plans the query and distributes work to BE nodes before returning the combined result.](images/04-sql-execution-through-fe-and-be.png)
+![A client submits SQL to FE, which assigns plan fragments to parallel BE workers and returns the combined result.](images/05-sql-execution-through-fe-and-be.png)
 
-*FE plans and coordinates SQL while BE nodes execute plan fragments in parallel.*
+*FE plans and coordinates SQL while BE nodes execute the assigned work.*
 
 The official [system architecture documentation](https://doris.apache.org/docs/4.x/features-architecture/system-architecture/)
 provides the complete FE and BE responsibility model.
@@ -344,9 +340,9 @@ This architecture is a strong fit when:
 - multiple workloads need isolated compute pools over shared data;
 - cloud-native elasticity is more important than the simplest deployment.
 
-![Integrated storage-compute keeps data on stateful BE nodes, while decoupled storage-compute uses compute groups over shared storage.](images/05-two-apache-doris-architectures.png)
+![Integrated BEs keep persistent local data, while decoupled compute groups use local caches over shared persistent storage.](images/06-two-apache-doris-architectures.png)
 
-*Integrated deployments scale local storage with BE compute; decoupled deployments scale compute independently over shared storage.*
+*Persistent-data placement determines whether storage and compute scale together or independently.*
 
 ### Compare the two architectures
 

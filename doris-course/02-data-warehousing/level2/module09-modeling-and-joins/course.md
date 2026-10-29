@@ -48,11 +48,9 @@ A damaged amount arrives with a batch of orders. The dashboard must still show v
 | DWS, Data Warehouse Summary | Which aggregates do reports reuse? | Aggregate layer, part of a mart | Lab 10's `daily_order_metrics_l2`, Lab 9's `dws_orders_region_day_l2` |
 | ADS, Application Data Service | What does a consumer read? | Serving layer, the mart's interface | Lab 11's `bi_order_metrics_l2`, Lab 9's `ads_orders_region_day_l2` |
 
-```text
-Sources → ODS (every delivery) → DWD (valid detail) → DWS (reused aggregates) → ADS (what consumers read)
-              │                       │
-              └→ rejected records     └→ drill-down to the detail
-```
+![Sources feed raw deliveries, validated detail, reusable aggregates, and consumer interfaces in successive warehouse layers.](images/01-warehouse-layers.png)
+
+*Layers preserve evidence while separating detail from reusable summaries.*
 
 The four names are a modeling convention, not kinds of Doris tables: a layer can be a table or a view, and prefixing four tables does not make a pipeline. What makes one is written down: how each layer is computed from the one before, when it is refreshed, where rejected records go, and how a failed batch is rerun. Level 1 already built the first two layers without naming them; Labs 9 to 11 add the others.
 
@@ -127,6 +125,10 @@ An empty result means that every order has its customer. An inner join cannot do
 
 The logical join says which rows appear; the physical join says how Doris brings the matching rows together:
 
+![Broadcast moves one side to workers, shuffle moves both sides, bucket shuffle moves one side, and colocate moves neither.](images/02-join-distribution-strategies.png)
+
+*Join distributions differ in which rows move to matching workers.*
+
 | Distribution | What moves | When it fits |
 | --- | --- | --- |
 | `BROADCAST` | One side, usually the smaller, is sent to every instance that scans the other | A small dimension and a large fact |
@@ -170,6 +172,10 @@ Level 1's orders were created on two days and paid twice, too few for the paymen
 The DWD step keeps the latest version of each order with a window function, `ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY event_version DESC, input_id DESC)`: it numbers the deliveries of each order from the highest version down, and the query keeps number 1. Module 10 explains window functions. So the late delivery of order 2102 with version 1 does not turn it back from `PARTIALLY_REFUNDED` to `CREATED`. A payment ID that arrives twice is one payment, because the case declares that a repeated ID carries the same content; the same ID with a different amount would be a conflict to resolve, not a duplicate to drop.
 
 The counts differ from layer to layer, 10, 8, and 5, because each layer has its own grain; the amount ties them together: the 800.00 of the summary is the DWD orders' 850.00 without the cancelled order's 50.00. The chain is rebuilt from ODS in each run, and the rebuild gives the same rows again. Inserting the summary a second time would count every order twice: an aggregate is reproducible when it is rebuilt from its detail, not when it is appended. The chain runs as a batch in the Lab; it implies no scheduler, no change-data capture, and no transaction across the layers.
+
+![Ten case deliveries become eight current orders and then five summary rows whose non-cancelled amount remains 800.00.](images/03-grain-through-warehouse-chain.png)
+
+*Counts change by grain while declared amounts reconcile.*
 
 ## Lab 9: Order Facts, Customer Dimensions, and a Warehouse Chain
 

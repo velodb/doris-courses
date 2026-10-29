@@ -184,13 +184,9 @@ single-table aggregation and maintain it with base-table writes.
 Conceptually, Doris stores a second physical representation under the base
 table:
 
-```text
-event detail index
-    one row per event
+![A synchronous materialized index is maintained with one base table’s writes, while an asynchronous view stores a separately refreshed event-product aggregation.](images/03-sync-vs-async-materialization.png)
 
-synchronous materialized index
-    one row per selected grouping state
-```
+*Synchronous and asynchronous materialization have different scope and freshness contracts.*
 
 A definition can precompute grouping state such as:
 
@@ -266,12 +262,7 @@ whether a separately refreshed result can meet the business freshness target.
 The product team now asks for category revenue. Unlike the regional dashboard,
 this report needs both event measures and a product attribute:
 
-```text
-event detail -- product_id --> product dimension
-       |                          |
-       +---- count and revenue ---+
-                  by category and region
-```
+The event–product Join and category-region aggregation are shown in the materialization comparison above.
 
 This is outside the single-table scope of the synchronous view above. If the
 report can tolerate bounded staleness, an asynchronous materialized view can
@@ -280,9 +271,6 @@ writes.
 
 An asynchronous view has at least three contracts:
 
-![Synchronous and asynchronous materialized-view scope, freshness, and maintenance](images/03-sync-vs-async-materialization.png)
-
-*Synchronous materialization trades write cost for immediate supported freshness; asynchronous materialization trades refresh cost for a stored snapshot.*
 
 | Contract | Decision |
 | --- | --- |
@@ -300,17 +288,9 @@ An asynchronous materialized view is directly queryable as a stored relation.
 It may also participate in transparent rewrite when another query targets the
 base relations.
 
-```text
-direct query
-    SELECT ... FROM stored_view
-                   |
-                   +-- read the stored result explicitly
+![A direct query explicitly reads the stored view, while a source-table query uses that result only if an eligible rewrite is chosen.](images/04-async-query-paths.png)
 
-transparent rewrite
-    SELECT ... FROM source_tables
-                   |
-                   +-- optimizer may substitute a usable view
-```
+*Direct access to a stored relation and transparent optimizer substitution are different query paths.*
 
 When validating the stored result itself, disable transparent rewrite for that
 comparison. Otherwise, an optimizer transformation can make it unclear which
@@ -372,9 +352,6 @@ The optimizer needs enough information to derive the requested result.
 
 Check four parts:
 
-![A fresh additive materialized result being eligible for rollup but ineligible for an exact distinct count](images/04-materialized-view-eligibility.png)
-
-*Freshness is only one gate: the stored dimensions, grain, and measure state must also answer the query.*
 
 | Query requirement | Question to ask |
 | --- | --- |
@@ -392,10 +369,9 @@ Suppose a view stores one row per `(category, region)` with:
 
 A report grouped only by `category` can add the stored region rows:
 
-```text
-category-region counts  -> SUM -> category count
-category-region revenue -> SUM -> category revenue
-```
+![Stored category-region counts and revenue can roll up additively, but exact distinct users require user identity or suitable distinct state.](images/05-materialized-view-eligibility.png)
+
+*Freshness alone does not make a stored result eligible or guarantee that the optimizer chooses it.*
 
 Both measures are additive across the removed `region` dimension. If other
 population and freshness conditions match, the optimizer can consider the
@@ -420,13 +396,7 @@ claim that Doris materialized views can never accelerate distinct counts.
 
 ### Read the rewrite decision in stages
 
-```text
-view built and refreshed
-        -> definition is semantically eligible
-        -> optimizer creates a rewrite candidate
-        -> cost-based optimizer chooses or rejects it
-        -> selected plan executes
-```
+The eligibility visual above separates a completed refresh, semantic matching, candidate creation, cost-based choice, and the selected plan.
 
 Do not collapse these stages into “the view exists, so it was used.” For an
 async view, the `MATERIALIZATIONS` section of `EXPLAIN` can distinguish a
@@ -467,7 +437,7 @@ one workload. An inverted index can add a separate access structure.
 Within a Segment, an un-tokenized inverted index maps a complete value to a set
 of Row IDs:
 
-![An inverted-index posting and bitmap inside one Segment of a Tablet replica](images/05-segment-local-inverted-index.png)
+![An inverted-index posting and bitmap inside one Segment of a Tablet replica](images/06-segment-local-inverted-index.png)
 
 *The posting narrows Row IDs inside one Segment; it does not redefine the table's larger storage layout.*
 

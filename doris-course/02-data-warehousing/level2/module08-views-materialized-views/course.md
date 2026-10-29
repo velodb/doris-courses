@@ -101,6 +101,10 @@ The view names the date `order_date`, keeps the filter in one place, and shows o
 
 A dashboard that opens the daily totals every few minutes runs the same join and aggregation again and again, and gets the same answer until the orders change. A **materialized view** stores that answer: it has a query, like a view, and a result, like a table.
 
+![A regular view computes its saved query on demand while an asynchronous materialized view serves rows computed during refresh.](images/01-view-materialized-comparison.png)
+
+*A regular view saves logic; a materialized view saves computed rows.*
+
 | Object | What it stores | When it computes | What to watch |
 | --- | --- | --- | --- |
 | Regular view | The query | At every query | The cost of every query |
@@ -153,11 +157,19 @@ A refresh answers two questions: when it runs, and how much it recomputes.
 
 The second refresh recomputed February 2 although nothing in it changed: equal values before and after do not show how much was recomputed. The task's `NeedRefreshPartitions` does, and a partition that was published again gets a new `PartitionId`. If a day's amount changes from 200.00 to 180.00, a refresh recomputes the day from its current rows; it never adds 180.00 to 200.00.
 
+![A fact-partition change refreshes one mapped day while an unpartitioned dimension change refreshes both days.](images/02-partition-refresh-scope.png)
+
+*Partition refresh works only when Doris can map the change to dates.*
+
 Lab 8 also shows the other side: a manual-refresh result after a write. Its regular view shows 2 orders and 150.00 at once; its materialized view keeps 1 order and 100.00 until the refresh. A synchronous materialized view has no such gap: the load updates it, and its cost moves into every load.
 
 ## 8.5 Prove a Rewrite
 
 Dashboards query the view, not the materialized view. When a query asks for something that a materialized view stores, Doris can rewrite the query to read the stored rows instead of the base tables: **transparent rewriting**. Four things are easily confused: the view was created, its refresh finished, a direct query of it returns the right rows, and a query of the base tables or the view was rewritten to use it. The first three do not prove the fourth.
+
+![The optimizer can read a materialized view or the base tables, and EXPLAIN identifies the chosen scan.](images/03-transparent-rewrite-evidence.png)
+
+*Only the plan proves which object a query scans.*
 
 `EXPLAIN` shows the plan of a query without running it. Each scan names the table or materialized view that it reads, and a section lists the materialized views that Doris tried: chosen, usable but not chosen, or not usable, with the reason. Lab 8 explains three queries of `orders_view_l2`:
 

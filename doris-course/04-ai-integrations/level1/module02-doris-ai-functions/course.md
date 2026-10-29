@@ -137,20 +137,9 @@ permission, a payment, or a deletion.
 
 An AI function crosses two processes of Doris and one network hop:
 
-```text
-your SQL ──MySQL protocol──► FE   parses the statement, checks that the Resource exists, plans the query
-                              │
-                              ▼
-                             BE   reads the rows, builds a request from the Resource and the rows
-                              │
-                              │   HTTP POST to the Resource's endpoint, as seen from the BE
-                              ▼
-                        model server ──► model
-                              │
-                              │   the answer, as JSON
-                              ▼
-                             BE   turns the answer into the column's value: STRING, BOOLEAN, or FLOAT
-```
+![The FE plans the SQL statement, the BE sends instructions and row values to the model server, and the BE turns the JSON answer into a column value.](images/01-sql-to-model-call.png)
+
+*The BE initiates the model request, so the Resource endpoint must be reachable from the BE.*
 
 Four things follow from that path.
 
@@ -210,6 +199,10 @@ notebook:
 | Your notebook, on your computer | `http://127.0.0.1:38080` (the published port; `DORIS_AI_LLM_PORT` changes it) | Yes |
 | The Doris BE, in `doris-ai` | `http://doris-ai-llm:8080`, the container's name on the network | Yes |
 | The Doris BE, in `doris-ai` | `http://127.0.0.1:38080` or `http://127.0.0.1:8080` | No: inside `doris-ai`, `127.0.0.1` is `doris-ai` itself |
+
+![The notebook reaches the published host port, while the BE reaches the model container by its Docker network name; BE loopback stays in the Doris container.](images/02-model-endpoint-network-boundaries.png)
+
+*An address that works in the notebook can point somewhere else from inside the BE container.*
 
 Section 1 of the Lab asks the server for its models from both places and shows
 the same table with real results. The Resource therefore uses
@@ -380,6 +373,10 @@ rejects. The Lab therefore stores answers one ticket per statement, so that a ba
 answer fails only its own ticket, and the next run sends only the tickets that are
 still missing (section 2.8).
 
+![A multi-ticket batch must return the expected number of strings, while one-ticket statements allow successful tickets to remain stored when another ticket fails.](images/03-batching-and-failure-scope.png)
+
+*Batch size controls requests; statement boundaries control how much work fails together.*
+
 Count the requests before you run a statement: rows times AI functions, divided
 by the rows per batch. Then check: the Lab reads the model server's log, which has
 a line for every finished request, and its `/metrics` endpoint, which counts the
@@ -440,6 +437,10 @@ number in one run and not in another, and `AI_EXTRACT` changed its format and
 once returned three strings for one ticket. Store the answer that you checked,
 instead of asking again and hoping for the same one.
 
+![Stored raw answers are checked against allowed labels, original text, human labels, and repeated runs before people rely on them.](images/04-check-candidate-answers.png)
+
+*Validate model outputs against independent evidence and keep the raw answer for review.*
+
 Two cautions go beyond checking:
 
 - **Text from a table is untrusted input** (Module 1, section 1.7). Doris's
@@ -484,6 +485,10 @@ WHERE t.ticket_id = 1001;
   and sentiment with a plain `GROUP BY` and makes 0 requests: it is as fast and as
   repeatable as any other query. An agent connected through Module 1's MCP Server
   could read the same table with `mcp_reader`, without calling a model.
+
+![An anti-join sends only missing tickets to AI enrichment, stores raw answers with provenance, and lets checks and reports read the stored columns without new model calls.](images/05-enrich-once-report-many.png)
+
+*Store model work once so reruns skip completed tickets and reports make zero model requests.*
 
 `AI_AGG` follows the same rule. It sends the rows of each group together and
 returns one text per group, so the size of a group decides the size of a request.

@@ -97,11 +97,9 @@ These answers define the policy. SQL properties only implement it.
 Module 4 introduced Partition and Bucket for query pruning and distribution.
 The same hierarchy now serves data management:
 
-```text
-Table
-  Partition: a business range, commonly an hour, day, or month
-    Bucket -> Tablet: a distributed storage and replica unit
-```
+![A table contains complete time-range Partitions, each containing Bucket Tablets whose replicas are stored on BEs.](images/02-partition-lifecycle-unit.png)
+
+*A Partition is the lifecycle range; Tablet replicas are the physical storage units beneath it.*
 
 A retention operation can remove one complete Partition efficiently. It does
 not need to identify and delete each expired event individually. That benefit
@@ -124,7 +122,7 @@ opportunities than mixing complete rows together.
 
 A useful simplified path is:
 
-![Column values being encoded before a table-selected algorithm compresses each Page](images/02-encoding-page-compression.png)
+![Column values being encoded before a table-selected algorithm compresses each Page](images/03-encoding-page-compression.png)
 
 *Column encoding represents values efficiently; Page compression reduces the resulting encoded bytes.*
 
@@ -329,9 +327,6 @@ Three Partition modes answer different creation questions:
 | Auto Partitioning | An incoming Partition value during data ingestion | Sparse, unpredictable, or data-driven values | Creates missing Partitions on demand; AUTO RANGE tables can use `partition.retention_count = N` to retain only the N newest historical ranges |
 | Dynamic Partitioning | A scheduler interpreting current time and table properties | Predictable time-series window with future pre-creation and rolling expiry | Creates and removes complete time ranges according to offsets |
 
-![Manual, Auto, and Dynamic Partition creation with a clock-relative rolling window](images/03-partition-rolling-window.png)
-
-*Dynamic Partitioning manages complete time ranges, so a row expires with its Partition rather than by an individual row TTL.*
 
 Auto Partitioning is the recommended general approach for automatic creation
 in current Doris documentation. Dynamic Partitioning remains the relevant
@@ -399,11 +394,9 @@ PROPERTIES (
 
 During calendar day `D0`, the intended window contains:
 
-```text
-D-6  D-5  D-4  D-3  D-2  D-1  D0  D+1
- |                             |    |
-oldest retained day          today  prepared tomorrow
-```
+![Manual, Auto, and Dynamic Partition creation with a clock-relative rolling window](images/04-partition-rolling-window.png)
+
+*Dynamic Partitioning manages complete time ranges, so a row expires with its Partition rather than by an individual row TTL.*
 
 With historical creation enabled, these settings create eight daily
 Partitions: six previous days, the current day, and one future day. Each Range
@@ -499,7 +492,7 @@ give each row an individual expiry timestamp. Dynamic Partitioning supports
 | Online ranges | `SHOW PARTITIONS` | Which Partition boundaries currently exist? |
 | Business visibility | A focused `SELECT` | Are the expected rows currently queryable? |
 
-![Policy, scheduler, online-range, and business-query evidence for a Partition expiry](images/04-expiry-evidence-layers.png)
+![Policy, scheduler, online-range, and business-query evidence for a Partition expiry](images/05-expiry-evidence-layers.png)
 
 *Verify logical expiry in four layers, then keep physical reclamation as a separate observation.*
 
@@ -615,7 +608,7 @@ Choose recovery according to the failure:
 | Entire cluster or failure domain is lost | Repository backup restored to a viable cluster, or source replay |
 | Dynamic retention removed an old range | Follow the designed archive/backup policy; do not depend on an accidental recycle-bin opportunity |
 
-![Replica repair, recycle-bin recovery, backup, and replay matched to different failures](images/05-recovery-boundary.png)
+![Replica repair, recycle-bin recovery, backup, and replay matched to different failures](images/06-recovery-boundary.png)
 
 *The recycle bin is a limited same-cluster undo path; independent backup or source replay covers broader failures.*
 

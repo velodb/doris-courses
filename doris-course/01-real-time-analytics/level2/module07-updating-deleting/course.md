@@ -84,10 +84,9 @@ Before writing, ask:
 When a source emits a complete current image, loading into a Unique Key table
 provides upsert behavior:
 
-```text
-new Key       -> insert a current row
-existing Key  -> replace its visible current state
-```
+![A new Unique Key inserts a current row, an existing Key replaces its state, and the largest source sequence preserves shipped despite a delayed paid message.](images/01-sequence-source-order.png)
+
+*Upsert changes current state, and the authoritative source sequence determines which state wins.*
 
 This fits batched full images from CDC or a producer that owns every target
 Value column. It does not preserve every historical version in ordinary query
@@ -99,9 +98,6 @@ Arrival order is unreliable. A delayed `paid` message can arrive after a newer
 `shipped` message. A Sequence column makes source version, timestamp, or offset
 part of the table contract:
 
-![A Sequence column choosing the newest source state despite out-of-order arrival](images/01-sequence-source-order.png)
-
-*Current state follows the authoritative source sequence, not arrival order.*
 
 Lab 7 declares `"function_column.sequence_col" = "updated_at"`. Merely naming a
 column `updated_at` would not create ordering semantics. Choose a value monotonic

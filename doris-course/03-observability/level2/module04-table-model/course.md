@@ -51,6 +51,10 @@ That is what the **data model** of a table says. Every Doris table has a key, se
 
 The model is fixed when the table is created. Doris stores the rows of each tablet sorted by the key, which also helps queries that filter on the first key columns.
 
+![Two rows with key K and values 4 then 7 remain two rows in DUPLICATE, sum to 11 in AGGREGATE, and leave the last value 7 in UNIQUE.](images/01-same-key-three-table-models.png)
+
+*The table model determines whether equal keys preserve events, combine totals, or replace state.*
+
 ## 4.2 DUPLICATE: keep every event
 
 A log line, a span, and a metric point are each a separate event. Two spans of the same service can start in the same millisecond: the frontend, whose SDK records milliseconds, starts several spans for one request at once, and Lab 4 finds keys that ten or more spans share. They are different events, with different span IDs, and a table that kept one row per key would lose all but one of them.
@@ -82,6 +86,10 @@ A load job adds one row per server span, with `requests = 1` and `failed_request
 
 **Load each source row exactly once.** An AGGREGATE table cannot tell a new row from a repeated one. When two loads overlap, or one runs twice, the counts of the repeated rows are added twice, and the table is wrong without any error. Lab 4 loads its summary in two batches that meet at a moment inside a minute: the second batch adds to the rows of that minute, loads of 4 and then 7 for one key leave 11, and a join against `otel_traces` checks that every count matches.
 
+![Server spans combine by their end minute and service into counts that can roll up to hours, while loading the same batch again adds its counts again.](images/02-aggregate-grain-and-repeat-loads.png)
+
+*Choose the summary key from the question and load every source event once.*
+
 ## 4.4 UNIQUE: keep the current state
 
 Every failed order leaves error spans in several services: the payment service, the checkout service, the frontend, the proxy, and the load generator. An alerting job that raised an alert for each error span would send several alerts a minute about one problem. What the on-call engineer needs is one alert per kind of error, with its current status.
@@ -108,6 +116,10 @@ A UNIQUE table must be distributed by a hash of key columns, so that all rows wi
 **The row loaded last wins.** Loading the same error spans again leaves the table unchanged, so the alerting job can run every minute without creating duplicates. To resolve an alert, the job writes its row again with `status = 'resolved'`; a later load of the same key replaces it again. Loads that can arrive out of order need a **sequence column**: with `"function_column.sequence_col" = "last_seen"`, Doris keeps the row with the largest `last_seen`, whatever the load order, so an old open row loaded late cannot overwrite a newer resolved one.
 
 **One row is not one occurrence.** The alert of the payment service's charge has one row in `error_alerts` and one error span per failed order in `otel_traces`. A UNIQUE table keeps the current state, not a count. To know how often an error occurred, count its spans, or keep the count in an AGGREGATE table.
+
+![A normalized message contributes to a stable alert key; UNIQUE keeps the last loaded state, while a sequence column preserves the state with the latest last_seen value.](images/03-unique-alert-state-and-sequence.png)
+
+*Stable keys combine occurrences into one alert, and a sequence column prevents a late old row from reopening it.*
 
 ## 4.5 The exporter's UNIQUE table
 

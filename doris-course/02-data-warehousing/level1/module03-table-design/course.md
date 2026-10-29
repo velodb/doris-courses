@@ -72,6 +72,10 @@ WWI order 1 has an amount of 2300.00, and order 2 one of 405.00. In separate Lab
 
 4550.00 is 2300.00 + 2250.00. Doris computed the sum correctly, but it is not an amount that order 1 ever had: two versions of one amount are not two sales.
 
+![The same three writes produce three retained details, two current rows, or sums by key in the three models.](images/01-three-key-models.png)
+
+*Key model determines the meaning retained from identical writes.*
+
 After Lab 3, check each result:
 
 ```sql
@@ -138,13 +142,9 @@ PROPERTIES("replication_num"="1");
 
 So the orders of 2013-01-02 belong to `p_day2`, and the hash of each order ID picks one of that partition's buckets. The table has only its own data, its **base index**, with no rollup or synchronous materialized view that would store another copy in more tablets:
 
-```text
-orders_partitioned
-├── p_day1: 2013-01-01 ≤ order_date < 2013-01-02
-│   └── HASH(order_id), 4 tablets
-└── p_day2: 2013-01-02 ≤ order_date < 2013-01-03
-    └── HASH(order_id), 4 tablets
-```
+![Two date partitions each contain four hash tablets, creating eight tablets in the table.](images/02-partition-tablet-layout.png)
+
+*Two partitions with four buckets each create eight tablets.*
 
 More buckets give more shards to scan in parallel, and more tablets to manage: choose the number from the data's size. See [Partitioning and bucketing](https://doris.apache.org/docs/4.x/table-design/data-partitioning/basic-concepts/).
 
@@ -166,6 +166,10 @@ WHERE order_date = '2013-01-01' AND order_id = 1;
 | Date and order ID | 1/2 | 1/4 | Only one bucket can hold order 1: **bucket pruning** |
 
 In the scan node `VOlapScanNode`, `tablets=` counts the tablets of the partitions that remain, so the denominator drops from 8 to 4. Field names can change between versions; look for the scan node and these two lines.
+
+![Date predicates select one partition and an order-ID equality further selects one of its tablets.](images/03-partition-and-bucket-pruning.png)
+
+*Date pruning chooses a partition; hash equality narrows its tablets.*
 
 ### Pruning must not change the answer, and is not yet a speedup
 
