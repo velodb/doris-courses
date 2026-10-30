@@ -13,6 +13,15 @@ variable "expected_account_id" {
   }
 }
 variable "region" { type = string }
+variable "availability_zone" {
+  type     = string
+  default  = null
+  nullable = true
+  validation {
+    condition     = var.availability_zone == null || can(regex("^${var.region}[a-z]$", var.availability_zone))
+    error_message = "The availability zone must belong to the selected Region."
+  }
+}
 variable "owner_id" { type = string }
 variable "state_bucket_name" { type = string }
 variable "event_id" {
@@ -22,12 +31,16 @@ variable "event_id" {
     error_message = "Use a stable event ID of at most 32 lowercase letters, digits or hyphens."
   }
 }
-variable "learner_id" {
-  type    = string
-  default = "s001"
+variable "learner_ids" {
+  type    = list(string)
+  default = ["s001"]
   validation {
-    condition     = can(regex("^[a-z][a-z0-9-]{0,31}$", var.learner_id))
-    error_message = "Use a stable learner ID."
+    condition = (
+      length(var.learner_ids) >= 1 && length(var.learner_ids) <= 5 &&
+      length(distinct(var.learner_ids)) == length(var.learner_ids) &&
+      alltrue([for id in var.learner_ids : can(regex("^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", id)) && length(id) <= 32 && !startswith(id, "spare-")])
+    )
+    error_message = "Use one to five unique stable learner IDs, without the reserved spare- prefix."
   }
 }
 variable "ami_id" { type = string }

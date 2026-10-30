@@ -1,14 +1,14 @@
 # First real Terraform integration run
 
 Use this runbook after the offline Terraform and runtime checks pass. It covers
-one new-network, SSM-only host; it does not certify full course/browser access.
+one to five new-network, SSM-only learner hosts; it does not certify full course/browser access.
 The [architecture](architecture.md) defines resource ownership and later stages.
 
 ## Supply the first-run inputs
 
 Confirm an explicit local AWS profile (SSO or a short-lived AssumeRole chain),
-expected 12-digit account ID, commercial AWS Region, owner/event ID, one learner
-ID, course SHA/profiles, instance/disk sizing, expiry and USD budget. Confirm that
+expected 12-digit account ID, commercial AWS Region, owner/event ID, explicit learner
+IDs, course SHA/profiles, instance/disk sizing, expiry and USD budget. Confirm that
 new VPC creation and public egress are allowed. Do not put credentials in YAML.
 Formal domain/IdP values may remain deferred placeholders for this SSM-only run.
 
@@ -18,9 +18,9 @@ Start with [event.example.yaml](examples/event.example.yaml) and
 Use a globally unique state bucket name and a UTC expiry within the configured
 `max_run_hours` (at most 24). Include installation time in the run duration.
 
-The first-run gate supports one non-burstable Standard On-Demand x86_64 instance,
+The integration gate supports one to five non-burstable Standard On-Demand x86_64 instances,
 an official Canonical Ubuntu 24.04 EBS base AMI and no spares. It rejects private
-networks, reused networks, prebuilt images and larger rosters. Discover a current
+networks, reused networks, prebuilt images, spares and rosters above five learners. Discover a current
 AMI in the selected Region with the
 [Canonical instructions](https://ubuntu.com/aws/docs/aws-how-to/instances/find-ubuntu-images/);
 set its owner to `099720109477`. Availability listings do not reserve capacity.
@@ -123,9 +123,17 @@ Once the foundation exists, plan and review the activity:
   --run-dir workshop/aws/.local/pilot-run-01
 ```
 
+The Terraform input is `learner_ids`, a list of stable unique IDs (default
+`["s001"]`). Reordering that list leaves existing map keys unchanged. Cost and
+vCPU/gp3 headroom calculations include every learner. The gate pins the new
+subnet to a zone that offers the instance type and rechecks that zone before
+apply. This extends the operator
+integration pilot; formal learner login, cross-user browser isolation and the
+full batch lifecycle remain separate work.
+
 Every run has a separate `terraform-data` directory and an explicit backend;
 switching events cannot silently reuse a previous event's backend. Review one
-learner instance, encrypted/deleted-on-termination root disk, zero inbound rules,
+instance per stable learner ID, encrypted/deleted-on-termination root disks, zero inbound rules,
 activity-only resources, tags, owner, account and expiry in the saved plan.
 Partial apply failures leave the run directory and state available for cleanup.
 

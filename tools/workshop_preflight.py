@@ -125,8 +125,8 @@ def validate_inputs(config, pilot, now=None):
             'pilot: all numbers must be finite')
     require(config['aws_partition'] == 'aws' and config['network_mode'] == 'public-egress',
             'scope: first run requires commercial AWS and a new VPC with public egress')
-    require(len(config['learner_ids']) == 1 and config['spare_count'] == 0,
-            'scope: first run requires one learner and no spares')
+    require(1 <= len(config['learner_ids']) <= 5 and config['spare_count'] == 0,
+            'scope: integration pilot supports one to five learners and no spares')
     require(config['image']['mode'] == 'base' and config['image']['owner_account_id'] == CANONICAL,
             'image: first run requires an official Canonical base AMI')
     require(bool(STANDARD.fullmatch(config['instance_type'])),
@@ -231,9 +231,10 @@ def quotas(aws, config, selected):
     vpcs = aws.items('ec2', 'describe_vpcs', 'Vpcs')
     igws = aws.items('ec2', 'describe_internet_gateways', 'InternetGateways')
     return {
-        'standard_vcpus': quota(aws, 'ec2', 'L-1216C47A', used, selected['VCpuInfo']['DefaultVCpus'], 'vCPU'),
+        'standard_vcpus': quota(aws, 'ec2', 'L-1216C47A', used,
+                                selected['VCpuInfo']['DefaultVCpus'] * len(config['learner_ids']), 'vCPU'),
         'gp3_tib': quota(aws, 'ebs', 'L-7A658B76', sum(v['Size'] for v in volumes) / 1024,
-                         config['disk_gib'] / 1024, 'gp3 storage'),
+                         config['disk_gib'] * len(config['learner_ids']) / 1024, 'gp3 storage'),
         'vpcs': quota(aws, 'vpc', 'L-F678F1CE', len(vpcs), 1, 'VPC'),
         'internet_gateways': quota(aws, 'vpc', 'L-A4707A72', len(igws), 1, 'Internet Gateway'),
     }
@@ -263,7 +264,7 @@ def price(aws, service, filters, unit, now):
             'effective_at': effective, 'queried_at': wc.utc_text(now), 'service': service, 'filters': filters}
 
 
-def costs(aws, config, pilot, now):
+def costs(aws, config, pilot, now, *, enforce_budget=True):
     region = config['region']
     specifications = {
         'compute': ('AmazonEC2', {'regionCode': region, 'instanceType': config['instance_type'],
@@ -279,9 +280,10 @@ def costs(aws, config, pilot, now):
                            'transferType': 'AWS Outbound'}, 'GB'),
     }
     hours = Decimal(str(pilot['max_run_hours'])) + Decimal(str(pilot['cleanup_buffer_hours']))
-    quantities = {'compute': hours, 'public_ipv4': hours,
+    count = len(config['learner_ids'])
+    quantities = {'compute': hours * count, 'public_ipv4': hours * count,
                   # 28-day denominator conservatively covers the shortest month.
-                  'root_gp3': hours * config['disk_gib'] / Decimal(28 * 24),
+                  'root_gp3': hours * config['disk_gib'] * count / Decimal(28 * 24),
                   's3_storage': Decimal(str(pilot['s3_storage_gb_months'])),
                   's3_writes': Decimal(pilot['s3_write_requests']), 's3_reads': Decimal(pilot['s3_read_requests']),
                   'internet_egress': Decimal(str(pilot['internet_egress_gb']))}
@@ -292,7 +294,10 @@ def costs(aws, config, pilot, now):
         amount = quantities[name] * Decimal(quote['usd_per_unit'])
         total += amount
         lines[name] = {**quote, 'quantity': str(quantities[name]), 'estimated_usd': str(amount)}
-    require(total <= Decimal(str(config['budget_usd'])), 'budget: estimated cost plus contingency exceeds budget_usd')
+    if enforce_budget:
+        require(config.get('budget_usd') is not None and
+                total <= Decimal(str(config['budget_usd'])),
+                'budget: approved budget is missing or estimated cost plus contingency exceeds budget_usd')
     return {'lines': lines, 'total_usd': str(total), 'budget_usd': config['budget_usd'],
             'contingency_usd': pilot['contingency_usd'], 'assumptions': pilot,
             'excluded_resources': ['ALB', 'NAT Gateway', 'model API', 'snapshots'],
@@ -395,11 +400,12 @@ def terraform(args, env, *, capture=False):
     return result.stdout if capture else None
 
 
-def inputs_for_terraform(config, pilot, stage):
+def inputs_for_terraform(config, pilot, stage, availability_zone=None):
     variables = {'aws_profile': config['aws_profile'], 'expected_account_id': config['aws_account_id'],
                  'region': config['region'], 'owner_id': config['owner_id'], 'state_bucket_name': pilot['state_bucket_name']}
     if stage == 'pilot':
-        variables.update(event_id=config['event_id'], learner_id=config['learner_ids'][0],
+        variables.update(event_id=config['event_id'], learner_ids=config['learner_ids'],
+                         availability_zone=availability_zone,
                          ami_id=config['image']['ami_id'], instance_type=config['instance_type'],
                          disk_gib=config['disk_gib'], expires_at=config['expires_at'],
                          runtime_bundle_dir=pilot['runtime_bundle_dir'])
@@ -414,7 +420,7 @@ def plan(config, pilot, aws, stage, directory):
     directory = directory.resolve()
     # Each run owns its Terraform data directory. Switching events cannot reuse a backend.
     env['TF_DATA_DIR'] = str(directory / 'terraform-data')
-    variables = inputs_for_terraform(config, pilot, stage)
+    variables = inputs_for_terraform(config, pilot, stage, report['availability_zones'][0])
     wc.write_manifest(directory / 'inputs.tfvars.json', variables)
     wc.write_manifest(directory / 'preflight.json', report)
     module = f'-chdir={MODULES / stage}'
@@ -472,6 +478,10 @@ def apply_saved(directory, aws_factory=Aws):
     if binding['stage'] == 'pilot':
         require(file_hash(directory / 'backend.tfbackend.json') == binding['backend_sha256'], 'plan: backend changed')
     report = live_check(config, pilot, aws_factory(config), binding['stage'])
+    if binding['stage'] == 'pilot':
+        variables = wc.load_document(directory / 'inputs.tfvars.json')
+        require(variables['availability_zone'] in report['availability_zones'],
+                'instance: saved plan availability zone no longer offers this instance type')
     wc.write_manifest(directory / f'apply-preflight-{datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%f")}.json', report)
     env['TF_DATA_DIR'] = str(directory / 'terraform-data')
     terraform([f'-chdir={MODULES / binding["stage"]}', 'apply', '-input=false', '-lock-timeout=60s',

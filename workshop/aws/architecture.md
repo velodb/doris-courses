@@ -7,7 +7,8 @@ activity-wide expiry cleanup have separate acceptance checks.
 
 ## First integration run
 
-Use one On-Demand Ubuntu 24.04 amd64 instance, one learner ID and no spares.
+Use one On-Demand Ubuntu 24.04 amd64 instance per learner, up to five stable
+learner IDs and no spares in the integration pilot.
 `rta-main`, `r7i.xlarge` and a 100 GiB gp3 root disk are initial sizing
 recommendations. The operator must supply the actual account, explicit profile,
 Region, course SHA, runtime bundle, budget and expiry before planning.
@@ -20,8 +21,8 @@ token. Operators use SSM Run Command for installation and Session Manager for
 maintenance and local port forwarding. AWS deployment credentials and Terraform
 state stay on the operator's machine or control plane.
 
-A private subnet, reused network, prebuilt AMI, burstable instance or multiple
-learners require additional preflight support. The first-run gate rejects these
+A private subnet, reused network, prebuilt AMI, burstable instance or a roster
+above five learners requires additional preflight support. The first-run gate rejects these
 choices rather than estimating resources it cannot verify. Formal DNS and login
 fields in the event configuration are deferred for this SSM-only run.
 

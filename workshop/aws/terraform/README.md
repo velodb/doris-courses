@@ -1,4 +1,4 @@
-# Terraform single-instance implementation
+# Terraform integration-pilot implementation
 
 These scripts implement the first Terraform-based EC2 integration run. Format,
 provider initialization with the backend disabled, schema validation and five
@@ -11,7 +11,7 @@ plan review and apply. No real deployment is recorded yet.
 | Directory | Scope |
 | --- | --- |
 | `bootstrap/` | Separate private, encrypted, versioned state bucket; blocks learner-role access and prevents accidental bucket destruction |
-| `pilot/` | One learner EC2 with a stable map key, encrypted gp3 root disk, IMDSv2, SSM, a private runtime-code bucket and an installation document |
+| `pilot/` | One EC2 per learner (up to five), with stable map keys, encrypted gp3 root disk, IMDSv2, SSM, a private runtime-code bucket and an installation document |
 
 The initial pilot targets the commercial AWS partition and an official
 Canonical Ubuntu 24.04 amd64 server AMI. The exact AMI must be resolved and
@@ -58,7 +58,7 @@ Use the [first-run runbook](../first-run.md) and `tools/workshop_preflight.py`
 for live checks and saved-plan application. That gate generates explicit vars,
 isolates each run's Terraform data/backend, verifies immutable inputs and reruns
 live checks before apply. Failed checks never invoke Terraform. Its first-run
-scope is one learner, a new VPC, public egress and an official base AMI.
+scope is one to five learners, a new VPC, public egress and an official base AMI.
 
 The following is the intended operator sequence. It is not an executed result.
 Account/profile/Region, owner, budget, expiry and course selection must first be

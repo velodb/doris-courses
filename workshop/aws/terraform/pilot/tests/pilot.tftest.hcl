@@ -79,3 +79,35 @@ run "reject_arm_instance" {
   }
   expect_failures = [aws_instance.learner]
 }
+
+run "two_stable_learner_keys" {
+  command = apply
+  variables {
+    learner_ids       = ["s002", "s001"]
+    availability_zone = "us-east-1a"
+  }
+  assert {
+    condition     = toset(keys(aws_instance.learner)) == toset(["s001", "s002"])
+    error_message = "Both learners must have their own instance and stable keys."
+  }
+  assert {
+    condition     = alltrue([for instance in aws_instance.learner : instance.root_block_device[0].delete_on_termination && instance.root_block_device[0].encrypted])
+    error_message = "Every learner root disk must be encrypted and deleted on termination."
+  }
+  assert {
+    condition     = aws_subnet.pilot[0].availability_zone == "us-east-1a"
+    error_message = "The integration subnet must use the verified instance offering's zone."
+  }
+}
+
+run "reject_duplicate_learner_ids" {
+  command = plan
+  variables { learner_ids = ["s001", "s001"] }
+  expect_failures = [var.learner_ids]
+}
+
+run "reject_reserved_spare_id" {
+  command = plan
+  variables { learner_ids = ["spare-001"] }
+  expect_failures = [var.learner_ids]
+}

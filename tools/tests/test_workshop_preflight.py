@@ -225,7 +225,7 @@ class PreflightTests(unittest.TestCase):
                 self.check()
 
     def test_unsupported_topologies_and_numbers_fail_before_aws(self):
-        for key, value in [('network_mode', 'private-egress'), ('learner_ids', ['s001', 's002']),
+        for key, value in [('network_mode', 'private-egress'), ('learner_ids', [f's{i:03d}' for i in range(6)]),
                            ('spare_count', 1), ('instance_type', 't3.xlarge'), ('instance_type', 'g5.xlarge')]:
             bad = {**self.config, key: value}
             with self.subTest(key=key), self.assertRaises(pf.PreflightError):
@@ -233,6 +233,32 @@ class PreflightTests(unittest.TestCase):
         for key, value in [('max_run_hours', 25), ('max_run_hours', float('nan')), ('contingency_usd', 0)]:
             with self.subTest(key=key), self.assertRaises(pf.wc.ConfigError):
                 pf.validate_inputs(self.config, {**self.pilot, key: value}, NOW)
+
+    def test_two_learner_cost_quota_and_terraform_inputs_include_both(self):
+        single = self.check()
+        self.config['learner_ids'] = ['s002', 's001']
+        self.config, self.pilot = pf.validate_inputs(self.config, self.pilot, NOW)
+        pair = self.check()
+        self.assertEqual(pair['quotas']['standard_vcpus']['requested'], 8)
+        self.assertEqual(pair['quotas']['gp3_tib']['requested'], 200 / 1024)
+        from decimal import Decimal
+        for line in ['compute', 'public_ipv4', 'root_gp3']:
+            self.assertEqual(Decimal(pair['cost']['lines'][line]['quantity']),
+                             2 * Decimal(single['cost']['lines'][line]['quantity']))
+        variables = pf.inputs_for_terraform(self.config, self.pilot, 'pilot')
+        self.assertEqual(variables['learner_ids'], ['s001', 's002'])
+        self.assertNotIn('learner_id', variables)
+        self.aws.overrides['get_service_quota'] = {'Quota': {'Value': 7}}
+        with self.assertRaisesRegex(pf.PreflightError, 'quota'):
+            self.check()
+
+    def test_quote_without_approved_budget_cannot_pass_creation_check(self):
+        self.config['budget_usd'] = None
+        quote = pf.costs(self.aws, self.config, self.pilot, NOW, enforce_budget=False)
+        self.assertIsNone(quote['budget_usd'])
+        self.assertNotIn('status', quote)
+        with self.assertRaisesRegex(pf.PreflightError, 'approved budget is missing'):
+            self.check()
 
     def test_bundle_mutation_and_mismatched_profiles_fail(self):
         bad = {**self.config, 'course_profiles': ['dw-main']}
@@ -339,6 +365,8 @@ class PreflightTests(unittest.TestCase):
             with mock.patch.object(pf, 'terraform', side_effect=tf):
                 pf.plan(self.config, self.pilot, self.aws, 'pilot', directory)
             backend = json.loads((directory / 'backend.tfbackend.json').read_text())
+            variables = json.loads((directory / 'inputs.tfvars.json').read_text())
+            self.assertEqual(variables['availability_zone'], 'ap-southeast-1a')
             self.assertTrue(backend['use_lockfile'])
             self.assertEqual(backend['allowed_account_ids'], ['000000000000'])
             self.assertIn('/example-rta/terraform.tfstate', backend['key'])

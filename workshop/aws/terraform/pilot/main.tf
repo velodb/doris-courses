@@ -61,9 +61,10 @@ resource "aws_internet_gateway" "pilot" {
   vpc_id = aws_vpc.pilot[0].id
 }
 resource "aws_subnet" "pilot" {
-  count      = local.create_vpc ? 1 : 0
-  vpc_id     = aws_vpc.pilot[0].id
-  cidr_block = "10.193.0.0/26"
+  count             = local.create_vpc ? 1 : 0
+  vpc_id            = aws_vpc.pilot[0].id
+  cidr_block        = "10.193.0.0/26"
+  availability_zone = var.availability_zone
 }
 resource "aws_route_table" "pilot" {
   count  = local.create_vpc ? 1 : 0
@@ -184,7 +185,7 @@ resource "aws_iam_instance_profile" "learner" {
 }
 
 resource "aws_instance" "learner" {
-  for_each                             = toset([var.learner_id])
+  for_each                             = toset(var.learner_ids)
   ami                                  = data.aws_ami.ubuntu.id
   instance_type                        = var.instance_type
   subnet_id                            = local.subnet_id
