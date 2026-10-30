@@ -102,6 +102,11 @@ tagged temporary EC2 key pair; normal Packer cleanup and the fallback cleanup
 remove it. Private key material is never uploaded to the runtime. The build host's expiry timer stops an overdue
 builder; full Terraform cleanup remains the operator's responsibility.
 
+SSM can report a later document step as missing while earlier installation
+steps are still running. The provisioner retries that response and checks the
+whole command for failures. A completed command whose preparation step stays
+missing fails after a short consistency grace period.
+
 After installation and runtime checks, the pipeline prepares container caches,
 records actual installed versions and exports a compact host manifest through
 SSM. The sealing command stops Jupyter, Docker, containerd and the SSM agent;

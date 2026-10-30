@@ -268,6 +268,7 @@ def provision(run_dir):
     command = ssm.send_command(InstanceIds=[instance], DocumentName=settings['install_document'], TimeoutSeconds=7200)['Command']['CommandId']
     write(run_dir / 'build-command.json', {'instance_id': instance, 'command_id': command})
     deadline = time.monotonic() + 7200
+    completed_without_step = 0
     while time.monotonic() < deadline:
         aggregate = ssm.list_commands(CommandId=command)['Commands']
         if aggregate and aggregate[0]['Status'] not in ('Pending', 'InProgress', 'Delayed', 'Success'):
@@ -275,7 +276,13 @@ def provision(run_dir):
             raise preflight.PreflightError('image: an earlier SSM build step failed; inspect private command record')
         try:
             result = ssm.get_command_invocation(CommandId=command, InstanceId=instance, PluginName='prepareImage')
-        except ssm.exceptions.InvocationDoesNotExist:
+        except (ssm.exceptions.InvocationDoesNotExist, ssm.exceptions.InvalidPluginName):
+            # SSM only exposes later document steps once they start. The command
+            # can still be installing packages when prepareImage is not visible.
+            if aggregate and aggregate[0]['Status'] == 'Success':
+                completed_without_step += 1
+                preflight.require(completed_without_step <= 6,
+                                  'image: completed SSM document has no preparation step')
             time.sleep(5)
             continue
         if result['Status'] == 'Success':

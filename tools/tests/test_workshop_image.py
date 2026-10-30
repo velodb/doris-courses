@@ -85,6 +85,8 @@ class SsmSealing(unittest.TestCase):
                          'build_id': 'test-image', 'install_document': 'test-install', 'runtime_bundle_dir': str(bundle)}
         (self.root / 'provision.json').write_text(json.dumps(self.settings))
         self.ec2, self.ssm, self.sts = MagicMock(), MagicMock(), MagicMock()
+        self.ssm.exceptions.InvocationDoesNotExist = type('InvocationDoesNotExist', (Exception,), {})
+        self.ssm.exceptions.InvalidPluginName = type('InvalidPluginName', (Exception,), {})
         self.sts.get_caller_identity.return_value = {'Account': '000000000000'}
         instance = {'InstanceId': 'i-00000000000000000', 'State': {'Name': 'stopped'}}
         self.ec2.describe_instances.return_value = {'Reservations': [{'Instances': [instance]}]}
@@ -117,6 +119,22 @@ class SsmSealing(unittest.TestCase):
         with self.assertRaisesRegex(wc.ConfigError, 'earlier SSM'):
             image.provision(self.root)
         self.assertEqual(self.ssm.send_command.call_count, 1)
+        self.assertFalse((self.root / 'seal-command.json').exists())
+
+    def test_later_step_not_registered_while_installing_is_retried(self):
+        result = self.ssm.get_command_invocation.return_value
+        self.ssm.get_command_invocation.side_effect = [self.ssm.exceptions.InvalidPluginName(), result]
+        self.ssm.list_commands.side_effect = [{'Commands': [{'Status': 'InProgress'}]},
+                                              {'Commands': [{'Status': 'Success'}]}]
+        image.provision(self.root)
+        self.assertEqual(self.ssm.get_command_invocation.call_count, 2)
+        self.assertTrue((self.root / 'seal-command.json').exists())
+
+    def test_completed_document_with_missing_step_fails_after_grace(self):
+        self.ssm.get_command_invocation.side_effect = self.ssm.exceptions.InvalidPluginName()
+        with self.assertRaisesRegex(wc.ConfigError, 'no preparation step'):
+            image.provision(self.root)
+        self.assertEqual(self.ssm.get_command_invocation.call_count, 7)
         self.assertFalse((self.root / 'seal-command.json').exists())
 
     def test_ambiguous_build_tag_never_runs_a_command(self):
