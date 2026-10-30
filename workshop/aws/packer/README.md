@@ -57,6 +57,8 @@ The public events Parquet dataset remains an online S3 dependency, preserving
 the TVF/loading lessons. Lab 3 downloads its small public CSV/JSONL fixtures
 when taught. The image includes no loaded tables. AWS SSM endpoints are also
 required. APT, Docker registry and PyPI are needed during image construction.
+Doris startup also contacts Docker Hub for the course's explicit `docker pull`,
+even when its image layers are already cached.
 
 ## Prepare, review and build
 
