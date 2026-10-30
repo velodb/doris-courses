@@ -8,16 +8,24 @@ Jupyter configuration directory is `/var/lib/doris-workshop/home/jupyter-config`
 `/etc/doris-workshop` holds the root-managed runtime plan. This separation lets
 Jupyter migrate IPython configuration after kernels have run and after restarts.
 
-The implementation has local bundle, kernel and Jupyter authentication tests.
-Installation on a real EC2 instance, Docker access there, host reboot and the
-course Labs still require target-host validation. This installer does not
-create EC2 instances or implement the browser gateway, HTTPS or user routing.
+The host runtime was validated on two real Ubuntu 24.04 x86_64
+`m7i.2xlarge` instances with `rta-main` on 2026-10-30. Checks covered Notebook
+kernel and terminal Docker access, real container execution, authenticated
+loopback access through SSM port forwarding, service/host reboot, credential
+rotation, saved-file persistence and fault detection/recovery. A same-name
+package fixture also verified kernel isolation on Linux; this does not certify
+the other courses' Labs.
 
-The first target-host test starts after the single-instance Terraform scripts
-and their static checks are ready. Terraform creates the test instance, the
-operator installs this bundle through the managed deployment path, and the
-same activity is destroyed through Terraform after validation. Runtime code
-can be developed and tested locally before that integration run.
+The real restart test found a Jupyter configuration-migration permission error;
+the writable user configuration directory above fixes it. A regression test
+reproduces the previous failure and verifies repeated authenticated startup.
+The complete local tool suite passes with Python 3.12, including live kernel
+and Jupyter fixtures.
+
+Terraform creates and destroys the hosts; this installer handles the runtime.
+Full course Labs, the browser gateway, HTTPS and user routing remain separate
+implementation and validation work. The instance expiry timer is a host cost
+guard; activity-wide scheduled cleanup still requires a separate executor.
 
 ## Build a bundle locally
 
@@ -62,8 +70,8 @@ Docker packages. It installs Python 3.12 and Docker from the official signed
 APT repository. Exact Docker package versions and Jupyter entry-point versions
 are listed in [packages.json](packages.json); unavailable versions fail rather
 than silently selecting another version. The currently listed versions were
-found in the official Ubuntu Noble amd64 package index on 2026-10-29. They
-remain installation candidates until the EC2 pilot validates them together.
+found in the official Ubuntu Noble amd64 package index on 2026-10-29 and
+validated together on the Ubuntu EC2 hosts on 2026-10-30.
 
 Course dependencies come from the pinned course's `requirements.txt` and
 editable local package, installed from that course's directory so `../common`

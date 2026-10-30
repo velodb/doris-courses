@@ -1,10 +1,15 @@
 # Terraform integration-pilot implementation
 
-These scripts implement the first Terraform-based EC2 integration run. Format,
-provider initialization with the backend disabled, schema validation and five
-provider-mock runs passed locally. Runtime code is implemented separately. The
-first real instance test follows live account/Region/AMI/quota/budget checks,
-plan review and apply. No real deployment is recorded yet.
+These scripts have completed a real operator integration run with two
+`m7i.2xlarge` hosts in `us-east-1`, each with a 200 GiB encrypted gp3 root disk,
+on 2026-10-30. Terraform created the foundation and activity, the host runtime
+was installed through SSM, and activity destroy was verified through AWS APIs.
+The separate private state bucket was retained. Eight provider-mock runs also
+pass; mocks remain distinct from the real run.
+
+This validates infrastructure and host-runtime operations. Full course Lab
+execution, a learner-facing browser gateway, HTTPS/login and automated
+activity-wide TTL cleanup have separate acceptance work.
 
 ## Modules
 
@@ -87,7 +92,8 @@ Unknown or failed checks must block apply.
 
 No deployment identity or learning-record backend is sent to the instance.
 The full create/install/readiness wrapper remains separate work. The live
-preflight and saved-plan gate are implemented; real AWS results are still pending.
+preflight and saved-plan gate were exercised in the real operator run described
+above. Full course/browser validation is still pending.
 Do not use examples or mock results as evidence of a real account check.
 
 ## Expiry and cleanup boundaries
