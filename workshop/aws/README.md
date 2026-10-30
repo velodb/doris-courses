@@ -4,6 +4,8 @@ This directory defines the configuration and planning manifest for temporary
 AWS course environments. The current tool validates local files and pinned
 course metadata. A [host runtime bundle and installer](runtime/README.md) and
 [Terraform integration scripts](terraform/README.md) are available.
+The [temporary course reader](runtime/access.md) and
+[browser URL mapping](browser-urls.md) reuse the host runtime.
 Real EC2 infrastructure and host-runtime integration have been verified. Full
 course/browser access and AMI building remain separate steps. The
 [deployment architecture](architecture.md) and

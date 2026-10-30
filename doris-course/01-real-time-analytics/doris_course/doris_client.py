@@ -27,6 +27,7 @@ import yaml
 from IPython.display import HTML, Javascript, display
 
 from doris_labkit.db import connect_doris, report_sql_error, sql, sql_string
+from doris_labkit.browser import browser_url
 from doris_labkit.docker import (
     container_inspect,
     docker_preflight,
@@ -2889,6 +2890,16 @@ LIMIT 10
     def fe_http_url(self) -> str:
         """The FE HTTP address on this host, for Stream Load and other REST requests."""
         return f"http://{self._profile_http_host}:{self._profile_http_port}"
+
+    @property
+    def fe_browser_url(self) -> str:
+        """The learner browser's FE entry; host-side requests use fe_http_url."""
+        return browser_url(self.fe_http_url)
+
+    def show_browser_link(self, url: str, label: str = "Open service") -> str:
+        destination = browser_url(url)
+        display(HTML(f'<a href="{html.escape(destination, quote=True)}" target="_blank" rel="noopener noreferrer">{html.escape(label)}</a>'))
+        return destination
 
     def prepare_environment(self):
         total_steps = 6
