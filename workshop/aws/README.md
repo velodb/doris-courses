@@ -187,3 +187,5 @@ output and overwrite refusal. The repository check job discovers them through
 the existing `tools/tests` suite. They require no AWS identity or Docker.
 
 Fixed private-image construction is described in the [Packer build guide](packer/README.md). Images remain candidates until independently validated on a new instance.
+
+The [fresh-image validation guide](image-validation.md) describes isolated candidate validation and cleanup before activity publication.

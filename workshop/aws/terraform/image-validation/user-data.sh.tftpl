@@ -1,0 +1,39 @@
+#!/bin/bash
+set -Eeuo pipefail
+umask 077
+install -d -m 0700 /var/log/doris-workshop
+exec >> /var/log/doris-workshop/image-start.log 2>&1
+cat > /usr/local/lib/doris-workshop/start_image.py <<'IMAGE_INITIALIZER'
+${init_script}
+IMAGE_INITIALIZER
+printf '%s' '${activity}' | base64 -d > /run/doris-workshop-activity.json
+systemctl stop doris-workshop-jupyter.service
+python3.12 /usr/local/lib/doris-workshop/start_image.py \
+ --activity /run/doris-workshop-activity.json --manifest-sha256 '${manifest_sha256}' \
+ --runtime-sha256 '${runtime_sha256}' --course-ref '${course_ref}'
+rm /run/doris-workshop-activity.json
+cat > /etc/systemd/system/doris-workshop-expire.service <<'EOF'
+[Unit]
+Description=Terminate the temporary workshop instance
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/shutdown -h now
+EOF
+cat > /etc/systemd/system/doris-workshop-expire.timer <<'EOF'
+[Unit]
+Description=Workshop expiry cost guard
+[Timer]
+OnCalendar=${replace(replace(expires_at, "T", " "), "Z", " UTC")}
+Persistent=true
+[Install]
+WantedBy=timers.target
+EOF
+systemctl daemon-reload
+systemctl enable --now doris-workshop-expire.timer docker.service
+systemctl enable --now doris-workshop-jupyter.service
+if command -v snap >/dev/null 2>&1 && snap list amazon-ssm-agent >/dev/null 2>&1; then
+ snap start --enable amazon-ssm-agent
+else
+ systemctl enable --now amazon-ssm-agent.service
+fi
+echo 'Prebuilt image started; no package installation was performed.'
