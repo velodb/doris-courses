@@ -271,6 +271,7 @@ def install(bundle):
         if plan.get("python_locks"):
             lock = layout.server.parent / "python-locks" / plan["python_locks"][name]
             lock.parent.mkdir(mode=0o755, exist_ok=True)
+            lock.parent.chmod(0o755)
             shutil.copyfile(Path(bundle) / plan["python_locks"][name], lock)
             lock.chmod(0o644)
             as_learner([*pip, "--require-hashes", "--only-binary=:all:", "--no-deps", "-r",

@@ -214,6 +214,45 @@ class RuntimeTests(unittest.TestCase):
             self.assertEqual(calls, [])
             self.assertEqual(notebook.read_text(), "learner exercise\n")
 
+    def test_locked_install_keeps_root_owned_locks_readable_with_private_umask(self):
+        bundle = Path(self.case_dir.name) / "locked-bundle"
+        shutil.copytree(self.bundle, bundle)
+        plan = copy.deepcopy(self.plan)
+        plan["python_locks"] = {name: name + ".requirements.lock" for name in ("server", "doris-rta", "doris-obs")}
+        for name in plan["python_locks"].values():
+            (bundle / name).write_text("fixture==1.0\n")
+            plan["sha256"][name] = host.digest(bundle / name)
+        (bundle / "runtime.json").write_text(json.dumps(plan))
+        self.layout.units.mkdir(parents=True)
+        user = SimpleNamespace(pw_uid=os.geteuid(), pw_gid=os.getegid())
+        lock_checks = []
+
+        def provision(command, layout, *, cwd=None, capture=False):
+            command = list(map(str, command))
+            if command[1:3] == ["-m", "venv"]:
+                binary = Path(command[-1]) / "bin/python"
+                binary.parent.mkdir(parents=True, exist_ok=True)
+                binary.touch()
+            if "--require-hashes" in command:
+                lock = Path(command[-1])
+                # A different, unprivileged owner must be able to traverse the
+                # root-owned directory and read the pinned public requirements.
+                self.assertEqual(lock.parent.stat().st_mode & 0o005, 0o005)
+                self.assertEqual(lock.stat().st_mode & 0o004, 0o004)
+                lock_checks.append(lock)
+            return subprocess.CompletedProcess(command, 0, stdout="fixture==1.0\n")
+
+        previous = os.umask(0o077)
+        try:
+            with mock.patch.object(host, "require_target"), mock.patch.object(host, "Layout", return_value=self.layout), \
+                    mock.patch.object(host, "learner_user", return_value=user), mock.patch.object(host.os, "chown"), \
+                    mock.patch.object(host, "as_learner", side_effect=provision), \
+                    mock.patch.object(host.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, stdout="docker=fixture\n")):
+                host.install(bundle)
+        finally:
+            os.umask(previous)
+        self.assertEqual(len(lock_checks), 3)
+
     def test_missing_docker_permissions_and_dependencies_are_reported(self):
         self.materialize()
         marker = self.layout.source / ".doris-workshop-source.json"

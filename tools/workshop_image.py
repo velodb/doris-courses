@@ -35,7 +35,11 @@ def checksum(path):
 
 
 def write(path, value):
-    wc.write_manifest(path, value)
+    def timestamp_value(item):
+        if isinstance(item, datetime):
+            return wc.utc_text(item)
+        raise TypeError('image: unsupported operational record value')
+    wc.write_manifest(path, json.loads(json.dumps(value, default=timestamp_value)))
 
 
 def prepare(config_path, output):

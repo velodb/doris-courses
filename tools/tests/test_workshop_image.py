@@ -2,6 +2,7 @@
 import importlib.util
 import itertools
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 import sys
 import tempfile
@@ -115,11 +116,14 @@ class SsmSealing(unittest.TestCase):
         self.ec2.create_image.assert_not_called()  # Snapshot is Packer's responsibility after this function returns.
 
     def test_failed_install_never_schedules_sealing(self):
-        self.ssm.list_commands.return_value = {'Commands': [{'Status': 'Failed'}]}
+        self.ssm.list_commands.return_value = {'Commands': [{'Status': 'Failed',
+            'RequestedDateTime': datetime(2026, 10, 30, 12, 0, tzinfo=timezone.utc)}]}
         with self.assertRaisesRegex(wc.ConfigError, 'earlier SSM'):
             image.provision(self.root)
         self.assertEqual(self.ssm.send_command.call_count, 1)
         self.assertFalse((self.root / 'seal-command.json').exists())
+        self.assertEqual(json.loads((self.root / 'failed-command.json').read_text())['RequestedDateTime'],
+                         '2026-10-30T12:00:00Z')
 
     def test_later_step_not_registered_while_installing_is_retried(self):
         result = self.ssm.get_command_invocation.return_value
