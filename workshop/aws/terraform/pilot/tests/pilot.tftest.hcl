@@ -111,3 +111,51 @@ run "reject_reserved_spare_id" {
   variables { learner_ids = ["spare-001"] }
   expect_failures = [var.learner_ids]
 }
+
+run "validated_prebuilt_injects_only_activity" {
+  command = plan
+  variables {
+    image_mode           = "prebuilt"
+    ami_owner_account_id = "000000000000"
+    image_release_ref    = "rta-v1"
+    image_release_sha256 = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    image_manifest_sha256 = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    image_runtime_sha256 = filesha256("tests/fixtures/runtime/runtime.json")
+  }
+  override_data {
+    target = data.aws_ami.ubuntu
+    values = {
+      owner_id = "000000000000"
+      public = false
+      architecture = "x86_64"
+      root_device_type = "ebs"
+      tags = {
+        ImageStatus = "validated"
+        ReleaseRef = "rta-v1"
+        ReleaseSHA256 = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ManifestSHA256 = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    }
+  }
+  assert {
+    condition = length(aws_s3_object.runtime) == 0 && length(regexall("install_host.sh|pip install|apt-get", aws_instance.learner["s001"].user_data)) == 0
+    error_message = "Prebuilt startup must not upload or execute the dependency installer."
+  }
+  assert {
+    condition = jsondecode(aws_ssm_document.install.content).mainSteps[0].name == "verifyPrebuilt" && length(jsondecode(aws_ssm_document.install.content).mainSteps) == 1
+    error_message = "The prebuilt SSM operation must only check the injected activity and runtime."
+  }
+  assert {
+    condition = length([for statement in jsondecode(aws_iam_role_policy.learner.policy).Statement : statement if statement.Effect == "Allow" && contains(statement.Action, "s3:GetObject")]) == 0
+    error_message = "Prebuilt learner roles must not receive runtime S3 download permissions."
+  }
+}
+
+run "reject_unpublished_prebuilt" {
+  command = plan
+  variables {
+    image_mode = "prebuilt"
+    ami_owner_account_id = "000000000000"
+  }
+  expect_failures = [aws_instance.learner]
+}

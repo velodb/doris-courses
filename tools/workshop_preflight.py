@@ -128,8 +128,13 @@ def validate_inputs(config, pilot, now=None):
             'scope: first run requires commercial AWS and a new VPC with public egress')
     require(1 <= len(config['learner_ids']) <= 5 and config['spare_count'] == 0,
             'scope: integration pilot supports one to five learners and no spares')
-    require(config['image']['mode'] == 'base' and config['image']['owner_account_id'] == CANONICAL,
-            'image: first run requires an official Canonical base AMI')
+    if config['image']['mode'] == 'base':
+        require(config['image']['owner_account_id'] == CANONICAL, 'image: base mode requires an official Canonical AMI')
+    else:
+        import workshop_release
+        require(bool(pilot.get('image_release_file')), 'image: prebuilt mode requires an immutable validated release file')
+        pilot['image_release_file'] = str(Path(pilot['image_release_file']).resolve())
+        release = workshop_release.load_release(pilot['image_release_file'], config)
     require(bool(STANDARD.fullmatch(config['instance_type'])),
             'scope: select a non-burstable Standard On-Demand instance family')
     require(config['disk_gib'] >= 20, 'disk_gib: pilot requires at least 20 GiB')
@@ -154,6 +159,14 @@ def validate_inputs(config, pilot, now=None):
     require({'install_host.sh', 'source.tar', 'host.py', 'check.py', 'kernel.py', 'serve.py', 'portal.py',
              'packages.json', 'doris-workshop-jupyter.service'} | set(locks.values()) == runtime['sha256'].keys(),
             'runtime: incomplete production bundle')
+    if config['image']['mode'] == 'prebuilt':
+        require(file_hash(bundle / 'runtime.json') == release['runtime_sha256'], 'image: local runtime does not match the released image')
+    if pilot.get('browser_routes_file'):
+        import workshop_urls
+        pilot['browser_routes_file'] = str(Path(pilot['browser_routes_file']).resolve())
+        routes = wc.load_document(pilot['browser_routes_file'])
+        require(set(routes) == set(config['learner_ids']), 'browser: routes must match the assigned learners')
+        for learner, ports in routes.items(): workshop_urls.build_routes(config, learner, ports)
     pilot['runtime_bundle_dir'] = str(bundle)
     return config, pilot
 
@@ -356,13 +369,18 @@ def live_check(config, pilot, aws, stage='pilot', now=None):
     regions = aws.call('ec2', 'describe_regions', RegionNames=[config['region']], AllRegions=True)['Regions']
     require(len(regions) == 1 and regions[0]['OptInStatus'] in {'opt-in-not-required', 'opted-in'},
             'region: target Region is unavailable or not enabled')
-    images = aws.call('ec2', 'describe_images', ImageIds=[config['image']['ami_id']], Owners=[CANONICAL])['Images']
-    require(len(images) == 1, 'image: selected AMI is unavailable to this identity')
-    image = images[0]
-    require(image['OwnerId'] == CANONICAL and image['State'] == 'available' and image['Architecture'] == 'x86_64'
-            and image['RootDeviceType'] == 'ebs' and image['VirtualizationType'] == 'hvm'
-            and image['Name'].startswith('ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-')
-            and not image.get('ProductCodes'), 'image: require an official available Ubuntu 24.04 amd64 EBS AMI')
+    if config['image']['mode'] == 'base':
+        images = aws.call('ec2', 'describe_images', ImageIds=[config['image']['ami_id']], Owners=[CANONICAL])['Images']
+        require(len(images) == 1, 'image: selected AMI is unavailable to this identity')
+        image = images[0]
+        require(image['OwnerId'] == CANONICAL and image['State'] == 'available' and image['Architecture'] == 'x86_64'
+                and image['RootDeviceType'] == 'ebs' and image['VirtualizationType'] == 'hvm'
+                and image['Name'].startswith('ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-')
+                and not image.get('ProductCodes'), 'image: require an official available Ubuntu 24.04 amd64 EBS AMI')
+    else:
+        import workshop_release
+        release = workshop_release.load_release(pilot['image_release_file'], config)
+        image = workshop_release.verify_live(aws, config, release)
     root = next(b['Ebs']['VolumeSize'] for b in image['BlockDeviceMappings'] if b['DeviceName'] == image['RootDeviceName'])
     require(config['disk_gib'] >= root, 'disk_gib: smaller than the AMI root volume')
     types = aws.call('ec2', 'describe_instance_types', InstanceTypes=[config['instance_type']])['InstanceTypes']
@@ -406,7 +424,7 @@ def terraform(args, env, *, capture=False):
     return result.stdout if capture else None
 
 
-def inputs_for_terraform(config, pilot, stage, availability_zone=None):
+def inputs_for_terraform(config, pilot, stage, availability_zone=None, *, release=None, browser_routes=None):
     variables = {'aws_profile': config['aws_profile'], 'expected_account_id': config['aws_account_id'],
                  'region': config['region'], 'owner_id': config['owner_id'], 'state_bucket_name': pilot['state_bucket_name']}
     if stage == 'pilot':
@@ -415,6 +433,14 @@ def inputs_for_terraform(config, pilot, stage, availability_zone=None):
                          ami_id=config['image']['ami_id'], instance_type=config['instance_type'],
                          disk_gib=config['disk_gib'], expires_at=config['expires_at'],
                          runtime_bundle_dir=pilot['runtime_bundle_dir'])
+        if config['image']['mode'] == 'prebuilt':
+            import workshop_release
+            release = release or workshop_release.load_release(pilot['image_release_file'], config)
+            variables.update(image_mode='prebuilt', ami_owner_account_id=config['aws_account_id'],
+                image_release_ref=release['release_ref'], image_release_sha256=wc.canonical_hash(release),
+                image_manifest_sha256=release['image_manifest_sha256'], image_runtime_sha256=release['runtime_sha256'])
+        if browser_routes is not None or pilot.get('browser_routes_file'):
+            variables['browser_routes'] = browser_routes if browser_routes is not None else wc.load_document(pilot['browser_routes_file'])
     return variables
 
 
@@ -450,7 +476,12 @@ def plan(config, pilot, aws, stage, directory, *, terraform_runner=None):
                        'backend_sha256': file_hash(directory / 'backend.tfbackend.json') if stage == 'pilot' else None,
                        'runtime_sha256': file_hash(Path(pilot['runtime_bundle_dir']) / 'runtime.json'),
                        'tool_sha256': tool_hash(),
-                       'module_sha256': module_hash(stage)})
+                       'module_sha256': module_hash(stage),
+                       **({'image_release': wc.load_document(pilot['image_release_file']),
+                           'image_release_sha256': file_hash(pilot['image_release_file']),
+                           'image_initializer_sha256': file_hash(SPEC/'runtime/start_image.py')} if config['image']['mode'] == 'prebuilt' else {}),
+                       **({'browser_routes': wc.load_document(pilot['browser_routes_file']),
+                           'browser_routes_sha256': file_hash(pilot['browser_routes_file'])} if pilot.get('browser_routes_file') else {})})
     return directory
 
 
@@ -461,7 +492,8 @@ def module_hash(stage):
 
 def tool_hash():
     paths = [Path(__file__), Path(wc.__file__), SPEC / 'config.schema.json',
-             SPEC / 'pilot.schema.json', SPEC / 'profiles.json']
+             SPEC / 'pilot.schema.json', SPEC / 'profiles.json', SPEC / 'image-release.schema.json',
+             Path(__file__).with_name('workshop_release.py'), SPEC / 'runtime/start_image.py']
     return wc.canonical_hash({str(p.relative_to(wc.REPO)): file_hash(p) for p in paths})
 
 
@@ -484,6 +516,10 @@ def apply_saved(directory, aws_factory=Aws, *, terraform_runner=None):
             module_hash(binding['stage']) == binding['module_sha256'], 'plan: saved plan, variables or module changed')
     if binding['stage'] == 'pilot':
         require(file_hash(directory / 'backend.tfbackend.json') == binding['backend_sha256'], 'plan: backend changed')
+    if config['image']['mode'] == 'prebuilt':
+        require(file_hash(pilot['image_release_file']) == binding['image_release_sha256'], 'plan: release metadata changed')
+    if pilot.get('browser_routes_file'):
+        require(file_hash(pilot['browser_routes_file']) == binding['browser_routes_sha256'], 'plan: browser route metadata changed')
     report = live_check(config, pilot, aws_factory(config), binding['stage'])
     if binding['stage'] == 'pilot':
         variables = wc.load_document(directory / 'inputs.tfvars.json')

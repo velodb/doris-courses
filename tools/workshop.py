@@ -3,7 +3,7 @@
 
 import argparse
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import fcntl
 import json
 import os
@@ -21,6 +21,9 @@ PROBE = ("runuser --user workshop -- env -i HOME=/var/lib/doris-workshop/home "
          "PATH=/opt/doris-workshop/server-venv/bin:/usr/local/bin:/usr/bin:/bin "
          "LANG=C.UTF-8 PYTHONNOUSERSITE=1 /opt/doris-workshop/server-venv/bin/python "
          "-I /usr/local/lib/doris-workshop/check.py")
+IMAGE_STARTUP = ["set -eu", "timeout 300 cloud-init status --wait >/dev/null",
+    "deadline=$(($(date +%s)+120)); until timeout 20 runuser --user workshop -- docker info >/dev/null 2>&1; do "
+    "test $(date +%s) -lt $deadline || exit 1; sleep 2; done"]
 RESOURCE_NAMES = {
     "aws_vpc": "pilot", "aws_internet_gateway": "pilot", "aws_subnet": "pilot",
     "aws_route_table": "pilot", "aws_route_table_association": "pilot", "aws_security_group": "pilot",
@@ -95,10 +98,11 @@ class Terraform:
 
 
 class Cloud(pf.Aws):
-    """Explicit-profile reads plus the two bounded SSM command operations."""
+    """Explicit-profile reads and bounded SSM startup, verification and health checks."""
 
-    def send(self, instance, document, *, probe=False):
-        options = {"Parameters": {"commands": [PROBE], "executionTimeout": ["300"]}} if probe else {}
+    def send(self, instance, document, *, probe=False, startup=False):
+        options = {"Parameters": {"commands": [PROBE], "executionTimeout": ["300"]}} if probe else (
+            {"Parameters": {"commands": IMAGE_STARTUP, "executionTimeout": ["600"]}} if startup else {})
         return self.client("ssm").send_command(InstanceIds=[instance], DocumentName=document,
                                                 TimeoutSeconds=600, **options)["Command"]["CommandId"]
 
@@ -134,9 +138,13 @@ class Controller:
                    and backend.get("encrypt") is True and backend.get("use_lockfile") is True,
                    "ownership: activity backend does not match the explicit target")
         variables = wc.load_document(self.directory / "inputs.tfvars.json")
-        expected = pf.inputs_for_terraform(self.config, self.pilot, "pilot", variables.get("availability_zone"))
+        expected = pf.inputs_for_terraform(self.config, self.pilot, "pilot", variables.get("availability_zone"),
+            release=b.get("image_release"), browser_routes=b.get("browser_routes"))
         pf.require(variables == expected and pf.module_hash("pilot") == b["module_sha256"],
                    "ownership: module or activity inputs changed; use the original deployment checkout")
+        if self.config['image']['mode'] == 'prebuilt':
+            pf.require(pf.file_hash(wc.SPEC/'runtime/start_image.py') == b['image_initializer_sha256'],
+                       'ownership: image initializer changed; use the original deployment checkout')
         self.cloud = cloud or Cloud(self.config)
         identity = self.cloud.call("sts", "get_caller_identity")
         pf.require(identity["Account"] == self.config["aws_account_id"] and
@@ -214,7 +222,9 @@ class Controller:
             entry["attempts"] += 1
             entry["status"] = "DispatchUnknown"
             self.save()
-            entry["command_id"] = self.cloud.send(node["instance_id"], document, probe=kind == "probe")
+            options = {"probe": kind == "probe"}
+            if kind == "startup": options["startup"] = True
+            entry["command_id"] = self.cloud.send(node["instance_id"], document, **options)
             entry["status"] = "Pending"
             self.save()
         result = self.cloud.command(entry["command_id"], node["instance_id"], probe=kind == "probe")
@@ -252,6 +262,7 @@ class Controller:
         return status == "Success"
 
     def inspect(self, *, install=False, timeout=900, retry_failed=False):
+        began = self.clock()
         deadline = self.clock() + timeout
         instances, document = self.inventory()
         if install:
@@ -292,6 +303,10 @@ class Controller:
                     all_ready = False
                     continue
                 try:
+                    if install and self.config['image']['mode'] == 'prebuilt' and not self.poll_command(
+                            node, 'startup', 'AWS-RunShellScript', deadline, retry_failed=retry_failed):
+                        all_ready = False
+                        continue
                     if install and not self.poll_command(node, "install", document, deadline, retry_failed=retry_failed):
                         all_ready = False
                         continue
@@ -305,9 +320,14 @@ class Controller:
             self.save()
             if all_ready or failed or not instances or not install and all(n.get("ec2") in {"missing", "terminated", "stopped"}
                                                                  for n in self.record["nodes"].values()):
+                self.record["last_health_check"] = {"seconds": round(self.clock()-began,2), "ready": bool(all_ready),
+                    "checked_at": wc.utc_text(datetime.now(timezone.utc)), "boundary": "ready" if all_ready else "failed-or-unavailable"}
+                self.save()
                 return self.summary(all_ready)
             if self.clock() >= deadline:
                 self.record["last_error"] = "wait-timeout; resources may remain; rerun status/up or destroy"
+                self.record["last_health_check"] = {"seconds": round(self.clock()-began,2), "ready": False,
+                    "checked_at": wc.utc_text(datetime.now(timezone.utc)), "boundary": "timeout"}
                 self.save()
                 raise wc.ConfigError("wait: timed out; command IDs and resource ownership retained for status/up/destroy")
             self.sleep(min(5, max(0, deadline - self.clock())))
@@ -321,15 +341,18 @@ class Controller:
                 "untracked_instances": self.record.get("untracked_instances", []),
                 "retained_foundation": self.pilot["state_bucket_name"],
                 "target_logs": "/var/log/doris-workshop", "nodes": self.record["nodes"],
+                "last_health_check": self.record.get("last_health_check"),
                 "entry": {"transport": "operator-ssm-forward", "remote_port": 8888, "path": "/workshop/"}}
 
     def up(self, approved_plan_hash, *, timeout=7500, retry_failed=False):
+        began = self.clock()
         pf.require(self.record["phase"] not in {"destroying", "destroyed"}, "up: use a fresh reviewed plan after destroy")
         if self.record["phase"] == "planned":
             pf.require(approved_plan_hash and pf.file_hash(self.directory / "saved.tfplan") == approved_plan_hash,
                        "plan: pass the reviewed plan SHA256; no apply started")
             self.inventory()
             self.record["phase"] = "applying"
+            self.record["apply_started_at"] = wc.utc_text(datetime.now(timezone.utc))
             self.save()
             try:
                 pf.apply_saved(self.directory, aws_factory=lambda config: self.cloud, terraform_runner=self.tf.execute)
@@ -338,6 +361,7 @@ class Controller:
                 self.save()
                 raise
             self.record["phase"] = "provisioned"
+            self.record["apply_finished_at"] = wc.utc_text(datetime.now(timezone.utc))
             self.save()
         pf.require(self.record["phase"] != "apply-failed" and self.record["phase"] != "applying",
                    "apply: previous attempt incomplete; inspect status, create a fresh reviewed plan or destroy")
@@ -348,9 +372,77 @@ class Controller:
         report = self.inspect(install=True, timeout=timeout, retry_failed=retry_failed)
         pf.require(report["ready"], "runtime: one or more nodes failed readiness; see lifecycle.json and status, resources remain")
         self.record["phase"] = "ready"
+        self.record.setdefault("readiness_history", []).append({"operation": "up", "seconds": round(self.clock() - began, 2),
+            "ready_at": wc.utc_text(datetime.now(timezone.utc)), "instances": {k: n["instance_id"] for k,n in report["nodes"].items()}})
         self.save()
         report["phase"] = "ready"
         return report
+
+    def replacement_plan(self, learner):
+        pf.require(self.record["phase"] == "ready" and learner in self.config["learner_ids"],
+                   "replace: select an existing learner in a ready activity")
+        instances, _ = self.inventory()
+        actual = self.actual_instances(instances.values())
+        pf.require(set(instances) == set(self.config["learner_ids"]) and all(
+            actual.get(i, {}).get("State", {}).get("Name") == "running" for i in instances.values()),
+            "replace: all learners must be running before planning a single replacement")
+        pf.live_check(self.config, self.pilot, self.cloud)
+        address = 'aws_instance.learner[' + json.dumps(learner) + ']'
+        plan_path = self.directory / "replace.tfplan"
+        self.tf.run(["plan", "-input=false", "-lock-timeout=60s", "-replace=" + address,
+            f"-var-file={self.directory / 'inputs.tfvars.json'}", f"-out={plan_path}"])
+        plan = json.loads(self.tf.run(["show", "-json", str(plan_path)], capture=True))
+        self.validate_replacement(plan, address)
+        receipt = {"learner_id": learner, "address": address, "before": instances,
+            "plan_sha256": pf.file_hash(plan_path), "vars_sha256": pf.file_hash(self.directory / "inputs.tfvars.json"),
+            "valid_until": wc.utc_text(datetime.now(timezone.utc) + timedelta(minutes=15)),
+            "warning": "The selected learner's instance and temporary root-disk data will be deleted. Other learners are preserved."}
+        atomic_json(self.directory / "replacement.json", receipt)
+        return receipt
+
+    @staticmethod
+    def validate_replacement(plan, address):
+        changed = [r for r in plan.get("resource_changes", []) if r.get("mode") == "managed"
+                   and r["change"]["actions"] != ["no-op"]]
+        pf.require(len(changed) == 1 and changed[0]["address"] == address and
+                   changed[0]["change"]["actions"] in (["delete", "create"], ["create", "delete"]),
+                   "replace: plan must replace only the selected instance; shared or other-learner changes rejected")
+
+    def replace(self, approved_plan_hash, *, timeout=900):
+        receipt = wc.load_document(self.directory / "replacement.json")
+        path = self.directory / "replace.tfplan"
+        pf.require(approved_plan_hash and approved_plan_hash == receipt["plan_sha256"] == pf.file_hash(path)
+            and receipt["vars_sha256"] == pf.file_hash(self.directory / "inputs.tfvars.json")
+            and wc.timestamp(receipt["valid_until"], "valid_until") > datetime.now(timezone.utc),
+            "replace: reviewed replacement plan expired or changed; create a new replacement plan")
+        instances, _ = self.inventory()
+        pf.require(instances == receipt["before"] and self.record["phase"] == "ready", "replace: activity changed since planning")
+        self.actual_instances(instances.values())
+        self.validate_replacement(json.loads(self.tf.run(["show", "-json", str(path)], capture=True)), receipt["address"])
+        pf.live_check(self.config, self.pilot, self.cloud)
+        began = self.clock()
+        self.record["phase"] = "replacing"
+        self.save()
+        try:
+            self.tf.run(["apply", "-input=false", "-lock-timeout=60s", str(path)])
+            after, _ = self.inventory()
+            learner = receipt["learner_id"]
+            pf.require(after[learner] != instances[learner] and all(after[k] == v for k,v in instances.items() if k != learner),
+                       "replace: instance assignments differ from the reviewed replacement")
+            for node in self.record['nodes'].values():
+                if node.get('probe',{}).get('status') == 'Success': node.pop('probe',None)
+            report = self.inspect(install=True, timeout=timeout)
+            pf.require(report["ready"], "replace: readiness failed; inspect status or destroy")
+            self.record["phase"] = "ready"
+            self.record.setdefault("readiness_history", []).append({"operation": "replace", "learner_id": learner,
+                "seconds": round(self.clock()-began,2), "ready_at": wc.utc_text(datetime.now(timezone.utc)), "before": instances, "after": after})
+            self.save()
+            report["phase"] = "ready"
+            return report
+        except Exception:
+            self.record["phase"] = "replace-failed"
+            self.save()
+            raise
 
     def destroy(self):
         resources = self.owned_resources()
@@ -390,14 +482,16 @@ def main(argv=None):
     plan.add_argument("--config", type=Path, required=True)
     plan.add_argument("--pilot", type=Path, required=True)
     plan.add_argument("--run-dir", type=Path, required=True)
-    for name in ("up", "status", "destroy"):
+    for name in ("up", "status", "destroy", "replace-plan", "replace"):
         cmd = commands.add_parser(name)
         cmd.add_argument("--run-dir", type=Path, required=True)
-        if name != "destroy":
+        if name not in {"destroy", "replace-plan"}:
             cmd.add_argument("--timeout", type=int, default=7500 if name == "up" else 180)
             cmd.add_argument("--retry-failed", action="store_true")
-        if name == "up":
+        if name in {"up", "replace"}:
             cmd.add_argument("--approved-plan-sha256")
+        if name == "replace-plan":
+            cmd.add_argument("--learner", required=True)
         if name == "destroy":
             cmd.add_argument("--approve-destroy", action="store_true", required=True)
     args = parser.parse_args(argv)
@@ -410,7 +504,7 @@ def main(argv=None):
             print(json.dumps({"phase": "planned", "plan_sha256": pf.file_hash(args.run_dir / "saved.tfplan"),
                               "message": "Review the private saved plan before up; foundation is reused."}))
             return 0
-        if args.command != "destroy":
+        if args.command not in {"destroy", "replace-plan"}:
             pf.require(1 <= args.timeout <= 14400, "wait: timeout must be between 1 and 14400 seconds")
         with run_lock(args.run_dir):
             controller = Controller(args.run_dir)
@@ -418,10 +512,14 @@ def main(argv=None):
                 report = controller.destroy()
             elif args.command == "up":
                 report = controller.up(args.approved_plan_sha256, timeout=args.timeout, retry_failed=args.retry_failed)
+            elif args.command == "replace-plan":
+                report = controller.replacement_plan(args.learner)
+            elif args.command == "replace":
+                report = controller.replace(args.approved_plan_sha256, timeout=args.timeout)
             else:
                 report = controller.inspect(timeout=args.timeout, retry_failed=args.retry_failed)
             print(json.dumps(report, indent=2, sort_keys=True))
-            return 0 if args.command == "destroy" or report["ready"] else 1
+            return 0 if args.command in {"destroy", "replace-plan"} or report["ready"] else 1
     except Exception as exc:
         # SDK/HTTP/SSM messages may contain arbitrary target output. Never echo
         # them; only our controlled ConfigError messages are ordinary output.

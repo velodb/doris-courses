@@ -84,7 +84,7 @@ instance and requires reconciled state, EC2/EBS, network, IAM and ENIs to be
 absent. It hashes the evidence into the strict
 [release schema](image-release.schema.json), tags the exact private AMI as
 validated, and refuses to overwrite another published version. Keep the release
-JSON unchanged. It supplies the explicit release input for subsequent activity startup.
+JSON unchanged. It supplies the explicit release input for [prebuilt activity startup](prebuilt.md).
 
 Live acceptance covered a fresh private `rta-main` image on Ubuntu 24.04,
 `m7i.2xlarge` with an encrypted 200 GiB root in `us-east-1`: all 27 initial

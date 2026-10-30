@@ -124,6 +124,9 @@ and [GetCommandInvocation](https://docs.aws.amazon.com/systems-manager/latest/AP
 Controlled offline tests cover orchestration and AWS SDK request shapes.
 Real cloud checks covered two fresh hosts, unchanged installation command IDs
 on repeated up, detection of a stopped Jupyter service while EC2 remained
-running, recovery, and activity destroy with retained foundation. Separate
-course execution covered the default RTA Labs and quiz startup; manual browser
-interaction, optional parts and shared user routing remain unverified.
+running, recovery, and activity destroy with retained foundation. Separate fresh-image acceptance covered the complete default RTA Labs and
+quizzes plus real browser interactions. Optional parts and shared user routing
+remain outside that acceptance scope.
+
+For exact private-image selection, dependency-free startup, timing records and
+guarded single-learner replacement, see [prebuilt activities](prebuilt.md).

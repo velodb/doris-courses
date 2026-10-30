@@ -27,14 +27,17 @@ data "aws_ec2_instance_type" "selected" {
   instance_type = var.instance_type
 }
 data "aws_ami" "ubuntu" {
-  owners = ["099720109477"]
+  owners = [var.ami_owner_account_id]
   filter {
     name   = "image-id"
     values = [var.ami_id]
   }
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+  dynamic "filter" {
+    for_each = var.image_mode == "base" ? [1] : []
+    content {
+      name   = "name"
+      values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*"]
+    }
   }
 }
 
@@ -42,7 +45,7 @@ locals {
   runtime      = jsondecode(file("${var.runtime_bundle_dir}/runtime.json"))
   runtime_hash = filesha256("${var.runtime_bundle_dir}/runtime.json")
   artifact_key = "runtime/${local.runtime_hash}"
-  files        = setunion(toset(keys(local.runtime.sha256)), toset(["runtime.json"]))
+  files        = var.image_mode == "prebuilt" ? toset([]) : setunion(toset(keys(local.runtime.sha256)), toset(["runtime.json"]))
   name         = "doris-workshop-${var.event_id}"
   create_vpc   = var.vpc_id == null
   vpc_id       = local.create_vpc ? aws_vpc.pilot[0].id : var.vpc_id
@@ -143,7 +146,7 @@ resource "aws_iam_role_policy" "learner" {
   role = aws_iam_role.learner.id
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
+    Statement = concat([
       {
         Sid      = "SSMControl", Effect = "Allow"
         Action   = ["ssm:UpdateInstanceInformation", "ssmmessages:CreateControlChannel", "ssmmessages:CreateDataChannel", "ssmmessages:OpenControlChannel", "ssmmessages:OpenDataChannel"]
@@ -154,19 +157,21 @@ resource "aws_iam_role_policy" "learner" {
         Action   = ["ec2messages:AcknowledgeMessage", "ec2messages:DeleteMessage", "ec2messages:FailMessage", "ec2messages:GetEndpoint", "ec2messages:GetMessages", "ec2messages:SendReply"]
         Resource = "*"
       },
-      {
-        Sid      = "InstallerObjects", Effect = "Allow", Action = ["s3:GetObject"]
-        Resource = [for name in local.files : "${aws_s3_bucket.runtime.arn}/${local.artifact_key}/${name}"]
-      },
-      {
-        Sid       = "InstallerPrefix", Effect = "Allow", Action = ["s3:ListBucket"]
-        Resource  = aws_s3_bucket.runtime.arn
-        Condition = { StringLike = { "s3:prefix" = [local.artifact_key, "${local.artifact_key}/", "${local.artifact_key}/*"] } }
-      },
-      {
-        Sid      = "InstallerRegion", Effect = "Allow", Action = ["s3:GetBucketLocation"]
-        Resource = aws_s3_bucket.runtime.arn
-      },
+      ], jsondecode(var.image_mode == "prebuilt" ? "[]" : jsonencode([
+        {
+          Sid      = "InstallerObjects", Effect = "Allow", Action = ["s3:GetObject"]
+          Resource = [for name in local.files : "${aws_s3_bucket.runtime.arn}/${local.artifact_key}/${name}"]
+        },
+        {
+          Sid       = "InstallerPrefix", Effect = "Allow", Action = ["s3:ListBucket"]
+          Resource  = aws_s3_bucket.runtime.arn
+          Condition = { StringLike = { "s3:prefix" = [local.artifact_key, "${local.artifact_key}/", "${local.artifact_key}/*"] } }
+        },
+        {
+          Sid      = "InstallerRegion", Effect = "Allow", Action = ["s3:GetBucketLocation"]
+          Resource = aws_s3_bucket.runtime.arn
+        },
+      ])), [
       {
         Sid      = "NoDeploymentPrivileges", Effect = "Deny"
         Action   = ["iam:*", "ec2:RunInstances", "ec2:TerminateInstances", "ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath", "secretsmanager:GetSecretValue"]
@@ -176,7 +181,7 @@ resource "aws_iam_role_policy" "learner" {
         Sid      = "NoTerraformState", Effect = "Deny", Action = ["s3:*"]
         Resource = ["arn:${data.aws_partition.current.partition}:s3:::${var.state_bucket_name}", "arn:${data.aws_partition.current.partition}:s3:::${var.state_bucket_name}/*"]
       }
-    ]
+    ])
   })
 }
 resource "aws_iam_instance_profile" "learner" {
@@ -194,8 +199,14 @@ resource "aws_instance" "learner" {
   iam_instance_profile                 = aws_iam_instance_profile.learner.name
   instance_initiated_shutdown_behavior = "terminate"
   user_data_replace_on_change          = true
-  user_data = templatefile("${path.module}/user-data.sh.tftpl", {
+  user_data = var.image_mode == "base" ? templatefile("${path.module}/user-data.sh.tftpl", {
     expires_at = var.expires_at, runtime_hash = local.runtime_hash
+    }) : templatefile("${path.module}/prebuilt-user-data.sh.tftpl", {
+    expires_at = var.expires_at,
+    activity = base64encode(jsonencode({ schema_version = 1, event_id = var.event_id, learner_id = each.key,
+    release_ref = var.image_release_ref, expires_at = var.expires_at, ports = try(var.browser_routes[each.key], {}) })),
+    init_script     = file("${path.module}/../../runtime/start_image.py"),
+    manifest_sha256 = var.image_manifest_sha256, runtime_sha256 = var.image_runtime_sha256, course_ref = local.runtime.course_ref
   })
   root_block_device {
     volume_type           = "gp3"
@@ -224,6 +235,17 @@ resource "aws_instance" "learner" {
       error_message = "The instance type must support the x86_64 runtime."
     }
     precondition {
+      condition = var.image_mode == "base" || (
+        var.ami_owner_account_id == var.expected_account_id &&
+        data.aws_ami.ubuntu.owner_id == var.expected_account_id && !data.aws_ami.ubuntu.public &&
+        try(data.aws_ami.ubuntu.tags["ImageStatus"], "") == "validated" &&
+        try(data.aws_ami.ubuntu.tags["ReleaseRef"], "") == var.image_release_ref && var.image_release_ref != "" &&
+        try(data.aws_ami.ubuntu.tags["ReleaseSHA256"], "") == var.image_release_sha256 &&
+        try(data.aws_ami.ubuntu.tags["ManifestSHA256"], "") == var.image_manifest_sha256 &&
+      local.runtime_hash == var.image_runtime_sha256)
+      error_message = "Prebuilt images must be private validated versions with matching release and runtime hashes."
+    }
+    precondition {
       condition     = alltrue([for name, checksum in local.runtime.sha256 : filesha256("${var.runtime_bundle_dir}/${name}") == checksum])
       error_message = "Runtime bundle hashes must match before creating an instance."
     }
@@ -236,7 +258,16 @@ resource "aws_ssm_document" "install" {
   content = jsonencode({
     schemaVersion = "2.2"
     description   = "Download this activity's runtime code and install it on the dedicated host."
-    mainSteps = [
+    mainSteps = jsondecode(var.image_mode == "prebuilt" ? jsonencode([
+      {
+        action = "aws:runShellScript", name = "verifyPrebuilt"
+        inputs = { timeoutSeconds = "600", runCommand = [
+          "set -eu", "cloud-init status --wait >/dev/null",
+          "python3.12 /usr/local/lib/doris-workshop/start_image.py --check --activity /etc/doris-workshop/activity.json --manifest-sha256 ${var.image_manifest_sha256} --runtime-sha256 ${var.image_runtime_sha256} --course-ref ${local.runtime.course_ref}",
+          "runuser --user workshop -- env -i HOME=/var/lib/doris-workshop/home PATH=/opt/doris-workshop/server-venv/bin:/usr/local/bin:/usr/bin:/bin LANG=C.UTF-8 PYTHONNOUSERSITE=1 /opt/doris-workshop/server-venv/bin/python -I /usr/local/lib/doris-workshop/check.py --wait 120"
+        ] }
+      }
+      ]) : jsonencode([
       {
         action = "aws:downloadContent", name = "downloadRuntime"
         inputs = {
@@ -249,7 +280,7 @@ resource "aws_ssm_document" "install" {
         action = "aws:runShellScript", name = "installRuntime"
         inputs = { timeoutSeconds = "7200", runCommand = ["set -eu", "cd /var/lib/doris-workshop/incoming", "bash install_host.sh"] }
       }
-    ]
+    ]))
   })
   depends_on = [aws_s3_object.runtime]
 }

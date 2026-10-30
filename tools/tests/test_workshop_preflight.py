@@ -143,6 +143,30 @@ class PreflightTests(unittest.TestCase):
             self.check()
         self.assertEqual(len(self.aws.calls), 1)
 
+    def test_prebuilt_binds_release_and_runtime_without_floating_selection(self):
+        from test_workshop_release import fixture
+        value=fixture()
+        value.update(aws_account_id=self.config['aws_account_id'], region=self.config['region'],
+            ami_id=self.config['image']['ami_id'], course_ref=self.config['course_ref'],
+            course_profiles=self.config['course_profiles'], runtime_sha256=pf.file_hash(self.bundle/'runtime.json'), root_gib=20)
+        config=copy.deepcopy(self.config)
+        config['image'].update(mode='prebuilt',owner_account_id=config['aws_account_id'],release_ref=value['release_ref'],
+            course_ref=config['course_ref'],course_profiles=config['course_profiles'])
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'release.json';path.write_text(json.dumps(value))
+            pilot={**self.pilot,'image_release_file':str(path)}
+            selected,settings=pf.validate_inputs(config,pilot,NOW)
+            variables=pf.inputs_for_terraform(selected,settings,'pilot')
+            self.assertEqual(variables['image_mode'],'prebuilt')
+            self.assertEqual(variables['ami_id'],value['ami_id'])
+            self.assertEqual(variables['image_release_sha256'],pf.wc.canonical_hash(value))
+            other=Path(directory)/'new-catalog-release.json'
+            other.write_text(json.dumps({**value,'ami_id':'ami-'+'f'*17}))
+            self.assertEqual(pf.inputs_for_terraform(selected,settings,'pilot'),variables)
+            path.write_text(json.dumps({**value,'runtime_sha256':'f'*64}))
+            with self.assertRaisesRegex(pf.PreflightError,'runtime does not match'):
+                pf.validate_inputs(config,pilot,NOW)
+
     def test_root_is_rejected(self):
         self.aws.overrides['get_caller_identity'] = {'Account': '000000000000', 'Arn': 'arn:aws:iam::000000000000:root'}
         with self.assertRaisesRegex(pf.PreflightError, 'never root'):

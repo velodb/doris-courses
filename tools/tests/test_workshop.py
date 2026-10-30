@@ -35,6 +35,7 @@ class FakeCloud:
         self.deleted, self.residual_volume = False, False
         self.account = config["aws_account_id"]
         self.runtime_sha256 = None
+        self.startups = []
 
     def call(self, service, operation, **kwargs):
         if operation == "get_caller_identity":
@@ -54,10 +55,11 @@ class FakeCloud:
             return {"Volumes": [{"VolumeId": "vol-residual"}] if self.residual_volume else []}
         raise AssertionError(operation)
 
-    def send(self, instance, document, *, probe=False):
+    def send(self, instance, document, *, probe=False, startup=False):
         command = f"command-{len(self.sent)}"
         self.sent.append((instance, document, probe))
         self.commands[command] = (instance, probe)
+        if startup: self.startups.append(command)
         return command
 
     def command(self, command_id, instance, *, probe=False):
@@ -191,6 +193,35 @@ class LifecycleTests(unittest.TestCase):
         text = (self.directory / "lifecycle.json").read_text()
         self.assertNotIn("PRIVATE-TOKEN", text)
         self.assertEqual((self.directory / "lifecycle.json").stat().st_mode & 0o777, 0o600)
+
+    def test_prebuilt_waits_for_startup_and_resumes_without_install_replay(self):
+        from test_workshop_release import fixture
+        release=fixture()
+        release.update(region=self.config['region'],course_ref=self.config['course_ref'],
+            course_profiles=self.config['course_profiles'],runtime_sha256=self.cloud.runtime_sha256,root_gib=20)
+        path=self.directory/'release.json';ws.atomic_json(path,release)
+        self.config['image'].update(mode='prebuilt',owner_account_id=self.config['aws_account_id'],
+            release_ref=release['release_ref'],course_ref=self.config['course_ref'],course_profiles=self.config['course_profiles'])
+        self.pilot['image_release_file']=str(path)
+        self.config,self.pilot=ws.pf.validate_inputs(self.config,self.pilot)
+        variables=ws.pf.inputs_for_terraform(self.config,self.pilot,'pilot',self.config['region']+'a',release=release)
+        ws.atomic_json(self.directory/'inputs.tfvars.json',variables)
+        self.binding.update(config=self.config,pilot=self.pilot,image_release=release,
+            image_release_sha256=ws.pf.file_hash(path),image_initializer_sha256=ws.pf.file_hash(ws.wc.SPEC/'runtime/start_image.py'),
+            vars_sha256=ws.pf.file_hash(self.directory/'inputs.tfvars.json'))
+        ws.atomic_json(self.directory/'binding.json',self.binding)
+        self.report.update(config_sha256=ws.wc.canonical_hash(self.config),pilot_sha256=ws.wc.canonical_hash(self.pilot))
+        ws.atomic_json(self.directory/'preflight.json',self.report)
+        self.cloud.pending=True
+        with self.assertRaisesRegex(ws.wc.ConfigError,'timed out'): self.up()
+        self.assertEqual(len(self.cloud.startups),2)
+        self.assertTrue(all(document=='AWS-RunShellScript' for _,document,_ in self.cloud.sent))
+        self.cloud.pending=False
+        self.assertTrue(self.up()['ready'])
+        self.assertTrue(self.up()['ready'])
+        self.assertEqual(len(self.cloud.startups),2)
+        self.assertEqual(self.tf.apply_count,1)
+        self.assertEqual(sum(document=='install' for _,document,_ in self.cloud.sent),2)
 
     def test_ec2_running_without_ssm_times_out_and_can_resume(self):
         self.cloud.online = False
@@ -364,3 +395,13 @@ class SsmSdkTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class ReplacementPlanTests(unittest.TestCase):
+    def test_only_selected_instance_can_change(self):
+        address='aws_instance.learner["alice"]'
+        row=lambda a,actions:dict(mode='managed',address=a,change=dict(actions=actions))
+        ws.Controller.validate_replacement(dict(resource_changes=[row(address,['delete','create']),row('aws_instance.learner["bob"]',['no-op'])]),address)
+        for changes in [[row(address,['update'])],[row('aws_instance.learner["bob"]',['delete','create'])],
+            [row(address,['delete','create']),row('aws_security_group.pilot',['update'])],[]]:
+            with self.subTest(changes=changes),self.assertRaisesRegex(ws.wc.ConfigError,'only the selected'):
+                ws.Controller.validate_replacement(dict(resource_changes=changes),address)

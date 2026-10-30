@@ -78,3 +78,36 @@ variable "subnet_id" {
     error_message = "Provide both VPC and subnet IDs, or neither to create an activity-owned network."
   }
 }
+
+variable "image_mode" {
+  type    = string
+  default = "base"
+  validation {
+    condition     = contains(["base", "prebuilt"], var.image_mode)
+    error_message = "Choose an explicit base or prebuilt image mode."
+  }
+}
+variable "ami_owner_account_id" {
+  type    = string
+  default = "099720109477"
+}
+variable "image_release_ref" {
+  type    = string
+  default = ""
+}
+variable "image_release_sha256" {
+  type    = string
+  default = ""
+}
+variable "image_manifest_sha256" {
+  type    = string
+  default = ""
+}
+variable "image_runtime_sha256" {
+  type    = string
+  default = ""
+}
+variable "browser_routes" {
+  type    = map(map(string))
+  default = {}
+}

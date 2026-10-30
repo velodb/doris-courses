@@ -17,6 +17,7 @@ activity-wide TTL cleanup have separate acceptance work.
 | --- | --- |
 | `bootstrap/` | Separate private, encrypted, versioned state bucket; blocks learner-role access and prevents accidental bucket destruction |
 | `pilot/` | One EC2 per learner (up to five), with stable map keys, encrypted gp3 root disk, IMDSv2, SSM, a private runtime-code bucket and an installation document |
+| `image-validation/` | Independent temporary launch and audit of a fixed candidate AMI before publication |
 
 The initial pilot targets the commercial AWS partition and an official
 Canonical Ubuntu 24.04 amd64 server AMI. The exact AMI must be resolved and
@@ -24,6 +25,11 @@ verified in the selected Region before planning. A new activity-owned public
 subnet/Internet Gateway is created by default, with no NAT Gateway. An explicit
 existing VPC and subnet may be supplied together; their ownership, public
 egress route and available capacity need preflight verification.
+
+The same pilot also accepts an exact private, validated release through the
+[prebuilt activity workflow](../prebuilt.md). It verifies owner/version hashes,
+injects activity differences, uploads no installer objects and checks existing
+services. Base mode retains its original runtime installation path.
 
 The instance has a public IPv4 address for outbound access and **no inbound
 security-group rules**. SSM provides operator access and local port forwarding.

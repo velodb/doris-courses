@@ -1,4 +1,4 @@
-# Offline example only. No AMI has been built or verified.
+# Illustrative IDs only. Replace with an independently validated private release.
 schema_version: 1
 event_id: example-rta
 owner_id: workshop-team
