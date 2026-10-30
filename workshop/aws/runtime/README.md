@@ -25,9 +25,19 @@ reproduces the previous failure and verifies repeated authenticated startup.
 The complete local tool suite passes with Python 3.12, including live kernel
 and Jupyter fixtures.
 
+The `rta-main` default Labs 1–10 and ten quiz entry Notebooks were also
+executed in separate managed kernels on a fresh Ubuntu 24.04 host: 20 Notebooks,
+189 code cells, with no final error outputs. Module 9 requires stopping the
+single-node sandbox first; stop its cluster before Lab 10, as the course guide
+requires. Optional Metabase and the opt-in real-clock expiry path were excluded.
+Authenticated lesson/image/download APIs, kernel/terminal WebSockets, and a
+temporary loopback HTTPS service with certificate verification and Secure,
+HttpOnly login cookies were checked separately. These API results do not
+certify manual browser rendering or interaction.
+
 Terraform creates and destroys the hosts; this installer handles the runtime.
-Full course Labs, the browser gateway, HTTPS and user routing remain separate
-implementation and validation work. The instance expiry timer is a host cost
+The shared browser gateway, trusted domain/OIDC routing, manual browser steps
+and other course profiles remain separate implementation and validation work. The instance expiry timer is a host cost
 guard; activity-wide scheduled cleanup still requires a separate executor.
 
 ## Build a bundle locally

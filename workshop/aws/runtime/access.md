@@ -56,6 +56,15 @@ explicit reviewed configuration, TLS and per-request ownership checks.
 
 The authentication model follows [Jupyter Server security](https://jupyter-server.readthedocs.io/en/latest/operators/security.html);
 Notebook navigation follows [JupyterLab file URLs](https://jupyterlab.readthedocs.io/en/stable/user/urls.html).
-Actual EC2 browser use, TLS, login-cookie behavior, refresh and reconnection
-remain cloud integration checks. Shared HTTPS/OIDC and cross-learner rejection
-require separate access infrastructure.
+On real EC2, API checks covered the selected ten lessons and 58 images,
+Notebook download, kernel/terminal WebSockets and reconnection, kernel restart,
+file preservation, and rejection without login. A separate temporary HTTPS
+service was checked with its self-signed certificate explicitly trusted by the
+test client, including Secure/HttpOnly cookies and authenticated repeat GETs.
+Manual browser rendering, refresh, menus and certificate-warning handling remain
+unverified. Shared HTTPS/OIDC and cross-learner rejection require separate
+access infrastructure.
+
+An expired or disconnected SSM forward can leave the local connection unusable.
+Reopen the forwarding session and use the current Jupyter credential; closing
+or recreating a forwarding session does not delete saved instance files.

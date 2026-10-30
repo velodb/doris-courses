@@ -4,8 +4,10 @@
 Terraform activity resources, SSM installation and runtime probes. It reuses an
 existing foundation bucket. It never creates or destroys foundation resources.
 The current scope is the one-to-five-host SSM-only pilot described in the
-[first-run guide](first-run.md). Shared HTTPS/OIDC and full course execution
-remain separate integration checks.
+[first-run guide](first-run.md). The two-host up/repeated-up, fault status,
+service recovery and basic destroy path have been exercised on real EC2.
+The default `rta-main` Labs 1–10 were executed separately after readiness.
+Shared HTTPS/OIDC and manual browser interaction remain separate checks.
 
 ## Plan, review and bring up
 
@@ -119,6 +121,9 @@ the account is empty based on an empty activity state.
 
 The SSM integration uses [SendCommand](https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_SendCommand.html)
 and [GetCommandInvocation](https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_GetCommandInvocation.html).
-Controlled offline tests cover orchestration and AWS SDK request shapes. Real
-cloud execution of this wrapper and full browser/course validation remain
-cloud integration work.
+Controlled offline tests cover orchestration and AWS SDK request shapes.
+Real cloud checks covered two fresh hosts, unchanged installation command IDs
+on repeated up, detection of a stopped Jupyter service while EC2 remained
+running, recovery, and activity destroy with retained foundation. Separate
+course execution covered the default RTA Labs and quiz startup; manual browser
+interaction, optional parts and shared user routing remain unverified.

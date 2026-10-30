@@ -8,8 +8,9 @@ The [temporary course reader](runtime/access.md) and
 [browser URL mapping](browser-urls.md) reuse the host runtime.
 Use the [activity lifecycle CLI](lifecycle.md) for reviewed-plan up, status,
 runtime waiting and basic activity destroy.
-Real EC2 infrastructure and host-runtime integration have been verified. Full
-course/browser access and AMI building remain separate steps. The
+Real EC2 infrastructure, the two-host CLI lifecycle, and default `rta-main`
+Notebook execution have been verified. Manual browser interaction, shared
+HTTPS/OIDC routing and AMI building remain separate steps. The
 [deployment architecture](architecture.md) and
 [first real Terraform runbook](first-run.md) describe the live preflight and
 saved-plan gate for the first SSM-only host.
