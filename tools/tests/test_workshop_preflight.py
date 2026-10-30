@@ -423,6 +423,16 @@ class SdkContractTests(unittest.TestCase):
             stub.add_response('describe_volumes', {'Volumes': [{'Size': 200}]}, {'NextToken': 'page2'})
             self.assertEqual(sum(v['Size'] for v in self.aws.items('ec2', 'describe_volumes', 'Volumes')), 300)
 
+    def test_transport_error_with_null_response_is_reported_safely(self):
+        from botocore.exceptions import ReadTimeoutError
+        error = ReadTimeoutError(endpoint_url='https://do-not-echo.example')
+        error.response = None
+        client = self.aws.client('ec2')
+        with mock.patch.object(client, 'describe_instances', side_effect=error):
+            with self.assertRaisesRegex(pf.PreflightError, 'QueryFailed') as caught:
+                self.aws.call('ec2', 'describe_instances')
+        self.assertNotIn('do-not-echo', str(caught.exception))
+
     def test_selected_profile_never_falls_back_to_host_metadata(self):
         with tempfile.TemporaryDirectory() as temp:
             config = Path(temp) / 'config'

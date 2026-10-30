@@ -164,11 +164,14 @@ class CandidateChecks(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
-        (self.root / 'binding.json').write_text(json.dumps({'config': {'region': 'us-east-1', 'aws_account_id': '000000000000'}}))
+        (self.root / 'binding.json').write_text(json.dumps({'build_id': 'test-image', 'config': {
+            'region': 'us-east-1', 'aws_account_id': '000000000000', 'course_ref': 'a' * 40}}))
         (self.root / 'packer-manifest.json').write_text(json.dumps({'builds': [{'artifact_id': 'us-east-1:ami-00000000000000000'}]}))
-        (self.root / 'image-manifest.json').write_text('{}')
+        (self.root / 'image-manifest.json').write_text(json.dumps({'course_ref': 'a' * 40}))
         self.image = {'State': 'available', 'Public': False, 'Architecture': 'x86_64', 'BlockDeviceMappings': [
-            {'DeviceName': '/dev/sda1', 'Ebs': {'VolumeSize': 200, 'DeleteOnTermination': True, 'SnapshotId': 'snap-00000000000000000'}}]}
+            {'DeviceName': '/dev/sda1', 'Ebs': {'VolumeSize': 200, 'DeleteOnTermination': True, 'SnapshotId': 'snap-00000000000000000'}}],
+            'Tags': [{'Key': 'ImageBuild', 'Value': 'test-image'}, {'Key': 'CourseRef', 'Value': 'a' * 40},
+                     {'Key': 'Scope', 'Value': 'image'}]}
         self.snapshot = {'Encrypted': True, 'State': 'completed', 'OwnerId': '000000000000', 'SnapshotId': 'snap-00000000000000000'}
         self.attrs = {'LaunchPermissions': []}
         self.aws = MagicMock()
@@ -195,6 +198,32 @@ class CandidateChecks(unittest.TestCase):
         with self.assertRaises(wc.ConfigError):
             image.record_candidate(self.root, self.aws)
         self.assertFalse((self.root / 'candidate.json').exists())
+
+    def test_inherited_virtual_devices_do_not_add_ebs_snapshots(self):
+        self.image['BlockDeviceMappings'].extend([
+            {'DeviceName': '/dev/sdb', 'VirtualName': 'ephemeral0'},
+            {'DeviceName': '/dev/sdc', 'VirtualName': 'ephemeral1'}])
+        image.record_candidate(self.root, self.aws)
+        self.assertEqual(len(json.loads((self.root / 'candidate.json').read_text())['snapshots']), 1)
+
+    def test_wrong_build_tags_are_rejected(self):
+        self.image['Tags'][0]['Value'] = 'another-image'
+        with self.assertRaisesRegex(wc.ConfigError, 'provenance'):
+            image.record_candidate(self.root, self.aws)
+
+    def test_verify_can_repeat_but_rechecks_encryption(self):
+        image.record_candidate(self.root, self.aws)
+        before = (self.root / 'candidate.json').stat().st_mtime_ns
+        image.record_candidate(self.root, self.aws)
+        self.assertEqual((self.root / 'candidate.json').stat().st_mtime_ns, before)
+        self.snapshot['Encrypted'] = False
+        with self.assertRaises(wc.ConfigError):
+            image.record_candidate(self.root, self.aws)
+
+    def test_unknown_extra_device_is_rejected(self):
+        self.image['BlockDeviceMappings'].append({'DeviceName': '/dev/sdf'})
+        with self.assertRaises(wc.ConfigError):
+            image.record_candidate(self.root, self.aws)
 
     def test_missing_cache_volume_mapping_is_rejected(self):
         self.image['BlockDeviceMappings'].append({'DeviceName': '/dev/sdf', 'Ebs': {'VolumeSize': 100}})

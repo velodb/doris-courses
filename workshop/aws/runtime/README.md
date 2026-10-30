@@ -117,11 +117,13 @@ Each environment runs `pip check`. The installer uses a clean learner process
 environment and public PyPI; it does not pass deployer AWS credentials, custom
 package indexes, Python paths or shell login state into installation commands.
 
-Python and Ubuntu transitive dependencies are not yet fully locked. Actual
-Python `pip freeze` output and installed Docker versions are saved under
-`/var/lib/doris-workshop/installed-packages/` for review and later AMI work.
-This does not claim a reproducible image build or pre-cache Lab images,
-models and datasets. Course containers start when the learner runs the Labs.
+Ordinary host bundles resolve transitive Python dependencies at install time.
+The [private image workflow](../packer/README.md) adds hash-locked Python
+dependencies and caches the selected container digests on the root volume.
+Both paths record actual Python freezes and installed Docker versions under
+`/var/lib/doris-workshop/installed-packages/`. Ubuntu package versions are
+audited in the image manifest. Course containers and data loading start when
+the learner runs the Labs; the image guide lists the remaining online access.
 
 ## Paths and ownership
 

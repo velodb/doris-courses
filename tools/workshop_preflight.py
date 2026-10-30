@@ -97,7 +97,8 @@ class Aws:
         try:
             return getattr(self.client(service), operation)(**kwargs)
         except Exception as exc:
-            code = getattr(exc, 'response', {}).get('Error', {}).get('Code', '')
+            response = getattr(exc, 'response', None) or {}
+            code = (response.get('Error') or {}).get('Code', '')
             if code == 'DryRunOperation' and kwargs.get('DryRun') is True:
                 return {'dry_run': True}
             if code in {'404', 'NoSuchBucket', 'NotFound'} and operation == 'head_bucket':

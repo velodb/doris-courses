@@ -199,20 +199,33 @@ def record_candidate(run_dir, aws):
     images = aws.call('ec2', 'describe_images', ImageIds=[ami], Owners=[config['aws_account_id']])['Images']
     preflight.require(len(images) == 1, 'image: built AMI missing')
     image = images[0]
-    mapping = image['BlockDeviceMappings']
+    mappings = image['BlockDeviceMappings']
+    mapping = [m for m in mappings if 'Ebs' in m]
+    virtual_only = all('Ebs' in m or 'NoDevice' in m or
+                       re.fullmatch(r'ephemeral[0-9]+', m.get('VirtualName', '')) for m in mappings)
     preflight.require(image['State'] == 'available' and not image['Public'] and image['Architecture'] == 'x86_64' and
-                      len(mapping) == 1 and mapping[0]['DeviceName'] == '/dev/sda1' and
+                      virtual_only and len(mapping) == 1 and mapping[0]['DeviceName'] == '/dev/sda1' and
                       mapping[0]['Ebs']['VolumeSize'] == 200 and mapping[0]['Ebs']['DeleteOnTermination'],
                       'image: AMI privacy, architecture or root volume mismatch')
+    tags = {t['Key']: t['Value'] for t in image.get('Tags', [])}
+    manifest = wc.load_document(run_dir / 'image-manifest.json')
+    preflight.require(tags.get('ImageBuild') == binding['build_id'] and tags.get('CourseRef') == config['course_ref'] and
+                      tags.get('Scope') == 'image' and manifest['course_ref'] == config['course_ref'],
+                      'image: AMI provenance does not match this build manifest')
     attrs = aws.call('ec2', 'describe_image_attribute', ImageId=ami, Attribute='launchPermission')
     preflight.require(not attrs.get('LaunchPermissions'), 'image: candidate must have no sharing grants')
     snapshots = aws.call('ec2', 'describe_snapshots', SnapshotIds=[mapping[0]['Ebs']['SnapshotId']])['Snapshots']
     preflight.require(len(snapshots) == 1 and snapshots[0]['Encrypted'] and snapshots[0]['State'] == 'completed' and
                       snapshots[0]['OwnerId'] == config['aws_account_id'], 'image: snapshot encryption/owner mismatch')
-    write(run_dir / 'candidate.json', {'ami_id': ami, 'region': region, 'status': 'candidate',
+    record = {'ami_id': ami, 'region': region, 'status': 'candidate', 'course_ref': config['course_ref'],
           'snapshots': [s['SnapshotId'] for s in snapshots], 'manifest_sha256': checksum(run_dir / 'image-manifest.json'),
           'release_requirement': 'Independent new-instance verification remains required.',
-          'retention': 'Keep for the next validation task; review after seven days. Tags do not delete snapshots.'})
+          'retention': 'Keep for the next validation task; review after seven days. Tags do not delete snapshots.'}
+    path = run_dir / 'candidate.json'
+    if path.exists():
+        preflight.require(wc.load_document(path) == record, 'image: existing candidate record differs; preserve it for review')
+    else:
+        write(path, record)
 
 
 def cleanup_build(run_dir):
@@ -332,7 +345,7 @@ def main():
     planned.add_argument('--settings', type=Path, required=True)
     planned.add_argument('--run-dir', type=Path, required=True)
     planned.add_argument('--build-id', required=True)
-    for command in ('build', 'cleanup'):
+    for command in ('build', 'cleanup', 'verify'):
         command_parser = subs.add_parser(command)
         command_parser.add_argument('--run-dir', type=Path, required=True)
     args = parser.parse_args()
@@ -346,6 +359,11 @@ def main():
             build_image(args.run_dir)
         elif args.command == 'cleanup':
             cleanup_build(args.run_dir.resolve())
+        elif args.command == 'verify':
+            run_dir = args.run_dir.resolve()
+            config = wc.load_document(run_dir / 'binding.json')['config']
+            record_candidate(run_dir, preflight.Aws(config))
+            print('Private candidate image verified; independent new-instance validation remains required.')
         else:
             provision(args.run_dir.resolve())
         return 0

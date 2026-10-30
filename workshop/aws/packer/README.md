@@ -6,8 +6,11 @@ It is separate from the learner activity and its Terraform state. Building an
 image does not certify a fresh instance or publish the image for activities.
 Independent launch, identity, course and browser validation must follow.
 
-The implementation has offline tests. A successful AWS build and cleanup must
-be recorded separately before describing any AMI as available.
+Two independent real builds in us-east-1 on 2026-10-30 UTC completed runtime
+installation, cache preparation, sealing and private AMI creation. Their full
+version manifests matched, including Python freezes, system package versions
+and container content IDs. Build-time checks do not replace the independent
+new-instance course and browser validation required to release a candidate.
 
 ## Fixed inputs
 
@@ -131,6 +134,22 @@ and `candidate.json`. Candidate validation checks the AMI is available,
 private, has no launch-sharing grants, and contains exactly one encrypted,
 account-owned completed root snapshot. Preserve the AMI and snapshot IDs for
 the independent new-instance validation task.
+
+Canonical's AMI metadata can also contain virtual instance-store mappings.
+The selected m7i.2xlarge is EBS-only; these inherited hints do not add an EBS
+cache disk. Validation counts actual EBS mappings, accepts virtual-device
+hints, and still rejects an additional EBS volume or an unknown mapping.
+AMI build/version tags must match the run's fixed manifest.
+
+If an operator-side check or connection fails after Packer has created the
+artifact, repeat the checks using its preserved run directory:
+
+```bash
+python tools/workshop_image.py verify --run-dir workshop/aws/.local/image-run-01
+```
+
+Verification queries AWS again. An identical existing candidate record is
+retained; a conflicting record is refused for review.
 
 The build command runs cleanup in a `finally` block. It terminates only live
 instances with this build's ID and scope tags, waits for termination, then
