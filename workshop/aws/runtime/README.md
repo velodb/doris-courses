@@ -3,7 +3,10 @@
 The runtime bundle installs the selected courses on a dedicated Ubuntu 24.04
 x86_64 host. Each course gets a Python 3.12 virtual environment, a distinct
 Jupyter kernel and a working copy of its selected Notebooks. JupyterLab runs
-as the `workshop` user under systemd and listens on `127.0.0.1:8888`.
+as the `workshop` user under systemd and listens on `127.0.0.1:8888`. Its writable
+Jupyter configuration directory is `/var/lib/doris-workshop/home/jupyter-config`;
+`/etc/doris-workshop` holds the root-managed runtime plan. This separation lets
+Jupyter migrate IPython configuration after kernels have run and after restarts.
 
 The implementation has local bundle, kernel and Jupyter authentication tests.
 Installation on a real EC2 instance, Docker access there, host reboot and the

@@ -38,8 +38,7 @@ def make_config(plan, workspace, runtime_dir, kernel_dir, port=8888):
     config.ServerApp.disable_check_xsrf = False
     config.ServerApp.cookie_secret_file = str(runtime_dir / "cookie-secret")
     config.ServerApp.log_level = "WARN"
-    config.ServerApp.no_browser_open_file = True
-    config.ServerApp.runtime_dir = str(runtime_dir)
+    config.ServerApp.use_redirect_file = False
     config.IdentityProvider.token = token
     config.KernelSpecManager.ensure_native_kernel = False
     config.KernelSpecManager.allowed_kernelspecs = {course["kernel"] for course in plan["courses"]}
@@ -55,6 +54,9 @@ def main(argv=None):
     parser.add_argument("--kernel-dir", type=Path, default=Path("/usr/local/share/doris-workshop/jupyter/kernels"))
     parser.add_argument("--port", type=int, default=8888)
     args = parser.parse_args(argv)
+    # runtime_dir is selected by jupyter_core through this environment variable;
+    # it is not a configurable ServerApp trait.
+    os.environ["JUPYTER_RUNTIME_DIR"] = str(args.runtime_dir)
     from jupyterlab.labapp import LabApp
 
     plan = json.loads(args.runtime_json.read_text())

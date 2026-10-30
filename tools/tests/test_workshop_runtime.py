@@ -202,6 +202,9 @@ class RuntimeTests(unittest.TestCase):
             receipt = json.loads((self.layout.state / "install.json").read_text())
             self.assertEqual(receipt["environments"], ["server"])
             host.install(self.bundle)
+            user_config = self.layout.home / "jupyter-config"
+            self.assertTrue(user_config.is_dir())
+            self.assertEqual(user_config.stat().st_mode & 0o777, 0o700)
             course = self.plan["courses"][0]
             notebook = self.layout.workspace / course["course_dir"] / self.lab
             notebook.write_text("learner exercise\n")
@@ -257,6 +260,67 @@ class RuntimeTests(unittest.TestCase):
             self.assertIn(course["course_dir"], results[0]["package_file"])
 
     @unittest.skipUnless(LIVE, "Install runtime/test-requirements.txt with Python 3.12 for live server tests")
+    def test_server_restart_migrates_config_in_the_service_user_directory(self):
+        self.materialize()
+        self.layout.config.mkdir(parents=True)
+        self.layout.config.chmod(0o555)
+        unit = (builder.RUNTIME / "doris-workshop-jupyter.service").read_text()
+        setting = next(line.split("=", 2)[2] for line in unit.splitlines()
+                       if line.startswith("Environment=JUPYTER_CONFIG_DIR="))
+        config_dir = Path(self.case_dir.name) / setting.lstrip("/")
+        config_dir.mkdir(parents=True, exist_ok=True)
+        runtime_dir = Path(self.case_dir.name) / "restart-runtime"
+        legacy = self.layout.home / ".ipython"
+        runtime_json = Path(self.case_dir.name) / "restart-runtime.json"
+        runtime_json.write_text(json.dumps(self.plan))
+        server_env = {**os.environ, "BROWSER": "/usr/bin/true", "HOME": str(self.layout.home),
+                      "IPYTHONDIR": str(legacy), "JUPYTER_CONFIG_DIR": str(config_dir),
+                      "JUPYTER_DATA_DIR": str(self.layout.home / "jupyter-data")}
+        server_env.pop("JUPYTER_RUNTIME_DIR", None)  # Exercise the CLI's runtime-dir override.
+        with socket.socket() as reservation:
+            reservation.bind(("127.0.0.1", 0))
+            port = reservation.getsockname()[1]
+        credentials = []
+        try:
+            for generation in range(2):
+                if generation:
+                    # Starting a course kernel creates this directory after the
+                    # first server launch. The next launch must be able to mark
+                    # migration without writing to root-owned /etc configuration.
+                    legacy.mkdir(parents=True, exist_ok=True)
+                    (config_dir / "migrated").unlink(missing_ok=True)
+                log = Path(self.case_dir.name) / f"restart-{generation}.log"
+                with log.open("w") as stream:
+                    process = subprocess.Popen([sys.executable, "-I", str(builder.RUNTIME / "serve.py"),
+                        "--runtime-json", str(runtime_json), "--workspace", str(self.layout.workspace),
+                        "--runtime-dir", str(runtime_dir), "--kernel-dir", str(self.layout.kernels),
+                        "--port", str(port)], stdout=stream, stderr=stream, env=server_env)
+                    try:
+                        url = f"http://127.0.0.1:{port}/api/status"
+                        deadline = time.monotonic() + 30
+                        while time.monotonic() < deadline and process.poll() is None:
+                            if check.jupyter_ready(runtime_dir / "token", url):
+                                break
+                            time.sleep(0.2)
+                        self.assertTrue(check.jupyter_ready(runtime_dir / "token", url), log.read_text())
+                        credentials.append(((runtime_dir / "token").read_bytes(),
+                                            (runtime_dir / "cookie-secret").read_bytes()))
+                        if generation:
+                            self.assertTrue((config_dir / "migrated").is_file())
+                        self.assertFalse((self.layout.config / "migrated").exists())
+                    finally:
+                        process.terminate()
+                        try:
+                            process.wait(timeout=10)
+                        except subprocess.TimeoutExpired:
+                            process.kill()
+                            process.wait(timeout=5)
+            self.assertNotEqual(credentials[0][0], credentials[1][0])
+            self.assertNotEqual(credentials[0][1], credentials[1][1])
+        finally:
+            self.layout.config.chmod(0o755)
+
+    @unittest.skipUnless(LIVE, "Install runtime/test-requirements.txt with Python 3.12 for live server tests")
     def test_real_loopback_server_requires_token_and_rotates_credentials(self):
         self.materialize()
         runtime_dir = Path(self.case_dir.name) / "sessions"
@@ -266,6 +330,7 @@ class RuntimeTests(unittest.TestCase):
         self.assertNotEqual(old_token, (runtime_dir / "token").read_text())
         self.assertEqual(first.ServerApp.ip, "127.0.0.1")
         self.assertFalse(second.ServerApp.disable_check_xsrf)
+        self.assertFalse(second.ServerApp.use_redirect_file)
         with socket.socket() as reservation:
             reservation.bind(("127.0.0.1", 0))
             port = reservation.getsockname()[1]
@@ -295,6 +360,7 @@ class RuntimeTests(unittest.TestCase):
                 with urllib.request.build_opener(urllib.request.ProxyHandler({})).open(request, timeout=5) as response:
                     self.assertEqual(set(json.load(response)["kernelspecs"]), {"doris-rta", "doris-obs"})
                 self.assertNotIn(token, log.read_text())
+                self.assertNotIn("not recognized by", log.read_text())
             finally:
                 process.terminate()
                 try:

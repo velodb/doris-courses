@@ -246,6 +246,10 @@ def install(bundle):
         raise RuntimeErrorDetail("install: runtime bundle differs; rebuild on a fresh instance")
     files = install_source(bundle, plan, layout)
     chown_tree(layout.source, user)
+    user_config = layout.home / "jupyter-config"
+    user_config.mkdir(parents=True, exist_ok=True)
+    user_config.chmod(0o700)
+    os.chown(user_config, user.pw_uid, user.pw_gid)
     layout.server.parent.mkdir(parents=True, exist_ok=True)
     os.chown(layout.server.parent, user.pw_uid, user.pw_gid)
     for name, directory, requirements, cwd in [
