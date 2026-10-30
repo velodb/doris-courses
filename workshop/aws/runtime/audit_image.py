@@ -55,7 +55,6 @@ def main():
     launched = datetime.fromisoformat(expected['launched_at']).timestamp()
     checks['new-ssh-keys'] = bool(ssh) and all(p.stat().st_mtime >= launched-60 for p in ssh)
     server_token = Path('/run/doris-workshop/token')
-    checks['fresh-jupyter-token'] = server_token.stat().st_mtime >= launched-60 and server_token.stat().st_mode & 0o777 == 0o600
     checks['no-containers'] = not call('docker','ps','-aq')
     checks['no-volumes'] = not call('docker','volume','ls','-q')
     workspace = Path('/var/lib/doris-workshop/workspace')
@@ -83,10 +82,11 @@ def main():
       'PATH=/opt/doris-workshop/server-venv/bin:/usr/local/bin:/usr/bin:/bin','LANG=C.UTF-8','PYTHONNOUSERSITE=1',
       '/opt/doris-workshop/server-venv/bin/python','-I','/usr/local/lib/doris-workshop/check.py','--wait','120'],capture_output=True,text=True,timeout=300)
     checks['runtime-ready'] = probe.returncode == 0
+    checks['fresh-jupyter-token'] = server_token.is_file() and server_token.stat().st_mtime >= launched-60 and server_token.stat().st_mode & 0o777 == 0o600
     report = {'schema_version':1,'kind':'doris-workshop-image-audit','checked_at':datetime.now(timezone.utc).isoformat(),
       'image_id':expected['ami_id'],'instance_id':instance,'event_id':activity['event_id'],'learner_id':activity['learner_id'],
       'course_ref':runtime['course_ref'],'image_manifest_sha256':digest(config/'image-manifest.json'),
-      'machine_id':machine_id,'token_sha256':digest(server_token),'notebook_count':len(notebooks),
+      'machine_id':machine_id,'token_sha256':digest(server_token) if server_token.is_file() else None,'notebook_count':len(notebooks),
       'checks':checks,'passed':all(checks.values()),'runtime_probe': json.loads(probe.stdout) if probe.returncode==0 else {'error':'readiness failed'}}
     Path('/var/lib/doris-workshop/initial-image-audit.json').write_text(json.dumps(report,indent=2)+'\n')
     print('IMAGE_AUDIT='+json.dumps(report,sort_keys=True))

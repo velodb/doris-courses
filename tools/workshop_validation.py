@@ -50,6 +50,9 @@ def plan(config_path, settings_path, candidate_run, directory, routes_path):
     import workshop_urls
     for learner,ports in routes.items():
         workshop_urls.build_routes(config,learner,ports)
+        if 'rta-main' in config['course_profiles']:
+            pf.require({'18030','18130','18131','18132'} <= ports.keys(),
+                       'validation: RTA requires routes for the host FE ports 18030 and 18130-18132')
     pf.require(not directory.exists(), 'validation: choose a new run directory')
     directory.mkdir(parents=True, mode=0o700)
     directory=directory.resolve()
@@ -84,7 +87,7 @@ def apply(directory):
     print('Validation instance created. Run audit before executing Labs; destroy when verification finishes.')
 
 
-def send_file_command(aws, instance, code, expected):
+def send_file_command(aws, instance, code, expected, timeout=600):
     # Keep each SSM StringList item short; only reviewed code and public metadata
     # are encoded. No operator credentials or browser tokens are transmitted.
     encoded=base64.b64encode(code.encode()).decode()
@@ -94,10 +97,52 @@ def send_file_command(aws, instance, code, expected):
        "printf '%s' '"+base64.b64encode(json.dumps(expected).encode()).decode()+"' | base64 -d > /run/workshop-audit-input.json",
        'cloud-init status --wait >/dev/null', 'python3.12 /run/workshop-audit.py /run/workshop-audit-input.json']
     return aws.client('ssm').send_command(InstanceIds=[instance],DocumentName='AWS-RunShellScript',
-         Parameters={'commands':commands,'executionTimeout':['600']},TimeoutSeconds=600)['Command']['CommandId']
+         Parameters={'commands':commands,'executionTimeout':[str(timeout)]},TimeoutSeconds=600)['Command']['CommandId']
+
+
+def course(directory):
+    b=wc.load_document(directory/'binding.json');config=b['config'];aws=pf.Aws(config)
+    pf.require(config['course_profiles']==['rta-main'], 'validation: full-course runner currently supports rta-main')
+    audit=wc.load_document(directory/'initial-audit.json')
+    pf.require(audit['passed'], 'validation: initial audit must pass before Labs')
+    attempt=directory/'courses'/datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f')
+    attempt.mkdir(parents=True,mode=0o700)
+    expected={'ami_id':b['candidate']['ami_id'],'instance_id':audit['instance_id'],'course_ref':config['course_ref'],
+        'event_id':config['event_id'],'learner_id':config['learner_ids'][0],
+        'course_output_dir':'/var/lib/doris-workshop/home/'+attempt.name}
+    encoded=base64.b64encode((wc.SPEC/'runtime/validate_course.py').read_bytes()).decode()
+    driver="""import base64,json,subprocess,sys
+from pathlib import Path
+root=Path('/var/lib/doris-workshop/home')
+code=root/'validation-course.py';inputs=root/'validation-course-input.json'
+code.write_bytes(base64.b64decode(%r));inputs.write_text(Path(sys.argv[1]).read_text())
+subprocess.run(['chown','workshop:workshop',str(code),str(inputs)],check=True)
+subprocess.run(['runuser','--user','workshop','--','env','-i','HOME='+str(root),
+ 'PATH=/opt/doris-workshop/server-venv/bin:/usr/local/bin:/usr/bin:/bin','LANG=C.UTF-8','PYTHONNOUSERSITE=1',
+ '/opt/doris-workshop/server-venv/bin/python','-I',str(code),str(inputs)],check=True)
+""" % encoded
+    command=send_file_command(aws,audit['instance_id'],driver,expected,timeout=7200)
+    images.write(attempt/'command.json',{'command_id':command,'instance_id':audit['instance_id'],'expected':expected})
+    deadline=time.monotonic()+7500
+    while time.monotonic()<deadline:
+        try:r=aws.client('ssm').get_command_invocation(CommandId=command,InstanceId=audit['instance_id'])
+        except aws.client('ssm').exceptions.InvocationDoesNotExist:time.sleep(5);continue
+        if r['Status'] in ('Pending','InProgress','Delayed'):time.sleep(10);continue
+        images.write(attempt/'invocation.json',r)
+        report=next((line[len('COURSE_REPORT='):] for line in r['StandardOutputContent'].splitlines() if line.startswith('COURSE_REPORT=')),None)
+        pf.require(report is not None,'validation: course returned no report; inspect the private invocation')
+        value=json.loads(report);images.write(attempt/'report.json',value)
+        pf.require(r['Status']=='Success' and value['passed'],'validation: full course failed; preserve the report and destroy resources')
+        pf.require(not (directory/'course-report.json').exists(),'validation: preserve the successful course report')
+        images.write(directory/'course-report.json',value)
+        print(json.dumps({'passed':True,'notebook_count':value['notebook_count'],'code_cells':value['code_cells']}));return
+    raise wc.ConfigError('validation: course timed out; inspect the remote execution and destroy resources')
 
 
 def audit(directory):
+    pf.require(not (directory/'initial-audit.json').exists(), 'validation: preserve the successful initial audit')
+    attempt=directory/'audits'/datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f')
+    attempt.mkdir(parents=True,mode=0o700)
     b=wc.load_document(directory/'binding.json');config=b['config'];aws=pf.Aws(config)
     outputs=wc.load_document(directory/'outputs.json');instance=next(iter(outputs['instance_ids'].values()))
     deadline=time.monotonic()+1200
@@ -116,20 +161,21 @@ def audit(directory):
         'launched_at':wc.utc_text(row['LaunchTime']),'manifest_sha256':b['candidate']['manifest_sha256'],
         'runtime_sha256':b['manifest']['runtime_sha256'],'course_ref':config['course_ref'],
         'event_id':config['event_id'],'learner_id':learner,'ports':v['browser_routes'][learner]}
-    images.write(directory/'audit-input.json',expected)
+    images.write(attempt/'audit-input.json',expected)
     command=send_file_command(aws,instance,(wc.SPEC/'runtime/audit_image.py').read_text(),expected)
-    images.write(directory/'audit-command.json',{'instance_id':instance,'command_id':command})
+    images.write(attempt/'audit-command.json',{'instance_id':instance,'command_id':command})
     while time.monotonic()<deadline:
         try:r=aws.client('ssm').get_command_invocation(CommandId=command,InstanceId=instance)
         except aws.client('ssm').exceptions.InvocationDoesNotExist:
             time.sleep(5);continue
         if r['Status'] in ('Pending','InProgress','Delayed'):
             time.sleep(5);continue
-        images.write(directory/'audit-invocation.json',r)
+        images.write(attempt/'audit-invocation.json',r)
         report=next((line[len('IMAGE_AUDIT='):] for line in r['StandardOutputContent'].splitlines() if line.startswith('IMAGE_AUDIT=')),None)
         if report:
-            data=json.loads(report);images.write(directory/'initial-audit.json',data)
+            data=json.loads(report);images.write(attempt/'audit-report.json',data)
             pf.require(r['Status']=='Success' and data['passed'],'validation: initial image audit failed; inspect private report')
+            images.write(directory/'initial-audit.json',data)
             print(json.dumps({'passed':True,'instance_id':instance,'checks':data['checks']},indent=2));return
         raise wc.ConfigError('validation: audit failed without a report; inspect private audit invocation')
     raise wc.ConfigError('validation: audit timed out; destroy resources')
@@ -145,6 +191,9 @@ def destroy(directory):
         tags=r['values'].get('tags_all') or r['values'].get('tags')
         if tags:pf.require(tags.get('Scope')=='image-validation' and tags.get('Event')==config['event_id'],'validation: unowned resource in state')
     known=[r['values']['id'] for r in managed if r['type']=='aws_instance']
+    volumes=[v['volume_id'] for r in managed if r['type']=='aws_instance' for v in r['values'].get('root_block_device',[]) if v.get('volume_id')]
+    if not volumes and (directory/'reconciliation.json').exists():
+        volumes=wc.load_document(directory/'reconciliation.json').get('known_volumes',[])
     if not known and (directory/'outputs.json').exists():known=list(wc.load_document(directory/'outputs.json')['instance_ids'].values())
     if managed:
         path=directory/'destroy.tfplan'
@@ -157,11 +206,34 @@ def destroy(directory):
     after=json.loads(tf(directory,'show','-json',capture=True)).get('values',{}).get('root_module',{}).get('resources',[])
     f=[{'Name':'tag:Event','Values':[config['event_id']]},{'Name':'tag:Scope','Values':['image-validation']}]
     instances=[i for r in aws.call('ec2','describe_instances',Filters=f)['Reservations'] for i in r['Instances']]
+    if known:
+        rows=aws.call('ec2','describe_instances',Filters=[{'Name':'instance-id','Values':known}])['Reservations']
+        instances+= [i for r in rows for i in r['Instances'] if i['InstanceId'] not in {j['InstanceId'] for j in instances}]
+    remaining_volumes={v['VolumeId'] for v in aws.call('ec2','describe_volumes',Filters=f)['Volumes']}
+    if volumes:
+        remaining_volumes.update(v['VolumeId'] for v in aws.call('ec2','describe_volumes',Filters=[{'Name':'volume-id','Values':volumes}])['Volumes'])
+    network=sum(len(aws.call('ec2',op,Filters=f)[key]) for op,key in (
+        ('describe_vpcs','Vpcs'),('describe_subnets','Subnets'),('describe_security_groups','SecurityGroups'),
+        ('describe_internet_gateways','InternetGateways'),('describe_route_tables','RouteTables')))
+    iam=aws.client('iam')
+    role_exists=profile_exists=False
+    try:iam.get_role(RoleName='doris-workshop-learner-'+config['event_id']);role_exists=True
+    except iam.exceptions.NoSuchEntityException:pass
+    try:iam.get_instance_profile(InstanceProfileName='doris-workshop-'+config['event_id']+'-learner');profile_exists=True
+    except iam.exceptions.NoSuchEntityException:pass
+    groups=[r['values']['id'] for r in managed if r['type']=='aws_security_group']
+    if not groups and (directory/'outputs.json').exists():groups=[wc.load_document(directory/'outputs.json')['security_group_id']]
+    enis=sum(len(aws.call('ec2','describe_network_interfaces',Filters=[{'Name':'group-id','Values':[group]}])['NetworkInterfaces']) for group in groups)
     result={'checked_at':wc.utc_text(datetime.now(timezone.utc)),'managed_resources':sum(r['mode']=='managed' for r in after),
-        'known_instances':known,'active_instances':sum(i['State']['Name']!='terminated' for i in instances),
-        'remaining_volumes':len(aws.call('ec2','describe_volumes',Filters=f)['Volumes'])}
-    ws.atomic_json(directory/'reconciliation.json',result)
-    pf.require(not any(result[k] for k in ('managed_resources','active_instances','remaining_volumes')),'validation: residual resources remain')
+        'known_instances':known,'known_volumes':volumes,'active_instances':sum(i['State']['Name']!='terminated' for i in instances),
+        'remaining_volumes':len(remaining_volumes),
+        'remaining_network_resources':network,'role_exists':role_exists,'profile_exists':profile_exists,'remaining_enis':enis}
+    keys=('managed_resources','active_instances','remaining_volumes','remaining_network_resources','role_exists','profile_exists','remaining_enis')
+    record=directory/'reconciliation.json'
+    if record.exists() and not any(wc.load_document(record).get(k,1) for k in keys):
+        images.write(directory/('cleanup-recheck-'+datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f')+'.json'),result)
+    else:ws.atomic_json(record,result)
+    pf.require(not any(result[k] for k in keys),'validation: residual resources remain')
     print('Validation environment destroyed and EC2/EBS reconciled; candidate AMI retained.')
 
 
@@ -169,11 +241,19 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);s=p.add_subparsers(dest='command',required=True)
     planp=s.add_parser('plan')
     for name in ('config','settings','candidate-run','run-dir','routes'):planp.add_argument('--'+name,type=Path,required=True)
-    for name in ('apply','audit','destroy'):
+    for name in ('apply','audit','course','destroy'):
         q=s.add_parser(name);q.add_argument('--run-dir',type=Path,required=True)
+    release=s.add_parser('publish')
+    for name in ('run-dir','course-report','browser-report','output'):release.add_argument('--'+name,type=Path,required=True)
+    release.add_argument('--release-ref',required=True)
     a=p.parse_args();os.umask(0o077)
     try:
         if a.command=='plan':plan(a.config,a.settings,a.candidate_run.resolve(),a.run_dir,a.routes)
+        elif a.command=='publish':
+            import workshop_release
+            b=wc.load_document(a.run_dir/'binding.json')
+            workshop_release.publish(a.run_dir,a.course_report,a.browser_report,a.release_ref,a.output,pf.Aws(b['config']))
+            print('Evidence-bound image release published privately; no validation instances retained.')
         else:
             with ws.run_lock(a.run_dir):globals()[a.command](a.run_dir.resolve())
         return 0
