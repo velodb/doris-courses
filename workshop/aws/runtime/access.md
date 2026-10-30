@@ -61,10 +61,20 @@ Notebook download, kernel/terminal WebSockets and reconnection, kernel restart,
 file preservation, and rejection without login. A separate temporary HTTPS
 service was checked with its self-signed certificate explicitly trusted by the
 test client, including Secure/HttpOnly cookies and authenticated repeat GETs.
-Manual browser rendering, refresh, menus and certificate-warning handling remain
-unverified. Shared HTTPS/OIDC and cross-learner rejection require separate
-access infrastructure.
+Browser checks also verified lesson/image rendering, Notebook creation and
+execution, save/refresh/native download, kernel restart with saved files, and
+reconnection after an actual SSM forwarding interruption. Module 1 quiz controls
+and the native File → New → Terminal flow worked, including Docker access and
+terminal WSS under a temporary HTTPS prefix. The operator handled self-signed
+certificate warnings manually; browser certificate checking stayed enabled.
+The forwarded Doris FE login, QueryProfile list and scan counters were verified.
+Shared HTTPS/OIDC and cross-learner rejection require separate access infrastructure.
 
 An expired or disconnected SSM forward can leave the local connection unusable.
 Reopen the forwarding session and use the current Jupyter credential; closing
 or recreating a forwarding session does not delete saved instance files.
+On a slow SSM connection, initial JupyterLab or Doris FE JavaScript assets can
+exceed the frontend's chunk timeout and leave a blank page. Allow the transfer
+to finish, then reload. This occurred during the browser checks even with
+JupyterLab gzip enabled. A classroom gateway still needs its own access and
+performance validation.

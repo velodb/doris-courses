@@ -9,7 +9,11 @@ The [temporary course reader](runtime/access.md) and
 Use the [activity lifecycle CLI](lifecycle.md) for reviewed-plan up, status,
 runtime waiting and basic activity destroy.
 Real EC2 infrastructure, the two-host CLI lifecycle, and default `rta-main`
-Notebook execution have been verified. Manual browser interaction, shared
+Notebook execution have been verified. Browser checks through operator SSM
+forwards also covered the reader, Notebook editing/save/download, kernel
+restart and reconnection, quiz widgets, terminal Docker access and the Doris
+QueryProfile page, including a temporary single-instance HTTPS/token entry.
+Slow SSM cold loads required a reload after frontend assets arrived. Shared
 HTTPS/OIDC routing and AMI building remain separate steps. The
 [deployment architecture](architecture.md) and
 [first real Terraform runbook](first-run.md) describe the live preflight and

@@ -40,12 +40,28 @@ single-node sandbox first; stop its cluster before Lab 10, as the course guide
 requires. Optional Metabase and the opt-in real-clock expiry path were excluded.
 Authenticated lesson/image/download APIs, kernel/terminal WebSockets, and a
 temporary loopback HTTPS service with certificate verification and Secure,
-HttpOnly login cookies were checked separately. These API results do not
-certify manual browser rendering or interaction.
+HttpOnly login cookies were checked separately.
+
+Real browser checks subsequently covered lesson/image rendering, Notebook
+creation, the selected interpreter/package/course directory, Docker access,
+save/refresh/native download, kernel restart with saved files, and reconnection
+to the same kernel after an actual SSM forwarding interruption. The Module 1
+quiz exercised missing-answer, incorrect/correct feedback, navigation, results
+and retry controls. A temporary single-instance HTTPS/token entry also passed
+Notebook and terminal WSS interaction, Secure/HttpOnly authentication cookies,
+refresh and download. The operator handled its self-signed certificate warnings
+manually. A generated browser link opened the forwarded Doris FE, where login,
+the QueryProfile list and a query's scan counters were verified.
+
+The SSM connection used for these checks was slow enough to cause initial
+JavaScript chunk timeouts in JupyterLab and Doris FE. Reloading after assets had
+arrived opened the applications. Gzip reduces JupyterLab traffic but does not
+guarantee a successful cold load on such a tunnel. These checks establish the
+single-instance functions; they do not qualify classroom gateway performance.
 
 Terraform creates and destroys the hosts; this installer handles the runtime.
-The shared browser gateway, trusted domain/OIDC routing, manual browser steps
-and other course profiles remain separate implementation and validation work. The instance expiry timer is a host cost
+The shared browser gateway, trusted domain/OIDC routing and other course
+profiles remain separate implementation and validation work. The instance expiry timer is a host cost
 guard; activity-wide scheduled cleanup still requires a separate executor.
 
 ## Build a bundle locally
