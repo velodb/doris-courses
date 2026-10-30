@@ -1,0 +1,26 @@
+#!/bin/bash
+set -eu
+cat > /etc/systemd/system/doris-image-expiry.service <<'EOF'
+[Unit]
+Description=Stop an overdue temporary image builder
+[Service]
+Type=oneshot
+ExecStart=/sbin/poweroff
+EOF
+cat > /etc/systemd/system/doris-image-expiry.timer <<'EOF'
+[Unit]
+Description=Image build expiry cost guard (not full cleanup)
+[Timer]
+OnCalendar=${replace(replace(expires_at, "T", " "), "Z", " UTC")}
+Persistent=true
+[Install]
+WantedBy=timers.target
+EOF
+systemctl daemon-reload
+systemctl enable --now doris-image-expiry.timer
+
+if command -v snap >/dev/null 2>&1 && snap list amazon-ssm-agent >/dev/null 2>&1; then
+    snap start --enable amazon-ssm-agent
+else
+    systemctl enable --now amazon-ssm-agent.service
+fi

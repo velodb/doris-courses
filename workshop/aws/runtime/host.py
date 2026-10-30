@@ -84,7 +84,12 @@ def verify_bundle(bundle):
         raise RuntimeErrorDetail("bundle: invalid course commit")
     if plan.get("runtime") != {"os": "linux", "architecture": "x86_64", "python_version": "3.12", "repository_root": "/opt/doris-courses"}:
         raise RuntimeErrorDetail("bundle: incompatible runtime")
-    if not isinstance(plan.get("sha256"), dict) or set(plan["sha256"]) != PAYLOAD:
+    locks = plan.get("python_locks", {})
+    expected_locks = {"server", *(c.get("kernel") for c in plan.get("courses", []) if isinstance(c, dict))}
+    if not isinstance(locks, dict) or (locks and (set(locks) != expected_locks or
+                  any(path != name + ".requirements.lock" for name, path in locks.items()))):
+        raise RuntimeErrorDetail("bundle: invalid Python lock mapping")
+    if not isinstance(plan.get("sha256"), dict) or set(plan["sha256"]) != PAYLOAD | set(locks.values()):
         raise RuntimeErrorDetail("bundle: incomplete payload hashes")
     for name, checksum in plan["sha256"].items():
         if (bundle / name).is_symlink() or digest(bundle / name) != checksum:
@@ -261,8 +266,20 @@ def install(bundle):
         if name in receipt["environments"] and (directory / "bin/python").is_file():
             continue
         as_learner(["/usr/bin/python3.12", "-m", "venv", directory], layout)
-        as_learner([directory / "bin/python", "-m", "pip", "install", "--disable-pip-version-check",
-                    "--index-url", "https://pypi.org/simple", *requirements], layout, cwd=cwd)
+        pip = [directory / "bin/python", "-m", "pip", "install", "--disable-pip-version-check",
+               "--index-url", "https://pypi.org/simple"]
+        if plan.get("python_locks"):
+            lock = layout.server.parent / "python-locks" / plan["python_locks"][name]
+            lock.parent.mkdir(mode=0o755, exist_ok=True)
+            shutil.copyfile(Path(bundle) / plan["python_locks"][name], lock)
+            lock.chmod(0o644)
+            as_learner([*pip, "--require-hashes", "--only-binary=:all:", "--no-deps", "-r",
+                        lock], layout, cwd=cwd)
+            if name != "server":
+                local = ".[extensions]" if next(c for c in plan["courses"] if c["kernel"] == name)["extensions"] else "."
+                as_learner([*pip, "--no-deps", "--no-build-isolation", "-e", "../common", "-e", local], layout, cwd=cwd)
+        else:
+            as_learner([*pip, *requirements], layout, cwd=cwd)
         as_learner([directory / "bin/python", "-m", "pip", "check"], layout, cwd=cwd)
         frozen = as_learner([directory / "bin/python", "-m", "pip", "freeze"], layout, cwd=cwd, capture=True)
         freeze_path = layout.state / "installed-packages" / (name + ".txt")

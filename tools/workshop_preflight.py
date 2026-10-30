@@ -145,8 +145,13 @@ def validate_inputs(config, pilot, now=None):
         path = bundle / name
         require(path.resolve().is_relative_to(bundle) and path.is_file() and file_hash(path) == checksum,
                 'runtime: bundle file missing, unsafe or changed')
+    locks = runtime.get('python_locks', {})
+    require(isinstance(locks, dict) and (not locks or
+            (set(locks) == {'server', *(c['kernel'] for c in runtime['courses'])} and
+             all(path == name + '.requirements.lock' for name, path in locks.items()))),
+            'runtime: invalid Python lock mapping')
     require({'install_host.sh', 'source.tar', 'host.py', 'check.py', 'kernel.py', 'serve.py', 'portal.py',
-             'packages.json', 'doris-workshop-jupyter.service'} == runtime['sha256'].keys(),
+             'packages.json', 'doris-workshop-jupyter.service'} | set(locks.values()) == runtime['sha256'].keys(),
             'runtime: incomplete production bundle')
     pilot['runtime_bundle_dir'] = str(bundle)
     return config, pilot

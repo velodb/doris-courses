@@ -185,3 +185,5 @@ These tests exercise schema and semantic rejection, pinned Git metadata, profile
 scope, draft/planned boundaries, roster stability, ownership checks, private
 output and overwrite refusal. The repository check job discovers them through
 the existing `tools/tests` suite. They require no AWS identity or Docker.
+
+Fixed private-image construction is described in the [Packer build guide](packer/README.md). Images remain candidates until independently validated on a new instance.

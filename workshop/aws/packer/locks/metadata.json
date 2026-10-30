@@ -1,0 +1,13 @@
+{
+  "locks_sha256": {
+    "doris-rta.requirements.lock": "8b37df53c5470f093787edd38c396088b8fe0cbd312e152ba05529be7f8680e8",
+    "server.requirements.lock": "8dd531a3886eef40d0ae2c7f170e5d142d1e43aa9e70f8b2e6f66212ca35f91e"
+  },
+  "packages_sha256": "24f0e9737487594c4ddea4345e5b2819e3622dec449f05528a2cf5d0a784cb80",
+  "resolver": "uv 0.12.5; Linux x86_64 manylinux_2_39; Python 3.12; PyPI; wheel-only",
+  "source_sha256": {
+    "doris-course/01-real-time-analytics/pyproject.toml": "feb27413286f606b0cd72c0709dfd18e645f422568860c752bb17b5c5e13a052",
+    "doris-course/01-real-time-analytics/requirements.txt": "aed165f19236b27b0701aa66d8d39667acdd7ea65e3e556796953d350e49c56f",
+    "doris-course/common/pyproject.toml": "d7057c069e13a45a9609a1309c4d91e1e526f6a3a51b0562a6730f7499f7f1e0"
+  }
+}

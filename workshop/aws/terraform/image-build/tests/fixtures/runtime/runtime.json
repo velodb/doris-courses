@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "kind": "doris-workshop-runtime",
+  "course_ref": "ca89b019067036f66cbe03577dd2fbb0bed602f4",
+  "sha256": {
+    "install_host.sh": "7b95f84692ec3bdfa58b6645efc46f345d782f24e67399b69f21c966096de178"
+  }
+}
