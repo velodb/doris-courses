@@ -409,6 +409,7 @@ class RuntimeTests(unittest.TestCase):
             self.assertNotIn("certificate", page)
             self.assertNotIn("fetch(", page)
         self.assertTrue(check.portal_ready(token_file, base + "/workshop/"))
+        self.assertTrue(check.widget_frontend_ready(token_file, base + "/lab"))
         lesson = self.layout.source / "doris-course/01-real-time-analytics/course.md"
         (lesson.parent / "image.png").write_bytes(b"fixture-image")
         lesson.write_text(f'# Lesson\n[Lab]({self.lab}?x=1#cell)\n![Image](image.png)\n<script>alert(1)</script>')

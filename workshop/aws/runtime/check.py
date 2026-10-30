@@ -8,10 +8,12 @@ from pathlib import Path
 import platform
 import pwd
 import queue
+import re
 import subprocess
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 
 
@@ -155,6 +157,25 @@ def portal_ready(token_file, url="http://127.0.0.1:8888/workshop/"):
         return False
 
 
+def widget_frontend_ready(token_file, url="http://127.0.0.1:8888/lab"):
+    """Require the widget manager in Lab's actual page config and served assets."""
+    try:
+        headers = {"Authorization": "token " + Path(token_file).read_text().strip()}
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+        with opener.open(urllib.request.Request(url, headers=headers), timeout=5) as response:
+            page = response.read().decode()
+        match = re.search(r'<script[^>]*id="jupyter-config-data"[^>]*>(.*?)</script>', page, re.S)
+        config = json.loads(match.group(1))
+        manager = next(item for item in config["federated_extensions"]
+                       if item["name"] == "@jupyter-widgets/jupyterlab-manager")
+        path = config["fullLabextensionsUrl"].rstrip("/") + "/" + manager["name"] + "/" + manager["load"]
+        asset_url = urllib.parse.urljoin(url, path)
+        with opener.open(urllib.request.Request(asset_url, headers=headers), timeout=5) as response:
+            return response.status == 200 and bool(response.read(1024))
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, StopIteration, urllib.error.URLError):
+        return False
+
+
 def course_services():
     """Report current containers, including stopped Labs; do not start services."""
     result = subprocess.run(["docker", "ps", "--all", "--format", "{{.Names}}\t{{.State}}"],
@@ -190,6 +211,7 @@ def collect_checks(plan, *, source=Path("/opt/doris-courses"),
     check("jupyter-authenticated-loopback", lambda: jupyter_ready(Path("/run/doris-workshop/token"),
           expected_kernels={course["kernel"] for course in plan["courses"]}))
     check("course-entry", lambda: portal_ready(Path("/run/doris-workshop/token")))
+    check("jupyter-widget-frontend", lambda: widget_frontend_ready(Path("/run/doris-workshop/token")))
     for course in plan["courses"]:
         def copies_valid():
             return all(json.loads((workspace / course["course_dir"] / path).read_text())["metadata"]["kernelspec"]["name"] == course["kernel"]

@@ -114,7 +114,7 @@ def verify_bundle(bundle):
         raise RuntimeErrorDetail("bundle: expected all five Docker packages")
     if any(not re.fullmatch(r"[0-9A-Za-z.+:~_-]+", version) for version in packages["docker_apt"].values()):
         raise RuntimeErrorDetail("bundle: invalid package version")
-    if packages.get("server_pip") != ["jupyterlab==4.4.10", "ipykernel==6.29.5", "markdown-it-py==3.0.0"]:
+    if packages.get("server_pip") != ["jupyterlab==4.4.10", "ipykernel==6.29.5", "markdown-it-py==3.0.0", "jupyterlab_widgets==3.0.17"]:
         raise RuntimeErrorDetail("bundle: unexpected Jupyter dependencies")
     return plan, packages
 

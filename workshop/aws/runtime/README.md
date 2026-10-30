@@ -10,6 +10,10 @@ as the `workshop` user under systemd and listens on `127.0.0.1:8888`. Its writab
 Jupyter configuration directory is `/var/lib/doris-workshop/home/jupyter-config`;
 `/etc/doris-workshop` holds the root-managed runtime plan. This separation lets
 Jupyter migrate IPython configuration after kernels have run and after restarts.
+The server environment also installs the widget frontend used by course
+quizzes. Installing `ipywidgets` only in a separate course kernel does not make
+its browser extension available to the server. Readiness checks verify that
+Lab advertises and serves the widget manager's JavaScript assets.
 
 The host runtime was validated on two real Ubuntu 24.04 x86_64
 `m7i.2xlarge` instances with `rta-main` on 2026-10-30. Checks covered Notebook
