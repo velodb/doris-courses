@@ -6,6 +6,8 @@ course metadata. A [host runtime bundle and installer](runtime/README.md) and
 [Terraform integration scripts](terraform/README.md) are available.
 The [temporary course reader](runtime/access.md) and
 [browser URL mapping](browser-urls.md) reuse the host runtime.
+Use the [activity lifecycle CLI](lifecycle.md) for reviewed-plan up, status,
+runtime waiting and basic activity destroy.
 Real EC2 infrastructure and host-runtime integration have been verified. Full
 course/browser access and AMI building remain separate steps. The
 [deployment architecture](architecture.md) and

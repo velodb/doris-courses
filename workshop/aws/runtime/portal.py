@@ -119,13 +119,10 @@ class ContentHandler(PortalHandler):
 class TerminalHandler(PortalHandler):
     @web.authenticated
     def get(self):
-        self.page("Web Terminal", '<p>Open a shell on your workshop instance.</p>'
-                  '<form method="post">' + self.xsrf_form_html() + '<button>Open terminal</button></form>')
-
-    @web.authenticated
-    def post(self):
-        terminal = self.settings["terminal_manager"].create()
-        self.redirect(url_path_join(self.base_url, "lab/terminals", terminal["name"]))
+        self.page("Web Terminal", '<p>Open JupyterLab, then choose <strong>File → New → Terminal</strong> '
+                  'to start a shell on your workshop instance. Existing terminals are listed in the '
+                  '<strong>Running Terminals and Kernels</strong> sidebar.</p>'
+                  f'<p><a href="{escape(url_path_join(self.base_url, "lab"))}">Open JupyterLab</a></p>')
 
 
 def register(server, plan, source):

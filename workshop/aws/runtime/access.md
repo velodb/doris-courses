@@ -57,5 +57,5 @@ explicit reviewed configuration, TLS and per-request ownership checks.
 The authentication model follows [Jupyter Server security](https://jupyter-server.readthedocs.io/en/latest/operators/security.html);
 Notebook navigation follows [JupyterLab file URLs](https://jupyterlab.readthedocs.io/en/stable/user/urls.html).
 Actual EC2 browser use, TLS, login-cookie behavior, refresh and reconnection
-remain AWS-11 second-round checks. Shared HTTPS/OIDC and cross-learner rejection
-remain AWS-15/16 work.
+remain cloud integration checks. Shared HTTPS/OIDC and cross-learner rejection
+require separate access infrastructure.

@@ -3,6 +3,8 @@
 Use this runbook after the offline Terraform and runtime checks pass. It covers
 one to five new-network, SSM-only learner hosts; it does not certify full course/browser access.
 The [architecture](architecture.md) defines resource ownership and later stages.
+The [lifecycle CLI](lifecycle.md) automates reviewed-plan apply, installation,
+runtime waiting, status and basic activity destroy using these same inputs.
 
 ## Supply the first-run inputs
 

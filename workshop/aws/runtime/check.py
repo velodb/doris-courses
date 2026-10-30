@@ -1,6 +1,7 @@
 """Report host-runtime readiness without creating Lab containers or printing secrets."""
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -138,6 +139,34 @@ def jupyter_ready(token_file, url="http://127.0.0.1:8888/api/status", *, expecte
         return False
 
 
+def portal_ready(token_file, url="http://127.0.0.1:8888/workshop/"):
+    try:
+        token = Path(token_file).read_text().strip()
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+        try:
+            opener.open(url, timeout=5).close()
+            return False
+        except urllib.error.HTTPError as error:
+            if error.code not in (302, 401, 403):
+                return False
+        with opener.open(urllib.request.Request(url, headers={"Authorization": "token " + token}), timeout=5) as response:
+            return response.status == 200 and b"Apache Doris workshop" in response.read(262144)
+    except (OSError, ValueError, urllib.error.URLError):
+        return False
+
+
+def course_services():
+    """Report current containers, including stopped Labs; do not start services."""
+    result = subprocess.run(["docker", "ps", "--all", "--format", "{{.Names}}\t{{.State}}"],
+                            capture_output=True, text=True, timeout=15, check=True)
+    services = []
+    for line in result.stdout.splitlines():
+        name, state = line.split("\t", 1)
+        if name.startswith(("doris-rta", "doris-warehousing-course", "doris-obs", "doris-ai")):
+            services.append({"name": name, "state": state})
+    return services
+
+
 def collect_checks(plan, *, source=Path("/opt/doris-courses"),
                    workspace=Path("/var/lib/doris-workshop/workspace"),
                    kernels=Path("/usr/local/share/doris-workshop/jupyter/kernels")):
@@ -160,6 +189,7 @@ def collect_checks(plan, *, source=Path("/opt/doris-courses"),
     check("jupyter-systemd", lambda: command_ok(["systemctl", "is-active", "--quiet", "doris-workshop-jupyter.service"]))
     check("jupyter-authenticated-loopback", lambda: jupyter_ready(Path("/run/doris-workshop/token"),
           expected_kernels={course["kernel"] for course in plan["courses"]}))
+    check("course-entry", lambda: portal_ready(Path("/run/doris-workshop/token")))
     for course in plan["courses"]:
         def copies_valid():
             return all(json.loads((workspace / course["course_dir"] / path).read_text())["metadata"]["kernelspec"]["name"] == course["kernel"]
@@ -188,7 +218,16 @@ def main(argv=None):
             time.sleep(min(1, max(0, deadline - time.monotonic())))
         checks = collect_checks(plan)
         passed = all(check["passed"] for check in checks)
-        print(json.dumps({"scope": "host-runtime", "ready": passed, "course_labs_validated": False, "checks": checks}, indent=2))
+        try:
+            services = course_services()
+        except (OSError, ValueError, subprocess.SubprocessError):
+            services = []
+            passed = False
+            checks.append({"check": "course-service-inventory", "passed": False})
+        print(json.dumps({"scope": "host-runtime", "ready": passed, "course_labs_validated": False,
+                          "course_ref": plan["course_ref"],
+                          "runtime_sha256": hashlib.sha256(args.runtime_json.read_bytes()).hexdigest(),
+                          "checks": checks, "services": services}, indent=2))
         return 0 if passed else 1
     except (OSError, ValueError, KeyError, TypeError):
         print(json.dumps({"scope": "host-runtime", "ready": False, "error": "invalid or unreadable runtime configuration"}))

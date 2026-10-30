@@ -241,6 +241,12 @@ class RuntimeTests(unittest.TestCase):
         self.assertFalse(json.loads(output.getvalue())["ready"])
         collect.assert_not_called()
 
+    def test_service_inventory_reports_running_and_stopped_course_containers(self):
+        output = "doris-rta\trunning\ndoris-warehousing-course\texited\nunrelated\trunning\n"
+        with mock.patch.object(check.subprocess, "run", return_value=subprocess.CompletedProcess([], 0, stdout=output)):
+            self.assertEqual(check.course_services(), [{"name": "doris-rta", "state": "running"},
+                                                     {"name": "doris-warehousing-course", "state": "exited"}])
+
     @unittest.skipUnless(LIVE, "Install runtime/test-requirements.txt with Python 3.12 for live kernel tests")
     def test_real_isolated_kernels_nested_cwd_and_restart(self):
         import ipykernel
@@ -364,7 +370,7 @@ class RuntimeTests(unittest.TestCase):
                 self.assertNotIn(token, log.read_text())
                 self.assertNotIn("not recognized by", log.read_text())
                 try:
-                    self.verify_portal_and_protected_endpoints(port, token)
+                    self.verify_portal_and_protected_endpoints(port, token, runtime_dir / "token")
                 except Exception as exc:
                     self.fail(f"{type(exc).__name__}: {log.read_text()}")
             finally:
@@ -375,7 +381,7 @@ class RuntimeTests(unittest.TestCase):
                     process.kill()
                     process.wait(timeout=5)
 
-    def verify_portal_and_protected_endpoints(self, port, token):
+    def verify_portal_and_protected_endpoints(self, port, token, token_file):
         from tornado.httpclient import HTTPRequest, HTTPClientError
         from tornado.websocket import websocket_connect
 
@@ -402,6 +408,7 @@ class RuntimeTests(unittest.TestCase):
             self.assertIn("/lab/tree/doris-course/01-real-time-analytics/" + self.lab, page)
             self.assertNotIn("certificate", page)
             self.assertNotIn("fetch(", page)
+        self.assertTrue(check.portal_ready(token_file, base + "/workshop/"))
         lesson = self.layout.source / "doris-course/01-real-time-analytics/course.md"
         (lesson.parent / "image.png").write_bytes(b"fixture-image")
         lesson.write_text(f'# Lesson\n[Lab]({self.lab}?x=1#cell)\n![Image](image.png)\n<script>alert(1)</script>')
@@ -414,11 +421,10 @@ class RuntimeTests(unittest.TestCase):
             self.assertEqual(response.read(), b"fixture-image")
         with request("/api/contents/doris-course/01-real-time-analytics/" + self.lab) as response:
             self.assertEqual(json.load(response)["content"]["metadata"]["kernelspec"]["name"], "doris-rta")
-        with self.assertRaises(urllib.error.HTTPError) as redirect:
-            request("/workshop/terminal", method="POST", body=b"")
-        self.assertEqual(redirect.exception.code, 302)
-        terminal = redirect.exception.headers["Location"].rsplit("/", 1)[-1]
-        self.assertIn("/lab/terminals/", redirect.exception.headers["Location"])
+        with request("/workshop/terminal") as response:
+            self.assertIn('href="/lab"', response.read().decode())
+        with request("/api/terminals", method="POST", body=b"{}") as response:
+            terminal = json.load(response)["name"]
         # A real kernel and terminal ensure rejection is authentication, not a
         # missing resource or an invalid websocket handshake.
         course = self.plan["courses"][0]

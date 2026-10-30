@@ -412,7 +412,8 @@ def inputs_for_terraform(config, pilot, stage, availability_zone=None):
     return variables
 
 
-def plan(config, pilot, aws, stage, directory):
+def plan(config, pilot, aws, stage, directory, *, terraform_runner=None):
+    run = terraform_runner or terraform
     env = explicit_environment()
     report = live_check(config, pilot, aws, stage)
     require(not directory.exists(), 'output: run directory exists; select a new directory')
@@ -433,10 +434,10 @@ def plan(config, pilot, aws, stage, directory):
         init.append(f'-backend-config={directory / "backend.tfbackend.json"}')
     else:
         init.append(f'-backend-config=path={directory / "foundation.tfstate"}')
-    terraform(init, env)
+    run(init, env)
     args = [module, 'plan', '-input=false', '-lock-timeout=60s', f'-var-file={directory / "inputs.tfvars.json"}',
             f'-out={directory / "saved.tfplan"}']
-    terraform(args, env)
+    run(args, env)
     wc.write_manifest(directory / 'binding.json', {'stage': stage, 'config': config, 'pilot': pilot,
                        'plan_sha256': file_hash(directory / 'saved.tfplan'),
                        'vars_sha256': file_hash(directory / 'inputs.tfvars.json'),
@@ -458,7 +459,7 @@ def tool_hash():
     return wc.canonical_hash({str(p.relative_to(wc.REPO)): file_hash(p) for p in paths})
 
 
-def apply_saved(directory, aws_factory=Aws):
+def apply_saved(directory, aws_factory=Aws, *, terraform_runner=None):
     env = explicit_environment()
     directory = directory.resolve()
     binding = wc.load_document(directory / 'binding.json')
@@ -484,7 +485,7 @@ def apply_saved(directory, aws_factory=Aws):
                 'instance: saved plan availability zone no longer offers this instance type')
     wc.write_manifest(directory / f'apply-preflight-{datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%f")}.json', report)
     env['TF_DATA_DIR'] = str(directory / 'terraform-data')
-    terraform([f'-chdir={MODULES / binding["stage"]}', 'apply', '-input=false', '-lock-timeout=60s',
+    (terraform_runner or terraform)([f'-chdir={MODULES / binding["stage"]}', 'apply', '-input=false', '-lock-timeout=60s',
                str(directory / 'saved.tfplan')], env)
 
 

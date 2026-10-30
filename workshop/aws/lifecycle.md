@@ -1,0 +1,124 @@
+# Activity lifecycle CLI
+
+`tools/workshop.py` wraps the existing live preflight and saved-plan gate,
+Terraform activity resources, SSM installation and runtime probes. It reuses an
+existing foundation bucket. It never creates or destroys foundation resources.
+The current scope is the one-to-five-host SSM-only pilot described in the
+[first-run guide](first-run.md). Shared HTTPS/OIDC and full course execution
+remain separate integration checks.
+
+## Plan, review and bring up
+
+Install [preflight-requirements.txt](preflight-requirements.txt), put Terraform
+on PATH, authenticate the explicit profile, and prepare the event/pilot inputs
+and a fresh [runtime bundle](runtime/README.md). Use a new run directory each
+time you create a saved plan. The bundle must include the current reader and
+runtime probes; rebuild older bundles rather than patching an installed host.
+
+```bash
+.venv-workshop/bin/python tools/workshop.py plan \
+  --config workshop/aws/events/event.local.yaml \
+  --pilot workshop/aws/events/pilot.local.yaml \
+  --run-dir workshop/aws/.local/event-run-03
+```
+
+This performs live identity, budget, price, permission and quota checks before
+Terraform init/plan. It writes a private saved plan and prints its SHA256.
+Inspect the saved plan with Terraform, using that run's `TF_DATA_DIR`:
+
+```bash
+TF_DATA_DIR="$PWD/workshop/aws/.local/event-run-03/terraform-data" \
+  terraform -chdir=workshop/aws/terraform/pilot show \
+  "$PWD/workshop/aws/.local/event-run-03/saved.tfplan"
+```
+
+Review ownership, learner IDs, zero inbound rules, deleted root disks, expiry,
+instance count and resource changes. Then one command applies that exact plan,
+waits for SSM, installs the runtime and checks every learner host:
+
+```bash
+.venv-workshop/bin/python tools/workshop.py up \
+  --run-dir workshop/aws/.local/event-run-03 \
+  --approved-plan-sha256 REVIEWED_SHA256 --timeout 7500
+```
+
+Apply reruns live preflight and rejects stale, changed or unreviewed plans.
+`--timeout` bounds installation/readiness waiting (1–14400 seconds), separately
+from the 1800-second Terraform subprocess limit and the SSM document's execution
+limit. SDK reads have finite retries/timeouts. A deadline leaves resource and
+command IDs in `lifecycle.json`; it does not imply cancellation or cleanup.
+
+`ready: true` means host runtime and authenticated course entry are ready:
+correct pinned course/runtime, Jupyter authentication, course reader, Docker,
+Notebook bindings and course kernels. It always includes
+`course_labs_validated: false`. Lab containers are started by the Labs, so the
+service list can initially be empty. Later probes report running and stopped
+course containers. EC2 `running` and an SSM dispatch are insufficient for ready.
+
+The reported entry is `operator-ssm-forward`, remote port 8888, `/workshop/`.
+Use the [temporary-access instructions](runtime/access.md) to forward the port
+and log in. A configured DNS placeholder is never printed as a working URL.
+The CLI does not print tokens or retrieve them into its ordinary output.
+
+## Status and recovery
+
+```bash
+.venv-workshop/bin/python tools/workshop.py status \
+  --run-dir workshop/aws/.local/event-run-03 --timeout 180
+.venv-workshop/bin/python tools/workshop.py up \
+  --run-dir workshop/aws/.local/event-run-03 --retry-failed
+```
+
+Repeated `up` after a successful apply resumes installation without replaying
+the saved plan. It reuses pending SSM command IDs and successful installations,
+then runs fresh health probes. `status` performs fresh remote probes and never
+installs packages. `--retry-failed` permits at most three attempts per failed
+installation/probe in that run. A lost send-command response is recorded as
+`DispatchUnknown`; inspect SSM command history and resolve the outstanding
+command before retrying. It is never silently resent.
+
+Failed or interrupted Terraform apply requires a new reviewed plan in a fresh
+run directory using the same event backend, or cleanup through the existing
+run. An old saved plan cannot be replayed. Preserve every run directory until
+cleanup and reconciliation finish. Keep the original deployment checkout and
+bundle available, because module, variables and backend fingerprints are bound.
+
+The non-secret `lifecycle.json` reports each learner's EC2/SSM state, bounded
+command attempts, health checks, current services, known EC2/EBS IDs, errors and
+retained foundation. SDK/SSM bodies are filtered rather than copied to it.
+Terraform diagnostics are private `terraform-*.log` files; raw machine-readable
+state stays in memory. Target installation logs are under
+`/var/log/doris-workshop`; Jupyter logs are in its systemd journal. Review logs
+before sharing them. Neither CLI failure nor local interruption deletes resources.
+
+Exit codes are `0` for ready/successfully destroyed/planned, `1` for a completed
+status query that is not ready, and `2` for invalid input, query/command failure,
+timeout or incomplete cleanup. Per-run file locks prevent concurrent local
+operations; Terraform retains its normal backend lock.
+
+## Destroy the activity
+
+```bash
+.venv-workshop/bin/python tools/workshop.py destroy \
+  --run-dir workshop/aws/.local/event-run-03 --approve-destroy
+```
+
+This validates explicit identity, bound activity backend/variables/module,
+state resource ownership and actual EC2 assignment. It saves EC2/EBS IDs,
+creates a destroy plan, rejects unowned or non-delete changes, and applies the
+plan under the normal Terraform lock. It then requires an empty managed state,
+no active known instance and no remaining known root volume. Retry the same
+command after a failed destroy or eventual-consistency residual. Expired event
+inputs and unavailable price queries do not block cleanup.
+
+Foundation storage remains and is reported explicitly. This basic reconciliation
+does not replace the later full account/API residual scan, external TTL runner,
+or inspection of resources removed manually from state. Known running instances
+missing from state are reported as untracked billing resources; do not claim
+the account is empty based on an empty activity state.
+
+The SSM integration uses [SendCommand](https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_SendCommand.html)
+and [GetCommandInvocation](https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_GetCommandInvocation.html).
+Controlled offline tests cover orchestration and AWS SDK request shapes. Real
+cloud execution of this wrapper and full browser/course validation remain
+cloud integration work.
