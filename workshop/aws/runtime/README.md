@@ -15,6 +15,10 @@ quizzes. Installing `ipywidgets` only in a separate course kernel does not make
 its browser extension available to the server. Readiness checks verify that
 Lab advertises and serves the widget manager's JavaScript assets.
 
+The server negotiates gzip for text responses, including JupyterLab's
+JavaScript chunks. This reduces cold-load traffic through SSM port forwarding;
+slow tunnels can otherwise exceed the browser's script-loading timeout.
+
 The host runtime was validated on two real Ubuntu 24.04 x86_64
 `m7i.2xlarge` instances with `rta-main` on 2026-10-30. Checks covered Notebook
 kernel and terminal Docker access, real container execution, authenticated

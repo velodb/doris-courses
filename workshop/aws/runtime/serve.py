@@ -51,6 +51,9 @@ def make_config(plan, workspace, runtime_dir, kernel_dir, port=8888, *, base_url
     config.ServerApp.cookie_secret_file = str(runtime_dir / "cookie-secret")
     config.ServerApp.log_level = "WARN"
     config.ServerApp.use_redirect_file = False
+    # JupyterLab loads many JavaScript chunks over the SSM tunnel. Negotiate
+    # text compression with browsers so cold loads do not exhaust chunk timeouts.
+    config.ServerApp.tornado_settings = {"compress_response": True}
     config.IdentityProvider.token = token
     config.KernelSpecManager.ensure_native_kernel = False
     config.KernelSpecManager.allowed_kernelspecs = {course["kernel"] for course in plan["courses"]}

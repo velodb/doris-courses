@@ -410,6 +410,22 @@ class RuntimeTests(unittest.TestCase):
             self.assertNotIn("fetch(", page)
         self.assertTrue(check.portal_ready(token_file, base + "/workshop/"))
         self.assertTrue(check.widget_frontend_ready(token_file, base + "/lab"))
+        # Exercise negotiated compression on the actual Lab entry script, not
+        # only the config flag: this is the cold-load path through SSM.
+        import gzip
+        import re
+        with request("/lab") as response:
+            lab_page = response.read().decode()
+        script = re.search(r'<script[^>]+src="([^"]+)', lab_page).group(1)
+        with request(script) as response:
+            uncompressed = response.read()
+        compressed_request = urllib.request.Request(base + script, headers={
+            "Authorization": "token " + token, "Accept-Encoding": "gzip"})
+        with opener.open(compressed_request, timeout=10) as response:
+            self.assertEqual(response.headers.get("Content-Encoding"), "gzip")
+            compressed = response.read()
+        self.assertEqual(gzip.decompress(compressed), uncompressed)
+        self.assertLess(len(compressed), len(uncompressed) // 2)
         lesson = self.layout.source / "doris-course/01-real-time-analytics/course.md"
         (lesson.parent / "image.png").write_bytes(b"fixture-image")
         lesson.write_text(f'# Lesson\n[Lab]({self.lab}?x=1#cell)\n![Image](image.png)\n<script>alert(1)</script>')
