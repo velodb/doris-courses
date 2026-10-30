@@ -5,6 +5,10 @@ import json
 import os
 from pathlib import Path
 import secrets
+import sys
+
+# Python -I excludes this directory. Load only the deployed helper directory.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 
 def private_bytes(path, value):
@@ -17,7 +21,7 @@ def private_bytes(path, value):
         os.close(descriptor)
 
 
-def make_config(plan, workspace, runtime_dir, kernel_dir, port=8888):
+def make_config(plan, workspace, runtime_dir, kernel_dir, port=8888, *, base_url="/", certfile=None, keyfile=None):
     from traitlets.config import Config
 
     runtime_dir = Path(runtime_dir)
@@ -30,7 +34,15 @@ def make_config(plan, workspace, runtime_dir, kernel_dir, port=8888):
     config.ServerApp.ip = "127.0.0.1"
     config.ServerApp.port = port
     config.ServerApp.port_retries = 0
-    config.ServerApp.root_dir = str(workspace)
+    config.ServerApp.root_dir = str(Path(workspace).resolve())
+    config.ServerApp.base_url = base_url
+    config.ServerApp.default_url = "/workshop/"
+    if bool(certfile) != bool(keyfile):
+        raise ValueError("TLS requires both certificate and key")
+    if certfile:
+        config.ServerApp.certfile = str(certfile)
+        config.ServerApp.keyfile = str(keyfile)
+        config.IdentityProvider.secure_cookie = True
     config.ServerApp.open_browser = False
     config.ServerApp.allow_root = False
     config.ServerApp.allow_remote_access = False
@@ -53,6 +65,10 @@ def main(argv=None):
     parser.add_argument("--runtime-dir", type=Path, default=Path("/run/doris-workshop"))
     parser.add_argument("--kernel-dir", type=Path, default=Path("/usr/local/share/doris-workshop/jupyter/kernels"))
     parser.add_argument("--port", type=int, default=8888)
+    parser.add_argument("--source", type=Path, default=Path("/opt/doris-courses"))
+    parser.add_argument("--base-url", default="/")
+    parser.add_argument("--certfile", type=Path)
+    parser.add_argument("--keyfile", type=Path)
     args = parser.parse_args(argv)
     # runtime_dir is selected by jupyter_core through this environment variable;
     # it is not a configurable ServerApp trait.
@@ -60,13 +76,16 @@ def main(argv=None):
     from jupyterlab.labapp import LabApp
 
     plan = json.loads(args.runtime_json.read_text())
-    config = make_config(plan, args.workspace, args.runtime_dir, args.kernel_dir, args.port)
+    config = make_config(plan, args.workspace, args.runtime_dir, args.kernel_dir, args.port,
+                         base_url=args.base_url, certfile=args.certfile, keyfile=args.keyfile)
     # LabApp.launch_instance drops its kwargs when creating ServerApp. Pass
     # configuration through initialize_server instead, before any startup.
     server = LabApp.initialize_server(argv=[], config=config)
     # kernel_dirs is an instance trait, not a configurable trait in
     # jupyter_client. Setting it through Config is silently ineffective.
     server.kernel_spec_manager.kernel_dirs = [str(args.kernel_dir)]
+    from portal import register
+    register(server, plan, args.source)
     server.start()
 
 

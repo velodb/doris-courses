@@ -1,6 +1,7 @@
 """Runtime bundles, preservation, real kernel isolation and loopback authentication."""
 
 import copy
+import asyncio
 import importlib.util
 import io
 import json
@@ -344,6 +345,7 @@ class RuntimeTests(unittest.TestCase):
         with log.open("w") as stream:
             process = subprocess.Popen([sys.executable, "-I", str(builder.RUNTIME / "serve.py"),
                 "--runtime-json", str(runtime_json), "--workspace", str(self.layout.workspace),
+                "--source", str(self.layout.source),
                 "--runtime-dir", str(runtime_dir), "--kernel-dir", str(self.layout.kernels), "--port", str(port)],
                 stdout=stream, stderr=stream, env=server_env)
             try:
@@ -361,6 +363,10 @@ class RuntimeTests(unittest.TestCase):
                     self.assertEqual(set(json.load(response)["kernelspecs"]), {"doris-rta", "doris-obs"})
                 self.assertNotIn(token, log.read_text())
                 self.assertNotIn("not recognized by", log.read_text())
+                try:
+                    self.verify_portal_and_protected_endpoints(port, token)
+                except Exception as exc:
+                    self.fail(f"{type(exc).__name__}: {log.read_text()}")
             finally:
                 process.terminate()
                 try:
@@ -368,6 +374,80 @@ class RuntimeTests(unittest.TestCase):
                 except subprocess.TimeoutExpired:
                     process.kill()
                     process.wait(timeout=5)
+
+    def verify_portal_and_protected_endpoints(self, port, token):
+        from tornado.httpclient import HTTPRequest, HTTPClientError
+        from tornado.websocket import websocket_connect
+
+        base = f"http://127.0.0.1:{port}"
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), check.NoRedirect())
+
+        def request(path, *, auth=True, method="GET", body=None):
+            headers = {"Authorization": "token " + token} if auth else {}
+            req = urllib.request.Request(base + path, headers=headers, method=method, data=body)
+            return opener.open(req, timeout=10)
+
+        for path in ("/api/contents", "/api/kernels", "/api/sessions", "/api/terminals", "/workshop/",
+                     "/workshop/content/doris-course/01-real-time-analytics/course.md", "/workshop/terminal"):
+            with self.subTest(unauthenticated=path), self.assertRaises(urllib.error.HTTPError) as failure:
+                request(path, auth=False)
+            self.assertIn(failure.exception.code, (302, 401, 403))
+        for path in ("/api/kernels", "/api/terminals", "/workshop/terminal"):
+            with self.subTest(unauthenticated_post=path), self.assertRaises(urllib.error.HTTPError) as failure:
+                request(path, auth=False, method="POST", body=b"{}")
+            self.assertIn(failure.exception.code, (401, 403))
+        with request("/workshop/") as response:
+            page = response.read().decode()
+            self.assertIn("doris-rta", page)
+            self.assertIn("/lab/tree/doris-course/01-real-time-analytics/" + self.lab, page)
+            self.assertNotIn("certificate", page)
+            self.assertNotIn("fetch(", page)
+        lesson = self.layout.source / "doris-course/01-real-time-analytics/course.md"
+        (lesson.parent / "image.png").write_bytes(b"fixture-image")
+        lesson.write_text(f'# Lesson\n[Lab]({self.lab}?x=1#cell)\n![Image](image.png)\n<script>alert(1)</script>')
+        with request("/workshop/content/doris-course/01-real-time-analytics/course.md") as response:
+            page = response.read().decode()
+            self.assertIn("?x=1#cell", page)
+            self.assertIn("/workshop/content/doris-course/01-real-time-analytics/image.png", page)
+            self.assertNotIn("<script>", page)
+        with request("/workshop/content/doris-course/01-real-time-analytics/image.png") as response:
+            self.assertEqual(response.read(), b"fixture-image")
+        with request("/api/contents/doris-course/01-real-time-analytics/" + self.lab) as response:
+            self.assertEqual(json.load(response)["content"]["metadata"]["kernelspec"]["name"], "doris-rta")
+        with self.assertRaises(urllib.error.HTTPError) as redirect:
+            request("/workshop/terminal", method="POST", body=b"")
+        self.assertEqual(redirect.exception.code, 302)
+        terminal = redirect.exception.headers["Location"].rsplit("/", 1)[-1]
+        self.assertIn("/lab/terminals/", redirect.exception.headers["Location"])
+        # A real kernel and terminal ensure rejection is authentication, not a
+        # missing resource or an invalid websocket handshake.
+        course = self.plan["courses"][0]
+        import ipykernel
+        env = self.layout.source / course["course_dir"] / ".venv"
+        venv.EnvBuilder(with_pip=False).create(env)
+        site = next((env / "lib").glob("python*/site-packages"))
+        (site / "99-test-dependencies.pth").write_text(str(Path(ipykernel.__file__).resolve().parents[1]) + "\n")
+        with request("/api/kernels", method="POST", body=json.dumps({"name": course["kernel"]}).encode()) as response:
+            kernel = json.load(response)["id"]
+
+        async def sockets():
+            for path in (f"/api/kernels/{kernel}/channels", f"/terminals/websocket/{terminal}"):
+                url = base.replace("http:", "ws:") + path
+                with self.subTest(websocket=path), self.assertRaises(HTTPClientError) as failure:
+                    await websocket_connect(HTTPRequest(url, connect_timeout=5))
+                self.assertIn(failure.exception.code, (401, 403))
+                connection = await websocket_connect(HTTPRequest(url, headers={"Authorization": "token " + token}, connect_timeout=5))
+                connection.close()
+        asyncio.run(sockets())
+        with request("/files/doris-course/01-real-time-analytics/" + self.lab + "?download=1") as response:
+            self.assertEqual(json.load(response)["metadata"]["kernelspec"]["name"], "doris-rta")
+        for path in (f"/api/kernels/{kernel}", f"/api/terminals/{terminal}"):
+            request(path, method="DELETE").close()
+        for path in ("/workshop/content/../../etc/passwd", "/workshop/content/doris-course/01-real-time-analytics/.env"):
+            with self.assertRaises(urllib.error.HTTPError) as failure:
+                request(path)
+            self.assertEqual(failure.exception.code, 404)
+
 
 
 if __name__ == "__main__":

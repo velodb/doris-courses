@@ -145,7 +145,7 @@ def validate_inputs(config, pilot, now=None):
         path = bundle / name
         require(path.resolve().is_relative_to(bundle) and path.is_file() and file_hash(path) == checksum,
                 'runtime: bundle file missing, unsafe or changed')
-    require({'install_host.sh', 'source.tar', 'host.py', 'check.py', 'kernel.py', 'serve.py',
+    require({'install_host.sh', 'source.tar', 'host.py', 'check.py', 'kernel.py', 'serve.py', 'portal.py',
              'packages.json', 'doris-workshop-jupyter.service'} == runtime['sha256'].keys(),
             'runtime: incomplete production bundle')
     pilot['runtime_bundle_dir'] = str(bundle)

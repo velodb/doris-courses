@@ -1,5 +1,8 @@
 # Host runtime for AWS workshops
 
+The authenticated [course reader and terminal entry](access.md) share the
+Jupyter login at `/workshop/`. The page contains no learning-record controls.
+
 The runtime bundle installs the selected courses on a dedicated Ubuntu 24.04
 x86_64 host. Each course gets a Python 3.12 virtual environment, a distinct
 Jupyter kernel and a working copy of its selected Notebooks. JupyterLab runs

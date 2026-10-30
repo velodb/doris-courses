@@ -14,7 +14,7 @@ import sys
 import tarfile
 import tempfile
 
-PAYLOAD = {"install_host.sh", "host.py", "kernel.py", "check.py", "serve.py",
+PAYLOAD = {"install_host.sh", "host.py", "kernel.py", "check.py", "serve.py", "portal.py",
            "doris-workshop-jupyter.service", "packages.json", "source.tar"}
 COURSES = {
     "doris-rta": ("doris-course/01-real-time-analytics", "doris_course"),
@@ -114,7 +114,7 @@ def verify_bundle(bundle):
         raise RuntimeErrorDetail("bundle: expected all five Docker packages")
     if any(not re.fullmatch(r"[0-9A-Za-z.+:~_-]+", version) for version in packages["docker_apt"].values()):
         raise RuntimeErrorDetail("bundle: invalid package version")
-    if packages.get("server_pip") != ["jupyterlab==4.4.10", "ipykernel==6.29.5"]:
+    if packages.get("server_pip") != ["jupyterlab==4.4.10", "ipykernel==6.29.5", "markdown-it-py==3.0.0"]:
         raise RuntimeErrorDetail("bundle: unexpected Jupyter dependencies")
     return plan, packages
 
@@ -272,7 +272,7 @@ def install(bundle):
         atomic_json(receipt_path, receipt)
     layout.helpers.mkdir(parents=True, exist_ok=True)
     layout.helpers.chmod(0o755)
-    for name in ("host.py", "kernel.py", "check.py", "serve.py"):
+    for name in ("host.py", "kernel.py", "check.py", "serve.py", "portal.py"):
         shutil.copyfile(Path(bundle) / name, layout.helpers / name)
         (layout.helpers / name).chmod(0o644)
     materialize(plan, files, layout)
