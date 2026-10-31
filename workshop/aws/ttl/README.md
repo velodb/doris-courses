@@ -4,9 +4,10 @@ The local implementation uses EventBridge Scheduler → Step Functions Standard
 → one ECS Fargate cleanup task. It runs outside learner hosts. The
 [control Terraform module](../terraform/ttl-control/main.tf) defaults to a
 disabled schedule. Its provider mocks and the Python contracts run offline.
-The image recipe has **not** been built or run on Fargate, and natural expiry,
-live IAM permissions, shared cleanup and control-resource retirement remain
-unverified. Do not enable it until those acceptance gates pass.
+Each committed image requires the local build/verification described below.
+Fargate execution, natural expiry, live IAM permissions, shared cleanup and
+control-resource retirement remain unverified. Do not enable it until those
+acceptance gates pass.
 
 The worker currently supports the canonical `access-bindings` and `pilot`
 remote states in one workload account and Region. It cleans bindings first,
@@ -174,14 +175,76 @@ force-unlock, generic delete command or blind retry tool.
 
 Build [Dockerfile](Dockerfile) only from a clean source archive, supplying the
 40-character `SOURCE_SHA` and reviewed digest-pinned `TERRAFORM_IMAGE` and
-`PYTHON_IMAGE` build arguments. The recipe installs pinned Python dependencies
-and caches locked Terraform providers. It sets an unprivileged UID, a read-only
+`PYTHON_IMAGE` build arguments. [images.json](images.json) records reviewed
+Linux amd64 publisher manifest digests for Python and Terraform. The recipe
+installs all Python dependencies from [requirements.lock](requirements.lock),
+including transitive SDK packages, with `--require-hashes`. The reviewed
+[wheel manifest](wheels.json) records official PyPI artifact URLs and hashes;
+installation uses local wheels with no index. It also installs a checksum-verified, packed Terraform
+provider mirror. [terraform.tfrc](terraform.tfrc) permits only that mirror;
+runtime initialization does not query a public registry. A plugin cache alone
+would still perform registry metadata requests, as the
+[Terraform CLI documentation](https://developer.hashicorp.com/terraform/cli/config/config-file#provider-plugin-cache)
+explains. It sets `TMPDIR=/work/tmp` for provider sockets and temporary files,
+an unprivileged UID, a read-only
 root and a single writable `/work` volume; ECS uses the matching Dockerfile
 [volume ownership contract](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/bind-mounts.html).
 The actual image must be built for Linux x86_64, checked for writable scratch,
 provider execution and task-role operation, scanned, then referenced by its
-same-account/Region ECR digest. Building or publishing that image was not part
-of local acceptance.
+same-account/Region ECR digest. Publishing and running the image on Fargate
+require separate cloud acceptance.
+
+The provider lock files include both Linux amd64 and macOS arm64 `h1`
+checksums. A ZIP checksum alone can pass installation while later checks of
+the unpacked Linux provider still fail. Keep both platform checksums when
+refreshing locks; the local container check loads the provider after init.
+
+Build and verify a committed snapshot from the repository root:
+
+```bash
+.venv-workshop/bin/python tools/workshop_ttl_image.py build \
+  --source-sha "$CLEANUP_SOURCE_SHA" --image doris-workshop-ttl:local-check \
+  --output workshop/aws/.local/image-build.json
+.venv-workshop/bin/python tools/workshop_ttl_image.py verify \
+  --source-sha "$CLEANUP_SOURCE_SHA" --image doris-workshop-ttl:local-check \
+  --output workshop/aws/.local/image-verify.json
+```
+
+An optional `build --provider-mirror PATH` reuses an already downloaded
+public provider ZIP. The helper checks its size and checksum against **both
+committed** module locks, copies only that ZIP into a temporary named build
+context and leaves the source archive untouched. Unrelated cache files are
+excluded. Without it, the isolated provider-fetch stage uses Terraform's
+standard registry mirror command.
+
+`build --wheelhouse PATH` similarly copies only the official wheels named in
+the committed manifest after checking every size/hash. Otherwise a separate
+Python fetch stage downloads those exact hash-bound artifact URLs. Keep direct
+requirements, the transitive lock and wheel manifest together when upgrading;
+local unit tests check their consistency. Private Python environments and pip
+configuration are not copied into the image.
+
+Use a new tag/result path for each candidate. Build reads base pins from the
+selected commit and uses `git archive`; working-tree edits, credentials,
+untracked files, `.git`, private state and `plan-doc` are excluded. It never
+pushes. Verification resolves a local image ID and runs with `--pull=never`,
+`--network=none`, read-only root, all capabilities dropped, a 1 GiB memory
+limit and 0.5 CPU, matching the task sizing. Anonymous scratch volumes are
+removed with each test container. No host credentials, mounts or Docker
+socket enter the container.
+
+[image_check.py](image_check.py) checks source seals, scratch ownership,
+unchanged locks, explicit provider schema loading in an independent local
+fixture, and backend-disabled initialization/validation of both original
+modules. The schema command itself reads backend state, so the local fixture
+keeps this check independent of S3. It exercises the installed SDK container provider
+against a loopback metadata fixture, uses SDK Stubber for STS, and verifies
+ambient credential/endpoint rejection. Only this explicitly invoked test
+redirects metadata to loopback; the production entry point is unchanged.
+Missing/ambient production credentials must produce the fixed failure exit.
+This is local container evidence, not IAM, ECS metadata routing, S3 backend,
+Fargate volume, natural expiry or deletion acceptance. Image vulnerability
+scanning and regional cloud execution remain separate pre-deployment checks.
 
 Four distinct reviewed identity policies are required: Scheduler delivery,
 workflow orchestration, ECR image execution and activity cleanup. Generate

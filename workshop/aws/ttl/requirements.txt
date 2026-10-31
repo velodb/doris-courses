@@ -1,0 +1,2 @@
+-r ../../../tools/requirements.txt
+boto3==1.43.121

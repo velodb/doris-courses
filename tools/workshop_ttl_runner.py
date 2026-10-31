@@ -52,6 +52,9 @@ def tree_hash(root):
     paths.extend(root.glob("workshop/aws/terraform/*/.terraform.lock.hcl"))
     paths.extend(root.glob("workshop/aws/ttl/*.json"))
     paths.extend(root.glob("workshop/aws/ttl/*.py"))
+    paths.extend(root.glob("workshop/aws/ttl/*.tfrc"))
+    paths.extend(root.glob("workshop/aws/ttl/requirements.txt"))
+    paths.extend(root.glob("workshop/aws/ttl/requirements.lock"))
     paths.extend(root.glob("workshop/aws/runtime/start_image.py"))
     return wc.canonical_hash({str(path.relative_to(root)): file_hash(path) for path in sorted(paths)})
 

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "platform": "linux/amd64",
+  "python": {
+    "tag": "3.12.16-slim-bookworm",
+    "image": "docker.io/library/python@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487"
+  },
+  "terraform": {
+    "tag": "1.17.1",
+    "image": "docker.io/hashicorp/terraform@sha256:8cffe811b97bb7db1b8aa14eff94b97f1095eb3394bdd03b3e916249c28091f5"
+  }
+}
