@@ -42,7 +42,7 @@ services:
   grafana:
     container_name: doris-obs-grafana
     environment:
-      - GF_SERVER_ROOT_URL=http://127.0.0.1:${DORIS_OBS_GRAFANA_PORT:-23000}/
+      - GF_SERVER_ROOT_URL=${DORIS_OBS_GRAFANA_PUBLIC_URL:-http://127.0.0.1:${DORIS_OBS_GRAFANA_PORT:-23000}/}
       # Module 8 sends alert emails to the local Mailpit inbox below.
       - GF_SMTP_ENABLED=true
       - GF_SMTP_HOST=doris-obs-mailpit:1025

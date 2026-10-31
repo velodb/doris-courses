@@ -44,7 +44,7 @@ services:
     ports: !reset []
     environment:
       # The browser sends its spans through the storefront proxy.
-      - PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://127.0.0.1:${DORIS_OBS_DEMO_PORT:-28082}/otlp-http/v1/traces
+      - PUBLIC_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=${DORIS_OBS_DEMO_PUBLIC_URL:-http://127.0.0.1:${DORIS_OBS_DEMO_PORT:-28082}}/otlp-http/v1/traces
   frontend-proxy:
     container_name: doris-obs-demo-frontend-proxy
     ports: !override

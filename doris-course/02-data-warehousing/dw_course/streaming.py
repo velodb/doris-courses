@@ -10,6 +10,7 @@ from xml.etree import ElementTree
 
 import requests
 import pandas as pd
+from doris_labkit.browser import browser_url, register_browser_port
 from IPython import get_ipython
 from IPython.display import HTML, display
 
@@ -40,7 +41,13 @@ def configure_streaming_port():
     port = int(match.group(1))
     global REST
     REST = f"http://127.0.0.1:{port}"
+    register_browser_port("dw-flink", port)
     return port
+
+
+def flink_browser_url():
+    """Use the named browser origin even when Docker assigns a new REST port."""
+    return browser_url(REST, service="dw-flink")
 
 
 def _render_wait_progress(description, elapsed, timeout, attempt, handle=None, state="waiting"):
@@ -148,7 +155,8 @@ def prepare_streaming(profile, *, start=False):
         raise ValueError("Choose kafka or cdc")
     print(compose("--profile", profile, "up", "-d", timeout=1800))
     if profile == "cdc":
-        print(f"Flink Web UI: {configure_streaming_port()}")
+        configure_streaming_port()
+        print(f"Flink Web UI: {flink_browser_url()}")
     # Startup failures are retried only here; operational SQL failures are not hidden.
     def ready():
         try:
@@ -207,14 +215,14 @@ def flink_api(path):
 def job_state(job):
     state = flink_api(f"/jobs/{job}")["state"]
     if state in {"FAILED", "CANCELED"}:
-        raise RuntimeError(f"Flink job {job} is {state}; see {REST}/#/job/{job}/exceptions")
+        raise RuntimeError(f"Flink job {job} is {state}; see {flink_browser_url()}/#/job/{job}/exceptions")
     return state
 
 
 def check_flink_job(job):
     state = job_state(job)
     if state in {"FINISHED", "SUSPENDED"}:
-        raise RuntimeError(f"Flink job {job} unexpectedly {state}; see {REST}/#/job/{job}/exceptions")
+        raise RuntimeError(f"Flink job {job} unexpectedly {state}; see {flink_browser_url()}/#/job/{job}/exceptions")
 
 
 def active_flink_jobs():

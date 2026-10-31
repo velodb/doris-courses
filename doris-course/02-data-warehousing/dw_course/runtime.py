@@ -14,6 +14,7 @@ import pymysql
 import requests
 
 from doris_labkit.profiles import fetch_profile_text, last_query_id, profile_metric, profile_row_sum
+from doris_labkit.browser import browser_url
 
 from .environment import connection_settings
 from .ui import card, in_notebook, install_styles, report_sql_error, result_frame, show_frame, show_log, show_sql
@@ -213,7 +214,7 @@ class WarehouseLab:
     def profile_url(self, query_id):
         """Link to this query in the FE UI, using the sandbox's configured HTTP port."""
         endpoint = (os.environ.get("DW_FE_HTTP_URL") or connection_settings()["DW_FE_HTTP_URL"]).rstrip("/")
-        return f"{endpoint}/QueryProfile/{quote(str(query_id), safe='')}"
+        return browser_url(f"{endpoint}/QueryProfile/{quote(str(query_id), safe='')}", service="dw-fe")
 
     def scan_profile(self, statement, *, title="Run the query, then read its Query Profile"):
         """Run a query and return how many rows its scans read and skipped, from its Query Profile.

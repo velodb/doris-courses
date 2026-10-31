@@ -28,8 +28,8 @@ The helper rejects a mismatched event/learner and an unmapped loopback web port
 when routes are configured. HTTPS service base URLs can include a path prefix;
 the file records the assignment rather than inferring it from array position.
 
-The route file provisions no proxy or authentication. Future service gateways
-must enforce the same ownership independently for every request. Applications
+The route file provisions no proxy or authentication. The [Cognito gateway](cognito-access.md)
+enforces the same ownership independently for every request. Applications
 with root-relative assets, absolute redirects, cookies and WebSockets require
 service-specific proxy configuration. `browser_redirect` resolves a Location
 header relative to its internal request URL and applies the same mapping;
@@ -49,3 +49,17 @@ The Module 9 SQL proxy, Kafka, Stream Load and BE HTTP endpoints are internal
 Lab traffic. They are not browser entries. Test their host/container behavior
 without substituting a browser hostname. The CLI and helper have offline tests;
 this does not certify a shared reverse proxy or the cloud browser experience.
+
+## Named services and dynamic ports
+
+Shared access adds an optional `services` map from a stable service name, such as
+`dw-flink`, to its protected browser base URL. `browser_url(..., service="dw-flink")`
+uses this origin when that map is present. A missing named route is rejected.
+Existing port-only SSM files and local mode retain their previous behavior.
+
+Flink discovers the current host port through Docker Compose. It keeps the
+internal `REST` URL on loopback and calls `register_browser_port` to update an
+activity/learner-bound local registry atomically. The gateway reads the registry
+for each request, so changing the dynamic port does not change the browser origin
+or require a gateway restart. Missing or mismatched registry entries return 503.
+See [service integration](service-access.md) for application settings and scope.

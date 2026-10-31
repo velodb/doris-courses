@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from doris_labkit.browser import browser_url, browser_redirect, validate_routes
+from doris_labkit.browser import browser_url, browser_redirect, validate_routes, register_browser_port
 
 
 class BrowserRoutesTests(unittest.TestCase):
@@ -60,6 +60,35 @@ class BrowserRoutesTests(unittest.TestCase):
                     browser_url("http://localhost:18030")
                 with patch.dict(os.environ, {"DORIS_WORKSHOP_EVENT_ID": "event-a", "DORIS_WORKSHOP_LEARNER_ID": "learner-a"}):
                     self.assertIn("learner.example.test", browser_url("http://localhost:18030"))
+
+    def test_named_service_keeps_browser_origin_stable_across_dynamic_port_changes(self):
+        self.routes["services"] = {"dw-flink": "https://flink.example.test"}
+        for port in (49123, 49234):
+            self.assertEqual(browser_url(f"http://127.0.0.1:{port}/#/jobs?limit=1", service="dw-flink", **self.args),
+                             "https://flink.example.test/#/jobs?limit=1")
+        with self.assertRaises(ValueError):
+            browser_url("http://127.0.0.1:49123", service="unassigned", **self.args)
+
+    def test_dynamic_registry_is_atomic_and_bound_to_the_learner(self):
+        import json
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.routes["services"] = {"dw-flink": "https://flink.example.test"}
+            (root / "routes.json").write_text(json.dumps(self.routes))
+            env = {"DORIS_BROWSER_ROUTES_FILE": str(root / "routes.json"),
+                   "DORIS_WORKSHOP_EVENT_ID": "event-a", "DORIS_WORKSHOP_LEARNER_ID": "learner-a",
+                   "DORIS_WORKSHOP_PORT_REGISTRY": str(root / "ports.json")}
+            with patch.dict(os.environ, env, clear=True):
+                register_browser_port("dw-flink", 49123)
+                register_browser_port("dw-flink", 49234)
+                self.assertEqual(json.loads((root / "ports.json").read_text())["ports"], {"dw-flink": 49234})
+                with self.assertRaises(ValueError):
+                    register_browser_port("unassigned", 49234)
+                record = json.loads((root / "ports.json").read_text())
+                record["learner_id"] = "other"
+                (root / "ports.json").write_text(json.dumps(record))
+                with self.assertRaises(ValueError):
+                    register_browser_port("dw-flink", 49345)
 
 
 if __name__ == "__main__":

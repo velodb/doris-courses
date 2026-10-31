@@ -194,7 +194,7 @@ class EnvironmentTests(unittest.TestCase):
         self.assertEqual(settings["DORIS_FE_HTTP_URL"], f"http://{environment.DORIS_CONTAINER}:8030")
         self.assertEqual(settings["DORIS_DB"], environment.LITEFUSE_DATABASE)
         self.assertEqual(settings["DORIS_REPLICATION_NUM"], "1")
-        self.assertEqual(settings["NEXTAUTH_URL"], "http://127.0.0.1:${DORIS_OBS_LITEFUSE_PORT:-23100}")
+        self.assertEqual(settings["NEXTAUTH_URL"], "${DORIS_OBS_LITEFUSE_PUBLIC_URL:-http://127.0.0.1:${DORIS_OBS_LITEFUSE_PORT:-23100}}")
         self.assertIn(f"@{container['postgres']}:5432/", settings["DATABASE_URL"])
         self.assertEqual(settings["REDIS_HOST"], container["redis"])
         for kind in ("EVENT", "MEDIA"):

@@ -2,6 +2,13 @@ variable "aws_profile" { type = string }
 variable "expected_account_id" { type = string }
 variable "region" { type = string }
 variable "owner_id" { type = string }
+variable "expires_at" {
+  type = string
+  validation {
+    condition     = can(regex("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$", var.expires_at)) && can(formatdate("YYYY-MM-DD hh:mm:ss", var.expires_at))
+    error_message = "Supply the activity's UTC expiry, including seconds. Tags do not perform cleanup."
+  }
+}
 variable "event_id" {
   type = string
   validation {

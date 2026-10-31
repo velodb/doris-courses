@@ -16,7 +16,8 @@ forwards also covered the reader, Notebook editing/save/download, kernel
 restart and reconnection, quiz widgets, terminal Docker access and the Doris
 QueryProfile page, including a temporary single-instance HTTPS/token entry.
 Slow SSM cold loads required a reload after frontend assets arrived. Shared
-HTTPS/OIDC routing remains a separate step. The
+HTTPS/Cognito routing now has a [local implementation](cognito-access.md) and
+[service integration](service-access.md); formal-domain cloud acceptance is pending. The
 [deployment architecture](architecture.md) and
 [first real Terraform runbook](first-run.md) describe the live preflight and
 saved-plan gate for the first SSM-only host.

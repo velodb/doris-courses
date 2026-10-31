@@ -22,7 +22,7 @@
 # after the DOG stack is running. The host port can be changed with the
 # variable named in it; doris_course/environment.py uses the same name and default.
 x-litefuse-env: &litefuse-env
-  NEXTAUTH_URL: http://127.0.0.1:${DORIS_OBS_LITEFUSE_PORT:-23100}
+  NEXTAUTH_URL: ${DORIS_OBS_LITEFUSE_PUBLIC_URL:-http://127.0.0.1:${DORIS_OBS_LITEFUSE_PORT:-23100}}
   NEXTAUTH_SECRET: doris-course-local-only
   SALT: doris-course-local-only
   ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000000"

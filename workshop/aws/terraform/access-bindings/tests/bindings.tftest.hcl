@@ -11,6 +11,7 @@ variables {
   expected_account_id = "000000000000"
   region              = "us-east-1"
   owner_id            = "test-owner"
+  expires_at          = "2099-01-01T00:00:00Z"
   event_id            = "test-event"
   access = {
     vpc_id             = "vpc-00000000000000000"

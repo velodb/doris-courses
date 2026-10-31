@@ -8,6 +8,7 @@ from urllib.parse import quote
 
 import pymysql
 import requests
+from doris_labkit.browser import browser_url
 
 from .environment import port
 from .sidecars import start_service
@@ -21,6 +22,11 @@ ADMIN_PASSWORD = 'course_local_only'
 def superset_url():
     """The host address of the course Superset, on DW_BI_PORT (51888 by default)."""
     return f"http://127.0.0.1:{port('DW_BI_PORT')}"
+
+
+def superset_browser_url():
+    """The protected browser origin; API clients continue to use loopback."""
+    return browser_url(superset_url(), service="dw-superset")
 
 
 class SupersetAPI:
@@ -153,10 +159,10 @@ def build_payment_dashboard(lab, *, start=False):
         attached = api.request('GET', f'dashboard/{dashboard_id}/charts')['result']
         expect(sorted(row['id'] for row in attached), sorted(charts), title='All three charts belong to the published dashboard')
         show_records('Verified Superset executions; not notebook-only mock charts', observations)
-        show_records('Local dashboard access', [{'url': superset_url() + f'/superset/dashboard/{dashboard_id}/',
+        show_records('Dashboard access', [{'url': superset_browser_url() + f'/superset/dashboard/{dashboard_id}/',
                                               'local_ui_user': ADMIN, 'doris_reader': user,
                                               'as_of': '2026-01-04 00:00:00 Asia/Shanghai'}])
-        return {'dashboard_id': dashboard_id, 'url': superset_url() + f'/superset/dashboard/{dashboard_id}/',
+        return {'dashboard_id': dashboard_id, 'url': superset_browser_url() + f'/superset/dashboard/{dashboard_id}/',
                 'charts': charts, 'reader': user}
     finally:
         api.session.close()

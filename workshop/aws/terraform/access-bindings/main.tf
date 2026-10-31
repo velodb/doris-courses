@@ -10,7 +10,7 @@ provider "aws" {
   profile             = var.aws_profile
   allowed_account_ids = [var.expected_account_id]
   default_tags {
-    tags = { Project = "doris-workshop", Event = var.event_id, Owner = var.owner_id, Scope = "activity-access" }
+    tags = { Project = "doris-workshop", Event = var.event_id, Owner = var.owner_id, Scope = "activity-access", ExpiresAt = var.expires_at }
   }
 }
 

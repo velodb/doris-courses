@@ -32,6 +32,7 @@ from doris_labkit.docker import (
 )
 from doris_labkit import docker as labkit_docker
 from doris_labkit.profiles import fetch_profile_text, find_profile, last_query_id, profile_row_sum
+from doris_labkit.browser import browser_url
 from doris_labkit.results import result_frame, show_frame
 from doris_labkit.shell import run_shell
 from doris_labkit.ui import card, install_styles, show_log, show_sql
@@ -302,6 +303,26 @@ class ObservabilityLab:
     def litefuse_url(self) -> str:
         """The Litefuse web UI and API on this host."""
         return f"http://127.0.0.1:{env.LITEFUSE_PORT}"
+
+    @property
+    def fe_browser_url(self) -> str:
+        return browser_url(self.fe_http_url, service="obs-fe")
+
+    @property
+    def grafana_browser_url(self) -> str:
+        return browser_url(self.grafana_url, service="obs-grafana")
+
+    @property
+    def demo_browser_url(self) -> str:
+        return browser_url(self.demo_url, service="obs-demo")
+
+    @property
+    def mailpit_browser_url(self) -> str:
+        return browser_url(self.mailpit_url, service="obs-mailpit")
+
+    @property
+    def litefuse_browser_url(self) -> str:
+        return browser_url(self.litefuse_url, service="obs-litefuse")
 
     @property
     def local_model_url(self) -> str:
@@ -703,7 +724,7 @@ class ObservabilityLab:
             "subject": match.get("Subject", ""),
         }]))
         text = detail.get("Text", "")
-        show_log(f"The text of the email (in the inbox at {self.mailpit_url})", text)
+        show_log(f"The text of the email (in the inbox at {self.mailpit_browser_url})", text)
         return {"id": match["ID"], "subject": match.get("Subject", ""), "received": received, "text": text}
 
     def export_alert_rule(self, rule: str) -> str:
@@ -794,7 +815,7 @@ class ObservabilityLab:
             for target in panel.get("targets") or [{}]
         ]
         frame = pd.DataFrame(rows, columns=["panel", "visualization", "format", "sql"])
-        show_frame(f"The panels of {title} · {self.grafana_url}/d/{uid}", frame)
+        show_frame(f"The panels of {title} · {self.grafana_browser_url}/d/{uid}", frame)
         return frame
 
     def connect(
@@ -931,9 +952,9 @@ dog_compose ps
         show_frame("Doris nodes (SHOW FRONTENDS, SHOW BACKENDS)", pd.DataFrame(nodes))
         self.sql("SELECT DATABASE() AS current_database", title="Current database")
         card(
-            f"Grafana: {self.grafana_url}/a/velodb-doris-app (user admin, password admin). "
+            f"Grafana: {self.grafana_browser_url}/a/velodb-doris-app (user admin, password admin). "
             f"Doris: 127.0.0.1:{env.QUERY_PORT} for MySQL clients, {self.fe_http_url} for HTTP. "
-            f"Mailpit, the inbox for Grafana's emails in Module 8: {self.mailpit_url}.",
+            f"Mailpit, the inbox for Grafana's emails in Module 8: {self.mailpit_browser_url}.",
             "ok",
             "The DOG stack is running",
         )
@@ -1039,7 +1060,7 @@ demo_compose ps
         if not restarted.empty:
             show_frame("Demo containers that restarted at least once (all are running now)", restarted)
         card(
-            f"All {len(containers)} demo containers are running, and the storefront at {self.demo_url} "
+            f"All {len(containers)} demo containers are running, and the storefront at {self.demo_browser_url} "
             f"answers (waited {elapsed:.0f} seconds).",
             "ok",
             "The demo is running",
@@ -1092,9 +1113,9 @@ demo_compose ps
                 break
             if elapsed >= timeout_seconds:
                 if found is None:
-                    message = f"The demo has no feature flag named {flag}. Check the name in {self.demo_url}/feature."
+                    message = f"The demo has no feature flag named {flag}. Check the name in {self.demo_browser_url}/feature."
                 else:
-                    message = (f"{flag} is {found.get('variant')}, not {variant}. Open {self.demo_url}/feature, "
+                    message = (f"{flag} is {found.get('variant')}, not {variant}. Open {self.demo_browser_url}/feature, "
                                f"choose {variant} in the {flag} card, click save, then rerun this cell.")
                 self._failure(f"{flag} is not {variant}", message)
                 raise EnvironmentNotReady(f"{flag} was not {variant} within {timeout_seconds} seconds.")
@@ -1191,7 +1212,7 @@ echo "[2/2] Show the Litefuse services"
             "project_id": project.get("id"),
         }]))
         card(
-            f"Litefuse answers at {self.litefuse_url} (waited {elapsed:.0f} seconds). Sign in with "
+            f"Litefuse answers at {self.litefuse_browser_url} (waited {elapsed:.0f} seconds). Sign in with "
             f"{env.LITEFUSE_USER_EMAIL} and the password {env.LITEFUSE_USER_PASSWORD}. Its tables are in "
             f"the Doris database {env.LITEFUSE_DATABASE}.",
             "ok",

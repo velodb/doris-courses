@@ -70,14 +70,14 @@ directories, with operator-only permissions. Install
    ```
 
 6. Upload the overlay and that learner's gateway JSON through operator SSM.
-   Run `bash install_gateway.sh /path/to/access-overlay /path/to/learner.json`
+   Run `bash install_gateway.sh /path/to/access-overlay /path/to/learner.json /path/to/learner-browser.json /path/to/learner.env`
    as root on the already verified prebuilt host. The installer checks activity,
    learner, expiry and overlay hashes. It installs an independent gateway venv
    and Jupyter launch wrapper; it does not modify the fixed AMI or its original
    runtime files. Preserve `overlay.json` alongside the release record. This
    overlay installation still requires Linux/EC2 acceptance.
-7. Copy that learner's generated browser JSON to
-   `/etc/doris-workshop/browser-urls.json`. The prebuilt Jupyter activity
+7. The installer copies that learner's generated browser JSON and public URL
+   environment to `/etc/doris-workshop/`. The prebuilt Jupyter activity
    environment already selects this route file. Restart Jupyter after changing
    service environment settings; restart the gateway after changing its routes
    or assignments. Check course readiness independently of `/healthz`.

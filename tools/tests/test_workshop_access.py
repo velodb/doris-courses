@@ -195,6 +195,31 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(response.headers.getall("Set-Cookie")), 6)
         self.assertEqual(self.requests, [])
 
+    async def test_dynamic_service_fails_closed_and_follows_port_changes_without_restart(self):
+        registry = Path(self.temp.name) / "service-ports.json"
+        config = copy.deepcopy(self.c)
+        config["services"][HOST].update(dynamic_port="dw-flink", jupyter=False)
+        client = TestClient(TestServer(gateway.application(config, verifier=LocalVerifier(config, None), registry_file=registry)))
+        await client.start_server()
+        other = TestServer(web.Application())
+        async def alternate(request):
+            return web.Response(text="new-port")
+        other.app.router.add_get("/", alternate)
+        await other.start_server()
+        try:
+            response = await client.get("/", headers=self.headers())
+            self.assertEqual(response.status, 503)
+            for learner, port, status, body in (("bob", self.server.port, 503, None),
+                    ("alice", self.server.port, 200, "backend"), ("alice", other.port, 200, "new-port")):
+                registry.write_text(json.dumps({"schema_version": 1, "event_id": "event", "learner_id": learner, "ports": {"dw-flink": port}}))
+                response = await client.get("/", headers=self.headers())
+                self.assertEqual(response.status, status)
+                if body:
+                    self.assertEqual(await response.text(), body)
+        finally:
+            await client.close()
+            await other.close()
+
 
 class PlanningTests(unittest.TestCase):
     def inputs(self):
@@ -220,6 +245,19 @@ class PlanningTests(unittest.TestCase):
         configs = access.gateway_configs(plan, identity, {"alice": ["one"], "bob": ["two"]})
         self.assertNotIn("two", json.dumps(configs["alice"]))
         self.assertNotIn("client_secret", json.dumps(configs))
+
+    def test_selected_service_catalog_generates_public_urls_and_explicit_host_ports(self):
+        c, a, instances = self.inputs()
+        c["course_profiles"] = ["rta-main", "rta-metabase", "dw-main", "dw-bi", "dw-cdc", "obs-main", "ai-functions"]
+        plan = access.routes(c, a, instances)
+        browser = access.browser_routes(plan, "alice")
+        self.assertEqual(len(browser["services"]), 15)
+        self.assertEqual(len(plan["terraform"]["routes"]), 30)
+        env = access.host_environment(plan, "alice")
+        self.assertEqual(env["DW_BI_PUBLIC_URL"], browser["services"]["dw-superset"])
+        self.assertEqual(env["DORIS_OBS_GRAFANA_PORT"], "23000")
+        self.assertEqual(plan["services"]["alice"][browser["services"]["dw-flink"].removeprefix("https://")]["dynamic_port"], "dw-flink")
+        self.assertTrue(all("bob" not in value for value in env.values()))
 
     def test_overlay_binds_exact_files_and_refuses_overwrite(self):
         with tempfile.TemporaryDirectory() as tmp:

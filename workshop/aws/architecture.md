@@ -33,7 +33,8 @@ fields in the event configuration are deferred for this SSM-only run.
 | Foundation | Separate bootstrap state, private versioned S3 state bucket, operator | Retained across activities; bucket has `prevent_destroy` |
 | Activity | `aws-workshop/<partition>/<account>/<region>/<event_id>/terraform.tfstate` | EC2/root EBS, activity VPC/routes/IGW/SG, installer-only S3 bucket, learner IAM role/profile and installation document |
 | Image release (planned) | Separate Packer release inventory and private AMIs/snapshots | Removed by explicit image-retirement work, never activity destroy |
-| Shared access (planned) | Separate state for ALB/ACM, DNS and IdP integration | Activity cleanup removes its bindings only; existing IdP users and shared infrastructure survive |
+| Shared access (local implementation) | Separate shared-access state for the VPC, ALB/ACM and certificate DNS validation | Activity cleanup removes its bindings only; shared infrastructure and the existing DNS zone survive |
+| Activity access (local implementation) | Separate access-bindings state for dedicated Cognito pool/client/domain, routes and target groups | Delete only this activity's dedicated accounts and bindings before its instances |
 | Expiry control (planned) | External control-plane state and execution role | Outlives the activity until cleanup has succeeded and been reconciled |
 
 Use stable learner map keys and Project/Event/Owner/Scope tags. Tags help
@@ -50,12 +51,16 @@ Actual negative permission tests remain part of the EC2 integration run.
 ## Shared browser access
 
 The [shared-access module](shared-access.md) now defines the ALB/ACM and two-zone
-network with a default-deny listener. Activity authentication, gateway and browser
-acceptance are separate from the SSM pilot. Real-domain cloud validation is pending.
+network with a default-deny listener. [Cognito access](cognito-access.md) supplies
+the activity identity resources, signed-claim verifier and local gateway, while
+[service integration](service-access.md) separates browser URLs from internal
+clients. Real-domain cloud and browser acceptance are pending.
 
-The implementation baseline is a shared ALB with ACM TLS and an OIDC identity
-provider. Temporary workshop accounts can use Cognito behind the same identity
-contract. The real domain, IdP and account lifecycle require activity input.
+The selected identity provider is an activity-owned Cognito user pool with
+administrator-created accounts and no public signup. It integrates with the
+shared ALB using `authenticate-cognito`. The real domain and DNS control still
+require activity input. Account creation suppresses outbound messages and stores
+temporary credentials only in operator delivery files.
 
 The trusted identity key is `(issuer, subject)`. An operator-owned assignment
 maps that key to an event and learner ID; a hostname or URL alone never selects

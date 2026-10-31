@@ -61,7 +61,9 @@ def validate_config(config):
     ports = set()
     for host, service in config["services"].items():
         if (not isinstance(host, str) or not HOST.fullmatch(host) or
-                set(service) != {"port", "jupyter", "redirect_origins"} or
+                not {"port", "jupyter", "redirect_origins"} <= set(service) or
+                set(service) - {"port", "jupyter", "redirect_origins", "dynamic_port"} or
+                ("dynamic_port" in service and service["dynamic_port"] != "dw-flink") or
                 type(service["port"]) is not int or not 1024 <= service["port"] <= 65535 or
                 service["port"] == 8080 or type(service["jupyter"]) is not bool or
                 not isinstance(service["redirect_origins"], list)):
@@ -142,12 +144,13 @@ def clean_headers(headers):
             and not k.lower().startswith(("x-amzn-", "x-forwarded-", "sec-websocket-"))]
 
 
-def redirect(location, config):
+def redirect(location, config, resolved_ports=None):
     parsed = urlsplit(location)
     if not parsed.netloc:
         return location
     for host, service in config["services"].items():
-        aliases = [f'http://127.0.0.1:{service["port"]}', f'http://localhost:{service["port"]}',
+        port = (resolved_ports or {}).get(host, service["port"])
+        aliases = [f'http://127.0.0.1:{port}', f'http://localhost:{port}',
                    *service["redirect_origins"]]
         if f"{parsed.scheme}://{parsed.netloc}" in aliases:
             return urlunsplit(("https", host, parsed.path, parsed.query, parsed.fragment))
@@ -173,7 +176,24 @@ def secure_cookies(headers):
     return result
 
 
-def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/token")):
+def resolve_port(service, config, registry_file):
+    if "dynamic_port" not in service:
+        return service["port"]
+    try:
+        registry = json.loads(Path(registry_file).read_text())
+        if (registry["schema_version"] != 1 or registry["event_id"] != config["event_id"] or
+                registry["learner_id"] != config["learner_id"]):
+            raise Denied(503)
+        port = registry["ports"][service["dynamic_port"]]
+        if type(port) is not int or not 1024 <= port <= 65535 or port == 8080:
+            raise Denied(503)
+        return port
+    except (OSError, ValueError, KeyError, TypeError):
+        raise Denied(503) from None
+
+
+def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/token"),
+                registry_file=Path("/run/doris-workshop/service-ports.json")):
     activity_expiry = validate_config(config)
     app = web.Application(client_max_size=64 * 1024**2)
 
@@ -226,7 +246,8 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                 headers["Cookie"] = "; ".join(safe)
             if service["jupyter"]:
                 headers["Authorization"] = "token " + Path(token_file).read_text().strip()
-            target = URL(f'http://127.0.0.1:{service["port"]}{request.raw_path}', encoded=True)
+            port = resolve_port(service, config, registry_file)
+            target = URL(f'http://127.0.0.1:{port}{request.raw_path}', encoded=True)
             if websocket:
                 protocols = tuple(s.strip() for s in request.headers.get("Sec-WebSocket-Protocol", "").split(",") if s.strip())
                 async with app[SESSION].ws_connect(target, headers=headers, protocols=protocols,
@@ -261,7 +282,7 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                 response.headers["Strict-Transport-Security"] = "max-age=31536000"
                 response.headers["X-Content-Type-Options"] = "nosniff"
                 if "Location" in upstream.headers:
-                    response.headers["Location"] = redirect(upstream.headers["Location"], config)
+                    response.headers["Location"] = redirect(upstream.headers["Location"], config, {host: port})
                 for value in secure_cookies(upstream.headers):
                     response.headers.add("Set-Cookie", value)
                 await response.prepare(request)
@@ -272,7 +293,8 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                 await response.write_eof()
                 return response
         except Denied as error:
-            return web.Response(status=error.status, text="Workshop access denied.\n", headers={"Cache-Control": "no-store"})
+            message = "Service unavailable. Start the course service and retry.\n" if error.status == 503 else "Workshop access denied.\n"
+            return web.Response(status=error.status, text=message, headers={"Cache-Control": "no-store"})
         except (OSError, asyncio.TimeoutError, ClientError):
             return web.Response(status=503, text="Service unavailable. Start the course service and retry.\n", headers={"Cache-Control": "no-store"})
 
