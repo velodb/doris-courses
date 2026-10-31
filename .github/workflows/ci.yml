@@ -63,7 +63,7 @@ jobs:
       - name: Install runtime test dependencies
         run: python -m pip install -r workshop/aws/runtime/test-requirements.txt
       - name: Bundle, kernel restart and local Jupyter authentication
-        run: python -m unittest discover -s tools/tests -p test_workshop_runtime.py -v
+        run: python -m unittest discover -s tools/tests -p 'test_workshop*runtime.py' -v
 
   workshop-preflight:
     name: Workshop preflight and saved-plan gate (offline)
@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        module: [bootstrap, pilot, image-build, image-validation, shared-access]
+        module: [bootstrap, pilot, image-build, image-validation, shared-access, access-bindings]
     defaults:
       run:
         working-directory: workshop/aws/terraform/${{ matrix.module }}

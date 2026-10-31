@@ -1,2 +1,3 @@
 -r ../../tools/requirements.txt
 boto3==1.43.121
+-r access/requirements.txt

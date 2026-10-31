@@ -30,8 +30,8 @@ until explicitly destroyed; an activity's expiry does not remove it.
    a verified instance-offering zone and `gateway_security_group_id` to the
    existing pilot Terraform module. Retain the existing fixed AMI/release,
    hash checks, instance expiry, private backend and operator-only state.
-4. Install and test the learner gateways before adding authenticated activity
-   bindings. ALB `/healthz` checks only the gateway process, not the course,
+4. Follow [Cognito access](cognito-access.md) to add authenticated activity
+   bindings and install the learner gateways. ALB `/healthz` checks only the gateway process, not the course,
    Docker, kernel or optional services.
 
 The current guarded pilot CLI still plans its SSM topology. Shared topology is

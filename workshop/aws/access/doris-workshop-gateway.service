@@ -1,0 +1,21 @@
+[Unit]
+Description=Verified workshop access gateway
+After=network-online.target doris-workshop-jupyter.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=workshop
+Group=workshop
+ExecStart=/opt/doris-workshop/gateway-venv/bin/python -I /opt/doris-workshop/access/gateway.py --config /etc/doris-workshop/gateway.json
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+UMask=0077
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

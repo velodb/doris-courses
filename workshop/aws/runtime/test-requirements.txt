@@ -1,4 +1,5 @@
 -r ../../../tools/requirements.txt
+-r ../access/requirements.txt
 jupyterlab==4.4.10
 ipykernel==6.29.5
 jupyterlab_widgets==3.0.17
