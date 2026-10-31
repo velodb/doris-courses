@@ -62,6 +62,9 @@ class FakeCloud:
         if startup: self.startups.append(command)
         return command
 
+    def items(self, service, operation, result, **kwargs):
+        return self.call(service, operation, **kwargs)[result]
+
     def command(self, command_id, instance, *, probe=False):
         if self.pending:
             return {"Status": "InProgress"}
@@ -107,7 +110,7 @@ class FakeTerraform:
     def run(self, args, *, capture=False):
         self.calls.append(list(args))
         if args[0] == "show":
-            changes = [{"mode": "managed", "address": r["address"], "change": {"actions": ["delete"]}} for r in self.resources]
+            changes = [{"mode": "managed", "address": r["address"], "change": {"actions": ["delete"], "before": copy.deepcopy(r["values"])}} for r in self.resources]
             if self.bad_destroy:
                 changes.append({"mode": "managed", "address": "aws_s3_bucket.foundation", "change": {"actions": ["delete"]}})
             return json.dumps({"resource_changes": changes})
@@ -296,6 +299,48 @@ class LifecycleTests(unittest.TestCase):
             self.controller().destroy()
         self.assertEqual(self.controller().record["reconciliation"]["remaining_known_volumes"], 1)
         self.cloud.residual_volume = False
+        self.assertEqual(self.controller().destroy()["phase"], "destroyed")
+
+    def test_destroy_tracks_and_rechecks_interfaces_after_partial_cleanup(self):
+        original = self.cloud.call
+        remaining = True
+        interface = "eni-00000000000000001"
+        def network(service, operation, **kwargs):
+            if operation == "describe_network_interfaces":
+                return {"NetworkInterfaces": [{"NetworkInterfaceId": interface}] if remaining else []}
+            result = original(service, operation, **kwargs)
+            if operation == "describe_instances":
+                for reservation in result["Reservations"]:
+                    for instance in reservation["Instances"]:
+                        if instance["InstanceId"] == "i-alice":
+                            instance["NetworkInterfaces"] = [{"NetworkInterfaceId": interface}]
+            return result
+        self.cloud.call = network
+        self.up()
+        with self.assertRaises(ws.wc.ConfigError):
+            self.controller().destroy()
+        record = self.controller().record
+        self.assertEqual(record["known_network_interfaces"][interface], "i-alice")
+        self.assertEqual(record["reconciliation"]["remaining_known_network_interfaces"], 1)
+        remaining = False
+        report = self.controller().destroy()
+        self.assertEqual(report["phase"], "destroyed")
+        self.assertIn("known-ec2-ebs-eni", report["cleanup_boundary"])
+
+    def test_orphan_state_dependency_requires_refresh_absence_before_retry(self):
+        self.up()
+        self.tf.resources = [{"mode": "managed", "type": "aws_iam_role_policy", "name": "learner", "address": "aws_iam_role_policy.learner",
+            "values": {"id": "retired-role:policy", "role": "retired-role"}}]
+        with self.assertRaises(ws.wc.ConfigError):
+            self.controller().destroy()
+        self.assertFalse(any(args[0] == "apply" for args in self.tf.calls if args))
+        original = self.tf.run
+        def refreshed(args, *, capture=False):
+            if args[0] == "show":
+                return json.dumps({"resource_drift": [{"mode": "managed", "address": "aws_iam_role_policy.learner",
+                    "change": {"actions": ["delete"], "before": self.tf.resources[0]["values"], "after": None}}]})
+            return original(args, capture=capture)
+        self.tf.run = refreshed
         self.assertEqual(self.controller().destroy()["phase"], "destroyed")
 
     def test_wrong_account_changed_backend_unknown_resource_and_destroy_plan_fail_closed(self):

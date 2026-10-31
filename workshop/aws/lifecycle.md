@@ -122,6 +122,9 @@ state resource ownership and actual EC2 assignment. It saves EC2/EBS IDs,
 creates a destroy plan, rejects unowned or non-delete changes, and applies the
 plan under the normal Terraform lock. It then requires an empty managed state,
 no active known instance and no remaining known root volume. Retry the same
+command after a failed destroy or eventual-consistency residual. Known ENIs must
+also disappear. The [cleanup guide](cleanup.md) describes stricter ownership and
+delete-plan checks plus broader standalone scan/report interfaces. Retry the same
 command after a failed destroy or eventual-consistency residual. Expired event
 inputs and unavailable price queries do not block cleanup.
 

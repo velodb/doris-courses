@@ -18,6 +18,7 @@ import workshop_config as wc
 import workshop_preflight as pf
 import workshop_operations as ops
 import workshop_batch as batch
+import workshop_cleanup as cleanup
 
 IN_FLIGHT = {"Pending", "InProgress", "Delayed", "Cancelling", "DispatchUnknown"}
 
@@ -189,6 +190,7 @@ class Controller:
                     "roster: resume only a ready activity")
                 for key in ("nodes", "known_instances", "known_volumes"):
                     self.record[key] = previous[key]
+                self.record["known_network_interfaces"] = previous.get("known_network_interfaces", {})
         self.concurrency = self.record.get("batch_concurrency", 2)
 
     def save(self):
@@ -197,21 +199,15 @@ class Controller:
 
     def owned_resources(self):
         resources = self.tf.state()
-        for row in resources:
-            pf.require(RESOURCE_NAMES.get(row["type"]) == row["name"] and not row.get("module_address"),
-                       "ownership: unexpected resource in activity state")
-            tags = row["values"].get("tags_all") or row["values"].get("tags")
-            if tags:
-                pf.require(all(tags.get(k) == v for k, v in self.tags().items()), "ownership: resource tags do not match this activity")
-            if row["type"] == "aws_s3_bucket":
-                pf.require(row["values"]["id"] != self.pilot["state_bucket_name"], "ownership: foundation bucket found in activity state")
+        cleanup.project_state({**self.config, "cleanup_learner_ids": [key for key, row in self.allocations.items() if row["role"] == "learner"]},
+            resources, state_bucket=self.pilot["state_bucket_name"])
         return resources
 
     def tags(self):
         return {"Project": "doris-workshop", "Event": self.config["event_id"], "Owner": self.config["owner_id"], "Scope": "activity"}
 
-    def inventory(self):
-        resources = self.owned_resources()
+    def inventory(self, *, resources=None):
+        resources = self.owned_resources() if resources is None else resources
         instances, document = {}, None
         for row in resources:
             values = row["values"]
@@ -232,12 +228,14 @@ class Controller:
     def actual_instances(self, instance_ids):
         if not instance_ids:
             return {}
-        reservations = self.cloud.call("ec2", "describe_instances", Filters=[{"Name": "instance-id", "Values": sorted(instance_ids)}])["Reservations"]
+        reservations = self.cloud.items("ec2", "describe_instances", "Reservations", Filters=[{"Name": "instance-id", "Values": sorted(instance_ids)}])
         instances = {i["InstanceId"]: i for r in reservations for i in r["Instances"]}
         for instance in instances.values():
             tags = {t["Key"]: t["Value"] for t in instance.get("Tags", [])}
             pf.require(all(tags.get(k) == v for k, v in self.tags().items()), "ownership: actual EC2 tags do not match")
             pf.require(tags.get("Learner") in self.allocations and self.allocations[tags["Learner"]]["role"] == "learner", "ownership: actual EC2 learner mismatch")
+            for interface in instance.get("NetworkInterfaces", []):
+                self.record.setdefault("known_network_interfaces", {})[interface["NetworkInterfaceId"]] = instance["InstanceId"]
         return instances
 
     def poll_command(self, node, kind, document, deadline, *, retry_failed=False):
@@ -414,11 +412,13 @@ class Controller:
                 "ready": bool(ready), "readiness_scope": "host-runtime-and-course-entry", "course_labs_validated": False,
                 "managed_resources": self.record.get("managed_resources", 0),
                 "resources_may_remain": bool(self.record.get("managed_resources", 0) or self.record.get("untracked_instances")
-                                              or (self.record["known_volumes"] or self.record["known_instances"]) and self.record["phase"] != "destroyed"),
+                                              or (self.record["known_volumes"] or self.record["known_instances"] or self.record.get("known_network_interfaces")) and self.record["phase"] != "destroyed"),
                 "batch": {"concurrency": self.concurrency, "in_flight": self.inflight(), "ready": ready_ids,
                     "failed": failed_ids, "pending": sorted(set(current) - set(ready_ids) - set(failed_ids))},
                 "allocations": {key: {"role": row["role"], "active": row["active"]} for key, row in self.allocations.items()},
                 "untracked_instances": self.record.get("untracked_instances", []),
+                "known_network_interfaces": self.record.get("known_network_interfaces", {}),
+                "cleanup_boundary": self.record.get("cleanup_boundary", "not-yet-reconciled"),
                 "retained_foundation": self.pilot["state_bucket_name"],
                 "target_logs": "/var/log/doris-workshop", "nodes": self.record["nodes"],
                 "last_health_check": self.record.get("last_health_check"),
@@ -527,8 +527,10 @@ class Controller:
             raise
 
     def destroy(self):
-        resources = self.owned_resources()
-        self.inventory()  # Save EC2/EBS IDs before Terraform removes them.
+        resources = self.tf.state()
+        claims = cleanup.project_state({**self.config, "cleanup_learner_ids": [key for key, row in self.allocations.items() if row["role"] == "learner"]},
+            resources, state_bucket=self.pilot["state_bucket_name"], defer_missing_parents=True)
+        self.inventory(resources=resources)  # Save IDs before Terraform removes them.
         self.actual_instances(self.record["known_instances"])
         self.record["phase"] = "destroying"
         self.save()
@@ -537,22 +539,25 @@ class Controller:
             self.tf.run(["plan", "-destroy", "-input=false", "-lock-timeout=60s",
                          f"-var-file={self.directory / 'inputs.tfvars.json'}", f"-out={plan_path}"])
             plan = json.loads(self.tf.run(["show", "-json", str(plan_path)], capture=True))
-            addresses = {r["address"] for r in resources}
-            for change in plan.get("resource_changes", []):
-                if change.get("mode") == "managed":
-                    pf.require(change["address"] in addresses and change["change"]["actions"] in [["delete"], ["no-op"]],
-                               "destroy: plan contains an unowned resource or non-delete action")
+            absent = cleanup.validate_destroy_plan(resources, plan)
+            pf.require(all(row["address"] in absent for row in claims if row.get("requires_refresh_absence")),
+                "destroy: a tagless object without an owned parent may only be forgotten after explicit refresh deletion proof")
             self.tf.run(["apply", "-input=false", "-lock-timeout=60s", str(plan_path)])
         remaining = self.owned_resources()
         actual = self.actual_instances(self.record["known_instances"])
         active = [i for i in actual.values() if i.get("State", {}).get("Name") != "terminated"]
-        volumes = self.cloud.call("ec2", "describe_volumes", Filters=[{"Name": "volume-id", "Values": self.record["known_volumes"]}])["Volumes"] if self.record["known_volumes"] else []
+        volumes = self.cloud.items("ec2", "describe_volumes", "Volumes", Filters=[{"Name": "volume-id", "Values": self.record["known_volumes"]}]) if self.record["known_volumes"] else []
+        interfaces = self.cloud.items("ec2", "describe_network_interfaces", "NetworkInterfaces",
+            Filters=[{"Name": "network-interface-id", "Values": sorted(self.record.get("known_network_interfaces", {}))}]) if self.record.get("known_network_interfaces") else []
         self.record["managed_resources"] = len(remaining)
-        self.record["reconciliation"] = {"managed_resources": len(remaining), "active_known_instances": len(active), "remaining_known_volumes": len(volumes)}
+        self.record["reconciliation"] = {"managed_resources": len(remaining), "active_known_instances": len(active),
+            "remaining_known_volumes": len(volumes), "remaining_known_network_interfaces": len(interfaces)}
         self.save()
-        pf.require(not remaining and not active and not volumes,
+        pf.require(not remaining and not active and not volumes and not interfaces,
                    "destroy: residual state, EC2 or EBS detected; retry destroy and inspect reconciliation")
         self.record["phase"], self.record["nodes"] = "destroyed", {}
+        self.record["untracked_instances"] = []
+        self.record["cleanup_boundary"] = "pilot-state-and-known-ec2-ebs-eni-only; use cleanup report for complete configured coverage"
         self.save()
         return self.summary()
 
