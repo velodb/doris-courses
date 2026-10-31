@@ -84,3 +84,13 @@ content identities against the event's base commit, Notebook outputs and
 offline tests. A local run does not mean remote CI ran or a release was
 published. Cloud, browser, optional-course and external-partner acceptance
 remain explicit release gates.
+
+The 2026-10-31 clean-install check ran 589 shared/course tests on Linux amd64
+(two conditional DOG-checkout tests skipped) and 306 tools/runtime tests on
+native Linux arm64. An amd64-emulated run on an arm64 Mac reproduced three
+kernel/WebSocket timeouts, including with a vanilla kernel; the same runtime
+tests passed natively. This resembles a
+[reported Docker Desktop/Rosetta issue](https://github.com/docker/desktop-feedback/issues/592),
+but does not establish its exact cause. Preserve that failed run and confirm
+the current runtime suite on native amd64 CI. This arm64 test result does not
+add arm64 EC2/AMI support to the matrix above.
