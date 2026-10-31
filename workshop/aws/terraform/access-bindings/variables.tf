@@ -17,10 +17,24 @@ variable "event_id" {
   }
 }
 variable "access" {
-  type = object({ vpc_id = string, domain = string, hosted_zone_id = string, alb_dns_name = string, alb_zone_id = string, https_listener_arn = string })
+  type = object({ vpc_id = string, domain = string, hosted_zone_id = string, alb_dns_name = string, alb_zone_id = string, https_listener_arn = string, portal = optional(object({ instance_id = string, target_group_arn = string, listener_priority = number })) })
   validation {
     condition     = startswith(var.access.https_listener_arn, "arn:aws:elasticloadbalancing:${var.region}:${var.expected_account_id}:listener/app/")
     error_message = "The shared HTTPS listener must belong to this account and Region."
+  }
+}
+variable "portal" {
+  type    = object({ hostname = string, priority = number })
+  default = null
+  validation {
+    condition = var.portal == null ? true : (
+      var.access.portal != null && var.portal.hostname == "${var.event_id}-entry.${var.access.domain}" &&
+      var.portal.priority >= 1 && var.portal.priority <= 49998 && floor(var.portal.priority) == var.portal.priority &&
+      !contains(flatten([for route in var.routes : [route.priority, route.priority + 1, route.priority + 2]]), var.portal.priority) &&
+      !contains(flatten([for route in var.routes : [route.priority, route.priority + 1, route.priority + 2]]), var.portal.priority + 1) &&
+      !contains(flatten([for route in var.routes : [route.priority, route.priority + 1, route.priority + 2]]), var.portal.priority + 2)
+    )
+    error_message = "The activity entry needs a shared operator portal and three non-overlapping priorities."
   }
 }
 variable "learners" {
@@ -33,7 +47,7 @@ variable "learners" {
 variable "routes" {
   type = map(object({ learner_id = string, hostname = string, priority = number }))
   validation {
-    condition     = length(var.routes) > 0 && length(var.routes) <= 33 && length(distinct([for route in var.routes : route.hostname])) == length(var.routes) && length(distinct(flatten([for route in var.routes : [route.priority, route.priority + 1, route.priority + 2]]))) == length(var.routes) * 3 && alltrue([for route in var.routes : can(regex("^[a-z0-9][a-z0-9.-]+$", route.hostname)) && length(split(".", route.hostname)[0]) <= 63 && route.priority >= 1 && route.priority <= 49998 && floor(route.priority) == route.priority])
-    error_message = "Use unique certificate-covered hosts and three reserved integer priorities per host; no more than 100 total rules."
+    condition     = !contains(keys(var.routes), "portal") && length(var.routes) > 0 && length(var.routes) <= 33 && length(distinct([for route in var.routes : route.hostname])) == length(var.routes) && length(distinct(flatten([for route in var.routes : [route.priority, route.priority + 1, route.priority + 2]]))) == length(var.routes) * 3 && alltrue([for route in var.routes : can(regex("^[a-z0-9][a-z0-9.-]+$", route.hostname)) && length(split(".", route.hostname)[0]) <= 63 && route.priority >= 1 && route.priority <= 49998 && floor(route.priority) == route.priority])
+    error_message = "Use unique certificate-covered hosts and three reserved integer priorities per host; reserve the portal key and stay within 100 total rules."
   }
 }

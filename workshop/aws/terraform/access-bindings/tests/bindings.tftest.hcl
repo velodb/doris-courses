@@ -20,6 +20,11 @@ variables {
     alb_dns_name       = "test.us-east-1.elb.amazonaws.com"
     alb_zone_id        = "ZEXAMPLEALB"
     https_listener_arn = "arn:aws:elasticloadbalancing:us-east-1:000000000000:listener/app/test/0123456789abcdef/0123456789abcdef"
+    portal = {
+      instance_id       = "i-00000000000000009"
+      target_group_arn  = "arn:aws:elasticloadbalancing:us-east-1:000000000000:targetgroup/portal/0123456789abcdef"
+      listener_priority = 100
+    }
   }
   learners = { alice = "i-00000000000000001", bob = "i-00000000000000002" }
   routes = {
@@ -70,4 +75,36 @@ run "reject_wrong_listener_account" {
   command = plan
   variables { expected_account_id = "111111111111" }
   expect_failures = [var.access]
+}
+run "activity_entry_authenticates_on_operator_target" {
+  command = apply
+  variables { portal = { hostname = "test-event-entry.workshops.example.com", priority = 1006 } }
+  assert {
+    condition     = length(aws_lb_listener_rule.learner) == 9 && length(aws_lb_target_group.learner) == 2 && length(aws_cognito_user_pool_client.alb.callback_urls) == 3 && aws_route53_record.learner["portal"].name == var.portal.hostname
+    error_message = "The activity entry has its own callback and three rules, and adds no learner target."
+  }
+  assert {
+    condition     = anytrue([for action in aws_lb_listener_rule.learner["portal-page"].action : try(action.target_group_arn == var.access.portal.target_group_arn && action.order == 2, false)]) && anytrue([for action in aws_lb_listener_rule.learner["portal-page"].action : action.type == "authenticate-cognito" && action.order == 1])
+    error_message = "Authenticate the entry with this activity's pool before sending it to the operator portal."
+  }
+}
+run "reject_portal_priority_overlap" {
+  command = plan
+  variables { portal = { hostname = "test-event-entry.workshops.example.com", priority = 1004 } }
+  expect_failures = [var.portal]
+}
+run "reject_portal_from_other_namespace" {
+  command = plan
+  variables { portal = { hostname = "test-event-entry.other.example.com", priority = 1006 } }
+  expect_failures = [var.portal]
+}
+run "reject_assigning_portal_host_to_learner" {
+  command = plan
+  variables { learners = { alice = "i-00000000000000009", bob = "i-00000000000000002" } }
+  expect_failures = [aws_lb_listener_rule.learner]
+}
+run "reject_using_shared_entry_priority" {
+  command = plan
+  variables { routes = { alice = { learner_id = "alice", hostname = "alice.workshops.example.com", priority = 100 } } }
+  expect_failures = [aws_lb_listener_rule.learner]
 }

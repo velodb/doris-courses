@@ -113,7 +113,7 @@ class Verifier:
                 self.keys.popitem(last=False)
             return value
 
-    async def verify(self, token):
+    async def verify_claims(self, token):
         if not isinstance(token, str) or len(token) > 16384:
             raise Denied()
         try:
@@ -129,13 +129,17 @@ class Verifier:
                 expiry = int(expiry)
             if type(expiry) not in (int, float) or not math.isfinite(expiry) or expiry <= time.time():
                 raise Denied()
-            if claims.get("sub") not in self.config["subjects"]:
-                raise Denied(403)
-            return expiry
+            return claims, expiry
         except Denied:
             raise
         except (jwt.PyJWTError, ValueError, TypeError):
             raise Denied() from None
+
+    async def verify(self, token):
+        claims, expiry = await self.verify_claims(token)
+        if claims.get("sub") not in self.config["subjects"]:
+            raise Denied(403)
+        return expiry
 
 
 def clean_headers(headers):

@@ -33,6 +33,10 @@ directories, with operator-only permissions. Install
 
    Reserve an unused listener priority range for this activity. Each service
    consumes three priorities: logout landing, API and page. The generated
+   activity entry consumes another three when shared access has an operator
+   portal, and the shared root list consumes one. Keep its reserved priority
+   outside every activity range. See the [operator portal](shared-access.md#operator-owned-course-entry)
+   for the separate host and its private assignment configuration. The generated
    `access-plan.tfvars.json` is input to `terraform/access-bindings`. Existing
    ALB rules count toward its quota, including rules from other activities.
    Live quota, callback count, identity, ownership and cost checks are required

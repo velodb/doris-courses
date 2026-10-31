@@ -40,6 +40,7 @@ PUBLIC_ENV = {"rta-metabase": "DORIS_RTA_METABASE_PUBLIC_URL", "dw-superset": "D
 DEFAULT_REDIRECTS = {f"rta-fe{index + 1}": [f"http://172.31.91.{40 + index}:8030"] for index in range(3)}
 OVERLAY = wc.REPO / "workshop/aws/access"
 OVERLAY_FILES = {"gateway.py", "jupyter_gateway.py", "requirements.txt", "doris-workshop-gateway.service", "install_gateway.sh"}
+PORTAL_FILES = {"portal.py", "gateway.py", "requirements.txt", "install_portal.sh", "doris-workshop-portal.service"}
 
 
 def require(condition, message):
@@ -76,13 +77,19 @@ def routes(config, access, instances, *, overrides=None, redirect_origins=None, 
             services[learner][host] = {"port": port, "jupyter": name == "jupyter", "redirect_origins": redirect_origins.get(learner, {}).get(name, DEFAULT_REDIRECTS.get(name, []))}
             if name == "dw-flink":
                 services[learner][host]["dynamic_port"] = "dw-flink"
-    require(len(result) <= 33 and priority_base + 3 * len(result) <= 50001, "three rules per service exceed the reserved ALB rule/priority limit")
+    portal = None
+    if access.get("portal") is not None:
+        require(access["portal"]["instance_id"] not in instances.values(), "the operator portal cannot be assigned to a learner")
+        portal = {"hostname": f'{config["event_id"]}-entry.{config["domain"]}', "priority": priority_base + 3 * len(result)}
+        require(access["portal"]["listener_priority"] not in range(priority_base, portal["priority"] + 3), "shared portal priority overlaps the activity range")
+    count = 3 * len(result) + (4 if portal else 0)
+    require(count <= 100 and priority_base + count - (1 if portal else 0) <= 50001, "include all portal and service rules in the ALB rule/priority limit")
     return {"schema_version": 1, "event_id": config["event_id"], "expires_at": config["expires_at"],
             "alb_arn": access["alb_arn"], "region": config["region"], "services": services,
             "browser_routes": browser,
             "terraform": {"aws_profile": config["aws_profile"], "expected_account_id": config["aws_account_id"],
                 "region": config["region"], "owner_id": config["owner_id"], "event_id": config["event_id"], "expires_at": config["expires_at"],
-                "access": access, "learners": instances, "routes": result}}
+                "access": access, "learners": instances, "routes": result, "portal": portal}}
 
 
 def gateway_configs(plan, identity, subjects):
@@ -103,13 +110,35 @@ def gateway_configs(plan, identity, subjects):
     return result
 
 
-def bundle(directory):
+def bundle(directory, *, portal=False):
     require(not directory.exists(), "select a new overlay output directory")
     directory.mkdir(parents=True, mode=0o700)
-    for name in sorted(OVERLAY_FILES):
+    files = PORTAL_FILES if portal else OVERLAY_FILES
+    for name in sorted(files):
         shutil.copyfile(OVERLAY / name, directory / name)
     wc.write_manifest(directory / "overlay.json", {"schema_version": 1,
-        "sha256": {name: hashlib.sha256((directory / name).read_bytes()).hexdigest() for name in sorted(OVERLAY_FILES)}})
+        "sha256": {name: hashlib.sha256((directory / name).read_bytes()).hexdigest() for name in sorted(files)}})
+
+
+def portal_config(plans, identities, assignments):
+    require(len(plans) == len(identities) == len(assignments) > 0, "supply one plan, identity and subject file for each activity")
+    first = plans[0]
+    result = {"schema_version": 1, "domain": first["terraform"]["access"]["domain"],
+        "alb_arn": first["alb_arn"], "region": first["region"], "activities": {}}
+    for plan, identity, subjects in zip(plans, identities, assignments):
+        require(plan["event_id"] not in result["activities"], "duplicate portal activity")
+        require(plan["alb_arn"] == result["alb_arn"] and plan["region"] == result["region"] and
+                plan["terraform"]["access"]["domain"] == result["domain"] and plan["terraform"].get("portal") is not None,
+                "each activity must use this operator portal and namespace")
+        gateways = gateway_configs(plan, identity, subjects)
+        result["activities"][plan["event_id"]] = {"expires_at": plan["expires_at"],
+            **{key: identity[key] for key in ("issuer", "client_id", "login_origin")},
+            "assignments": {subject: {"learner_id": learner, "services": browser_routes(plan, learner)["services"]}
+                for learner, config in gateways.items() for subject in config["subjects"]}}
+    sys.path.insert(0, str(OVERLAY))
+    from portal import validate_config
+    validate_config(result)
+    return result
 
 
 def browser_routes(plan, learner):
@@ -151,10 +180,19 @@ def main():
         hostp.add_argument("--" + name, type=Path, required=True)
     bundlep = commands.add_parser("bundle")
     bundlep.add_argument("--output-dir", type=Path, required=True)
+    portalp = commands.add_parser("portal-config")
+    for name in ("plan", "identity", "subjects"):
+        portalp.add_argument("--" + name, type=Path, action="append", required=True)
+    portalp.add_argument("--output", type=Path, required=True)
+    portalbundle = commands.add_parser("portal-bundle")
+    portalbundle.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
     try:
-        if args.command == "bundle":
-            bundle(args.output_dir)
+        if args.command in {"bundle", "portal-bundle"}:
+            bundle(args.output_dir, portal=args.command == "portal-bundle")
+        elif args.command == "portal-config":
+            wc.write_manifest(args.output, portal_config(*[[wc.load_document(path) for path in paths]
+                for paths in (args.plan, args.identity, args.subjects)]))
         elif args.command == "routes":
             config, _, _ = wc.validate_config(wc.load_document(args.config))
             value = routes(config, wc.load_document(args.access), wc.load_document(args.instances),

@@ -1,0 +1,26 @@
+[Unit]
+Description=Operator-owned Doris course entry
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=doris-portal
+Group=doris-portal
+ExecStart=/opt/doris-workshop-portal/venv/bin/python -I /opt/doris-workshop-portal/portal.py --config /etc/doris-workshop-portal/portal.json
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+RestrictSUIDSGID=true
+CapabilityBoundingSet=
+UMask=0077
+LimitNOFILE=4096
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=multi-user.target

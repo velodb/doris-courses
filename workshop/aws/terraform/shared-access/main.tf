@@ -94,8 +94,9 @@ resource "aws_security_group" "gateway" {
   egress = []
 }
 resource "aws_acm_certificate" "access" {
-  domain_name       = "*.${var.domain}"
-  validation_method = "DNS"
+  domain_name               = "*.${var.domain}"
+  subject_alternative_names = [var.domain]
+  validation_method         = "DNS"
   lifecycle {
     create_before_destroy = true
     precondition {
@@ -109,9 +110,11 @@ resource "aws_acm_certificate" "access" {
 }
 resource "aws_route53_record" "validation" {
   zone_id = var.hosted_zone_id
-  name    = one(aws_acm_certificate.access.domain_validation_options).resource_record_name
-  type    = one(aws_acm_certificate.access.domain_validation_options).resource_record_type
-  records = [one(aws_acm_certificate.access.domain_validation_options).resource_record_value]
+  # ACM returns the same validation CNAME for an apex and its wildcard. Select
+  # the apex explicitly so keys remain known in the first (unapplied) plan.
+  name    = one([for option in aws_acm_certificate.access.domain_validation_options : option.resource_record_name if option.domain_name == var.domain])
+  type    = "CNAME"
+  records = [one([for option in aws_acm_certificate.access.domain_validation_options : option.resource_record_value if option.domain_name == var.domain])]
   ttl     = 60
 }
 resource "aws_acm_certificate_validation" "access" {
@@ -159,6 +162,84 @@ resource "aws_lb_listener" "http" {
   }
 }
 
+resource "aws_route53_record" "root" {
+  zone_id = var.hosted_zone_id
+  name    = var.domain
+  type    = "A"
+  alias {
+    name                   = aws_lb.access.dns_name
+    zone_id                = aws_lb.access.zone_id
+    evaluate_target_health = true
+  }
+}
+
+# Provision the operator's host separately, then attach this dedicated group.
+# No learner code, Docker socket, deployment credentials or TLS keys run here.
+resource "aws_security_group" "portal" {
+  name_prefix = "${local.name}-portal-"
+  vpc_id      = aws_vpc.access.id
+  ingress {
+    protocol        = "tcp"
+    from_port       = 8080
+    to_port         = 8080
+    security_groups = [aws_security_group.alb.id]
+  }
+  egress {
+    protocol    = "tcp"
+    from_port   = 443
+    to_port     = 443
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+data "aws_instance" "portal" {
+  count       = var.portal_instance_id == null ? 0 : 1
+  instance_id = var.portal_instance_id
+}
+data "aws_subnet" "portal" {
+  count = var.portal_instance_id == null ? 0 : 1
+  id    = data.aws_instance.portal[0].subnet_id
+}
+resource "aws_lb_target_group" "portal" {
+  count                = var.portal_instance_id == null ? 0 : 1
+  name_prefix          = "dwsp-"
+  vpc_id               = aws_vpc.access.id
+  port                 = 8080
+  protocol             = "HTTP"
+  target_type          = "instance"
+  deregistration_delay = 10
+  health_check {
+    path    = "/healthz"
+    matcher = "200"
+  }
+  lifecycle {
+    precondition {
+      condition     = data.aws_subnet.portal[0].vpc_id == aws_vpc.access.id && contains(data.aws_instance.portal[0].vpc_security_group_ids, aws_security_group.portal.id) && try(data.aws_instance.portal[0].tags["Project"], "") == "doris-workshop" && try(data.aws_instance.portal[0].tags["Scope"], "") == "shared-portal" && try(data.aws_instance.portal[0].tags["Owner"], "") == var.owner_id && try(data.aws_instance.portal[0].tags["Access"], "") == var.access_id && !contains(keys(data.aws_instance.portal[0].tags), "Event")
+      error_message = "Use a separately owned shared-portal host in this VPC with the portal SG, matching Owner/Access and no activity Event tag."
+    }
+  }
+}
+resource "aws_lb_target_group_attachment" "portal" {
+  count            = var.portal_instance_id == null ? 0 : 1
+  target_group_arn = aws_lb_target_group.portal[0].arn
+  target_id        = var.portal_instance_id
+  port             = 8080
+}
+resource "aws_lb_listener_rule" "portal" {
+  count        = var.portal_instance_id == null ? 0 : 1
+  listener_arn = aws_lb_listener.https.arn
+  priority     = var.portal_priority
+  condition {
+    host_header { values = [var.domain] }
+  }
+  condition {
+    path_pattern { values = ["/doris-courses", "/doris-courses/"] }
+  }
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.portal[0].arn
+  }
+}
+
 output "access" {
   value = {
     schema_version            = 1, access_id = var.access_id, account_id = data.aws_caller_identity.current.account_id,
@@ -167,6 +248,11 @@ output "access" {
     alb_arn                   = aws_lb.access.arn, alb_security_group_id = aws_security_group.alb.id,
     alb_dns_name              = aws_lb.access.dns_name, alb_zone_id = aws_lb.access.zone_id,
     https_listener_arn        = aws_lb_listener.https.arn, gateway_port = 8080,
-    gateway_security_group_id = aws_security_group.gateway.id
+    gateway_security_group_id = aws_security_group.gateway.id,
+    portal_security_group_id  = aws_security_group.portal.id,
+    portal = var.portal_instance_id == null ? null : {
+      instance_id       = var.portal_instance_id, target_group_arn = aws_lb_target_group.portal[0].arn,
+      listener_priority = var.portal_priority
+    }
   }
 }

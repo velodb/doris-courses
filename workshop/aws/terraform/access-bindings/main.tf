@@ -43,8 +43,8 @@ resource "aws_cognito_user_pool_client" "alb" {
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["openid"]
   supported_identity_providers         = ["COGNITO"]
-  callback_urls                        = sort([for route in var.routes : "https://${route.hostname}/oauth2/idpresponse"])
-  logout_urls                          = sort([for route in var.routes : "https://${route.hostname}/_workshop/logged-out"])
+  callback_urls                        = sort([for hostname in local.auth_hosts : "https://${hostname}/oauth2/idpresponse"])
+  logout_urls                          = sort([for hostname in local.auth_hosts : "https://${hostname}/_workshop/logged-out"])
   access_token_validity                = 15
   id_token_validity                    = 15
   refresh_token_validity               = 1
@@ -87,7 +87,7 @@ resource "aws_lb_target_group_attachment" "learner" {
   port             = 8080
 }
 resource "aws_route53_record" "learner" {
-  for_each = var.routes
+  for_each = local.hosts
   zone_id  = var.access.hosted_zone_id
   name     = each.value.hostname
   type     = "A"
@@ -99,10 +99,15 @@ resource "aws_route53_record" "learner" {
 }
 
 locals {
+  hosts = merge(
+    { for key, route in var.routes : key => merge(route, { portal = false }) },
+    var.portal == null ? {} : { "portal" = merge(var.portal, { portal = true, learner_id = "" }) }
+  )
+  auth_hosts = [for host in local.hosts : host.hostname]
   rules = merge(
-    { for key, route in var.routes : "${key}-logout" => merge(route, { kind = "logout", priority = route.priority }) },
-    { for key, route in var.routes : "${key}-api" => merge(route, { kind = "api", priority = route.priority + 1 }) },
-    { for key, route in var.routes : "${key}-page" => merge(route, { kind = "page", priority = route.priority + 2 }) }
+    { for key, route in local.hosts : "${key}-logout" => merge(route, { kind = "logout", priority = route.priority }) },
+    { for key, route in local.hosts : "${key}-api" => merge(route, { kind = "api", priority = route.priority + 1 }) },
+    { for key, route in local.hosts : "${key}-page" => merge(route, { kind = "page", priority = route.priority + 2 }) }
   )
 }
 resource "aws_lb_listener_rule" "learner" {
@@ -139,7 +144,7 @@ resource "aws_lb_listener_rule" "learner" {
     content {
       type             = "forward"
       order            = 2
-      target_group_arn = aws_lb_target_group.learner[each.value.learner_id].arn
+      target_group_arn = each.value.portal ? var.access.portal.target_group_arn : aws_lb_target_group.learner[each.value.learner_id].arn
     }
   }
   dynamic "action" {
@@ -155,8 +160,16 @@ resource "aws_lb_listener_rule" "learner" {
   }
   lifecycle {
     precondition {
-      condition     = endswith(each.value.hostname, ".${var.access.domain}") && length(split(".", trimsuffix(each.value.hostname, ".${var.access.domain}"))) == 1 && contains(keys(var.learners), each.value.learner_id)
+      condition     = endswith(each.value.hostname, ".${var.access.domain}") && length(split(".", trimsuffix(each.value.hostname, ".${var.access.domain}"))) == 1 && (each.value.portal || contains(keys(var.learners), each.value.learner_id))
       error_message = "Every hostname must be one certificate-covered label and assigned to an existing learner."
+    }
+    precondition {
+      condition     = var.access.portal == null ? true : (!contains(values(var.learners), var.access.portal.instance_id) && each.value.priority != var.access.portal.listener_priority)
+      error_message = "The operator portal cannot be assigned to a learner and its listener priority is reserved."
+    }
+    precondition {
+      condition     = length(local.rules) + (var.access.portal == null ? 0 : 1) <= 100 && length(distinct(local.auth_hosts)) == length(local.hosts)
+      error_message = "Include the portal in the ALB rule budget and use unique hosts. Other activities still need live quota checks."
     }
   }
 }

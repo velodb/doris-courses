@@ -23,6 +23,22 @@ variable "domain" {
   }
 }
 variable "hosted_zone_id" { type = string }
+variable "portal_instance_id" {
+  type    = string
+  default = null
+  validation {
+    condition     = var.portal_instance_id == null ? true : can(regex("^i-[0-9a-f]{17}$", var.portal_instance_id))
+    error_message = "Supply a separately managed operator portal instance, or leave the entry closed."
+  }
+}
+variable "portal_priority" {
+  type    = number
+  default = 100
+  validation {
+    condition     = var.portal_priority >= 1 && var.portal_priority <= 50000 && floor(var.portal_priority) == var.portal_priority
+    error_message = "Reserve a unique integer listener priority for the shared entry."
+  }
+}
 variable "availability_zones" {
   type = list(string)
   validation {

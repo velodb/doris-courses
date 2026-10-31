@@ -19,6 +19,8 @@ restart and reconnection, quiz widgets, terminal Docker access and the Doris
 QueryProfile page, including a temporary single-instance HTTPS/token entry.
 Slow SSM cold loads required a reload after frontend assets arrived. Shared
 HTTPS/Cognito routing now has a [local implementation](cognito-access.md) and
+[operator-owned course entry](shared-access.md#operator-owned-course-entry), with
+apex/wildcard TLS configuration and delegated partner namespace support, plus
 [service integration](service-access.md); formal-domain cloud acceptance is pending. The
 [deployment architecture](architecture.md) and
 [first real Terraform runbook](first-run.md) describe the live preflight and
