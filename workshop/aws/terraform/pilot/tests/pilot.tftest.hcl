@@ -115,38 +115,38 @@ run "reject_reserved_spare_id" {
 run "validated_prebuilt_injects_only_activity" {
   command = plan
   variables {
-    image_mode           = "prebuilt"
-    ami_owner_account_id = "000000000000"
-    image_release_ref    = "rta-v1"
-    image_release_sha256 = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    image_mode            = "prebuilt"
+    ami_owner_account_id  = "000000000000"
+    image_release_ref     = "rta-v1"
+    image_release_sha256  = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
     image_manifest_sha256 = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
-    image_runtime_sha256 = filesha256("tests/fixtures/runtime/runtime.json")
+    image_runtime_sha256  = filesha256("tests/fixtures/runtime/runtime.json")
   }
   override_data {
     target = data.aws_ami.ubuntu
     values = {
-      owner_id = "000000000000"
-      public = false
-      architecture = "x86_64"
+      owner_id         = "000000000000"
+      public           = false
+      architecture     = "x86_64"
       root_device_type = "ebs"
       tags = {
-        ImageStatus = "validated"
-        ReleaseRef = "rta-v1"
-        ReleaseSHA256 = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ImageStatus    = "validated"
+        ReleaseRef     = "rta-v1"
+        ReleaseSHA256  = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
         ManifestSHA256 = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
       }
     }
   }
   assert {
-    condition = length(aws_s3_object.runtime) == 0 && length(regexall("install_host.sh|pip install|apt-get", aws_instance.learner["s001"].user_data)) == 0
+    condition     = length(aws_s3_object.runtime) == 0 && length(regexall("install_host.sh|pip install|apt-get", aws_instance.learner["s001"].user_data)) == 0
     error_message = "Prebuilt startup must not upload or execute the dependency installer."
   }
   assert {
-    condition = jsondecode(aws_ssm_document.install.content).mainSteps[0].name == "verifyPrebuilt" && length(jsondecode(aws_ssm_document.install.content).mainSteps) == 1
+    condition     = jsondecode(aws_ssm_document.install.content).mainSteps[0].name == "verifyPrebuilt" && length(jsondecode(aws_ssm_document.install.content).mainSteps) == 1
     error_message = "The prebuilt SSM operation must only check the injected activity and runtime."
   }
   assert {
-    condition = length([for statement in jsondecode(aws_iam_role_policy.learner.policy).Statement : statement if statement.Effect == "Allow" && contains(statement.Action, "s3:GetObject")]) == 0
+    condition     = length([for statement in jsondecode(aws_iam_role_policy.learner.policy).Statement : statement if statement.Effect == "Allow" && contains(statement.Action, "s3:GetObject")]) == 0
     error_message = "Prebuilt learner roles must not receive runtime S3 download permissions."
   }
 }
@@ -154,8 +154,25 @@ run "validated_prebuilt_injects_only_activity" {
 run "reject_unpublished_prebuilt" {
   command = plan
   variables {
-    image_mode = "prebuilt"
+    image_mode           = "prebuilt"
     ami_owner_account_id = "000000000000"
   }
   expect_failures = [aws_instance.learner]
+}
+run "shared_network_keeps_service_ports_closed" {
+  command = apply
+  variables {
+    vpc_id                    = "vpc-00000000000000000"
+    subnet_id                 = "subnet-00000000000000000"
+    gateway_security_group_id = "sg-00000000000000000"
+  }
+  assert {
+    condition     = length(aws_vpc.pilot) == 0 && contains(aws_instance.learner["s001"].vpc_security_group_ids, "sg-00000000000000000") && length(aws_security_group.pilot.ingress) == 0
+    error_message = "Shared access reuses its VPC without exposing backend service ports."
+  }
+}
+run "reject_gateway_in_an_unrelated_vpc" {
+  command = plan
+  variables { gateway_security_group_id = "sg-00000000000000000" }
+  expect_failures = [var.gateway_security_group_id]
 }

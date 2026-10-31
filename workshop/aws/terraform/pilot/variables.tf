@@ -111,3 +111,12 @@ variable "browser_routes" {
   type    = map(map(string))
   default = {}
 }
+variable "gateway_security_group_id" {
+  type     = string
+  default  = null
+  nullable = true
+  validation {
+    condition     = var.gateway_security_group_id == null || var.vpc_id != null
+    error_message = "A shared gateway security group requires the shared access VPC and subnet."
+  }
+}

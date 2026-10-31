@@ -124,3 +124,9 @@ availability, installation success or actual cleanup.
 References: [S3 backend and lock files](https://developer.hashicorp.com/terraform/language/backend/s3),
 [SSM scripts from S3](https://docs.aws.amazon.com/systems-manager/latest/userguide/integration-s3.html),
 [Canonical Ubuntu AMI discovery](https://ubuntu.com/aws/docs/aws-how-to/instances/find-ubuntu-images/).
+# Shared access
+
+See [shared HTTPS access](../shared-access.md) for `shared-access`, its independent
+state, two-zone VPC, default-deny ALB and ACM/DNS ownership. The pilot module can
+reuse that network and attach its ALB-only gateway security group through explicit
+Terraform variables. The guarded SSM pilot CLI does not yet plan this topology.

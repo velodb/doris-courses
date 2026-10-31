@@ -47,7 +47,11 @@ It receives SSM agent channels and read access to its exact runtime-code prefix,
 with explicit denial of Terraform state, deployment management and secret reads.
 Actual negative permission tests remain part of the EC2 integration run.
 
-## Shared browser access, subsequent implementation
+## Shared browser access
+
+The [shared-access module](shared-access.md) now defines the ALB/ACM and two-zone
+network with a default-deny listener. Activity authentication, gateway and browser
+acceptance are separate from the SSM pilot. Real-domain cloud validation is pending.
 
 The implementation baseline is a shared ALB with ACM TLS and an OIDC identity
 provider. Temporary workshop accounts can use Cognito behind the same identity

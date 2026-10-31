@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        module: [bootstrap, pilot, image-build, image-validation]
+        module: [bootstrap, pilot, image-build, image-validation, shared-access]
     defaults:
       run:
         working-directory: workshop/aws/terraform/${{ matrix.module }}

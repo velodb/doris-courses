@@ -194,7 +194,7 @@ resource "aws_instance" "learner" {
   ami                                  = data.aws_ami.ubuntu.id
   instance_type                        = var.instance_type
   subnet_id                            = local.subnet_id
-  vpc_security_group_ids               = [aws_security_group.pilot.id]
+  vpc_security_group_ids               = concat([aws_security_group.pilot.id], var.gateway_security_group_id == null ? [] : [var.gateway_security_group_id])
   associate_public_ip_address          = true
   iam_instance_profile                 = aws_iam_instance_profile.learner.name
   instance_initiated_shutdown_behavior = "terminate"
@@ -289,3 +289,4 @@ output "instance_ids" { value = { for id, instance in aws_instance.learner : id 
 output "install_document" { value = aws_ssm_document.install.name }
 output "runtime_bucket" { value = aws_s3_bucket.runtime.id }
 output "learner_role_arn" { value = aws_iam_role.learner.arn }
+output "network" { value = { vpc_id = local.vpc_id, subnet_id = local.subnet_id } }
