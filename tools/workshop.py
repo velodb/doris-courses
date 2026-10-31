@@ -17,6 +17,9 @@ import time
 import workshop_config as wc
 import workshop_preflight as pf
 import workshop_operations as ops
+import workshop_batch as batch
+
+IN_FLIGHT = {"Pending", "InProgress", "Delayed", "Cancelling", "DispatchUnknown"}
 
 _PROBE_PREFIX = ("runuser --user workshop -- env -i HOME=/var/lib/doris-workshop/home "
          "PATH=/opt/doris-workshop/server-venv/bin:/usr/local/bin:/usr/bin:/bin "
@@ -105,10 +108,19 @@ class Terraform:
 class Cloud(pf.Aws):
     """Explicit-profile reads and bounded SSM startup, verification and health checks."""
 
+    def dispatch_client(self):
+        # SendCommand has no idempotency token. Retrying a lost HTTP response
+        # could run an installer twice; only an operator may resolve that case.
+        if not hasattr(self, "_ssm_dispatch_client"):
+            from botocore.config import Config
+            self._ssm_dispatch_client = self.session.client("ssm", config=self.options.merge(
+                Config(retries={"mode": "standard", "total_max_attempts": 1})))
+        return self._ssm_dispatch_client
+
     def send(self, instance, document, *, probe=False, startup=False):
         options = {"Parameters": {"commands": [PROBE], "executionTimeout": ["300"]}} if probe else (
             {"Parameters": {"commands": IMAGE_STARTUP, "executionTimeout": ["600"]}} if startup else {})
-        return self.client("ssm").send_command(InstanceIds=[instance], DocumentName=document,
+        return self.dispatch_client().send_command(InstanceIds=[instance], DocumentName=document,
                                                 TimeoutSeconds=600, **options)["Command"]["CommandId"]
 
     def command(self, command_id, instance, *, probe=False):
@@ -132,6 +144,12 @@ class Controller:
         pf.require(b.get("stage") == "pilot", "run: only activity runs are supported; foundation is retained")
         self.config, self.pilot = b["config"], b["pilot"]
         wc.schema_check(self.config, "config.schema.json")
+        self.allocations = {key: {"role": "learner", "active": True} for key in self.config["learner_ids"]}
+        if b.get("allocations_sha256"):
+            pf.require(pf.file_hash(self.directory / "allocations.json") == b["allocations_sha256"], "ownership: allocation manifest changed")
+            manifest = wc.load_document(self.directory / "allocations.json")
+            batch.validate_manifest(manifest, self.config)
+            self.allocations = manifest["allocations"]
         # Expiry and live prices deliberately do not block status or cleanup.
         for name, key in (("inputs.tfvars.json", "vars_sha256"), ("backend.tfbackend.json", "backend_sha256")):
             pf.require(pf.file_hash(self.directory / name) == b[key], "ownership: bound variables or backend changed")
@@ -162,6 +180,16 @@ class Controller:
             "known_instances": [], "known_volumes": [],
         }
         pf.require(self.record.get("event_id") == self.config["event_id"], "ownership: lifecycle event mismatch")
+        if b.get("resume_sha256"):
+            pf.require(pf.file_hash(self.directory / "resume.json") == b["resume_sha256"] and
+                pf.file_hash(self.directory / "roster-review.json") == b["roster_review_sha256"], "ownership: roster review or resume snapshot changed")
+            if not self.path.exists():
+                previous = wc.load_document(self.directory / "resume.json")
+                pf.require(previous.get("event_id") == self.config["event_id"] and previous.get("phase") == "ready",
+                    "roster: resume only a ready activity")
+                for key in ("nodes", "known_instances", "known_volumes"):
+                    self.record[key] = previous[key]
+        self.concurrency = self.record.get("batch_concurrency", 2)
 
     def save(self):
         self.record["updated_at"] = wc.utc_text(datetime.now(timezone.utc))
@@ -189,7 +217,7 @@ class Controller:
             values = row["values"]
             if row["type"] == "aws_instance":
                 learner = row.get("index")
-                pf.require(learner in self.config["learner_ids"] and values.get("tags", {}).get("Learner") == learner,
+                pf.require(learner in self.allocations and self.allocations[learner]["role"] == "learner" and values.get("tags", {}).get("Learner") == learner,
                            "ownership: unknown learner instance")
                 instances[learner] = values["id"]
                 self.record["known_instances"] = sorted(set(self.record["known_instances"]) | {values["id"]})
@@ -209,7 +237,7 @@ class Controller:
         for instance in instances.values():
             tags = {t["Key"]: t["Value"] for t in instance.get("Tags", [])}
             pf.require(all(tags.get(k) == v for k, v in self.tags().items()), "ownership: actual EC2 tags do not match")
-            pf.require(tags.get("Learner") in self.config["learner_ids"], "ownership: actual EC2 learner mismatch")
+            pf.require(tags.get("Learner") in self.allocations and self.allocations[tags["Learner"]]["role"] == "learner", "ownership: actual EC2 learner mismatch")
         return instances
 
     def poll_command(self, node, kind, document, deadline, *, retry_failed=False):
@@ -223,7 +251,14 @@ class Controller:
                 raise wc.ConfigError(f"ssm: {kind} failed; inspect target logs, then use --retry-failed (at most 3 attempts)")
             entry.pop("command_id", None)
         if not entry.get("command_id"):
-            pf.require(self.clock() < deadline, "wait: deadline reached before command dispatch")
+            if self.clock() >= deadline:
+                return False
+            if self.inflight() >= self.concurrency or any(row.get("status") == "DispatchUnknown"
+                    for current in self.record["nodes"].values() for row in self.commands(current)):
+                entry["status"] = "Queued"
+                node["waiting_for_slot"] = True
+                return False
+            node.pop("waiting_for_slot", None)
             entry["attempts"] += 1
             entry["status"] = "DispatchUnknown"
             self.save()
@@ -267,13 +302,26 @@ class Controller:
             raise wc.ConfigError(f"ssm: {kind} failed; target logs: /var/log/doris-workshop; resources remain")
         return status == "Success"
 
-    def inspect(self, *, install=False, timeout=900, retry_failed=False):
+    @staticmethod
+    def commands(node):
+        return [node[kind] for kind in ("startup", "install", "probe") if kind in node]
+
+    def inflight(self):
+        return sum(row.get("status") in IN_FLIGHT for node in self.record["nodes"].values() for row in self.commands(node))
+
+    def inspect(self, *, install=False, timeout=900, retry_failed=False, concurrency=2):
+        pf.require(type(concurrency) is int and 1 <= concurrency <= 16, "batch: concurrency must be an integer from 1 to 16")
+        self.concurrency = concurrency
+        self.record["batch_concurrency"] = concurrency
         began = self.clock()
         deadline = self.clock() + timeout
         instances, document = self.inventory()
         if install:
             pf.require(set(instances) == set(self.config["learner_ids"]) and document,
                        "apply: incomplete activity state; resources may remain, create a fresh reviewed plan or destroy")
+        for learner, instance in instances.items():
+            if self.record["nodes"].get(learner, {}).get("instance_id") != instance:
+                self.record["nodes"][learner] = {"instance_id": instance, "ready": False}
         # Every status command starts a fresh remote probe, never reports an old
         # successful probe as current health. Up preserves pending command IDs.
         if not install:
@@ -285,11 +333,14 @@ class Controller:
             node["managed"] = instances.get(learner) == node["instance_id"]
         while True:
             actual = self.actual_instances(set(instances.values()) | set(self.record["known_instances"]))
+            for node in self.record["nodes"].values():
+                if not node["managed"]:
+                    node["ec2"] = actual.get(node["instance_id"], {}).get("State", {}).get("Name", "missing")
             self.record["untracked_instances"] = sorted(i for i, row in actual.items()
                                                         if i not in instances.values() and row.get("State", {}).get("Name") != "terminated")
             all_ready = bool(instances) and set(instances) == set(self.config["learner_ids"]) and not self.record["untracked_instances"]
             failed = bool(self.record["untracked_instances"])
-            for learner, instance in instances.items():
+            for learner, instance in sorted(instances.items()):
                 old = self.record["nodes"].get(learner, {})
                 node = old if old.get("instance_id") == instance else {"instance_id": instance}
                 self.record["nodes"][learner] = node
@@ -299,16 +350,33 @@ class Controller:
                     tags = {t["Key"]: t["Value"] for t in actual[instance].get("Tags", [])}
                     pf.require(tags.get("Learner") == learner, "ownership: actual EC2 assignment differs from state")
                 node["ready"] = False
+                node.pop("waiting_for_slot", None)
+                node.pop("error", None)
                 if node["ec2"] != "running":
                     all_ready = False
                     continue
-                rows = self.cloud.call("ssm", "describe_instance_information",
-                                       Filters=[{"Key": "InstanceIds", "Values": [instance]}])["InstanceInformationList"]
-                node["ssm"] = rows[0].get("PingStatus", "Offline") if rows else "Offline"
-                if node["ssm"] != "Online":
-                    all_ready = False
-                    continue
                 try:
+                    rows = self.cloud.call("ssm", "describe_instance_information",
+                                           Filters=[{"Key": "InstanceIds", "Values": [instance]}])["InstanceInformationList"]
+                    node["ssm"] = rows[0].get("PingStatus", "Offline") if rows else "Offline"
+                    if node["ssm"] != "Online":
+                        all_ready = False
+                        continue
+                    if not install:
+                        # Status may finish polling an earlier dispatch, but
+                        # cannot resend an installer or leave its occupied slot
+                        # stuck forever after the remote command has completed.
+                        outstanding = False
+                        for kind in ("startup", "install"):
+                            entry = node.get(kind, {})
+                            if entry.get("status") in IN_FLIGHT:
+                                outstanding = not self.poll_command(node, kind,
+                                    "AWS-RunShellScript" if kind == "startup" else document, deadline)
+                                if outstanding:
+                                    break
+                        if outstanding:
+                            all_ready = False
+                            continue
                     if install and self.config['image']['mode'] == 'prebuilt' and not self.poll_command(
                             node, 'startup', 'AWS-RunShellScript', deadline, retry_failed=retry_failed):
                         all_ready = False
@@ -319,8 +387,8 @@ class Controller:
                     if self.poll_command(node, "probe", "AWS-RunShellScript", deadline, retry_failed=retry_failed):
                         node["ready"] = node["probe"].get("ready", False)
                     node.pop("error", None)
-                except wc.ConfigError as exc:
-                    node["error"] = str(exc)
+                except Exception as exc:
+                    node["error"] = str(exc) if isinstance(exc, wc.ConfigError) else "batch: query or dispatch failed; reconcile this node before retrying"
                     failed = True
                 all_ready &= node["ready"]
             self.save()
@@ -339,18 +407,25 @@ class Controller:
             self.sleep(min(5, max(0, deadline - self.clock())))
 
     def summary(self, ready=False):
+        current = {key: self.record["nodes"].get(key, {}) for key in self.config["learner_ids"]}
+        ready_ids = sorted(key for key, node in current.items() if node.get("ready") and node.get("managed"))
+        failed_ids = sorted(key for key, node in current.items() if node.get("error"))
         return {"event_id": self.config["event_id"], "region": self.config["region"], "phase": self.record["phase"],
                 "ready": bool(ready), "readiness_scope": "host-runtime-and-course-entry", "course_labs_validated": False,
                 "managed_resources": self.record.get("managed_resources", 0),
                 "resources_may_remain": bool(self.record.get("managed_resources", 0) or self.record.get("untracked_instances")
-                                              or self.record["known_volumes"] and self.record["phase"] != "destroyed"),
+                                              or (self.record["known_volumes"] or self.record["known_instances"]) and self.record["phase"] != "destroyed"),
+                "batch": {"concurrency": self.concurrency, "in_flight": self.inflight(), "ready": ready_ids,
+                    "failed": failed_ids, "pending": sorted(set(current) - set(ready_ids) - set(failed_ids))},
+                "allocations": {key: {"role": row["role"], "active": row["active"]} for key, row in self.allocations.items()},
                 "untracked_instances": self.record.get("untracked_instances", []),
                 "retained_foundation": self.pilot["state_bucket_name"],
                 "target_logs": "/var/log/doris-workshop", "nodes": self.record["nodes"],
                 "last_health_check": self.record.get("last_health_check"),
                 "entry": {"transport": "operator-ssm-forward", "remote_port": 8888, "path": "/workshop/"}}
 
-    def up(self, approved_plan_hash, *, timeout=7500, retry_failed=False):
+    def up(self, approved_plan_hash, *, timeout=7500, retry_failed=False, concurrency=2):
+        pf.require(type(concurrency) is int and 1 <= concurrency <= 16, "batch: concurrency must be an integer from 1 to 16")
         began = self.clock()
         pf.require(self.record["phase"] not in {"destroying", "destroyed"}, "up: use a fresh reviewed plan after destroy")
         if self.record["phase"] == "planned":
@@ -375,7 +450,7 @@ class Controller:
         for node in self.record["nodes"].values():
             if node.get("probe", {}).get("status") == "Success":
                 node.pop("probe", None)
-        report = self.inspect(install=True, timeout=timeout, retry_failed=retry_failed)
+        report = self.inspect(install=True, timeout=timeout, retry_failed=retry_failed, concurrency=concurrency)
         pf.require(report["ready"], "runtime: one or more nodes failed readiness; see lifecycle.json and status, resources remain")
         self.record["phase"] = "ready"
         self.record.setdefault("readiness_history", []).append({"operation": "up", "seconds": round(self.clock() - began, 2),
@@ -414,7 +489,8 @@ class Controller:
                    changed[0]["change"]["actions"] in (["delete", "create"], ["create", "delete"]),
                    "replace: plan must replace only the selected instance; shared or other-learner changes rejected")
 
-    def replace(self, approved_plan_hash, *, timeout=900):
+    def replace(self, approved_plan_hash, *, timeout=900, concurrency=2):
+        pf.require(type(concurrency) is int and 1 <= concurrency <= 16, "batch: concurrency must be an integer from 1 to 16")
         receipt = wc.load_document(self.directory / "replacement.json")
         path = self.directory / "replace.tfplan"
         pf.require(approved_plan_hash and approved_plan_hash == receipt["plan_sha256"] == pf.file_hash(path)
@@ -437,7 +513,7 @@ class Controller:
                        "replace: instance assignments differ from the reviewed replacement")
             for node in self.record['nodes'].values():
                 if node.get('probe',{}).get('status') == 'Success': node.pop('probe',None)
-            report = self.inspect(install=True, timeout=timeout)
+            report = self.inspect(install=True, timeout=timeout, concurrency=concurrency)
             pf.require(report["ready"], "replace: readiness failed; inspect status or destroy")
             self.record["phase"] = "ready"
             self.record.setdefault("readiness_history", []).append({"operation": "replace", "learner_id": learner,
@@ -488,6 +564,7 @@ def main(argv=None):
     plan.add_argument("--config", type=Path, required=True)
     plan.add_argument("--pilot", type=Path, required=True)
     plan.add_argument("--run-dir", type=Path, required=True)
+    plan.add_argument("--previous-run", type=Path, help="Ready run on the same backend, for a roster-only reviewed plan")
     for name in ("up", "status", "destroy", "replace-plan", "replace", "diagnose", "configure-logs"):
         cmd = commands.add_parser(name)
         cmd.add_argument("--run-dir", type=Path, required=True)
@@ -496,6 +573,8 @@ def main(argv=None):
             cmd.add_argument("--retry-failed", action="store_true")
         if name in {"up", "replace"}:
             cmd.add_argument("--approved-plan-sha256")
+        if name in {"up", "status", "replace"}:
+            cmd.add_argument("--concurrency", type=int, default=2)
         if name == "replace-plan":
             cmd.add_argument("--learner", required=True)
         if name in {"diagnose", "configure-logs"}:
@@ -505,39 +584,66 @@ def main(argv=None):
             cmd.add_argument("--approve-destroy", action="store_true", required=True)
     args = parser.parse_args(argv)
     os.umask(0o077)
+    controller = None
     try:
         if args.command == "plan":
             config, pilot = pf.load_inputs(args.config, args.pilot)
             runner = Terraform(args.run_dir)
-            pf.plan(config, pilot, Cloud(config), "pilot", args.run_dir, terraform_runner=runner.execute)
+            cloud = Cloud(config)
+            if args.previous_run:
+                with run_lock(args.previous_run):
+                    previous = Controller(args.previous_run, cloud=cloud)
+                    pf.require(previous.record["phase"] == "ready" and previous.binding.get("allocations_sha256") and
+                        all(previous.record["nodes"].get(key, {}).get("ready") for key in previous.config["learner_ids"]) and
+                        previous.inflight() == 0 and
+                        previous.binding["runtime_sha256"] == pf.file_hash(Path(pilot["runtime_bundle_dir"]) / "runtime.json") and
+                        previous.pilot["state_bucket_name"] == pilot["state_bucket_name"],
+                        "roster: use a ready run with bound allocations, the same runtime and state bucket")
+                    instances, _ = previous.inventory()
+                    pf.require(set(instances) == set(previous.config["learner_ids"]) and all(
+                        previous.record["nodes"][key]["instance_id"] == value for key, value in instances.items()),
+                        "roster: previous state changed since readiness; reconcile it before planning")
+                    pf.plan(config, pilot, cloud, "pilot", args.run_dir, terraform_runner=runner.execute,
+                        previous_manifest=wc.load_document(args.previous_run / "allocations.json"), previous_record=previous.record)
+            else:
+                pf.plan(config, pilot, cloud, "pilot", args.run_dir, terraform_runner=runner.execute)
             print(json.dumps({"phase": "planned", "plan_sha256": pf.file_hash(args.run_dir / "saved.tfplan"),
                               "message": "Review the private saved plan before up; foundation is reused."}))
             return 0
         if args.command not in {"destroy", "replace-plan"}:
             pf.require(1 <= args.timeout <= 14400, "wait: timeout must be between 1 and 14400 seconds")
+        if args.command in {"up", "status", "replace"}:
+            pf.require(1 <= args.concurrency <= 16, "batch: concurrency must be between 1 and 16")
         with run_lock(args.run_dir):
             controller = Controller(args.run_dir)
             if args.command == "destroy":
                 report = controller.destroy()
             elif args.command == "up":
-                report = controller.up(args.approved_plan_sha256, timeout=args.timeout, retry_failed=args.retry_failed)
+                report = controller.up(args.approved_plan_sha256, timeout=args.timeout, retry_failed=args.retry_failed, concurrency=args.concurrency)
             elif args.command == "replace-plan":
                 report = controller.replacement_plan(args.learner)
             elif args.command == "replace":
-                report = controller.replace(args.approved_plan_sha256, timeout=args.timeout)
+                report = controller.replace(args.approved_plan_sha256, timeout=args.timeout, concurrency=args.concurrency)
             elif args.command in {"diagnose", "configure-logs"}:
                 report = ops.diagnose(controller, learner=args.learner, configure=args.command == "configure-logs",
                                       days=args.retention_days, timeout=args.timeout)
             else:
-                report = controller.inspect(timeout=args.timeout, retry_failed=args.retry_failed)
+                report = controller.inspect(timeout=args.timeout, retry_failed=args.retry_failed, concurrency=args.concurrency)
             print(json.dumps(report, indent=2, sort_keys=True))
             return 0 if args.command in {"destroy", "replace-plan"} or report.get("ok", report.get("ready", False)) else 1
     except Exception as exc:
         # SDK/HTTP/SSM messages may contain arbitrary target output. Never echo
         # them; only our controlled ConfigError messages are ordinary output.
         safe = str(exc) if isinstance(exc, wc.ConfigError) else "operation: query or input failed; inspect private diagnostics; resources may remain"
-        print(json.dumps({"error": safe, "run_dir": str(args.run_dir), "resources_may_remain": args.command != "plan",
-                          "next": "status/destroy with the same run directory; target logs /var/log/doris-workshop"}), file=sys.stderr)
+        failure = {"error": safe, "run_dir": str(args.run_dir), "resources_may_remain": args.command != "plan",
+                   "next": "status/destroy with the same run directory; target logs /var/log/doris-workshop"}
+        if controller is not None:
+            try:
+                failure["batch"] = controller.summary()["batch"]
+            except (KeyError, TypeError, ValueError, AttributeError):
+                # Corrupt local records must still produce the safe error above.
+                pass
+        print(json.dumps(failure), file=sys.stderr)
         return 2
 
 

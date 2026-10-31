@@ -446,10 +446,12 @@ def inputs_for_terraform(config, pilot, stage, availability_zone=None, *, releas
     return variables
 
 
-def plan(config, pilot, aws, stage, directory, *, terraform_runner=None):
+def plan(config, pilot, aws, stage, directory, *, terraform_runner=None, previous_manifest=None, previous_record=None):
     run = terraform_runner or terraform
     env = explicit_environment()
     report = live_check(config, pilot, aws, stage)
+    if previous_manifest is not None:
+        require(stage == 'pilot' and previous_record is not None, 'roster: previous run is required for activity changes')
     require(not directory.exists(), 'output: run directory exists; select a new directory')
     directory.mkdir(parents=True, mode=0o700)
     directory = directory.resolve()
@@ -458,6 +460,10 @@ def plan(config, pilot, aws, stage, directory, *, terraform_runner=None):
     variables = inputs_for_terraform(config, pilot, stage, report['availability_zones'][0])
     wc.write_manifest(directory / 'inputs.tfvars.json', variables)
     wc.write_manifest(directory / 'preflight.json', report)
+    if stage == 'pilot':
+        resolved, runtime = wc.resolve_profiles(config, wc.REPO)
+        allocations = wc.build_manifest(config, resolved, runtime, previous=previous_manifest)
+        wc.write_manifest(directory / 'allocations.json', allocations)
     module = f'-chdir={MODULES / stage}'
     init = [module, 'init', '-input=false', '-lockfile=readonly']
     if stage == 'pilot':
@@ -472,6 +478,12 @@ def plan(config, pilot, aws, stage, directory, *, terraform_runner=None):
     args = [module, 'plan', '-input=false', '-lock-timeout=60s', f'-var-file={directory / "inputs.tfvars.json"}',
             f'-out={directory / "saved.tfplan"}']
     run(args, env)
+    if previous_manifest is not None:
+        import workshop_batch
+        exported = json.loads(run([module, 'show', '-json', str(directory / 'saved.tfplan')], env, capture=True))
+        receipt = workshop_batch.review_roster(previous_manifest, allocations, exported)
+        wc.write_manifest(directory / 'roster-review.json', receipt)
+        wc.write_manifest(directory / 'resume.json', previous_record)
     wc.write_manifest(directory / 'binding.json', {'stage': stage, 'config': config, 'pilot': pilot,
                        'plan_sha256': file_hash(directory / 'saved.tfplan'),
                        'vars_sha256': file_hash(directory / 'inputs.tfvars.json'),
@@ -479,6 +491,9 @@ def plan(config, pilot, aws, stage, directory, *, terraform_runner=None):
                        'runtime_sha256': file_hash(Path(pilot['runtime_bundle_dir']) / 'runtime.json'),
                        'tool_sha256': tool_hash(),
                        'module_sha256': module_hash(stage),
+                       **({'allocations_sha256': file_hash(directory / 'allocations.json')} if stage == 'pilot' else {}),
+                       **({'resume_sha256': file_hash(directory / 'resume.json'),
+                           'roster_review_sha256': file_hash(directory / 'roster-review.json')} if previous_manifest is not None else {}),
                        **({'image_release': wc.load_document(pilot['image_release_file']),
                            'image_release_sha256': file_hash(pilot['image_release_file']),
                            'image_initializer_sha256': file_hash(SPEC/'runtime/start_image.py')} if config['image']['mode'] == 'prebuilt' else {}),
@@ -496,6 +511,7 @@ def tool_hash():
     paths = [Path(__file__), Path(wc.__file__), SPEC / 'config.schema.json',
              SPEC / 'pilot.schema.json', SPEC / 'profiles.json', SPEC / 'image-release.schema.json',
              Path(__file__).with_name('workshop_release.py'), SPEC / 'runtime/start_image.py']
+    paths.extend(Path(__file__).with_name(name) for name in ('workshop_batch.py', 'workshop.py'))
     return wc.canonical_hash({str(p.relative_to(wc.REPO)): file_hash(p) for p in paths})
 
 
@@ -511,6 +527,10 @@ def apply_saved(directory, aws_factory=Aws, *, terraform_runner=None):
             wc.timestamp(previous['valid_until'], 'preflight.valid_until') > datetime.now(timezone.utc),
             'plan: preflight expired or inputs changed; create and review a new plan')
     require(binding['stage'] in {'bootstrap', 'pilot'}, 'plan: invalid stage')
+    for filename, key in (('allocations.json', 'allocations_sha256'), ('resume.json', 'resume_sha256'),
+                          ('roster-review.json', 'roster_review_sha256')):
+        if key in binding:
+            require(file_hash(directory / filename) == binding[key], 'plan: bound allocation or roster artifacts changed')
     require(file_hash(directory / 'saved.tfplan') == binding['plan_sha256'] and
             file_hash(directory / 'inputs.tfvars.json') == binding['vars_sha256'] and
             file_hash(Path(pilot['runtime_bundle_dir']) / 'runtime.json') == binding['runtime_sha256'] and

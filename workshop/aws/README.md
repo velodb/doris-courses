@@ -8,6 +8,8 @@ The [temporary course reader](runtime/access.md) and
 [browser URL mapping](browser-urls.md) reuse the host runtime.
 Use the [activity lifecycle CLI](lifecycle.md) for reviewed-plan up, status,
 runtime waiting and basic activity destroy.
+Use [stable batch preparation](batch-operations.md) for persistent listener
+assignments, roster-only saved plans and bounded SSM readiness scheduling.
 For a validated private AMI, use [prebuilt activity startup](prebuilt.md),
 including pinned release metadata and guarded single-learner replacement.
 Use [controlled SSM diagnostics and log handling](operations.md) to locate

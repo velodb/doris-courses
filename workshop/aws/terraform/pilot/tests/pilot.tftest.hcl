@@ -106,6 +106,40 @@ run "reject_duplicate_learner_ids" {
   expect_failures = [var.learner_ids]
 }
 
+run "roster_reordering_preserves_instance_ids" {
+  command = apply
+  variables {
+    learner_ids       = ["s001", "s002"]
+    availability_zone = "us-east-1a"
+  }
+  assert {
+    condition     = output.instance_ids == run.two_stable_learner_keys.instance_ids
+    error_message = "Roster order must not replace existing instances."
+  }
+}
+run "adding_one_learner_preserves_other_instances" {
+  command = apply
+  variables {
+    learner_ids       = ["s003", "s002", "s001"]
+    availability_zone = "us-east-1a"
+  }
+  assert {
+    condition     = toset(keys(output.instance_ids)) == toset(["s001", "s002", "s003"]) && alltrue([for key, id in run.two_stable_learner_keys.instance_ids : output.instance_ids[key] == id])
+    error_message = "Adding one learner must preserve every existing instance ID."
+  }
+}
+run "removing_one_learner_preserves_other_instances" {
+  command = apply
+  variables {
+    learner_ids       = ["s003", "s001"]
+    availability_zone = "us-east-1a"
+  }
+  assert {
+    condition     = toset(keys(output.instance_ids)) == toset(["s001", "s003"]) && alltrue([for key, id in output.instance_ids : id == run.adding_one_learner_preserves_other_instances.instance_ids[key]])
+    error_message = "Removing one learner must preserve all other instance IDs."
+  }
+}
+
 run "reject_reserved_spare_id" {
   command = plan
   variables { learner_ids = ["spare-001"] }

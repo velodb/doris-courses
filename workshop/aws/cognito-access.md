@@ -28,9 +28,16 @@ directories, with operator-only permissions. Install
      --config workshop/aws/events/event.local.yaml \
      --access workshop/aws/.local/access.json \
      --instances workshop/aws/.local/instances.json \
-     --priority-base 1000 --output workshop/aws/.local/access-plan.json
+     --priority-base 1000 --priority-limit 1999 \
+     --allocations workshop/aws/.local/listener-allocations.json \
+     --init-allocations --output workshop/aws/.local/access-plan.json
    ```
 
+   `--init-allocations` is only for the first activity on a new listener. All
+   later generations and activities reuse the same private allocation file and
+   omit that flag. Each activity reserves a distinct inclusive interval; changing
+   its owner or interval is rejected. Withdrawn hosts retain their slots. See
+   [stable batch operations](batch-operations.md) for updates and locking.
    Reserve an unused listener priority range for this activity. Each service
    consumes three priorities: logout landing, API and page. The generated
    activity entry consumes another three when shared access has an operator

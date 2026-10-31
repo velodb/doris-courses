@@ -6,6 +6,9 @@ existing foundation bucket. It never creates or destroys foundation resources.
 The current scope is the one-to-five-host SSM-only pilot described in the
 [first-run guide](first-run.md). The two-host up/repeated-up, fault status,
 service recovery and basic destroy path have been exercised on real EC2.
+Stable roster updates, listener allocations and bounded SSM scheduling now have
+[local batch coverage](batch-operations.md); those additions have not been
+exercised in a real shared activity.
 The default `rta-main` Labs 1–10 were executed separately after readiness.
 Shared HTTPS/OIDC and manual browser interaction remain separate checks.
 
@@ -41,7 +44,7 @@ waits for SSM, installs the runtime and checks every learner host:
 ```bash
 .venv-workshop/bin/python tools/workshop.py up \
   --run-dir workshop/aws/.local/event-run-03 \
-  --approved-plan-sha256 REVIEWED_SHA256 --timeout 7500
+  --approved-plan-sha256 REVIEWED_SHA256 --timeout 7500 --concurrency 2
 ```
 
 Apply reruns live preflight and rejects stale, changed or unreviewed plans.
@@ -49,6 +52,10 @@ Apply reruns live preflight and rejects stale, changed or unreviewed plans.
 from the 1800-second Terraform subprocess limit and the SSM document's execution
 limit. SDK reads have finite retries/timeouts. A deadline leaves resource and
 command IDs in `lifecycle.json`; it does not imply cancellation or cleanup.
+`--concurrency` limits outstanding remote SSM commands in this run, from 1 to 16
+(default 2). It applies to `up`, `status` and `replace`, independently of
+Terraform's own scheduling. It does not increase the pilot's one-to-five-host
+limit. Lowering the limit polls already running work without cancelling it.
 
 `ready: true` means host runtime and authenticated course entry are ready:
 correct pinned course/runtime, Jupyter authentication, course reader, Docker,
@@ -78,6 +85,8 @@ installs packages. `--retry-failed` permits at most three attempts per failed
 installation/probe in that run. A lost send-command response is recorded as
 `DispatchUnknown`; inspect SSM command history and resolve the outstanding
 command before retrying. It is never silently resent.
+The separate dispatch SDK client disables automatic retries. `status` can poll
+an already dispatched installer to completion, but never dispatches a new one.
 
 Failed or interrupted Terraform apply requires a new reviewed plan in a fresh
 run directory using the same event backend, or cleanup through the existing

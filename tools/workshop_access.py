@@ -10,6 +10,7 @@ import shutil
 import sys
 
 import workshop_config as wc
+import workshop_routing as routing
 
 SERVICES = {
     "jupyter": (8888, None),
@@ -48,7 +49,8 @@ def require(condition, message):
         raise wc.ConfigError("access: " + message)
 
 
-def routes(config, access, instances, *, overrides=None, redirect_origins=None, priority_base=1000):
+def routes(config, access, instances, *, overrides=None, redirect_origins=None, priority_base=1000,
+           priority_limit=None, previous=None):
     require(access["account_id"] == config["aws_account_id"] and access["region"] == config["region"] and
             access["domain"] == config["domain"], "shared access must match the event account, Region and domain")
     require(set(instances) == set(config["learner_ids"]) and len(set(instances.values())) == len(instances), "supply one distinct instance per assigned learner")
@@ -81,12 +83,24 @@ def routes(config, access, instances, *, overrides=None, redirect_origins=None, 
     if access.get("portal") is not None:
         require(access["portal"]["instance_id"] not in instances.values(), "the operator portal cannot be assigned to a learner")
         portal = {"hostname": f'{config["event_id"]}-entry.{config["domain"]}', "priority": priority_base + 3 * len(result)}
-        require(access["portal"]["listener_priority"] not in range(priority_base, portal["priority"] + 3), "shared portal priority overlaps the activity range")
+    hosts = {key: row["hostname"] for key, row in result.items()}
+    if portal:
+        hosts["portal"] = portal["hostname"]
+    ledger, priorities = routing.reserve(config, access, hosts, previous=previous, priority_base=priority_base,
+        priority_limit=min(priority_base + 999, 50000) if priority_limit is None else priority_limit)
+    for key, row in result.items():
+        row["priority"] = priorities[key]
+    if portal:
+        portal["priority"] = priorities["portal"]
     count = 3 * len(result) + (4 if portal else 0)
-    require(count <= 100 and priority_base + count - (1 if portal else 0) <= 50001, "include all portal and service rules in the ALB rule/priority limit")
+    require(count <= 100, "include all portal and service rules in the ALB rule/priority limit")
+    ledger_count = 3 * sum(host["active"] for event in ledger["events"].values() for host in event["hosts"].values())
+    require(ledger_count + (1 if access.get("portal") is not None else 0) <= 100,
+        "active reservations across this listener exceed the local 100-rule ceiling")
     return {"schema_version": 1, "event_id": config["event_id"], "expires_at": config["expires_at"],
             "alb_arn": access["alb_arn"], "region": config["region"], "services": services,
             "browser_routes": browser,
+            "routing_allocations": ledger,
             "terraform": {"aws_profile": config["aws_profile"], "expected_account_id": config["aws_account_id"],
                 "region": config["region"], "owner_id": config["owner_id"], "event_id": config["event_id"], "expires_at": config["expires_at"],
                 "access": access, "learners": instances, "routes": result, "portal": portal}}
@@ -175,6 +189,9 @@ def main():
     planp.add_argument("--ports", type=Path)
     planp.add_argument("--redirects", type=Path, help="Per-learner service-to-internal-origin lists for explicit FE redirects")
     planp.add_argument("--priority-base", type=int, required=True)
+    planp.add_argument("--priority-limit", type=int, required=True)
+    planp.add_argument("--allocations", type=Path, required=True, help="Private shared-listener allocation file, reused for every route generation")
+    planp.add_argument("--init-allocations", action="store_true", help="Explicitly initialize a new listener ledger; never use to reset an existing event")
     hostp = commands.add_parser("gateways")
     for name in ("plan", "identity", "subjects", "output-dir"):
         hostp.add_argument("--" + name, type=Path, required=True)
@@ -195,11 +212,21 @@ def main():
                 for paths in (args.plan, args.identity, args.subjects)]))
         elif args.command == "routes":
             config, _, _ = wc.validate_config(wc.load_document(args.config))
-            value = routes(config, wc.load_document(args.access), wc.load_document(args.instances),
-                overrides=wc.load_document(args.ports) if args.ports else None,
-                redirect_origins=wc.load_document(args.redirects) if args.redirects else None, priority_base=args.priority_base)
-            wc.write_manifest(args.output, value)
-            wc.write_manifest(args.output.with_suffix(".tfvars.json"), value["terraform"])
+            with routing.lock(args.allocations):
+                require(args.allocations.exists() != args.init_allocations, "reuse the existing allocations file, or explicitly initialize a new listener")
+                require(not args.output.exists() and not args.output.with_suffix(".tfvars.json").exists() and
+                    args.allocations.resolve() not in {args.output.resolve(), args.output.with_suffix(".tfvars.json").resolve()},
+                    "select fresh output paths distinct from the allocations file")
+                value = routes(config, wc.load_document(args.access), wc.load_document(args.instances),
+                    overrides=wc.load_document(args.ports) if args.ports else None,
+                    redirect_origins=wc.load_document(args.redirects) if args.redirects else None,
+                    priority_base=args.priority_base, priority_limit=args.priority_limit,
+                    previous=wc.load_document(args.allocations) if args.allocations.exists() else None)
+                # Persist reservations first. A failed output write can be retried
+                # with fresh paths; it must never leave an unreserved route plan.
+                routing.save(args.allocations, value["routing_allocations"])
+                wc.write_manifest(args.output, value)
+                wc.write_manifest(args.output.with_suffix(".tfvars.json"), value["terraform"])
         else:
             require(not args.output_dir.exists(), "select a new gateway configuration directory")
             plan = wc.load_document(args.plan)

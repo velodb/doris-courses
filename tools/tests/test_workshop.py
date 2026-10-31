@@ -252,7 +252,7 @@ class LifecycleTests(unittest.TestCase):
             original(*args, **kwargs)
             raise TimeoutError("response lost")
         self.cloud.send = lost_response
-        with self.assertRaises(TimeoutError):
+        with self.assertRaises(ws.wc.ConfigError):
             self.up()
         self.cloud.send = original
         with self.assertRaises(ws.wc.ConfigError):
@@ -368,8 +368,186 @@ class LifecycleTests(unittest.TestCase):
         self.assertTrue(json.loads(stream.getvalue())["resources_may_remain"])
 
 
+    def test_remote_command_concurrency_is_bounded_and_resumes_existing_ids(self):
+        self.cloud.pending = True
+        with self.assertRaisesRegex(ws.wc.ConfigError, "timed out"):
+            self.up(concurrency=1)
+        controller = self.controller()
+        self.assertEqual(len(self.cloud.sent), 1)
+        self.assertEqual(controller.inflight(), 1)
+        self.assertEqual(controller.record["nodes"]["bob"]["install"]["status"], "Queued")
+        self.assertTrue(controller.summary()["resources_may_remain"])
+        first_id = controller.record["nodes"]["alice"]["install"]["command_id"]
+        self.cloud.pending = False
+        report = self.up(concurrency=1)
+        self.assertTrue(report["ready"])
+        self.assertEqual(report["batch"]["ready"], ["alice", "bob"])
+        self.assertEqual(report["nodes"]["alice"]["install"]["command_id"], first_id)
+        self.assertEqual(len([row for row in self.cloud.sent if not row[2]]), 2)
+
+    def test_lowering_limit_polls_old_work_without_sending_more(self):
+        self.cloud.pending = True
+        with self.assertRaises(ws.wc.ConfigError):
+            self.up(concurrency=2)
+        before = list(self.cloud.sent)
+        with self.assertRaises(ws.wc.ConfigError):
+            self.up(concurrency=1)
+        self.assertEqual(self.cloud.sent, before)
+        self.assertEqual(self.controller().inflight(), 2)
+
+    def test_status_polls_old_installer_without_resending_or_deadlocking_a_slot(self):
+        self.cloud.pending = True
+        with self.assertRaises(ws.wc.ConfigError):
+            self.up(concurrency=1)
+        before = [row for row in self.cloud.sent if not row[2]]
+        self.cloud.pending = False
+        report = self.controller().inspect(timeout=10, concurrency=1)
+        self.assertTrue(report["ready"])
+        self.assertEqual([row for row in self.cloud.sent if not row[2]], before)
+        self.assertEqual(report["batch"]["in_flight"], 0)
+
+    def test_partial_failure_keeps_pending_nodes_and_billing_resources_visible(self):
+        original = self.cloud.command
+        def partial(command_id, instance, *, probe=False):
+            if instance == "i-bob":
+                return {"Status": "InProgress"}
+            return original(command_id, instance, probe=probe)
+        self.cloud.fail_install = {"i-alice"}
+        self.cloud.command = partial
+        with self.assertRaises(ws.wc.ConfigError):
+            self.up()
+        report = self.controller().summary()
+        self.assertEqual(report["batch"]["failed"], ["alice"])
+        self.assertEqual(report["batch"]["pending"], ["bob"])
+        self.assertEqual(report["batch"]["in_flight"], 1)
+        self.assertTrue(report["resources_may_remain"])
+        self.assertFalse(report["ready"])
+
+    def test_per_node_read_failure_is_sanitized_and_other_node_is_reported(self):
+        original = self.cloud.call
+        def failure(service, operation, **kwargs):
+            if operation == "describe_instance_information" and kwargs["Filters"][0]["Values"] == ["i-bob"]:
+                raise RuntimeError("PRIVATE-TOKEN")
+            return original(service, operation, **kwargs)
+        self.cloud.call = failure
+        with self.assertRaises(ws.wc.ConfigError):
+            self.up()
+        report = self.controller().summary()
+        self.assertEqual(report["batch"]["ready"], ["alice"])
+        self.assertEqual(report["batch"]["failed"], ["bob"])
+        self.assertNotIn("PRIVATE-TOKEN", json.dumps(report))
+        self.assertTrue(report["resources_may_remain"])
+        self.assertFalse(report["ready"])
+
+    def test_invalid_concurrency_is_rejected_before_apply(self):
+        for limit in (0, 17, True, 1.5):
+            with self.subTest(limit=limit), self.assertRaises(ws.wc.ConfigError):
+                self.up(concurrency=limit)
+        self.assertEqual(self.tf.apply_count, 0)
+
+    def test_cli_partial_failure_includes_per_learner_batch_summary(self):
+        self.cloud.fail_install = {"i-bob"}
+        with mock.patch.object(ws, "Cloud", return_value=self.cloud), \
+                mock.patch.object(ws, "Terraform", return_value=self.tf), \
+                mock.patch("sys.stderr", new_callable=io.StringIO) as output:
+            code = ws.main(["up", "--run-dir", str(self.directory),
+                "--approved-plan-sha256", self.binding["plan_sha256"], "--concurrency", "1"])
+        self.assertEqual(code, 2)
+        report = json.loads(output.getvalue())
+        self.assertFalse(report.get("ready", False))
+        self.assertEqual(report["batch"]["ready"], ["alice"])
+        self.assertEqual(report["batch"]["failed"], ["bob"])
+        self.assertTrue(report["resources_may_remain"])
+        self.assertNotIn("PRIVATE-TOKEN", output.getvalue())
+
+    def test_malformed_batch_summary_keeps_the_cli_error_private(self):
+        with mock.patch.object(ws, "Cloud", return_value=self.cloud), \
+                mock.patch.object(ws, "Terraform", return_value=self.tf), \
+                mock.patch.object(ws.Controller, "summary", side_effect=ValueError("PRIVATE-TOKEN")), \
+                mock.patch("sys.stderr", new_callable=io.StringIO) as output:
+            code = ws.main(["up", "--run-dir", str(self.directory),
+                "--approved-plan-sha256", self.binding["plan_sha256"]])
+        self.assertEqual(code, 2)
+        self.assertNotIn("PRIVATE-TOKEN", output.getvalue())
+        self.assertTrue(json.loads(output.getvalue())["resources_may_remain"])
+
+    def test_roster_plan_and_up_reuse_retained_installations_and_preserve_withdrawn_ids(self):
+        self.up()
+        resolved, runtime = ws.wc.resolve_profiles(self.config, ws.wc.REPO)
+        manifest = ws.wc.build_manifest(self.config, resolved, runtime)
+        previous = copy.deepcopy(self.controller().record)
+        old_install = {key: node["install"]["command_id"] for key, node in previous["nodes"].items()}
+        config = {**self.config, "learner_ids": ["alice", "charlie"]}
+        self.live.return_value = {**self.report, "config_sha256": ws.wc.canonical_hash(config)}
+        event = self.config["event_id"]
+        def row(learner, action):
+            tags = {"Project": "doris-workshop", "Scope": "activity", "Event": event,
+                "Owner": config["owner_id"], "Learner": learner}
+            values = {"tags_all": tags}
+            return {"mode": "managed", "type": "aws_instance", "name": "learner", "index": learner,
+                "address": 'aws_instance.learner[' + json.dumps(learner) + ']',
+                "change": {"actions": [action], "before": values if action == "delete" else None,
+                    "after": values if action == "create" else None}}
+        def runner(args, env, *, capture=False):
+            if "plan" in args:
+                path = Path(next(arg.split("=", 1)[1] for arg in args if arg.startswith("-out=")))
+                path.write_bytes(b"new-reviewed-roster")
+            if "show" in args:
+                return json.dumps({"resource_changes": [row("bob", "delete"), row("charlie", "create")]})
+        directory = self.directory / "new-run"
+        ws.atomic_json(self.directory / "allocations.json", manifest)
+        self.binding["allocations_sha256"] = ws.pf.file_hash(self.directory / "allocations.json")
+        ws.atomic_json(self.directory / "binding.json", self.binding)
+        with mock.patch.object(ws.pf, "load_inputs", return_value=(config, self.pilot)), \
+                mock.patch.object(ws, "Cloud", return_value=self.cloud), \
+                mock.patch.object(ws, "Terraform", return_value=self.tf), \
+                mock.patch.object(self.tf, "execute", side_effect=runner), \
+                mock.patch("sys.stdout", new_callable=io.StringIO) as output:
+            result = ws.main(["plan", "--config", "fixture.json", "--pilot", "pilot.json",
+                "--previous-run", str(self.directory), "--run-dir", str(directory)])
+        self.assertEqual(result, 0, output.getvalue())
+        self.assertNotIn("PRIVATE-TOKEN", output.getvalue())
+        self.tf.config = self.cloud.config = config
+        original = self.cloud.call
+        def deleted_node(service, operation, **kwargs):
+            result = original(service, operation, **kwargs)
+            if operation == "describe_instances":
+                for reservation in result["Reservations"]:
+                    for instance in reservation["Instances"]:
+                        if instance["InstanceId"] == "i-bob" and self.tf.apply_count > 1:
+                            instance["State"]["Name"] = "terminated"
+            return result
+        self.cloud.call = deleted_node
+        controller = ws.Controller(directory, cloud=self.cloud, terraform=self.tf, clock=self.clock, sleep=self.clock.sleep)
+        report = controller.up(ws.pf.file_hash(directory / "saved.tfplan"), timeout=10)
+        self.assertTrue(report["ready"])
+        self.assertEqual(report["nodes"]["alice"]["install"]["command_id"], old_install["alice"])
+        self.assertEqual(len([r for r in self.cloud.sent if r[0] == "i-alice" and not r[2]]), 1)
+        self.assertFalse(report["allocations"]["bob"]["active"])
+        self.assertIn("i-bob", controller.record["known_instances"])
+        self.assertIn("vol-bob", controller.record["known_volumes"])
+        self.assertFalse(report["nodes"]["bob"]["managed"])
+        self.assertEqual(report["nodes"]["bob"]["ec2"], "terminated")
+        self.assertEqual(report["batch"]["ready"], ["alice", "charlie"])
+        # Operator-only artifacts stay bound and may not be edited after review.
+        (directory / "resume.json").write_text("{}")
+        with self.assertRaisesRegex(ws.wc.ConfigError, "resume snapshot changed"):
+            ws.Controller(directory, cloud=self.cloud, terraform=self.tf)
+
+
 @unittest.skipUnless(importlib.util.find_spec("boto3"), "Install preflight-requirements.txt for SDK contract tests")
 class SsmSdkTests(unittest.TestCase):
+    def test_dispatch_client_disables_implicit_sdk_retries_and_is_reused(self):
+        from botocore.config import Config
+        cloud = object.__new__(ws.Cloud)
+        cloud.session = mock.Mock()
+        cloud.options = Config(connect_timeout=5, read_timeout=20, retries={"max_attempts": 2})
+        first = cloud.dispatch_client()
+        self.assertIs(first, cloud.dispatch_client())
+        options = cloud.session.client.call_args.kwargs["config"]
+        self.assertEqual(options.retries["total_max_attempts"], 1)
+        self.assertEqual(cloud.session.client.call_count, 1)
+
     def test_real_sdk_shapes_and_eventual_consistency(self):
         import boto3
         from botocore.stub import Stubber
@@ -377,6 +555,7 @@ class SsmSdkTests(unittest.TestCase):
         client = boto3.client("ssm", region_name="us-east-1", aws_access_key_id="fixture", aws_secret_access_key="fixture")
         cloud = object.__new__(ws.Cloud)
         cloud.client = lambda service: client
+        cloud.dispatch_client = lambda: client
         command = "11111111-1111-1111-1111-111111111111"
         instance = "i-00000000000000000"
         with Stubber(client) as stub:
