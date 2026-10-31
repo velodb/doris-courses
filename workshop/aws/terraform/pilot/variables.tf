@@ -1,8 +1,16 @@
 variable "aws_profile" {
   type = string
   validation {
-    condition     = length(trimspace(var.aws_profile)) > 0
-    error_message = "Select an explicit local AWS CLI profile."
+    condition     = var.credential_mode == "task-role" ? var.aws_profile == null : (var.aws_profile == null ? false : length(trimspace(var.aws_profile)) > 0)
+    error_message = "Select an explicit operator profile, or null only with the separate task-role mode."
+  }
+}
+variable "credential_mode" {
+  type    = string
+  default = "profile"
+  validation {
+    condition     = contains(["profile", "task-role"], var.credential_mode)
+    error_message = "Use explicit profile or task-role credentials."
   }
 }
 variable "expected_account_id" {

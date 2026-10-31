@@ -12,6 +12,8 @@ Use [stable batch preparation](batch-operations.md) for persistent listener
 assignments, roster-only saved plans and bounded SSM readiness scheduling.
 Use [cleanup ownership and reconciliation](cleanup.md) to prepare private
 resource evidence, collect read-only catalogs and audit remaining resources.
+Use [external TTL cleanup preparation](ttl/README.md) for revision-bound
+control records, operator fencing and the disabled Scheduler/Fargate interface.
 For a validated private AMI, use [prebuilt activity startup](prebuilt.md),
 including pinned release metadata and guarded single-learner replacement.
 Use [controlled SSM diagnostics and log handling](operations.md) to locate

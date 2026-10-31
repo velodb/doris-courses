@@ -76,6 +76,18 @@ run "reject_wrong_listener_account" {
   variables { expected_account_id = "111111111111" }
   expect_failures = [var.access]
 }
+run "task_role_has_no_operator_profile" {
+  command = plan
+  variables {
+    aws_profile     = null
+    credential_mode = "task-role"
+  }
+}
+run "reject_accidental_role_fallback" {
+  command = plan
+  variables { aws_profile = null }
+  expect_failures = [var.aws_profile]
+}
 run "activity_entry_authenticates_on_operator_target" {
   command = apply
   variables { portal = { hostname = "test-event-entry.workshops.example.com", priority = 1006 } }

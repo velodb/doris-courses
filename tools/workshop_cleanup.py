@@ -42,7 +42,7 @@ BASE_KINDS = {"instances", "volumes", "network_interfaces", "vpcs", "subnets", "
     "internet_gateways", "nat_gateways", "addresses", "images", "snapshots", "key_pairs", "roles", "instance_profiles", "buckets", "ssm_documents", "tagged_resources"}
 ACCESS_KINDS = {"load_balancers", "target_groups", "listener_rules", "target_attachments", "dns_records", "user_pools", "user_pool_clients", "user_pool_domains"}
 ALL_KINDS = BASE_KINDS | ACCESS_KINDS
-PROTECTED_SCOPES = {"foundation", "shared-access", "shared-portal", "image-release"}
+PROTECTED_SCOPES = {"foundation", "shared-access", "shared-portal", "image-release", "cleanup-control"}
 TEXT = re.compile(r"[A-Za-z0-9_./:*+=@,\[\]-]{1,1024}")
 
 

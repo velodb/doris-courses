@@ -65,6 +65,12 @@ class FakeCloud:
     def items(self, service, operation, result, **kwargs):
         return self.call(service, operation, **kwargs)[result]
 
+    def control_store(self, bucket, account):
+        if not hasattr(self, "ttl_store"):
+            from test_workshop_ttl import MemoryStore
+            self.ttl_store = MemoryStore()
+        return self.ttl_store
+
     def command(self, command_id, instance, *, probe=False):
         if self.pending:
             return {"Status": "InProgress"}
@@ -515,6 +521,29 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertNotIn("PRIVATE-TOKEN", output.getvalue())
         self.assertTrue(json.loads(output.getvalue())["resources_may_remain"])
+
+    def test_registered_ttl_cannot_be_bypassed_by_an_old_run_or_concurrent_destroy(self):
+        import workshop_ttl as ttl
+        self.up()
+        manifest = ws.cleanup.prepare(self.config, [{"module": "pilot", "resources": self.tf.state()}], state_bucket=self.pilot["state_bucket_name"])
+        backend = ws.wc.load_document(self.directory / "backend.tfbackend.json")
+        backend.pop("profile")
+        bound = ttl.make_binding(self.config, manifest, [{"module": "pilot", "backend": backend,
+            "vars_sha256": "a" * 64, "module_sha256": "b" * 64}], bucket=self.pilot["state_bucket_name"], revision=1,
+            source_sha="c" * 40, tree_sha256="d" * 64)
+        path = self.directory / "ttl.json"
+        ws.atomic_json(path, bound)
+        store = self.cloud.control_store(self.pilot["state_bucket_name"], self.config["aws_account_id"])
+        ttl.register(store, bound)
+        with self.assertRaisesRegex(ws.wc.ConfigError, "--ttl-binding"):
+            self.up()
+        controller = self.controller()
+        controller.ttl_binding = path
+        self.assertTrue(controller.up(None, timeout=10)["ready"])
+        with ttl.operation(store, bound, holder="other-operator"):
+            with self.assertRaises(ws.wc.ConfigError):
+                controller.destroy()
+        self.assertEqual(self.tf.apply_count, 1)
 
     def test_roster_plan_and_up_reuse_retained_installations_and_preserve_withdrawn_ids(self):
         self.up()

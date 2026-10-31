@@ -19,6 +19,7 @@ import workshop_preflight as pf
 import workshop_operations as ops
 import workshop_batch as batch
 import workshop_cleanup as cleanup
+import workshop_ttl as ttl
 
 IN_FLIGHT = {"Pending", "InProgress", "Delayed", "Cancelling", "DispatchUnknown"}
 
@@ -109,6 +110,9 @@ class Terraform:
 class Cloud(pf.Aws):
     """Explicit-profile reads and bounded SSM startup, verification and health checks."""
 
+    def control_store(self, bucket, account):
+        return ttl.S3ControlStore(self.client("s3"), bucket, account)
+
     def dispatch_client(self):
         # SendCommand has no idempotency token. Retrying a lost HTTP response
         # could run an installer twice; only an operator may resolve that case.
@@ -138,8 +142,9 @@ class Cloud(pf.Aws):
 
 
 class Controller:
-    def __init__(self, directory, *, cloud=None, terraform=None, clock=time.monotonic, sleep=time.sleep):
+    def __init__(self, directory, *, cloud=None, terraform=None, clock=time.monotonic, sleep=time.sleep, ttl_binding=None):
         self.directory = Path(directory).resolve()
+        self.ttl_binding = ttl_binding
         self.binding = wc.load_document(self.directory / "binding.json")
         b = self.binding
         pf.require(b.get("stage") == "pilot", "run: only activity runs are supported; foundation is retained")
@@ -425,6 +430,10 @@ class Controller:
                 "entry": {"transport": "operator-ssm-forward", "remote_port": 8888, "path": "/workshop/"}}
 
     def up(self, approved_plan_hash, *, timeout=7500, retry_failed=False, concurrency=2):
+        with ttl.activity_operation(self.cloud, self.config, self.pilot, self.ttl_binding, scope_change=self.record["phase"] == "planned"):
+            return self._up(approved_plan_hash, timeout=timeout, retry_failed=retry_failed, concurrency=concurrency)
+
+    def _up(self, approved_plan_hash, *, timeout=7500, retry_failed=False, concurrency=2):
         pf.require(type(concurrency) is int and 1 <= concurrency <= 16, "batch: concurrency must be an integer from 1 to 16")
         began = self.clock()
         pf.require(self.record["phase"] not in {"destroying", "destroyed"}, "up: use a fresh reviewed plan after destroy")
@@ -490,6 +499,10 @@ class Controller:
                    "replace: plan must replace only the selected instance; shared or other-learner changes rejected")
 
     def replace(self, approved_plan_hash, *, timeout=900, concurrency=2):
+        with ttl.activity_operation(self.cloud, self.config, self.pilot, self.ttl_binding, scope_change=True):
+            return self._replace(approved_plan_hash, timeout=timeout, concurrency=concurrency)
+
+    def _replace(self, approved_plan_hash, *, timeout=900, concurrency=2):
         pf.require(type(concurrency) is int and 1 <= concurrency <= 16, "batch: concurrency must be an integer from 1 to 16")
         receipt = wc.load_document(self.directory / "replacement.json")
         path = self.directory / "replace.tfplan"
@@ -527,6 +540,10 @@ class Controller:
             raise
 
     def destroy(self):
+        with ttl.activity_operation(self.cloud, self.config, self.pilot, self.ttl_binding, cleanup_operation=True):
+            return self._destroy()
+
+    def _destroy(self):
         resources = self.tf.state()
         claims = cleanup.project_state({**self.config, "cleanup_learner_ids": [key for key, row in self.allocations.items() if row["role"] == "learner"]},
             resources, state_bucket=self.pilot["state_bucket_name"], defer_missing_parents=True)
@@ -570,9 +587,12 @@ def main(argv=None):
     plan.add_argument("--pilot", type=Path, required=True)
     plan.add_argument("--run-dir", type=Path, required=True)
     plan.add_argument("--previous-run", type=Path, help="Ready run on the same backend, for a roster-only reviewed plan")
+    plan.add_argument("--ttl-binding", type=Path)
     for name in ("up", "status", "destroy", "replace-plan", "replace", "diagnose", "configure-logs"):
         cmd = commands.add_parser(name)
         cmd.add_argument("--run-dir", type=Path, required=True)
+        if name in {"up", "replace", "destroy", "replace-plan"}:
+            cmd.add_argument("--ttl-binding", type=Path)
         if name not in {"destroy", "replace-plan"}:
             cmd.add_argument("--timeout", type=int, default=7500 if name == "up" else 180)
             cmd.add_argument("--retry-failed", action="store_true")
@@ -595,38 +615,21 @@ def main(argv=None):
             config, pilot = pf.load_inputs(args.config, args.pilot)
             runner = Terraform(args.run_dir)
             cloud = Cloud(config)
-            if args.previous_run:
-                with run_lock(args.previous_run):
-                    previous = Controller(args.previous_run, cloud=cloud)
-                    pf.require(previous.record["phase"] == "ready" and previous.binding.get("allocations_sha256") and
-                        all(previous.record["nodes"].get(key, {}).get("ready") for key in previous.config["learner_ids"]) and
-                        previous.inflight() == 0 and
-                        previous.binding["runtime_sha256"] == pf.file_hash(Path(pilot["runtime_bundle_dir"]) / "runtime.json") and
-                        previous.pilot["state_bucket_name"] == pilot["state_bucket_name"],
-                        "roster: use a ready run with bound allocations, the same runtime and state bucket")
-                    instances, _ = previous.inventory()
-                    pf.require(set(instances) == set(previous.config["learner_ids"]) and all(
-                        previous.record["nodes"][key]["instance_id"] == value for key, value in instances.items()),
-                        "roster: previous state changed since readiness; reconcile it before planning")
-                    pf.plan(config, pilot, cloud, "pilot", args.run_dir, terraform_runner=runner.execute,
-                        previous_manifest=wc.load_document(args.previous_run / "allocations.json"), previous_record=previous.record)
-            else:
-                pf.plan(config, pilot, cloud, "pilot", args.run_dir, terraform_runner=runner.execute)
-            print(json.dumps({"phase": "planned", "plan_sha256": pf.file_hash(args.run_dir / "saved.tfplan"),
-                              "message": "Review the private saved plan before up; foundation is reused."}))
-            return 0
+            with ttl.activity_operation(cloud, config, pilot, args.ttl_binding, scope_change=True):
+                return plan_activity(args, config, pilot, cloud, runner)
         if args.command not in {"destroy", "replace-plan"}:
             pf.require(1 <= args.timeout <= 14400, "wait: timeout must be between 1 and 14400 seconds")
         if args.command in {"up", "status", "replace"}:
             pf.require(1 <= args.concurrency <= 16, "batch: concurrency must be between 1 and 16")
         with run_lock(args.run_dir):
-            controller = Controller(args.run_dir)
+            controller = Controller(args.run_dir, ttl_binding=getattr(args, "ttl_binding", None))
             if args.command == "destroy":
                 report = controller.destroy()
             elif args.command == "up":
                 report = controller.up(args.approved_plan_sha256, timeout=args.timeout, retry_failed=args.retry_failed, concurrency=args.concurrency)
             elif args.command == "replace-plan":
-                report = controller.replacement_plan(args.learner)
+                with ttl.activity_operation(controller.cloud, controller.config, controller.pilot, controller.ttl_binding, scope_change=True):
+                    report = controller.replacement_plan(args.learner)
             elif args.command == "replace":
                 report = controller.replace(args.approved_plan_sha256, timeout=args.timeout, concurrency=args.concurrency)
             elif args.command in {"diagnose", "configure-logs"}:
@@ -637,19 +640,41 @@ def main(argv=None):
             print(json.dumps(report, indent=2, sort_keys=True))
             return 0 if args.command in {"destroy", "replace-plan"} or report.get("ok", report.get("ready", False)) else 1
     except Exception as exc:
-        # SDK/HTTP/SSM messages may contain arbitrary target output. Never echo
-        # them; only our controlled ConfigError messages are ordinary output.
         safe = str(exc) if isinstance(exc, wc.ConfigError) else "operation: query or input failed; inspect private diagnostics; resources may remain"
         failure = {"error": safe, "run_dir": str(args.run_dir), "resources_may_remain": args.command != "plan",
                    "next": "status/destroy with the same run directory; target logs /var/log/doris-workshop"}
+        if safe.startswith("ttl:"):
+            failure["next"] = "inspect the current TTL control record and reconcile outstanding tasks/locks before retrying"
         if controller is not None:
             try:
                 failure["batch"] = controller.summary()["batch"]
             except (KeyError, TypeError, ValueError, AttributeError):
-                # Corrupt local records must still produce the safe error above.
                 pass
         print(json.dumps(failure), file=sys.stderr)
         return 2
+
+
+def plan_activity(args, config, pilot, cloud, runner):
+    if args.previous_run:
+        with run_lock(args.previous_run):
+            previous = Controller(args.previous_run, cloud=cloud)
+            pf.require(previous.record["phase"] == "ready" and previous.binding.get("allocations_sha256") and
+                all(previous.record["nodes"].get(key, {}).get("ready") for key in previous.config["learner_ids"]) and
+                previous.inflight() == 0 and
+                previous.binding["runtime_sha256"] == pf.file_hash(Path(pilot["runtime_bundle_dir"]) / "runtime.json") and
+                previous.pilot["state_bucket_name"] == pilot["state_bucket_name"],
+                "roster: use a ready run with bound allocations, the same runtime and state bucket")
+            instances, _ = previous.inventory()
+            pf.require(set(instances) == set(previous.config["learner_ids"]) and all(
+                previous.record["nodes"][key]["instance_id"] == value for key, value in instances.items()),
+                "roster: previous state changed since readiness; reconcile it before planning")
+            pf.plan(config, pilot, cloud, "pilot", args.run_dir, terraform_runner=runner.execute,
+                previous_manifest=wc.load_document(args.previous_run / "allocations.json"), previous_record=previous.record)
+    else:
+        pf.plan(config, pilot, cloud, "pilot", args.run_dir, terraform_runner=runner.execute)
+    print(json.dumps({"phase": "planned", "plan_sha256": pf.file_hash(args.run_dir / "saved.tfplan"),
+                      "message": "Review the private saved plan before up; foundation is reused."}))
+    return 0
 
 
 if __name__ == "__main__":

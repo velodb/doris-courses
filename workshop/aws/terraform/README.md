@@ -130,3 +130,17 @@ See [shared HTTPS access](../shared-access.md) for `shared-access`, its independ
 state, two-zone VPC, default-deny ALB and ACM/DNS ownership. The pilot module can
 reuse that network and attach its ALB-only gateway security group through explicit
 Terraform variables. The guarded SSM pilot CLI does not yet plan this topology.
+
+## TTL control module
+
+`ttl-control` defines an external Scheduler → Standard workflow → Fargate
+cleanup task, with four reviewed policy inputs and a schedule disabled by
+default. See [TTL preparation and limits](../ttl/README.md) before using it.
+It belongs to a separate `cleanup-control` state and operator network. Do not
+include it in an activity destroy plan. Its provider mocks are offline checks;
+the image, permissions, real expiry and retirement still need acceptance.
+
+`pilot` and `access-bindings` keep named-profile authentication by default.
+Only the explicit `credential_mode = "task-role"`, `aws_profile = null` path
+allows the verified Fargate runner to use ECS credentials. This does not
+change the operator CLI's explicit-profile requirement.

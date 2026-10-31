@@ -145,6 +145,18 @@ run "reject_reserved_spare_id" {
   variables { learner_ids = ["spare-001"] }
   expect_failures = [var.learner_ids]
 }
+run "task_role_is_explicit_without_operator_profile" {
+  command = plan
+  variables {
+    aws_profile     = null
+    credential_mode = "task-role"
+  }
+}
+run "reject_accidental_task_role_fallback" {
+  command = plan
+  variables { aws_profile = null }
+  expect_failures = [var.aws_profile]
+}
 
 run "validated_prebuilt_injects_only_activity" {
   command = plan

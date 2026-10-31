@@ -145,3 +145,15 @@ remain outside that acceptance scope.
 
 For exact private-image selection, dependency-free startup, timing records and
 guarded single-learner replacement, see [prebuilt activities](prebuilt.md).
+
+## TTL enrollment
+
+The [external TTL contract](ttl/README.md) adds a distributed activity fence
+around `plan`, `up`, `replace-plan`, `replace` and `destroy`. Enrolled events
+require `--ttl-binding PATH`; an old run directory cannot skip that check.
+Cancel the current revision before roster/replacement/expiry changes, then
+reseal the resulting resource IDs and inputs as a new revision. An unknown
+operator/cleanup outcome retains the fence until reconciliation. Missing-key
+legacy behavior does not coordinate an already running command with first
+enrollment, so quiesce operators before registering the first revision. The
+control module is disabled by default and has no live TTL acceptance yet.
