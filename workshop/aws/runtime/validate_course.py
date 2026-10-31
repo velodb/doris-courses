@@ -39,8 +39,10 @@ def main():
                         row['cells'].append({'cell':cell.get('id'),'seconds':round(time.monotonic()-began,2),
                             'errors':sum(o.get('output_type')=='error' for o in cell.get('outputs',[]))})
             row['passed']=True
-        except Exception as error:
-            row['error']={'type':type(error).__name__,'message':str(error)[-6000:]}
+        except Exception:
+            # Notebook exceptions can embed code, passwords and API responses.
+            # Executed Notebooks stay private on this disposable validation host.
+            row['error']={'type':'cell-execution-failed','message':'execution failed; inspect the private validation Notebook'}
         finally:
             nbformat.write(nb,root/path.name)
         report['notebook_count']+=1;report['code_cells']+=len(row['cells'])

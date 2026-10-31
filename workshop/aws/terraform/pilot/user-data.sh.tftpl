@@ -3,7 +3,9 @@ set -Eeuo pipefail
 umask 077
 # Runtime fingerprint: ${runtime_hash}. No deployment credentials are present.
 install -d -m 0700 /var/log/doris-workshop
-exec >> /var/log/doris-workshop/cloud-init.log 2>&1
+install -m 0600 /dev/null /var/log/doris-workshop/cloud-init.log
+exec >/dev/null 2>&1
+trap 'echo "{\"reason\":\"error\"}" >> /var/log/doris-workshop/cloud-init.log' ERR
 
 cat > /etc/systemd/system/doris-workshop-expire.service <<'EOF'
 [Unit]
@@ -32,3 +34,4 @@ else
     echo 'The selected Ubuntu image has no SSM Agent; choose an SSM-ready Canonical image.' >&2
     exit 2
 fi
+echo '{"reason":"completed"}' >> /var/log/doris-workshop/cloud-init.log

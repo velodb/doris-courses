@@ -2,7 +2,9 @@
 set -Eeuo pipefail
 umask 077
 install -d -m 0700 /var/log/doris-workshop
-exec >> /var/log/doris-workshop/image-start.log 2>&1
+install -m 0600 /dev/null /var/log/doris-workshop/image-start.log
+exec >/dev/null 2>&1
+trap 'echo "{\"reason\":\"error\"}" >> /var/log/doris-workshop/image-start.log' ERR
 cat > /usr/local/lib/doris-workshop/start_image.py <<'IMAGE_INITIALIZER'
 ${init_script}
 IMAGE_INITIALIZER
@@ -36,4 +38,4 @@ if command -v snap >/dev/null 2>&1 && snap list amazon-ssm-agent >/dev/null 2>&1
 else
  systemctl enable --now amazon-ssm-agent.service
 fi
-echo 'Prebuilt image started; no package installation was performed.'
+echo '{"reason":"completed"}' >> /var/log/doris-workshop/image-start.log

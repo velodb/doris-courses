@@ -15,7 +15,7 @@ import workshop_config as config_tool
 
 RUNTIME = config_tool.SPEC / "runtime"
 PAYLOAD = ("install_host.sh", "host.py", "kernel.py", "check.py", "serve.py", "portal.py",
-           "doris-workshop-jupyter.service", "packages.json")
+           "doris-workshop-jupyter.service", "packages.json", "operations.py")
 
 
 def create_bundle(config_path, output, *, repo=config_tool.REPO):
@@ -50,7 +50,8 @@ def create_bundle(config_path, output, *, repo=config_tool.REPO):
     temporary = Path(tempfile.mkdtemp(prefix=".runtime-bundle-", dir=output.parent))
     try:
         for name in PAYLOAD:
-            shutil.copyfile(RUNTIME / name, temporary / name)
+            source = config_tool.SPEC / "operations/node.py" if name == "operations.py" else RUNTIME / name
+            shutil.copyfile(source, temporary / name)
         with (temporary / "source.tar").open("wb") as archive:
             result = subprocess.run(
                 ["git", "-C", str(repo), "archive", "--format=tar", config["course_ref"]],

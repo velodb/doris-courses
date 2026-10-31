@@ -117,6 +117,8 @@ class SsmSealing(unittest.TestCase):
 
     def test_failed_install_never_schedules_sealing(self):
         self.ssm.list_commands.return_value = {'Commands': [{'Status': 'Failed',
+            'StandardErrorContent': 'fixture-password-do-not-persist',
+            'Parameters': {'commands': ['fixture-password-do-not-persist']},
             'RequestedDateTime': datetime(2026, 10, 30, 12, 0, tzinfo=timezone.utc)}]}
         with self.assertRaisesRegex(wc.ConfigError, 'earlier SSM'):
             image.provision(self.root)
@@ -124,6 +126,7 @@ class SsmSealing(unittest.TestCase):
         self.assertFalse((self.root / 'seal-command.json').exists())
         self.assertEqual(json.loads((self.root / 'failed-command.json').read_text())['RequestedDateTime'],
                          '2026-10-30T12:00:00Z')
+        self.assertNotIn('fixture-password-do-not-persist', (self.root / 'failed-command.json').read_text())
 
     def test_later_step_not_registered_while_installing_is_retried(self):
         result = self.ssm.get_command_invocation.return_value

@@ -89,9 +89,12 @@ The non-secret `lifecycle.json` reports each learner's EC2/SSM state, bounded
 command attempts, health checks, current services, known EC2/EBS IDs, errors and
 retained foundation. SDK/SSM bodies are filtered rather than copied to it.
 Terraform diagnostics are private `terraform-*.log` files; raw machine-readable
-state stays in memory. Target installation logs are under
-`/var/log/doris-workshop`; Jupyter logs are in its systemd journal. Review logs
-before sharing them. Neither CLI failure nor local interruption deletes resources.
+state stays in memory. Human Terraform output is discarded; these log files
+contain only a return code. Installer logs under `/var/log/doris-workshop` use
+fixed categories. Jupyter/gateway application output is disabled by the log
+policy. Use [controlled diagnostics](operations.md) for per-node service/kernel
+failures, bounded private evidence and older-image policy installation.
+Neither CLI failure nor local interruption deletes resources.
 
 Exit codes are `0` for ready/successfully destroyed/planned, `1` for a completed
 status query that is not ready, and `2` for invalid input, query/command failure,

@@ -15,7 +15,7 @@ import tarfile
 import tempfile
 
 PAYLOAD = {"install_host.sh", "host.py", "kernel.py", "check.py", "serve.py", "portal.py",
-           "doris-workshop-jupyter.service", "packages.json", "source.tar"}
+           "doris-workshop-jupyter.service", "packages.json", "source.tar", "operations.py"}
 COURSES = {
     "doris-rta": ("doris-course/01-real-time-analytics", "doris_course"),
     "doris-dw": ("doris-course/02-data-warehousing", "dw_course"),
@@ -290,7 +290,7 @@ def install(bundle):
         atomic_json(receipt_path, receipt)
     layout.helpers.mkdir(parents=True, exist_ok=True)
     layout.helpers.chmod(0o755)
-    for name in ("host.py", "kernel.py", "check.py", "serve.py", "portal.py"):
+    for name in ("host.py", "kernel.py", "check.py", "serve.py", "portal.py", "operations.py"):
         shutil.copyfile(Path(bundle) / name, layout.helpers / name)
         (layout.helpers / name).chmod(0o644)
     materialize(plan, files, layout)

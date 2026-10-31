@@ -18,11 +18,12 @@ if [[ $ID != ubuntu || $VERSION_ID != 24.04 ]]; then
     exit 2
 fi
 bundle=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-python3 "$bundle/host.py" verify --bundle "$bundle"
 exec 9>/run/lock/doris-workshop-install.lock
 flock -n 9 || { echo 'host: another bootstrap is running' >&2; exit 2; }
 install -d -m 0700 /var/log/doris-workshop
-exec > >(tee -a /var/log/doris-workshop/bootstrap.log) 2>&1
+exec > >(python3 "$bundle/operations.py" filter --log /var/log/doris-workshop/bootstrap.log) 2>&1
+python3 "$bundle/host.py" verify --bundle "$bundle"
+python3 "$bundle/operations.py" configure
 stage=preflight
 trap 'echo "bootstrap failed at stage $stage, line $LINENO; see /var/log/doris-workshop/bootstrap.log" >&2' ERR
 
@@ -34,6 +35,7 @@ for package in docker.io docker-compose docker-compose-v2 docker-doc docker-buil
 done
 
 stage=system-packages
+echo "WORKSHOP_STAGE=$stage"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y --no-install-recommends ca-certificates curl git python3.12 python3.12-venv
@@ -58,6 +60,7 @@ fi
 apt-get install -y --no-install-recommends "${docker_packages[@]}"
 
 stage=user-and-docker
+echo "WORKSHOP_STAGE=$stage"
 install -d -m 0755 /var/lib/doris-workshop
 if ! id workshop >/dev/null 2>&1; then
     useradd --create-home --user-group --home-dir /var/lib/doris-workshop/home --shell /bin/bash workshop
@@ -68,12 +71,15 @@ usermod --append --groups docker workshop
 systemctl enable --now docker.service
 
 stage=course-environments
+echo "WORKSHOP_STAGE=$stage"
 python3.12 "$bundle/host.py" install --bundle "$bundle"
 stage=jupyter-service
+echo "WORKSHOP_STAGE=$stage"
 systemctl daemon-reload
 systemctl enable doris-workshop-jupyter.service
 systemctl restart doris-workshop-jupyter.service
 stage=readiness
+echo "WORKSHOP_STAGE=$stage"
 runuser --user workshop -- env -i \
     HOME=/var/lib/doris-workshop/home PATH=/opt/doris-workshop/server-venv/bin:/usr/local/bin:/usr/bin:/bin \
     LANG=C.UTF-8 PYTHONNOUSERSITE=1 \

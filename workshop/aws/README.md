@@ -10,6 +10,8 @@ Use the [activity lifecycle CLI](lifecycle.md) for reviewed-plan up, status,
 runtime waiting and basic activity destroy.
 For a validated private AMI, use [prebuilt activity startup](prebuilt.md),
 including pinned release metadata and guarded single-learner replacement.
+Use [controlled SSM diagnostics and log handling](operations.md) to locate
+initialization, service and kernel failures without exporting student content.
 Real EC2 infrastructure, the two-host CLI lifecycle, and default `rta-main`
 Notebook execution have been verified. Browser checks through operator SSM
 forwards also covered the reader, Notebook editing/save/download, kernel

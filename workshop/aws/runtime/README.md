@@ -138,7 +138,7 @@ the learner runs the Labs; the image guide lists the remaining online access.
 | `/etc/doris-workshop/runtime.json` | Non-secret installed runtime plan |
 | `/var/lib/doris-workshop/install.json` | Installation fingerprint and completed environment stages |
 | `/run/doris-workshop` | Private, temporary Jupyter token, cookie secret and connection files |
-| `/var/log/doris-workshop/bootstrap.log` | Target-host bootstrap stages, dependency installation output and readiness result |
+| `/var/log/doris-workshop/bootstrap.log` | Fixed bootstrap stages and failure categories, with raw dependency output discarded |
 
 Course source/runtime directories and working copies are writable by `workshop`.
 Operational configuration and helpers are root-owned. The learner belongs to
@@ -205,12 +205,12 @@ Exit codes are `0` for host-runtime checks passed, `1` for failed readiness and
 sets `course_labs_validated: false`; it does not assert that teaching SQL,
 browser pages, AI Host integration or whole-course execution passed.
 
-For bootstrap failures, start with the stage and line in
-`/var/log/doris-workshop/bootstrap.log`. Inspect service failures with
-`systemctl status doris-workshop-jupyter.service` and
-`journalctl -u doris-workshop-jupyter.service`. Keep raw operational logs local
-and redact them before saving evidence. The bootstrap does not install a log
-retention policy yet.
+For bootstrap failures, use [controlled SSM diagnostics](../operations.md).
+It reports fixed stages/categories, systemd unit states and synthetic kernel
+checks. New source installs include a bounded log policy; older validated images
+use the explicit operations overlay. Jupyter/gateway application output is
+disabled to avoid collecting HTTP paths, session credentials and student content.
+The default retention is seven days, configurable from one to thirty days.
 
 ## Local tests
 

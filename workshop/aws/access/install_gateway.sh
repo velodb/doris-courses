@@ -2,6 +2,10 @@
 # Run through operator SSM on an already verified host, after uploading this overlay.
 set -euo pipefail
 test "$(id -u)" -eq 0
+umask 077
+test -f /usr/local/lib/doris-workshop/operations.py
+install -d -m 0700 /var/log/doris-workshop
+exec > >(python3.12 /usr/local/lib/doris-workshop/operations.py filter --log /var/log/doris-workshop/gateway-install.log) 2>&1
 test "$#" -eq 4
 bundle_dir=$(realpath "$1")
 gateway_config=$(realpath "$2")

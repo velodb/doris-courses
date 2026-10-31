@@ -183,8 +183,10 @@ def course_services():
     services = []
     for line in result.stdout.splitlines():
         name, state = line.split("\t", 1)
-        if name.startswith(("doris-rta", "doris-warehousing-course", "doris-obs", "doris-ai")):
-            services.append({"name": name, "state": state})
+        for family in ("doris-rta", "doris-warehousing-course", "doris-obs", "doris-ai"):
+            if name.startswith(family) and state in {"running", "created", "restarting", "removing", "paused", "exited", "dead"}:
+                # Learners can name containers freely. Export only fixed families.
+                services.append({"name": family, "state": state})
     return services
 
 

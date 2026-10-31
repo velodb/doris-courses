@@ -16,13 +16,14 @@ import time
 import workshop_config as wc
 import workshop_preflight as preflight
 import workshop_runtime as runtime
+import workshop_operations as operations
 
 SPEC = wc.SPEC / 'packer'
 
 
 def deployment_dirty():
     paths = [Path(__file__), Path(preflight.__file__), Path(runtime.__file__), Path(wc.__file__),
-             *runtime.RUNTIME.iterdir(), *(wc.SPEC / 'terraform/image-build').glob('*.tf'),
+             *runtime.RUNTIME.iterdir(), operations.NODE_PATH, *(wc.SPEC / 'terraform/image-build').glob('*.tf'),
              wc.SPEC / 'terraform/image-build/.terraform.lock.hcl',
              *(p for p in SPEC.rglob('*') if p.is_file() and '__pycache__' not in p.parts)]
     paths = [str(p.relative_to(wc.REPO)) for p in paths if p.is_file()]
@@ -289,7 +290,7 @@ def provision(run_dir):
     while time.monotonic() < deadline:
         aggregate = ssm.list_commands(CommandId=command)['Commands']
         if aggregate and aggregate[0]['Status'] not in ('Pending', 'InProgress', 'Delayed', 'Success'):
-            write(run_dir / 'failed-command.json', aggregate[0])
+            write(run_dir / 'failed-command.json', operations.invocation_summary(aggregate[0]))
             raise preflight.PreflightError('image: an earlier SSM build step failed; inspect private command record')
         try:
             result = ssm.get_command_invocation(CommandId=command, InstanceId=instance, PluginName='prepareImage')
@@ -311,7 +312,7 @@ def provision(run_dir):
             write(run_dir / 'image-manifest.json', report)
             break
         if result['Status'] not in ('Pending', 'InProgress', 'Delayed'):
-            write(run_dir / 'failed-command.json', result)
+            write(run_dir / 'failed-command.json', operations.invocation_summary(result))
             raise preflight.PreflightError('image: SSM preparation failed; inspect private failed-command.json')
         time.sleep(10)
     else:

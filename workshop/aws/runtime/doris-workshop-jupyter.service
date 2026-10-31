@@ -25,6 +25,8 @@ RestartSec=5
 TimeoutStopSec=30
 KillMode=control-group
 NoNewPrivileges=true
+StandardOutput=null
+StandardError=null
 
 [Install]
 WantedBy=multi-user.target

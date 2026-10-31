@@ -128,7 +128,7 @@ subprocess.run(['runuser','--user','workshop','--','env','-i','HOME='+str(root),
         try:r=aws.client('ssm').get_command_invocation(CommandId=command,InstanceId=audit['instance_id'])
         except aws.client('ssm').exceptions.InvocationDoesNotExist:time.sleep(5);continue
         if r['Status'] in ('Pending','InProgress','Delayed'):time.sleep(10);continue
-        images.write(attempt/'invocation.json',r)
+        images.write(attempt/'invocation.json',ws.ops.invocation_summary(r))
         report=next((line[len('COURSE_REPORT='):] for line in r['StandardOutputContent'].splitlines() if line.startswith('COURSE_REPORT=')),None)
         pf.require(report is not None,'validation: course returned no report; inspect the private invocation')
         value=json.loads(report);images.write(attempt/'report.json',value)
@@ -170,7 +170,7 @@ def audit(directory):
             time.sleep(5);continue
         if r['Status'] in ('Pending','InProgress','Delayed'):
             time.sleep(5);continue
-        images.write(attempt/'audit-invocation.json',r)
+        images.write(attempt/'audit-invocation.json',ws.ops.invocation_summary(r))
         report=next((line[len('IMAGE_AUDIT='):] for line in r['StandardOutputContent'].splitlines() if line.startswith('IMAGE_AUDIT=')),None)
         if report:
             data=json.loads(report);images.write(attempt/'audit-report.json',data)

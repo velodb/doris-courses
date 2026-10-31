@@ -16,11 +16,15 @@ import time
 
 import workshop_config as wc
 import workshop_preflight as pf
+import workshop_operations as ops
 
-PROBE = ("runuser --user workshop -- env -i HOME=/var/lib/doris-workshop/home "
+_PROBE_PREFIX = ("runuser --user workshop -- env -i HOME=/var/lib/doris-workshop/home "
          "PATH=/opt/doris-workshop/server-venv/bin:/usr/local/bin:/usr/bin:/bin "
          "LANG=C.UTF-8 PYTHONNOUSERSITE=1 /opt/doris-workshop/server-venv/bin/python "
-         "-I /usr/local/lib/doris-workshop/check.py")
+         "-I ")
+PROBE = ("if test -f /usr/local/lib/doris-workshop/operations.py; then " + _PROBE_PREFIX +
+         "/usr/local/lib/doris-workshop/operations.py probe; else " + _PROBE_PREFIX +
+         "/usr/local/lib/doris-workshop/check.py; fi")
 IMAGE_STARTUP = ["set -eu", "timeout 300 cloud-init status --wait >/dev/null",
     "deadline=$(($(date +%s)+120)); until timeout 20 runuser --user workshop -- docker info >/dev/null 2>&1; do "
     "test $(date +%s) -lt $deadline || exit 1; sleep 2; done"]
@@ -80,7 +84,8 @@ class Terraform:
             log = self.directory / f"terraform-{stamp}.log"
             descriptor = os.open(log, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
             with os.fdopen(descriptor, "w") as stream:
-                stream.write(result.stdout + result.stderr)
+                stream.write(ops.safe_terraform_log(result.returncode))
+            ops.prune_local(self.directory)
         pf.require(result.returncode == 0, "terraform: failed; inspect private terraform logs and run status/destroy")
         return result.stdout if capture else None
 
@@ -248,9 +253,10 @@ class Controller:
                          and required.issubset(r["check"] for r in checks))
                 entry["ready"] = valid
                 entry["checks"] = [{"check": r["check"], "passed": r["passed"]} for r in checks
-                                   if re.fullmatch(r"[a-z0-9:-]{1,100}", r["check"])]
-                entry["services"] = [{"name": r["name"], "state": r["state"]} for r in report.get("services", [])
-                                     if re.fullmatch(r"[a-zA-Z0-9_.-]{1,100}", r.get("name", ""))
+                                   if r["check"] in ops.node.CHECKS and type(r["passed"]) is bool]
+                entry["services"] = [{"name": family, "state": r["state"]} for r in report.get("services", [])
+                                     for family in ("doris-rta", "doris-warehousing-course", "doris-obs", "doris-ai")
+                                     if isinstance(r.get("name"), str) and r["name"].startswith(family)
                                      and r.get("state") in {"running", "created", "restarting", "removing", "paused", "exited", "dead"}]
                 if not valid:
                     entry["status"] = "Failed"
@@ -482,7 +488,7 @@ def main(argv=None):
     plan.add_argument("--config", type=Path, required=True)
     plan.add_argument("--pilot", type=Path, required=True)
     plan.add_argument("--run-dir", type=Path, required=True)
-    for name in ("up", "status", "destroy", "replace-plan", "replace"):
+    for name in ("up", "status", "destroy", "replace-plan", "replace", "diagnose", "configure-logs"):
         cmd = commands.add_parser(name)
         cmd.add_argument("--run-dir", type=Path, required=True)
         if name not in {"destroy", "replace-plan"}:
@@ -492,6 +498,9 @@ def main(argv=None):
             cmd.add_argument("--approved-plan-sha256")
         if name == "replace-plan":
             cmd.add_argument("--learner", required=True)
+        if name in {"diagnose", "configure-logs"}:
+            cmd.add_argument("--learner")
+            cmd.add_argument("--retention-days", type=int, default=7)
         if name == "destroy":
             cmd.add_argument("--approve-destroy", action="store_true", required=True)
     args = parser.parse_args(argv)
@@ -516,10 +525,13 @@ def main(argv=None):
                 report = controller.replacement_plan(args.learner)
             elif args.command == "replace":
                 report = controller.replace(args.approved_plan_sha256, timeout=args.timeout)
+            elif args.command in {"diagnose", "configure-logs"}:
+                report = ops.diagnose(controller, learner=args.learner, configure=args.command == "configure-logs",
+                                      days=args.retention_days, timeout=args.timeout)
             else:
                 report = controller.inspect(timeout=args.timeout, retry_failed=args.retry_failed)
             print(json.dumps(report, indent=2, sort_keys=True))
-            return 0 if args.command in {"destroy", "replace-plan"} or report["ready"] else 1
+            return 0 if args.command in {"destroy", "replace-plan"} or report.get("ok", report.get("ready", False)) else 1
     except Exception as exc:
         # SDK/HTTP/SSM messages may contain arbitrary target output. Never echo
         # them; only our controlled ConfigError messages are ordinary output.
