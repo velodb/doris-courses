@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "runtime": {
+    "os": "linux",
+    "architecture": "x86_64",
+    "python_version": "3.12",
+    "repository_root": "/opt/doris-courses"
+  },
+  "profiles": {
+    "rta-main": {
+      "course_dir": "doris-course/01-real-time-analytics",
+      "kernel": "doris-rta",
+      "ec2_course": "verified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": {
+        "course_sha": "180aca72c993a784a5d9b25e903341a834f14458",
+        "transport": "operator-ssm-forward",
+        "hosts": 2,
+        "region": "us-east-1",
+        "instance_type": "m7i.2xlarge",
+        "disk_gib": 200
+      },
+      "summary": "prebuilt.md",
+      "limitations": "RTA main Labs and the published private AMI were tested. Shared ALB/Cognito, formal-domain service routing and target-scale acceptance remain pending."
+    },
+    "rta-metabase": {
+      "course_dir": "doris-course/01-real-time-analytics",
+      "kernel": "doris-rta",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+    },
+    "dw-main": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+    },
+    "dw-kafka": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+    },
+    "dw-cdc": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+    },
+    "dw-bi": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+    },
+    "dw-backup": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+    },
+    "dw-extensions": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+    },
+    "obs-main": {
+      "course_dir": "doris-course/03-observability",
+      "kernel": "doris-obs",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+    },
+    "obs-local-model": {
+      "course_dir": "doris-course/03-observability",
+      "kernel": "doris-obs",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+    },
+    "obs-openai": {
+      "course_dir": "doris-course/03-observability",
+      "kernel": "doris-obs",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+    },
+    "ai-mcp": {
+      "course_dir": "doris-course/04-ai-integrations",
+      "kernel": "doris-ai",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "pending",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Draft profile. A cloud/browser Host, model access and integration acceptance are pending; stdio probes do not certify full conversation."
+    },
+    "ai-functions": {
+      "course_dir": "doris-course/04-ai-integrations",
+      "kernel": "doris-ai",
+      "ec2_course": "unverified",
+      "shared_browser": "pending",
+      "browser_host": "not-required",
+      "evidence": null,
+      "summary": "support.md#validation-levels",
+      "limitations": "Draft profile. Model access, quotas and EC2 integration acceptance are pending."
+    }
+  }
+}

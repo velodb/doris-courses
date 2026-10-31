@@ -44,6 +44,7 @@ python3 tools/check_course_manifests.py            # each course.yaml against th
 python3 tools/check_content_contract.py            # complete website package contract
 python3 tools/check_image_digests.py --offline     # maintenance/images.md lists every image the courses name
 python3 tools/check_sensitive_info.py              # secrets, local paths and personal email addresses
+python3 tools/check_workshop_release.py            # profile support claims and public checkout boundaries
 python3 -m unittest discover -s tools/tests        # tests of the checks themselves
 ```
 

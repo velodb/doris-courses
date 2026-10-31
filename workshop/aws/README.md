@@ -4,6 +4,9 @@ This directory defines the configuration and planning manifest for temporary
 AWS course environments. The current tool validates local files and pinned
 course metadata. A [host runtime bundle and installer](runtime/README.md) and
 [Terraform integration scripts](terraform/README.md) are available.
+Start with the [operator quick start](getting-started.md) and
+[support and validation matrix](support.md) for the tested scope and pending
+release gates.
 The [temporary course reader](runtime/access.md) and
 [browser URL mapping](browser-urls.md) reuse the host runtime.
 Use the [activity lifecycle CLI](lifecycle.md) for reviewed-plan up, status,

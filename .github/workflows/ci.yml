@@ -21,11 +21,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
       - name: Install the check dependencies
-        run: python -m pip install -r workshop/aws/preflight-requirements.txt
+        run: python -m pip install -r workshop/aws/preflight-requirements.txt -r workshop/aws/runtime/test-requirements.txt
       - name: Links
         run: python tools/check_links.py doris-course maintenance workshop README.md CONTRIBUTING.md
       - name: Notebook outputs
@@ -42,7 +44,16 @@ jobs:
       - name: Course manifests
         run: python tools/check_course_manifests.py
       - name: Content contract
-        run: python tools/check_content_contract.py
+        env:
+          CONTRACT_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before || '' }}
+        run: |
+          if [ -n "$CONTRACT_BASE_SHA" ] && [ "$CONTRACT_BASE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            python tools/check_content_contract.py --base-ref "$CONTRACT_BASE_SHA"
+          else
+            python tools/check_content_contract.py
+          fi
+      - name: Workshop release boundaries
+        run: python tools/check_workshop_release.py
       - name: Image list
         # Only whether maintenance/images.md lists the images that the courses
         # name; comparing their digests with the registries needs the network.
