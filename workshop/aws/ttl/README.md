@@ -194,6 +194,9 @@ provider execution and task-role operation, scanned, then referenced by its
 same-account/Region ECR digest. Publishing and running the image on Fargate
 require separate cloud acceptance.
 
+The [2026-10-31 scan review](security-review.md) covers the local image and
+expanded provider. It records unresolved findings and is not release approval.
+
 The provider lock files include both Linux amd64 and macOS arm64 `h1`
 checksums. A ZIP checksum alone can pass installation while later checks of
 the unpacked Linux provider still fail. Keep both platform checksums when
