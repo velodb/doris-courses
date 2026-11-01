@@ -2,8 +2,8 @@
   "schema_version": 1,
   "platform": "linux/amd64",
   "python": {
-    "tag": "3.12.16-slim-bookworm",
-    "image": "docker.io/library/python@sha256:623674a14ef93d052bb9b0de4dbf5f28eb578a35263838941cc8aa43213c1487"
+    "tag": "3.12.16-slim-trixie",
+    "image": "docker.io/library/python@sha256:1148dbb014615300fa7e713b2f94f550c0d1c69780c0805f84f093ceee34dd0b"
   },
   "terraform": {
     "tag": "1.17.1",
