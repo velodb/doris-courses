@@ -178,10 +178,11 @@ Build [Dockerfile](Dockerfile) only from a clean source archive, supplying the
 `PYTHON_IMAGE` build arguments. [images.json](images.json) records reviewed
 Linux amd64 publisher manifest digests for Python and Terraform. The recipe
 installs all Python dependencies from [requirements.lock](requirements.lock),
-including transitive SDK packages and pip itself, with `--require-hashes`.
-The Python 3.12 runtime uses the Debian 13 (Trixie) slim base. The installer
-is pinned independently of the version inherited from that base; image
-verification checks every manifest version and runs `pip check`. The reviewed
+including transitive SDK packages, with `--require-hashes`.
+The Python 3.12 runtime uses the Debian 13 (Trixie) slim base. The build runs
+`pip check`, then uninstalls pip and its bundled dependencies. Runtime image
+verification requires the installed distribution inventory to match the locked
+closure exactly and rejects an importable pip package. The reviewed
 [wheel manifest](wheels.json) records official PyPI artifact URLs and hashes;
 installation uses local wheels with no index. It also installs a checksum-verified, packed Terraform
 provider mirror. [terraform.tfrc](terraform.tfrc) permits only that mirror;

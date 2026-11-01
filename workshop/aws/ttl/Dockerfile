@@ -25,6 +25,7 @@ COPY tools/requirements.txt tools/requirements.txt
 COPY workshop/aws/ttl/requirements.lock workshop/aws/ttl/requirements.lock
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 RUN --mount=from=python-fetch,source=/wheels,target=/wheels python -m pip --no-cache-dir install --no-index --find-links=/wheels --require-hashes -r workshop/aws/ttl/requirements.lock && \
+    python -m pip check && python -m pip uninstall --yes pip && \
     mkdir -p /opt/terraform-providers /opt/doris-workshop /work/tmp && \
     chown -R 10001:10001 /work && chmod 700 /work /work/tmp && chmod -R a+rX /opt/terraform-providers
 COPY . /opt/doris-courses

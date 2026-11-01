@@ -4,6 +4,7 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 import hashlib
 import importlib.metadata
+import importlib.util
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
@@ -104,9 +105,13 @@ def check_runtime(source_sha):
     assert source["source_sha"] == source_sha and source["source_tree_sha256"] == runtime.tree_hash(ROOT)
     with tempfile.TemporaryDirectory() as directory:
         Path(directory, "scratch").write_text("local-only")
-    command([sys.executable, "-m", "pip", "check"])
     wheels = json.loads((ROOT / "workshop/aws/ttl/wheels.json").read_text())["wheels"]
-    assert all(importlib.metadata.version(row["package"]) == row["version"] for row in wheels)
+    # pip check runs before the installer is removed during the build. Require
+    # the final installed distribution inventory to match the reviewed closure.
+    installed = {dist.metadata["Name"].lower().replace("_", "-"): dist.version
+        for dist in importlib.metadata.distributions()}
+    assert installed == {row["package"]: row["version"] for row in wheels}
+    assert importlib.util.find_spec("pip") is None
     version = json.loads(command(["terraform", "version", "-json"]))
     assert version["terraform_version"] == "1.17.1" and version["platform"] == "linux_amd64"
     # The schema command reads backend state. Use an independent local-only
@@ -140,7 +145,7 @@ def check_runtime(source_sha):
     assert all('"zh:' + provider_hash + '"' in (ROOT / "workshop/aws/terraform" / module / ".terraform.lock.hcl").read_text()
         for module in checks)
     return {"platform": "linux/amd64", "uid": os.getuid(), "readonly_root": True, "scratch": "/work", "source": source,
-        "python": platform.python_version(), "dependencies": {name: importlib.metadata.version(name) for name in ("boto3", "botocore", "jsonschema", "PyYAML")},
+        "python": platform.python_version(), "installed_packages": installed, "runtime_installer": False, "dependencies": {name: importlib.metadata.version(name) for name in ("boto3", "botocore", "jsonschema", "PyYAML")},
         "terraform": version["terraform_version"], "provider_zip_sha256": provider_hash, "schema_fixture_backend": "local", "modules": checks}
 
 
