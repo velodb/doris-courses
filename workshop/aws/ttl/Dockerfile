@@ -13,7 +13,7 @@ wheels = json.loads(pathlib.Path('/wheels.json').read_text())['wheels']
 pathlib.Path('/wheel-urls.txt').write_text(''.join(row['url'] + ' --hash=sha256:' + row['sha256'] + '\n' for row in wheels))
 PYTHON
 RUN python -m pip download --no-deps --no-index --require-hashes -r /wheel-urls.txt --dest /wheels
-FROM ${PYTHON_IMAGE}
+FROM ${PYTHON_IMAGE} AS prepared
 ARG TERRAFORM_IMAGE
 ARG PYTHON_IMAGE
 RUN case "$TERRAFORM_IMAGE" in *@sha256:*) ;; *) exit 1 ;; esac && \
@@ -42,6 +42,16 @@ assert re.fullmatch('[0-9a-f]{40}', sys.argv[1])
 pathlib.Path('/opt/doris-workshop/source.json').write_text(json.dumps({'source_sha': sys.argv[1], 'source_tree_sha256': workshop_ttl_runner.tree_hash(pathlib.Path.cwd())}))
 PY
 ENV HOME=/work TMPDIR=/work/tmp PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 AWS_EC2_METADATA_DISABLED=true CHECKPOINT_DISABLE=1
+RUN python workshop/aws/ttl/runtime_rootfs.py
+
+FROM scratch
+COPY --from=prepared /rootfs/ /
+ARG SOURCE_SHA
+ENV PATH=/usr/local/bin:/usr/bin:/bin LANG=C.UTF-8 HOME=/work TMPDIR=/work/tmp \
+    PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 AWS_EC2_METADATA_DISABLED=true CHECKPOINT_DISABLE=1 \
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt SSL_CERT_DIR=/etc/ssl/certs \
+    TF_CLI_CONFIG_FILE=/opt/doris-courses/workshop/aws/ttl/terraform.tfrc
+WORKDIR /opt/doris-courses
 LABEL org.opencontainers.image.revision=$SOURCE_SHA
 VOLUME ["/work"]
 USER 10001:10001

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "packages": {
+    "ca-certificates": "20250419+deb13u1",
+    "gcc-14-base": "14.2.0-19",
+    "libbz2-1.0": "1.0.8-6",
+    "libc6": "2.41-12+deb13u4",
+    "libcrypt1": "1:4.4.38-1",
+    "libdb5.3t64": "5.3.28+dfsg2-9",
+    "libffi8": "3.4.8-2",
+    "libgcc-s1": "14.2.0-19",
+    "libgdbm6t64": "1.24-2",
+    "liblzma5": "5.8.1-1+deb13u2",
+    "libncursesw6": "6.5+20250216-2",
+    "libreadline8t64": "8.2-6",
+    "libsqlite3-0": "3.46.1-7+deb13u2",
+    "libssl3t64": "3.5.7-1~deb13u3",
+    "libtinfo6": "6.5+20250216-2",
+    "libuuid1": "2.41.5-0+deb13u1",
+    "libzstd1": "1.5.7+dfsg-1",
+    "ncurses-base": "6.5+20250216-2",
+    "openssl-provider-legacy": "3.5.7-1~deb13u3",
+    "readline-common": "8.2-6",
+    "zlib1g": "1:1.3.dfsg+really1.3.1-1+b1"
+  }
+}

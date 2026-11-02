@@ -94,6 +94,33 @@ def check_credentials():
     return {"method": "container-role", "metadata_calls": len(calls), "aws_calls": "SDK Stubber only", "ambient_rejections": 4}
 
 
+def check_native_runtime():
+    import importlib
+    import socket
+    import ssl
+    import sysconfig
+    manifest = json.loads(Path("/opt/doris-workshop/native-runtime.json").read_text())
+    expected = json.loads((ROOT / "workshop/aws/ttl/runtime-packages.json").read_text())["packages"]
+    assert {name: row["version"] for name, row in manifest["packages"].items()} == expected
+    for filename, row in manifest["files"].items():
+        path = Path(filename)
+        if "symlink" in row:
+            assert path.is_symlink() and os.readlink(path) == row["symlink"], filename
+        else:
+            assert runtime.file_hash(path) == row["sha256"], filename
+    for name in ("sh", "bash", "mount", "umount", "nsenter", "infocmp", "cp", "mv", "tar", "perl", "apt", "apt-get", "dpkg"):
+        assert not any((Path(directory) / name).exists() for directory in ("/bin", "/usr/bin", "/sbin", "/usr/sbin")), name
+    assert not list(Path("/usr/lib").rglob("libacl.so*")) and not list(Path("/usr/lib").rglob("libmount.so*"))
+    extensions = sorted(path.name.split(".", 1)[0] for path in Path(sysconfig.get_config_var("DESTSHARED")).glob("*.so"))
+    for name in extensions:
+        importlib.import_module(name)
+    assert socket.getaddrinfo("localhost", 443)
+    authorities = ssl.create_default_context().cert_store_stats()["x509_ca"]
+    assert authorities > 0
+    return {"packages": expected, "payload_files_verified": len(manifest["files"]),
+        "stdlib_extensions_imported": len(extensions), "certificate_authorities": authorities, "os_tools_absent": True}
+
+
 def check_runtime(source_sha):
     assert platform.system() == "Linux" and platform.machine() == "x86_64"
     assert os.getuid() == os.getgid() == 10001
@@ -112,6 +139,7 @@ def check_runtime(source_sha):
         for dist in importlib.metadata.distributions()}
     assert installed == {row["package"]: row["version"] for row in wheels}
     assert importlib.util.find_spec("pip") is None
+    native = check_native_runtime()
     version = json.loads(command(["terraform", "version", "-json"]))
     assert version["terraform_version"] == "1.17.1" and version["platform"] == "linux_amd64"
     # The schema command reads backend state. Use an independent local-only
@@ -145,7 +173,7 @@ def check_runtime(source_sha):
     assert all('"zh:' + provider_hash + '"' in (ROOT / "workshop/aws/terraform" / module / ".terraform.lock.hcl").read_text()
         for module in checks)
     return {"platform": "linux/amd64", "uid": os.getuid(), "readonly_root": True, "scratch": "/work", "source": source,
-        "python": platform.python_version(), "installed_packages": installed, "runtime_installer": False, "dependencies": {name: importlib.metadata.version(name) for name in ("boto3", "botocore", "jsonschema", "PyYAML")},
+        "python": platform.python_version(), "installed_packages": installed, "runtime_installer": False, "native_runtime": native, "dependencies": {name: importlib.metadata.version(name) for name in ("boto3", "botocore", "jsonschema", "PyYAML")},
         "terraform": version["terraform_version"], "provider_zip_sha256": provider_hash, "schema_fixture_backend": "local", "modules": checks}
 
 

@@ -13,6 +13,20 @@ import workshop_ttl_image as image
 
 
 class ImageTests(unittest.TestCase):
+    def test_native_payload_selection_rejects_missing_changed_or_duplicate_packages(self):
+        spec = importlib.util.spec_from_file_location("rootfs_fixture", image.ROOT / "workshop/aws/ttl/runtime_rootfs.py")
+        rootfs = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(rootfs)
+        status = "Package: libc6\nStatus: install ok installed\nVersion: 1.0\nSource: glibc\n"
+        selected = rootfs.select_packages(status + "\nPackage: mount\nVersion: 1.0\n", {"libc6": "1.0"})
+        self.assertEqual(set(selected), {"libc6"})
+        self.assertIn("Source: glibc", selected["libc6"][1])
+        for value, expected in ((status, {"libc6": "2.0"}), (status, {"libc6": "1.0", "libssl3t64": "1.0"}),
+                (status + "\n" + status, {"libc6": "1.0"}),
+                (status.replace("install ok installed", "deinstall ok config-files"), {"libc6": "1.0"})):
+            with self.assertRaises(ValueError):
+                rootfs.select_packages(value, expected)
+
     def test_build_context_uses_only_the_selected_commit(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
