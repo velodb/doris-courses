@@ -1,5 +1,10 @@
 # Cleanup runner finding applicability
 
+The later [runtime-only candidate](security-minimization.md) physically removes
+the OS components discussed below. This assessment remains bound to the earlier
+image and its original reports; its Go analysis limitation still applies to the
+unchanged executables in the new candidate.
+
 Reviewed on 2026-11-02 for source
 `1a3e4127339774e721f556004964e8f6a4c5a494` and local image
 `sha256:e5cb4e89ec4035b11ba9ce78637e2a320e7e34efe45237945551df619ec41ae9`.

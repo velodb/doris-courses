@@ -1,5 +1,28 @@
 # Cleanup runner image scan
 
+## Current runtime-only candidate (2026-11-02)
+
+Source `744734d16cf7f9b8adfdc62a470c56fe5ffb66df`, local image
+`sha256:a9c98f12308e3081b16f20ca56f8082d2a84df18bc1a905199b7a0d67a7dae44`,
+passed isolated image acceptance and a complete OS/Python/Terraform/expanded-provider
+scan. **Deployment review remains open.** The image is local and Scheduler stays
+disabled.
+
+Against the same fresh official DB (`2026-11-02T01:14:05Z`), the earlier hardened
+baseline has 187 package occurrences / 86 advisory IDs; the new candidate has
+37 / 31. High decreases from 45 to zero, Critical stays zero, and OS payloads
+fall from 87 to 14. The candidate retains 27 Medium, eight Low and two Go Unknown
+occurrences, with no Python findings or new advisory ID relative to that baseline.
+No finding filter or automatic exemption was added; scan exit remains `2`.
+
+See the [runtime contract, exact bindings and current scan](security-minimization.md)
+for the native-module exclusions, file checks, same-DB comparison and adoption
+requirements. The [earlier Go applicability limitation](security-applicability.md)
+still applies to the unchanged stripped executables. The historical counts below
+use an older DB and must not replace the current comparison.
+
+## Historical hardened image (2026-11-01)
+
 The hardened runner built from source
 `1a3e4127339774e721f556004964e8f6a4c5a494` was scanned on 2026-11-01.
 Its local image ID is
@@ -13,7 +36,7 @@ coverage. Three advisory IDs concern absent components; six OS advisories and
 both Go occurrences remain open. That review does not change the raw counts
 below or constitute a fresh scan.
 
-## Coverage and results
+### Coverage and results
 
 Trivy 0.76.1 came from its immutable
 [official release](https://github.com/aquasecurity/trivy/releases/tag/v0.76.1),
@@ -51,7 +74,7 @@ Counts include unfixed issues and source-package matches. An advisory can
 affect several packages or both binaries; occurrences do not establish
 reachability. No ignore file, unfixed filter or automatic waiver was applied.
 
-## Changes verified
+### Changes verified
 
 - **SQLite / CVE-2025-7458:** the hardened image contains
   `libsqlite3-0 3.46.1-7+deb13u2`, which Debian lists as fixed. The original
@@ -76,7 +99,7 @@ the installed SDK's container-role path and ambient credential rejection.
 This is local image acceptance; Fargate permissions and natural TTL remain
 unverified.
 
-## High and Unknown findings
+### High and Unknown findings
 
 The 44 OS High occurrences represent eight advisory IDs. The complete report
 retains every affected package, including source-package repetitions:
@@ -126,7 +149,7 @@ a new reviewed source/image binding; do not retarget an existing bound request.
 Rebuild, verify and rescan
 against a current DB after further changes.
 
-## Repeat locally
+### Repeat locally
 
 Obtain and verify Trivy 0.76.1 and a current official Trivy DB. The helper does
 not install a scanner or update a database:

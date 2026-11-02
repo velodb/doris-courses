@@ -179,7 +179,7 @@ Build [Dockerfile](Dockerfile) only from a clean source archive, supplying the
 Linux amd64 publisher manifest digests for Python and Terraform. The recipe
 installs all Python dependencies from [requirements.lock](requirements.lock),
 including transitive SDK packages, with `--require-hashes`.
-The Python 3.12 runtime uses the Debian 13 (Trixie) slim base. The build runs
+The Python 3.12 build stage uses the Debian 13 (Trixie) slim base. The build runs
 `pip check`, then uninstalls pip and its bundled dependencies. Runtime image
 verification requires the installed distribution inventory to match the locked
 closure exactly and rejects an importable pip package. The reviewed
@@ -198,8 +198,19 @@ provider execution and task-role operation, scanned, then referenced by its
 same-account/Region ECR digest. Publishing and running the image on Fargate
 require separate cloud acceptance.
 
-The [2026-11-01 hardening and scan review](security-review.md) covers the local image and
-expanded provider. It records unresolved findings and is not release approval.
+The final `scratch` stage receives the Python/Go runtime and the 14 versioned
+native package payloads in [runtime-packages.json](runtime-packages.json).
+It retains file/package provenance and generated trust data, with no shell,
+package manager or mount/namespace tools. Optional SQLite, terminal-interaction
+and UUID native extensions are omitted; the worker's UUID path is checked
+without `_uuid`. The upstream slim image's already unusable Tk extension is
+also omitted. This is a fixed-worker runtime, not a general Python environment
+or an apt-managed Debian installation. See the [runtime contract and scan](security-minimization.md)
+for the exact exclusions, payload checks and remaining findings.
+
+The [current and historical scan review](security-review.md) covers the local
+images and expanded provider. It records unresolved findings and is not release
+approval.
 
 The provider lock files include both Linux amd64 and macOS arm64 `h1`
 checksums. A ZIP checksum alone can pass installation while later checks of
