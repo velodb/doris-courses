@@ -124,7 +124,8 @@ Deploy this explicit interface using separately reviewed Terraform plans:
 
 1. Create shared access with `portal_instance_id = null`. The root Alias exists
    but its course path remains closed. Export `access` as before.
-2. Separately provision an operator-controlled Ubuntu 24.04 EC2 in the shared
+2. Separately provision an operator-controlled Ubuntu 24.04 EC2 using
+   [shared-portal](terraform/shared-portal/README.md) in the shared
    VPC, with Python 3.12 and `python3.12-venv`, SSM access and outbound HTTPS.
    The host needs Internet egress for package installation and ALB public keys.
    Give it the exported `portal_security_group_id`; expose no public inbound
@@ -133,7 +134,7 @@ Deploy this explicit interface using separately reviewed Terraform plans:
    `Access`, and no `Event` tag. It must have no learner runtime, Docker socket,
    learner login, state access or deployment credentials. Its encrypted disk,
    IAM/SSM access, patches, capacity, cost and cleanup belong to the operator.
-   This interface does not provision that host automatically.
+   The separate module provisions this host; it is not part of activity state.
 3. Set `portal_instance_id` to that separate host and reserve `portal_priority`
    (default 100) across the listener. Review/apply a fresh shared plan and export
    `access` again. Terraform checks VPC, portal SG and ownership tags; activity
@@ -175,6 +176,13 @@ removing an entry or reaching its expiry does not destroy AWS resources. Portal
 logout clears only the activity-entry origin's cookies. Other service sessions
 follow the existing [logout boundary](cognito-access.md#trust-and-session-boundary).
 
+Before registering the first activity, install the same runtime with an empty
+registry containing `schema_version: 1`, `domain`, `region`, the actual shared
+`alb_arn`, and `activities: {}`. The root index reports that no activities are
+available. Activity hosts remain denied, and no placeholder Cognito identities
+or learner assignments are needed. Replace this private configuration with the
+generated registry when an activity is ready.
+
 For a delegated partner namespace, set `domain` consistently in the event and
 shared module, for example `partner-a.workshop.example.com`, and supply the
 partner's public zone in its own account. The same `/doris-courses/` path and
@@ -201,8 +209,8 @@ checks. Increasing an idle timeout does not make a connection immortal.
 
 The deployment currently has local format/schema/provider-mock coverage. No
 formal-domain TLS or shared-login browser validation is claimed yet. The
-operator portal host installer has local fixtures and shell syntax coverage;
-it has not been installed or reboot-tested on EC2. The
+operator portal installer and separate host module have local coverage;
+real installation and reboot evidence must be recorded separately. The
 published AMI remains unchanged; access code must be installed as a separately
 versioned overlay or included in a newly validated image.
 

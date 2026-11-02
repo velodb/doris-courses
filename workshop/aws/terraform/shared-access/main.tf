@@ -157,11 +157,13 @@ resource "aws_lb" "access" {
   depends_on                 = [aws_route_table_association.access]
 }
 resource "aws_lb_listener" "https" {
-  load_balancer_arn = aws_lb.access.arn
-  port              = 443
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
-  certificate_arn   = aws_acm_certificate_validation.access.certificate_arn
+  routing_http_response_strict_transport_security_header_value = "max-age=31536000"
+  routing_http_response_server_enabled                         = false
+  load_balancer_arn                                            = aws_lb.access.arn
+  port                                                         = 443
+  protocol                                                     = "HTTPS"
+  ssl_policy                                                   = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn                                              = aws_acm_certificate_validation.access.certificate_arn
   default_action {
     type = "fixed-response"
     fixed_response {

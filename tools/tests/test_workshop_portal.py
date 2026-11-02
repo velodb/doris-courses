@@ -55,6 +55,15 @@ class LocalVerifier(gateway.Verifier):
 
 
 class PortalPlanningTests(unittest.TestCase):
+    def test_empty_registry_validates_global_identity_without_placeholder_assignments(self):
+        c = {**config(), "activities": {}}
+        portal.validate_config(c)
+        for field, value in (("region", "invalid"), ("region", "us-west-2"),
+                             ("alb_arn", "arn:aws:elasticloadbalancing:us-east-1:000000000000:listener/app/test/id"),
+                             ("activities", [])):
+            with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                portal.validate_config({**c, field: value})
+
     def test_partner_and_company_have_same_paths_and_separate_service_origins(self):
         for domain in (DOMAIN, "partner-a." + DOMAIN):
             c = config(domain)
@@ -145,6 +154,19 @@ class PortalHTTPTests(unittest.IsolatedAsyncioTestCase):
 
     def headers(self, signed=None, event="class-a", **extra):
         return {"Host": event + "-entry." + DOMAIN, "X-Amzn-Oidc-Data": signed or token(event=event), **extra}
+
+    async def test_empty_portal_serves_only_public_index_and_health(self):
+        client = await self.start({**self.config, "activities": {}})
+        response = await client.get(portal.PATH, headers={"Host": DOMAIN})
+        self.assertEqual(response.status, 200)
+        body = await response.text()
+        self.assertIn("No activities are available", body)
+        self.assertNotIn("href=", body)
+        for host, path in (("class-a-entry." + DOMAIN, portal.PATH), (DOMAIN, "/api/contents")):
+            response = await client.get(path, headers={"Host": host})
+            self.assertEqual(response.status, 403)
+        response = await client.get("/healthz", headers={"Host": DOMAIN})
+        self.assertEqual(response.status, 200)
 
     async def test_public_index_contains_activity_links_without_assignments(self):
         response = await self.client.get("/doris-courses/", headers={"Host": DOMAIN})

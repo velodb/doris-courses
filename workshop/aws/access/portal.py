@@ -5,6 +5,7 @@ import hashlib
 from html import escape
 import json
 from pathlib import Path
+import re
 import sys
 import time
 from urllib.parse import urlencode
@@ -24,8 +25,14 @@ def validate_config(config):
         raise ValueError("Invalid portal fields")
     if not isinstance(config["domain"], str) or not HOST.fullmatch(config["domain"]) or len(config["domain"]) > 190:
         raise ValueError("Invalid portal namespace")
-    if not isinstance(config["activities"], dict) or not config["activities"]:
-        raise ValueError("Register an explicit activity")
+    if not isinstance(config["region"], str) or not re.fullmatch(r"[a-z]{2}-[a-z-]+-\d", config["region"]):
+        raise ValueError("Invalid portal Region")
+    if not isinstance(config["alb_arn"], str) or not re.fullmatch(
+            r"arn:aws:elasticloadbalancing:" + re.escape(config["region"]) +
+            r":\d{12}:loadbalancer/app/[a-zA-Z0-9-]+/[a-f0-9]{16}", config["alb_arn"]):
+        raise ValueError("Invalid portal ALB")
+    if not isinstance(config["activities"], dict):
+        raise ValueError("Register activities as an explicit map")
     for event, activity in config["activities"].items():
         if not ID.fullmatch(event) or set(activity) != {"expires_at", "issuer", "client_id", "login_origin", "assignments"}:
             raise ValueError("Invalid portal activity")
@@ -94,7 +101,8 @@ def application(config, *, verifiers=None):
                 raise Denied(403)
             links = [f'<li><a href="https://{event}-entry.{config["domain"]}{PATH}">{escape(event)}</a></li>'
                 for event, activity in sorted(config["activities"].items()) if active(activity)]
-            return page("<p>Choose your activity to sign in.</p><ul>" + "".join(links) + "</ul>")
+            return page("<p>Choose your activity to sign in.</p><ul>" + "".join(links) + "</ul>"
+                if links else "<p>No activities are available.</p>")
         event = next((event for event in config["activities"] if host == f'{event}-entry.{config["domain"]}'), None)
         if event is None or not active(config["activities"][event]):
             raise Denied(403)
