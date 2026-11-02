@@ -36,6 +36,7 @@ for line in environment_path.read_text().splitlines():
 PY
 python3.12 -m venv /opt/doris-workshop/gateway-venv
 /opt/doris-workshop/gateway-venv/bin/python -m pip --isolated install --disable-pip-version-check --index-url https://pypi.org/simple -r "$bundle_dir/requirements.txt"
+chmod -R a+rX /opt/doris-workshop/gateway-venv
 /opt/doris-workshop/gateway-venv/bin/python - "$bundle_dir" "$gateway_config" <<'PY'
 import json, pathlib, sys
 sys.path.insert(0, sys.argv[1])

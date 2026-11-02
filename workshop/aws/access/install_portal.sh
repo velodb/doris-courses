@@ -24,6 +24,9 @@ id doris-portal >/dev/null 2>&1 || useradd --system --no-create-home --shell /us
 install -d -m 0755 /opt/doris-workshop-portal
 python3.12 -m venv /opt/doris-workshop-portal/venv
 /opt/doris-workshop-portal/venv/bin/python -m pip --isolated install --disable-pip-version-check --index-url https://pypi.org/simple -r "$bundle_dir/requirements.txt"
+# Dependencies are public; the unprivileged service must traverse this root-owned
+# venv. Private configuration retains its separate restrictive permissions.
+chmod -R a+rX /opt/doris-workshop-portal/venv
 /opt/doris-workshop-portal/venv/bin/python - "$bundle_dir" "$portal_config" <<'PY'
 import json, pathlib, sys
 sys.path.insert(0, sys.argv[1])
