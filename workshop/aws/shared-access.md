@@ -15,6 +15,10 @@ opened to the Internet.
 
 ## States and deployment order
 
+For a partner-owned namespace, first create or reconcile its public zone using
+[partner DNS](terraform/partner-dns/README.md), and have the company administrator
+delegate that subdomain. Use the partner's own zone ID and domain here.
+
 Use a separate S3 backend key, for example
 `aws-workshop/shared-access/us-east-1/training/terraform.tfstate`. Keep the existing
 foundation state. Shared infrastructure has its own owner and remains billable

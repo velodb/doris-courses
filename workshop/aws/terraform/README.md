@@ -16,6 +16,7 @@ activity-wide TTL cleanup have separate acceptance work.
 | Directory | Scope |
 | --- | --- |
 | `bootstrap/` | Separate private, encrypted, versioned state bucket; blocks learner-role access and prevents accidental bucket destruction |
+| `partner-dns/` | Persistent public partner zone and parent NS handoff, independently retained across activities |
 | `pilot/` | One EC2 per learner (up to five), with stable map keys, encrypted gp3 root disk, IMDSv2, SSM, a private runtime-code bucket and an installation document |
 | `image-validation/` | Independent temporary launch and audit of a fixed candidate AMI before publication |
 
