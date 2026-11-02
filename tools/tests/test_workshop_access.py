@@ -228,6 +228,25 @@ class PlanningTests(unittest.TestCase):
         a = {"account_id": c["aws_account_id"], "region": c["region"], "domain": c["domain"], "alb_arn": ARN}
         return c, a, {"alice": "i-00000000000000001", "bob": "i-00000000000000002"}
 
+    def test_separate_dns_identity_is_bound_to_shared_dns_account(self):
+        c, a, instances = self.inputs()
+        a["dns_account_id"] = "111111111111"
+        for dns in ({"account_id": a["dns_account_id"], "profile": "dns-operator"},
+                    {"account_id": a["dns_account_id"], "role_arn": "arn:aws:iam::111111111111:role/workshop-dns"}):
+            with self.subTest(dns=dns):
+                plan = access.routes(c, a, instances, dns=dns)
+                self.assertEqual(plan["terraform"]["dns"], dns)
+                self.assertEqual(plan["terraform"]["expected_account_id"], c["aws_account_id"])
+                self.assertEqual(plan["terraform"]["aws_profile"], c["aws_profile"])
+        invalid = (None, {}, {"account_id": "222222222222", "profile": "other"},
+            {"account_id": a["dns_account_id"], "profile": ""},
+            {"account_id": a["dns_account_id"], "profile": "dns", "role_arn": "arn:aws:iam::111111111111:role/dns"},
+            {"account_id": a["dns_account_id"], "role_arn": "arn:aws:iam::222222222222:role/dns"},
+            {"account_id": a["dns_account_id"], "profile": "dns", "secret": "forbidden"})
+        for dns in invalid:
+            with self.subTest(dns=dns), self.assertRaises(ValueError):
+                access.routes(c, a, instances, dns=dns)
+
     def test_routes_are_per_learner_port_overrides_are_explicit_and_roster_order_is_irrelevant(self):
         c, a, instances = self.inputs()
         plan = access.routes(c, a, instances, overrides={"alice": {"rta-fe": 28030}})

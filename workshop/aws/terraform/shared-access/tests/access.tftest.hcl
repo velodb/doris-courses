@@ -12,12 +12,18 @@ mock_provider "aws" {
     ] }
   }
   mock_data "aws_caller_identity" { defaults = { account_id = "000000000000" } }
-  mock_data "aws_route53_zone" { defaults = { name = "example.com.", private_zone = false } }
+  mock_data "aws_route53_zone" { defaults = { name = "workload.invalid.", private_zone = false } }
   mock_data "aws_subnet" { defaults = { vpc_id = "vpc-00000000000000000" } }
   mock_data "aws_instance" { defaults = {
     subnet_id = "subnet-00000000000000000", vpc_security_group_ids = ["sg-00000000000000000"],
     tags      = { Project = "doris-workshop", Scope = "shared-portal", Owner = "test-owner", Access = "test-access" }
   } }
+}
+mock_provider "aws" {
+  alias = "dns"
+  mock_data "aws_caller_identity" { defaults = { account_id = "000000000000" } }
+  mock_data "aws_route53_zone" { defaults = { name = "example.com.", private_zone = false } }
+  mock_resource "aws_route53_record" { defaults = { fqdn = "dns-provider.example.com" } }
 }
 variables {
   aws_profile         = "offline-test"
@@ -28,6 +34,29 @@ variables {
   domain              = "workshops.example.com"
   hosted_zone_id      = "ZEXAMPLE"
   availability_zones  = ["us-east-1a", "us-east-1b"]
+}
+run "separate_dns_account_keeps_certificate_and_alb_in_workload" {
+  command   = apply
+  state_key = "separate-dns"
+  variables { dns = { account_id = "111111111111", role_arn = "arn:aws:iam::111111111111:role/workshop-dns" } }
+  override_data {
+    target = data.aws_caller_identity.dns
+    values = { account_id = "111111111111" }
+  }
+  assert {
+    condition     = output.access.account_id == "000000000000" && output.access.dns_account_id == "111111111111" && aws_route53_record.root.fqdn == "dns-provider.example.com" && aws_route53_record.validation.fqdn == "dns-provider.example.com" && startswith(aws_acm_certificate.access.arn, "arn:aws:acm:us-east-1:000000000000:")
+    error_message = "Only DNS records and lookup use the separate DNS provider."
+  }
+}
+run "reject_wrong_dns_identity" {
+  command = plan
+  variables { dns = { account_id = "111111111111", profile = "dns-operator" } }
+  expect_failures = [data.aws_caller_identity.dns]
+}
+run "reject_dns_role_in_other_account" {
+  command = plan
+  variables { dns = { account_id = "111111111111", role_arn = "arn:aws:iam::222222222222:role/dns" } }
+  expect_failures = [var.dns]
 }
 run "shared_tls_defaults_closed" {
   command = apply

@@ -15,15 +15,37 @@ provider "aws" {
   }
 }
 
+provider "aws" {
+  alias               = "dns"
+  region              = var.region
+  profile             = var.dns == null ? var.aws_profile : (var.dns.profile == null ? var.aws_profile : var.dns.profile)
+  allowed_account_ids = [local.dns_account_id]
+  dynamic "assume_role" {
+    for_each = var.dns == null ? [] : (var.dns.role_arn == null ? [] : [var.dns.role_arn])
+    content { role_arn = assume_role.value }
+  }
+}
+
 data "aws_caller_identity" "current" {}
+data "aws_caller_identity" "dns" {
+  provider = aws.dns
+  lifecycle {
+    postcondition {
+      condition     = self.account_id == local.dns_account_id
+      error_message = "The DNS identity must match the explicitly selected DNS account."
+    }
+  }
+}
 data "aws_route53_zone" "public" {
+  provider     = aws.dns
   zone_id      = var.hosted_zone_id
   private_zone = false
 }
 
 locals {
-  name  = "doris-access-${var.access_id}"
-  zones = { for index, zone in var.availability_zones : zone => index }
+  name           = "doris-access-${var.access_id}"
+  zones          = { for index, zone in var.availability_zones : zone => index }
+  dns_account_id = var.dns == null ? var.expected_account_id : var.dns.account_id
 }
 
 resource "aws_vpc" "access" {
@@ -109,7 +131,8 @@ resource "aws_acm_certificate" "access" {
   }
 }
 resource "aws_route53_record" "validation" {
-  zone_id = var.hosted_zone_id
+  provider = aws.dns
+  zone_id  = var.hosted_zone_id
   # ACM returns the same validation CNAME for an apex and its wildcard. Select
   # the apex explicitly so keys remain known in the first (unapplied) plan.
   name    = one([for option in aws_acm_certificate.access.domain_validation_options : option.resource_record_name if option.domain_name == var.domain])
@@ -163,9 +186,10 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_route53_record" "root" {
-  zone_id = var.hosted_zone_id
-  name    = var.domain
-  type    = "A"
+  provider = aws.dns
+  zone_id  = var.hosted_zone_id
+  name     = var.domain
+  type     = "A"
   alias {
     name                   = aws_lb.access.dns_name
     zone_id                = aws_lb.access.zone_id
@@ -244,6 +268,7 @@ output "access" {
   value = {
     schema_version            = 1, access_id = var.access_id, account_id = data.aws_caller_identity.current.account_id,
     region                    = var.region, domain = var.domain, hosted_zone_id = var.hosted_zone_id,
+    dns_account_id            = data.aws_caller_identity.dns.account_id,
     vpc_id                    = aws_vpc.access.id, subnet_ids = { for zone, subnet in aws_subnet.access : zone => subnet.id },
     alb_arn                   = aws_lb.access.arn, alb_security_group_id = aws_security_group.alb.id,
     alb_dns_name              = aws_lb.access.dns_name, alb_zone_id = aws_lb.access.zone_id,

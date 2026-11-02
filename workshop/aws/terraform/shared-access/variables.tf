@@ -23,6 +23,20 @@ variable "domain" {
   }
 }
 variable "hosted_zone_id" { type = string }
+variable "dns" {
+  description = "Optional separate DNS identity. Use one explicit profile or a role assumed from the workload profile."
+  type        = object({ account_id = string, profile = optional(string), role_arn = optional(string) })
+  default     = null
+  validation {
+    condition = var.dns == null ? true : (
+      can(regex("^[0-9]{12}$", var.dns.account_id)) &&
+      ((var.dns.profile != null) != (var.dns.role_arn != null)) &&
+      (var.dns.profile == null ? true : length(trimspace(var.dns.profile)) > 0) &&
+      (var.dns.role_arn == null ? true : can(regex("^arn:aws:iam::${var.dns.account_id}:role/[A-Za-z0-9_+=,.@/-]+$", var.dns.role_arn)))
+    )
+    error_message = "Supply a DNS account ID and exactly one nonempty profile or a role ARN in that account."
+  }
+}
 variable "portal_instance_id" {
   type    = string
   default = null

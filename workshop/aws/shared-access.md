@@ -49,6 +49,57 @@ record; do not reuse that exact record outside its managed certificate lifecycle
 The separately provisioned operator portal host has its own lifecycle and must
 also be retired when the shared entry is retired; activity destroy does not own it.
 
+## Separate DNS account
+
+The workload and DNS accounts can differ. The default AWS provider owns the
+ALB, ACM certificate, network and portal attachments in `expected_account_id`.
+Only Route 53 zone reads and records use the `aws.dns` provider. Set the optional
+`dns` variable in the shared module to exactly one explicit credential path:
+
+```json
+{
+  "dns": {
+    "account_id": "111111111111",
+    "role_arn": "arn:aws:iam::111111111111:role/workshop-dns"
+  }
+}
+```
+
+Alternatively, replace `role_arn` with `"profile": "workshop-dns"` for an
+operator profile using temporary credentials. The role path assumes the DNS
+role from the existing workload profile; it does not change the S3 backend
+identity. Both provider configurations restrict the allowed account IDs, and
+the DNS caller is checked independently. Omitting `dns` preserves the original
+same-account behavior. The exported `access.dns_account_id` binds later
+activity records to that same DNS account.
+
+Before any apply, verify STS for both identities, `GetHostedZone` for the exact
+public zone, its delegated NS set, record inventory and the DNS role's scoped
+permissions. The role needs zone-scoped reads and record changes, plus
+`GetChange` to observe propagation. Restrict changes to approved A aliases and
+ACM validation CNAMEs with Route 53 record-name/type/action conditions. Exclude
+NS/SOA changes, zone creation/deletion and parent-zone access. The DNS account
+administrator must establish trust and the caller must be allowed to assume
+that exact role. This module does not create a role or establish trust. See
+[Route 53 record permissions](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-permissions.html)
+and [cross-account roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html).
+
+Pass the same private DNS configuration to activity route generation with
+`--dns`; see [Cognito access](cognito-access.md). Retain both identities and
+their reviewed inputs until the shared and activity records have been removed.
+The activity state owns only its exact aliases. The shared state owns the apex
+alias and certificate CNAME; neither state owns the hosted zone or delegation.
+DNS cannot be switched to another provider just by editing an old saved plan.
+
+This interface has offline provider-mock coverage. Cross-account API scans,
+full cleanup reconciliation and task-role TTL execution still require separate
+implementation and cloud acceptance. Separate DNS credentials are rejected in
+the current task-role bindings mode. Do not enable automatic TTL on the basis
+of these mocks or treat a workload-only scan as proof that DNS is clean.
+Changes to the bindings module also change the TTL runtime tree: the previously
+validated local cleanup image and its source binding cannot be relabeled or
+reused for this new source without rebuilding and repeating its required checks.
+
 ## Operator-owned course entry
 
 The [portal runtime](access/portal.py) serves a public activity list at
@@ -125,8 +176,9 @@ shared module, for example `partner-a.workshop.example.com`, and supply the
 partner's public zone in its own account. The same `/doris-courses/` path and
 single-label service origins apply. Its certificate covers that partner apex
 and `*.partner-a.workshop.example.com`; a company wildcard cannot cover the
-deeper service names. Examples do not create or authorize a partner. This
-single-provider interface does not automate cross-account company DNS writes.
+deeper service names. Examples do not create or authorize a partner. A
+separate DNS identity is optional; a partner with its own zone and workloads in
+one account does not need company credentials or a cross-account DNS role.
 
 ## Hostnames and connections
 

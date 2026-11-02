@@ -49,6 +49,15 @@ directories, with operator-only permissions. Install
    Live quota, callback count, identity, ownership and cost checks are required
    before saving and reviewing the real plan. The local generator cannot query
    other activities. A rule cap is not evidence of account-wide free capacity.
+   For [separate DNS accounts](shared-access.md#separate-dns-account), add
+   `--dns workshop/aws/.local/dns.json`. That private file contains the `dns`
+   object's fields directly, for example
+   `{"account_id":"111111111111","profile":"workshop-dns"}`. Its account must
+   equal `access.dns_account_id`; the route generator preserves it in the
+   binding variables while keeping the workload profile/account unchanged.
+   A matching `role_arn` can replace `profile`. Neither passwords nor access
+   keys belong in this file. Cross-account output without this explicit DNS
+   identity is rejected. Keep the same inputs available for activity destroy.
 3. Initialize a separate private activity-access backend and apply its reviewed
    saved plan. Export `terraform output -json identity`. Authentication rules
    are installed from the beginning; without a running gateway they return a

@@ -13,6 +13,22 @@ variable "credential_mode" {
     error_message = "Use explicit profile or task-role credentials."
   }
 }
+variable "dns" {
+  description = "Optional DNS identity, matching the shared access DNS account. Cross-account task-role cleanup is not yet supported."
+  type        = object({ account_id = string, profile = optional(string), role_arn = optional(string) })
+  default     = null
+  validation {
+    condition = var.dns == null ? coalesce(var.access.dns_account_id, var.expected_account_id) == var.expected_account_id : (
+      var.credential_mode == "profile" &&
+      can(regex("^[0-9]{12}$", var.dns.account_id)) &&
+      var.dns.account_id == coalesce(var.access.dns_account_id, var.expected_account_id) &&
+      ((var.dns.profile != null) != (var.dns.role_arn != null)) &&
+      (var.dns.profile == null ? true : length(trimspace(var.dns.profile)) > 0) &&
+      (var.dns.role_arn == null ? true : can(regex("^arn:aws:iam::${var.dns.account_id}:role/[A-Za-z0-9_+=,.@/-]+$", var.dns.role_arn)))
+    )
+    error_message = "Supply exactly one DNS profile or role in the shared DNS account; separate DNS credentials are operator-only."
+  }
+}
 variable "expected_account_id" { type = string }
 variable "region" { type = string }
 variable "owner_id" { type = string }
@@ -31,10 +47,14 @@ variable "event_id" {
   }
 }
 variable "access" {
-  type = object({ vpc_id = string, domain = string, hosted_zone_id = string, alb_dns_name = string, alb_zone_id = string, https_listener_arn = string, portal = optional(object({ instance_id = string, target_group_arn = string, listener_priority = number })) })
+  type = object({ vpc_id = string, domain = string, hosted_zone_id = string, dns_account_id = optional(string), alb_dns_name = string, alb_zone_id = string, https_listener_arn = string, portal = optional(object({ instance_id = string, target_group_arn = string, listener_priority = number })) })
   validation {
     condition     = startswith(var.access.https_listener_arn, "arn:aws:elasticloadbalancing:${var.region}:${var.expected_account_id}:listener/app/")
     error_message = "The shared HTTPS listener must belong to this account and Region."
+  }
+  validation {
+    condition     = var.access.dns_account_id == null ? true : can(regex("^[0-9]{12}$", var.access.dns_account_id))
+    error_message = "The shared DNS account must be a twelve-digit account ID."
   }
 }
 variable "portal" {

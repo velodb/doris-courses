@@ -50,9 +50,20 @@ def require(condition, message):
 
 
 def routes(config, access, instances, *, overrides=None, redirect_origins=None, priority_base=1000,
-           priority_limit=None, previous=None):
+           priority_limit=None, previous=None, dns=None):
     require(access["account_id"] == config["aws_account_id"] and access["region"] == config["region"] and
             access["domain"] == config["domain"], "shared access must match the event account, Region and domain")
+    dns_account = access.get("dns_account_id", config["aws_account_id"])
+    require(isinstance(dns_account, str) and re.fullmatch(r"[0-9]{12}", dns_account), "invalid shared DNS account")
+    require(dns is not None or dns_account == config["aws_account_id"], "cross-account shared access requires explicit DNS credentials")
+    if dns is not None:
+        require(isinstance(dns, dict) and set(dns) <= {"account_id", "profile", "role_arn"} and
+            dns.get("account_id") == dns_account, "DNS credentials must match the shared DNS account")
+        profile, role = dns.get("profile"), dns.get("role_arn")
+        require((profile is not None) != (role is not None), "select exactly one DNS profile or assumed role")
+        require(profile is None or isinstance(profile, str) and profile.strip(), "DNS profile must be nonempty")
+        require(role is None or isinstance(role, str) and re.fullmatch(r"arn:aws:iam::" + dns_account + r":role/[A-Za-z0-9_+=,.@/-]+", role),
+            "DNS role must belong to the selected DNS account")
     require(set(instances) == set(config["learner_ids"]) and len(set(instances.values())) == len(instances), "supply one distinct instance per assigned learner")
     require(type(priority_base) is int and 1 <= priority_base < 50000, "reserve an explicit listener priority range")
     selected = {name: port for name, (port, profile) in SERVICES.items() if profile is None or any(p in config["course_profiles"] for p in ((profile,) if isinstance(profile, str) else profile))}
@@ -103,7 +114,8 @@ def routes(config, access, instances, *, overrides=None, redirect_origins=None, 
             "routing_allocations": ledger,
             "terraform": {"aws_profile": config["aws_profile"], "expected_account_id": config["aws_account_id"],
                 "region": config["region"], "owner_id": config["owner_id"], "event_id": config["event_id"], "expires_at": config["expires_at"],
-                "access": access, "learners": instances, "routes": result, "portal": portal}}
+                "access": access, "learners": instances, "routes": result, "portal": portal,
+                **({"dns": dns} if dns is not None else {})}}
 
 
 def gateway_configs(plan, identity, subjects):
@@ -187,6 +199,7 @@ def main():
     for name in ("config", "access", "instances", "output"):
         planp.add_argument("--" + name, type=Path, required=True)
     planp.add_argument("--ports", type=Path)
+    planp.add_argument("--dns", type=Path, help="Private DNS account/profile or role configuration for a separate DNS account")
     planp.add_argument("--redirects", type=Path, help="Per-learner service-to-internal-origin lists for explicit FE redirects")
     planp.add_argument("--priority-base", type=int, required=True)
     planp.add_argument("--priority-limit", type=int, required=True)
@@ -221,6 +234,7 @@ def main():
                     overrides=wc.load_document(args.ports) if args.ports else None,
                     redirect_origins=wc.load_document(args.redirects) if args.redirects else None,
                     priority_base=args.priority_base, priority_limit=args.priority_limit,
+                    dns=wc.load_document(args.dns) if args.dns else None,
                     previous=wc.load_document(args.allocations) if args.allocations.exists() else None)
                 # Persist reservations first. A failed output write can be retried
                 # with fresh paths; it must never leave an unreserved route plan.

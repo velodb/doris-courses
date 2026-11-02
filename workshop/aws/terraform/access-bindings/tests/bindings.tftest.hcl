@@ -6,6 +6,11 @@ mock_provider "aws" {
     defaults = { arn = "arn:aws:elasticloadbalancing:us-east-1:000000000000:targetgroup/test/0123456789abcdef" }
   }
 }
+mock_provider "aws" {
+  alias = "dns"
+  mock_data "aws_caller_identity" { defaults = { account_id = "000000000000" } }
+  mock_resource "aws_route53_record" { defaults = { fqdn = "dns-provider.example.com" } }
+}
 variables {
   aws_profile         = "offline-test"
   expected_account_id = "000000000000"
@@ -31,6 +36,54 @@ variables {
     alice = { learner_id = "alice", hostname = "test-event-alice-jupyter.workshops.example.com", priority = 1000 }
     bob   = { learner_id = "bob", hostname = "test-event-bob-jupyter.workshops.example.com", priority = 1003 }
   }
+}
+run "separate_dns_account_owns_only_activity_records" {
+  command   = apply
+  state_key = "separate-dns"
+  variables {
+    dns = { account_id = "111111111111", profile = "dns-operator" }
+    access = {
+      vpc_id             = "vpc-00000000000000000", domain = "workshops.example.com", hosted_zone_id = "ZEXAMPLE", dns_account_id = "111111111111",
+      alb_dns_name       = "test.us-east-1.elb.amazonaws.com", alb_zone_id = "ZEXAMPLEALB",
+      https_listener_arn = "arn:aws:elasticloadbalancing:us-east-1:000000000000:listener/app/test/0123456789abcdef/0123456789abcdef"
+    }
+  }
+  override_data {
+    target = data.aws_caller_identity.dns
+    values = { account_id = "111111111111" }
+  }
+  assert {
+    condition     = aws_route53_record.learner["alice"].fqdn == "dns-provider.example.com" && startswith(aws_cognito_user_pool.activity.arn, "arn:aws:cognito-idp:us-east-1:000000000000:")
+    error_message = "Activity DNS uses the DNS account while Cognito remains in the workload account."
+  }
+}
+run "reject_unexpected_dns_identity" {
+  command = plan
+  override_data {
+    target = data.aws_caller_identity.dns
+    values = { account_id = "222222222222" }
+  }
+  expect_failures = [data.aws_caller_identity.dns]
+}
+run "reject_cross_account_access_without_dns_credentials" {
+  command = plan
+  variables {
+    access = {
+      vpc_id             = "vpc-00000000000000000", domain = "workshops.example.com", hosted_zone_id = "ZEXAMPLE", dns_account_id = "111111111111",
+      alb_dns_name       = "test.us-east-1.elb.amazonaws.com", alb_zone_id = "ZEXAMPLEALB",
+      https_listener_arn = "arn:aws:elasticloadbalancing:us-east-1:000000000000:listener/app/test/0123456789abcdef/0123456789abcdef"
+    }
+  }
+  expect_failures = [var.dns]
+}
+run "reject_separate_dns_in_task_role_runner" {
+  command = plan
+  variables {
+    aws_profile     = null
+    credential_mode = "task-role"
+    dns             = { account_id = "000000000000", profile = "dns-operator" }
+  }
+  expect_failures = [var.dns]
 }
 run "owned_cognito_and_authenticated_routes" {
   command = apply

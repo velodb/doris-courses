@@ -13,6 +13,25 @@ provider "aws" {
     tags = { Project = "doris-workshop", Event = var.event_id, Owner = var.owner_id, Scope = "activity-access", ExpiresAt = var.expires_at }
   }
 }
+provider "aws" {
+  alias               = "dns"
+  region              = var.region
+  profile             = var.dns == null ? var.aws_profile : (var.dns.profile == null ? var.aws_profile : var.dns.profile)
+  allowed_account_ids = [coalesce(var.access.dns_account_id, var.expected_account_id)]
+  dynamic "assume_role" {
+    for_each = var.dns == null ? [] : (var.dns.role_arn == null ? [] : [var.dns.role_arn])
+    content { role_arn = assume_role.value }
+  }
+}
+data "aws_caller_identity" "dns" {
+  provider = aws.dns
+  lifecycle {
+    postcondition {
+      condition     = self.account_id == coalesce(var.access.dns_account_id, var.expected_account_id)
+      error_message = "The DNS identity must match the shared access DNS account."
+    }
+  }
+}
 
 resource "aws_cognito_user_pool" "activity" {
   name = "doris-workshop-${var.event_id}"
@@ -87,6 +106,7 @@ resource "aws_lb_target_group_attachment" "learner" {
   port             = 8080
 }
 resource "aws_route53_record" "learner" {
+  provider = aws.dns
   for_each = local.hosts
   zone_id  = var.access.hosted_zone_id
   name     = each.value.hostname
