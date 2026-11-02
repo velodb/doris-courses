@@ -7,6 +7,12 @@ Its local image ID is
 **The scan is complete; deployment review remains open.** The image has not
 been pushed or deployed, and Scheduler remains disabled.
 
+The [2026-11-02 applicability review](security-applicability.md) maps the High
+and Unknown findings to installed files and checks the Go analyzer's symbol
+coverage. Three advisory IDs concern absent components; six OS advisories and
+both Go occurrences remain open. That review does not change the raw counts
+below or constitute a fresh scan.
+
 ## Coverage and results
 
 Trivy 0.76.1 came from its immutable
@@ -70,7 +76,7 @@ the installed SDK's container-role path and ambient credential rejection.
 This is local image acceptance; Fargate permissions and natural TTL remain
 unverified.
 
-## Findings still open
+## High and Unknown findings
 
 The 44 OS High occurrences represent eight advisory IDs. The complete report
 retains every affected package, including source-package repetitions:
@@ -83,32 +89,39 @@ retains every affected package, including source-package repetitions:
 | systemd | CVE-2026-16742 |
 | perl | CVE-2026-9538 |
 
-The DB lists no fixed Trixie version for those entries. For example, Debian
-still marks the installed util-linux version vulnerable. The systemd advisory
-concerns systemd-homed, while the image contains libraries from that source
-package. These differences require package and execution-path review; the
-non-root/read-only container configuration does not close them.
+The DB lists no fixed Trixie version for those entries. Debian still marks
+the installed source versions vulnerable. The follow-up review confirms that
+mount/nsenter, the affected libacl symbols and infocmp are installed, so those
+six advisories remain open. It finds the affected systemd-homed component
+absent from this exact image; only libraries from that source are installed.
+The non-root/read-only container configuration does not close the remaining
+findings.
 [util-linux tracker](https://security-tracker.debian.org/tracker/CVE-2026-76642),
 [systemd tracker](https://security-tracker.debian.org/tracker/CVE-2026-16742)
 
 The three Unknown occurrences are:
 
 - **CVE-2026-82560:** a Perl Pod::Text resource-exhaustion issue. Debian marks
-  Trixie's source package vulnerable. The cleanup command interface does not
-  expose POD formatting, but source-package applicability remains open.
+  Trixie's source package vulnerable. The follow-up file and Perl load checks
+  find the affected Pod::Text module absent, as they do Archive::Tar for
+  CVE-2026-9538. Both conclusions apply only to this exact image.
   [Debian tracker](https://security-tracker.debian.org/tracker/CVE-2026-82560)
 - **GO-2026-5932, in both Go binaries:** golang.org/x/crypto v0.58.0 is detected.
   The advisory concerns deprecated OpenPGP packages and has no fixed version.
   Decoding the actual binaries' Go function tables found x/crypto functions
-  but no `golang.org/x/crypto/openpgp` function entries. This is evidence for
-  further package review, not a complete inline analysis or call graph. Keep
-  both raw findings open; a compiler upgrade alone does not resolve them.
+  but no `golang.org/x/crypto/openpgp` function entries. Official govulncheck
+  v1.9.0 cannot extract package symbols from either stripped artifact and
+  falls back to module matching; positive controls confirm the limitation.
+  Complete inline/package applicability remains unproved. Keep both raw
+  findings open; a compiler upgrade alone does not resolve them.
   [Go advisory](https://pkg.go.dev/vuln/GO-2026-5932),
   [Go symbol table documentation](https://pkg.go.dev/debug/gosym)
 
-Review the remaining OS findings and binary/package applicability before
-release. This document grants no blanket exemption for an unfixed package,
-container isolation or a source-package match. Enrolling this candidate requires
+Resolve the installed-component findings and Go applicability before release.
+The follow-up assessment leaves the original 168 raw occurrences intact and
+does not assess the Medium/Low findings. This document grants no blanket
+exemption for an unfixed package, container isolation or a source-package match.
+Enrolling this candidate requires
 a new reviewed source/image binding; do not retarget an existing bound request.
 Rebuild, verify and rescan
 against a current DB after further changes.
