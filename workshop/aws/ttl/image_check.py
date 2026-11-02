@@ -111,18 +111,25 @@ def check_native_runtime():
             assert runtime.file_hash(path) == row["sha256"], filename
     for name in ("sh", "bash", "mount", "umount", "nsenter", "infocmp", "cp", "mv", "tar", "perl", "apt", "apt-get", "dpkg"):
         assert not any((Path(directory) / name).exists() for directory in ("/bin", "/usr/bin", "/sbin", "/usr/sbin")), name
-    assert not list(Path("/usr/lib").rglob("libacl.so*")) and not list(Path("/usr/lib").rglob("libmount.so*"))
+    for pattern in ("libacl.so*", "libmount.so*", "libncurses*", "libtinfo*", "libuuid*", "libsqlite3*", "libreadline*"):
+        assert not list(Path("/usr/lib").rglob(pattern)), pattern
     extensions = sorted(path.name.split(".", 1)[0] for path in Path(sysconfig.get_config_var("DESTSHARED")).glob("*.so"))
     assert {name: row["missing_in_pinned_base"] for name, row in manifest["excluded_unusable_extensions"].items()} == spec["excluded_unusable_extensions"]
     for name in spec["excluded_unusable_extensions"]:
         assert name not in extensions and importlib.util.find_spec(name) is None
+    assert set(manifest["excluded_optional_extensions"]) == set(spec["excluded_optional_extensions"])
+    for name in spec["excluded_optional_extensions"]:
+        assert name not in extensions and importlib.util.find_spec(name) is None
     for name in extensions:
         importlib.import_module(name)
+    import uuid
+    assert uuid.uuid4().version == 4
     assert socket.getaddrinfo("localhost", 443)
     authorities = ssl.create_default_context().cert_store_stats()["x509_ca"]
     assert authorities > 0
     return {"packages": expected, "payload_files_verified": len(manifest["files"]),
         "stdlib_extensions_imported": len(extensions), "excluded_unusable_extensions": manifest["excluded_unusable_extensions"],
+        "excluded_optional_extensions": manifest["excluded_optional_extensions"],
         "certificate_authorities": authorities, "os_tools_absent": True}
 
 

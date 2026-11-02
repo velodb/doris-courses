@@ -90,17 +90,22 @@ def assemble(destination=Path("/rootfs")):
     (destination / "etc/passwd").write_text("root:x:0:0:root:/root:/nonexistent\nrunner:x:10001:10001:runner:/work:/nonexistent\n")
     (destination / "etc/group").write_text("root:x:0:\nrunner:x:10001:\n")
 
-    dependencies, excluded = {}, {}
+    dependencies, excluded, optional = {}, {}, {}
     for source in sorted(Path("/usr/local").rglob("*")):
         if source.is_symlink() or not source.is_file():
             continue
         with source.open("rb") as stream:
             if stream.read(4) != b"\x7fELF":
                 continue
+        extension = source.name.split(".", 1)[0]
+        if source.parent.name == "lib-dynload" and extension in spec["excluded_optional_extensions"]:
+            (destination / source.relative_to("/")).unlink()
+            optional[extension] = {"source_path": str(source), "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+                "reason": "optional native extension outside the fixed cleanup runtime"}
+            continue
         result = subprocess.run(["ldd", str(source)], capture_output=True, text=True, timeout=30)
         output = result.stdout + result.stderr
         missing_libraries = sorted(re.findall(r"^\s*(\S+) => not found$", output, re.MULTILINE))
-        extension = source.name.split(".", 1)[0]
         if missing_libraries:
             # The pinned upstream slim image leaves an already unusable Tk GUI
             # extension. Do not quietly accept a newly broken native module.
@@ -116,11 +121,13 @@ def assemble(destination=Path("/rootfs")):
             assert (destination / Path(library).resolve().relative_to("/")).is_file(), library
         dependencies[str(source)] = libraries
     assert set(excluded) == set(spec["excluded_unusable_extensions"])
+    assert set(optional) == set(spec["excluded_optional_extensions"])
     for path in (destination / "work", destination / "work/tmp"):
         os.chown(path, 10001, 10001)
         path.chmod(0o700)
     manifest = {"schema_version": 1, "packages": payloads, "files": copied, "dynamic_dependencies": dependencies,
         "excluded_unusable_extensions": excluded,
+        "excluded_optional_extensions": optional,
         "base_manifest_paths_already_absent": sorted(set(missing)), "metadata_files": metadata,
         "scope": "retained runtime payloads; package configuration dependencies and tools intentionally absent"}
     (destination / "opt/doris-workshop/native-runtime.json").write_text(json.dumps(manifest, sort_keys=True))
