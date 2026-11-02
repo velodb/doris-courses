@@ -62,5 +62,5 @@ systemctl daemon-reload
 systemctl restart doris-workshop-jupyter.service
 systemctl enable --now doris-workshop-gateway.service
 systemctl restart doris-workshop-gateway.service
-curl --fail --silent --show-error --max-time 5 http://127.0.0.1:8080/healthz
+curl --fail --silent --show-error --max-time 5 --retry 10 --retry-connrefused --retry-delay 1 --retry-max-time 30 http://127.0.0.1:8080/healthz
 # Jupyter readiness, course execution and formal-domain browser tests follow.
