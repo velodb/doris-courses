@@ -8,6 +8,13 @@ passed isolated image acceptance and a complete OS/Python/Terraform/expanded-pro
 scan. **Deployment review remains open.** The image is local and Scheduler stays
 disabled.
 
+The [follow-up Go and Medium/Low review](security-remaining-review.md) now covers
+every remaining occurrence. A source-checked reader of complete concrete/inline
+runtime names assesses both Go occurrences not affected for their exact hashes.
+OS review finds 14 Medium/two Low occurrences inapplicable to this image's
+components, architecture or set-id prerequisites; 13 Medium/six Low remain open.
+Raw scan counts and the deployment-review gate are unchanged.
+
 Against the same fresh official DB (`2026-11-02T01:14:05Z`), the earlier hardened
 baseline has 187 package occurrences / 86 advisory IDs; the new candidate has
 37 / 31. High decreases from 45 to zero, Critical stays zero, and OS payloads
@@ -17,9 +24,10 @@ No finding filter or automatic exemption was added; scan exit remains `2`.
 
 See the [runtime contract, exact bindings and current scan](security-minimization.md)
 for the native-module exclusions, file checks, same-DB comparison and adoption
-requirements. The [earlier Go applicability limitation](security-applicability.md)
-still applies to the unchanged stripped executables. The historical counts below
-use an older DB and must not replace the current comparison.
+requirements. The [earlier govulncheck fallback](security-applicability.md)
+remains a tool limitation; the new complete-name reader supplies the additional
+package assessment. The historical counts below use an older DB and must not
+replace the current comparison.
 
 ## Historical hardened image (2026-11-01)
 

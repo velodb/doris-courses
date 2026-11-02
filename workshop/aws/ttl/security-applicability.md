@@ -2,8 +2,9 @@
 
 The later [runtime-only candidate](security-minimization.md) physically removes
 the OS components discussed below. This assessment remains bound to the earlier
-image and its original reports; its Go analysis limitation still applies to the
-unchanged executables in the new candidate.
+image and its original reports. The [subsequent complete-name-table review](security-remaining-review.md)
+addresses its Go inline-coverage gap for the unchanged executables in the new
+candidate. The historical govulncheck fallback findings below remain accurate.
 
 Reviewed on 2026-11-02 for source
 `1a3e4127339774e721f556004964e8f6a4c5a494` and local image

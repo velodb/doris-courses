@@ -8,6 +8,11 @@ Its executable source-tree hash is
 **Local acceptance passed; deployment review remains open.** This image is
 the fixed cleanup worker, separate from the course AMI and learner environment.
 
+The subsequent [Go and Medium/Low assessment](security-remaining-review.md)
+covers all remaining occurrences: both Go records are assessed not affected
+for the exact executable hashes, 16 OS occurrences have image-scoped exclusions,
+and 13 Medium/six Low remain open. This does not change the raw results below.
+
 ## Runtime contract
 
 The [Dockerfile](Dockerfile) prepares dependencies using the same pinned Python
@@ -108,11 +113,12 @@ SQLite findings to the unchanged baseline, including
 [CVE-2026-119373](https://security-tracker.debian.org/tracker/CVE-2026-119373).
 The final worker contains neither SQLite's library nor its Python extension.
 
-The two Unknown occurrences remain GO-2026-5932, one per unchanged Go binary.
+The two raw Unknown occurrences remain GO-2026-5932, one per unchanged Go binary.
 Their hashes match the [earlier applicability review](security-applicability.md).
-Its stripped-symbol analysis limitation still applies; removing OS tools does
-not resolve OpenPGP package applicability. The 27 Medium and eight Low
-occurrences also remain in the raw reports and require review. No ignore file,
+That review's concrete-function-only limitation is addressed by the subsequent
+bounded concrete/inline name-table reader, documented in the follow-up above.
+The 27 Medium and eight Low occurrences remain in the raw reports; all are now
+classified, with 13 Medium/six Low still open. No ignore file,
 unfixed filter or automatic exemption was added. The complete scan exits `2`
 and reports `review_required=true`, rather than granting release approval.
 

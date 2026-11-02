@@ -208,6 +208,11 @@ also omitted. This is a fixed-worker runtime, not a general Python environment
 or an apt-managed Debian installation. See the [runtime contract and scan](security-minimization.md)
 for the exact exclusions, payload checks and remaining findings.
 
+The [Go and Medium/Low finding ledger](security-remaining-review.md) records the
+artifact-specific applicability decisions and the OS findings still open.
+Its offline Go metadata reader supplements the scanner; it does not alter raw
+findings or enable deployment.
+
 The [current and historical scan review](security-review.md) covers the local
 images and expanded provider. It records unresolved findings and is not release
 approval.
