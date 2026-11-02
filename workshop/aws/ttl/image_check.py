@@ -100,7 +100,8 @@ def check_native_runtime():
     import ssl
     import sysconfig
     manifest = json.loads(Path("/opt/doris-workshop/native-runtime.json").read_text())
-    expected = json.loads((ROOT / "workshop/aws/ttl/runtime-packages.json").read_text())["packages"]
+    spec = json.loads((ROOT / "workshop/aws/ttl/runtime-packages.json").read_text())
+    expected = spec["packages"]
     assert {name: row["version"] for name, row in manifest["packages"].items()} == expected
     for filename, row in manifest["files"].items():
         path = Path(filename)
@@ -112,13 +113,17 @@ def check_native_runtime():
         assert not any((Path(directory) / name).exists() for directory in ("/bin", "/usr/bin", "/sbin", "/usr/sbin")), name
     assert not list(Path("/usr/lib").rglob("libacl.so*")) and not list(Path("/usr/lib").rglob("libmount.so*"))
     extensions = sorted(path.name.split(".", 1)[0] for path in Path(sysconfig.get_config_var("DESTSHARED")).glob("*.so"))
+    assert {name: row["missing_in_pinned_base"] for name, row in manifest["excluded_unusable_extensions"].items()} == spec["excluded_unusable_extensions"]
+    for name in spec["excluded_unusable_extensions"]:
+        assert name not in extensions and importlib.util.find_spec(name) is None
     for name in extensions:
         importlib.import_module(name)
     assert socket.getaddrinfo("localhost", 443)
     authorities = ssl.create_default_context().cert_store_stats()["x509_ca"]
     assert authorities > 0
     return {"packages": expected, "payload_files_verified": len(manifest["files"]),
-        "stdlib_extensions_imported": len(extensions), "certificate_authorities": authorities, "os_tools_absent": True}
+        "stdlib_extensions_imported": len(extensions), "excluded_unusable_extensions": manifest["excluded_unusable_extensions"],
+        "certificate_authorities": authorities, "os_tools_absent": True}
 
 
 def check_runtime(source_sha):

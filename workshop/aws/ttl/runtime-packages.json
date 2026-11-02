@@ -1,5 +1,8 @@
 {
   "schema_version": 1,
+  "excluded_unusable_extensions": {
+    "_tkinter": ["libtcl8.6.so", "libtk8.6.so"]
+  },
   "packages": {
     "ca-certificates": "20250419+deb13u1",
     "gcc-14-base": "14.2.0-19",

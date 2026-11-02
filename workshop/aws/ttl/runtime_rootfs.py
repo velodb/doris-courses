@@ -90,7 +90,7 @@ def assemble(destination=Path("/rootfs")):
     (destination / "etc/passwd").write_text("root:x:0:0:root:/root:/nonexistent\nrunner:x:10001:10001:runner:/work:/nonexistent\n")
     (destination / "etc/group").write_text("root:x:0:\nrunner:x:10001:\n")
 
-    dependencies = {}
+    dependencies, excluded = {}, {}
     for source in sorted(Path("/usr/local").rglob("*")):
         if source.is_symlink() or not source.is_file():
             continue
@@ -99,17 +99,28 @@ def assemble(destination=Path("/rootfs")):
                 continue
         result = subprocess.run(["ldd", str(source)], capture_output=True, text=True, timeout=30)
         output = result.stdout + result.stderr
-        assert "not found" not in output, str(source)
+        missing_libraries = sorted(re.findall(r"^\s*(\S+) => not found$", output, re.MULTILINE))
+        extension = source.name.split(".", 1)[0]
+        if missing_libraries:
+            # The pinned upstream slim image leaves an already unusable Tk GUI
+            # extension. Do not quietly accept a newly broken native module.
+            assert source.parent.name == "lib-dynload" and missing_libraries == spec["excluded_unusable_extensions"].get(extension), str(source)
+            (destination / source.relative_to("/")).unlink()
+            excluded[extension] = {"source_path": str(source), "missing_in_pinned_base": missing_libraries,
+                "sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
+            continue
         if result.returncode:
             assert "not a dynamic executable" in output or "statically linked" in output, output
         libraries = sorted(set(re.findall(r"(?:=>\s+|^\s*)(/[^\s()]+)", output, re.MULTILINE)))
         for library in libraries:
             assert (destination / Path(library).resolve().relative_to("/")).is_file(), library
         dependencies[str(source)] = libraries
+    assert set(excluded) == set(spec["excluded_unusable_extensions"])
     for path in (destination / "work", destination / "work/tmp"):
         os.chown(path, 10001, 10001)
         path.chmod(0o700)
     manifest = {"schema_version": 1, "packages": payloads, "files": copied, "dynamic_dependencies": dependencies,
+        "excluded_unusable_extensions": excluded,
         "base_manifest_paths_already_absent": sorted(set(missing)), "metadata_files": metadata,
         "scope": "retained runtime payloads; package configuration dependencies and tools intentionally absent"}
     (destination / "opt/doris-workshop/native-runtime.json").write_text(json.dumps(manifest, sort_keys=True))
