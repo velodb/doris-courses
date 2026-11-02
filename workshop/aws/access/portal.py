@@ -75,8 +75,13 @@ def application(config, *, verifiers=None):
             response = await handler(request)
         except Denied as denied:
             response = web.Response(status=denied.status, text="Course entry unavailable or unauthorized.\n")
+        # Chrome applies form-action to the logout redirect as well as the POST.
+        # Allow only this entry's configured Cognito logout endpoint.
+        activity = next((value for event, value in config["activities"].items()
+            if request.headers.get("Host") == f'{event}-entry.{config["domain"]}'), None)
+        form_action = "'self'" + (" " + activity["login_origin"] + "/logout" if activity else "")
         response.headers.update({"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff",
-            "Content-Security-Policy": "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'",
+            "Content-Security-Policy": "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action " + form_action,
             "Referrer-Policy": "no-referrer"})
         return response
 

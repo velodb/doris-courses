@@ -231,6 +231,19 @@ class PortalHTTPTests(unittest.IsolatedAsyncioTestCase):
         response = await self.client.get("/_workshop/logged-out", headers={"Host": "class-a-entry." + DOMAIN})
         self.assertEqual(response.status, 200)
 
+    async def test_logout_form_policy_allows_only_its_own_cognito_redirect(self):
+        for event, activity in self.config["activities"].items():
+            response = await self.client.get(portal.PATH, headers=self.headers(event=event))
+            self.assertEqual(response.status, 200)
+            policy = response.headers["Content-Security-Policy"]
+            self.assertEqual(policy.split("form-action ")[1], "'self' " + activity["login_origin"] + "/logout")
+            response = await self.client.post("/_workshop/logout", headers=self.headers(
+                event=event, Origin=f"https://{event}-entry.{DOMAIN}"), allow_redirects=False)
+            self.assertEqual(response.status, 303)
+            self.assertTrue(response.headers["Location"].startswith(activity["login_origin"] + "/logout?"))
+        response = await self.client.get(portal.PATH, headers={"Host": DOMAIN})
+        self.assertEqual(response.headers["Content-Security-Policy"].split("form-action ")[1], "'self'")
+
     async def test_partner_namespace_uses_identical_entry_path(self):
         domain = "partner-a." + DOMAIN
         client = await self.start(config(domain))
