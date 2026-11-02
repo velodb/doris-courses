@@ -282,6 +282,8 @@ class PlanningTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             directory = Path(tmp) / "overlay"
             access.bundle(directory)
+            self.assertEqual((directory / "operations.py").read_bytes(),
+                             (access.wc.SPEC / "operations/node.py").read_bytes())
             manifest = json.loads((directory / "overlay.json").read_text())
             for name, digest in manifest["sha256"].items():
                 self.assertEqual(hashlib.sha256((directory / name).read_bytes()).hexdigest(), digest)

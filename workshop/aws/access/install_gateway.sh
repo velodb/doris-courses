@@ -3,9 +3,6 @@
 set -euo pipefail
 test "$(id -u)" -eq 0
 umask 077
-test -f /usr/local/lib/doris-workshop/operations.py
-install -d -m 0700 /var/log/doris-workshop
-exec > >(python3.12 /usr/local/lib/doris-workshop/operations.py filter --log /var/log/doris-workshop/gateway-install.log) 2>&1
 test "$#" -eq 4
 bundle_dir=$(realpath "$1")
 gateway_config=$(realpath "$2")
@@ -17,7 +14,7 @@ import hashlib, json, pathlib, sys
 import re
 bundle, config_path, browser_path, environment_path = map(pathlib.Path, sys.argv[1:])
 manifest = json.loads((bundle/'overlay.json').read_text())
-expected = {'gateway.py', 'jupyter_gateway.py', 'requirements.txt', 'doris-workshop-gateway.service', 'install_gateway.sh'}
+expected = {'gateway.py', 'jupyter_gateway.py', 'requirements.txt', 'doris-workshop-gateway.service', 'install_gateway.sh', 'operations.py'}
 assert manifest['schema_version'] == 1 and set(manifest['sha256']) == expected
 for name, checksum in manifest['sha256'].items():
     assert not (bundle/name).is_symlink()
@@ -34,6 +31,8 @@ for line in environment_path.read_text().splitlines():
     assert re.fullmatch(r'(?:DORIS_|DW_)[A-Z0-9_]+', key)
     assert re.fullmatch(r'[a-zA-Z0-9:/._-]+', value)
 PY
+install -d -m 0700 /var/log/doris-workshop
+exec > >(python3.12 "$bundle_dir/operations.py" filter --log /var/log/doris-workshop/gateway-install.log) 2>&1
 python3.12 -m venv /opt/doris-workshop/gateway-venv
 /opt/doris-workshop/gateway-venv/bin/python -m pip --isolated install --disable-pip-version-check --index-url https://pypi.org/simple -r "$bundle_dir/requirements.txt"
 chmod -R a+rX /opt/doris-workshop/gateway-venv
