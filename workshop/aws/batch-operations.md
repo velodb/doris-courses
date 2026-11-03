@@ -127,6 +127,35 @@ before changing scope. This command currently supports DNS in the workload
 account only. Portal assignments, account operations, gateway installation and
 authenticated access checks remain separate steps.
 
+When using an installed shared portal, update only this activity's registry
+entry with the exact current registry file. The current route must match the
+binding state; the proposed route may remove one learner before its bindings
+are removed, or may match the already updated bindings:
+
+```bash
+python tools/workshop_portal_update.py \
+  --pilot-run workshop/aws/.local/event-run \
+  --bindings-run workshop/aws/.local/access-bindings \
+  --current-route workshop/aws/.local/routes-old.json \
+  --plan workshop/aws/.local/routes-new.json \
+  --identity workshop/aws/.local/identity.json \
+  --subjects workshop/aws/.local/subjects-new.json \
+  --previous-registry workshop/aws/.local/portal-current.json \
+  --output workshop/aws/.local/portal-update-01
+```
+
+The command verifies the owned portal host, binding state, Cognito pool and
+subjects. On the portal host it locks the registry and compares the exact prior
+file hash before replacing the file; other activity entries are preserved.
+Keep the operation's private `next-portal.json` as the input for the next
+update. The SSM request contains portal routing and subject identifiers, so
+restrict access to SSM command history. An unknown dispatch or partial failure
+requires reconciliation; a successful receipt is not an authenticated browser
+check. Supply `--ttl-binding` and cancel an enrolled revision before updating.
+To remove the complete activity from the portal before deleting its bindings,
+use matching current and proposed routes and subjects, and add
+`--remove-activity`; the existing assignment must match exactly.
+
 To add a learner, create that learner's instance using a roster-only pilot plan,
 then generate and review new access bindings for the exact instance IDs. Create
 only the new Cognito account with `workshop_accounts.py --learner ID` and a new
