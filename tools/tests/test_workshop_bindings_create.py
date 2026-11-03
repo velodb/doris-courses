@@ -73,6 +73,31 @@ class BindingCreateTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "priorities are already in use"):
             create.headroom(controller, v)
 
+    def test_headroom_covers_all_listeners_and_exact_dns_names(self):
+        v, _ = fixture()
+        v["access"].update(access_id="access", region="us-east-1")
+        controller = mock.Mock()
+        controller.config = {"owner_id": "owner", "domain": "example.com"}
+        cloud = controller.cloud
+        cloud.call.side_effect = lambda service, operation, **kwargs: {
+            ("elbv2", "describe_load_balancers"): {"LoadBalancers": [{"VpcId": "vpc", "State": {"Code": "active"}, "DNSName": "alb.example", "CanonicalHostedZoneId": "azone"}]},
+            ("elbv2", "describe_tags"): {"TagDescriptions": [{"ResourceArn": "alb", "Tags": [{"Key": k, "Value": val} for k, val in {"Project": "doris-workshop", "Scope": "shared-access", "Owner": "owner", "Access": "access"}.items()]}]},
+            ("route53", "get_hosted_zone"): {"HostedZone": {"Name": "example.com.", "Config": {"PrivateZone": False}}},
+        }[(service, operation)]
+        records = [{"Name": "example.com."}]
+        def items(service, operation, key, **kwargs):
+            if operation == "describe_listeners": return [{"ListenerArn": "listener", "Protocol": "HTTPS", "Port": 443}, {"ListenerArn": "http"}]
+            if operation == "describe_rules": return [{"Priority": "default"}] + ([{"Priority": "5"}] if kwargs["ListenerArn"] == "http" else [])
+            if operation == "describe_account_limits": return [{"Name": "rules-per-application-load-balancer", "Max": "4"}, {"Name": "target-groups", "Max": "10"}]
+            if operation == "describe_target_groups": return []
+            if operation == "list_resource_record_sets": return records
+            raise AssertionError(operation)
+        cloud.items.side_effect = items
+        create.headroom(controller, v)
+        records.append({"Name": "alice.example."})
+        with self.assertRaisesRegex(ValueError, "DNS name already exists"):
+            create.headroom(controller, v)
+
     def test_cli_holds_scope_change_fence(self):
         c = mock.Mock()
         c.config, c.pilot, c.cloud = {}, {}, object()
