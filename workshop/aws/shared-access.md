@@ -203,16 +203,16 @@ selecting a backend. Separate service origins retain root-relative resources
 and keep application cookies separate.
 
 The ALB preserves Host, drops invalid headers and uses strict desync mitigation.
-Its idle timeout is 3600 seconds. Gateways must support WebSocket upgrades;
-reconnect, kernel/terminal sessions and browser TLS remain cloud acceptance
-checks. Increasing an idle timeout does not make a connection immortal.
+Its idle timeout is 3600 seconds. Gateways support WebSocket upgrades. A
+real two-learner `rta-main` event validated public TLS, shared login, notebook
+and terminal connections, reconnection and a signed-identity expiry while idle.
+Increasing the ALB idle timeout does not make a connection immortal.
 
-The deployment currently has local format/schema/provider-mock coverage. No
-formal-domain TLS or shared-login browser validation is claimed yet. The
-operator portal installer and separate host module have local coverage;
-real installation and reboot evidence must be recorded separately. The
-published AMI remains unchanged; access code must be installed as a separately
-versioned overlay or included in a newly validated image.
+The operator portal was validated on a separate host, including restart and
+reboot in an earlier event. These results cover the tested events and their
+selected course profile, not every deployment or target class size. The published AMI remains
+unchanged; install access code as a separately versioned overlay or include it
+in a newly validated image.
 
 References: [ALB subnet requirements](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/application-load-balancers.html),
 [ALB authentication](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-authenticate-users.html),
