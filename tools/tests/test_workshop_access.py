@@ -452,6 +452,43 @@ class PlanningTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 accounts.create(c, identity, Path(tmp) / "accounts", call=call)
 
+    def test_roster_account_create_and_disable_are_scoped_to_exact_subject(self):
+        c, _, _ = self.inputs()
+        identity = {"event_id": "event", "user_pool_id": "us-east-1_test", "issuer": config()["issuer"]}
+        operations = []
+        enabled = True
+
+        def call(config, operation, parameters, **kwargs):
+            nonlocal enabled
+            operations.append((operation, parameters))
+            if operation == "get-caller-identity":
+                return {"Account": c["aws_account_id"]}
+            if operation == "list-tags-for-resource":
+                return {"Tags": {"Project": "doris-workshop", "Event": "event", "Scope": "activity-access", "Owner": "operator"}}
+            if operation == "admin-create-user":
+                return {"User": {"Username": parameters["Username"], "UserStatus": "FORCE_CHANGE_PASSWORD",
+                    "Attributes": [{"Name": "sub", "Value": "subject-" + parameters["Username"]}]}}
+            if operation == "admin-get-user":
+                return {"Username": parameters["Username"], "Enabled": enabled,
+                    "UserAttributes": [{"Name": "sub", "Value": "subject-" + parameters["Username"]}]}
+            if operation == "admin-disable-user":
+                enabled = False
+                return {}
+            self.fail(operation)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            subjects = accounts.create(c, identity, Path(tmp) / "new", learner="bob", call=call)
+            self.assertEqual(subjects, {"bob": ["subject-bob"]})
+            self.assertEqual([op for op, _ in operations].count("admin-create-user"), 1)
+            with self.assertRaisesRegex(ValueError, "subject differs"):
+                accounts.disable(c, identity, {"bob": ["wrong"]}, "bob", Path(tmp) / "wrong", call=call)
+            self.assertNotIn("admin-disable-user", [op for op, _ in operations])
+            receipt = accounts.disable(c, identity, subjects, "bob", Path(tmp) / "disabled", call=call)
+            self.assertEqual(receipt["status"], "disabled")
+            self.assertEqual([op for op, _ in operations].count("admin-disable-user"), 1)
+            with self.assertRaisesRegex(ValueError, "selected learner"):
+                accounts.create(c, identity, Path(tmp) / "other", learner="unknown", call=call)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -137,6 +137,65 @@ class PreflightTests(unittest.TestCase):
                             for _, op, kw in self.aws.calls))
         self.assertNotIn('assumed-role/Pilot/session', json.dumps(result))
 
+    def test_shared_network_is_checked_and_its_cost_and_variables_are_bound(self):
+        from test_workshop_shared_preflight import SharedPreflightTests, FakeAws as FakeSharedAws
+        fixture = SharedPreflightTests()
+        fixture.setUp()
+        config = {**self.config, **fixture.config}
+        self.aws.session = SimpleNamespace(get_available_regions=lambda service: ['us-east-1'])
+        self.aws.overrides['get_caller_identity'] = {'Account': config['aws_account_id'],
+            'Arn': 'arn:aws:iam::123456789012:user/owner'}
+        self.aws.overrides['describe_instance_type_offerings'] = [{'Location': 'us-east-1a'}, {'Location': 'us-east-1b'}]
+        shared_aws = FakeSharedAws(fixture.access)
+        normal_call, normal_items = self.aws.call, self.aws.items
+
+        def call(service, operation, **kwargs):
+            if operation in shared_aws.results:
+                return shared_aws.call(service, operation, **kwargs)
+            return normal_call(service, operation, **kwargs)
+
+        def items(service, operation, key, **kwargs):
+            if operation in {'describe_route_tables', 'describe_internet_gateways'}:
+                return shared_aws.items(service, operation, key, **kwargs)
+            if operation == 'get_products' and kwargs['ServiceCode'] == 'AWSELB':
+                # Both units are offered in distinct dimensions of the same price product.
+                return [json.dumps({'product': {'sku': 'TEST-ALB'}, 'terms': {'OnDemand': {'offer': {
+                    'effectiveDate': '2026-01-01T00:00:00Z', 'priceDimensions': {
+                    u: {'unit': u, 'pricePerUnit': {'USD': '0.001'}, 'rateCode': u} for u in ('Hrs', 'LCU-Hrs')}}}}})]
+            return normal_items(service, operation, key, **kwargs)
+
+        self.aws.call, self.aws.items = call, items
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'access.json'
+            path.write_text(json.dumps(fixture.access))
+            pilot = {**self.pilot, 'shared_access_file': str(path)}
+            with mock.patch.object(pf, 'foundation', return_value='verified'):
+                report = pf.live_check(config, pilot, self.aws, 'pilot', NOW)
+            self.assertEqual(report['shared_network']['availability_zones'], ['us-east-1a', 'us-east-1b'])
+            self.assertEqual(report['quotas']['vpcs']['requested'], 0)
+            self.assertIn('shared_alb_lcu', report['cost']['lines'])
+            variables = pf.inputs_for_terraform(config, pilot, 'pilot', 'us-east-1a')
+            self.assertEqual(variables['vpc_id'], fixture.access['vpc_id'])
+            self.assertEqual(variables['subnet_id'], fixture.access['subnet_ids']['us-east-1a'])
+            self.assertEqual(variables['gateway_security_group_id'], fixture.access['gateway_security_group_id'])
+            with mock.patch.object(pf, 'foundation', return_value='verified'):
+                with self.assertRaisesRegex(pf.PreflightError, 'shared entry and activity'):
+                    pf.live_check({**config, 'budget_usd': 0.001}, pilot, self.aws, 'pilot', NOW)
+            run = Path(directory) / 'run'
+            def terraform(args, env, **kwargs):
+                if 'plan' in args:
+                    (run / 'saved.tfplan').write_bytes(b'saved-plan')
+            with mock.patch.object(pf, 'live_check', return_value=report), mock.patch.object(pf, 'terraform', side_effect=terraform):
+                pf.plan(config, pilot, self.aws, 'pilot', run)
+            binding = json.loads((run / 'binding.json').read_text())
+            self.assertEqual(binding['shared_access'], fixture.access)
+            self.assertEqual(binding['shared_access_sha256'], pf.file_hash(path))
+            path.write_text(json.dumps({**fixture.access, 'vpc_id': 'vpc-' + '9' * 17}))
+            with mock.patch.object(pf, 'validate_inputs', return_value=(config, pilot)):
+                with mock.patch.object(pf, 'terraform') as apply, self.assertRaisesRegex(pf.PreflightError, 'shared access metadata changed'):
+                    pf.apply_saved(run, lambda _: self.aws)
+                apply.assert_not_called()
+
     def test_wrong_account_stops_before_any_other_query(self):
         self.aws.overrides['get_caller_identity'] = {'Account': '111111111111', 'Arn': 'arn:aws:iam::111111111111:root'}
         with self.assertRaisesRegex(pf.PreflightError, 'actual account'):

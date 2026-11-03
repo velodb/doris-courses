@@ -92,6 +92,34 @@ separate interfaces. Remove an exiting learner's bindings before deleting that
 host, and add new authenticated bindings only with verified assignments. This
 pilot CLI does not orchestrate those shared topology operations.
 
+For a shared entry, set `shared_access_file` in the pilot inputs to the private
+JSON object exported by shared access. Use the same access output and listener
+allocation ledger for each update. The pilot CLI verifies and binds the shared
+network, but does not modify the separate access state or install the gateway.
+Its ready status covers host runtime only.
+
+To add a learner, create that learner's instance using a roster-only pilot plan,
+then generate and review new access bindings for the exact instance IDs. Create
+only the new Cognito account with `workshop_accounts.py --learner ID` and a new
+private delivery directory. Merge its subject receipt with the retained prior
+subjects, regenerate the gateway and portal configuration, install the new
+gateway, then verify authenticated access. Do not reset retained accounts.
+
+To remove a learner, first remove its portal assignment and authenticated
+bindings with a separately reviewed access plan. Use the prior roster and
+subject mapping with `workshop_accounts.py --disable --learner ID --subjects
+PATH` to disable only the verified Cognito subject. Existing ALB sessions can
+outlive disabling an account, so remove routes and assignments independently.
+Then apply the roster-only pilot plan that deletes the learner's instance and
+temporary disk. If the disable call fails or its result is unknown, retain the
+private operation directory and reconcile the exact user before retrying.
+
+For a replacement, a pilot replacement does not update the access state or
+install the new gateway. Reconcile the one changed target attachment through a
+fresh reviewed access plan, reinstall the same learner's gateway configuration
+on the new host and verify authentication and readiness. Other learner instance
+IDs, routes and assignments must remain unchanged.
+
 ## Bounded remote work and failure reports
 
 `up`, `status` and `replace` accept `--concurrency 1..16`, default 2. This counts

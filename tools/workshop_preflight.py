@@ -169,6 +169,12 @@ def validate_inputs(config, pilot, now=None):
         routes = wc.load_document(pilot['browser_routes_file'])
         require(set(routes) == set(config['learner_ids']), 'browser: routes must match the assigned learners')
         for learner, ports in routes.items(): workshop_urls.build_routes(config, learner, ports)
+    if pilot.get('shared_access_file'):
+        pilot['shared_access_file'] = str(Path(pilot['shared_access_file']).resolve())
+        shared = wc.load_document(pilot['shared_access_file'])
+        require(isinstance(shared, dict) and shared.get('schema_version') == 1 and
+                shared.get('account_id') == config['aws_account_id'] and shared.get('region') == config['region'] and
+                shared.get('domain') == config['domain'], 'shared network: access output must match activity identity')
     pilot['runtime_bundle_dir'] = str(bundle)
     return config, pilot
 
@@ -237,7 +243,7 @@ def quota(aws, service, code, used, extra, name):
     return {'used': used, 'requested': extra, 'limit': limit, 'quota_code': code}
 
 
-def quotas(aws, config, selected):
+def quotas(aws, config, selected, *, shared=False):
     reservations = aws.items('ec2', 'describe_instances', 'Reservations', Filters=[
         {'Name': 'instance-state-name', 'Values': ['pending', 'running', 'stopping']}])
     instances = [i for r in reservations for i in r['Instances'] if not i.get('InstanceLifecycle') and
@@ -256,8 +262,8 @@ def quotas(aws, config, selected):
                                 selected['VCpuInfo']['DefaultVCpus'] * len(config['learner_ids']), 'vCPU'),
         'gp3_tib': quota(aws, 'ebs', 'L-7A658B76', sum(v['Size'] for v in volumes) / 1024,
                          config['disk_gib'] * len(config['learner_ids']) / 1024, 'gp3 storage'),
-        'vpcs': quota(aws, 'vpc', 'L-F678F1CE', len(vpcs), 1, 'VPC'),
-        'internet_gateways': quota(aws, 'vpc', 'L-A4707A72', len(igws), 1, 'Internet Gateway'),
+        'vpcs': quota(aws, 'vpc', 'L-F678F1CE', len(vpcs), 0 if shared else 1, 'VPC'),
+        'internet_gateways': quota(aws, 'vpc', 'L-A4707A72', len(igws), 0 if shared else 1, 'Internet Gateway'),
     }
 
 
@@ -323,6 +329,55 @@ def costs(aws, config, pilot, now, *, enforce_budget=True):
             'contingency_usd': pilot['contingency_usd'], 'assumptions': pilot,
             'excluded_resources': ['ALB', 'NAT Gateway', 'model API', 'snapshots'],
             'billing_cap': False}
+
+
+def shared_costs(aws, config, pilot, access, now, estimate):
+    """Include the already-running entry for the entire approved test window."""
+    hours = Decimal(str(pilot['max_run_hours'])) + Decimal(str(pilot['cleanup_buffer_hours']))
+    region = config['region']
+    specs = {
+        'shared_alb': ('AWSELB', {'regionCode': region, 'productFamily': 'Load Balancer-Application'}, 'Hrs', hours),
+        'shared_alb_lcu': ('AWSELB', {'regionCode': region, 'productFamily': 'Load Balancer-Application'}, 'LCU-Hrs', hours * 10),
+        'shared_alb_ipv4': ('AmazonVPC', {'regionCode': region, 'group': 'VPCPublicIPv4Address'}, 'Hrs', hours * len(access['subnet_ids'])),
+    }
+    portal = access.get('portal')
+    if portal is not None:
+        require(isinstance(portal, dict) and re.fullmatch(r'i-[0-9a-f]{17}', portal.get('instance_id', '')),
+                'shared network: invalid portal instance')
+        reservations = aws.call('ec2', 'describe_instances', InstanceIds=[portal['instance_id']])['Reservations']
+        instances = [i for r in reservations for i in r['Instances']]
+        require(len(instances) == 1 and instances[0].get('InstanceId') == portal['instance_id'] and
+                instances[0].get('VpcId') == access['vpc_id'] and instances[0].get('State', {}).get('Name') == 'running',
+                'shared network: portal is not running in the selected VPC')
+        instance = instances[0]
+        tags = {t['Key']: t['Value'] for t in instance.get('Tags', [])}
+        require(all(tags.get(k) == v for k, v in {'Project': 'doris-workshop', 'Owner': config['owner_id'],
+                'Scope': 'shared-portal', 'Access': access['access_id']}.items()) and 'Event' not in tags,
+                'shared network: portal ownership mismatch')
+        roots = [v['Ebs']['VolumeId'] for v in instance.get('BlockDeviceMappings', [])
+                 if v.get('DeviceName') == instance.get('RootDeviceName') and v.get('Ebs', {}).get('VolumeId')]
+        require(len(roots) == 1, 'shared network: portal root volume is unknown')
+        volumes = aws.call('ec2', 'describe_volumes', VolumeIds=roots)['Volumes']
+        require(len(volumes) == 1 and volumes[0].get('VolumeType') == 'gp3' and volumes[0].get('Size', 0) > 0,
+                'shared network: portal root must be a known gp3 volume')
+        specs.update({
+            'portal_compute': ('AmazonEC2', {'regionCode': region, 'instanceType': instance['InstanceType'],
+                'operatingSystem': 'Linux', 'tenancy': 'Shared', 'preInstalledSw': 'NA', 'capacitystatus': 'Used'}, 'Hrs', hours),
+            'portal_root_gp3': ('AmazonEC2', {'regionCode': region, 'volumeApiName': 'gp3', 'productFamily': 'Storage'},
+                'GB-Mo', hours * volumes[0]['Size'] / Decimal(28 * 24)),
+            'portal_ipv4': ('AmazonVPC', {'regionCode': region, 'group': 'VPCPublicIPv4Address'}, 'Hrs', hours),
+        })
+    total = Decimal(estimate['total_usd'])
+    for name, (service, filters, unit, quantity) in specs.items():
+        quote = price(aws, service, filters, unit, now)
+        amount = quantity * Decimal(quote['usd_per_unit'])
+        total += amount
+        estimate['lines'][name] = {**quote, 'quantity': str(quantity), 'estimated_usd': str(amount)}
+    require(config.get('budget_usd') is not None and total <= Decimal(str(config['budget_usd'])),
+            'budget: shared entry and activity exceed budget_usd or approved budget is missing')
+    estimate['total_usd'] = str(total)
+    estimate['excluded_resources'] = ['model API', 'snapshots', 'DNS hosted zone and queries']
+    return estimate
 
 
 def foundation(aws, config, pilot, stage):
@@ -399,20 +454,29 @@ def live_check(config, pilot, aws, stage='pilot', now=None):
         require(config['region'] in aws.session.get_available_regions(service) or service == 'iam',
                 'services: required service endpoint unavailable')
     permissions(aws, config, arn)
-    quota_results = quotas(aws, config, selected)
+    access = wc.load_document(pilot['shared_access_file']) if pilot.get('shared_access_file') else None
+    require(access is None or stage == 'pilot', 'shared network: use an existing foundation and pilot stage')
+    topology = None
+    if access is not None:
+        import workshop_shared_preflight
+        topology = workshop_shared_preflight.verify(config, access, aws, {o['Location'] for o in offerings})
+    quota_results = quotas(aws, config, selected, shared=access is not None)
     require(aws.call('ec2', 'create_vpc', CidrBlock='10.193.0.0/24', DryRun=True).get('dry_run') is True,
             'permissions: EC2 DryRun did not explicitly succeed')
     state = foundation(aws, config, pilot, stage)
     require(stage != 'bootstrap' or state == 'new',
             'foundation: bucket already exists; preserve original bootstrap state and use stage pilot')
-    estimate = costs(aws, config, pilot, now)
+    estimate = costs(aws, config, pilot, now, enforce_budget=access is None)
+    if access is not None:
+        estimate = shared_costs(aws, config, pilot, access, now, estimate)
     return {'schema_version': 1, 'kind': 'aws-workshop-preflight', 'status': 'passed', 'stage': stage,
             'checked_at': wc.utc_text(now), 'valid_until': wc.utc_text(min(now + timedelta(minutes=15),
                         wc.timestamp(config['expires_at'], 'expires_at'))),
             'config_sha256': wc.canonical_hash(config), 'pilot_sha256': wc.canonical_hash(pilot),
             'identity': {'account': identity['Account'], 'principal_arn': arn},
             'region': config['region'], 'ami_id': image['ImageId'],
-            'availability_zones': sorted(o['Location'] for o in offerings),
+            'availability_zones': topology['availability_zones'] if topology else sorted(o['Location'] for o in offerings),
+            **({'shared_network': topology} if topology else {}),
             'quotas': quota_results, 'foundation': state, 'cost': estimate,
             'limits': ['IAM simulation does not prove session-policy/endpoint-policy permission or launch capacity',
                        'Usage estimates and contingency are not billing caps; operator must destroy and reconcile']}
@@ -426,7 +490,7 @@ def terraform(args, env, *, capture=False):
     return result.stdout if capture else None
 
 
-def inputs_for_terraform(config, pilot, stage, availability_zone=None, *, release=None, browser_routes=None):
+def inputs_for_terraform(config, pilot, stage, availability_zone=None, *, release=None, browser_routes=None, shared_access=None):
     variables = {'aws_profile': config['aws_profile'], 'expected_account_id': config['aws_account_id'],
                  'region': config['region'], 'owner_id': config['owner_id'], 'state_bucket_name': pilot['state_bucket_name']}
     if stage == 'pilot':
@@ -443,13 +507,23 @@ def inputs_for_terraform(config, pilot, stage, availability_zone=None, *, releas
                 image_manifest_sha256=release['image_manifest_sha256'], image_runtime_sha256=release['runtime_sha256'])
         if browser_routes is not None or pilot.get('browser_routes_file'):
             variables['browser_routes'] = browser_routes if browser_routes is not None else wc.load_document(pilot['browser_routes_file'])
+        if shared_access is not None or pilot.get('shared_access_file'):
+            shared_access = shared_access if shared_access is not None else wc.load_document(pilot['shared_access_file'])
+            require(availability_zone in shared_access['subnet_ids'], 'shared network: selected zone is not in the access output')
+            variables.update(vpc_id=shared_access['vpc_id'], subnet_id=shared_access['subnet_ids'][availability_zone],
+                             gateway_security_group_id=shared_access['gateway_security_group_id'])
     return variables
 
 
 def plan(config, pilot, aws, stage, directory, *, terraform_runner=None, previous_manifest=None, previous_record=None):
     run = terraform_runner or terraform
     env = explicit_environment()
+    shared_path = pilot.get('shared_access_file')
+    shared_hash = file_hash(shared_path) if shared_path else None
     report = live_check(config, pilot, aws, stage)
+    require(shared_path is None or file_hash(shared_path) == shared_hash,
+            'shared network: access output changed during preflight')
+    shared_access = wc.load_document(shared_path) if shared_path else None
     if previous_manifest is not None:
         require(stage == 'pilot' and previous_record is not None, 'roster: previous run is required for activity changes')
     require(not directory.exists(), 'output: run directory exists; select a new directory')
@@ -457,7 +531,7 @@ def plan(config, pilot, aws, stage, directory, *, terraform_runner=None, previou
     directory = directory.resolve()
     # Each run owns its Terraform data directory. Switching events cannot reuse a backend.
     env['TF_DATA_DIR'] = str(directory / 'terraform-data')
-    variables = inputs_for_terraform(config, pilot, stage, report['availability_zones'][0])
+    variables = inputs_for_terraform(config, pilot, stage, report['availability_zones'][0], shared_access=shared_access)
     wc.write_manifest(directory / 'inputs.tfvars.json', variables)
     wc.write_manifest(directory / 'preflight.json', report)
     if stage == 'pilot':
@@ -484,6 +558,8 @@ def plan(config, pilot, aws, stage, directory, *, terraform_runner=None, previou
         receipt = workshop_batch.review_roster(previous_manifest, allocations, exported)
         wc.write_manifest(directory / 'roster-review.json', receipt)
         wc.write_manifest(directory / 'resume.json', previous_record)
+    require(shared_path is None or file_hash(shared_path) == shared_hash,
+            'shared network: access output changed while planning')
     wc.write_manifest(directory / 'binding.json', {'stage': stage, 'config': config, 'pilot': pilot,
                        'plan_sha256': file_hash(directory / 'saved.tfplan'),
                        'vars_sha256': file_hash(directory / 'inputs.tfvars.json'),
@@ -498,7 +574,8 @@ def plan(config, pilot, aws, stage, directory, *, terraform_runner=None, previou
                            'image_release_sha256': file_hash(pilot['image_release_file']),
                            'image_initializer_sha256': file_hash(SPEC/'runtime/start_image.py')} if config['image']['mode'] == 'prebuilt' else {}),
                        **({'browser_routes': wc.load_document(pilot['browser_routes_file']),
-                           'browser_routes_sha256': file_hash(pilot['browser_routes_file'])} if pilot.get('browser_routes_file') else {})})
+                           'browser_routes_sha256': file_hash(pilot['browser_routes_file'])} if pilot.get('browser_routes_file') else {}),
+                       **({'shared_access': shared_access, 'shared_access_sha256': shared_hash} if shared_path else {})})
     return directory
 
 
@@ -511,7 +588,7 @@ def tool_hash():
     paths = [Path(__file__), Path(wc.__file__), SPEC / 'config.schema.json',
              SPEC / 'pilot.schema.json', SPEC / 'profiles.json', SPEC / 'image-release.schema.json',
              Path(__file__).with_name('workshop_release.py'), SPEC / 'runtime/start_image.py']
-    paths.extend(Path(__file__).with_name(name) for name in ('workshop_batch.py', 'workshop_cleanup.py', 'workshop.py'))
+    paths.extend(Path(__file__).with_name(name) for name in ('workshop_batch.py', 'workshop_cleanup.py', 'workshop_shared_preflight.py', 'workshop.py'))
     return wc.canonical_hash({str(p.relative_to(wc.REPO)): file_hash(p) for p in paths})
 
 
@@ -542,7 +619,12 @@ def apply_saved(directory, aws_factory=Aws, *, terraform_runner=None):
         require(file_hash(pilot['image_release_file']) == binding['image_release_sha256'], 'plan: release metadata changed')
     if pilot.get('browser_routes_file'):
         require(file_hash(pilot['browser_routes_file']) == binding['browser_routes_sha256'], 'plan: browser route metadata changed')
+    if pilot.get('shared_access_file'):
+        require(file_hash(pilot['shared_access_file']) == binding['shared_access_sha256'], 'plan: shared access metadata changed')
     report = live_check(config, pilot, aws_factory(config), binding['stage'])
+    if pilot.get('shared_access_file'):
+        require(file_hash(pilot['shared_access_file']) == binding['shared_access_sha256'],
+                'plan: shared access metadata changed during apply preflight')
     if binding['stage'] == 'pilot':
         variables = wc.load_document(directory / 'inputs.tfvars.json')
         require(variables['availability_zone'] in report['availability_zones'],

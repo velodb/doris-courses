@@ -40,10 +40,17 @@ until explicitly destroyed; an activity's expiry does not remove it.
    bindings and install the learner gateways. ALB `/healthz` checks only the gateway process, not the course,
    Docker, kernel or optional services.
 
-The current guarded pilot CLI still plans its SSM topology. Shared topology is
-an explicit Terraform interface; do not edit a saved pilot plan or claim the
-pilot preflight has checked ALB, DNS or authentication costs. Full shared-access
-cloud deployment needs refreshed identity, prices, quotas and a reviewed plan.
+The guarded pilot CLI can also consume the private exported `access` object via
+`shared_access_file` in the pilot inputs. Its read-only preflight checks the
+account, resource ownership tags, ALB/listener/VPC/subnet relationships,
+gateway security-group ingress, a route to the owned Internet gateway, address
+headroom and the instance offering. The access file is bound to the saved plan;
+changing it requires a fresh plan. The estimate includes the shared ALB,
+10 LCUs, its IPv4 addresses and the current portal host, if present, for the
+entire test window. DNS, snapshots and model APIs remain outside that estimate.
+This topology check does not provision the shared entry, review its state or
+prove that DNS, authentication, gateway software or course services work.
+Create and review those resources separately before the pilot plan.
 
 Delete activity listener rules, DNS aliases, target attachments and target
 groups before destroying the learner instances. Shared ALB/network/certificate

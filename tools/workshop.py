@@ -168,7 +168,7 @@ class Controller:
                    "ownership: activity backend does not match the explicit target")
         variables = wc.load_document(self.directory / "inputs.tfvars.json")
         expected = pf.inputs_for_terraform(self.config, self.pilot, "pilot", variables.get("availability_zone"),
-            release=b.get("image_release"), browser_routes=b.get("browser_routes"))
+            release=b.get("image_release"), browser_routes=b.get("browser_routes"), shared_access=b.get("shared_access"))
         pf.require(variables == expected and pf.module_hash("pilot") == b["module_sha256"],
                    "ownership: module or activity inputs changed; use the original deployment checkout")
         if self.config['image']['mode'] == 'prebuilt':
@@ -476,7 +476,9 @@ class Controller:
         pf.require(set(instances) == set(self.config["learner_ids"]) and all(
             actual.get(i, {}).get("State", {}).get("Name") == "running" for i in instances.values()),
             "replace: all learners must be running before planning a single replacement")
+        self.check_shared_access_binding()
         pf.live_check(self.config, self.pilot, self.cloud)
+        self.check_shared_access_binding()
         address = 'aws_instance.learner[' + json.dumps(learner) + ']'
         plan_path = self.directory / "replace.tfplan"
         self.tf.run(["plan", "-input=false", "-lock-timeout=60s", "-replace=" + address,
@@ -520,7 +522,9 @@ class Controller:
         pf.require(instances == receipt["before"] and self.record["phase"] == "ready", "replace: activity changed since planning")
         self.actual_instances(instances.values())
         self.validate_replacement(json.loads(self.tf.run(["show", "-json", str(path)], capture=True)), receipt["address"])
+        self.check_shared_access_binding()
         pf.live_check(self.config, self.pilot, self.cloud)
+        self.check_shared_access_binding()
         began = self.clock()
         self.record["phase"] = "replacing"
         self.save()
@@ -544,6 +548,11 @@ class Controller:
             self.record["phase"] = "replace-failed"
             self.save()
             raise
+
+    def check_shared_access_binding(self):
+        if self.pilot.get("shared_access_file"):
+            pf.require(pf.file_hash(self.pilot["shared_access_file"]) == self.binding.get("shared_access_sha256"),
+                       "replace: shared access metadata changed; reconcile the topology before planning")
 
     def destroy(self):
         with ttl.activity_operation(self.cloud, self.config, self.pilot, self.ttl_binding, cleanup_operation=True):
