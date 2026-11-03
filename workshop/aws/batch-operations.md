@@ -95,8 +95,37 @@ pilot CLI does not orchestrate those shared topology operations.
 For a shared entry, set `shared_access_file` in the pilot inputs to the private
 JSON object exported by shared access. Use the same access output and listener
 allocation ledger for each update. The pilot CLI verifies and binds the shared
-network, but does not modify the separate access state or install the gateway.
-Its ready status covers host runtime only.
+network; its ready status covers host runtime only.
+
+For a one-learner access update, retain the previous and newly generated route
+plans and the bindings backend directory. Review the private saved plan and its
+receipt, then apply the exact receipt hash:
+
+```bash
+python tools/workshop_bindings_update.py plan \
+  --pilot-run workshop/aws/.local/event-run \
+  --bindings-run workshop/aws/.local/access-bindings \
+  --old-route workshop/aws/.local/routes-old.json \
+  --new-route workshop/aws/.local/routes-new.json \
+  --output workshop/aws/.local/bindings-review-01
+python tools/workshop_bindings_update.py apply \
+  --pilot-run workshop/aws/.local/event-run \
+  --bindings-run workshop/aws/.local/access-bindings \
+  --old-route workshop/aws/.local/routes-old.json \
+  --new-route workshop/aws/.local/routes-new.json \
+  --output workshop/aws/.local/bindings-review-01 \
+  --approved-review-sha256 REVIEWED_RECEIPT_SHA256
+```
+
+The command permits one add, removal or target replacement, checks exact route
+and listener allocations, state ownership, refreshed identities and OAuth URLs,
+and uses the activity fence and Terraform state lock. It updates the bindings
+input file only after a successful apply and state check. A partial or unknown
+apply requires reconciliation and a fresh review; it is never blindly replayed.
+For an enrolled TTL revision supply `--ttl-binding` and cancel that revision
+before changing scope. This command currently supports DNS in the workload
+account only. Portal assignments, account operations, gateway installation and
+authenticated access checks remain separate steps.
 
 To add a learner, create that learner's instance using a roster-only pilot plan,
 then generate and review new access bindings for the exact instance IDs. Create
