@@ -138,6 +138,17 @@ class GatewayDeploymentTests(unittest.TestCase):
         self.assertEqual(result["gateways"]["alice"]["status"], "Success")
         self.assertEqual(self.controller.cloud.sent, 2)
 
+    def test_lost_dispatch_response_is_persisted_and_never_resent(self):
+        with mock.patch.object(self.controller.cloud, "send_command", side_effect=TimeoutError("unknown outcome")) as send:
+            with self.assertRaises(TimeoutError):
+                deploy.install(self.controller, self.plan, self.identity, self.subjects, learner="alice")
+            row = self.controller.record["gateway_installations"][self.instances["alice"]]
+            self.assertEqual(row["status"], "dispatching")
+            self.assertGreater(self.controller.saves, 0)
+            with self.assertRaisesRegex(ValueError, "dispatch outcome unknown"):
+                deploy.install(self.controller, self.plan, self.identity, self.subjects, learner="alice", retry_failed=True)
+            self.assertEqual(send.call_count, 1)
+
 
 if __name__ == "__main__":
     unittest.main()
