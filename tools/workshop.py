@@ -492,8 +492,14 @@ class Controller:
 
     @staticmethod
     def validate_replacement(plan, address):
-        changed = [r for r in plan.get("resource_changes", []) if r.get("mode") == "managed"
-                   and r["change"]["actions"] != ["no-op"]]
+        pf.require(isinstance(plan.get("resource_changes"), list) and not plan.get("errored") and
+                   plan.get("complete", True) is True and not plan.get("deferred_changes"),
+                   "replace: use a complete, non-deferred Terraform plan export")
+        managed = [r for r in plan["resource_changes"] if r.get("mode") == "managed"]
+        addresses = [r["address"] for r in managed]
+        pf.require(len(addresses) == len(set(addresses)) and all(not r.get("module_address") for r in managed),
+                   "replace: duplicate or nested resource addresses are not supported")
+        changed = [r for r in managed if r["change"]["actions"] != ["no-op"]]
         pf.require(len(changed) == 1 and changed[0]["address"] == address and
                    changed[0]["change"]["actions"] in (["delete", "create"], ["create", "delete"]),
                    "replace: plan must replace only the selected instance; shared or other-learner changes rejected")

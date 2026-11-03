@@ -658,3 +658,16 @@ class ReplacementPlanTests(unittest.TestCase):
             [row(address,['delete','create']),row('aws_security_group.pilot',['update'])],[]]:
             with self.subTest(changes=changes),self.assertRaisesRegex(ws.wc.ConfigError,'only the selected'):
                 ws.Controller.validate_replacement(dict(resource_changes=changes),address)
+
+    def test_rejects_incomplete_deferred_and_ambiguous_plans(self):
+        address = 'aws_instance.learner["alice"]'
+        replacement = {"mode": "managed", "address": address, "change": {"actions": ["delete", "create"]}}
+        for extra in ({"complete": False}, {"errored": True}, {"deferred_changes": [{"reason": "unknown"}]}):
+            with self.subTest(extra=extra), self.assertRaisesRegex(ws.wc.ConfigError, "complete, non-deferred"):
+                ws.Controller.validate_replacement({"resource_changes": [replacement], **extra}, address)
+        for rows in ([replacement, {**replacement, "change": {"actions": ["no-op"]}}],
+                     [{**replacement, "module_address": "module.other"}]):
+            with self.subTest(rows=rows), self.assertRaisesRegex(ws.wc.ConfigError, "duplicate or nested"):
+                ws.Controller.validate_replacement({"resource_changes": rows}, address)
+        with self.assertRaisesRegex(ws.wc.ConfigError, "complete, non-deferred"):
+            ws.Controller.validate_replacement({}, address)

@@ -49,13 +49,22 @@ python tools/workshop.py replace --run-dir workshop/aws/.local/activity \
 ```
 
 The plan must replace exactly that learner's instance. Changes to shared
-resources or other learners are rejected. Apply requires the same assignments,
+resources or other learners, incomplete or deferred plans, and duplicate or
+nested managed resource addresses are rejected. Apply requires the same assignments,
 inputs, plan hash and a fresh 15-minute plan window, repeats live preflight,
 and verifies the resulting assignments and readiness. Failed operations retain
 instance/volume IDs and private diagnostics for `status` and `destroy`.
 Readiness timing and before/after IDs are retained in `lifecycle.json`.
 The old activity remains pinned even when a separate release is published;
 choose a new version explicitly for a new activity.
+
+This flow covers the pilot host only. If a learner is also connected to a
+shared entry, its separate access state still targets the old instance and the
+new host does not have the gateway overlay. Reconcile the learner's target
+attachment with a fresh reviewed access plan, install its own gateway and
+verify authenticated access separately. Host readiness does not establish
+that the shared entry is ready. The guarded pilot CLI does not orchestrate
+these steps.
 
 After validation or an event, destroy the activity and reconcile its owned
 resources. Retain the original foundation state and release records:
