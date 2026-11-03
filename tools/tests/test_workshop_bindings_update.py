@@ -96,6 +96,13 @@ class BindingUpdateTests(unittest.TestCase):
             self.apply(receipt)
         self.assertEqual(FakeTerraform.apply_count, 0)
 
+    def test_inputs_changed_during_validation_are_rejected_before_apply(self):
+        receipt = self.prepare()
+        with mock.patch.object(update, "hashes", side_effect=[{"bound": "fixture"}, {"bound": "changed"}]):
+            with self.assertRaisesRegex(ValueError, "changed before apply"):
+                self.apply(receipt)
+        self.assertEqual(FakeTerraform.apply_count, 0)
+
     def test_partial_failure_is_not_blindly_replayed(self):
         receipt = self.prepare()
         FakeTerraform.fail = True

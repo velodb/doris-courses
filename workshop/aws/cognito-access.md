@@ -58,16 +58,41 @@ directories, with operator-only permissions. Install
    A matching `role_arn` can replace `profile`. Neither passwords nor access
    keys belong in this file. Cross-account output without this explicit DNS
    identity is rejected. Keep the same inputs available for activity destroy.
-3. Initialize a separate private activity-access backend and apply its reviewed
-   saved plan. Export `terraform output -json identity`. Authentication rules
-   are installed from the beginning; without a running gateway they return a
-   backend error and do not expose a service.
+3. Prepare a private activity-access directory containing `inputs.tfvars.json`
+   copied from the generated `access-plan.tfvars.json` and
+   `backend.tfbackend.json` for the same state bucket, profile, account and
+   Region. Its key must be
+   `aws-workshop/aws/ACCOUNT/REGION/EVENT/access.tfstate`, with encryption and
+   the S3 lockfile enabled. Create the initial bindings through a reviewed plan:
+
+   ```bash
+   python tools/workshop_bindings_create.py plan \
+     --pilot-run workshop/aws/.local/event-run \
+     --bindings-run workshop/aws/.local/event-bindings \
+     --route workshop/aws/.local/access-plan.json \
+     --output workshop/aws/.local/bindings-create-review
+   # Inspect the saved plan and review.json, then use its printed receipt hash.
+   python tools/workshop_bindings_create.py apply \
+     --pilot-run workshop/aws/.local/event-run \
+     --bindings-run workshop/aws/.local/event-bindings \
+     --route workshop/aws/.local/access-plan.json \
+     --output workshop/aws/.local/bindings-create-review \
+     --approved-review-sha256 REVIEWED_RECEIPT_SHA256
+   ```
+
+   The command checks the bound pilot and shared entry, live preflight, DNS and
+   listener capacity, exact create-only plan, state lock and activity fence. It
+   writes the private identity output to `bindings-create-review/identity.json`.
+   For an enrolled TTL revision supply `--ttl-binding` and cancel that revision
+   before changing scope. A partial or unknown apply must be reconciled before
+   creating another plan. Authentication rules are installed from the beginning;
+   without a running gateway they return a backend error and expose no service.
 4. Create the accounts with the explicitly configured AWS profile:
 
    ```bash
    python tools/workshop_accounts.py \
      --config workshop/aws/events/event.local.yaml \
-     --identity workshop/aws/.local/identity.json \
+     --identity workshop/aws/.local/bindings-create-review/identity.json \
      --output-dir workshop/aws/.local/account-delivery
    ```
 
@@ -82,7 +107,7 @@ directories, with operator-only permissions. Install
    ```bash
    python tools/workshop_access.py gateways \
      --plan workshop/aws/.local/access-plan.json \
-     --identity workshop/aws/.local/identity.json \
+     --identity workshop/aws/.local/bindings-create-review/identity.json \
      --subjects workshop/aws/.local/account-delivery/subjects.json \
      --output-dir workshop/aws/.local/gateways
    python tools/workshop_access.py bundle \
@@ -95,7 +120,7 @@ directories, with operator-only permissions. Install
    python tools/workshop_gateway_deploy.py \
      --pilot-run workshop/aws/.local/event-run \
      --plan workshop/aws/.local/access-plan.json \
-     --identity workshop/aws/.local/identity.json \
+     --identity workshop/aws/.local/bindings-create-review/identity.json \
      --subjects workshop/aws/.local/account-delivery/subjects.json
    ```
 

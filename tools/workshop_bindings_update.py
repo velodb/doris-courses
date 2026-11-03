@@ -163,6 +163,9 @@ def apply(controller, bindings_run, old_path, new_path, output, approved_hash, *
             "saved plan no longer matches the review")
     progress = output / "progress.json"
     require(not progress.exists(), "previous apply attempted; reconcile before creating another plan")
+    require(wc.timestamp(receipt["valid_until"], "valid_until") > (now or datetime.now(timezone.utc)) and
+            receipt["artifacts"] == hashes(controller, bindings_run, old_path, new_path) and
+            receipt["plan_sha256"] == pf.file_hash(output / "update.tfplan"), "review expired or inputs changed before apply")
     lifecycle.atomic_json(progress, {"phase": "applying", "resources_may_remain": True})
     tf.apply(output / "update.tfplan")
     verify_state(controller, tf.state(), new)

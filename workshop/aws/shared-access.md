@@ -163,33 +163,30 @@ Deploy this explicit interface using separately reviewed Terraform plans:
    `access` again. Terraform checks VPC, portal SG and ownership tags; activity
    bindings also reject assigning this host to a learner. These checks do not
    inspect the host's installed software or all other security groups.
-4. Generate each activity's routes and deploy its bindings using
+4. Install the empty portal on the verified shared host through SSM:
+
+   ```bash
+   python tools/workshop_portal_install.py \
+     --config workshop/aws/events/event.local.yaml \
+     --access workshop/aws/.local/access.json \
+     --portal-run workshop/aws/.local/portal-run \
+     --output workshop/aws/.local/portal-install
+   ```
+
+   The run directory contains the shared-portal backend and inputs. The command
+   checks the owned state, live host and target group, then installs the fixed
+   overlay under a host lock. It refuses to overwrite an existing registry and
+   saves the exact empty registry as `portal-install/portal-empty.json`.
+   Unknown or failed dispatches require reconciliation before a new operation.
+5. Generate each activity's routes and deploy its bindings using
    [Cognito access](cognito-access.md). With a configured shared portal, `routes`
    adds the activity entry, three rule priorities and its exact callback/logout
    URLs. Reserve priorities across all activities. Create accounts, install
    learner gateways and verify their independent readiness.
-5. Prepare the operator-only assignment configuration and a distinct bundle:
-
-   ```bash
-   python tools/workshop_access.py portal-config \
-     --plan workshop/aws/.local/access-plan.json \
-     --identity workshop/aws/.local/identity.json \
-     --subjects workshop/aws/.local/account-delivery/subjects.json \
-     --output workshop/aws/.local/portal.json
-   python tools/workshop_access.py portal-bundle \
-     --output-dir workshop/aws/.local/portal-overlay
-   ```
-
-   Repeat `--plan`, `--identity` and `--subjects` in the same order for additional
-   activities on the same ALB and namespace. All activities must be present in
-   each generated portal configuration. It contains immutable subject mappings,
-   not client secrets, passwords or tokens. Keep it private and never upload it
-   to a learner host. The runtime uses only this file and the public bundle.
-6. Upload both through operator SSM to the portal host. As root, run
-   `bash install_portal.sh /path/to/portal-overlay /path/to/portal.json`.
-   The installer checks bundle hashes, rejects a learner activity file or Docker
-   socket, and runs a dedicated unprivileged `doris-portal` systemd service.
-   Application and install output are suppressed; `/healthz` checks the process.
+6. Register the activity with the guarded [portal update](batch-operations.md),
+   using the same route file for `--current-route` and `--plan` and the empty
+   registry as `--previous-registry` for the first registration. Later updates
+   use the previous operation's `next-portal.json` and preserve other activities.
    Verify public TLS, Cognito first login/change-password, assigned links,
    origin isolation, restart and cleanup separately.
 

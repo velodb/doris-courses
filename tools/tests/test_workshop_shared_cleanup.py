@@ -142,6 +142,15 @@ class SharedCleanupTests(unittest.TestCase):
                                  review["review_sha256"], tf_factory=FakeTerraform)
         self.assertEqual(FakeTerraform.actions, [])
 
+    def test_changed_inputs_during_validation_never_apply(self):
+        receipt = self.prepare()
+        original = receipt["review_sha256"]
+        artifacts = wc.load_document(self.output / "review.json")["artifacts"]
+        with mock.patch.object(shared_cleanup, "artifact_hashes", side_effect=[artifacts, {"changed": "yes"}]):
+            with self.assertRaisesRegex(wc.ConfigError, "changed before apply"):
+                shared_cleanup.apply(self.controller, self.bindings, self.routes, self.output, original, tf_factory=FakeTerraform)
+        self.assertEqual(FakeTerraform.actions, [])
+
     def test_changed_state_or_partial_failure_is_never_blindly_replayed(self):
         review = self.prepare()
         FakeTerraform.store["pilot"][0]["values"]["tags_all"]["Owner"] = "other"

@@ -165,6 +165,10 @@ def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_fa
     validate_plans(manifest, states, plans)
     progress = output / "progress.json"
     require(not progress.exists(), "previous apply attempted; reconcile and create new plans")
+    require(wc.timestamp(receipt["valid_until"], "valid_until") > (now or datetime.now(timezone.utc)) and
+            receipt["artifacts"] == artifact_hashes(controller, bindings_run, routes_file) and
+            all(receipt["plans"][name] == pf.file_hash(output / name / "destroy.tfplan") for name in receipt["order"]),
+            "review expired or inputs changed before apply")
     lifecycle.atomic_json(progress, {"phase": "applying-bindings", "resources_may_remain": True})
     modules["access-bindings"].apply(output / "access-bindings" / "destroy.tfplan")
     require(not modules["access-bindings"].state()["resources"], "bindings state is not empty")
