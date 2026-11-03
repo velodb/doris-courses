@@ -3,6 +3,8 @@
 set -Eeuo pipefail
 umask 077
 systemctl stop doris-workshop-jupyter.service docker.service docker.socket containerd.service
+# Keep cached images, but let Docker create a unique engine identity on each clone.
+rm -f /var/lib/docker/engine-id
 # Nothing may write identity/session state while it is being removed.
 systemctl stop snap.amazon-ssm-agent.amazon-ssm-agent.service
 systemctl stop rsyslog.service systemd-journald.service systemd-journald.socket systemd-journald-dev-log.socket systemd-journald-audit.socket || true

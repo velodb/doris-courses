@@ -56,6 +56,11 @@ No Lab containers or volumes are created. This profile needs no extra model,
 plugin, or custom container build. Optional Metabase and other profiles are
 excluded.
 
+The seal step stops Docker and removes its engine ID while preserving the image
+cache, so a newly built image can generate a separate ID on each host. This
+change does not modify previously published AMIs; a new build and independent
+validation are required for those images.
+
 The public events Parquet dataset remains an online S3 dependency, preserving
 the TVF/loading lessons. Lab 3 downloads its small public CSV/JSONL fixtures
 when taught. The image includes no loaded tables. AWS SSM endpoints are also
