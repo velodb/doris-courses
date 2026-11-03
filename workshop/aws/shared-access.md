@@ -60,6 +60,22 @@ record; do not reuse that exact record outside its managed certificate lifecycle
 The separately provisioned operator portal host has its own lifecycle and must
 also be retired when the shared entry is retired; activity destroy does not own it.
 
+When retiring an entry with a portal, first remove all activity assignments and
+bindings. While the portal host still exists, set `portal_instance_id = null`
+and review a fresh shared-access plan that detaches only its portal listener
+rule, target attachment and target group. Apply that plan under the shared
+state lock, then destroy the separate portal state. Finally review and destroy
+the remaining shared-access state. This order avoids evaluating the portal
+instance and subnet data sources after EC2 has discarded the terminated host's
+network details. Preserve the hosted zone and foundation state unless they are
+independently owned and explicitly selected for retirement.
+
+If the portal was already terminated, do not replay an old plan or blindly
+remove state. Reconcile the exact prior instance, target group and attachment
+against AWS, prepare fresh inputs with the portal reference cleared, and review
+the resulting plan and any refresh drift before proceeding. A missing attachment
+is not evidence that unrelated state objects can be forgotten.
+
 ## Separate DNS account
 
 The workload and DNS accounts can differ. The default AWS provider owns the
