@@ -139,10 +139,13 @@ activity's dedicated Cognito pool/accounts and routing resources. Existing
 enterprise identity systems and shared infrastructure remain. Reconcile resources
 and remove private credential-delivery files after the activity retention period.
 
-Local tests cover cryptographic rejection, ownership, HTTP forwarding, Cookie and
-redirect handling, WebSocket text/binary/subprotocols, expiry, real Jupyter reader,
-file save, kernel execution and terminal sockets. They do not certify real Cognito
-login, public TLS, account recovery or EC2/browser network isolation.
+Local tests cover cryptographic rejection, ownership, HTTP forwarding, cookies,
+redirects and WebSockets. Two-learner events also exercised real Cognito login,
+public TLS, browser and API isolation, notebook execution, terminal WebSockets,
+entry logout and re-login. A real ALB-signed identity was rejected after natural
+expiry and its idle WebSocket closed; a separate 3600-second ALB authentication
+session also expired while a later session remained usable. These checks cover
+the tested events and do not certify account recovery or every future deployment.
 
 References: [ALB signed claims and logout](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-authenticate-users.html),
 [Cognito user pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools.html).
