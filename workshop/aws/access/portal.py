@@ -82,7 +82,11 @@ def application(config, *, verifiers=None):
         form_action = "'self'" + (" " + activity["login_origin"] + "/logout" if activity else "")
         response.headers.update({"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff",
             "Content-Security-Policy": "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action " + form_action,
-            "Referrer-Policy": "no-referrer"})
+            # no-referrer makes a same-origin form POST send Origin: null in
+            # browsers, which cannot pass the strict logout Origin check.
+            # same-origin still withholds the referrer from Cognito and other
+            # cross-origin destinations.
+            "Referrer-Policy": "same-origin"})
         return response
 
     app = web.Application(middlewares=[security], client_max_size=1024)

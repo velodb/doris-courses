@@ -218,7 +218,7 @@ class PortalHTTPTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status, 403)
 
     async def test_logout_requires_signed_identity_and_exact_origin(self):
-        for method, origin, status in (("POST", "https://evil.example.com", 403), ("GET", None, 403),
+        for method, origin, status in (("POST", "https://evil.example.com", 403), ("POST", "null", 403), ("GET", None, 403),
                 ("POST", "https://class-a-entry." + DOMAIN, 303)):
             headers = self.headers()
             if origin:
@@ -235,6 +235,7 @@ class PortalHTTPTests(unittest.IsolatedAsyncioTestCase):
         for event, activity in self.config["activities"].items():
             response = await self.client.get(portal.PATH, headers=self.headers(event=event))
             self.assertEqual(response.status, 200)
+            self.assertEqual(response.headers["Referrer-Policy"], "same-origin")
             policy = response.headers["Content-Security-Policy"]
             self.assertEqual(policy.split("form-action ")[1], "'self' " + activity["login_origin"] + "/logout")
             response = await self.client.post("/_workshop/logout", headers=self.headers(
