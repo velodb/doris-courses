@@ -339,6 +339,9 @@ class Controller:
             for node in self.record["nodes"].values():
                 if not node["managed"]:
                     node["ec2"] = actual.get(node["instance_id"], {}).get("State", {}).get("Name", "missing")
+                    # SSM is not queried for withdrawn instances; an old Online
+                    # observation must not be presented as current health.
+                    node.pop("ssm", None)
             self.record["untracked_instances"] = sorted(i for i, row in actual.items()
                                                         if i not in instances.values() and row.get("State", {}).get("Name") != "terminated")
             all_ready = bool(instances) and set(instances) == set(self.config["learner_ids"]) and not self.record["untracked_instances"]
@@ -356,6 +359,7 @@ class Controller:
                 node.pop("waiting_for_slot", None)
                 node.pop("error", None)
                 if node["ec2"] != "running":
+                    node.pop("ssm", None)
                     all_ready = False
                     continue
                 try:

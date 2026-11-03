@@ -614,6 +614,7 @@ class LifecycleTests(unittest.TestCase):
         self.assertIn("vol-bob", controller.record["known_volumes"])
         self.assertFalse(report["nodes"]["bob"]["managed"])
         self.assertEqual(report["nodes"]["bob"]["ec2"], "terminated")
+        self.assertNotIn("ssm", report["nodes"]["bob"])
         self.assertEqual(report["batch"]["ready"], ["alice", "charlie"])
         # Operator-only artifacts stay bound and may not be edited after review.
         (directory / "resume.json").write_text("{}")
