@@ -139,6 +139,9 @@ timeouts/retries. A local timeout does not cancel remote work.
 
 The `batch` report lists ready, failed and pending learner IDs, the configured
 limit and in-flight count. Per-node failures are filtered before persistence.
+For a shared topology, the report also lists the bound non-secret learner URLs
+and marks shared access readiness as not checked. A ready host does not prove
+that its target group, gateway or authenticated browser session is ready.
 Partial failures leave pending IDs and known billable resources visible and
 never produce a ready class. `resources_may_remain` stays true until the owned
 resources are reconciled. Runtime readiness continues to report

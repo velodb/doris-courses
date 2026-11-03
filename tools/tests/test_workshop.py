@@ -203,6 +203,18 @@ class LifecycleTests(unittest.TestCase):
         self.assertNotIn("PRIVATE-TOKEN", text)
         self.assertEqual((self.directory / "lifecycle.json").stat().st_mode & 0o777, 0o600)
 
+    def test_shared_summary_reports_assigned_urls_without_claiming_access_readiness(self):
+        controller = self.controller()
+        self.assertEqual(controller.summary()["entry"]["transport"], "operator-ssm-forward")
+        controller.binding["shared_access"] = {"domain": "workshops.example.com", "portal": {"instance_id": "i-portal"}}
+        controller.binding["browser_routes"] = {"alice": {"8888": "https://alice.workshops.example.com"},
+                                                "bob": {"8888": "https://bob.workshops.example.com"}}
+        entry = controller.summary()["entry"]
+        self.assertEqual(entry["transport"], "shared-authenticated-https")
+        self.assertEqual(entry["access_readiness"], "not-checked")
+        self.assertEqual(entry["learner_urls"]["alice"]["8888"], "https://alice.workshops.example.com")
+        self.assertEqual(entry["activity_url"], "https://example-rta-entry.workshops.example.com/doris-courses/")
+
     def test_prebuilt_waits_for_startup_and_resumes_without_install_replay(self):
         from test_workshop_release import fixture
         release=fixture()

@@ -413,6 +413,14 @@ class Controller:
         current = {key: self.record["nodes"].get(key, {}) for key in self.config["learner_ids"]}
         ready_ids = sorted(key for key, node in current.items() if node.get("ready") and node.get("managed"))
         failed_ids = sorted(key for key, node in current.items() if node.get("error"))
+        shared = self.binding.get("shared_access")
+        entry = {"transport": "operator-ssm-forward", "remote_port": 8888, "path": "/workshop/"}
+        if shared:
+            routes = self.binding.get("browser_routes", {})
+            entry = {"transport": "shared-authenticated-https", "access_readiness": "not-checked",
+                     "learner_urls": {learner: routes.get(learner, {}) for learner in sorted(current)}}
+            if shared.get("portal") is not None:
+                entry["activity_url"] = f'https://{self.config["event_id"]}-entry.{shared["domain"]}/doris-courses/'
         return {"event_id": self.config["event_id"], "region": self.config["region"], "phase": self.record["phase"],
                 "ready": bool(ready), "readiness_scope": "host-runtime-and-course-entry", "course_labs_validated": False,
                 "managed_resources": self.record.get("managed_resources", 0),
@@ -427,7 +435,7 @@ class Controller:
                 "retained_foundation": self.pilot["state_bucket_name"],
                 "target_logs": "/var/log/doris-workshop", "nodes": self.record["nodes"],
                 "last_health_check": self.record.get("last_health_check"),
-                "entry": {"transport": "operator-ssm-forward", "remote_port": 8888, "path": "/workshop/"}}
+                "entry": entry}
 
     def up(self, approved_plan_hash, *, timeout=7500, retry_failed=False, concurrency=2):
         with ttl.activity_operation(self.cloud, self.config, self.pilot, self.ttl_binding, scope_change=self.record["phase"] == "planned"):
