@@ -344,6 +344,10 @@ class PlanningTests(unittest.TestCase):
         plan = access.routes(c, a, instances, overrides={"alice": {"rta-fe": 28030}})
         self.assertIn("28030", plan["browser_routes"]["alice"])
         self.assertIn("18030", plan["browser_routes"]["bob"])
+        for learner in ("alice", "bob"):
+            grouped = {host.split(".")[0] for host, service in plan["services"][learner].items()
+                       if service.get("relay_group") == "rta-m09-fe"}
+            self.assertEqual(grouped, {f"event-{learner}-rta-fe{index}" for index in (1, 2, 3)})
         c["learner_ids"].reverse()
         self.assertEqual(plan, access.routes(c, a, instances, overrides={"alice": {"rta-fe": 28030}}))
 
@@ -389,6 +393,10 @@ class PlanningTests(unittest.TestCase):
             gateway.validate_config(c)
         c = config()
         c["services"][HOST]["redirect_origins"] = ["http://:@127.0.0.1:8030"]
+        with self.assertRaises(ValueError):
+            gateway.validate_config(c)
+        c = config()
+        c["services"][HOST]["relay_group"] = "rta-m09-fe"
         with self.assertRaises(ValueError):
             gateway.validate_config(c)
         c = config(8080)
