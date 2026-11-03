@@ -75,8 +75,53 @@ Explicit matching `resource_drift` deletion evidence can account for resources
 already removed remotely. A stale tagless dependency lacking its owned parent
 can only be forgotten with that evidence; it cannot authorize a fresh delete.
 It checks all pages for known EC2/EBS/ENI residuals. A lingering ENI leaves cleanup
-incomplete. Its boundary remains pilot state and known resources, without a
-shared multi-state orchestrator, cross-state rollback or distributed lock.
+incomplete. Its boundary remains pilot state and known resources.
+
+### Reviewed shared activity cleanup
+
+`tools/workshop_shared_cleanup.py` prepares two private saved destroy plans and
+applies activity bindings before the pilot under one activity fence. It retains
+the shared entry, portal, DNS zone, foundation and published images. Remove the
+activity from the separately managed portal registry first. This command does
+not retire the portal or shared infrastructure, revoke unrelated identities or
+perform the full residual scan.
+
+Use the latest pilot run, the bindings directory containing its original
+`inputs.tfvars.json` and `backend.tfbackend.json`, and the exact current route
+plan whose `terraform` object matches those variables. The bindings backend
+must use the activity's canonical `access.tfstate` key and the same account,
+Region and state bucket as the pilot. This first version supports a DNS zone in
+the workload account; cross-account DNS needs separate cleanup and validation.
+Cancel any enrolled TTL revision before planning or applying a shared cleanup.
+Unenrolled activities still require operators to coordinate; local run locks
+are not distributed locks.
+
+```bash
+python tools/workshop_shared_cleanup.py plan \
+  --pilot-run workshop/aws/.local/event-run \
+  --bindings-run workshop/aws/.local/event-bindings \
+  --routes workshop/aws/.local/access-plan.json \
+  --output workshop/aws/.local/shared-cleanup-review
+
+# Inspect both private destroy.tfplan files and review.json. Then pass the
+# review_sha256 printed by the plan command.
+python tools/workshop_shared_cleanup.py apply \
+  --pilot-run workshop/aws/.local/event-run \
+  --bindings-run workshop/aws/.local/event-bindings \
+  --routes workshop/aws/.local/access-plan.json \
+  --output workshop/aws/.local/shared-cleanup-review \
+  --approved-review-sha256 REVIEWED_SHA256
+```
+
+For an enrolled activity, supply `--ttl-binding` on both commands. The review
+expires after 15 minutes and binds the inputs, source, initialized backends,
+manifest and both plans. Terraform obtains its normal state locks for each
+plan and apply. A failed or interrupted apply is never replayed automatically:
+retain the private progress record, reconcile actual state and any TTL fence,
+then create fresh reviewed plans. There is no cross-state rollback. A completed
+pilot reconciliation checks known instance, root-volume and ENI IDs; it is not
+proof of complete DNS, Cognito, target-group or account-wide cleanup. Run the
+separate [collection and reconciliation](#collect-and-reconcile) workflow.
 
 ## Collect and reconcile
 

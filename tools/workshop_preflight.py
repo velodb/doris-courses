@@ -588,7 +588,7 @@ def tool_hash():
     paths = [Path(__file__), Path(wc.__file__), SPEC / 'config.schema.json',
              SPEC / 'pilot.schema.json', SPEC / 'profiles.json', SPEC / 'image-release.schema.json',
              Path(__file__).with_name('workshop_release.py'), SPEC / 'runtime/start_image.py']
-    paths.extend(Path(__file__).with_name(name) for name in ('workshop_batch.py', 'workshop_cleanup.py', 'workshop_shared_preflight.py', 'workshop.py'))
+    paths.extend(Path(__file__).with_name(name) for name in ('workshop_batch.py', 'workshop_cleanup.py', 'workshop_shared_preflight.py', 'workshop_shared_cleanup.py', 'workshop.py'))
     return wc.canonical_hash({str(p.relative_to(wc.REPO)): file_hash(p) for p in paths})
 
 
