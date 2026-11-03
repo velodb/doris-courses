@@ -81,6 +81,10 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
             self.requests.append((request.raw_path, dict(request.headers), await request.read()))
             if request.path == "/redirect":
                 return web.Response(status=302, headers={"Location": f"http://127.0.0.1:{self.server.port}/deep?a=1#frag"})
+            if request.path == "/redirect-with-userinfo":
+                return web.Response(status=307, headers={"Location": f"http://root:fixture-password@127.0.0.1:{self.server.port}/deep?a=1#frag"})
+            if request.path == "/redirect-to-untrusted-userinfo":
+                return web.Response(status=307, headers={"Location": "https://root:fixture-password@untrusted.example.com/deep"})
             if request.path == "/cookie":
                 return web.Response(headers=[("Set-Cookie", "app=one; Domain=example.com; Path=/; HttpOnly"),
                                              ("Set-Cookie", "second=two; Path=/")])
@@ -161,6 +165,15 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
     async def test_redirects_are_parsed_and_keep_deep_link_query_and_fragment(self):
         response = await self.client.get("/redirect", headers=self.headers(), allow_redirects=False)
         self.assertEqual(response.headers["Location"], f"https://{HOST}/deep?a=1#frag")
+
+    async def test_internal_redirect_strips_userinfo_and_untrusted_userinfo_is_denied(self):
+        response = await self.client.get("/redirect-with-userinfo", headers=self.headers(), allow_redirects=False)
+        self.assertEqual(response.status, 307)
+        self.assertEqual(response.headers["Location"], f"https://{HOST}/deep?a=1#frag")
+        self.assertNotIn("fixture-password", str(response.headers))
+        response = await self.client.get("/redirect-to-untrusted-userinfo", headers=self.headers(), allow_redirects=False)
+        self.assertEqual(response.status, 502)
+        self.assertNotIn("fixture-password", str(response.headers))
 
     async def test_unavailable_service_is_503_and_recovers(self):
         await self.server.close()
@@ -295,9 +308,23 @@ class PlanningTests(unittest.TestCase):
         c["client_secret"] = "must-stay-in-control-plane"
         with self.assertRaises(ValueError):
             gateway.validate_config(c)
+        c = config()
+        c["services"][HOST]["redirect_origins"] = ["http://:@127.0.0.1:8030"]
+        with self.assertRaises(ValueError):
+            gateway.validate_config(c)
         c = config(8080)
         with self.assertRaises(ValueError):
             gateway.validate_config(c)
+
+    def test_follower_redirect_with_userinfo_maps_to_the_assigned_leader_host(self):
+        c = config()
+        leader = "event-alice-rta-fe1.workshops.example.com"
+        follower = "event-alice-rta-fe2.workshops.example.com"
+        c["services"][leader] = {"port": 18130, "jupyter": False, "redirect_origins": ["http://172.31.91.40:8030"]}
+        c["services"][follower] = {"port": 18131, "jupyter": False, "redirect_origins": ["http://172.31.91.41:8030"]}
+        gateway.validate_config(c)
+        result = gateway.redirect("http://root:fixture-password@172.31.91.40:8030/rest/deep?a=1#part", c)
+        self.assertEqual(result, f"https://{leader}/rest/deep?a=1#part")
 
     def test_temporary_accounts_are_owned_silent_and_credentials_remain_private(self):
         c, _, _ = self.inputs()

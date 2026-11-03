@@ -73,7 +73,8 @@ def validate_config(config):
         ports.add(service["port"])
         for origin in service["redirect_origins"]:
             parsed = urlsplit(origin)
-            if parsed.scheme != "http" or not parsed.hostname or parsed.path or parsed.query or parsed.fragment or parsed.username or parsed.password:
+            if (parsed.scheme != "http" or not parsed.hostname or parsed.path or parsed.query or parsed.fragment or
+                    parsed.username is not None or parsed.password is not None):
                 raise ValueError("Redirect aliases must be explicit internal HTTP origins")
     return expiry
 
@@ -152,12 +153,17 @@ def redirect(location, config, resolved_ports=None):
     parsed = urlsplit(location)
     if not parsed.netloc:
         return location
+    # Doris can embed HTTP Basic credentials in a follower-to-leader Location.
+    # Match only the configured authority and never expose userinfo to a browser.
+    authority = parsed.netloc.rsplit("@", 1)[-1]
     for host, service in config["services"].items():
         port = (resolved_ports or {}).get(host, service["port"])
         aliases = [f'http://127.0.0.1:{port}', f'http://localhost:{port}',
                    *service["redirect_origins"]]
-        if f"{parsed.scheme}://{parsed.netloc}" in aliases:
+        if f"{parsed.scheme}://{authority}" in aliases:
             return urlunsplit(("https", host, parsed.path, parsed.query, parsed.fragment))
+    if "@" in parsed.netloc:
+        raise Denied(502)
     # Unknown internal redirects must not send learners to their own localhost.
     if parsed.scheme == "http":
         raise Denied(502)
