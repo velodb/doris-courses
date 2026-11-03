@@ -559,6 +559,9 @@ class LifecycleTests(unittest.TestCase):
 
     def test_roster_plan_and_up_reuse_retained_installations_and_preserve_withdrawn_ids(self):
         self.up()
+        prior = self.controller()
+        prior.record["gateway_installations"] = {"i-alice": {"status": "Success", "command_id": "gateway-command"}}
+        prior.save()
         resolved, runtime = ws.wc.resolve_profiles(self.config, ws.wc.REPO)
         manifest = ws.wc.build_manifest(self.config, resolved, runtime)
         previous = copy.deepcopy(self.controller().record)
@@ -607,6 +610,7 @@ class LifecycleTests(unittest.TestCase):
         controller = ws.Controller(directory, cloud=self.cloud, terraform=self.tf, clock=self.clock, sleep=self.clock.sleep)
         report = controller.up(ws.pf.file_hash(directory / "saved.tfplan"), timeout=10)
         self.assertTrue(report["ready"])
+        self.assertEqual(controller.record["gateway_installations"]["i-alice"]["command_id"], "gateway-command")
         self.assertEqual(report["nodes"]["alice"]["install"]["command_id"], old_install["alice"])
         self.assertEqual(len([r for r in self.cloud.sent if r[0] == "i-alice" and not r[2]]), 1)
         self.assertFalse(report["allocations"]["bob"]["active"])

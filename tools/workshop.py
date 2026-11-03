@@ -196,6 +196,7 @@ class Controller:
                 for key in ("nodes", "known_instances", "known_volumes"):
                     self.record[key] = previous[key]
                 self.record["known_network_interfaces"] = previous.get("known_network_interfaces", {})
+                self.record["gateway_installations"] = previous.get("gateway_installations", {})
         self.concurrency = self.record.get("batch_concurrency", 2)
 
     def save(self):

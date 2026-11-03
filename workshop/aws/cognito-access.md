@@ -89,13 +89,29 @@ directories, with operator-only permissions. Install
      --output-dir workshop/aws/.local/access-overlay
    ```
 
-6. Upload the overlay and that learner's gateway JSON through operator SSM.
-   Run `bash install_gateway.sh /path/to/access-overlay /path/to/learner.json /path/to/learner-browser.json /path/to/learner.env`
-   as root on the already verified prebuilt host. The installer checks activity,
-   learner, expiry and overlay hashes. It installs an independent gateway venv
-   and Jupyter launch wrapper; it does not modify the fixed AMI or its original
-   runtime files. Preserve `overlay.json` alongside the release record. This
-   overlay installation still requires Linux/EC2 acceptance.
+6. Install the fixed checked-in overlay through the guarded operator command:
+
+   ```bash
+   python tools/workshop_gateway_deploy.py \
+     --pilot-run workshop/aws/.local/event-run \
+     --plan workshop/aws/.local/access-plan.json \
+     --identity workshop/aws/.local/identity.json \
+     --subjects workshop/aws/.local/account-delivery/subjects.json
+   ```
+
+   It checks the bound source, shared ALB, current instance assignments, pool
+   ownership and exact Cognito subjects before SSM dispatch. Use `--learner ID`
+   to install one assigned host. Installation records are retained in the
+   private pilot lifecycle and carried into roster updates. A pending command is
+   polled, an unknown dispatch is not resent, and a failed installation needs
+   explicit `--retry-failed` with at most three attempts. Enrolled TTL revisions
+   must be cancelled before rollout and supplied with `--ttl-binding`.
+
+   The installer checks activity, learner, expiry and overlay hashes. It installs
+   an independent gateway venv and Jupyter launch wrapper; it does not modify
+   the fixed AMI. Gateway installation is not authenticated browser acceptance.
+   The lower-level installer remains available for separately reviewed SSM
+   workflows; keep its files and any diagnostics private.
 7. The installer copies that learner's generated browser JSON and public URL
    environment to `/etc/doris-workshop/`. The prebuilt Jupyter activity
    environment already selects this route file. Restart Jupyter after changing
