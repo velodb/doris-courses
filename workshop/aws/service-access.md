@@ -81,8 +81,13 @@ port switching, stopped-service errors, deep redirects, cookies and real
 Jupyter kernel/terminal sockets. Docker Compose configuration was rendered with
 both local defaults and public URLs without starting containers.
 
-Real browser login, static resources, deep links, Grafana Live, Superset charts,
-Metabase dashboards, Litefuse callbacks and browser-generated demo spans must
-still be verified through the formal domain on EC2 for each selected profile.
-Do not treat configuration rendering, a health check or an API result as that
-browser acceptance. Public TLS and Cognito acceptance remain pending too.
+A two-learner `rta-main` event validated public TLS and Cognito login, the
+single-FE and Module 9 FE browser pages, FE2 deep links and a follower-to-leader
+write redirect. Stopping FE3 produced a service-unavailable message; after
+restart, its application session required login again. Internal SQL and the
+three-FE topology were checked separately.
+
+Other profiles still need their own real browser acceptance, including Grafana
+Live, Superset charts, Metabase dashboards, Litefuse callbacks and demo spans
+when selected. Configuration rendering, a health check or an API response alone
+does not establish those browser behaviors.
