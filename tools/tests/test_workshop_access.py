@@ -171,6 +171,7 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status, 307)
         self.assertEqual(response.headers["Location"], f"https://{HOST}/deep?a=1#frag")
         self.assertNotIn("fixture-password", str(response.headers))
+
         response = await self.client.get("/redirect-to-untrusted-userinfo", headers=self.headers(), allow_redirects=False)
         self.assertEqual(response.status, 502)
         self.assertNotIn("fixture-password", str(response.headers))
@@ -232,6 +233,84 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         finally:
             await client.close()
             await other.close()
+
+
+class FeWriteRedirectTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.received = []
+        async def leader(request):
+            self.received.append((request.method, request.raw_path, dict(request.headers), await request.read()))
+            return web.Response(text="leader-result", headers={"Set-Cookie": "leader=session; Path=/"})
+        leader_app = web.Application()
+        leader_app.router.add_route("*", "/{tail:.*}", leader)
+        self.leader = TestServer(leader_app)
+        await self.leader.start_server()
+        async def follower(request):
+            await request.read()
+            destination = ("http://untrusted.invalid:9999/path" if request.path == "/bad" else
+                           f"http://root:secret@127.0.0.1:{self.leader.port}/rest/deep?q=1")
+            return web.Response(status=307, headers={"Location": destination, "Set-Cookie": "follower=session; Path=/"})
+        follower_app = web.Application()
+        follower_app.router.add_route("*", "/{tail:.*}", follower)
+        self.follower = TestServer(follower_app)
+        await self.follower.start_server()
+        self.follower_host = "event-alice-rta-fe2.workshops.example.com"
+        self.leader_host = "event-alice-rta-fe1.workshops.example.com"
+        self.c = config()
+        self.c["services"] = {
+            self.follower_host: {"port": self.follower.port, "jupyter": False, "redirect_origins": [], "relay_group": "rta-m09-fe"},
+            self.leader_host: {"port": self.leader.port, "jupyter": False, "redirect_origins": [], "relay_group": "rta-m09-fe"},
+        }
+        self.client = TestClient(TestServer(gateway.application(self.c, verifier=LocalVerifier(self.c, None))))
+        await self.client.start_server()
+
+    async def asyncTearDown(self):
+        await self.client.close()
+        await self.follower.close()
+        await self.leader.close()
+
+    def headers(self, **extra):
+        return {"Host": self.follower_host, "X-Amzn-Oidc-Data": token(),
+                "Origin": "https://" + self.follower_host, "Authorization": "Basic cm9vdDo=", **extra}
+
+    async def test_write_relays_only_to_assigned_fe_and_keeps_follower_cookie(self):
+        response = await self.client.post("/broker", headers=self.headers(), data=b'{"x":1}', allow_redirects=False)
+        self.assertEqual(response.status, 200)
+        self.assertEqual(await response.text(), "leader-result")
+        self.assertEqual(len(self.received), 1)
+        method, path, headers, body = self.received[0]
+        self.assertEqual((method, path, body), ("POST", "/rest/deep?q=1", b'{"x":1}'))
+        self.assertEqual(headers["Authorization"], "Basic cm9vdDo=")
+        self.assertNotIn("X-Amzn-Oidc-Data", headers)
+        cookies = response.headers.getall("Set-Cookie")
+        self.assertEqual(len(cookies), 1)
+        self.assertIn("follower=session", cookies[0])
+        self.assertNotIn("leader=session", str(response.headers))
+
+    async def test_get_still_redirects_and_bad_identity_origin_or_destination_never_relays(self):
+        response = await self.client.get("/broker", headers=self.headers(), allow_redirects=False)
+        self.assertEqual(response.status, 307)
+        self.assertEqual(response.headers["Location"], f"https://{self.leader_host}/rest/deep?q=1")
+        for headers, status in ((self.headers(Origin="null"), 403),
+                                (self.headers(**{"X-Amzn-Oidc-Data": token("subject-bob")}), 403)):
+            response = await self.client.post("/broker", headers=headers, data=b"private", allow_redirects=False)
+            self.assertEqual(response.status, status)
+        response = await self.client.post("/bad", headers=self.headers(), data=b"private", allow_redirects=False)
+        self.assertEqual(response.status, 502)
+        self.assertEqual(self.received, [])
+
+    async def test_other_service_group_is_not_replayed(self):
+        other = copy.deepcopy(self.c)
+        del other["services"][self.leader_host]["relay_group"]
+        client = TestClient(TestServer(gateway.application(other, verifier=LocalVerifier(other, None))))
+        await client.start_server()
+        try:
+            response = await client.post("/broker", headers=self.headers(), data=b"private", allow_redirects=False)
+            self.assertEqual(response.status, 307)
+            self.assertEqual(response.headers["Location"], f"https://{self.leader_host}/rest/deep?q=1")
+            self.assertEqual(self.received, [])
+        finally:
+            await client.close()
 
 
 class PlanningTests(unittest.TestCase):

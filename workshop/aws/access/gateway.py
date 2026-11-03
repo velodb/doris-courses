@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 from collections import OrderedDict
+from contextlib import AsyncExitStack
 from datetime import datetime, timezone
 import hashlib
 from http.cookies import SimpleCookie
@@ -62,8 +63,10 @@ def validate_config(config):
     for host, service in config["services"].items():
         if (not isinstance(host, str) or not HOST.fullmatch(host) or
                 not {"port", "jupyter", "redirect_origins"} <= set(service) or
-                set(service) - {"port", "jupyter", "redirect_origins", "dynamic_port"} or
+                set(service) - {"port", "jupyter", "redirect_origins", "dynamic_port", "relay_group"} or
                 ("dynamic_port" in service and service["dynamic_port"] != "dw-flink") or
+                ("relay_group" in service and (service["relay_group"] != "rta-m09-fe" or
+                                               service["jupyter"] or "dynamic_port" in service)) or
                 type(service["port"]) is not int or not 1024 <= service["port"] <= 65535 or
                 service["port"] == 8080 or type(service["jupyter"]) is not bool or
                 not isinstance(service["redirect_origins"], list)):
@@ -285,15 +288,37 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                         await asyncio.gather(*tasks, return_exceptions=True)
                         await downstream.close()
                     return downstream
-            async with app[SESSION].request(request.method, target, headers=headers,
-                    data=request.content if request.can_read_body else None, allow_redirects=False) as upstream:
+            # A browser cannot follow a cross-origin 307 with Authorization and an
+            # unsafe Origin. Only opted-in FEs of this learner may relay such a
+            # request internally; buffer once so the body can be replayed exactly.
+            relay_group = service.get("relay_group")
+            body = (await request.read() if relay_group and request.can_read_body else
+                    request.content if request.can_read_body else None)
+            async with AsyncExitStack() as stack:
+                upstream = await stack.enter_async_context(app[SESSION].request(
+                    request.method, target, headers=headers, data=body, allow_redirects=False))
+                original_cookies = None
+                if relay_group and request.method not in {"GET", "HEAD", "OPTIONS"} and upstream.status in {307, 308} and "Location" in upstream.headers:
+                    mapped = urlsplit(redirect(upstream.headers["Location"], config, {host: port}))
+                    destination = config["services"].get(mapped.netloc)
+                    if (mapped.scheme == "https" and destination and mapped.netloc != host and
+                            destination.get("relay_group") == relay_group):
+                        if time.time() >= expiry:
+                            raise Denied()
+                        original_cookies = secure_cookies(upstream.headers)
+                        path = urlunsplit(("", "", mapped.path or "/", mapped.query, ""))
+                        next_target = URL(f'http://127.0.0.1:{resolve_port(destination, config, registry_file)}{path}', encoded=True)
+                        upstream = await stack.enter_async_context(app[SESSION].request(
+                            request.method, next_target, headers=headers, data=body, allow_redirects=False))
                 outgoing = [(k, v) for k, v in clean_headers(upstream.headers) if k.lower() not in {"set-cookie", "location"}]
                 response = web.StreamResponse(status=upstream.status, headers=outgoing)
                 response.headers["Strict-Transport-Security"] = "max-age=31536000"
                 response.headers["X-Content-Type-Options"] = "nosniff"
                 if "Location" in upstream.headers:
                     response.headers["Location"] = redirect(upstream.headers["Location"], config, {host: port})
-                for value in secure_cookies(upstream.headers):
+                # Cookies from the leader belong to its own public Host. Keep
+                # only the follower's cookies when responding on the follower.
+                for value in (original_cookies if original_cookies is not None else secure_cookies(upstream.headers)):
                     response.headers.add("Set-Cookie", value)
                 await response.prepare(request)
                 async for chunk in upstream.content.iter_chunked(65536):

@@ -88,6 +88,8 @@ def routes(config, access, instances, *, overrides=None, redirect_origins=None, 
             require(str(port) not in browser[learner], "published services cannot share a loopback port")
             browser[learner][str(port)] = "https://" + host
             services[learner][host] = {"port": port, "jupyter": name == "jupyter", "redirect_origins": redirect_origins.get(learner, {}).get(name, DEFAULT_REDIRECTS.get(name, []))}
+            if name in {"rta-fe1", "rta-fe2", "rta-fe3"}:
+                services[learner][host]["relay_group"] = "rta-m09-fe"
             if name == "dw-flink":
                 services[learner][host]["dynamic_port"] = "dw-flink"
     portal = None

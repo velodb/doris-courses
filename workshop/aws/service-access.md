@@ -65,6 +65,14 @@ only explicit origins to their assigned service host and preserves path, query
 and fragment. Unknown HTTP redirect origins fail closed. Response bodies and
 host-side Stream Load redirects are not rewritten by this browser proxy.
 
+Module 9 FE routes share an explicit per-learner relay group. For an unsafe
+request receiving a 307 or 308 to another FE in that group, the gateway verifies
+the caller and Origin, then sends the same method, headers and bounded body to
+the assigned loopback FE. This avoids cross-origin browser redirects that drop
+authorization. Other redirects retain their normal browser behavior. Leader
+cookies are not copied onto the follower's browser origin. The relay follows at
+most one hop and never targets a service outside the configured group.
+
 ## Acceptance boundary
 
 Local tests cover named browser routes, unchanged internal API endpoints,
