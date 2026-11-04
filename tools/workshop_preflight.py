@@ -588,7 +588,7 @@ def tool_hash():
     paths = [Path(__file__), Path(wc.__file__), SPEC / 'config.schema.json',
              SPEC / 'pilot.schema.json', SPEC / 'profiles.json', SPEC / 'image-release.schema.json',
              Path(__file__).with_name('workshop_release.py'), SPEC / 'runtime/start_image.py']
-    paths.extend(Path(__file__).with_name(name) for name in ('workshop_access.py', 'workshop_routing.py', 'workshop_batch.py', 'workshop_cleanup.py', 'workshop_shared_preflight.py', 'workshop_shared_cleanup.py', 'workshop_gateway_deploy.py', 'workshop_bindings_create.py', 'workshop_bindings_review.py', 'workshop_bindings_update.py', 'workshop_portal_install.py', 'workshop_portal_update.py', 'workshop.py'))
+    paths.extend(Path(__file__).with_name(name) for name in ('workshop_access.py', 'workshop_routing.py', 'workshop_batch.py', 'workshop_cleanup.py', 'workshop_scan.py', 'workshop_shared_preflight.py', 'workshop_shared_cleanup.py', 'workshop_gateway_deploy.py', 'workshop_bindings_create.py', 'workshop_bindings_review.py', 'workshop_bindings_update.py', 'workshop_portal_install.py', 'workshop_portal_update.py', 'workshop.py'))
     paths.extend(SPEC / 'access' / name for name in ('gateway.py', 'portal.py', 'jupyter_gateway.py', 'requirements.txt',
                  'doris-workshop-gateway.service', 'install_gateway.sh', 'doris-workshop-portal.service', 'install_portal.sh'))
     paths.append(SPEC / 'operations/node.py')
