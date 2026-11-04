@@ -21,14 +21,17 @@ import workshop_operations as operations
 SPEC = wc.SPEC / 'packer'
 
 
-def deployment_dirty():
-    paths = [Path(__file__), Path(preflight.__file__), Path(runtime.__file__), Path(wc.__file__),
-             *runtime.RUNTIME.iterdir(), operations.NODE_PATH, *(wc.SPEC / 'terraform/image-build').glob('*.tf'),
-             wc.SPEC / 'terraform/image-build/.terraform.lock.hcl',
-             *(p for p in SPEC.rglob('*') if p.is_file() and '__pycache__' not in p.parts)]
-    paths = [str(p.relative_to(wc.REPO)) for p in paths if p.is_file()]
-    tracked = set(wc.git(wc.REPO, 'ls-files', '--', *paths).splitlines())
-    return set(paths) != tracked or bool(wc.git(wc.REPO, 'diff', 'HEAD', '--', *paths))
+def deployment_dirty(*, repo=None):
+    # Include the independent UI and its packaging adapter in image provenance.
+    # Git status also detects removed and untracked inputs; filtering by is_file
+    # would silently omit deleted tracked files.
+    paths = ['tools/workshop_image.py', 'tools/workshop_preflight.py',
+             'tools/workshop_runtime.py', 'tools/workshop_config.py', 'tools/workshop_ui.py',
+             'workshop/aws/runtime', 'workshop/aws/operations/node.py',
+             'workshop/aws/terraform/image-build', 'workshop/aws/packer',
+             'ui/workshop']
+    return bool(wc.git(repo or wc.REPO, 'status', '--porcelain=v1',
+                       '--untracked-files=all', '--', *paths).strip())
 
 
 def checksum(path):

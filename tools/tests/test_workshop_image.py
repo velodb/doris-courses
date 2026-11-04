@@ -2,6 +2,7 @@
 import importlib.util
 import itertools
 import json
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 import sys
@@ -70,6 +71,40 @@ class ImageInputs(unittest.TestCase):
         self.prepare()
         with self.assertRaises(wc.ConfigError):
             self.prepare()
+
+
+class ImageProvenance(unittest.TestCase):
+    def test_ui_and_packaging_changes_cannot_claim_a_clean_deployment(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            repo = Path(temporary)
+            subprocess.run(['git', 'init', '-q', str(repo)], check=True)
+            paths = ['ui/workshop/src/templates/page.html', 'ui/workshop/assets/manrope.ttf',
+                     'ui/workshop/package.py', 'tools/workshop_ui.py',
+                     'workshop/aws/runtime/host.py']
+            for name in paths:
+                path = repo / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text('committed input\n')
+            subprocess.run(['git', '-C', str(repo), 'add', '.'], check=True)
+            subprocess.run(['git', '-C', str(repo), '-c', 'user.name=Fixture',
+                            '-c', 'user.email=fixture@example.com', '-c', 'commit.gpgsign=false',
+                            'commit', '-qm', 'Image inputs'], check=True)
+            self.assertFalse(image.deployment_dirty(repo=repo))
+            for name in paths:
+                with self.subTest(path=name):
+                    path = repo / name
+                    path.write_text('uncommitted input\n')
+                    self.assertTrue(image.deployment_dirty(repo=repo))
+                    path.unlink()
+                    self.assertTrue(image.deployment_dirty(repo=repo))
+                    path.write_text('committed input\n')
+            extra = repo / 'ui/workshop/src/untracked.html'
+            extra.write_text('untracked input\n')
+            self.assertTrue(image.deployment_dirty(repo=repo))
+            extra.unlink()
+            (repo / 'plan-doc').mkdir()
+            (repo / 'plan-doc/private.md').write_text('local planning\n')
+            self.assertFalse(image.deployment_dirty(repo=repo))
 
 
 @unittest.skipUnless(importlib.util.find_spec('boto3'), 'Install preflight-requirements.txt for SSM contract tests')
