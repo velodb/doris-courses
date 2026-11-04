@@ -6,11 +6,11 @@
 
 已展示三版：
 
-- A：[HTML](design-demos/a-lab-manual.html)、[截图](screenshots/a-lab-manual-workspace-1440.png)，Bauhaus Geometric 轮盘 #10，绿色课程主区和编号工具列。
-- B：[HTML](design-demos/b-tool-workspace.html)、[截图](screenshots/b-tool-workspace-workspace-1440.png)，工具工作台。
-- C：[HTML](design-demos/c-reading-first.html)、[截图](screenshots/c-reading-first-workspace-1440.png)，阅读优先。
+- A：HTML `design-demos/a-lab-manual.html`、截图 `screenshots/a-lab-manual-workspace-1440.png`，Bauhaus Geometric 轮盘 #10，绿色课程主区和编号工具列。
+- B：HTML `design-demos/b-tool-workspace.html`、截图 `screenshots/b-tool-workspace-workspace-1440.png`，工具工作台。
+- C：HTML `design-demos/c-reading-first.html`、截图 `screenshots/c-reading-first-workspace-1440.png`，阅读优先。
 
-三方向已通过真实 HTML、截图及[比较页](index.html)展示。本轮进入同一方向内的深化，不重新发起三方向选择。保留初稿，选定版另存 `selected/`。
+三方向已通过真实 HTML、截图及比较页 `index.html`展示。本轮进入同一方向内的深化，不重新发起三方向选择。保留初稿，选定版另存 `selected/`。
 
 ## 深化假设
 
@@ -56,4 +56,4 @@
 
 用户补充原话：「UI 部分需要是独立的目录，方便维护和管理，不要和管控代码以及课程内容混在一起」。已把UI源码、素材、设计与构建验证工具收拢到独立 `ui/workshop/`，本文件随评审资料迁入 `review/`；初稿HTML/截图内容hash不变。管控和课程源未改，预览只读课程并生成忽略提交的HTML。
 
-A深化稿位于 [dist/prototype.html](../dist/prototype.html)，规范位于 [selected/](selected/design-system.md)。方向已经确认，整套设计评审仍待用户查看本轮完整稿。
+A深化稿位于 dist/prototype.html `../dist/prototype.html`，规范位于 [selected/](selected/design-system.md)。方向已经确认，整套设计评审仍待用户查看本轮完整稿。

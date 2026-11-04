@@ -2,15 +2,15 @@
 
 状态：用户在精简A版后要求「继续」，设计已收口为实施基线，见 [确认记录](design-accepted.md)。自有门户与课程UI已完成本地接入，见 [当前架构](../architecture.md)；下方保留设计阶段材料。
 
-当前入口：[A深化原型](../dist/prototype.html)、[组件参考](../dist/components.html)、[独立UI目录](../README.md)、[设计规范](selected/design-system.md)。下方为初稿历史和保留材料。
+当前入口：A深化原型 `../dist/prototype.html`、组件参考 `../dist/components.html`、[独立UI目录](../README.md)、[设计规范](selected/design-system.md)。下方为初稿历史和保留材料。
 
-双击打开 [比较页](index.html)，可比较个人首页、活动入口和课程阅读的真实截图，再打开各版交互初稿。每个方向 HTML 内嵌所需图片、字体和脚本，复制到其他目录也能单独打开，无需启动服务器。
+双击打开 比较页 `index.html`，可比较个人首页、活动入口和课程阅读的真实截图，再打开各版交互初稿。每个方向 HTML 内嵌所需图片、字体和脚本，复制到其他目录也能单独打开，无需启动服务器。
 
 | 方向 | 依据与构图 | 原型 |
 | --- | --- | --- |
-| A 实验手册 | 秒数轮盘 #10 / Bauhaus Geometric；「读、跑、看」组织为显著的课程主区与编号工具列 | [完整初稿](design-demos/a-lab-manual.html) |
-| B 工具工作台 | IBM Carbon 任务导向界面参照；持久侧栏、环境信息条、横向服务区 | [完整初稿](design-demos/b-tool-workspace.html) |
-| C 阅读优先 | Information Architects 聚焦阅读的思考锚点；出版物层级、横向导航、首课阅读区与下方工具横栏 | [完整初稿](design-demos/c-reading-first.html) |
+| A 实验手册 | 秒数轮盘 #10 / Bauhaus Geometric；「读、跑、看」组织为显著的课程主区与编号工具列 | 完整初稿 `design-demos/a-lab-manual.html` |
+| B 工具工作台 | IBM Carbon 任务导向界面参照；持久侧栏、环境信息条、横向服务区 | 完整初稿 `design-demos/b-tool-workspace.html` |
+| C 阅读优先 | Information Architects 聚焦阅读的思考锚点；出版物层级、横向导航、首课阅读区与下方工具横栏 | 完整初稿 `design-demos/c-reading-first.html` |
 
 三个方向是本项目自己的设计提案，不表示参考团队参与设计。B 和 C 的官方参考来源见 [事实与边界](product-facts.md)。三版使用同一课程和示例身份，未连接任何真实活动或服务。
 
@@ -31,9 +31,9 @@
 - [设计共同输入](design-spec.md)
 - [品牌及素材](brand-spec.md)，[下载来源](../assets/sources.json)
 - [页面与实现交接草案](review-notes.md)
-- [浏览器验证记录](verification.json)
+- 浏览器验证记录 `verification.json`
 - `screenshots/`：三版 × 三尺寸 × 四代表页面，共 36 张真实截图。比较尺寸为 1440×1000；另检查 768×1024、390×844。
-- `build-demos.py` 可重建独立原型，`build-gallery.py` 可在截图完成后重建比较页。
+- 本页的三方向 HTML、截图、比较页及其历史构建脚本属于本机设计归档。当前预览的可复现构建入口见 [UI 说明](../README.md)。
 - `verify-demos.cjs` 使用本机已有 Playwright，支持 `PLAYWRIGHT_MODULE` 指向其他安装路径；浏览器可用 PLAYWRIGHT_EXECUTABLE 指定，不硬编码个人机器路径。
 
 验收只覆盖初稿：17 页面 × 3 尺寸 × 3 方向，共 153 组布局检查，另检查主要跳转、图片加载、外部请求、控制台、文字对比与键盘焦点。不是认证或线上浏览器端到端验收。

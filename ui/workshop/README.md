@@ -19,7 +19,7 @@ ui/workshop/
 
 ## 查看与维护
 
-打开 [A 深化原型](dist/prototype.html)。它包含真实十模块阅读内容，可切换 17 个页面或状态，并提供布局密度、字号和登录情形预览。已按用户意见删减入口、首页、目录和工具说明，课程正文保持原样。文件离线可用，顶部评审工具条不属于最终产品。真实登录输入框保持只读，Lab / JupyterLab / Doris 停在明确的外部打开边界。
+先运行下方构建命令，再打开生成的 `dist/prototype.html`。`dist/`、历史初稿和截图仅保留在本机，不包含在干净 checkout 中。它包含真实十模块阅读内容，可切换 17 个页面或状态，并提供布局密度、字号和登录情形预览。已按用户意见删减入口、首页、目录和工具说明，课程正文保持原样。文件离线可用，顶部评审工具条不属于最终产品。真实登录输入框保持只读，Lab / JupyterLab / Doris 停在明确的外部打开边界。
 
 重建需要 Python 3.11+、PyYAML 和 markdown-it-py，可使用仓库已有课程运行环境：
 
@@ -42,4 +42,4 @@ node ui/workshop/scripts/verify-preview.cjs
 
 不提供学习记录、持久成绩、证书或资源管理 UI。唯一 localStorage 数据是设计预览的布局密度和字号，账号、会话、路径、模块和成绩均不写入。
 
-设计规格和状态交接见 [A 设计规范](review/selected/design-system.md)、[页面及状态](review/selected/pages-and-states.md)、[实现交接](review/selected/implementation.md)。方向选择见 [确认记录](review/direction-approved.md)。初稿保留在 [三版比较页](review/index.html)。
+设计规格和状态交接见 [A 设计规范](review/selected/design-system.md)、[页面及状态](review/selected/pages-and-states.md)、[实现交接](review/selected/implementation.md)。方向选择见 [确认记录](review/direction-approved.md)。初稿保留在 三版比较页 `review/index.html`。
