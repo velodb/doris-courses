@@ -474,6 +474,24 @@ class SdkScanTests(unittest.TestCase):
             self.assertEqual(scanner.snapshot["checks"]["user_pool_domains"]["resources"][0]["id"], "retiring-domain")
             stub.assert_no_pending_responses()
 
+    def test_cognito_child_inventory_does_not_read_other_activity_clients(self):
+        from botocore.stub import Stubber
+        client = self.session.client("cognito-idp")
+        self.clients["cognito-idp"] = client
+        scanner = Scanner(self.aws, access_manifest())
+        owned, other = 'us-east-1_owned', 'us-east-1_other'
+        arn = lambda pool: f'arn:aws:cognito-idp:{REGION}:{ACCOUNT}:userpool/{pool}'
+        with Stubber(client) as stub:
+            stub.add_response('list_user_pools', {'UserPools': [{'Id': owned, 'Name': 'owned'}, {'Id': other, 'Name': 'other'}]}, {'MaxResults': 60})
+            stub.add_response('list_tags_for_resource', {'Tags': tags('activity-access')}, {'ResourceArn': arn(owned)})
+            stub.add_response('list_user_pool_clients', {'UserPoolClients': [{'ClientId': 'client1', 'UserPoolId': owned}]},
+                              {'UserPoolId': owned, 'MaxResults': 60})
+            stub.add_response('list_tags_for_resource', {'Tags': tags('activity-access', Event='other-class')}, {'ResourceArn': arn(other)})
+            scanner.run('user_pool_clients', lambda: scanner.pools('user_pool_clients'))
+            self.assertEqual(scanner.snapshot['checks']['user_pool_clients']['status'], 'complete')
+            self.assertEqual([r['id'] for r in scanner.snapshot['checks']['user_pool_clients']['resources']], [owned + '/client1'])
+            stub.assert_no_pending_responses()
+
     def test_s3_no_tags_is_not_a_missing_bucket(self):
         from botocore.stub import Stubber
         client = self.session.client("s3")

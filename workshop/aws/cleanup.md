@@ -173,6 +173,8 @@ and SSM documents. Shared-binding coverage adds ALBs/TGs/targets/rules, exact DN
 records and activity Cognito pools/clients/domains. Some child absence follows
 from absent owned parents; domains also get exact historical checks. Bucket
 absence implies no objects, versions or multipart uploads in that bucket.
+The Cognito scan inspects clients and domains only for this activity's tagged
+or explicitly referenced pools; it does not enumerate another activity's clients.
 
 Paginated tagged discovery can reveal objects outside the module catalog,
 including future cleanup resources. It does not find every untagged object.

@@ -214,7 +214,10 @@ class Scanner:
             resource_tags = self.call("cognito-idp", "list_tags_for_resource", ResourceArn=arn)["Tags"]
             if kind == "user_pools":
                 self.add(kind, identity, resource_tags=resource_tags)
-            elif resource_tags.get("Project") == "doris-workshop" or identity in self.references:
+            elif (all(resource_tags.get(key) == value for key, value in {"Project": "doris-workshop",
+                    "Owner": t["owner_id"], "Event": t["event_id"]}.items()) or
+                    ("user_pools", identity) in self.known or
+                    ("user_pools", identity) in {cleanup.key(row) for row in self.manifest["retained"]}):
                 if kind == "user_pool_clients":
                     for client in self.items("cognito-idp", "list_user_pool_clients", "UserPoolClients", UserPoolId=identity, MaxResults=60):
                         self.add(kind, identity + "/" + client["ClientId"], resource_tags=resource_tags, fields={"pool_id": identity})
