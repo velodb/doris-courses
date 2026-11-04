@@ -25,6 +25,7 @@
   "elasticloadbalancing:DescribeLoadBalancers",
   "elasticloadbalancing:DescribeRules",
   "elasticloadbalancing:DescribeTags",
+  "elasticloadbalancing:DescribeTargetGroupAttributes",
   "elasticloadbalancing:DescribeTargetGroups",
   "elasticloadbalancing:DescribeTargetHealth",
   "iam:GetInstanceProfile",

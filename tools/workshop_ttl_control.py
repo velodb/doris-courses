@@ -11,7 +11,7 @@ GLOBAL_READS = {"sts:GetCallerIdentity", "ecr:GetAuthorizationToken", "s3:ListAl
     *["ec2:" + name for name in ("DescribeInstances", "DescribeInstanceTypes", "DescribeVpcs", "DescribeSubnets", "DescribeVolumes",
         "DescribeNetworkInterfaces", "DescribeRouteTables", "DescribeSecurityGroups", "DescribeSecurityGroupRules", "DescribeInstanceCreditSpecifications", "DescribeInternetGateways", "DescribeNatGateways",
         "DescribeAddresses", "DescribeImages", "DescribeSnapshots", "DescribeKeyPairs", "DescribeTags")],
-    *["elasticloadbalancing:" + name for name in ("DescribeLoadBalancers", "DescribeTargetGroups", "DescribeListeners", "DescribeRules", "DescribeTags", "DescribeTargetHealth")],
+    *["elasticloadbalancing:" + name for name in ("DescribeLoadBalancers", "DescribeTargetGroups", "DescribeTargetGroupAttributes", "DescribeListeners", "DescribeRules", "DescribeTags", "DescribeTargetHealth")],
     "tag:GetResources"}
 # This is a verifier for reviewed Autopilot output, not a policy generator.
 MUTATIONS = {
