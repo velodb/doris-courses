@@ -16,6 +16,7 @@ class ReleaseTests(unittest.TestCase):
 
     def test_profile_coverage_and_actual_transport_bound_claims(self):
         self.assertEqual(release.validate(self.matrix, self.profiles), [])
+        self.matrix["profiles"]["rta-main"]["evidence"]["transport"] = "operator-ssm-forward"
         self.matrix["profiles"]["rta-main"]["shared_browser"] = "verified"
         self.assertTrue(any("SSM evidence" in error for error in release.validate(self.matrix, self.profiles)))
         del self.matrix["profiles"]["dw-main"]

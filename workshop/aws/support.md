@@ -3,21 +3,23 @@
 The validated AWS course profile is **`rta-main` on Linux x86_64**, using
 Python 3.12, `us-east-1`, `m7i.2xlarge` and a 200 GiB root disk. The published
 private course image was validated at course commit
-`180aca72c993a784a5d9b25e903341a834f14458`. Two-host startup, repeated startup,
-single-host replacement and manual cleanup have historical real-EC2 evidence.
-See [prebuilt startup](prebuilt.md) and [the pilot runbook](first-run.md).
+`180aca72c993a784a5d9b25e903341a834f14458`. Three-learner shared HTTPS/Cognito startup, concurrent Lab 1, CPU pressure,
+single-host replacement and cleanup now have real-AWS evidence in the
+[scale rehearsal](scale-rehearsal.md). The pinned image's full main-course Lab
+execution was validated separately; the three-host round did not execute all
+Labs concurrently.
 
-Browser validation used operator SSM forwards, including a temporary
-single-host HTTPS/token entry. Formal-domain ALB/Cognito access, shared service
-routing, complete activity cleanup, natural TTL and target-scale acceptance
-remain pending. A local check, mock or kernel probe does not certify a course
-Lab, a real browser flow, a model conversation or cloud permissions.
+Browser validation includes the historical operator SSM/token entry and the
+formal-domain ALB/Cognito entry, learner ownership and RTA service routes.
+Configured-range cleanup and natural TTL have separate acceptance evidence;
+the TTL image's production security review remains open. A local check, mock
+or kernel probe does not certify a course Lab, browser flow or model conversation.
 
 ## Validation levels
 
 | Profile | Configuration | EC2 course execution | Shared HTTPS/Cognito |
 | --- | --- | --- | --- |
-| `rta-main` | Implemented | Verified within the limits above | Pending |
+| `rta-main` | Implemented | Verified within the limits above | Verified; three-learner scope above |
 | `rta-metabase` | Implemented | Unverified | Pending |
 | `dw-main`, `dw-kafka`, `dw-cdc`, `dw-bi`, `dw-backup`, `dw-extensions` | Implemented | Unverified; delivery scope not selected | Pending |
 | `obs-main`, `obs-local-model`, `obs-openai` | Implemented | Unverified; delivery scope not selected | Pending |
@@ -39,14 +41,18 @@ perform cloud or browser acceptance.
 - EC2 runtime and AMI validation cover Linux x86_64 and the stated Region and
   instance type. Arm64 EC2, other Regions/types and optional course combinations
   need their own validation.
-- The lifecycle CLI currently executes a one-to-five-host SSM-only pilot with
-  no spare promotion. Two hosts were tested live. The upper configuration limit
-  is not evidence that five hosts, a larger event or shared authentication passed.
-- Shared access, stable allocation, Cognito and service routing have local
-  implementations and tests. Follow their explicit pending acceptance limits.
-- The cleanup runner is a separate Linux amd64 image, with its own
-  [build, verification and scan requirements](ttl/README.md). Its local success
-  does not certify ECS/Fargate, natural expiry or the course AMI.
+- The lifecycle CLI executes a one-to-five-host pilot, including explicitly
+  bound shared networks. Three learner hosts were tested live. Shared route,
+  gateway and portal operations remain separate commands; no spare promotion
+  is implemented. Larger events require their own capacity acceptance.
+- Shared access, stable allocation, Cognito and service routing have local tests
+  and real integration evidence for the declared RTA scope. The older validated
+  AMI still shares a Docker engine ID between clones; the sealing fix needs a
+  new image build and fresh-instance validation.
+- The cleanup runner is a separate Linux amd64 image with its own
+  [build, verification and scan requirements](ttl/README.md). Its isolated
+  Fargate/TTL acceptance does not close its production security review or
+  certify another course/image variant.
 - A partner uses its own account, credentials, state and image/installation
   source. The current private AMI is not a public cross-account dependency.
 

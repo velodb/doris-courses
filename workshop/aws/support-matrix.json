@@ -11,18 +11,18 @@
       "course_dir": "doris-course/01-real-time-analytics",
       "kernel": "doris-rta",
       "ec2_course": "verified",
-      "shared_browser": "pending",
+      "shared_browser": "verified",
       "browser_host": "not-required",
       "evidence": {
         "course_sha": "180aca72c993a784a5d9b25e903341a834f14458",
-        "transport": "operator-ssm-forward",
-        "hosts": 2,
+        "transport": "shared-https",
+        "hosts": 3,
         "region": "us-east-1",
         "instance_type": "m7i.2xlarge",
         "disk_gib": 200
       },
-      "summary": "prebuilt.md",
-      "limitations": "RTA main Labs and the published private AMI were tested. Shared ALB/Cognito, formal-domain service routing and target-scale acceptance remain pending."
+      "summary": "scale-rehearsal.md",
+      "limitations": "Full main-course Labs and the private AMI have historical execution evidence. Three-learner shared access, concurrent Lab 1, pressure and replacement were tested; all Labs were not run concurrently on every host. The older AMI still duplicates Docker engine IDs; its sealing fix needs a rebuilt image. Larger events and other variants require separate acceptance."
     },
     "rta-metabase": {
       "course_dir": "doris-course/01-real-time-analytics",

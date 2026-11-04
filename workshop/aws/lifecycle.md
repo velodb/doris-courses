@@ -3,14 +3,15 @@
 `tools/workshop.py` wraps the existing live preflight and saved-plan gate,
 Terraform activity resources, SSM installation and runtime probes. It reuses an
 existing foundation bucket. It never creates or destroys foundation resources.
-The current scope is the one-to-five-host SSM-only pilot described in the
-[first-run guide](first-run.md). The two-host up/repeated-up, fault status,
-service recovery and basic destroy path have been exercised on real EC2.
-Stable roster updates, listener allocations and bounded SSM scheduling now have
-[local batch coverage](batch-operations.md); those additions have not been
-exercised in a real shared activity.
-The default `rta-main` Labs 1–10 were executed separately after readiness.
-Shared HTTPS/OIDC and manual browser interaction remain separate checks.
+The current scope is a one-to-five-host pilot, with either its own network or
+an explicitly bound shared network. Three-host startup, fault isolation,
+replacement and shared authenticated access were exercised in the
+[scale rehearsal](scale-rehearsal.md). Stable roster updates, listener
+allocations and bounded SSM scheduling are described in the
+[batch guide](batch-operations.md). Authenticated bindings, gateway deployment
+and portal updates have separate reviewed commands; host readiness does not
+verify those access steps. The default `rta-main` Labs 1–10 were executed
+separately after readiness; the three-host round ran Lab 1 concurrently.
 
 ## Plan, review and bring up
 

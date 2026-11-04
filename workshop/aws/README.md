@@ -21,19 +21,16 @@ For a validated private AMI, use [prebuilt activity startup](prebuilt.md),
 including pinned release metadata and guarded single-learner replacement.
 Use [controlled SSM diagnostics and log handling](operations.md) to locate
 initialization, service and kernel failures without exporting student content.
-Real EC2 infrastructure, the two-host CLI lifecycle, and default `rta-main`
-Notebook execution have been verified. Browser checks through operator SSM
-forwards also covered the reader, Notebook editing/save/download, kernel
-restart and reconnection, quiz widgets, terminal Docker access and the Doris
-QueryProfile page, including a temporary single-instance HTTPS/token entry.
-Slow SSM cold loads required a reload after frontend assets arrived. Shared
-HTTPS/Cognito routing now has a [local implementation](cognito-access.md) and
-[operator-owned course entry](shared-access.md#operator-owned-course-entry), with
-apex/wildcard TLS configuration and delegated partner namespace support, plus
-[service integration](service-access.md); formal-domain cloud acceptance is pending. The
-[deployment architecture](architecture.md) and
-[first real Terraform runbook](first-run.md) describe the live preflight and
-saved-plan gate for the first SSM-only host.
+Real EC2 infrastructure, the default `rta-main` Labs and the private image have
+been verified. A [three-learner rehearsal](scale-rehearsal.md) also exercised
+shared HTTPS/Cognito access, portal ownership, kernel and terminal WebSockets,
+concurrent Lab 1, CPU pressure, single-host replacement and cleanup. The pilot
+CLI supports one to five hosts; three is the tested target scale, with no spare
+promotion. Shared access, gateway installation and portal operations use their
+separate reviewed interfaces. Follow the [deployment architecture](architecture.md),
+[shared access](shared-access.md), [Cognito routing](cognito-access.md) and
+[service integration](service-access.md) guides. The [first-run guide](first-run.md)
+retains the initial SSM-only workflow and its cold-load limitations.
 
 ## Try the offline tool
 

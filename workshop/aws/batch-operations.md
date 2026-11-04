@@ -4,9 +4,11 @@ The batch implementation preserves learner keys, withdrawn allocations,
 ALB priorities and retained installation command IDs. Fixtures cover roster
 changes, bounded remote SSM scheduling and partial failures. Shared entry,
 authenticated access, roster changes, replacement and activity cleanup have
-also been exercised on AWS. Account-wide residual scanning, enrolled TTL and
-target-scale exercises remain separate work. The guarded CLI supports one to
-five learner hosts and does not create or promote spares.
+also been exercised on AWS. Configured-range residual scanning and enrolled TTL have separate acceptance
+procedures. A [three-learner target-scale rehearsal](scale-rehearsal.md) covers
+concurrent use, pressure, replacement and cleanup. The guarded CLI supports one
+to five learner hosts; three is the tested target, and it does not create or
+promote spares.
 
 ## Persistent listener assignments
 
