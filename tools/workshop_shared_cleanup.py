@@ -12,6 +12,7 @@ import workshop as lifecycle
 import workshop_cleanup as cleanup
 import workshop_config as wc
 import workshop_preflight as pf
+from workshop_scan import Scanner
 import workshop_ttl as ttl
 
 
@@ -139,7 +140,30 @@ def prepare(controller, bindings_run, routes_file, output, *, tf_factory=Terrafo
             "shared_resources_retained": True, "valid_until": receipt["valid_until"]}
 
 
-def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_factory=Terraform, now=None):
+def reconcile(controller, output, manifest, modules, *, scan_factory=Scanner):
+    """Collect a new independent report; a failed report never means cleanup succeeded."""
+    states = {}
+    for name, module in modules.items():
+        state = module.state()
+        states[name] = {"status": "complete", "managed_addresses": [r["address"] for r in state["resources"]
+                        if r.get("mode", "managed") == "managed"]}
+    index = 1
+    while (output / f"reconciliation-{index:03d}").exists():
+        index += 1
+    directory = output / f"reconciliation-{index:03d}"
+    directory.mkdir(mode=0o700)
+    snapshot = scan_factory(controller.cloud, manifest, states=states).collect()
+    report = cleanup.reconcile(manifest, snapshot)
+    wc.write_manifest(directory / "snapshot.json", snapshot)
+    wc.write_manifest(directory / "report.json", report)
+    lifecycle.atomic_json(output / "progress.json", {"phase": "complete" if report["ok"] else "reconciliation-incomplete",
+        "report": str(directory / "report.json"), "resources_may_remain": not report["ok"], "shared_resources_retained": True})
+    require(report["ok"], "resource reconciliation incomplete; inspect the private report and retry collection")
+    return {"phase": "complete", "shared_resources_retained": True, "full_shared_scan_complete": True,
+            "report": str(directory / "report.json")}
+
+
+def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_factory=Terraform, scan_factory=Scanner, now=None):
     bindings_run, routes_file = Path(bindings_run).resolve(), Path(routes_file).resolve()
     output = Path(output).resolve()
     review_path = output / "review.json"
@@ -178,16 +202,36 @@ def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_fa
     # state causes no further Terraform mutation or nested fence acquisition.
     require(not modules["pilot"].state()["resources"], "pilot state is not empty")
     controller.tf = lifecycle.Terraform(output / "pilot")
-    result = controller._destroy()
-    lifecycle.atomic_json(progress, {"phase": "complete", "pilot_resources_reconciled": True,
-                                    "other_activity_resources_may_remain": True, "shared_resources_retained": True})
-    return {"phase": "complete", "shared_resources_retained": True,
-            "cleanup_boundary": result["cleanup_boundary"], "full_shared_scan_complete": False}
+    controller._destroy()
+    lifecycle.atomic_json(progress, {"phase": "reconciling", "resources_may_remain": True, "shared_resources_retained": True})
+    return reconcile(controller, output, manifest, modules, scan_factory=scan_factory)
+
+
+def retry_reconciliation(controller, bindings_run, routes_file, output, approved_hash, *, tf_factory=Terraform, scan_factory=Scanner):
+    """Retry only read-only reconciliation after both reviewed applies completed."""
+    output = Path(output).resolve()
+    receipt_path = output / "review.json"
+    require(approved_hash and pf.file_hash(receipt_path) == approved_hash, "supply the reviewed receipt SHA256")
+    receipt = wc.load_document(receipt_path)
+    manifest = wc.load_document(output / "manifest.json")
+    progress = wc.load_document(output / "progress.json")
+    require(receipt.get("kind") == "aws-workshop-shared-cleanup-review" and receipt.get("schema_version") == 1 and
+            receipt.get("event_id") == controller.config["event_id"] and receipt.get("order") == ["access-bindings", "pilot"] and
+            receipt.get("manifest_sha256") == wc.canonical_hash(manifest), "review or manifest differs")
+    require(progress.get("phase") in {"reconciling", "reconciliation-incomplete", "complete"},
+            "apply outcome is not known; reconcile manually before any retry")
+    require(receipt["artifacts"] == artifact_hashes(controller, bindings_run, routes_file), "inputs or source changed")
+    bound_inputs(controller, bindings_run, routes_file)
+    for name in receipt["order"]:
+        require(receipt["initialized_backends"][name] == pf.file_hash(output / name / "terraform-data" / "terraform.tfstate"),
+                "initialized Terraform backend changed")
+    modules = {name: tf_factory(name, output / name) for name in receipt["order"]}
+    return reconcile(controller, output, manifest, modules, scan_factory=scan_factory)
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("plan", "apply"))
+    parser.add_argument("command", choices=("plan", "apply", "reconcile"))
     for name in ("pilot-run", "bindings-run", "routes", "output"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--ttl-binding", type=Path)
@@ -199,8 +243,12 @@ def main(argv=None):
             controller = lifecycle.Controller(args.pilot_run, ttl_binding=args.ttl_binding)
             with ttl.activity_operation(controller.cloud, controller.config, controller.pilot, args.ttl_binding,
                                         cleanup_operation=True, scope_change=True):
-                result = (prepare(controller, args.bindings_run, args.routes, args.output) if args.command == "plan" else
-                          apply(controller, args.bindings_run, args.routes, args.output, args.approved_review_sha256))
+                if args.command == "plan":
+                    result = prepare(controller, args.bindings_run, args.routes, args.output)
+                elif args.command == "apply":
+                    result = apply(controller, args.bindings_run, args.routes, args.output, args.approved_review_sha256)
+                else:
+                    result = retry_reconciliation(controller, args.bindings_run, args.routes, args.output, args.approved_review_sha256)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     except Exception as exc:

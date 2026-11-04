@@ -84,8 +84,7 @@ incomplete. Its boundary remains pilot state and known resources.
 applies activity bindings before the pilot under one activity fence. It retains
 the shared entry, portal, DNS zone, foundation and published images. Remove the
 activity from the separately managed portal registry first. This command does
-not retire the portal or shared infrastructure, revoke unrelated identities or
-perform the full residual scan.
+not retire the portal or shared infrastructure or revoke unrelated identities.
 
 Use the latest pilot run, the bindings directory containing its original
 `inputs.tfvars.json` and `backend.tfbackend.json`, and the exact current route
@@ -119,10 +118,13 @@ expires after 15 minutes and binds the inputs, source, initialized backends,
 manifest and both plans. Terraform obtains its normal state locks for each
 plan and apply. A failed or interrupted apply is never replayed automatically:
 retain the private progress record, reconcile actual state and any TTL fence,
-then create fresh reviewed plans. There is no cross-state rollback. A completed
-pilot reconciliation checks known instance, root-volume and ENI IDs; it is not
-proof of complete DNS, Cognito, target-group or account-wide cleanup. Run the
-separate [collection and reconciliation](#collect-and-reconcile) workflow.
+then create fresh reviewed plans. There is no cross-state rollback. After both
+applies and the pilot checks, the command reads both states again and collects a
+configuration-scoped residual report. A failed or incomplete scan fails the
+operation and retains the report. If both applies are known to have completed,
+repeat the read-only scan with `reconcile` and the same arguments and receipt
+hash; the previous report is preserved. An uncertain apply outcome requires
+manual investigation, not a scan-only retry. This is not account-wide cleanup.
 
 ## Collect and reconcile
 
@@ -168,9 +170,12 @@ permission error, pagination limitation or bound makes coverage incomplete.
 Partial resources remain recorded and raw errors are discarded. Unrelated
 account inventory is filtered before persistence. The scanner reads no IAM
 policy documents, Cognito users/secrets, SSM document bodies or S3 object contents.
-When an individual bucket cannot be inspected, the scanner continues with the
-remaining buckets but marks the entire bucket catalog incomplete. It cannot
-assume that an inaccessible bucket is unrelated to the activity.
+Bucket discovery uses the paginated regional `ListBuckets` filter and requires
+the returned Region to match; it does not need a separate location query for
+every account bucket. When an individual bucket's tags cannot be inspected,
+the scanner continues with the remaining buckets but marks the entire bucket
+catalog incomplete. It cannot assume that an inaccessible bucket is unrelated
+to the activity.
 
 Reports separate residuals, conflicts, incomplete coverage, remaining state,
 known absence and protected resources. Protected resources require cost review;

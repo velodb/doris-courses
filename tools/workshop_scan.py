@@ -119,13 +119,10 @@ class Scanner:
         t = self.manifest["target"]
         client = self.aws.client("s3")
         incomplete = False
-        for bucket in self.items("s3", "list_buckets", "Buckets"):
+        for bucket in self.items("s3", "list_buckets", "Buckets", BucketRegion=t["region"]):
             name = bucket["Name"]
             try:
-                location = self.call("s3", "get_bucket_location", Bucket=name).get("LocationConstraint")
-                region = "us-east-1" if location is None else "eu-west-1" if location == "EU" else location
-                if region != t["region"]:
-                    continue
+                cleanup.require(bucket.get("BucketRegion") == t["region"], "bucket region missing or mismatched")
                 try:
                     resource_tags = self.call("s3", "get_bucket_tagging", Bucket=name)["TagSet"]
                 except client.exceptions.ClientError as exc:

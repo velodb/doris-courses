@@ -13,7 +13,7 @@ from unittest import mock
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import workshop_config as wc
 import workshop_shared_cleanup as shared_cleanup
-from test_workshop_cleanup import config, shared, state_row, tags
+from test_workshop_cleanup import config, shared, snapshot, state_row, tags
 
 
 class FakeController:
@@ -25,6 +25,7 @@ class FakeController:
         self.config["expires_at"] = "2099-01-01T00:00:00Z"
         self.pilot = {"state_bucket_name": "foundation-state-example"}
         self.binding = {"shared_access": shared()}
+        self.cloud = object()
         self.record = {"event_id": "class-a", "known_instances": [], "known_volumes": [], "nodes": {}}
         self.reconciled = False
         for name in ("binding.json", "inputs.tfvars.json", "backend.tfbackend.json"):
@@ -82,6 +83,19 @@ class FakeTerraform:
         self.store[self.module] = []
 
 
+class FakeScanner:
+    fail = False
+
+    def __init__(self, cloud, manifest, *, states):
+        self.result = snapshot(manifest)
+        self.result["states"] = states
+        if self.fail:
+            self.result["checks"]["buckets"]["status"] = "failed"
+
+    def collect(self):
+        return self.result
+
+
 class SharedCleanupTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -112,6 +126,7 @@ class SharedCleanupTests(unittest.TestCase):
                            {"user_pool_id": "us-east-1_pool", "client_secret": "PRIVATE-CLIENT"}, index=None)
         FakeTerraform.store = {"pilot": [pilot], "access-bindings": [pool, client]}
         FakeTerraform.plans, FakeTerraform.actions, FakeTerraform.fail_module = {}, [], None
+        FakeScanner.fail = False
 
     def prepare(self):
         return shared_cleanup.prepare(self.controller, self.bindings, self.routes, self.output, tf_factory=FakeTerraform)
@@ -120,11 +135,36 @@ class SharedCleanupTests(unittest.TestCase):
         review = self.prepare()
         self.assertNotIn("PRIVATE-CLIENT", (self.output / "manifest.json").read_text())
         result = shared_cleanup.apply(self.controller, self.bindings, self.routes, self.output,
-                                      review["review_sha256"], tf_factory=FakeTerraform)
+                                      review["review_sha256"], tf_factory=FakeTerraform, scan_factory=FakeScanner)
         self.assertEqual(FakeTerraform.actions, ["access-bindings", "pilot"])
         self.assertTrue(self.controller.reconciled)
         self.assertTrue(result["shared_resources_retained"])
-        self.assertFalse(result["full_shared_scan_complete"])
+        self.assertTrue(result["full_shared_scan_complete"])
+        self.assertTrue(wc.load_document(Path(result["report"]))["ok"])
+
+    def test_incomplete_scan_requires_read_only_retry_without_reapplying(self):
+        review = self.prepare()
+        FakeScanner.fail = True
+        with self.assertRaisesRegex(wc.ConfigError, "reconciliation incomplete"):
+            shared_cleanup.apply(self.controller, self.bindings, self.routes, self.output,
+                review["review_sha256"], tf_factory=FakeTerraform, scan_factory=FakeScanner)
+        self.assertEqual(FakeTerraform.actions, ["access-bindings", "pilot"])
+        self.assertEqual(wc.load_document(self.output / "progress.json")["phase"], "reconciliation-incomplete")
+        self.assertFalse(wc.load_document(self.output / "reconciliation-001" / "report.json")["ok"])
+        FakeScanner.fail = False
+        result = shared_cleanup.retry_reconciliation(self.controller, self.bindings, self.routes, self.output,
+            review["review_sha256"], tf_factory=FakeTerraform, scan_factory=FakeScanner)
+        self.assertTrue(result["full_shared_scan_complete"])
+        self.assertEqual(FakeTerraform.actions, ["access-bindings", "pilot"])
+        self.assertTrue(wc.load_document(self.output / "reconciliation-002" / "report.json")["ok"])
+
+    def test_cannot_retry_scan_after_unknown_apply_outcome(self):
+        review = self.prepare()
+        wc.write_manifest(self.output / "progress.json", {"phase": "applying-pilot"})
+        with self.assertRaisesRegex(wc.ConfigError, "apply outcome is not known"):
+            shared_cleanup.retry_reconciliation(self.controller, self.bindings, self.routes, self.output,
+                review["review_sha256"], tf_factory=FakeTerraform, scan_factory=FakeScanner)
+        self.assertEqual(FakeTerraform.actions, [])
 
     def test_changed_plan_or_backend_never_applies(self):
         review = self.prepare()

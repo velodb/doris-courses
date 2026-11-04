@@ -464,8 +464,7 @@ class SdkScanTests(unittest.TestCase):
         self.clients["s3"] = client
         scanner = Scanner(self.aws, manifest())
         with Stubber(client) as stub:
-            stub.add_response("list_buckets", {"Buckets": [{"Name": "foundation-state-example"}]}, {})
-            stub.add_response("get_bucket_location", {}, {"Bucket": "foundation-state-example"})
+            stub.add_response("list_buckets", {"Buckets": [{"Name": "foundation-state-example", "BucketRegion": REGION}]}, {"BucketRegion": REGION})
             stub.add_client_error("get_bucket_tagging", service_error_code="NoSuchTagSet", expected_params={"Bucket": "foundation-state-example"})
             scanner.run("buckets", scanner.buckets)
             self.assertEqual(scanner.snapshot["checks"]["buckets"]["status"], "complete")
@@ -479,11 +478,10 @@ class SdkScanTests(unittest.TestCase):
         m = manifest([state_row("aws_s3_bucket", "runtime", "owned-runtime-example", index=None)])
         scanner = Scanner(self.aws, m)
         with Stubber(client) as stub:
-            stub.add_response("list_buckets", {"Buckets": [{"Name": "inaccessible-example"},
-                {"Name": "owned-runtime-example"}]}, {})
-            stub.add_client_error("get_bucket_location", service_error_code="AccessDenied",
+            stub.add_response("list_buckets", {"Buckets": [{"Name": "inaccessible-example", "BucketRegion": REGION},
+                {"Name": "owned-runtime-example", "BucketRegion": REGION}]}, {"BucketRegion": REGION})
+            stub.add_client_error("get_bucket_tagging", service_error_code="AccessDenied",
                 service_message="PRIVATE-RESPONSE", expected_params={"Bucket": "inaccessible-example"})
-            stub.add_response("get_bucket_location", {}, {"Bucket": "owned-runtime-example"})
             stub.add_response("get_bucket_tagging", {"TagSet": [{"Key": k, "Value": v} for k, v in tags().items()]},
                 {"Bucket": "owned-runtime-example"})
             scanner.run("buckets", scanner.buckets)
@@ -499,24 +497,18 @@ class SdkScanTests(unittest.TestCase):
             self.assertEqual(report["residual"][0]["id"], "owned-runtime-example")
             stub.assert_no_pending_responses()
 
-    def test_s3_tag_access_denial_also_keeps_catalog_incomplete(self):
+    def test_s3_unexpected_region_fails_closed(self):
         from botocore.stub import Stubber
         client = self.session.client("s3")
         self.clients["s3"] = client
         scanner = Scanner(self.aws, manifest())
         with Stubber(client) as stub:
-            stub.add_response("list_buckets", {"Buckets": [{"Name": "unknown-example"},
-                {"Name": "foundation-state-example"}]}, {})
-            stub.add_response("get_bucket_location", {}, {"Bucket": "unknown-example"})
-            stub.add_client_error("get_bucket_tagging", service_error_code="AccessDenied",
-                expected_params={"Bucket": "unknown-example"})
-            stub.add_response("get_bucket_location", {}, {"Bucket": "foundation-state-example"})
-            stub.add_client_error("get_bucket_tagging", service_error_code="NoSuchTagSet",
-                expected_params={"Bucket": "foundation-state-example"})
+            stub.add_response("list_buckets", {"Buckets": [{"Name": "unknown-example", "BucketRegion": "us-west-2"}]},
+                {"BucketRegion": REGION})
             scanner.run("buckets", scanner.buckets)
             check = scanner.snapshot["checks"]["buckets"]
             self.assertEqual(check["status"], "failed")
-            self.assertEqual([row["id"] for row in check["resources"]], ["foundation-state-example"])
+            self.assertEqual(check["resources"], [])
             stub.assert_no_pending_responses()
 
 
