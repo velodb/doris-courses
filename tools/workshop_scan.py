@@ -118,6 +118,7 @@ class Scanner:
     def buckets(self):
         t = self.manifest["target"]
         client = self.aws.client("s3")
+        incomplete = False
         for bucket in self.items("s3", "list_buckets", "Buckets"):
             name = bucket["Name"]
             try:
@@ -133,7 +134,13 @@ class Scanner:
                     resource_tags = []
             except client.exceptions.NoSuchBucket:
                 continue
+            except client.exceptions.ClientError:
+                # One inaccessible account bucket must not hide later buckets.
+                # Its unknown ownership still makes the whole catalog incomplete.
+                incomplete = True
+                continue
             self.add("buckets", name, resource_tags=resource_tags)
+        cleanup.require(not incomplete, "one or more buckets could not be inspected")
 
     def ssm(self):
         for value in self.items("ssm", "list_documents", "DocumentIdentifiers", Filters=[{"Key": "Owner", "Values": ["Self"]}]):

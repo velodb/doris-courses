@@ -168,6 +168,9 @@ permission error, pagination limitation or bound makes coverage incomplete.
 Partial resources remain recorded and raw errors are discarded. Unrelated
 account inventory is filtered before persistence. The scanner reads no IAM
 policy documents, Cognito users/secrets, SSM document bodies or S3 object contents.
+When an individual bucket cannot be inspected, the scanner continues with the
+remaining buckets but marks the entire bucket catalog incomplete. It cannot
+assume that an inaccessible bucket is unrelated to the activity.
 
 Reports separate residuals, conflicts, incomplete coverage, remaining state,
 known absence and protected resources. Protected resources require cost review;
