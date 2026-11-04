@@ -1,11 +1,12 @@
 # Stable batch preparation
 
-The local batch implementation preserves learner keys, withdrawn allocations,
+The batch implementation preserves learner keys, withdrawn allocations,
 ALB priorities and retained installation command IDs. Fixtures cover roster
-changes, bounded remote SSM scheduling and partial failures. Real shared
-TLS/Cognito/service acceptance, full activity cleanup, external TTL and target
-scale remain separate acceptance work. This code does not extend the guarded
-CLI beyond the existing one-to-five-host SSM pilot.
+changes, bounded remote SSM scheduling and partial failures. Shared entry,
+authenticated access, roster changes, replacement and activity cleanup have
+also been exercised on AWS. Account-wide residual scanning, enrolled TTL and
+target-scale exercises remain separate work. The guarded CLI supports one to
+five learner hosts and does not create or promote spares.
 
 ## Persistent listener assignments
 

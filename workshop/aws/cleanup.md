@@ -3,8 +3,9 @@
 `tools/workshop_cleanup.py` prepares ownership evidence, collects read-only AWS
 inventory and reconciles it with post-cleanup Terraform exports. It never deletes
 resources or grants deletion permission. These interfaces have local fixtures
-and SDK contract tests; real shared cleanup, target scale and TTL remain separate
-acceptance work.
+and SDK contract tests. The reviewed shared activity cleanup has also been
+exercised on AWS; account-wide residual coverage, target scale and TTL remain
+separate acceptance work.
 
 ## Prepare evidence before cleanup
 
