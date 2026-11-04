@@ -47,8 +47,9 @@ perform cloud or browser acceptance.
   is implemented. Larger events require their own capacity acceptance.
 - Shared access, stable allocation, Cognito and service routing have local tests
   and real integration evidence for the declared RTA scope. The older validated
-  AMI still shares a Docker engine ID between clones; the sealing fix needs a
-  new image build and fresh-instance validation.
+  AMI still shares a Docker engine ID between clones. A new candidate includes
+  the sealing change and passed the fresh-instance audit and full RTA run;
+  GUI certification, repeated clone launches and release are still pending.
 - The cleanup runner is a separate Linux amd64 image with its own
   [build, verification and scan requirements](ttl/README.md). Its isolated
   Fargate/TTL acceptance does not close its production security review or
@@ -100,3 +101,13 @@ tests passed natively. This resembles a
 but does not establish its exact cause. Preserve that failed run and confirm
 the current runtime suite on native amd64 CI. This arm64 test result does not
 add arm64 EC2/AMI support to the matrix above.
+
+A later private candidate at course/deployment commit
+`db2620cb51c29a5fb6577e242dadeb03c15c368e` completed all ten RTA Labs and ten
+quizzes (189 code cells) after a Module 9 BE disk-report readiness fix. Its
+native Linux x86_64 checks covered 389 tools/runtime tests, five UI tests and
+591 shared/course tests (two DOG-specific skips). The shared portal passed
+HTTPS and fixed-asset/CORS checks. Window-control failures prevented the new
+candidate's GUI certification and release, so it is not an activity-ready
+replacement for the older published image. The new three-learner UI round and
+remote GitHub Actions run remain pending.

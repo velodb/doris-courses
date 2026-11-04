@@ -1,6 +1,6 @@
 # Workshop UI
 
-Workshop 的独立 UI 工作区。采用用户选定的精简 A「实验手册」，页面英文，使用 Apache Doris 官方标识。自有门户与课程页面已完成本地运行接入；尚未部署 AWS，Cognito 托管认证版本未改。验证结果见 [接入状态](integration-status.md)。
+Workshop 的独立 UI 工作区。采用用户选定的精简 A「实验手册」，页面英文，使用 Apache Doris 官方标识。自有门户与课程页面已接入运行时。新的私有候选镜像已通过原生测试和完整 RTA 执行，云端 GUI 与新三人共享验收仍待完成；Cognito 托管认证版本未改。验证结果见 [接入状态](integration-status.md)。
 
 ```text
 ui/workshop/
