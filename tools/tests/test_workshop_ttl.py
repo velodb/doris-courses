@@ -108,6 +108,26 @@ class BindingTests(unittest.TestCase):
             with self.assertRaises(wc.ConfigError):
                 ttl.validate_binding(b)
 
+    def test_runtime_bundle_requires_declared_lockfiles_and_matching_hashes(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            lock = root / 'doris-rta.requirements.lock'
+            lock.write_bytes(b'locked-dependency')
+            digest = hashlib.sha256(lock.read_bytes()).hexdigest()
+            (root / 'runtime.json').write_text(json.dumps({'sha256': {lock.name: digest}}))
+            artifacts = ttl.runtime_bundle_artifacts(root)
+            self.assertEqual({x['name'] for x in artifacts}, {'runtime.json', lock.name})
+            b = binding()
+            b['runtime_artifacts'] = artifacts
+            ttl.validate_binding(b)
+            lock.write_bytes(b'changed')
+            with self.assertRaisesRegex(wc.ConfigError, 'hash differs'):
+                ttl.runtime_bundle_artifacts(root)
+            lock.unlink()
+            with self.assertRaisesRegex(wc.ConfigError, 'exactly its declared files'):
+                ttl.runtime_bundle_artifacts(root)
+
 
 class ControlTests(unittest.TestCase):
     def setUp(self):

@@ -45,7 +45,9 @@ For `pilot`, preserve the original runtime bundle as fixed, hash-bound inputs;
 change only its variable path to `/work/runtime`. Include `runtime.json` and
 every installer file it references. The worker downloads the approved filenames
 to scratch storage, verifies sizes/hashes and never extracts or executes the
-course archive. Only the installer artifact names accepted by
+course archive. Include any server and course `.requirements.lock` files listed
+in `runtime.json`; preparation verifies their content hashes and rejects missing
+or extra files. Only the installer artifact names accepted by
 `workshop_ttl.RUNTIME_FILES` are allowed. Private runtime data and state are
 excluded from the runner image.
 

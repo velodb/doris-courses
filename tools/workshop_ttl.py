@@ -17,7 +17,8 @@ HASH = re.compile(r"[0-9a-f]{64}")
 ID = re.compile(r"[a-z][a-z0-9-]{0,31}")
 MODULE_KEYS = {"pilot": "terraform.tfstate", "access-bindings": "access.tfstate"}
 RUNTIME_FILES = {"runtime.json", "source.tar", "install_host.sh", "host.py", "kernel.py", "check.py", "serve.py", "portal.py",
-    "doris-workshop-jupyter.service", "packages.json", "operations.py"}
+    "doris-workshop-jupyter.service", "packages.json", "operations.py", "server.requirements.lock",
+    "doris-rta.requirements.lock", "doris-dw.requirements.lock", "doris-obs.requirements.lock", "doris-ai.requirements.lock"}
 BUSY = {"operating", "cleaning", "unknown"}
 
 
@@ -275,6 +276,31 @@ def execute(binding, event, store, adapter, *, now=None, holder=None, clock=time
         raise
 
 
+def runtime_bundle_artifacts(directory):
+    """Bind exactly the files required by the runtime manifest, including lockfiles."""
+    import hashlib
+    directory = Path(directory)
+    require(directory.is_dir() and not directory.is_symlink(), "runtime bundle must be a directory")
+    paths = sorted(directory.iterdir())
+    require(all(path.name in RUNTIME_FILES and path.is_file() and not path.is_symlink() for path in paths),
+            "runtime bundle contains unapproved data or symlinks")
+    names = {path.name for path in paths}
+    require("runtime.json" in names, "runtime manifest is required")
+    runtime = wc.load_document(directory / "runtime.json")
+    require(isinstance(runtime, dict) and isinstance(runtime.get("sha256"), dict), "invalid runtime manifest hashes")
+    expected = runtime["sha256"]
+    require(all(isinstance(name, str) and name in RUNTIME_FILES and name != "runtime.json" and
+                isinstance(digest, str) and HASH.fullmatch(digest) for name, digest in expected.items()) and
+            names == set(expected) | {"runtime.json"}, "runtime bundle must contain exactly its declared files")
+    artifacts = []
+    for path in paths:
+        with path.open("rb") as stream:
+            digest = hashlib.file_digest(stream, "sha256").hexdigest()
+        require(path.name == "runtime.json" or digest == expected[path.name], "runtime artifact hash differs from manifest")
+        artifacts.append({"name": path.name, "sha256": digest, "size": path.stat().st_size})
+    return artifacts
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -302,12 +328,7 @@ def main(argv=None):
         if args.command == "prepare":
             artifacts = []
             if args.runtime_bundle:
-                import hashlib
-                for path in sorted(args.runtime_bundle.iterdir()):
-                    require(path.name in RUNTIME_FILES and path.is_file() and not path.is_symlink(), "runtime bundle contains unapproved data or symlinks")
-                    with path.open("rb") as stream:
-                        digest = hashlib.file_digest(stream, "sha256").hexdigest()
-                    artifacts.append({"name": path.name, "sha256": digest, "size": path.stat().st_size})
+                artifacts = runtime_bundle_artifacts(args.runtime_bundle)
             binding = make_binding(config, wc.load_document(args.cleanup_manifest), wc.load_document(args.modules), bucket=args.bucket,
                 revision=args.revision, source_sha=args.source_sha, tree_sha256=args.source_tree_sha256, runtime_artifacts=artifacts)
             scheduled = schedule(binding)
