@@ -49,6 +49,10 @@ run "disabled_control_plane_has_bounded_nonprivileged_workflow" {
     error_message = "The control worker is unprivileged and has no incoming network access."
   }
   assert {
+    condition     = length(jsondecode(aws_ecs_task_definition.control.container_definitions)[0].portMappings) == 0 && length(jsondecode(aws_ecs_task_definition.control.container_definitions)[0].linuxParameters.capabilities.add) == 0 && length(jsondecode(aws_ecs_task_definition.control.container_definitions)[0].systemControls) == 0 && length(jsondecode(aws_ecs_task_definition.control.container_definitions)[0].volumesFrom) == 0
+    error_message = "Explicit empty ECS defaults prevent unnecessary task replacements."
+  }
+  assert {
     condition     = jsondecode(aws_sfn_state_machine.control.definition).States.Run.Parameters.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp == "DISABLED"
     error_message = "Public task IPs must remain disabled by default."
   }

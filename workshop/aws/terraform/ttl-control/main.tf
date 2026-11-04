@@ -139,7 +139,8 @@ resource "aws_ecs_task_definition" "control" {
   container_definitions = jsonencode([{
     name                   = "cleanup", image = var.runner_image, essential = true, user = "10001:10001",
     readonlyRootFilesystem = true, privileged = false,
-    linuxParameters        = { capabilities = { drop = ["ALL"] } },
+    linuxParameters        = { capabilities = { add = [], drop = ["ALL"] } },
+    portMappings           = [], systemControls = [], volumesFrom = [],
     mountPoints            = [{ sourceVolume = "work", containerPath = "/work", readOnly = false }],
     environment = [
       { name = "TTL_ACCOUNT_ID", value = var.expected_account_id },
