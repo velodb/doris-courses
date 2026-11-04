@@ -116,6 +116,30 @@ class StopTests(unittest.TestCase):
         self.assertEqual(raised.exception._render_traceback_(),
                          ["Stopped: Prepare the Kafka source failed; the log above shows why."])
 
+    def test_backend_heartbeats_wait_for_disk_reports_with_an_offline_registered_node(self):
+        lab = DorisLab.__new__(DorisLab)
+        pending = [{"BackendId": str(i), "Host": f"be-{i}", "Alive": i < 3,
+                    "AvailCapacity": "0.000", "TotalCapacity": "0.000"} for i in (1, 2, 3)]
+        ready = [{**row, "AvailCapacity": "20 GB", "TotalCapacity": "200 GB"}
+                 if row["Alive"] else row for row in pending]
+        lab._metadata_rows = Mock(side_effect=[pending, ready])
+        with patch.object(client.time, "sleep") as sleep:
+            result = lab.wait_for_backend_storage(expected_backends=3, expected_alive=2, show=False)
+        self.assertEqual(lab._metadata_rows.call_count, 2)
+        sleep.assert_called_once_with(1)
+        self.assertEqual(result["Alive"].tolist(), [True, True, False])
+
+    def test_an_alive_backend_without_a_disk_report_times_out(self):
+        lab = DorisLab.__new__(DorisLab)
+        lab._metadata_rows = Mock(return_value=[{"BackendId": "1", "Host": "be-1", "Alive": True,
+                                                "AvailCapacity": "0.000", "TotalCapacity": "0.000"}])
+        with patch.object(client.time, "monotonic", side_effect=[0, 0, 121]), \
+             patch.object(client.time, "sleep"), patch.object(client, "card"), \
+             patch.object(client, "show_frame") as frame:
+            with self.assertRaises(client.WaitTimedOut):
+                lab.wait_for_backend_storage(expected_backends=1)
+        self.assertEqual(frame.call_args.args[1]["TotalCapacity"].tolist(), ["0.000"])
+
     def test_scheduler_time_is_shown_in_the_session_time_zone(self):
         self.assertEqual(
             DorisLab._session_time("2026-10-21 16:57:12", "UTC", "Asia/Shanghai"),

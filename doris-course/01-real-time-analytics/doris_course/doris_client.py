@@ -1050,11 +1050,15 @@ class DorisLab:
         self,
         *,
         expected_backends: int,
+        expected_alive: int | None = None,
         timeout_seconds: int = 120,
         title: str = "BE storage paths are ready",
         show: bool = True,
     ) -> pd.DataFrame:
-        """Wait until every live BE has reported nonzero local storage capacity."""
+        """Wait for the expected live BEs to report usable local storage."""
+        expected_alive = expected_backends if expected_alive is None else expected_alive
+        if not 1 <= expected_alive <= expected_backends:
+            raise ValueError("Expected live backends must be between one and the registered count.")
         deadline = time.monotonic() + timeout_seconds
         rows: list[dict[str, object]] = []
         while time.monotonic() < deadline:
@@ -1065,7 +1069,8 @@ class DorisLab:
                 and self._capacity_bytes(row.get("TotalCapacity", 0)) > 0
                 and self._capacity_bytes(row.get("AvailCapacity", 0)) > 1024**2
             ]
-            if len(rows) == expected_backends and len(ready) == expected_backends:
+            alive = sum(str(row.get("Alive", "")).lower() == "true" for row in rows)
+            if len(rows) == expected_backends and alive == expected_alive and len(ready) == expected_alive:
                 break
             time.sleep(1)
         else:
@@ -1074,7 +1079,8 @@ class DorisLab:
                          if c in last.columns]]
             raise self._timed_out(
                 "BE storage is not ready",
-                f"After {timeout_seconds} seconds, not all {expected_backends} BEs reported usable storage.",
+                f"After {timeout_seconds} seconds, not all {expected_alive} expected live BEs "
+                f"among {expected_backends} registered BEs reported usable storage.",
                 last,
                 hint="Check the containers with `docker compose --file level3/module09-sharding-replication/compose.multinode.yml ps` and read the logs of the one that is not running.",
             )
