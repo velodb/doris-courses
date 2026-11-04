@@ -1,0 +1,59 @@
+{
+  "source_ref": "60ad53da8f885a5a22de409cf866b01e7ab10b7e",
+  "course_manifest": "doris-course/01-real-time-analytics/course.yaml",
+  "modules": [
+    {
+      "id": "module-1",
+      "source": "level1/module01-introduction/course.md",
+      "sha256": "bc82b18d2325d812502a1c43ff256c70dabbaacd149eddb9422390d65a5bcb3c"
+    },
+    {
+      "id": "module-2",
+      "source": "level1/module02-architecture/course.md",
+      "sha256": "c006cccfe54f150da2ca42d4fad99747a958a90830179f31ce4d13277ccbbbd2"
+    },
+    {
+      "id": "module-3",
+      "source": "level1/module03-loading-data/course.md",
+      "sha256": "4f0c7d804c5858bd39f3eb88c5d690649726801dadc81546d217e1b9d53254ac"
+    },
+    {
+      "id": "module-4",
+      "source": "level2/module04-modeling/course.md",
+      "sha256": "f5922ed0bd72e80b693c7fdc51908cba491618e1d9ba86032783ec251550a0a4"
+    },
+    {
+      "id": "module-5",
+      "source": "level2/module05-analyzing/course.md",
+      "sha256": "0e5b60d818ea7cf5575614e140e65ef7c58907696395b34be50beec6abf730ab"
+    },
+    {
+      "id": "module-6",
+      "source": "level2/module06-joining/course.md",
+      "sha256": "a59515e704a5d3cbeb0457444bf0597d917fa9fd06fa850c0fda16a6371ab4cf"
+    },
+    {
+      "id": "module-7",
+      "source": "level2/module07-updating-deleting/course.md",
+      "sha256": "ea1966cb278f6956ad9284c5f9e89bb7bd057a8090737565c65d02a052e4d8a4"
+    },
+    {
+      "id": "module-8",
+      "source": "level3/module08-query-acceleration/course.md",
+      "sha256": "239587663059d2d33fef8126666f219c56d74854c3f2aa990ebf60ee7b75d8b8"
+    },
+    {
+      "id": "module-9",
+      "source": "level3/module09-sharding-replication/course.md",
+      "sha256": "d124d41a08fa3f137f6fa4080f89c24ac1cfcbd338fb3b088423b6d8a0419560"
+    },
+    {
+      "id": "module-10",
+      "source": "level3/module10-managing-data/course.md",
+      "sha256": "745cf25a9ea4f2337f80f3b33db5f779d38d6087c24eed867bc4bdfb5f2be08e"
+    }
+  ],
+  "embedded_images": 58,
+  "output": "dist/prototype.html",
+  "output_sha256": "ba54b7d48cc8fc555ad0e20a34fe9832acf9c9b1abb743898d9481c8821a779b"
+}

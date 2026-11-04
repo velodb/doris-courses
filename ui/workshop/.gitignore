@@ -1,0 +1,11 @@
+/dist/
+/review/screenshots/
+/review/selected/*.png
+/review/selected/verification.json
+/review/design-demos/
+/review/index.html
+/review/verification.json
+/review/gallery-verification.json
+__pycache__/
+node_modules/
+.venv/

@@ -1,0 +1,39 @@
+[
+  {
+    "file": "doris.svg",
+    "source": "https://doris.apache.org/images/brand-assets/apache-doris-logo-horizontal-primary.svg",
+    "bytes": 3512
+  },
+  {
+    "file": "doris-dark.svg",
+    "source": "https://doris.apache.org/images/brand-assets/apache-doris-logo-horizontal-dark.svg",
+    "bytes": 3504
+  },
+  {
+    "file": "jupyter.svg",
+    "source": "https://jupyter.org/assets/homepage/main-logo.svg",
+    "bytes": 11002
+  },
+  {
+    "file": "manrope.ttf",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/Manrope%5Bwght%5D.ttf",
+    "bytes": 164700
+  },
+  {
+    "file": "manrope-OFL.txt",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/OFL.txt",
+    "bytes": 4386,
+    "normalization": "Trailing whitespace removed; license text unchanged."
+  },
+  {
+    "file": "newsreader.ttf",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/newsreader/Newsreader%5Bopsz,wght%5D.ttf",
+    "bytes": 451664
+  },
+  {
+    "file": "newsreader-OFL.txt",
+    "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/newsreader/OFL.txt",
+    "bytes": 4393,
+    "normalization": "Trailing whitespace removed; license text unchanged."
+  }
+]

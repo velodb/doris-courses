@@ -1,0 +1,57 @@
+{
+  "activity": {
+    "before": 102,
+    "after": 25,
+    "reduction_percent": 75
+  },
+  "workspace": {
+    "before": 169,
+    "after": 71,
+    "reduction_percent": 58
+  },
+  "course": {
+    "before": 307,
+    "after": 175,
+    "reduction_percent": 43
+  },
+  "terminal": {
+    "before": 87,
+    "after": 32,
+    "reduction_percent": 63
+  },
+  "no-activity": {
+    "before": 58,
+    "after": 27,
+    "reduction_percent": 53
+  },
+  "ended": {
+    "before": 59,
+    "after": 38,
+    "reduction_percent": 36
+  },
+  "not-ready": {
+    "before": 72,
+    "after": 51,
+    "reduction_percent": 29
+  },
+  "denied": {
+    "before": 56,
+    "after": 28,
+    "reduction_percent": 50
+  },
+  "expired": {
+    "before": 57,
+    "after": 35,
+    "reduction_percent": 39
+  },
+  "signed-out": {
+    "before": 61,
+    "after": 36,
+    "reduction_percent": 41
+  },
+  "help": {
+    "before": 72,
+    "after": 32,
+    "reduction_percent": 56
+  }
+}

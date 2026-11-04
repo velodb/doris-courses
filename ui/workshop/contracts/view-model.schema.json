@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:doris:workshop-ui:view-model:v1",
+  "title": "Workshop UI view model, proposed design contract",
+  "description": "Server-supplied presentation data. This contract does not authenticate a request or manage resources.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "page", "language"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "language": { "const": "en" },
+    "page": {
+      "enum": [
+        "activities",
+        "workspace",
+        "course",
+        "lesson",
+        "terminal",
+        "state"
+      ]
+    },
+    "activity": { "$ref": "#/$defs/activity" },
+    "activities": { "type": "array", "items": { "$ref": "#/$defs/activity" } },
+    "learner_id": { "type": "string", "minLength": 1, "maxLength": 63 },
+    "services": { "type": "array", "items": { "$ref": "#/$defs/link" } },
+    "navigation": { "type": "array", "items": { "$ref": "#/$defs/link" } },
+    "course": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "modules"],
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "modules": { "type": "array", "items": { "$ref": "#/$defs/module" } }
+      }
+    },
+    "lesson": {
+      "allOf": [{ "$ref": "#/$defs/module" }],
+      "description": "The renderer receives the selected module plus separately sanitized body_html."
+    },
+    "body_html": {
+      "type": "string",
+      "description": "Only trusted server-side sanitized Markdown output; never arbitrary client HTML."
+    },
+    "contents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" }
+        }
+      }
+    },
+    "state": {
+      "enum": [
+        "no-activity",
+        "ended",
+        "not-ready",
+        "denied",
+        "expired",
+        "signed-out",
+        "help"
+      ]
+    }
+  },
+  "$defs": {
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "href", "opens_separately"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "href": {
+          "type": "string",
+          "description": "Trusted same-origin path or exact assigned HTTPS destination; schema validation alone does not authorize it."
+        },
+        "opens_separately": { "type": "boolean" }
+      }
+    },
+    "activity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "entry_href"],
+      "properties": {
+        "id": { "type": "string" },
+        "entry_href": { "type": "string" },
+        "display_title": {
+          "type": "string",
+          "description": "Optional configured label; fall back to event ID, never guess a title."
+        },
+        "expires_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "number", "title", "level", "lesson_href", "lab_href"],
+      "properties": {
+        "id": { "type": "string" },
+        "number": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string" },
+        "summary": { "type": "string" },
+        "level": { "type": "integer", "minimum": 1 },
+        "lesson_href": { "type": "string" },
+        "lab_href": { "type": "string" }
+      }
+    }
+  }
+}

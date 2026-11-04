@@ -1,0 +1,3 @@
+# UI preview build only; no AWS SDK or control-plane dependencies.
+markdown-it-py==3.0.0
+PyYAML==6.0.3

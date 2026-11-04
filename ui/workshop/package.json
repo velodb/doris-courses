@@ -1,0 +1,13 @@
+{
+  "name": "doris-workshop-ui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Isolated workshop UI design and preview tooling",
+  "scripts": {
+    "build:preview": "python3 scripts/build-preview.py",
+    "verify:preview": "node scripts/verify-preview.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1"
+  }
+}
