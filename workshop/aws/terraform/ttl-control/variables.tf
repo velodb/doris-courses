@@ -46,6 +46,11 @@ variable "control_subnet_ids" {
   }
 }
 variable "activity_vpc_ids" { type = set(string) }
+variable "assign_public_ip" {
+  description = "Assign a public IP for HTTPS egress from an operator-owned public subnet; inbound remains blocked."
+  type        = bool
+  default     = false
+}
 variable "task_timeout_seconds" {
   type    = number
   default = 3600

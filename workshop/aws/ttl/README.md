@@ -304,8 +304,11 @@ permits only `GetObject` and `GetObjectVersion` on that prefix; writes and delet
 remain limited to individually approved object ARNs.
 
 The control module uses a dedicated operator VPC/subnets that survive activity
-deletion, no incoming network access, and HTTPS egress. Provide working private
-egress or the necessary service endpoints and DNS. The module does not create
+deletion, no incoming network access, and HTTPS egress. By default, provide
+working private egress or the necessary service endpoints and DNS. An operator
+may set `assign_public_ip = true` with an operator-owned public subnet and an
+Internet gateway; the security group still has no inbound rules and only HTTPS
+egress. Public IPv4 charges apply. The module does not create
 a VPC, NAT gateway, ECR repository or new state bucket. These prerequisites,
 live IAM policy size/behavior and cross-account DNS must be resolved before
 enabling. The acceptance booleans are explicit operator attestations, not

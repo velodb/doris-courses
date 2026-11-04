@@ -165,7 +165,7 @@ resource "aws_sfn_state_machine" "control" {
           Cluster              = aws_ecs_cluster.control.arn, TaskDefinition = aws_ecs_task_definition.control.arn,
           LaunchType           = "FARGATE", PlatformVersion = "1.4.0",
           "ClientToken.$"      = "States.Hash(States.Format('{}:{}', $$.Execution.Id, $.attempts), 'SHA-256')",
-          NetworkConfiguration = { AwsvpcConfiguration = { Subnets = var.control_subnet_ids, SecurityGroups = [aws_security_group.control.id], AssignPublicIp = "DISABLED" } },
+          NetworkConfiguration = { AwsvpcConfiguration = { Subnets = var.control_subnet_ids, SecurityGroups = [aws_security_group.control.id], AssignPublicIp = var.assign_public_ip ? "ENABLED" : "DISABLED" } },
           Overrides            = { ContainerOverrides = [{ Name = "cleanup", Environment = [{ Name = "TTL_TRIGGER_JSON", "Value.$" = "States.JsonToString($.trigger)" }] }] },
           PropagateTags        = "TASK_DEFINITION"
         },

@@ -49,6 +49,10 @@ run "disabled_control_plane_has_bounded_nonprivileged_workflow" {
     error_message = "The control worker is unprivileged and has no incoming network access."
   }
   assert {
+    condition     = jsondecode(aws_sfn_state_machine.control.definition).States.Run.Parameters.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp == "DISABLED"
+    error_message = "Public task IPs must remain disabled by default."
+  }
+  assert {
     condition     = length(aws_iam_role.control) == 4 && aws_sqs_queue.delivery_failures.sqs_managed_sse_enabled
     error_message = "Separate scheduler, workflow, image-execution and runner roles; encrypt delivery failures."
   }
@@ -57,6 +61,14 @@ run "disabled_control_plane_has_bounded_nonprivileged_workflow" {
       item.name != "TTL_EXPECTED_ROLE_ARN" || item.value == aws_iam_role.control["runner"].arn
     ]) && contains([for item in jsondecode(aws_ecs_task_definition.control.container_definitions)[0].environment : item.name], "TTL_ACCOUNT_ID")
     error_message = "The image entry point must receive the fixed account and runner identity."
+  }
+}
+run "public_egress_is_explicit_and_has_no_ingress" {
+  command = plan
+  variables { assign_public_ip = true }
+  assert {
+    condition     = jsondecode(aws_sfn_state_machine.control.definition).States.Run.Parameters.NetworkConfiguration.AwsvpcConfiguration.AssignPublicIp == "ENABLED" && length(aws_security_group.control.ingress) == 0
+    error_message = "An explicitly public task must still have no inbound rules."
   }
 }
 run "reject_unaccepted_enable" {
