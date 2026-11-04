@@ -287,11 +287,13 @@ substitute that for the Terraform byte hash.
 Both verifiers reject wildcard actions, escalation actions and unrestricted
 mutation resources. Read-only regional discovery is explicitly catalogued;
 it may inspect account metadata but not arbitrary object bodies or secrets.
-Mutations require reviewed exact ARNs. The sole dynamic-task exception is
+Mutations require reviewed exact ARNs. Dynamic task IDs are limited to
 StopTask/DescribeTasks under this cleanup cluster, with an exact cluster
-condition. PassRole is limited to the exact cleanup execution/task roles for
-ECS. DNS changes are DELETE-only for approved event A-record names, with null
-guards. The runner cannot delete or weaken the state bucket or delete retained
+condition. The runner can read Route 53 change status through the dynamic
+`change/*` ARN because Route 53 assigns the change ID after deletion; this
+exception permits only `GetChange`. PassRole is limited to the exact cleanup
+execution/task roles for ECS. DNS changes are DELETE-only for approved event
+A-record names, with null guards. The runner cannot delete or weaken the state bucket or delete retained
 control/state/evidence objects; only exact Terraform `.tflock` objects may be
 deleted there. Review control-record/state PutObject scopes separately from
 immutable input objects. No account administrator policy is supplied.

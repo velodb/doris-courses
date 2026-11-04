@@ -333,6 +333,17 @@ class TerraformAdapterTests(unittest.TestCase):
 
 
 class PolicyTests(unittest.TestCase):
+    def test_dynamic_route53_change_status_is_read_only(self):
+        arn = 'arn:aws:route53:::change/*'
+        args = {'account_id': '000000000000', 'region': 'us-east-1', 'state_bucket': 'foundation-state-example', 'event_id': 'class-a'}
+        policy = {'Version': '2012-10-17', 'Statement': [{'Effect': 'Allow', 'Action': 'route53:GetChange', 'Resource': arn}]}
+        self.assertTrue(control.validate_policy('runner', policy, [arn], **args))
+        for action in ('route53:ChangeResourceRecordSets', 'route53:GetHostedZone'):
+            bad = copy.deepcopy(policy)
+            bad['Statement'][0]['Action'] = action
+            with self.assertRaises(wc.ConfigError):
+                control.validate_policy('runner', bad, [arn], **args)
+
     def test_dns_cleanup_is_limited_to_a_records_and_checks_missing_types(self):
         arn = 'arn:aws:route53:::hostedzone/ZEXAMPLE'
         name = 'class-a-alice.workshops.example.com'

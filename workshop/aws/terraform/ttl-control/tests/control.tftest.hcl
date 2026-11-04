@@ -146,3 +146,38 @@ run "reject_dns_deletion_without_record_type_guard" {
   }
   expect_failures = [aws_iam_role_policy.control]
 }
+run "accept_dynamic_dns_change_status_only" {
+  command = plan
+  variables {
+    approved_resource_arns = {
+      scheduler = ["arn:aws:states:us-east-1:000000000000:stateMachine:mock-control"]
+      workflow  = ["arn:aws:ecs:us-east-1:000000000000:task-definition/mock-control:1"]
+      execution = ["arn:aws:ecr:us-east-1:000000000000:repository/cleanup"]
+      runner    = ["arn:aws:route53:::change/*"]
+    }
+    policy_documents = {
+      scheduler = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      workflow  = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      execution = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      runner    = { json = file("tests/fixtures/dns-change-status.json"), sha256 = filesha256("tests/fixtures/dns-change-status.json") }
+    }
+  }
+}
+run "reject_dynamic_dns_change_other_action" {
+  command = plan
+  variables {
+    approved_resource_arns = {
+      scheduler = ["arn:aws:states:us-east-1:000000000000:stateMachine:mock-control"]
+      workflow  = ["arn:aws:ecs:us-east-1:000000000000:task-definition/mock-control:1"]
+      execution = ["arn:aws:ecr:us-east-1:000000000000:repository/cleanup"]
+      runner    = ["arn:aws:route53:::change/*"]
+    }
+    policy_documents = {
+      scheduler = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      workflow  = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      execution = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      runner    = { json = file("tests/fixtures/dns-change-wrong-action.json"), sha256 = filesha256("tests/fixtures/dns-change-wrong-action.json") }
+    }
+  }
+  expect_failures = [aws_iam_role_policy.control]
+}

@@ -9,7 +9,7 @@ GLOBAL_READS = {"sts:GetCallerIdentity", "ecr:GetAuthorizationToken", "s3:ListAl
     "s3:GetBucketLocation", "s3:GetBucketTagging", "iam:GetRole", "iam:GetInstanceProfile", "ssm:ListTagsForResource",
     "ssm:ListDocuments", "cognito-idp:ListUserPools", "cognito-idp:ListTagsForResource", "cognito-idp:DescribeUserPoolDomain", "ecs:DescribeTasks",
     *["ec2:" + name for name in ("DescribeInstances", "DescribeInstanceTypes", "DescribeVpcs", "DescribeSubnets", "DescribeVolumes",
-        "DescribeNetworkInterfaces", "DescribeRouteTables", "DescribeSecurityGroups", "DescribeInternetGateways", "DescribeNatGateways",
+        "DescribeNetworkInterfaces", "DescribeRouteTables", "DescribeSecurityGroups", "DescribeSecurityGroupRules", "DescribeInstanceCreditSpecifications", "DescribeInternetGateways", "DescribeNatGateways",
         "DescribeAddresses", "DescribeImages", "DescribeSnapshots", "DescribeKeyPairs", "DescribeTags")],
     *["elasticloadbalancing:" + name for name in ("DescribeLoadBalancers", "DescribeTargetGroups", "DescribeListeners", "DescribeRules", "DescribeTags", "DescribeTargetHealth")],
     "tag:GetResources"}
@@ -33,7 +33,8 @@ def validate_policy(role, document, approved_arns, *, account_id, region, state_
     cluster_arn = f"arn:aws:ecs:{region}:{account_id}:cluster/doris-ttl-{event_id}" if event_id else None
     ttl.require(role in ROLE_NAMES and document.get("Version") == "2012-10-17" and isinstance(document.get("Statement"), list), "invalid reviewed role policy")
     ttl.require(approved_arns and all(isinstance(arn, str) and arn.startswith("arn:aws:") and
-        ("*" not in arn or role == "workflow" and arn == task_scope) and "?" not in arn for arn in approved_arns),
+        ("*" not in arn or role == "workflow" and arn == task_scope or
+         role == "runner" and arn == "arn:aws:route53:::change/*") and "?" not in arn for arn in approved_arns),
         "approve exact resource ARNs; wildcard mutation scopes are forbidden")
     for arn in approved_arns:
         parts = arn.split(":", 5)
@@ -56,8 +57,9 @@ def validate_policy(role, document, approved_arns, *, account_id, region, state_
                     for name in ("runner", "execution")} for resource in resources) and
                     row.get("Condition", {}).get("StringEquals", {}).get("iam:PassedToService") == "ecs-tasks.amazonaws.com", "PassRole must be restricted to the exact cleanup task roles")
             if any("*" in resource and resource != "*" for resource in resources):
-                ttl.require(action in {"ecs:StopTask", "ecs:DescribeTasks"} and resources == [task_scope] and
-                    row.get("Condition", {}).get("ArnEquals", {}).get("ecs:cluster") == cluster_arn,
+                ttl.require((action in {"ecs:StopTask", "ecs:DescribeTasks"} and resources == [task_scope] and
+                    row.get("Condition", {}).get("ArnEquals", {}).get("ecs:cluster") == cluster_arn) or
+                    (role == "runner" and action == "route53:GetChange" and resources == ["arn:aws:route53:::change/*"]),
                     "only this cleanup cluster's dynamic task IDs may use a scoped wildcard")
             if action == "route53:ChangeResourceRecordSets":
                 conditions = row.get("Condition", {})
