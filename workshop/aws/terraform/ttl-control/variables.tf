@@ -86,7 +86,7 @@ variable "approved_resource_arns" {
     condition = toset(keys(var.approved_resource_arns)) == toset(["scheduler", "workflow", "execution", "runner"]) && alltrue(flatten([
       for role, resources in var.approved_resource_arns : [for arn in resources : startswith(arn, "arn:aws:") &&
         (!strcontains(arn, "*") || role == "workflow" && arn == "arn:aws:ecs:${var.region}:${var.expected_account_id}:task/doris-ttl-${var.event_id}/*" ||
-        role == "runner" && arn == "arn:aws:route53:::change/*") && !strcontains(arn, "?") &&
+        role == "runner" && contains(["arn:aws:route53:::change/*", "arn:aws:s3:::${var.state_bucket_name}/aws-workshop-control/${var.expected_account_id}/${var.region}/${var.event_id}/bindings/${var.revision}/*"], arn)) && !strcontains(arn, "?") &&
       try(contains(["", var.region], split(":", arn)[3]) && contains(["", var.expected_account_id], split(":", arn)[4]), false)]
     ]))
     error_message = "Approve exact resource ARNs for each role."

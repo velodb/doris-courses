@@ -298,6 +298,11 @@ control/state/evidence objects; only exact Terraform `.tflock` objects may be
 deleted there. Review control-record/state PutObject scopes separately from
 immutable input objects. No account administrator policy is supplied.
 
+To keep large runtime bundles within IAM policy-size limits, the runner may read
+the exact activity and revision's `bindings/REVISION/*` prefix. The verifier
+permits only `GetObject` and `GetObjectVersion` on that prefix; writes and deletes
+remain limited to individually approved object ARNs.
+
 The control module uses a dedicated operator VPC/subnets that survive activity
 deletion, no incoming network access, and HTTPS egress. Provide working private
 egress or the necessary service endpoints and DNS. The module does not create

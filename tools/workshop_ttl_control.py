@@ -28,13 +28,15 @@ MUTATIONS = {
 }
 
 
-def validate_policy(role, document, approved_arns, *, account_id, region, state_bucket, event_id=None, approved_dns_names=()):
+def validate_policy(role, document, approved_arns, *, account_id, region, state_bucket, event_id=None, revision=None, approved_dns_names=()):
     task_scope = f"arn:aws:ecs:{region}:{account_id}:task/doris-ttl-{event_id}/*" if event_id else None
     cluster_arn = f"arn:aws:ecs:{region}:{account_id}:cluster/doris-ttl-{event_id}" if event_id else None
+    revision_read = (f"arn:aws:s3:::{state_bucket}/aws-workshop-control/{account_id}/{region}/{event_id}/bindings/{revision}/*"
+                     if event_id and type(revision) is int and revision > 0 else None)
     ttl.require(role in ROLE_NAMES and document.get("Version") == "2012-10-17" and isinstance(document.get("Statement"), list), "invalid reviewed role policy")
     ttl.require(approved_arns and all(isinstance(arn, str) and arn.startswith("arn:aws:") and
         ("*" not in arn or role == "workflow" and arn == task_scope or
-         role == "runner" and arn == "arn:aws:route53:::change/*") and "?" not in arn for arn in approved_arns),
+         role == "runner" and arn in {"arn:aws:route53:::change/*", revision_read}) and "?" not in arn for arn in approved_arns),
         "approve exact resource ARNs; wildcard mutation scopes are forbidden")
     for arn in approved_arns:
         parts = arn.split(":", 5)
@@ -59,7 +61,8 @@ def validate_policy(role, document, approved_arns, *, account_id, region, state_
             if any("*" in resource and resource != "*" for resource in resources):
                 ttl.require((action in {"ecs:StopTask", "ecs:DescribeTasks"} and resources == [task_scope] and
                     row.get("Condition", {}).get("ArnEquals", {}).get("ecs:cluster") == cluster_arn) or
-                    (role == "runner" and action == "route53:GetChange" and resources == ["arn:aws:route53:::change/*"]),
+                    (role == "runner" and action == "route53:GetChange" and resources == ["arn:aws:route53:::change/*"]) or
+                    (role == "runner" and action in {"s3:GetObject", "s3:GetObjectVersion"} and resources == [revision_read]),
                     "only this cleanup cluster's dynamic task IDs may use a scoped wildcard")
             if action == "route53:ChangeResourceRecordSets":
                 conditions = row.get("Condition", {})

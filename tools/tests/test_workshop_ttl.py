@@ -333,6 +333,21 @@ class TerraformAdapterTests(unittest.TestCase):
 
 
 class PolicyTests(unittest.TestCase):
+    def test_revision_prefix_is_read_only_and_bound_to_exact_activity(self):
+        arn = 'arn:aws:s3:::foundation-state-example/aws-workshop-control/000000000000/us-east-1/class-a/bindings/1/*'
+        args = {'account_id': '000000000000', 'region': 'us-east-1', 'state_bucket': 'foundation-state-example', 'event_id': 'class-a', 'revision': 1}
+        policy = {'Version': '2012-10-17', 'Statement': [{'Effect': 'Allow', 'Action': ['s3:GetObject', 's3:GetObjectVersion'], 'Resource': arn}]}
+        self.assertTrue(control.validate_policy('runner', policy, [arn], **args))
+        for action in ('s3:PutObject', 's3:DeleteObject'):
+            bad = copy.deepcopy(policy)
+            bad['Statement'][0]['Action'] = action
+            with self.assertRaises(wc.ConfigError):
+                control.validate_policy('runner', bad, [arn], **args)
+        with self.assertRaises(wc.ConfigError):
+            control.validate_policy('runner', policy, [arn], **{**args, 'revision': 2})
+        with self.assertRaises(wc.ConfigError):
+            control.validate_policy('runner', policy, [arn], **{**args, 'event_id': 'other-class'})
+
     def test_dynamic_route53_change_status_is_read_only(self):
         arn = 'arn:aws:route53:::change/*'
         args = {'account_id': '000000000000', 'region': 'us-east-1', 'state_bucket': 'foundation-state-example', 'event_id': 'class-a'}

@@ -57,6 +57,8 @@ resource "aws_iam_role_policy" "control" {
           try(statement.Condition.ArnEquals["ecs:cluster"] == "arn:aws:ecs:${var.region}:${var.expected_account_id}:cluster/${local.name}", false)) ||
           (each.key == "runner" && resource == "arn:aws:route53:::change/*" &&
           alltrue([for action in flatten([statement.Action]) : action == "route53:GetChange"])) ||
+          (each.key == "runner" && resource == "arn:aws:s3:::${var.state_bucket_name}/aws-workshop-control/${var.expected_account_id}/${var.region}/${var.event_id}/bindings/${var.revision}/*" &&
+          alltrue([for action in flatten([statement.Action]) : contains(["s3:GetObject", "s3:GetObjectVersion"], action)])) ||
         (resource == "*" && alltrue([for action in flatten([statement.Action]) : contains(local.global_read_actions, action)]))])
       ])
       error_message = "Policies must enumerate actions; wildcard resources are allowed only for read APIs. Run the policy scope verifier before deployment."
