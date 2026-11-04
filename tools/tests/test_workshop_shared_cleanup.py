@@ -54,6 +54,8 @@ class FakeTerraform:
     plans = {}
     actions = []
     fail_module = None
+    omit_address = None
+    refresh_proofs = {}
 
     def __init__(self, module, path):
         self.module, self.path = module, Path(path)
@@ -70,12 +72,22 @@ class FakeTerraform:
         Path(path).write_bytes(("plan:" + self.module).encode())
         rows = [{"mode": "managed", "address": r["address"],
                  "change": {"actions": ["delete"], "before": copy.deepcopy(r["values"])}}
-                for r in self.store[self.module]]
+                for r in self.store[self.module] if r["address"] != self.omit_address]
         self.plans[self.module] = {"resource_changes": rows}
         return copy.deepcopy(self.plans[self.module])
 
     def call(self, args, *, capture=False):
+        if "refresh.tfplan" in str(args[-1]):
+            return json.dumps(self.refresh_proofs[self.module])
         return json.dumps(self.plans[self.module])
+
+    def refresh_plan(self, variables, path):
+        Path(path).write_bytes(("refresh:" + self.module).encode())
+        row = next(r for r in self.store[self.module] if r["address"] == self.omit_address)
+        proof = {"resource_changes": [], "resource_drift": [{"mode": "managed", "address": row["address"],
+            "change": {"actions": ["delete"], "before": copy.deepcopy(row["values"]), "after": None}}]}
+        self.refresh_proofs[self.module] = proof
+        return copy.deepcopy(proof)
 
     def apply(self, path):
         self.actions.append(self.module)
@@ -127,6 +139,7 @@ class SharedCleanupTests(unittest.TestCase):
                            {"user_pool_id": "us-east-1_pool", "client_secret": "PRIVATE-CLIENT"}, index=None)
         FakeTerraform.store = {"pilot": [pilot], "access-bindings": [pool, client]}
         FakeTerraform.plans, FakeTerraform.actions, FakeTerraform.fail_module = {}, [], None
+        FakeTerraform.omit_address, FakeTerraform.refresh_proofs = None, {}
         FakeScanner.fail = False
 
     def prepare(self):
@@ -208,6 +221,16 @@ class SharedCleanupTests(unittest.TestCase):
         with self.assertRaisesRegex(wc.ConfigError, "saved destroy plan changed"):
             shared_cleanup.apply(self.controller, self.bindings, self.routes, self.output,
                                  review["review_sha256"], tf_factory=FakeTerraform)
+        self.assertEqual(FakeTerraform.actions, [])
+
+    def test_separate_refresh_plan_is_bound_and_checked_before_apply(self):
+        FakeTerraform.omit_address = 'aws_cognito_user_pool_client.alb'
+        review = self.prepare()
+        self.assertIn('access-bindings', wc.load_document(self.output / 'review.json')['refresh_plans'])
+        (self.output / 'access-bindings' / 'refresh.tfplan').write_bytes(b'tampered')
+        with self.assertRaisesRegex(wc.ConfigError, 'refresh proof changed'):
+            shared_cleanup.apply(self.controller, self.bindings, self.routes, self.output,
+                review['review_sha256'], tf_factory=FakeTerraform, scan_factory=FakeScanner)
         self.assertEqual(FakeTerraform.actions, [])
 
     def test_changed_initialized_backend_never_applies(self):

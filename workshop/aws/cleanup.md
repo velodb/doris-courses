@@ -73,7 +73,10 @@ The [pilot destroy](lifecycle.md#destroy-the-activity) now requires a complete
 delete-only plan, unchanged refreshed IDs/tags/relationships and exact owned
 parents. Missing, duplicate, extra, non-delete or deferred changes are rejected.
 Explicit matching `resource_drift` deletion evidence can account for resources
-already removed remotely. A stale tagless dependency lacking its owned parent
+already removed remotely. If a destroy plan omits an address without reporting
+drift, shared cleanup saves a separate refresh-only plan and accepts the omission
+only when that plan proves deletion of the same owned identity and relationships.
+Both plans are bound to the review. A stale tagless dependency lacking its owned parent
 can only be forgotten with that evidence; it cannot authorize a fresh delete.
 It checks all pages for known EC2/EBS/ENI residuals. A lingering ENI leaves cleanup
 incomplete. Its boundary remains pilot state and known resources.

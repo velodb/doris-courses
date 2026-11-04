@@ -133,8 +133,10 @@ keys, IAM roles or endpoints. The runner verifies ECS task-role credentials,
 STS identity, the immutable image's source seal, input hashes and state
 ownership, then creates fresh saved destroy plans. Every module plan must
 validate before any apply. Newly added or replaced resource IDs require a new
-reviewed binding. Final success requires fresh empty-state evidence and the
-full configuration-scoped AWS resource reconciliation, including coverage
+reviewed binding. If a destroy plan omits an already absent resource without
+drift evidence, the worker creates a separate refresh-only plan and requires
+matching deletion evidence before accepting the omission. Final success requires
+fresh empty-state evidence and the full configuration-scoped AWS reconciliation, including coverage
 failures. The result never asserts that the whole account is empty.
 
 The protocol uses S3

@@ -73,6 +73,11 @@ class Terraform:
         os.chmod(path, 0o600)
         return json.loads(self.call(["show", "-json", str(path)], capture=True))
 
+    def refresh_plan(self, variables, path):
+        self.call(["plan", "-refresh-only", "-input=false", "-lock-timeout=60s", f"-var-file={variables}", f"-out={path}"])
+        os.chmod(path, 0o600)
+        return json.loads(self.call(["show", "-json", str(path)], capture=True))
+
     def apply(self, path):
         self.call(["apply", "-input=false", "-lock-timeout=60s", str(path)])
 
@@ -82,10 +87,10 @@ def state_manifest(controller, bindings, pilot, shared, hosts):
                            history=controller.record, shared=shared, hosts=hosts)
 
 
-def validate_plans(manifest, states, plans):
+def validate_plans(manifest, states, plans, refresh_proofs=None):
     for module in ("access-bindings", "pilot"):
         resources = [r for r in states[module]["resources"] if r.get("mode", "managed") == "managed"]
-        absent = cleanup.validate_destroy_plan(resources, plans[module])
+        absent = cleanup.validate_destroy_plan(resources, plans[module], (refresh_proofs or {}).get(module))
         claims = [row for row in manifest["state"] if row["module"] == module]
         require(all(row["address"] in absent for row in claims if row.get("requires_refresh_absence")),
                 "missing owned parents require explicit refresh deletion evidence")
@@ -134,17 +139,20 @@ def prepare(controller, bindings_run, routes_file, output, *, tf_factory=Terrafo
     controller.actual_instances(controller.record["known_instances"])
     controller.save()
     manifest = state_manifest(controller, states["access-bindings"], states["pilot"], shared, hosts)
-    plans = {}
+    plans, refresh_proofs = {}, {}
     for name in ("access-bindings", "pilot"):
         var_path = Path(bindings_run) / "inputs.tfvars.json" if name == "access-bindings" else controller.directory / "inputs.tfvars.json"
         plans[name] = modules[name].plan(var_path, output / name / "destroy.tfplan")
-    validate_plans(manifest, states, plans)
+        if cleanup.missing_destroy_evidence(states[name]["resources"], plans[name]):
+            refresh_proofs[name] = modules[name].refresh_plan(var_path, output / name / "refresh.tfplan")
+    validate_plans(manifest, states, plans, refresh_proofs)
     require(input_hashes == artifact_hashes(controller, bindings_run, routes_file), "inputs changed while planning")
     now = now or datetime.now(timezone.utc)
     receipt = {"schema_version": 1, "kind": "aws-workshop-shared-cleanup-review", "event_id": controller.config["event_id"],
         "valid_until": wc.utc_text(now + timedelta(minutes=15)), "artifacts": input_hashes,
         "manifest_sha256": wc.canonical_hash(manifest),
         "plans": {name: pf.file_hash(output / name / "destroy.tfplan") for name in modules},
+        "refresh_plans": {name: pf.file_hash(output / name / "refresh.tfplan") for name in refresh_proofs},
         "initialized_backends": {name: pf.file_hash(output / name / "terraform-data" / "terraform.tfstate") for name in modules},
         "order": ["access-bindings", "pilot"], "shared_resources_retained": True, "portal": portal_binding}
     if portal_files:
@@ -195,6 +203,9 @@ def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_fa
         require(receipt["plans"][name] == pf.file_hash(output / name / "destroy.tfplan"), "saved destroy plan changed")
         require(receipt["initialized_backends"][name] == pf.file_hash(output / name / "terraform-data" / "terraform.tfstate"),
                 "initialized Terraform backend changed")
+    require(set(receipt.get("refresh_plans", {})) <= set(receipt["order"]), "unexpected refresh proof module")
+    for name, digest in receipt.get("refresh_plans", {}).items():
+        require(digest == pf.file_hash(output / name / "refresh.tfplan"), "saved refresh proof changed")
     _, _, shared, hosts = bound_inputs(controller, bindings_run, routes_file)
     modules = {name: tf_factory(name, output / name) for name in receipt["order"]}
     states = {name: modules[name].state() for name in modules}
@@ -203,12 +214,15 @@ def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_fa
     current = state_manifest(controller, states["access-bindings"], states["pilot"], shared, hosts)
     require(wc.canonical_hash(current) == receipt["manifest_sha256"], "state or resource ownership changed since review")
     plans = {name: json.loads(modules[name].call(["show", "-json", str(output / name / "destroy.tfplan")], capture=True)) for name in modules}
-    validate_plans(manifest, states, plans)
+    proofs = {name: json.loads(modules[name].call(["show", "-json", str(output / name / "refresh.tfplan")], capture=True))
+              for name in receipt.get("refresh_plans", {})}
+    validate_plans(manifest, states, plans, proofs)
     progress = output / "progress.json"
     require(not progress.exists(), "previous apply attempted; reconcile and create new plans")
     require(wc.timestamp(receipt["valid_until"], "valid_until") > (now or datetime.now(timezone.utc)) and
             receipt["artifacts"] == artifact_hashes(controller, bindings_run, routes_file) and
-            all(receipt["plans"][name] == pf.file_hash(output / name / "destroy.tfplan") for name in receipt["order"]),
+            all(receipt["plans"][name] == pf.file_hash(output / name / "destroy.tfplan") for name in receipt["order"]) and
+            all(digest == pf.file_hash(output / name / "refresh.tfplan") for name, digest in receipt.get("refresh_plans", {}).items()),
             "review expired or inputs changed before apply")
     if portal_files:
         require(portal_review(controller, bindings_run, routes_file, portal_files) == receipt["portal"],
@@ -230,7 +244,8 @@ def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_fa
             wc.load_document(copies["subjects"]), copies["registry"], output / "portal-unregister", remove_activity=True)
         require(wc.timestamp(receipt["valid_until"], "valid_until") > (now or datetime.now(timezone.utc)) and
                 receipt["artifacts"] == artifact_hashes(controller, bindings_run, routes_file) and
-                all(receipt["plans"][name] == pf.file_hash(output / name / "destroy.tfplan") for name in receipt["order"]),
+                all(receipt["plans"][name] == pf.file_hash(output / name / "destroy.tfplan") for name in receipt["order"]) and
+                all(digest == pf.file_hash(output / name / "refresh.tfplan") for name, digest in receipt.get("refresh_plans", {}).items()),
                 "review expired or inputs changed during portal removal; reconcile before replanning")
     lifecycle.atomic_json(progress, {"phase": "applying-bindings", "resources_may_remain": True})
     modules["access-bindings"].apply(output / "access-bindings" / "destroy.tfplan")

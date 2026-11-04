@@ -126,6 +126,13 @@ class TerraformAdapter:
             "-var-file=" + str(private / "inputs.tfvars.json"), "-out=" + str(path)], timeout=timeout or self.binding["limits"]["task_timeout_seconds"])
         plan = json.loads(self.command(module, ["show", "-json", str(path)], timeout=60))
         self.plans[module] = {"path": path, "sha256": file_hash(path), "resources": resources}
+        if cleanup.missing_destroy_evidence(resources, plan):
+            refresh = private / "refresh.tfplan"
+            self.command(module, ["plan", "-refresh-only", "-input=false", "-lock=true", f"-lock-timeout={lock_wait_seconds}s",
+                "-var-file=" + str(private / "inputs.tfvars.json"), "-out=" + str(refresh)],
+                timeout=timeout or self.binding["limits"]["task_timeout_seconds"])
+            proof = json.loads(self.command(module, ["show", "-json", str(refresh)], timeout=60))
+            self.plans[module].update(refresh_path=refresh, refresh_sha256=file_hash(refresh), refresh_proof=proof)
         return plan
 
     def validate(self, module_binding, plan):
@@ -146,13 +153,15 @@ class TerraformAdapter:
         hosts = [row["id"].split("/")[1] for row in self.manifest["known"] if row["kind"] == "dns_records"]
         projected = cleanup.project_state(config, resources, module=module, state_bucket=self.binding["control"]["bucket"],
             shared=self.inputs[module].get("access"), hosts=hosts, defer_missing_parents=True)
-        absent = cleanup.validate_destroy_plan(resources, plan)
+        absent = cleanup.validate_destroy_plan(resources, plan, self.plans[module].get("refresh_proof"))
         ttl.require(all(row["address"] in absent for row in projected if row.get("requires_refresh_absence")), "unproved dependent resource cannot be deleted")
 
     def apply(self, module_binding, plan, *, timeout):
         module = module_binding["module"]
         approved = self.plans[module]
         ttl.require(file_hash(approved["path"]) == approved["sha256"], "fresh destroy plan changed after validation")
+        if "refresh_path" in approved:
+            ttl.require(file_hash(approved["refresh_path"]) == approved["refresh_sha256"], "refresh proof changed after validation")
         self.command(module, ["apply", "-input=false", "-lock=true", f'-lock-timeout={self.binding["limits"]["lock_wait_seconds"]}s', str(approved["path"])], timeout=timeout)
 
     def reconcile(self):

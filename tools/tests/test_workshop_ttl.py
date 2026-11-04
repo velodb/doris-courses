@@ -255,7 +255,10 @@ class TerraformAdapterTests(unittest.TestCase):
         if "plan" in command:
             Path(next(value.removeprefix("-out=") for value in command if value.startswith("-out="))).write_bytes(b"fresh-plan")
         if "show" in command:
-            value = self.plan if command[-1].endswith("tfplan") else {"format_version": "1.0", "values": {"root_module": {"resources": [self.row]}}}
+            if command[-1].endswith("refresh.tfplan"):
+                value = getattr(self, 'refresh_proof', {})
+            else:
+                value = self.plan if command[-1].endswith("tfplan") else {"format_version": "1.0", "values": {"root_module": {"resources": [self.row]}}}
             return SimpleNamespace(returncode=0, stdout=json.dumps(value), stderr="")
         return SimpleNamespace(returncode=0, stdout="", stderr="PRIVATE-TERRAFORM")
 
@@ -283,6 +286,19 @@ class TerraformAdapterTests(unittest.TestCase):
         with self.assertRaises(wc.ConfigError):
             adapter.validate(self.bound["modules"][0], plan)
         self.assertFalse(any("apply" in command for command in self.commands))
+
+    def test_runner_requires_and_binds_refresh_proof_for_missing_resource(self):
+        self.plan = {"resource_changes": []}
+        self.refresh_proof = {"resource_changes": [], "resource_drift": [{"mode": "managed", "address": self.row["address"],
+            "change": {"actions": ["delete"], "before": self.row["values"], "after": None}}]}
+        adapter = self.adapter()
+        adapter.verify(self.bound)
+        plan = adapter.plan(self.bound['modules'][0], lock_wait_seconds=60)
+        adapter.validate(self.bound['modules'][0], plan)
+        self.assertTrue(any('-refresh-only' in command for command in self.commands))
+        adapter.plans['pilot']['refresh_path'].write_bytes(b'tampered')
+        with self.assertRaisesRegex(wc.ConfigError, 'refresh proof changed'):
+            adapter.apply(self.bound['modules'][0], plan, timeout=60)
 
     def test_wrong_role_and_source_tree_are_rejected_before_commands(self):
         adapter = self.adapter()

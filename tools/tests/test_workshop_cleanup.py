@@ -151,6 +151,22 @@ class OwnershipTests(unittest.TestCase):
         with self.assertRaises(wc.ConfigError):
             cleanup.validate_destroy_plan([row], {"resource_drift": [{**drift, "change": {**drift["change"], "actions": ["update"]}}]})
 
+    def test_separate_refresh_only_proves_an_omitted_destroy_resource(self):
+        row = state_row()
+        plan = {"resource_changes": [], "resource_drift": []}
+        drift = {"mode": "managed", "address": row["address"],
+                 "change": {"actions": ["delete"], "before": row["values"], "after": None}}
+        proof = {"complete": True, "resource_changes": [], "resource_drift": [drift]}
+        self.assertEqual(cleanup.validate_destroy_plan([row], plan, proof), {row["address"]})
+        for change in (lambda p: p.update(complete=False),
+                       lambda p: p['resource_drift'][0]['change']['before'].update(id='i-00000000000000002'),
+                       lambda p: p['resource_drift'][0]['change'].update(after={'id': row['values']['id']}),
+                       lambda p: p.update(resource_changes=[{'mode': 'managed', 'change': {'actions': ['delete']}}])):
+            broken = copy.deepcopy(proof)
+            change(broken)
+            with self.assertRaises(wc.ConfigError):
+                cleanup.validate_destroy_plan([row], plan, broken)
+
 
 class ReconciliationTests(unittest.TestCase):
     def test_unpublished_build_images_and_key_pairs_are_residual_not_releases(self):

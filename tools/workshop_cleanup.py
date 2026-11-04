@@ -162,12 +162,28 @@ def project_state(config, resources, *, module="pilot", state_bucket, shared=Non
     return result
 
 
-def validate_destroy_plan(resources, plan):
+def missing_destroy_evidence(resources, plan):
+    expected = {r["address"] for r in resources if r.get("mode", "managed") == "managed"}
+    covered = {r["address"] for r in plan.get("resource_changes", []) if r.get("mode") == "managed"}
+    covered.update(r["address"] for r in plan.get("resource_drift", [])
+                   if r.get("mode") == "managed" and r["change"]["actions"] == ["delete"])
+    return expected - covered
+
+
+def validate_destroy_plan(resources, plan, refresh_proof=None):
     require(not plan.get("errored") and plan.get("complete", True) is True and not plan.get("deferred_changes"), "destroy plan is incomplete or deferred")
     expected = {r["address"]: r for r in resources if r.get("mode", "managed") == "managed"}
     seen, absent = set(), set()
     rows = [(row, False) for row in plan.get("resource_changes", [])]
     rows += [(row, True) for row in plan.get("resource_drift", []) if row.get("mode") == "managed" and row["change"]["actions"] == ["delete"]]
+    if refresh_proof is not None:
+        require(not refresh_proof.get("errored") and refresh_proof.get("complete", True) is True and
+                not refresh_proof.get("deferred_changes") and
+                not any(row.get("mode") == "managed" and row["change"]["actions"] != ["no-op"]
+                        for row in refresh_proof.get("resource_changes", [])), "refresh-only proof is incomplete or contains changes")
+        missing = missing_destroy_evidence(resources, plan)
+        rows += [(row, True) for row in refresh_proof.get("resource_drift", []) if row.get("mode") == "managed" and
+                 row.get("address") in missing and row["change"]["actions"] == ["delete"]]
     for row, drift in rows:
         if row.get("mode") != "managed":
             continue
