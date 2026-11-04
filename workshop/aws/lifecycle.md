@@ -124,8 +124,11 @@ plan under the normal Terraform lock. It then requires an empty managed state,
 no active known instance and no remaining known root volume. Retry the same
 command after a failed destroy or eventual-consistency residual. Known ENIs must
 also disappear. The [cleanup guide](cleanup.md) describes stricter ownership and
-delete-plan checks plus broader standalone scan/report interfaces. Retry the same
-command after a failed destroy or eventual-consistency residual. Expired event
+delete-plan checks plus broader standalone scan/report interfaces. If apply was
+interrupted or failed, the command also scans the configured resource families
+for untracked activity resources and saves private evidence. An incomplete scan
+or residual blocks success, even when state and known instance lists are empty.
+After investigating and removing owned residuals, retry the command. Expired event
 inputs and unavailable price queries do not block cleanup.
 
 Foundation storage remains and is reported explicitly. This basic reconciliation

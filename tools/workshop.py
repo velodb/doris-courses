@@ -429,7 +429,8 @@ class Controller:
         return {"event_id": self.config["event_id"], "region": self.config["region"], "phase": self.record["phase"],
                 "ready": bool(ready), "readiness_scope": "host-runtime-and-course-entry", "course_labs_validated": False,
                 "managed_resources": self.record.get("managed_resources", 0),
-                "resources_may_remain": bool(self.record.get("managed_resources", 0) or self.record.get("untracked_instances")
+                "resources_may_remain": bool(self.record.get("apply_outcome_unreconciled") or self.record["phase"] in {"applying", "apply-failed"} or
+                                              self.record.get("managed_resources", 0) or self.record.get("untracked_instances")
                                               or (self.record["known_volumes"] or self.record["known_instances"] or self.record.get("known_network_interfaces")) and self.record["phase"] != "destroyed"),
                 "batch": {"concurrency": self.concurrency, "in_flight": self.inflight(), "ready": ready_ids,
                     "failed": failed_ids, "pending": sorted(set(current) - set(ready_ids) - set(failed_ids))},
@@ -455,6 +456,7 @@ class Controller:
                        "plan: pass the reviewed plan SHA256; no apply started")
             self.inventory()
             self.record["phase"] = "applying"
+            self.record["apply_outcome_unreconciled"] = True
             self.record["apply_started_at"] = wc.utc_text(datetime.now(timezone.utc))
             self.save()
             try:
@@ -464,6 +466,7 @@ class Controller:
                 self.save()
                 raise
             self.record["phase"] = "provisioned"
+            self.record["apply_outcome_unreconciled"] = False
             self.record["apply_finished_at"] = wc.utc_text(datetime.now(timezone.utc))
             self.save()
         pf.require(self.record["phase"] != "apply-failed" and self.record["phase"] != "applying",
@@ -572,6 +575,10 @@ class Controller:
             return self._destroy()
 
     def _destroy(self):
+        interrupted = bool(self.record.get("apply_outcome_unreconciled") or self.record["phase"] in {"applying", "apply-failed"})
+        if interrupted:
+            self.record["apply_outcome_unreconciled"] = True
+            self.save()
         resources = self.tf.state()
         claims = cleanup.project_state({**self.config, "cleanup_learner_ids": [key for key, row in self.allocations.items() if row["role"] == "learner"]},
             resources, state_bucket=self.pilot["state_bucket_name"], defer_missing_parents=True)
@@ -600,6 +607,26 @@ class Controller:
         self.save()
         pf.require(not remaining and not active and not volumes and not interfaces,
                    "destroy: residual state, EC2 or EBS detected; retry destroy and inspect reconciliation")
+        if interrupted:
+            # An interrupted provider apply can create resources that never made
+            # it into state or lifecycle history. Empty state is not evidence of
+            # their absence; collect the independently scoped catalog first.
+            import tempfile
+            from workshop_scan import Scanner
+            state = {"module": "pilot", "resources": resources}
+            manifest = cleanup.prepare(self.config, [state], state_bucket=self.pilot["state_bucket_name"],
+                history=self.record, shared=self.binding.get("shared_access"))
+            states = {"pilot": {"status": "complete", "managed_addresses": [r["address"] for r in self.tf.state()]}}
+            evidence = Path(tempfile.mkdtemp(prefix="interrupted-scan-", dir=self.directory))
+            wc.write_manifest(evidence / "manifest.json", manifest)
+            snapshot = Scanner(self.cloud, manifest, states=states).collect()
+            report = cleanup.reconcile(manifest, snapshot)
+            wc.write_manifest(evidence / "snapshot.json", snapshot)
+            wc.write_manifest(evidence / "report.json", report)
+            self.record["interrupted_reconciliation"] = str(evidence / "report.json")
+            self.save()
+            pf.require(report["ok"], "destroy: interrupted apply may have untracked resources; inspect the private scan report")
+            self.record["apply_outcome_unreconciled"] = False
         self.record["phase"], self.record["nodes"] = "destroyed", {}
         self.record["untracked_instances"] = []
         self.record["cleanup_boundary"] = "pilot-state-and-known-ec2-ebs-eni-only; use cleanup report for complete configured coverage"

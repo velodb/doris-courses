@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest import mock
 
@@ -294,6 +295,7 @@ class LifecycleTests(unittest.TestCase):
         self.assertEqual(len([c for c in self.cloud.sent if not c[2] and c[0] == "i-alice"]), 1)
 
     def test_failed_apply_cannot_replay_stale_plan_and_destroy_remains_available(self):
+        from test_workshop_cleanup import snapshot
         self.tf.fail_apply = True
         with self.assertRaises(ws.wc.ConfigError):
             self.up()
@@ -301,10 +303,44 @@ class LifecycleTests(unittest.TestCase):
         with self.assertRaisesRegex(ws.wc.ConfigError, "previous attempt"):
             self.up()
         self.assertEqual(self.tf.apply_count, 1)
-        result = self.controller().destroy()
+        def scanner(cloud, manifest, *, states):
+            value = snapshot(manifest)
+            value['states'] = states
+            return SimpleNamespace(collect=lambda: value)
+        with mock.patch('workshop_scan.Scanner', side_effect=scanner):
+            result = self.controller().destroy()
         self.assertEqual(result["phase"], "destroyed")
         self.assertFalse(result["resources_may_remain"])
         self.assertEqual(self.controller().destroy()["phase"], "destroyed")
+
+    def test_interrupted_apply_with_empty_state_never_hides_untracked_resources(self):
+        from test_workshop_cleanup import snapshot
+        controller = self.controller()
+        controller.record['phase'] = 'applying'
+        controller.save()
+        self.assertTrue(controller.summary()['resources_may_remain'])
+        def scanner(cloud, manifest, *, states):
+            value = snapshot(manifest)
+            value['states'] = states
+            value['checks']['instances']['resources'].append({'id': 'i-orphan', 'tags': {
+                'Project': 'doris-workshop', 'Owner': self.config['owner_id'],
+                'Event': self.config['event_id'], 'Scope': 'activity'}})
+            return SimpleNamespace(collect=lambda: value)
+        with mock.patch('workshop_scan.Scanner', side_effect=scanner), \
+                self.assertRaisesRegex(ws.wc.ConfigError, 'untracked resources'):
+            controller.destroy()
+        self.assertTrue(controller.summary()['resources_may_remain'])
+        report = ws.wc.load_document(Path(controller.record['interrupted_reconciliation']))
+        self.assertFalse(report['ok'])
+        self.assertEqual(report['residual'][0]['id'], 'i-orphan')
+        def clean_scanner(cloud, manifest, *, states):
+            value = snapshot(manifest)
+            value['states'] = states
+            return SimpleNamespace(collect=lambda: value)
+        with mock.patch('workshop_scan.Scanner', side_effect=clean_scanner):
+            result = controller.destroy()
+        self.assertEqual(result['phase'], 'destroyed')
+        self.assertFalse(result['resources_may_remain'])
 
     def test_destroy_failure_and_volume_residual_are_reported_then_retried(self):
         self.up()
