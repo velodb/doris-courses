@@ -82,9 +82,12 @@ incomplete. Its boundary remains pilot state and known resources.
 
 `tools/workshop_shared_cleanup.py` prepares two private saved destroy plans and
 applies activity bindings before the pilot under one activity fence. It retains
-the shared entry, portal, DNS zone, foundation and published images. Remove the
-activity from the separately managed portal registry first. This command does
-not retire the portal or shared infrastructure or revoke unrelated identities.
+the shared entry, portal, DNS zone, foundation and published images. Supply all
+three portal inputs below when the activity is registered in the shared portal;
+the reviewed apply removes only that exact assignment before destroying the
+bindings. If the activity has already been removed and reconciled, omit all
+three. This command does not retire the portal or shared infrastructure or revoke
+unrelated identities.
 
 Use the latest pilot run, the bindings directory containing its original
 `inputs.tfvars.json` and `backend.tfbackend.json`, and the exact current route
@@ -101,6 +104,9 @@ python tools/workshop_shared_cleanup.py plan \
   --pilot-run workshop/aws/.local/event-run \
   --bindings-run workshop/aws/.local/event-bindings \
   --routes workshop/aws/.local/access-plan.json \
+  --portal-identity workshop/aws/.local/identity.json \
+  --portal-subjects workshop/aws/.local/subjects.json \
+  --portal-registry workshop/aws/.local/portal-current.json \
   --output workshop/aws/.local/shared-cleanup-review
 
 # Inspect both private destroy.tfplan files and review.json. Then pass the
@@ -109,6 +115,9 @@ python tools/workshop_shared_cleanup.py apply \
   --pilot-run workshop/aws/.local/event-run \
   --bindings-run workshop/aws/.local/event-bindings \
   --routes workshop/aws/.local/access-plan.json \
+  --portal-identity workshop/aws/.local/identity.json \
+  --portal-subjects workshop/aws/.local/subjects.json \
+  --portal-registry workshop/aws/.local/portal-current.json \
   --output workshop/aws/.local/shared-cleanup-review \
   --approved-review-sha256 REVIEWED_SHA256
 ```
@@ -125,6 +134,10 @@ operation and retains the report. If both applies are known to have completed,
 repeat the read-only scan with `reconcile` and the same arguments and receipt
 hash; the previous report is preserved. An uncertain apply outcome requires
 manual investigation, not a scan-only retry. This is not account-wide cleanup.
+If portal dispatch fails or its outcome is unknown, investigate the private
+portal operation and actual registry before preparing another cleanup; never
+blindly repeat the request. The reviewed input copies and `next-portal.json`
+contain subject identifiers and must remain private.
 
 ## Collect and reconcile
 

@@ -13,6 +13,7 @@ from unittest import mock
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import workshop_config as wc
 import workshop_shared_cleanup as shared_cleanup
+import workshop_portal_update as portal_update
 from test_workshop_cleanup import config, shared, snapshot, state_row, tags
 
 
@@ -165,6 +166,41 @@ class SharedCleanupTests(unittest.TestCase):
             shared_cleanup.retry_reconciliation(self.controller, self.bindings, self.routes, self.output,
                 review["review_sha256"], tf_factory=FakeTerraform, scan_factory=FakeScanner)
         self.assertEqual(FakeTerraform.actions, [])
+
+    def test_reviewed_portal_removal_precedes_destroy_and_is_bound_to_receipt(self):
+        paths = {}
+        for key in ("identity", "subjects", "registry"):
+            paths[key] = self.root / (key + ".json")
+            wc.write_manifest(paths[key], {"fixture": key})
+        expected = {"inputs": {key: shared_cleanup.pf.file_hash(path) for key, path in paths.items()},
+                    "next_registry_sha256": "next-registry"}
+        with mock.patch.object(shared_cleanup, "portal_review", return_value=expected), \
+                mock.patch.object(portal_update, "update", side_effect=lambda *a, **kw: FakeTerraform.actions.append("portal")):
+            review = shared_cleanup.prepare(self.controller, self.bindings, self.routes, self.output,
+                tf_factory=FakeTerraform, portal_files=paths)
+            with self.assertRaisesRegex(wc.ConfigError, "portal inputs"):
+                shared_cleanup.apply(self.controller, self.bindings, self.routes, self.output,
+                    review["review_sha256"], tf_factory=FakeTerraform, scan_factory=FakeScanner)
+            shared_cleanup.apply(self.controller, self.bindings, self.routes, self.output,
+                review["review_sha256"], tf_factory=FakeTerraform, scan_factory=FakeScanner, portal_files=paths)
+        self.assertEqual(FakeTerraform.actions, ["portal", "access-bindings", "pilot"])
+
+    def test_portal_failure_blocks_destroy_and_requires_investigation(self):
+        paths = {}
+        for key in ("identity", "subjects", "registry"):
+            paths[key] = self.root / (key + ".json")
+            wc.write_manifest(paths[key], {"fixture": key})
+        expected = {"inputs": {key: shared_cleanup.pf.file_hash(path) for key, path in paths.items()},
+                    "next_registry_sha256": "next-registry"}
+        with mock.patch.object(shared_cleanup, "portal_review", return_value=expected), \
+                mock.patch.object(portal_update, "update", side_effect=RuntimeError("dispatch unknown")):
+            review = shared_cleanup.prepare(self.controller, self.bindings, self.routes, self.output,
+                tf_factory=FakeTerraform, portal_files=paths)
+            with self.assertRaises(RuntimeError):
+                shared_cleanup.apply(self.controller, self.bindings, self.routes, self.output,
+                    review["review_sha256"], tf_factory=FakeTerraform, scan_factory=FakeScanner, portal_files=paths)
+        self.assertEqual(FakeTerraform.actions, [])
+        self.assertEqual(wc.load_document(self.output / "progress.json")["phase"], "unregistering-portal")
 
     def test_changed_plan_or_backend_never_applies(self):
         review = self.prepare()

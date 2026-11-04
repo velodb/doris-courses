@@ -101,12 +101,25 @@ def artifact_hashes(controller, bindings_run, routes_file):
             "pilot_module": pf.module_hash("pilot"), "bindings_module": pf.module_hash("access-bindings")}
 
 
-def prepare(controller, bindings_run, routes_file, output, *, tf_factory=Terraform, now=None):
+def portal_review(controller, bindings_run, routes_file, portal_files):
+    """Validate the exact portal assignment and bind all private inputs."""
+    import workshop_portal_update as portal
+    paths = {key: Path(portal_files[key]).resolve() for key in ("identity", "subjects", "registry")}
+    route = wc.load_document(routes_file)
+    previous = wc.load_document(paths["registry"])
+    _, next_registry = portal.verify(controller, bindings_run, route, route,
+        wc.load_document(paths["identity"]), wc.load_document(paths["subjects"]), previous, remove_activity=True)
+    return {"inputs": {key: pf.file_hash(path) for key, path in paths.items()},
+            "next_registry_sha256": wc.canonical_hash(next_registry)}
+
+
+def prepare(controller, bindings_run, routes_file, output, *, tf_factory=Terraform, portal_files=None, now=None):
     bindings_run, routes_file = Path(bindings_run).resolve(), Path(routes_file).resolve()
     output = Path(output).resolve()
     require(not output.exists(), "use a fresh private cleanup directory")
     variables, backend, shared, hosts = bound_inputs(controller, bindings_run, routes_file)
     del variables, backend
+    portal_binding = portal_review(controller, bindings_run, routes_file, portal_files) if portal_files else None
     input_hashes = artifact_hashes(controller, bindings_run, routes_file)
     output.mkdir(mode=0o700, parents=True)
     modules = {}
@@ -133,7 +146,10 @@ def prepare(controller, bindings_run, routes_file, output, *, tf_factory=Terrafo
         "manifest_sha256": wc.canonical_hash(manifest),
         "plans": {name: pf.file_hash(output / name / "destroy.tfplan") for name in modules},
         "initialized_backends": {name: pf.file_hash(output / name / "terraform-data" / "terraform.tfstate") for name in modules},
-        "order": ["access-bindings", "pilot"], "shared_resources_retained": True}
+        "order": ["access-bindings", "pilot"], "shared_resources_retained": True, "portal": portal_binding}
+    if portal_files:
+        require(portal_binding == portal_review(controller, bindings_run, routes_file, portal_files),
+                "portal assignment changed while planning")
     wc.write_manifest(output / "manifest.json", manifest)
     wc.write_manifest(output / "review.json", receipt)
     return {"review_sha256": pf.file_hash(output / "review.json"), "order": receipt["order"],
@@ -163,7 +179,7 @@ def reconcile(controller, output, manifest, modules, *, scan_factory=Scanner):
             "report": str(directory / "report.json")}
 
 
-def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_factory=Terraform, scan_factory=Scanner, now=None):
+def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_factory=Terraform, scan_factory=Scanner, portal_files=None, now=None):
     bindings_run, routes_file = Path(bindings_run).resolve(), Path(routes_file).resolve()
     output = Path(output).resolve()
     review_path = output / "review.json"
@@ -172,6 +188,7 @@ def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_fa
     require(receipt.get("kind") == "aws-workshop-shared-cleanup-review" and receipt.get("schema_version") == 1 and
             receipt.get("event_id") == controller.config["event_id"] and receipt.get("order") == ["access-bindings", "pilot"] and
             wc.timestamp(receipt["valid_until"], "valid_until") > (now or datetime.now(timezone.utc)), "receipt is invalid or expired")
+    require(bool(receipt.get("portal")) == bool(portal_files), "supply exactly the portal inputs bound to the review")
     require(receipt["artifacts"] == artifact_hashes(controller, bindings_run, routes_file) and
             receipt["manifest_sha256"] == wc.canonical_hash(manifest), "inputs, source or manifest changed")
     for name in receipt["order"]:
@@ -193,6 +210,28 @@ def apply(controller, bindings_run, routes_file, output, approved_hash, *, tf_fa
             receipt["artifacts"] == artifact_hashes(controller, bindings_run, routes_file) and
             all(receipt["plans"][name] == pf.file_hash(output / name / "destroy.tfplan") for name in receipt["order"]),
             "review expired or inputs changed before apply")
+    if portal_files:
+        require(portal_review(controller, bindings_run, routes_file, portal_files) == receipt["portal"],
+                "portal inputs or assignment changed since review")
+        lifecycle.atomic_json(progress, {"phase": "unregistering-portal", "resources_may_remain": True})
+        import workshop_portal_update as portal
+        inputs_dir = output / "portal-inputs"
+        inputs_dir.mkdir(mode=0o700)
+        copies = {}
+        for key in ("identity", "subjects", "registry"):
+            path = inputs_dir / (key + ".json")
+            descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            with os.fdopen(descriptor, "wb") as stream:
+                stream.write(Path(portal_files[key]).read_bytes())
+            require(pf.file_hash(path) == receipt["portal"]["inputs"][key], "portal input changed before dispatch")
+            copies[key] = path
+        route = wc.load_document(routes_file)
+        portal.update(controller, bindings_run, route, route, wc.load_document(copies["identity"]),
+            wc.load_document(copies["subjects"]), copies["registry"], output / "portal-unregister", remove_activity=True)
+        require(wc.timestamp(receipt["valid_until"], "valid_until") > (now or datetime.now(timezone.utc)) and
+                receipt["artifacts"] == artifact_hashes(controller, bindings_run, routes_file) and
+                all(receipt["plans"][name] == pf.file_hash(output / name / "destroy.tfplan") for name in receipt["order"]),
+                "review expired or inputs changed during portal removal; reconcile before replanning")
     lifecycle.atomic_json(progress, {"phase": "applying-bindings", "resources_may_remain": True})
     modules["access-bindings"].apply(output / "access-bindings" / "destroy.tfplan")
     require(not modules["access-bindings"].state()["resources"], "bindings state is not empty")
@@ -236,17 +275,22 @@ def main(argv=None):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--ttl-binding", type=Path)
     parser.add_argument("--approved-review-sha256")
+    for name in ("identity", "subjects", "registry"):
+        parser.add_argument("--portal-" + name, type=Path)
     args = parser.parse_args(argv)
     os.umask(0o077)
     try:
+        portal_files = {key: getattr(args, "portal_" + key) for key in ("identity", "subjects", "registry")}
+        require(not any(portal_files.values()) or all(portal_files.values()), "supply all three portal inputs")
+        portal_files = portal_files if all(portal_files.values()) else None
         with lifecycle.run_lock(args.pilot_run):
             controller = lifecycle.Controller(args.pilot_run, ttl_binding=args.ttl_binding)
             with ttl.activity_operation(controller.cloud, controller.config, controller.pilot, args.ttl_binding,
                                         cleanup_operation=True, scope_change=True):
                 if args.command == "plan":
-                    result = prepare(controller, args.bindings_run, args.routes, args.output)
+                    result = prepare(controller, args.bindings_run, args.routes, args.output, portal_files=portal_files)
                 elif args.command == "apply":
-                    result = apply(controller, args.bindings_run, args.routes, args.output, args.approved_review_sha256)
+                    result = apply(controller, args.bindings_run, args.routes, args.output, args.approved_review_sha256, portal_files=portal_files)
                 else:
                     result = retry_reconciliation(controller, args.bindings_run, args.routes, args.output, args.approved_review_sha256)
         print(json.dumps(result, indent=2, sort_keys=True))
