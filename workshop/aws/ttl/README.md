@@ -290,7 +290,7 @@ it may inspect account metadata but not arbitrary object bodies or secrets.
 Mutations require reviewed exact ARNs. The sole dynamic-task exception is
 StopTask/DescribeTasks under this cleanup cluster, with an exact cluster
 condition. PassRole is limited to the exact cleanup execution/task roles for
-ECS. DNS changes are DELETE-only for approved event record names, with null
+ECS. DNS changes are DELETE-only for approved event A-record names, with null
 guards. The runner cannot delete or weaken the state bucket or delete retained
 control/state/evidence objects; only exact Terraform `.tflock` objects may be
 deleted there. Review control-record/state PutObject scopes separately from

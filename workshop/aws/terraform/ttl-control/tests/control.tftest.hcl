@@ -109,3 +109,40 @@ run "reject_foundation_bucket_configuration_mutation" {
   }
   expect_failures = [aws_iam_role_policy.control]
 }
+run "accept_exact_dns_a_deletion" {
+  command = plan
+  variables {
+    approved_dns_names = ["class-a-s001.workshops.example.com"]
+    approved_resource_arns = {
+      scheduler = ["arn:aws:states:us-east-1:000000000000:stateMachine:mock-control"]
+      workflow  = ["arn:aws:ecs:us-east-1:000000000000:task-definition/mock-control:1"]
+      execution = ["arn:aws:ecr:us-east-1:000000000000:repository/cleanup"]
+      runner    = ["arn:aws:route53:::hostedzone/ZEXAMPLE"]
+    }
+    policy_documents = {
+      scheduler = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      workflow  = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      execution = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      runner    = { json = file("tests/fixtures/dns-a-only.json"), sha256 = filesha256("tests/fixtures/dns-a-only.json") }
+    }
+  }
+}
+run "reject_dns_deletion_without_record_type_guard" {
+  command = plan
+  variables {
+    approved_dns_names = ["class-a-s001.workshops.example.com"]
+    approved_resource_arns = {
+      scheduler = ["arn:aws:states:us-east-1:000000000000:stateMachine:mock-control"]
+      workflow  = ["arn:aws:ecs:us-east-1:000000000000:task-definition/mock-control:1"]
+      execution = ["arn:aws:ecr:us-east-1:000000000000:repository/cleanup"]
+      runner    = ["arn:aws:route53:::hostedzone/ZEXAMPLE"]
+    }
+    policy_documents = {
+      scheduler = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      workflow  = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      execution = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      runner    = { json = file("tests/fixtures/dns-unrestricted-type.json"), sha256 = filesha256("tests/fixtures/dns-unrestricted-type.json") }
+    }
+  }
+  expect_failures = [aws_iam_role_policy.control]
+}

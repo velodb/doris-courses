@@ -333,6 +333,31 @@ class TerraformAdapterTests(unittest.TestCase):
 
 
 class PolicyTests(unittest.TestCase):
+    def test_dns_cleanup_is_limited_to_a_records_and_checks_missing_types(self):
+        arn = 'arn:aws:route53:::hostedzone/ZEXAMPLE'
+        name = 'class-a-alice.workshops.example.com'
+        conditions = {'ForAllValues:StringEquals': {
+            'route53:ChangeResourceRecordSetsActions': ['DELETE'],
+            'route53:ChangeResourceRecordSetsRecordTypes': ['A'],
+            'route53:ChangeResourceRecordSetsNormalizedRecordNames': [name]},
+            'Null': {'route53:ChangeResourceRecordSetsActions': 'false',
+                     'route53:ChangeResourceRecordSetsRecordTypes': 'false',
+                     'route53:ChangeResourceRecordSetsNormalizedRecordNames': 'false'}}
+        row = {'Effect': 'Allow', 'Action': 'route53:ChangeResourceRecordSets', 'Resource': arn, 'Condition': conditions}
+        policy = {'Version': '2012-10-17', 'Statement': [row]}
+        args = {'account_id': '000000000000', 'region': 'us-east-1', 'state_bucket': 'foundation-state-example',
+                'event_id': 'class-a', 'approved_dns_names': [name]}
+        self.assertTrue(control.validate_policy('runner', policy, [arn], **args))
+        for mutation in ('missing_guard', 'wrong_type'):
+            bad = copy.deepcopy(policy)
+            condition = bad['Statement'][0]['Condition']
+            if mutation == 'missing_guard':
+                condition['Null'].pop('route53:ChangeResourceRecordSetsRecordTypes')
+            else:
+                condition['ForAllValues:StringEquals']['route53:ChangeResourceRecordSetsRecordTypes'] = ['AAAA']
+            with self.assertRaises(wc.ConfigError):
+                control.validate_policy('runner', bad, [arn], **args)
+
     def test_mock_policy_is_read_only_and_mutations_need_exact_reviewed_scope(self):
         policy = json.loads((wc.SPEC / "terraform/ttl-control/tests/fixtures/read-only-policy.json").read_text())
         arn = "arn:aws:s3:::example-control/control.json"

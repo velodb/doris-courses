@@ -63,11 +63,13 @@ def validate_policy(role, document, approved_arns, *, account_id, region, state_
                 conditions = row.get("Condition", {})
                 selected = conditions.get("ForAllValues:StringEquals", {})
                 ttl.require(selected.get("route53:ChangeResourceRecordSetsActions") == ["DELETE"] and
+                    selected.get("route53:ChangeResourceRecordSetsRecordTypes") == ["A"] and
                     selected.get("route53:ChangeResourceRecordSetsNormalizedRecordNames") and
                     event_id and all(name in approved_dns_names and name.startswith(event_id + "-") and "*" not in name and "?" not in name
                         for name in selected["route53:ChangeResourceRecordSetsNormalizedRecordNames"]) and
                     conditions.get("Null", {}).get("route53:ChangeResourceRecordSetsNormalizedRecordNames") == "false" and
-                    conditions.get("Null", {}).get("route53:ChangeResourceRecordSetsActions") == "false", "DNS changes must be limited to explicit DELETE record names")
+                    conditions.get("Null", {}).get("route53:ChangeResourceRecordSetsActions") == "false" and
+                    conditions.get("Null", {}).get("route53:ChangeResourceRecordSetsRecordTypes") == "false", "DNS changes must be limited to explicit DELETE A record names")
     return wc.canonical_hash(document)
 
 

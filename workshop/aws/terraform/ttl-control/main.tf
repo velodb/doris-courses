@@ -81,10 +81,12 @@ resource "aws_iam_role_policy" "control" {
       condition = alltrue([for statement in jsondecode(each.value.json).Statement :
         !contains(flatten([statement.Action]), "route53:ChangeResourceRecordSets") || try(
           statement.Condition["ForAllValues:StringEquals"]["route53:ChangeResourceRecordSetsActions"] == ["DELETE"] &&
+          statement.Condition["ForAllValues:StringEquals"]["route53:ChangeResourceRecordSetsRecordTypes"] == ["A"] &&
           length(statement.Condition["ForAllValues:StringEquals"]["route53:ChangeResourceRecordSetsNormalizedRecordNames"]) > 0 &&
           alltrue([for name in statement.Condition["ForAllValues:StringEquals"]["route53:ChangeResourceRecordSetsNormalizedRecordNames"] : contains(var.approved_dns_names, name)]) &&
           statement.Condition.Null["route53:ChangeResourceRecordSetsNormalizedRecordNames"] == "false" &&
-        statement.Condition.Null["route53:ChangeResourceRecordSetsActions"] == "false", false)
+          statement.Condition.Null["route53:ChangeResourceRecordSetsActions"] == "false" &&
+        statement.Condition.Null["route53:ChangeResourceRecordSetsRecordTypes"] == "false", false)
       ])
       error_message = "DNS mutation must be DELETE-only for reviewed exact names with null guards."
     }
