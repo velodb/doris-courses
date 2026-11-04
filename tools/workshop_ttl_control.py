@@ -16,7 +16,7 @@ GLOBAL_READS = {"sts:GetCallerIdentity", "ecr:GetAuthorizationToken", "s3:ListAl
 # This is a verifier for reviewed Autopilot output, not a policy generator.
 MUTATIONS = {
     "scheduler": {"states:StartExecution", "sqs:SendMessage"},
-    "workflow": {"ecs:RunTask", "ecs:StopTask", "iam:PassRole", "events:PutRule", "events:PutTargets"},
+    "workflow": {"ecs:RunTask", "ecs:StopTask", "ecs:TagResource", "iam:PassRole", "events:PutRule", "events:PutTargets"},
     "execution": {"ecr:BatchCheckLayerAvailability"},
     "runner": {"ec2:TerminateInstances", "ec2:DeleteVpc", "ec2:DeleteSubnet", "ec2:DeleteRouteTable", "ec2:DeleteSecurityGroup",
         "ec2:DeleteInternetGateway", "ec2:DetachInternetGateway", "ec2:DisassociateRouteTable", "ec2:DeleteRoute", "ec2:DeleteVolume",
@@ -61,6 +61,8 @@ def validate_policy(role, document, approved_arns, *, account_id, region, state_
             if any("*" in resource and resource != "*" for resource in resources):
                 ttl.require((action in {"ecs:StopTask", "ecs:DescribeTasks"} and resources == [task_scope] and
                     row.get("Condition", {}).get("ArnEquals", {}).get("ecs:cluster") == cluster_arn) or
+                    (role == "workflow" and action == "ecs:TagResource" and resources == [task_scope] and
+                     row.get("Condition", {}).get("StringEquals", {}).get("ecs:CreateAction") == "RunTask") or
                     (role == "runner" and action == "route53:GetChange" and resources == ["arn:aws:route53:::change/*"]) or
                     (role == "runner" and action in {"s3:GetObject", "s3:GetObjectVersion"} and resources == [revision_read]),
                     "only this cleanup cluster's dynamic task IDs may use a scoped wildcard")

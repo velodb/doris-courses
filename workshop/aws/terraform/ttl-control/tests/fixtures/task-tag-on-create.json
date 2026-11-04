@@ -1,0 +1,1 @@
+{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":"ecs:TagResource","Resource":"arn:aws:ecs:us-east-1:000000000000:task/doris-ttl-class-a/*","Condition":{"StringEquals":{"ecs:CreateAction":"RunTask"}}}]}

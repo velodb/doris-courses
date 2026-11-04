@@ -333,6 +333,21 @@ class TerraformAdapterTests(unittest.TestCase):
 
 
 class PolicyTests(unittest.TestCase):
+    def test_task_tagging_is_only_allowed_during_run_task_creation(self):
+        arn = 'arn:aws:ecs:us-east-1:000000000000:task/doris-ttl-class-a/*'
+        args = {'account_id': '000000000000', 'region': 'us-east-1', 'state_bucket': 'foundation-state-example', 'event_id': 'class-a'}
+        policy = {'Version': '2012-10-17', 'Statement': [{'Effect': 'Allow', 'Action': 'ecs:TagResource', 'Resource': arn,
+                   'Condition': {'StringEquals': {'ecs:CreateAction': 'RunTask'}}}]}
+        self.assertTrue(control.validate_policy('workflow', policy, [arn], **args))
+        for create_action in ('CreateService', None):
+            bad = copy.deepcopy(policy)
+            if create_action is None:
+                bad['Statement'][0].pop('Condition')
+            else:
+                bad['Statement'][0]['Condition']['StringEquals']['ecs:CreateAction'] = create_action
+            with self.assertRaises(wc.ConfigError):
+                control.validate_policy('workflow', bad, [arn], **args)
+
     def test_revision_prefix_is_read_only_and_bound_to_exact_activity(self):
         arn = 'arn:aws:s3:::foundation-state-example/aws-workshop-control/000000000000/us-east-1/class-a/bindings/1/*'
         args = {'account_id': '000000000000', 'region': 'us-east-1', 'state_bucket': 'foundation-state-example', 'event_id': 'class-a', 'revision': 1}

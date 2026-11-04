@@ -289,7 +289,9 @@ mutation resources. Read-only regional discovery is explicitly catalogued;
 it may inspect account metadata but not arbitrary object bodies or secrets.
 Mutations require reviewed exact ARNs. Dynamic task IDs are limited to
 StopTask/DescribeTasks under this cleanup cluster, with an exact cluster
-condition. The runner can read Route 53 change status through the dynamic
+condition. Workflow task tagging is limited to this cluster's task ARN pattern
+and the `RunTask` creation context, for propagated control tags. The runner can
+read Route 53 change status through the dynamic
 `change/*` ARN because Route 53 assigns the change ID after deletion; this
 exception permits only `GetChange`. PassRole is limited to the exact cleanup
 execution/task roles for ECS. DNS changes are DELETE-only for approved event

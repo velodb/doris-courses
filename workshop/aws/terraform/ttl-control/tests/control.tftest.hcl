@@ -228,3 +228,38 @@ run "reject_revision_prefix_writes" {
   }
   expect_failures = [aws_iam_role_policy.control]
 }
+run "accept_task_tagging_only_at_creation" {
+  command = plan
+  variables {
+    approved_resource_arns = {
+      scheduler = ["arn:aws:states:us-east-1:000000000000:stateMachine:mock-control"]
+      workflow  = ["arn:aws:ecs:us-east-1:000000000000:task/doris-ttl-class-a/*"]
+      execution = ["arn:aws:ecr:us-east-1:000000000000:repository/cleanup"]
+      runner    = ["arn:aws:s3:::foundation-state-example/activity.tflock"]
+    }
+    policy_documents = {
+      scheduler = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      workflow  = { json = file("tests/fixtures/task-tag-on-create.json"), sha256 = filesha256("tests/fixtures/task-tag-on-create.json") }
+      execution = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      runner    = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+    }
+  }
+}
+run "reject_task_tagging_after_creation" {
+  command = plan
+  variables {
+    approved_resource_arns = {
+      scheduler = ["arn:aws:states:us-east-1:000000000000:stateMachine:mock-control"]
+      workflow  = ["arn:aws:ecs:us-east-1:000000000000:task/doris-ttl-class-a/*"]
+      execution = ["arn:aws:ecr:us-east-1:000000000000:repository/cleanup"]
+      runner    = ["arn:aws:s3:::foundation-state-example/activity.tflock"]
+    }
+    policy_documents = {
+      scheduler = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      workflow  = { json = file("tests/fixtures/task-tag-unrestricted.json"), sha256 = filesha256("tests/fixtures/task-tag-unrestricted.json") }
+      execution = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+      runner    = { json = file("tests/fixtures/read-only-policy.json"), sha256 = filesha256("tests/fixtures/read-only-policy.json") }
+    }
+  }
+  expect_failures = [aws_iam_role_policy.control]
+}

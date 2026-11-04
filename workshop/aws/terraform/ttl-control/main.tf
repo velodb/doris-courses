@@ -55,6 +55,9 @@ resource "aws_iam_role_policy" "control" {
           (each.key == "workflow" && resource == "arn:aws:ecs:${var.region}:${var.expected_account_id}:task/${local.name}/*" &&
             alltrue([for action in flatten([statement.Action]) : contains(["ecs:StopTask", "ecs:DescribeTasks"], action)]) &&
           try(statement.Condition.ArnEquals["ecs:cluster"] == "arn:aws:ecs:${var.region}:${var.expected_account_id}:cluster/${local.name}", false)) ||
+          (each.key == "workflow" && resource == "arn:aws:ecs:${var.region}:${var.expected_account_id}:task/${local.name}/*" &&
+            alltrue([for action in flatten([statement.Action]) : action == "ecs:TagResource"]) &&
+          try(statement.Condition.StringEquals["ecs:CreateAction"] == "RunTask", false)) ||
           (each.key == "runner" && resource == "arn:aws:route53:::change/*" &&
           alltrue([for action in flatten([statement.Action]) : action == "route53:GetChange"])) ||
           (each.key == "runner" && resource == "arn:aws:s3:::${var.state_bucket_name}/aws-workshop-control/${var.expected_account_id}/${var.region}/${var.event_id}/bindings/${var.revision}/*" &&

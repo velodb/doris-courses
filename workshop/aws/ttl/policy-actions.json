@@ -6,6 +6,7 @@
   "workflow": [
     "ecs:RunTask",
     "ecs:StopTask",
+    "ecs:TagResource",
     "events:PutRule",
     "events:PutTargets",
     "iam:PassRole"
