@@ -95,12 +95,13 @@ class FakeAws:
 
 
 class PreflightTests(unittest.TestCase):
-    def test_scan_source_is_bound_to_reviewed_tools(self):
+    def test_scan_and_fence_sources_are_bound_to_reviewed_tools(self):
         original_hash = pf.file_hash
         baseline = pf.tool_hash()
-        with mock.patch.object(pf, 'file_hash', side_effect=lambda path: '0' * 64
-                if Path(path).name == 'workshop_scan.py' else original_hash(path)):
-            self.assertNotEqual(baseline, pf.tool_hash())
+        for name in ('workshop_scan.py', 'workshop_ttl.py'):
+            with self.subTest(name=name), mock.patch.object(pf, 'file_hash', side_effect=lambda path: '0' * 64
+                    if Path(path).name == name else original_hash(path)):
+                self.assertNotEqual(baseline, pf.tool_hash())
 
     @classmethod
     def setUpClass(cls):
