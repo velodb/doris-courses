@@ -49,6 +49,13 @@ def commit(repo, message):
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_markdown_table_alignment_does_not_require_inline_styles(self):
+        portal = load_helper("portal")
+        html = portal.render_markdown("|Name|Count|\n|:---|---:|\n|events|10|\n", "course.md", "/")
+        self.assertNotIn('style=', html)
+        self.assertIn('class="align-left"', html)
+        self.assertIn('class="align-right"', html)
+
     @classmethod
     def setUpClass(cls):
         cls.temporary = tempfile.TemporaryDirectory()
@@ -99,6 +106,7 @@ class RuntimeTests(unittest.TestCase):
         files = host.install_source(self.bundle, self.plan, self.layout)
         self.layout.helpers.mkdir(parents=True)
         shutil.copyfile(builder.RUNTIME / "kernel.py", self.layout.helpers / "kernel.py")
+        host.install_ui(self.bundle, self.layout)
         host.materialize(self.plan, files, self.layout)
         return files
 
@@ -108,6 +116,7 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(len(plan["courses"]), 2)
         self.assertEqual(set(packages["docker_apt"]), host.DOCKER_PACKAGES)
         self.assertEqual(self.bundle.stat().st_mode & 0o777, 0o700)
+        self.assertIn("ui.tar", plan["sha256"])
         for key in ("aws_account_id", "aws_profile", "event_id", "learner_ids", "auth"):
             self.assertNotIn(key, json.dumps(plan))
         with tarfile.open(self.bundle / "source.tar") as stream:
@@ -433,7 +442,8 @@ class RuntimeTests(unittest.TestCase):
             return opener.open(req, timeout=10)
 
         for path in ("/api/contents", "/api/kernels", "/api/sessions", "/api/terminals", "/workshop/",
-                     "/workshop/content/doris-course/01-real-time-analytics/course.md", "/workshop/terminal"):
+                     "/workshop/content/doris-course/01-real-time-analytics/course.md", "/workshop/terminal",
+                     "/workshop/static/ui.css", "/workshop/static/manrope.ttf", "/workshop/help"):
             with self.subTest(unauthenticated=path), self.assertRaises(urllib.error.HTTPError) as failure:
                 request(path, auth=False)
             self.assertIn(failure.exception.code, (302, 401, 403))
@@ -443,11 +453,15 @@ class RuntimeTests(unittest.TestCase):
             self.assertIn(failure.exception.code, (401, 403))
         with request("/workshop/") as response:
             page = response.read().decode()
-            self.assertIn("doris-rta", page)
+            self.assertIn('class="module"', page)
             self.assertIn("/lab/tree/doris-course/01-real-time-analytics/" + self.lab, page)
             self.assertNotIn("certificate", page)
             self.assertNotIn("fetch(", page)
         self.assertTrue(check.portal_ready(token_file, base + "/workshop/"))
+        for name, mime in (("ui.css", "text/css"), ("logo.svg", "image/svg+xml"), ("manrope.ttf", "font/ttf")):
+            with request("/workshop/static/" + name) as response:
+                self.assertIn(mime, response.headers["Content-Type"])
+                self.assertGreater(len(response.read()), 100)
         self.assertTrue(check.widget_frontend_ready(token_file, base + "/lab"))
         # Exercise negotiated compression on the actual Lab entry script, not
         # only the config flag: this is the cold-load path through SSM.

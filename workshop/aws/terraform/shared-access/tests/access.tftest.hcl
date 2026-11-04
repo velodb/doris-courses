@@ -91,7 +91,7 @@ run "operator_portal_routes_only_course_path" {
   command = apply
   variables { portal_instance_id = "i-00000000000000009" }
   assert {
-    condition     = anytrue([for condition in aws_lb_listener_rule.portal[0].condition : try(condition.host_header[0].values == toset([var.domain]), false)]) && anytrue([for condition in aws_lb_listener_rule.portal[0].condition : try(condition.path_pattern[0].values == toset(["/doris-courses", "/doris-courses/"]), false)]) && length(aws_lb_listener_rule.portal[0].condition) == 2 && aws_lb_target_group_attachment.portal[0].target_id == var.portal_instance_id && output.access.portal.instance_id == var.portal_instance_id
+    condition     = anytrue([for condition in aws_lb_listener_rule.portal[0].condition : try(condition.host_header[0].values == toset([var.domain]), false)]) && anytrue([for condition in aws_lb_listener_rule.portal[0].condition : try(condition.path_pattern[0].values == toset(["/doris-courses", "/doris-courses/*"]), false)]) && length(aws_lb_listener_rule.portal[0].condition) == 2 && aws_lb_target_group_attachment.portal[0].target_id == var.portal_instance_id && output.access.portal.instance_id == var.portal_instance_id
     error_message = "The root course path uses an operator target, while other root paths retain default denial."
   }
 }

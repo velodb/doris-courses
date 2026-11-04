@@ -1,16 +1,22 @@
 """Authenticated, read-only course navigation inside the existing Jupyter server."""
 
-from html import escape
 import mimetypes
 from pathlib import Path
 import posixpath
 import re
+import sys
 from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 from jupyter_server.base.handlers import JupyterHandler
 from jupyter_server.utils import url_path_join
 from markdown_it import MarkdownIt
 from tornado import web
+
+UI_ROOT = Path(__file__).resolve().parent / "ui"
+if not UI_ROOT.is_dir():
+    UI_ROOT = Path(__file__).resolve().parents[3] / "ui/workshop"
+sys.path.insert(0, str(UI_ROOT))
+from doris_workshop_ui import Renderer, asset as ui_asset
 
 
 def content_url(base, path):
@@ -44,6 +50,10 @@ def render_markdown(text, current, base):
 
     def rewrite(items):
         for token in items:
+            alignment = token.attrGet("style")
+            if token.tag in {"td", "th"} and alignment in {"text-align:left", "text-align:right", "text-align:center"}:
+                token.attrs.pop("style", None)
+                token.attrSet("class", "align-" + alignment.split(":")[1])
             for key in ("href", "src"):
                 value = token.attrGet(key)
                 if value:
@@ -57,41 +67,34 @@ def render_markdown(text, current, base):
 class PortalHandler(JupyterHandler):
     def initialize(self, plan, source):
         self.plan, self.source = plan, Path(source).resolve()
+        self.ui = Renderer(asset_base=url_path_join(self.base_url, "workshop/static"),
+            home=url_path_join(self.base_url, "workshop/"), help_url=url_path_join(self.base_url, "workshop/help"), home_label="Course outline")
 
-    def page(self, title, body):
-        base = self.base_url
+    def page(self, html):
         self.set_header("Cache-Control", "no-store")
-        self.set_header("Content-Security-Policy", "default-src 'self'; img-src 'self' https: data:; style-src 'unsafe-inline'; frame-ancestors 'self'")
+        self.set_header("Content-Security-Policy", "default-src 'none'; img-src 'self' https: data:; style-src 'self'; font-src 'self'; base-uri 'none'; frame-ancestors 'self'; form-action 'self'")
         self.set_header("Content-Type", "text/html; charset=utf-8")
-        self.finish('<!doctype html><html lang="en"><meta charset="utf-8">'
-                    '<meta name="viewport" content="width=device-width,initial-scale=1">'
-                    f'<title>{escape(title)}</title><style>'
-                    'body{max-width:960px;margin:32px auto;padding:0 24px;font:17px/1.65 system-ui;color:#172b4d}'
-                    'a{color:#1558b0}nav{display:flex;gap:24px;border-bottom:1px solid #ddd;padding-bottom:16px}'
-                    'img{max-width:100%;height:auto}pre{overflow:auto;background:#f3f5f7;padding:16px}'
-                    'table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:8px}'
-                    'button{font:inherit;padding:8px 16px}code{overflow-wrap:anywhere}'
-                    '</style><nav>'
-                    f'<a href="{escape(url_path_join(base, "workshop/"))}">Course home</a>'
-                    f'<a href="{escape(url_path_join(base, "lab"))}">Notebooks &amp; downloads</a>'
-                    f'<a href="{escape(url_path_join(base, "workshop/terminal"))}">Web Terminal</a></nav>'
-                    f'<main><h1>{escape(title)}</h1>{body}</main></html>')
+        self.finish(html)
+
+    def course_links(self):
+        return {"course": url_path_join(self.base_url, "workshop/"), "notebooks": url_path_join(self.base_url, "lab"),
+            "terminal": url_path_join(self.base_url, "workshop/terminal")}
 
 
 class IndexHandler(PortalHandler):
     @web.authenticated
     def get(self):
-        body = '<p>Read a lesson, then open its Lab. Save or download your files in JupyterLab.</p>'
+        courses = []
         for course in self.plan["courses"]:
             directory = course["course_dir"]
-            body += f'<h2>{escape(course.get("title", directory.rsplit("/", 1)[-1]))}</h2><p>Kernel: <code>{escape(course["kernel"])}</code></p><ol>'
+            modules = []
             for module in course.get("modules", []):
                 lesson = content_url(self.base_url, directory + "/" + module["course"])
                 lab = notebook_url(self.base_url, directory + "/" + module["lab"])
-                body += f'<li><a href="{escape(lesson)}">{escape(module.get("title", module["id"]))}</a> · <a href="{escape(lab)}">Open Lab</a></li>'
-            body += '</ol>'
-        body += f'<p>Course version: <code>{escape(self.plan["course_ref"])}</code></p>'
-        self.page("Apache Doris workshop", body)
+                modules.append({"title": module.get("title", module["id"]), "lesson": lesson, "lab": lab, "level": module.get("level")})
+            courses.append({"title": course.get("title", directory.rsplit("/", 1)[-1]), "modules": modules, "levels": course.get("levels", {})})
+        links = self.course_links()
+        self.page(self.ui.course(courses, course_url=links["course"], notebooks=links["notebooks"], terminal=links["terminal"]))
 
 
 class ContentHandler(PortalHandler):
@@ -102,7 +105,14 @@ class ContentHandler(PortalHandler):
         if not allowed or not target.is_file() or any(p.startswith(".") for p in Path(path).parts):
             raise web.HTTPError(404)
         if target.suffix == ".md":
-            self.page(target.stem, render_markdown(target.read_text(), path, self.base_url))
+            source = target.read_text()
+            heading = re.match(r"^#\s+([^\n]+)\n", source)
+            title = heading[1] if heading else target.stem
+            source = source[heading.end():] if heading else source
+            lab = next((notebook_url(self.base_url, course["course_dir"] + "/" + module["lab"])
+                for course in self.plan["courses"] for module in course.get("modules", [])
+                if path == course["course_dir"] + "/" + module["course"]), None)
+            self.page(self.ui.lesson(title, render_markdown(source, path, self.base_url), lab=lab, **self.course_links()))
         elif target.suffix.lower() in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"}:
             self.set_header("Content-Type", mimetypes.guess_type(str(target))[0])
             self.set_header("X-Content-Type-Options", "nosniff")
@@ -119,10 +129,28 @@ class ContentHandler(PortalHandler):
 class TerminalHandler(PortalHandler):
     @web.authenticated
     def get(self):
-        self.page("Web Terminal", '<p>Open JupyterLab, then choose <strong>File → New → Terminal</strong> '
-                  'to start a shell on your workshop instance. Existing terminals are listed in the '
-                  '<strong>Running Terminals and Kernels</strong> sidebar.</p>'
-                  f'<p><a href="{escape(url_path_join(self.base_url, "lab"))}">Open JupyterLab</a></p>')
+        self.page(self.ui.terminal(**self.course_links()))
+
+
+class AssetHandler(PortalHandler):
+    @web.authenticated
+    def get(self, name):
+        try:
+            data, mime = ui_asset(name)
+        except KeyError:
+            raise web.HTTPError(404)
+        self.set_header("Content-Type", mime)
+        self.set_header("X-Content-Type-Options", "nosniff")
+        self.set_header("Cache-Control", "no-store")
+        self.finish(data)
+
+    head = get
+
+
+class HelpHandler(PortalHandler):
+    @web.authenticated
+    def get(self):
+        self.page(self.ui.state("help"))
 
 
 def register(server, plan, source):
@@ -131,5 +159,7 @@ def register(server, plan, source):
     server.web_app.add_handlers(".*$", [
         (prefix + "/?", IndexHandler, options),
         (prefix + "/terminal", TerminalHandler, options),
+        (prefix + "/help", HelpHandler, options),
+        (prefix + "/static/([^/]+)", AssetHandler, options),
         (prefix + "/content/(.*)", ContentHandler, options),
     ])

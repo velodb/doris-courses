@@ -2,6 +2,7 @@
 /review/screenshots/
 /review/selected/*.png
 /review/selected/verification.json
+/review/selected/integrated-verification.json
 /review/design-demos/
 /review/index.html
 /review/verification.json

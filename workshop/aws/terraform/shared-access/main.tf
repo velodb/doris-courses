@@ -258,7 +258,7 @@ resource "aws_lb_listener_rule" "portal" {
     host_header { values = [var.domain] }
   }
   condition {
-    path_pattern { values = ["/doris-courses", "/doris-courses/"] }
+    path_pattern { values = ["/doris-courses", "/doris-courses/*"] }
   }
   action {
     type             = "forward"

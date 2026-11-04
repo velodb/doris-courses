@@ -2,7 +2,6 @@
 import argparse
 from datetime import datetime, timezone
 import hashlib
-from html import escape
 import json
 from pathlib import Path
 import re
@@ -15,6 +14,12 @@ from aiohttp import ClientSession, ClientTimeout, DummyCookieJar, web
 # The installed directory is root-owned; isolated Python omits the script path.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from gateway import Denied, HOST, ID, Verifier, validate_config as validate_gateway
+
+UI_ROOT = Path(__file__).resolve().parent / "ui"
+if not UI_ROOT.is_dir():
+    UI_ROOT = Path(__file__).resolve().parents[3] / "ui/workshop"
+sys.path.insert(0, str(UI_ROOT))
+from doris_workshop_ui import Renderer, asset as ui_asset
 
 PATH = "/doris-courses/"
 VERIFIERS = web.AppKey("portal_verifiers", dict)
@@ -59,29 +64,33 @@ def active(activity):
     return time.time() < datetime.strptime(activity["expires_at"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp()
 
 
-def page(body):
-    return web.Response(text='<!doctype html><html lang="en"><meta charset="utf-8">'
-        '<meta name="viewport" content="width=device-width,initial-scale=1">'
-        '<title>Doris courses</title><body><main><h1>Doris courses</h1>' + body + '</main></body></html>',
-        content_type="text/html")
+def page(html, *, status=200):
+    return web.Response(text=html, status=status, content_type="text/html")
 
 
 def application(config, *, verifiers=None):
     validate_config(config)
+    ui = Renderer(asset_base="https://" + config["domain"] + PATH + "static",
+        home="https://" + config["domain"] + PATH)
 
     @web.middleware
     async def security(request, handler):
         try:
             response = await handler(request)
         except Denied as denied:
-            response = web.Response(status=denied.status, text="Course entry unavailable or unauthorized.\n")
+            entry = next((f'https://{event}-entry.{config["domain"]}{PATH}' for event in config["activities"]
+                if request.headers.get("Host") == f'{event}-entry.{config["domain"]}'), None)
+            response = page(ui.state("expired" if denied.status == 401 else "denied",
+                destination=entry if denied.status == 401 else None), status=denied.status)
         # Chrome applies form-action to the logout redirect as well as the POST.
         # Allow only this entry's configured Cognito logout endpoint.
         activity = next((value for event, value in config["activities"].items()
             if request.headers.get("Host") == f'{event}-entry.{config["domain"]}'), None)
         form_action = "'self'" + (" " + activity["login_origin"] + "/logout" if activity else "")
         response.headers.update({"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff",
-            "Content-Security-Policy": "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action " + form_action,
+            "Content-Security-Policy": "default-src 'none'; style-src 'self' https://" + config["domain"] +
+                "; img-src 'self' https://" + config["domain"] + "; font-src 'self' https://" + config["domain"] +
+                "; base-uri 'none'; frame-ancestors 'none'; form-action " + form_action,
             # no-referrer makes a same-origin form POST send Origin: null in
             # browsers, which cannot pass the strict logout Origin check.
             # same-origin still withholds the referrer from Cognito and other
@@ -106,18 +115,25 @@ def application(config, *, verifiers=None):
             raise Denied(400)
         host = request.headers["Host"]
         if host == config["domain"]:
+            if request.path.startswith(PATH + "static/") and request.method in {"GET", "HEAD"}:
+                try:
+                    data, mime = ui_asset(request.path[len(PATH + "static/"):])
+                except KeyError:
+                    raise Denied(404)
+                return web.Response(body=data, content_type=mime, headers={"Access-Control-Allow-Origin": "*"})
+            if request.path == PATH + "help" and request.method in {"GET", "HEAD"}:
+                return page(ui.state("help"))
             if request.path not in {PATH, PATH.rstrip("/")} or request.method not in {"GET", "HEAD"}:
                 raise Denied(403)
-            links = [f'<li><a href="https://{event}-entry.{config["domain"]}{PATH}">{escape(event)}</a></li>'
+            links = [{"id": event, "href": f'https://{event}-entry.{config["domain"]}{PATH}'}
                 for event, activity in sorted(config["activities"].items()) if active(activity)]
-            return page("<p>Choose your activity to sign in.</p><ul>" + "".join(links) + "</ul>"
-                if links else "<p>No activities are available.</p>")
+            return page(ui.activities(links))
         event = next((event for event in config["activities"] if host == f'{event}-entry.{config["domain"]}'), None)
         if event is None or not active(config["activities"][event]):
             raise Denied(403)
         activity = config["activities"][event]
         if request.path == "/_workshop/logged-out" and request.method in {"GET", "HEAD"}:
-            return page("<p>Signed out. Close other course tabs.</p>")
+            return page(ui.state("signed-out"))
         if request.path not in {PATH, PATH.rstrip("/"), "/_workshop/logout"}:
             raise Denied(403)
         if len(request.headers.getall("X-Amzn-Oidc-Data", [])) != 1:
@@ -139,10 +155,17 @@ def application(config, *, verifiers=None):
             return response
         if request.method not in {"GET", "HEAD"} or request.headers.get("Upgrade"):
             raise Denied(405)
-        links = [f'<li><a href="{escape(url, quote=True)}{("/workshop/" if service == "jupyter" else "/")}">{escape(service)}</a></li>'
-            for service, url in sorted(assignment["services"].items())]
-        return page("<p>Your course services</p><ul>" + "".join(links) + '</ul><form method="post" action="/_workshop/logout">'
-            '<button type="submit">Sign out of this entry</button></form>')
+        services = assignment["services"]
+        jupyter = services["jupyter"]
+        tools = [{"id": "jupyter", "title": "Notebooks", "href": jupyter + "/lab", "external": True},
+            {"id": "terminal", "title": "Web Terminal", "href": jupyter + "/workshop/terminal", "external": True}]
+        primary = next((name for name in services if ui.service_role(name) == "doris"), None)
+        if primary:
+            tools.append({"id": primary, "title": ui.service_label(primary), "href": services[primary] + "/", "external": True})
+        extra = [{"id": name, "title": ui.service_label(name), "href": url + "/"}
+            for name, url in sorted(services.items()) if name not in {"jupyter", primary}]
+        return page(ui.workspace(event=event, learner=assignment["learner_id"], course=jupyter + "/workshop/",
+            tools=tools, extra=extra, logout="/_workshop/logout"))
 
     app.router.add_route("*", "/{tail:.*}", handle)
     return app

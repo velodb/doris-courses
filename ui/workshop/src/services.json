@@ -1,0 +1,13 @@
+{
+  "rta-fe": {"label": "Doris · single FE", "role": "doris"},
+  "rta-fe1": {"label": "FE 1", "role": "fe"},
+  "rta-fe2": {"label": "FE 2", "role": "fe"},
+  "rta-fe3": {"label": "FE 3", "role": "fe"},
+  "dw-fe": {"label": "Doris", "role": "doris"},
+  "obs-fe": {"label": "Doris", "role": "doris"},
+  "ai-fe": {"label": "Doris", "role": "doris"},
+  "doris": {"label": "Doris", "role": "doris"},
+  "fe1": {"label": "FE 1", "role": "fe"},
+  "fe2": {"label": "FE 2", "role": "fe"},
+  "fe3": {"label": "FE 3", "role": "fe"}
+}

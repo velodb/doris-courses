@@ -241,3 +241,14 @@ References: [ALB subnet requirements](https://docs.aws.amazon.com/elasticloadbal
 The apex/wildcard CNAME selection follows
 [ACM DNS validation](https://docs.aws.amazon.com/acm/latest/userguide/dns-validation.html);
 the root Alias follows [Route 53 ELB routing](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-elb-load-balancer.html).
+
+
+## Independently maintained UI
+
+The activity entry and course handlers render the English A interface from [`ui/workshop`](../../ui/workshop/README.md). Templates, CSS, labels and assets stay there; the handlers retain authentication, assignment and route checks. Course Markdown and Notebooks remain in their original directories.
+
+The public apex route covers `/doris-courses/` and its owned UI paths. Only four fixed public static resources allow cross-origin loading, so an entry signed-out page can load its styles without starting a new login. Personal data does not allow CORS. Only the exact portal signed-out path forwards without authentication; other learner service logout responses keep their existing behavior.
+
+New portal installs stage a hash-bound UI archive before installing the main bundle. Each SSM step keeps the 24KB bound and its own receipt; unknown dispatches or changed inputs require reconciliation. The portal downloads the font and Jupyter logo from pinned public sources with SHA256 checks during installation. Runtime bundles carry those assets offline. Existing AMIs and installed portals are not updated by changing source code.
+
+This integration has local handler/browser and Terraform mock coverage. A new deployment still needs its own identity, budget, expiry and reviewed plans, followed by real Cognito, service, isolation, logout and cleanup verification.

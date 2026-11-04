@@ -152,6 +152,10 @@ run "activity_entry_authenticates_on_operator_target" {
     condition     = anytrue([for action in aws_lb_listener_rule.learner["portal-page"].action : try(action.target_group_arn == var.access.portal.target_group_arn && action.order == 2, false)]) && anytrue([for action in aws_lb_listener_rule.learner["portal-page"].action : action.type == "authenticate-cognito" && action.order == 1])
     error_message = "Authenticate the entry with this activity's pool before sending it to the operator portal."
   }
+  assert {
+    condition     = length(aws_lb_listener_rule.learner["portal-logout"].action) == 1 && aws_lb_listener_rule.learner["portal-logout"].action[0].type == "forward" && aws_lb_listener_rule.learner["portal-logout"].action[0].target_group_arn == var.access.portal.target_group_arn
+    error_message = "Only the exact portal logout landing page forwards without authentication; learner service logout remains a fixed response."
+  }
 }
 run "reject_portal_priority_overlap" {
   command = plan

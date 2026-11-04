@@ -17,7 +17,7 @@ HASH = re.compile(r"[0-9a-f]{64}")
 ID = re.compile(r"[a-z][a-z0-9-]{0,31}")
 MODULE_KEYS = {"pilot": "terraform.tfstate", "access-bindings": "access.tfstate"}
 RUNTIME_FILES = {"runtime.json", "source.tar", "install_host.sh", "host.py", "kernel.py", "check.py", "serve.py", "portal.py",
-    "doris-workshop-jupyter.service", "packages.json", "operations.py", "server.requirements.lock",
+    "doris-workshop-jupyter.service", "packages.json", "operations.py", "ui.tar", "server.requirements.lock",
     "doris-rta.requirements.lock", "doris-dw.requirements.lock", "doris-obs.requirements.lock", "doris-ai.requirements.lock"}
 BUSY = {"operating", "cleaning", "unknown"}
 

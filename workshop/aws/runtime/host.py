@@ -15,7 +15,7 @@ import tarfile
 import tempfile
 
 PAYLOAD = {"install_host.sh", "host.py", "kernel.py", "check.py", "serve.py", "portal.py",
-           "doris-workshop-jupyter.service", "packages.json", "source.tar", "operations.py"}
+           "doris-workshop-jupyter.service", "packages.json", "source.tar", "operations.py", "ui.tar"}
 COURSES = {
     "doris-rta": ("doris-course/01-real-time-analytics", "doris_course"),
     "doris-dw": ("doris-course/02-data-warehousing", "dw_course"),
@@ -135,6 +135,33 @@ def archive_files(archive):
             if member.isfile():
                 names.append(member.name)
         return names
+
+
+def install_ui(bundle, layout):
+    archive = Path(bundle) / "ui.tar"
+    names = archive_files(archive)
+    required = {"doris_workshop_ui.py", "src/templates/page.html", "src/styles.css", "assets/manrope.ttf", "assets/jupyter.svg"}
+    if not required.issubset(names) or len(names) != len(set(names)) or len(names) > 64:
+        raise RuntimeErrorDetail("UI: incomplete or duplicate archive")
+    layout.helpers.mkdir(parents=True, exist_ok=True)
+    target = layout.helpers / "ui"
+    if target.is_symlink():
+        raise RuntimeErrorDetail("UI: unsafe destination")
+    temporary = Path(tempfile.mkdtemp(prefix=".ui-", dir=layout.helpers))
+    try:
+        with tarfile.open(archive) as stream:
+            if any(not m.isfile() or m.size > 1024 * 1024 for m in stream.getmembers()):
+                raise RuntimeErrorDetail("UI: unsafe archive entry")
+            stream.extractall(temporary, filter="data")
+        for path in temporary.rglob("*"):
+            path.chmod(0o755 if path.is_dir() else 0o644)
+        temporary.chmod(0o755)
+        if target.exists():
+            shutil.rmtree(target)
+        os.rename(temporary, target)
+    finally:
+        if temporary.exists():
+            shutil.rmtree(temporary)
 
 
 def install_source(bundle, plan, layout):
@@ -293,6 +320,7 @@ def install(bundle):
     for name in ("host.py", "kernel.py", "check.py", "serve.py", "portal.py", "operations.py"):
         shutil.copyfile(Path(bundle) / name, layout.helpers / name)
         (layout.helpers / name).chmod(0o644)
+    install_ui(bundle, layout)
     materialize(plan, files, layout)
     chown_tree(layout.workspace, user)
     layout.config.mkdir(parents=True, exist_ok=True)

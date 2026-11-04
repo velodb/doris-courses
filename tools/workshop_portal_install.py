@@ -92,9 +92,9 @@ def verify(config, shared, portal_run, cloud):
     return portal["instance_id"]
 
 
-def payload(shared):
-    require(all((access.OVERLAY / name).is_file() and not (access.OVERLAY / name).is_symlink() for name in access.PORTAL_FILES), "portal overlay is missing or unsafe")
-    files = {name: (access.OVERLAY / name).read_bytes() for name in access.PORTAL_FILES}
+def payload(shared, *, sources=None):
+    files = dict(sources if sources is not None else access.portal_sources())
+    ui_digest = hashlib.sha256(files["ui.tar"]).hexdigest()
     files["overlay.json"] = (json.dumps({"schema_version": 1, "sha256": {name: hashlib.sha256(data).hexdigest() for name, data in files.items()}}, sort_keys=True) + "\n").encode()
     registry = {"schema_version": 1, "domain": shared["domain"], "region": shared["region"], "alb_arn": shared["alb_arn"], "activities": {}}
     registry_bytes = (json.dumps(registry, indent=2, sort_keys=True) + "\n").encode()
@@ -102,6 +102,8 @@ def payload(shared):
     archive = io.BytesIO()
     with tarfile.open(fileobj=archive, mode="w") as tar:
         for name, data in sorted(files.items()):
+            if name == "ui.tar":
+                continue
             entry = tarfile.TarInfo(name)
             entry.size, entry.mode, entry.mtime = len(data), 0o600, 0
             tar.addfile(entry, io.BytesIO(data))
@@ -117,37 +119,49 @@ def payload(shared):
     commands.append("python3.12 - <<'PY'\nimport base64,hashlib,io,pathlib,tarfile\np=pathlib.Path('/var/lib/doris-workshop-portal-install')\nb=base64.b64decode((p/'bundle.b64').read_text(),validate=True)\n"
         + "assert hashlib.sha256(b).hexdigest()==" + repr(digest) + "\n"
         "with tarfile.open(fileobj=io.BytesIO(b),mode='r:gz') as t:\n"
-        + " assert {m.name for m in t.getmembers()}==" + repr(set(files)) + "\n"
+        + " assert {m.name for m in t.getmembers()}==" + repr(set(files) - {"ui.tar"}) + "\n"
         " for m in t.getmembers():\n  assert m.isfile() and m.size<100000\n  (p/m.name).write_bytes(t.extractfile(m).read())\nPY")
+    commands.append("cp /var/lib/doris-workshop-portal-install/ui-" + ui_digest + ".tar /var/lib/doris-workshop-portal-install/ui.tar")
     commands.extend(["bash /var/lib/doris-workshop-portal-install/install_portal.sh /var/lib/doris-workshop-portal-install /var/lib/doris-workshop-portal-install/portal.json",
                      "systemctl is-active --quiet doris-workshop-portal.service", "printf 'portal-ready\\n'"])
     require(len(json.dumps(commands)) < 24000, "portal installer exceeds its SSM payload bound")
     return commands, digest, registry_bytes
 
 
-def install(config, shared, portal_run, output, cloud, *, timeout=900, clock=time.monotonic, sleep=time.sleep):
-    output = Path(output).resolve()
-    instance = verify(config, shared, portal_run, cloud)
-    commands, digest, registry_bytes = payload(shared)
-    record_path = output / "dispatch.json"
-    if output.exists():
-        require(record_path.is_file(), "incomplete operation directory; reconcile before retrying")
+def ui_payload(data):
+    digest = hashlib.sha256(data).hexdigest()
+    encoded = base64.b64encode(gzip.compress(data, mtime=0)).decode()
+    commands = ["set -eu", "umask 077", "install -d -m 0700 /var/lib/doris-workshop-portal-install",
+        "python3 - <<'PY'\nimport base64,gzip,hashlib,os,pathlib,tempfile\n"
+        + "data=gzip.decompress(base64.b64decode(" + repr(encoded) + ",validate=True))\n"
+        + "assert len(data)<=1024*1024 and hashlib.sha256(data).hexdigest()==" + repr(digest) + "\n"
+        + "target=pathlib.Path('/var/lib/doris-workshop-portal-install/ui-" + digest + ".tar')\n"
+        + "assert not target.is_symlink()\n"
+        + "with tempfile.NamedTemporaryFile(dir=target.parent,delete=False) as f:\n f.write(data)\n temp=pathlib.Path(f.name)\n"
+        + "try:\n temp.chmod(0o600)\n os.replace(temp,target)\nfinally:\n temp.unlink(missing_ok=True)\nprint('ui-ready')\nPY"]
+    require(len(json.dumps(commands)) < 24000, "UI stage exceeds its SSM payload bound")
+    return commands, digest
+
+
+def dispatch_step(instance, commands, digest, record_path, marker, cloud, *, timeout, clock, sleep):
+    require(timeout > 0, "portal installation is pending; reconcile before retrying")
+    ssm = cloud.client("ssm")
+    require(len(json.dumps(commands)) < 24000, "installer step exceeds its SSM payload bound")
+    if record_path.exists():
         record = wc.load_document(record_path)
         require(record.get("instance_id") == instance and record.get("payload_sha256") == digest, "operation inputs differ")
         require(record.get("status") != "dispatching" and record.get("command_id"), "dispatch outcome unknown; reconcile SSM history")
         if record.get("status") == "Success":
-            return {"status": "Success", "reused_receipt": True, "portal_instance_id": instance}
+            return True
         require(record.get("status") in {"Pending", "InProgress", "Delayed", "Cancelling"}, "failed installation requires reconciliation")
     else:
         deadline = clock() + min(timeout, 300)
         while True:
-            rows = cloud.client("ssm").describe_instance_information(Filters=[{"Key": "InstanceIds", "Values": [instance]}])["InstanceInformationList"]
-            if len(rows) == 1 and rows[0].get("PingStatus") == "Online": break
+            rows = ssm.describe_instance_information(Filters=[{"Key": "InstanceIds", "Values": [instance]}])["InstanceInformationList"]
+            if len(rows) == 1 and rows[0].get("PingStatus") == "Online":
+                break
             require(clock() < deadline, "portal SSM agent is not online")
             sleep(min(5, max(0, deadline - clock())))
-        output.mkdir(parents=True, mode=0o700)
-        (output / "portal-empty.json").write_bytes(registry_bytes)
-        os.chmod(output / "portal-empty.json", 0o600)
         record = {"instance_id": instance, "payload_sha256": digest, "status": "dispatching"}
         lifecycle.atomic_json(record_path, record)
         sent = cloud.dispatch_client().send_command(InstanceIds=[instance], DocumentName="AWS-RunShellScript",
@@ -157,19 +171,45 @@ def install(config, shared, portal_run, output, cloud, *, timeout=900, clock=tim
     deadline = clock() + timeout
     while True:
         try:
-            result = cloud.client("ssm").get_command_invocation(CommandId=record["command_id"], InstanceId=instance)
-        except cloud.client("ssm").exceptions.InvocationDoesNotExist:
+            result = ssm.get_command_invocation(CommandId=record["command_id"], InstanceId=instance)
+        except ssm.exceptions.InvocationDoesNotExist:
             result = {"Status": "Pending"}
         status = result["Status"]
         require(status in {"Pending", "InProgress", "Delayed", "Cancelling", "Success", "Failed", "Cancelled", "TimedOut"},
                 "unknown SSM status; reconcile before retrying")
-        record["status"] = "Failed" if status == "Success" and "portal-ready" not in result.get("StandardOutputContent", "") else status
+        record["status"] = "Failed" if status == "Success" and marker not in result.get("StandardOutputContent", "") else status
         lifecycle.atomic_json(record_path, record)
-        if status in {"Success", "Failed", "Cancelled", "TimedOut"}: break
+        if status in {"Success", "Failed", "Cancelled", "TimedOut"}:
+            break
         require(clock() < deadline, "portal installation is pending; reconcile before retrying")
         sleep(min(5, max(0, deadline - clock())))
     require(record["status"] == "Success", "installation failed or returned an invalid result; inspect private host logs")
-    return {"status": "Success", "reused_receipt": False, "portal_instance_id": instance}
+    return False
+
+
+def install(config, shared, portal_run, output, cloud, *, timeout=900, clock=time.monotonic, sleep=time.sleep):
+    output = Path(output).resolve()
+    instance = verify(config, shared, portal_run, cloud)
+    sources = access.portal_sources()
+    commands, digest, registry_bytes = payload(shared, sources=sources)
+    stage_commands, stage_digest = ui_payload(sources["ui.tar"])
+    operation = {"schema_version": 1, "instance_id": instance, "payload_sha256": digest, "ui_sha256": stage_digest}
+    operation_path = output / "operation.json"
+    if output.exists():
+        require(operation_path.is_file(), "incomplete operation directory; reconcile before retrying")
+        require(wc.load_document(operation_path) == operation, "operation inputs differ")
+    else:
+        output.mkdir(parents=True, mode=0o700)
+        lifecycle.atomic_json(operation_path, operation)
+        (output / "portal-empty.json").write_bytes(registry_bytes)
+        os.chmod(output / "portal-empty.json", 0o600)
+    deadline = clock() + timeout
+    dispatch_step(instance, stage_commands, stage_digest, output / "ui-dispatch.json", "ui-ready", cloud,
+        timeout=max(0, deadline-clock()), clock=clock, sleep=sleep)
+    require(clock() < deadline, "portal installation is pending; reconcile before retrying")
+    reused = dispatch_step(instance, commands, digest, output / "dispatch.json", "portal-ready", cloud,
+        timeout=max(0, deadline-clock()), clock=clock, sleep=sleep)
+    return {"status": "Success", "reused_receipt": reused, "portal_instance_id": instance}
 
 
 def main(argv=None):

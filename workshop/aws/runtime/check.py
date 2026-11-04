@@ -152,7 +152,8 @@ def portal_ready(token_file, url="http://127.0.0.1:8888/workshop/"):
             if error.code not in (302, 401, 403):
                 return False
         with opener.open(urllib.request.Request(url, headers={"Authorization": "token " + token}), timeout=5) as response:
-            return response.status == 200 and b"Apache Doris workshop" in response.read(262144)
+            body = response.read(262144)
+            return response.status == 200 and (b'data-workshop-ui="1"' in body or b"Apache Doris workshop" in body)
     except (OSError, ValueError, urllib.error.URLError):
         return False
 

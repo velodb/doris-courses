@@ -160,8 +160,9 @@ class PortalHTTPTests(unittest.IsolatedAsyncioTestCase):
         response = await client.get(portal.PATH, headers={"Host": DOMAIN})
         self.assertEqual(response.status, 200)
         body = await response.text()
-        self.assertIn("No activities are available", body)
-        self.assertNotIn("href=", body)
+        self.assertIn("No active workshops", body)
+        self.assertNotIn("class-a-entry", body)
+        self.assertNotIn("subject-", body)
         for host, path in (("class-a-entry." + DOMAIN, portal.PATH), (DOMAIN, "/api/contents")):
             response = await client.get(path, headers={"Host": host})
             self.assertEqual(response.status, 403)
@@ -196,6 +197,39 @@ class PortalHTTPTests(unittest.IsolatedAsyncioTestCase):
             response = await self.client.get(portal.PATH, headers=headers)
             self.assertEqual(response.status, status)
             self.assertNotIn("alice", await response.text())
+
+    async def test_static_ui_is_public_only_on_the_apex_and_has_no_sample_identity(self):
+        for name, mime in (("ui.css", "text/css"), ("logo.svg", "image/svg+xml"),
+                           ("manrope.ttf", "font/ttf"), ("jupyter.svg", "image/svg+xml")):
+            response = await self.client.get(portal.PATH + "static/" + name, headers={"Host": DOMAIN})
+            self.assertEqual(response.status, 200)
+            self.assertIn(mime, response.headers["Content-Type"])
+            self.assertEqual(response.headers["Access-Control-Allow-Origin"], "*")
+            self.assertGreater(len(await response.read()), 100)
+        for path in ("../portal.py", "portal.py", "src/copy.json"):
+            response = await self.client.get(portal.PATH + "static/" + path, headers={"Host": DOMAIN})
+            self.assertIn(response.status, (403, 404))
+        response = await self.client.get(portal.PATH + "static/ui.css", headers={"Host": "evil.example.com"})
+        self.assertEqual(response.status, 403)
+        response = await self.client.get(portal.PATH, headers=self.headers())
+        self.assertNotIn("Access-Control-Allow-Origin", response.headers)
+        html = await response.text()
+        self.assertIn('class="course-board"', html)
+        self.assertNotIn("demo-rta", html)
+        self.assertNotIn("s001", html)
+        self.assertNotIn("<script", html)
+        self.assertNotIn("<style", html)
+        policy = response.headers["Content-Security-Policy"]
+        self.assertNotIn("unsafe-inline", policy)
+        self.assertNotIn("unsafe-eval", policy)
+        self.assertIn("https://" + DOMAIN, policy)
+
+    async def test_empty_registry_and_help_have_html_without_identity(self):
+        client = await self.start({**self.config, "activities": {}})
+        for suffix, expected in (("", "No active workshops"), ("help", "Contact your organizer")):
+            response = await client.get(portal.PATH + suffix, headers={"Host": DOMAIN})
+            self.assertEqual(response.status, 200)
+            self.assertIn(expected, await response.text())
 
     async def test_unknown_hosts_paths_queries_writes_and_websockets_are_denied(self):
         for host, path in ((DOMAIN, "/"), (DOMAIN, "/another-workshop/"), ("evil.example.com", portal.PATH),

@@ -160,15 +160,15 @@ resource "aws_lb_listener_rule" "learner" {
     }
   }
   dynamic "action" {
-    for_each = each.value.kind == "logout" ? [] : [1]
+    for_each = each.value.kind == "logout" && !each.value.portal ? [] : [1]
     content {
       type             = "forward"
-      order            = 2
+      order            = each.value.kind == "logout" ? 1 : 2
       target_group_arn = each.value.portal ? var.access.portal.target_group_arn : aws_lb_target_group.learner[each.value.learner_id].arn
     }
   }
   dynamic "action" {
-    for_each = each.value.kind == "logout" ? [1] : []
+    for_each = each.value.kind == "logout" && !each.value.portal ? [1] : []
     content {
       type = "fixed-response"
       fixed_response {

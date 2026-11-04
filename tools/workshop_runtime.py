@@ -12,10 +12,11 @@ import sys
 import tempfile
 
 import workshop_config as config_tool
+import workshop_ui
 
 RUNTIME = config_tool.SPEC / "runtime"
 PAYLOAD = ("install_host.sh", "host.py", "kernel.py", "check.py", "serve.py", "portal.py",
-           "doris-workshop-jupyter.service", "packages.json", "operations.py")
+           "doris-workshop-jupyter.service", "packages.json", "operations.py", "ui.tar")
 
 
 def create_bundle(config_path, output, *, repo=config_tool.REPO):
@@ -25,17 +26,19 @@ def create_bundle(config_path, output, *, repo=config_tool.REPO):
     for profile_id, profile in resolved.items():
         metadata = config_tool.yaml.load(config_tool.git(repo, "show", f"{config['course_ref']}:{profile['course_dir']}/course.yaml"), Loader=config_tool.StrictLoader)
         titles = {m["id"]: m.get("title", m["id"]) for m in metadata["modules"]}
+        levels = {m["id"]: m.get("level") for m in metadata["modules"]}
         course = courses.setdefault(profile["kernel"], {
             "course_dir": profile["course_dir"], "kernel": profile["kernel"],
             "package": "dw_course" if profile["kernel"] == "doris-dw" else "doris_course",
             "profiles": [], "notebooks": [], "modules": [], "extensions": False,
             "title": metadata.get("title", profile["course_dir"].rsplit("/", 1)[-1]),
+            "levels": metadata.get("levels", {}),
         })
         course["profiles"].append(profile_id)
         course["extensions"] |= profile_id == "dw-extensions"
         for module in profile["modules"]:
             if not any(m["id"] == module["id"] for m in course["modules"]):
-                course["modules"].append({**module, "title": titles[module["id"]]})
+                course["modules"].append({**module, "title": titles[module["id"]], "level": levels[module["id"]]})
             course["notebooks"].append(module["lab"])
             quiz = str(Path(module["quiz"]).with_suffix(".ipynb"))
             if profile["course_dir"] + "/" + quiz in files:
@@ -50,6 +53,9 @@ def create_bundle(config_path, output, *, repo=config_tool.REPO):
     temporary = Path(tempfile.mkdtemp(prefix=".runtime-bundle-", dir=output.parent))
     try:
         for name in PAYLOAD:
+            if name == "ui.tar":
+                (temporary / name).write_bytes(workshop_ui.archive(offline=True))
+                continue
             source = config_tool.SPEC / "operations/node.py" if name == "operations.py" else RUNTIME / name
             shutil.copyfile(source, temporary / name)
         with (temporary / "source.tar").open("wb") as archive:

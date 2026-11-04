@@ -17,13 +17,18 @@ class Cloud:
     def __init__(self):
         self.sent = 0
         self.output = "portal-ready\n"
+        self.commands = {}
     def client(self, service): return self
     def dispatch_client(self): return self
     def describe_instance_information(self, **kwargs): return {"InstanceInformationList": [{"PingStatus": "Online"}]}
     def send_command(self, **kwargs):
         self.sent += 1
+        self.commands["command-" + str(self.sent)] = kwargs["Parameters"]["commands"]
         return {"Command": {"CommandId": "command-" + str(self.sent)}}
-    def get_command_invocation(self, **kwargs): return {"Status": "Success", "StandardOutputContent": self.output}
+    def get_command_invocation(self, **kwargs):
+        staged = any("print('ui-ready')" in c for c in self.commands[kwargs["CommandId"]])
+        output = "ui-ready\n" if staged and self.output == "portal-ready\n" else self.output
+        return {"Status": "Success", "StandardOutputContent": output}
     class exceptions:
         class InvocationDoesNotExist(Exception): pass
 
@@ -46,19 +51,38 @@ class PortalInstallTests(unittest.TestCase):
         self.assertTrue(any("flock -n 9" in c for c in commands))
         self.assertTrue(any("test ! -e /etc/doris-workshop-portal/portal.json" in c for c in commands))
         self.assertLess(len(json.dumps(commands)), 24000)
+        staged, ui_digest = install.ui_payload(install.access.portal_sources()["ui.tar"])
+        self.assertLess(len(json.dumps(staged)), 24000)
+        self.assertTrue(any(ui_digest in command for command in commands))
 
     def test_success_receipt_is_reused_and_unknown_dispatch_not_resent(self):
         with mock.patch.object(install, "verify", return_value="i-portal"):
             args = (self.config, self.shared, self.root, self.root / "install", self.cloud)
             self.assertFalse(install.install(*args)["reused_receipt"])
             self.assertTrue(install.install(*args)["reused_receipt"])
-            self.assertEqual(self.cloud.sent, 1)
+            self.assertEqual(self.cloud.sent, 2)
             record = json.loads((self.root / "install/dispatch.json").read_text())
             record["status"] = "dispatching"
             record.pop("command_id")
             (self.root / "install/dispatch.json").write_text(json.dumps(record))
             with self.assertRaisesRegex(ValueError, "dispatch outcome unknown"): install.install(*args)
-            self.assertEqual(self.cloud.sent, 1)
+            self.assertEqual(self.cloud.sent, 2)
+
+    def test_unknown_ui_stage_is_not_resent_and_other_inputs_cannot_reuse_it(self):
+        with mock.patch.object(install, "verify", return_value="i-portal"):
+            args = (self.config, self.shared, self.root, self.root / "stage", self.cloud)
+            install.install(*args)
+            record_path = self.root / "stage/ui-dispatch.json"
+            record = json.loads(record_path.read_text())
+            record.update(status="dispatching")
+            record.pop("command_id")
+            record_path.write_text(json.dumps(record))
+            with self.assertRaisesRegex(ValueError, "dispatch outcome unknown"):
+                install.install(*args)
+            self.assertEqual(self.cloud.sent, 2)
+            changed = {**self.shared, "domain": "other.example.com"}
+            with self.assertRaisesRegex(ValueError, "operation inputs differ"):
+                install.install(self.config, changed, self.root, self.root / "stage", self.cloud)
 
     def test_lost_dispatch_and_invalid_success_are_not_replayed(self):
         with mock.patch.object(install, "verify", return_value="i-portal"), \
