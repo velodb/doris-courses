@@ -195,6 +195,14 @@ the scanner continues with the remaining buckets but marks the entire bucket
 catalog incomplete. It cannot assume that an inaccessible bucket is unrelated
 to the activity.
 
+The tagging index can retain deleted resources. For an exact known instance,
+volume or user pool that is absent from a complete native catalog, the scanner
+also queries that exact native ID after collecting the tag index. Only an
+explicit native not-found response, or an EC2 instance confirmed terminated,
+can resolve that observation. The original tag row remains in the snapshot;
+the report lists the discrepancy and native result. Unknown IDs, incomplete
+catalogs, permission failures and native resources still present remain blocking.
+
 Reports separate residuals, conflicts, incomplete coverage, remaining state,
 known absence and protected resources. Protected resources require cost review;
 the report does not calculate their bill. `ok` applies to the supplied module

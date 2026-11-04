@@ -202,6 +202,26 @@ class ReconciliationTests(unittest.TestCase):
         self.assertFalse(report["ok"])
         self.assertFalse(report["residual"][0]["state_tracked"])
 
+    def test_tag_index_discrepancy_requires_exact_known_native_absence(self):
+        m = manifest()
+        s = snapshot(m)
+        arn = f'arn:aws:ec2:{REGION}:{ACCOUNT}:instance/{INSTANCE}'
+        s['checks']['tagged_resources']['resources'].append({'id': arn, 'tags': tags()})
+        s['tagging_discrepancies'] = [{'arn': arn, 'native': cleanup.ref('instances', INSTANCE), 'result': 'terminated'}]
+        report = cleanup.reconcile(m, s)
+        self.assertTrue(report['ok'])
+        self.assertEqual(report['tagging_discrepancies'][0]['native_result'], 'terminated')
+        self.assertEqual(s['checks']['tagged_resources']['resources'][0]['id'], arn)
+        s['checks']['instances']['status'] = 'failed'
+        self.assertFalse(cleanup.reconcile(m, s)['ok'])
+        s['checks']['instances']['status'] = 'complete'
+        s['checks']['instances']['resources'].append({'id': INSTANCE, 'tags': tags()})
+        self.assertFalse(cleanup.reconcile(m, s)['ok'])
+        s['checks']['instances']['resources'].clear()
+        s['tagging_discrepancies'][0]['native']['id'] = 'i-00000000000000002'
+        with self.assertRaises(wc.ConfigError):
+            cleanup.reconcile(m, s)
+
     def test_missing_family_or_state_proof_and_stale_state_block_success(self):
         m = manifest()
         for mutate in (lambda s: s["checks"].pop("volumes"), lambda s: s.update(states={}),
@@ -374,6 +394,46 @@ class SdkScanTests(unittest.TestCase):
             s["checks"]["tagged_resources"] = scanner.snapshot["checks"]["tagged_resources"]
             self.assertFalse(cleanup.reconcile(m, s)["ok"])
             stub.assert_no_pending_responses()
+
+    def test_tagging_discrepancy_uses_exact_native_query_and_fails_closed(self):
+        from botocore.stub import Stubber
+        client = self.session.client('ec2')
+        self.clients['ec2'] = client
+        scanner = Scanner(self.aws, manifest())
+        arn = f'arn:aws:ec2:{REGION}:{ACCOUNT}:instance/{INSTANCE}'
+        scanner.snapshot['checks']['instances'] = {'status': 'complete', 'resources': []}
+        scanner.snapshot['checks']['tagged_resources'] = {'status': 'complete', 'resources': [{'id': arn, 'tags': tags()}]}
+        with Stubber(client) as stub:
+            stub.add_client_error('describe_instances', service_error_code='InvalidInstanceID.NotFound',
+                                  expected_params={'InstanceIds': [INSTANCE]})
+            scanner.confirm_tagging_discrepancies()
+            self.assertEqual(scanner.snapshot['tagging_discrepancies'][0]['result'], 'not-found')
+            stub.add_client_error('describe_instances', service_error_code='UnauthorizedOperation',
+                                  expected_params={'InstanceIds': [INSTANCE]})
+            scanner.confirm_tagging_discrepancies()
+            self.assertEqual(scanner.snapshot['tagging_discrepancies'], [])
+            stub.assert_no_pending_responses()
+
+    def test_exact_volume_and_cognito_not_found_can_confirm_stale_tags(self):
+        from botocore.stub import Stubber
+        ec2, cognito = self.session.client('ec2'), self.session.client('cognito-idp')
+        self.clients.update(ec2=ec2, **{'cognito-idp': cognito})
+        m = access_manifest()
+        volume, pool = 'vol-00000000000000001', 'us-east-1_abc123'
+        m['known'].extend([cleanup.ref('volumes', volume), cleanup.ref('user_pools', pool)])
+        scanner = Scanner(self.aws, m)
+        scanner.snapshot['checks']['volumes'] = {'status': 'complete', 'resources': []}
+        scanner.snapshot['checks']['user_pools'] = {'status': 'complete', 'resources': []}
+        scanner.snapshot['checks']['tagged_resources'] = {'status': 'complete', 'resources': [
+            {'id': f'arn:aws:ec2:{REGION}:{ACCOUNT}:volume/{volume}', 'tags': tags()},
+            {'id': f'arn:aws:cognito-idp:{REGION}:{ACCOUNT}:userpool/{pool}', 'tags': tags('activity-access')}]}
+        with Stubber(ec2) as ec2_stub, Stubber(cognito) as cognito_stub:
+            ec2_stub.add_client_error('describe_volumes', service_error_code='InvalidVolume.NotFound', expected_params={'VolumeIds': [volume]})
+            cognito_stub.add_client_error('describe_user_pool', service_error_code='ResourceNotFoundException', expected_params={'UserPoolId': pool})
+            scanner.confirm_tagging_discrepancies()
+            self.assertEqual([p['result'] for p in scanner.snapshot['tagging_discrepancies']], ['not-found', 'not-found'])
+            ec2_stub.assert_no_pending_responses()
+            cognito_stub.assert_no_pending_responses()
 
     def test_foreign_target_group_attachment_is_reported_not_deregistered(self):
         from botocore.stub import Stubber

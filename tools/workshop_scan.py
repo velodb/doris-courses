@@ -150,6 +150,43 @@ class Scanner:
                 TagFilters=[{"Key": "Project", "Values": ["doris-workshop"]}]):
             self.add("tagged_resources", value["ResourceARN"], resource_tags=value.get("Tags"))
 
+    def confirm_tagging_discrepancies(self):
+        """Recheck exact known resources after both native and tagging catalogs."""
+        from botocore.exceptions import ClientError
+        checks = self.snapshot["checks"]
+        if checks.get("tagged_resources", {}).get("status") != "complete":
+            return
+        confirmed = []
+        for row in checks["tagged_resources"]["resources"]:
+            native = cleanup.tagged_native_reference(row["id"], self.manifest["target"])
+            if not native or cleanup.key(native) not in self.known:
+                continue
+            check = checks.get(native["kind"], {})
+            if check.get("status") != "complete" or any(item["id"] == native["id"] for item in check.get("resources", [])):
+                continue
+            try:
+                if native["kind"] == "instances":
+                    response = self.call("ec2", "describe_instances", InstanceIds=[native["id"]])
+                    instances = [i for reservation in response.get("Reservations", []) for i in reservation.get("Instances", [])]
+                    result = "terminated" if len(instances) == 1 and instances[0].get("InstanceId") == native["id"] and instances[0].get("State", {}).get("Name") == "terminated" else None
+                elif native["kind"] == "volumes":
+                    self.call("ec2", "describe_volumes", VolumeIds=[native["id"]])
+                    result = None
+                else:
+                    self.call("cognito-idp", "describe_user_pool", UserPoolId=native["id"])
+                    result = None
+            except ClientError as exc:
+                code = exc.response.get("Error", {}).get("Code")
+                absent_codes = {"instances": "InvalidInstanceID.NotFound", "volumes": "InvalidVolume.NotFound", "user_pools": "ResourceNotFoundException"}
+                result = "not-found" if code == absent_codes[native["kind"]] else None
+            except Exception:
+                # Failure to obtain the independent proof leaves the raw tag
+                # observation as a blocking residual in the report.
+                result = None
+            if result:
+                confirmed.append({"arn": row["id"], "native": native, "result": result})
+        self.snapshot["tagging_discrepancies"] = confirmed
+
     def elb_catalog(self, kind):
         operation, result, identity = ("describe_load_balancers", "LoadBalancers", "LoadBalancerArn") if kind == "load_balancers" else (
             "describe_target_groups", "TargetGroups", "TargetGroupArn")
@@ -256,5 +293,6 @@ class Scanner:
                     self.run(kind, method)
                 else:
                     self.snapshot["checks"][kind] = {"status": "unsupported", "resources": []}
+        self.confirm_tagging_discrepancies()
         self.snapshot["published_snapshots"] = sorted(set(self.snapshot["published_snapshots"]))
         return self.snapshot

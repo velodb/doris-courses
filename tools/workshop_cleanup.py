@@ -60,6 +60,20 @@ def key(value):
     return value["kind"], value["id"]
 
 
+def tagged_native_reference(arn, target):
+    """Map only non-reusable, explicitly supported resource ARNs to native IDs."""
+    prefix = f'arn:aws:ec2:{target["region"]}:{target["aws_account_id"]}:'
+    for resource, kind, pattern in (("instance/", "instances", r"i-(?:[0-9a-f]{8}|[0-9a-f]{17})"),
+                                    ("volume/", "volumes", r"vol-(?:[0-9a-f]{8}|[0-9a-f]{17})")):
+        start = prefix + resource
+        if arn.startswith(start) and re.fullmatch(pattern, arn[len(start):]):
+            return ref(kind, arn[len(start):])
+    start = f'arn:aws:cognito-idp:{target["region"]}:{target["aws_account_id"]}:userpool/'
+    if arn.startswith(start) and re.fullmatch(re.escape(target["region"]) + r"_[A-Za-z0-9]+", arn[len(start):]):
+        return ref("user_pools", arn[len(start):])
+    return None
+
+
 def target(config):
     require(config["aws_partition"] == "aws", "only the commercial partition is implemented")
     return {name: config[name] for name in ("aws_account_id", "region", "event_id", "owner_id", "domain")}
@@ -303,8 +317,17 @@ def reconcile(manifest, snapshot):
             isinstance(state.get("managed_addresses"), list) and all(isinstance(address, str) for address in state["managed_addresses"]), "invalid current state evidence")
     managed = [{"module": module, "address": address} for module in manifest["modules"]
         for address in snapshot.get("states", {}).get(module, {}).get("managed_addresses", [])]
-    observed, residual, conflicts, protected = {}, [], [], []
+    observed, residual, conflicts, protected, discrepancies = {}, [], [], [], []
     t = manifest["target"]
+    verified = {}
+    for proof in snapshot.get("tagging_discrepancies", []):
+        require(set(proof) == {"arn", "native", "result"} and isinstance(proof["arn"], str), "invalid tagging discrepancy proof")
+        native = tagged_native_reference(proof["arn"], t)
+        require(native == proof["native"] and native is not None and key(native) in known and
+                proof["result"] in ({"instances": {"terminated", "not-found"}, "volumes": {"not-found"},
+                                     "user_pools": {"not-found"}}[native["kind"]]) and proof["arn"] not in verified,
+                "tagging discrepancy is not an exact known native resource")
+        verified[proof["arn"]] = proof
     for kind, check in checks.items():
         require(kind in ALL_KINDS and check.get("status") in {"complete", "failed", "unsupported"}, "invalid scan coverage result")
         for row in check.get("resources", []):
@@ -326,7 +349,15 @@ def reconcile(manifest, snapshot):
                 proof = next((item for item in manifest["state"] if item["kind"] == kind and item["id"] == row["id"]), {})
                 owns = bool(proof) and proof.get("fields") == row.get("fields")
             if owns:
-                residual.append({**identity, "state_tracked": key(identity) in known, "reason": "owned-resource-still-present"})
+                proof = verified.get(row["id"]) if kind == "tagged_resources" else None
+                native = proof["native"] if proof else None
+                native_rows = checks.get(native["kind"], {}).get("resources", []) if native else []
+                if (proof and checks.get(native["kind"], {}).get("status") == "complete" and
+                        not any(item.get("id") == native["id"] for item in native_rows)):
+                    discrepancies.append({**identity, "native": native, "native_result": proof["result"],
+                                          "reason": "tag-index-differs-from-exact-native-query"})
+                else:
+                    residual.append({**identity, "state_tracked": key(identity) in known, "reason": "owned-resource-still-present"})
             elif key(identity) in known:
                 # Exact history identifies what to inspect, not a new delete grant.
                 conflicts.append({**identity, "reason": "known-resource-missing-or-conflicting-ownership-tags"})
@@ -347,7 +378,7 @@ def reconcile(manifest, snapshot):
         "snapshot_sha256": wc.canonical_hash(snapshot), "ok": not (incomplete or incomplete_modules or managed or residual or conflicts or state_remaining),
         "boundary": "configured-modules-known-resources-and-tagged-discovery", "account_globally_empty": False,
         "incomplete_kinds": incomplete, "incomplete_modules": incomplete_modules, "managed_state_remaining": managed,
-        "residual": sorted(residual, key=key), "conflicts": sorted(conflicts, key=key),
+        "residual": sorted(residual, key=key), "conflicts": sorted(conflicts, key=key), "tagging_discrepancies": sorted(discrepancies, key=key),
         "state_objects_still_present": state_remaining, "known_absent": [ref(kind, value) for kind, value in missing],
         "retained": sorted(protected, key=key), "mutations_performed": False,
         "retained_expected": [{**ref(kind, identity), "presence": "present" if (kind, identity) in observed else
