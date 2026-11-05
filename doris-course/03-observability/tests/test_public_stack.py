@@ -64,7 +64,11 @@ class PublicCheckoutTests(unittest.TestCase):
             previous = os.umask(0o077)
             try:
                 prepare_public_checkout(root)
-                prepare_public_checkout(root)
+                # A container can replace an already-readable tracked flag
+                # file with its own UID. A rerun must not require chmod then.
+                with patch.object(Path, "chmod", side_effect=PermissionError("foreign UID")) as chmod:
+                    prepare_public_checkout(root)
+                    chmod.assert_not_called()
                 self.assertEqual(os.umask(0o077), 0o077)
             finally:
                 os.umask(previous)

@@ -25,10 +25,14 @@ def prepare_public_checkout(root: Path) -> None:
             continue
         current = path.stat().st_mode
         if stat.S_ISREG(current):
-            path.chmod(current | (0o555 if mode == b"100755" else 0o444))
+            readable = current | (0o555 if mode == b"100755" else 0o444)
+            if readable != current:
+                path.chmod(readable)
             directories.update(parents)
     for directory in directories:
-        directory.chmod(directory.stat().st_mode | 0o555)
+        current = directory.stat().st_mode
+        if current | 0o555 != current:
+            directory.chmod(current | 0o555)
 
 
 if __name__ == "__main__":
