@@ -67,7 +67,10 @@ def initialize(activity, manifest_sha, runtime_sha, course_ref, *, root=Path('/'
     if check:
         require(json.loads((config / 'activity.json').read_text()) == activity, 'activity: metadata changed')
         browser.validate_routes(json.loads((config / 'browser-urls.json').read_text()), activity['event_id'], activity['learner_id'])
-        require((config / 'browser.env').read_text() == browser_environment(routes), 'activity: browser environment changed')
+        expected_env = dict(line.split('=', 1) for line in browser_environment(routes).splitlines())
+        if expected_env:
+            actual_env = dict(line.split('=', 1) for line in (config / 'browser.env').read_text().splitlines())
+            require(all(actual_env.get(k) == v for k, v in expected_env.items()), 'activity: browser environment changed')
         return receipt
     config.mkdir(parents=True, exist_ok=True)
     for name, data in [('activity.json', activity), ('browser-urls.json', routes)]:

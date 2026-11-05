@@ -81,6 +81,9 @@ class ImageStartTests(unittest.TestCase):
         dropin = (self.root/'etc/systemd/system/doris-workshop-jupyter.service.d/activity.conf').read_text()
         self.assertIn('EnvironmentFile=/etc/doris-workshop/browser.env', dropin)
         self.initialize(check=True)
+        # The gateway adds fixed-port settings to this same trusted file.
+        with (config/'browser.env').open('a') as stream: stream.write('DORIS_OBS_GRAFANA_PORT=23000\n')
+        self.initialize(check=True)
         (config/'browser.env').write_text('DORIS_OBS_DEMO_PUBLIC_URL=http://localhost\n')
         with self.assertRaisesRegex(ValueError, 'browser environment changed'): self.initialize(check=True)
 
