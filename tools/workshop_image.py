@@ -20,21 +20,24 @@ import workshop_operations as operations
 
 SPEC = wc.SPEC / 'packer'
 DW_PROFILES = {'dw-main', 'dw-kafka', 'dw-cdc', 'dw-bi', 'dw-backup', 'dw-extensions'}
+OBS_PROFILES = {'obs-main', 'obs-local-model'}
 
 
 def image_selection(config):
     profiles = set(config['course_profiles'])
     if profiles == {'rta-main'}:
         return 'doris-rta', wc.load_document(SPEC / 'images.json')
-    preflight.require('dw-main' in profiles and profiles <= DW_PROFILES,
-                      'image: supported selections are rta-main or dw-main with its optional profiles')
-    catalog = wc.load_document(SPEC / 'images-dw.json')
+    dw = 'dw-main' in profiles and profiles <= DW_PROFILES
+    obs = 'obs-main' in profiles and profiles <= OBS_PROFILES
+    preflight.require(dw or obs,
+                      'image: select rta-main, dw-main with its options, or obs-main with optional obs-local-model')
+    catalog = wc.load_document(SPEC / ('images-dw.json' if dw else 'images-obs.json'))
     selected = {'schema_version': 1, 'profiles': sorted(profiles),
                 'online_dependencies': catalog['online_dependencies']}
     for key in ('images', 'builds'):
         selected[key] = [{k: v for k, v in row.items() if k != 'required_by'}
                          for row in catalog[key] if profiles.intersection(row['required_by'])]
-    return 'doris-dw', selected
+    return ('doris-dw' if dw else 'doris-obs'), selected
 
 
 def deployment_dirty(*, repo=None):
@@ -68,7 +71,8 @@ def prepare(config_path, output):
     preflight.require(config['image']['mode'] == 'base' and config['image']['owner_account_id'] == preflight.CANONICAL,
                       'image: require a pinned Canonical base AMI')
     preflight.require(not output.exists(), 'image: choose a new output directory')
-    metadata = wc.load_document(SPEC / ('locks/metadata.json' if kernel == 'doris-rta' else 'locks/metadata-dw.json'))
+    metadata_name = {'doris-rta': 'metadata.json', 'doris-dw': 'metadata-dw.json', 'doris-obs': 'metadata-obs.json'}[kernel]
+    metadata = wc.load_document(SPEC / 'locks' / metadata_name)
     for name, expected in metadata['source_sha256'].items():
         actual = hashlib.sha256(subprocess.check_output(['git', 'show', f"{config['course_ref']}:{name}"])).hexdigest()
         preflight.require(actual == expected, 'image: course dependency inputs changed; regenerate and review locks')

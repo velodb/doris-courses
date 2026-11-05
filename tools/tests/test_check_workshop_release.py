@@ -23,6 +23,8 @@ class ReleaseTests(unittest.TestCase):
         self.assertTrue(release.validate(self.matrix, self.profiles))
 
     def test_unverified_profiles_cannot_acquire_evidence_or_private_summaries(self):
+        # Define the negative fixture independently of completed live rollouts.
+        self.matrix['profiles']['dw-main'].update(ec2_course='unverified', shared_browser='pending', evidence=None)
         self.matrix["profiles"]["dw-main"]["evidence"] = copy.deepcopy(self.matrix["profiles"]["rta-main"]["evidence"])
         self.assertTrue(any("unverified profile" in error for error in release.validate(self.matrix, self.profiles)))
         self.matrix["profiles"]["dw-main"].update(evidence=None, summary="../../plan-doc/private.md")

@@ -19,6 +19,17 @@ DW_OPTIONALS = {
     'dw-cdc': [(5, 'level1/module05-ingestion/optional05_flink_mysql_cdc.ipynb')],
 }
 CONTINUOUS_QUIZ = 'level1/module05-ingestion/quiz05_continuous_ingestion.ipynb'
+OBS_OPTIONAL = 'level2/module07-data-analysis-litefuse/optional07_trace_a_real_model.ipynb'
+# These cells read state created in the preceding documented browser steps.
+# A checkpoint acknowledgement coordinates the run; independent browser evidence
+# is still mandatory at publication.
+OBS_BROWSER_GATES = {
+    'ob10-incident-flag': 'obs-payment-failure-on',
+    'ob14-dashboard': 'obs-grafana-dashboard',
+    'ob06-test-email': 'obs-grafana-contact-test',
+    'ob06-rule-state': 'obs-grafana-cpu-rule',
+    'ob10-l8-end-flag': 'obs-payment-failure-off',
+}
 
 
 def resource_sample():
@@ -55,9 +66,10 @@ def selection_plan(course):
     profiles = set(course['profiles'])
     rta = course['kernel'] == 'doris-rta' and profiles == {'rta-main'}
     dw = course['kernel'] == 'doris-dw' and 'dw-main' in profiles and profiles <= DW_PROFILES
-    if not (rta or dw):
+    obs = course['kernel'] == 'doris-obs' and 'obs-main' in profiles and profiles <= {'obs-main', 'obs-local-model'}
+    if not (rta or dw or obs):
         raise ValueError('course validation: unsupported profile selection')
-    expected_modules = [f'module-{i}' for i in range(1, 11 if rta else 15)]
+    expected_modules = [f'module-{i}' for i in range(1, 11 if rta else 15 if dw else 9)]
     if [m['id'] for m in course['modules']] != expected_modules:
         raise ValueError('course validation: incomplete or reordered main path')
     steps = []
@@ -77,9 +89,19 @@ def selection_plan(course):
                     steps.append({'module': module['id'], 'kind': 'optional', 'notebook': path, 'opt_ins': []})
         if dw and number == 5 and profiles & {'dw-kafka', 'dw-cdc'}:
             steps.append({'module': module['id'], 'kind': 'optional-quiz', 'notebook': CONTINUOUS_QUIZ, 'opt_ins': []})
+        if obs and number == 7 and 'obs-local-model' in profiles:
+            steps.append({'module': module['id'], 'kind': 'optional', 'notebook': OBS_OPTIONAL, 'opt_ins': []})
     if set(course['notebooks']) != {s['notebook'] for s in steps}:
         raise ValueError('course validation: selected Notebooks do not match the execution plan')
     return steps
+
+
+def valid_browser_checkpoint(value, expected, gate, notebook):
+    return (type(value) is dict and value.get('passed') is True and
+            value.get('kind') == 'doris-workshop-browser-checkpoint' and
+            value.get('gate') == gate and value.get('notebook') == notebook and
+            all(value.get(key) == expected[key] for key in
+                ('ami_id', 'instance_id', 'course_ref', 'event_id', 'learner_id')))
 
 
 def enable_opt_ins(notebook, flags):
@@ -109,6 +131,12 @@ def valid_selection_report(report, steps, profiles, source_notebooks):
     modules = [{'module': step['module'], 'passed': True} for step in steps if step['kind'] == 'lab']
     if report.get('modules') != modules:
         return False
+    if 'obs-main' in profiles:
+        gates = [{'gate': OBS_BROWSER_GATES[cell['id']], 'notebook': step['notebook'], 'cell': cell['id']}
+                 for step in steps for cell in json.loads(source_notebooks[step['notebook']])['cells']
+                 if cell.get('id') in OBS_BROWSER_GATES]
+        if report.get('browser_checkpoints') != gates or report.get('waiting_browser'):
+            return False
     for row, step in zip(rows, steps):
         source = source_notebooks[step['notebook']]
         code_count = sum(c['cell_type'] == 'code' for c in json.loads(source)['cells'])
@@ -208,6 +236,23 @@ def main():
                 for index, cell in enumerate(nb.cells):
                     if cell.cell_type != 'code':
                         continue
+                    gate = OBS_BROWSER_GATES.get(cell.get('id')) if course['kernel'] == 'doris-obs' else None
+                    if gate:
+                        report['waiting_browser'] = {'gate': gate, 'notebook': step['notebook'], 'cell': cell['id']}
+                        save()
+                        checkpoint = root / 'browser-actions' / (gate + '.json')
+                        deadline = time.monotonic() + 1800
+                        while True:
+                            if checkpoint.exists():
+                                value = json.loads(checkpoint.read_text())
+                                if not valid_browser_checkpoint(value, expected, gate, step['notebook']):
+                                    raise ValueError('course validation: browser checkpoint binding mismatch')
+                                break
+                            if time.monotonic() >= deadline:
+                                raise TimeoutError('course validation: browser step was not completed')
+                            time.sleep(2)
+                        report.setdefault('browser_checkpoints', []).append(report.pop('waiting_browser'))
+                        save()
                     began = time.monotonic()
                     try:
                         client.execute_cell(cell, index)

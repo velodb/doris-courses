@@ -1,0 +1,13 @@
+{
+  "locks_sha256": {
+    "server.requirements.lock": "8dd531a3886eef40d0ae2c7f170e5d142d1e43aa9e70f8b2e6f66212ca35f91e",
+    "doris-obs.requirements.lock": "f1d58053a174b4d6641207d771b62f7985b694bb54ff7152beec57630841d6a1"
+  },
+  "packages_sha256": "24f0e9737487594c4ddea4345e5b2819e3622dec449f05528a2cf5d0a784cb80",
+  "resolver": "uv 0.12.5; Linux x86_64 manylinux_2_39; Python 3.12; PyPI; wheel-only; exclude-newer 2026-11-06T00:00:00Z",
+  "source_sha256": {
+    "doris-course/03-observability/pyproject.toml": "54912b63f8087e25c80a4fbbdab1deffc64bfe96e7c2c97657da2845a1a57017",
+    "doris-course/03-observability/requirements.txt": "0b5c5a6e05cc62c4b81cb5a25493e96c4ef59365fca57a6a7653edeffa88cdbb",
+    "doris-course/common/pyproject.toml": "d7057c069e13a45a9609a1309c4d91e1e526f6a3a51b0562a6730f7499f7f1e0"
+  }
+}

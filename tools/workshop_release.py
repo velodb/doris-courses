@@ -15,6 +15,12 @@ def browser_checks(config):
         checks.add('dw-superset-dashboard')
     if 'dw-cdc' in config['course_profiles']:
         checks.add('dw-flink-rest')
+    if 'obs-main' in config['course_profiles']:
+        checks.update({'obs-demo-browser-telemetry', 'obs-grafana-discover-traces-dashboard',
+                       'obs-grafana-live', 'obs-litefuse-login-trace', 'obs-mailpit-alert-cycle',
+                       'obs-cpu-load-entry', 'obs-service-restart'})
+    if 'obs-local-model' in config['course_profiles']:
+        checks.add('obs-local-model-trace')
     return checks
 
 
@@ -75,7 +81,8 @@ def publish(validation_run,course_path,browser_path,release_ref,output,aws):
     require(browser['kind']=='doris-workshop-browser-validation' and browser['passed'] is True and browser['instance_id']==instance and
         browser['image_id']==candidate['ami_id'] and browser['course_ref']==config['course_ref'] and
         browser_checks(config) <= browser['checks'].keys() and all(v is True for v in browser['checks'].values()) and
-        ('dw-main' not in config['course_profiles'] or browser.get('course_profiles') == sorted(config['course_profiles'])),
+        (not set(config['course_profiles']) & {'dw-main', 'obs-main'} or
+         browser.get('course_profiles') == sorted(config['course_profiles'])),
         'release: real browser validation must pass on the audited instance')
     require(instance in cleanup['known_instances'] and not any(cleanup[k] for k in
         ('managed_resources','active_instances','remaining_volumes','remaining_network_resources','role_exists','profile_exists','remaining_enis')),

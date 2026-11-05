@@ -61,7 +61,7 @@ class ImageInputs(unittest.TestCase):
                 host.verify_bundle(bundle)
 
     def test_unvalidated_profile_is_rejected(self):
-        self.config['course_profiles'] = ['obs-main']
+        self.config['course_profiles'] = ['obs-main', 'obs-openai']
         self.path.write_text(json.dumps(self.config))
         with self.assertRaisesRegex(wc.ConfigError, 'rta-main'):
             self.prepare()
@@ -86,6 +86,27 @@ class ImageInputs(unittest.TestCase):
         inputs = json.loads((self.prepare() / 'image-input.json').read_text())
         self.assertEqual(len(inputs['images']['images']), 3)
         self.assertEqual(inputs['images']['builds'], [])
+
+    def test_obs_bundle_pins_every_selected_container_and_course_dependency(self):
+        for profiles, count, notebooks in [(['obs-main'], 33, 16),
+                                           (['obs-local-model', 'obs-main'], 34, 17)]:
+            with self.subTest(profiles=profiles):
+                self.config['course_profiles'] = profiles
+                self.path.write_text(json.dumps(self.config))
+                bundle = self.root / ('bundle-' + str(count))
+                inputs = image.prepare(self.path, bundle)
+                plan, _ = host.verify_bundle(bundle)
+                self.assertEqual(set(plan['python_locks']), {'server', 'doris-obs'})
+                self.assertEqual(len(plan['courses'][0]['notebooks']), notebooks)
+                self.assertEqual(len(inputs['images']['images']), count)
+                self.assertEqual(inputs['images']['builds'], [])
+                self.assertEqual(any('llama.cpp' in row['tag'] for row in inputs['images']['images']), count == 34)
+                self.assertEqual(inputs['images']['profiles'], profiles)
+
+    def test_obs_external_model_or_mixed_course_selection_is_refused(self):
+        for profiles in [['obs-main', 'obs-openai'], ['obs-main', 'dw-main'], ['obs-local-model']]:
+            with self.subTest(profiles=profiles), self.assertRaises(wc.ConfigError):
+                image.image_selection({'course_profiles': profiles})
 
     def test_output_cannot_overwrite_an_existing_bundle(self):
         self.prepare()

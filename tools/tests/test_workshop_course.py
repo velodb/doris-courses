@@ -72,7 +72,7 @@ class CourseContract(unittest.TestCase):
         selected = copy.deepcopy(self.selected)
         selected['notebooks'].pop()
         with self.assertRaises(ValueError): course.selection_plan(selected)
-        config = {**self.config, 'course_profiles': ['obs-main']}
+        config = {**self.config, 'course_profiles': ['ai-functions']}
         with self.assertRaises(wc.ConfigError): course.selection(config)
 
     def test_resource_summary_uses_interval_cpu_and_minimum_available_capacity(self):
@@ -90,6 +90,53 @@ class CourseContract(unittest.TestCase):
         self.assertEqual(summary['network_rx_bytes'], 2000)
         self.assertEqual(summary['network_tx_bytes'], 3000)
         self.assertEqual(summary['duration_seconds'], 4)
+
+
+class ObservabilityContract(unittest.TestCase):
+    def test_main_and_local_model_cover_exact_files_cells_and_browser_checkpoints(self):
+        for profiles, count in [(['obs-main'], 16), (['obs-local-model', 'obs-main'], 17)]:
+            config = wc.load_document(wc.SPEC / 'examples/event.example.yaml')
+            config.update(course_ref=wc.git(wc.REPO, 'rev-parse', 'HEAD').strip(), course_profiles=profiles)
+            selected, steps = course.selection(config)
+            self.assertEqual(len(steps), count)
+            if count == 17:
+                optional = next(i for i, step in enumerate(steps) if step['kind'] == 'optional')
+                self.assertEqual(steps[optional]['module'], 'module-7')
+                self.assertEqual(steps[optional + 1]['module'], 'module-8')
+            sources = {s['notebook']: wc.git(wc.REPO, 'show',
+                       f"{config['course_ref']}:{selected['course_dir']}/{s['notebook']}").encode() for s in steps}
+            rows = [{**s, 'enabled_opt_ins': [], 'passed': True, 'errors': 0,
+                     'source_sha256': hashlib.sha256(sources[s['notebook']]).hexdigest(),
+                     'code_cells': sum(c['cell_type'] == 'code' for c in json.loads(sources[s['notebook']])['cells'])}
+                    for s in steps]
+            gates = [{'gate': course._contract['OBS_BROWSER_GATES'][c['id']], 'notebook': s['notebook'], 'cell': c['id']}
+                     for s in steps for c in json.loads(sources[s['notebook']])['cells']
+                     if c.get('id') in course._contract['OBS_BROWSER_GATES']]
+            self.assertEqual(len(gates), 5)
+            report = dict(course_profiles=profiles, notebooks=rows, notebook_count=count,
+                          code_cells=sum(r['code_cells'] for r in rows), browser_checkpoints=gates,
+                          modules=[{'module': s['module'], 'passed': True} for s in steps if s['kind'] == 'lab'])
+            verify = lambda value: course.valid_selection_report(value, steps, profiles, sources)
+            self.assertTrue(verify(report))
+            for change in [dict(browser_checkpoints=[]), dict(browser_checkpoints=gates[::-1]),
+                           dict(waiting_browser=gates[0]), dict(notebook_count=count-1), dict(course_profiles=['rta-main'])]:
+                self.assertFalse(verify({**report, **change}))
+            bad = copy.deepcopy(report); bad['notebooks'][0]['code_cells'] -= 1
+            self.assertFalse(verify(bad))
+            bad = copy.deepcopy(selected); bad['modules'].reverse()
+            with self.assertRaises(ValueError): course.selection_plan(bad)
+            bad = copy.deepcopy(selected); bad['notebooks'].pop()
+            with self.assertRaises(ValueError): course.selection_plan(bad)
+
+    def test_browser_acknowledgement_is_bound_to_the_exact_environment_and_step(self):
+        expected = dict(ami_id='ami-a', instance_id='i-a', course_ref='a'*40, event_id='event-a', learner_id='s001')
+        value = {**expected, 'kind': 'doris-workshop-browser-checkpoint', 'passed': True,
+                 'gate': 'obs-payment-failure-on', 'notebook': 'lab.ipynb'}
+        verify = lambda v: course._contract['valid_browser_checkpoint'](v, expected, value['gate'], value['notebook'])
+        self.assertTrue(verify(value))
+        for key in list(expected) + ['kind', 'passed', 'gate', 'notebook']:
+            self.assertFalse(verify({**value, key: 'wrong'}))
+        self.assertFalse(verify([]))
 
 
 if __name__ == '__main__':

@@ -1,7 +1,8 @@
 # Private workshop AMI builds
 
-This pipeline prepares a private **candidate** AMI for `rta-main`, or `dw-main`
-with its selected optional profiles, on Ubuntu
+This pipeline prepares a private **candidate** AMI for `rta-main`, `dw-main`
+with its selected optional profiles, or `obs-main` with optional
+`obs-local-model`, on Ubuntu
 24.04 amd64, using one `m7i.2xlarge` and one encrypted 200 GiB gp3 root volume.
 It is separate from the learner activity and its Terraform state. Building an
 image does not certify a fresh instance or publish the image for activities.
@@ -39,6 +40,13 @@ Data Warehousing uses `locks/doris-dw.in`, `doris-dw.requirements.lock` and
 `metadata-dw.json`, including the PyArrow dependency for its extensions. The
 resolver cutoff and platform are recorded in that metadata. Only the selected
 course kernel and server locks enter its bundle.
+
+[Observability](../observability.md) uses `locks/doris-obs.in`,
+`doris-obs.requirements.lock` and `metadata-obs.json`. Its 33 main-path images
+and optional llama.cpp image are selected from `images-obs.json`. First course
+setup still fetches the pinned DOG/demo source and Grafana plugin; the optional
+Lab downloads and verifies model weights. These online dependencies are
+recorded in the image input and manifest. Observability integration is pending.
 
 To regenerate both locks, use the resolver and flags recorded in metadata:
 

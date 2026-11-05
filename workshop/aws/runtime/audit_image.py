@@ -38,6 +38,13 @@ def main():
     routes = json.loads((config / 'browser-urls.json').read_text())
     checks['browser-routes'] = (routes['event_id'] == expected['event_id'] and routes['learner_id'] == expected['learner_id'] and
                                 routes['ports'] == expected['ports'] and routes.get('services', {}) == expected.get('services', {}))
+    if 'obs-main' in manifest['profiles']:
+        public = {'obs-grafana': 'DORIS_OBS_GRAFANA_PUBLIC_URL', 'obs-demo': 'DORIS_OBS_DEMO_PUBLIC_URL',
+                  'obs-litefuse': 'DORIS_OBS_LITEFUSE_PUBLIC_URL'}
+        environment = dict(line.split('=', 1) for line in (config / 'browser.env').read_text().splitlines())
+        checks['obs-public-application-origins'] = all(
+            environment.get(key) == expected.get('services', {}).get(service) and environment.get(key)
+            for service, key in public.items())
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     request = urllib.request.Request('http://169.254.169.254/latest/api/token', method='PUT', headers={'X-aws-ec2-metadata-token-ttl-seconds':'60'})
     with opener.open(request,timeout=5) as response: token = response.read().decode()

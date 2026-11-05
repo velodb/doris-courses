@@ -8,6 +8,17 @@ from pathlib import Path
 import re
 import sys
 
+PUBLIC_URL_ENV = {
+    'rta-metabase': 'DORIS_RTA_METABASE_PUBLIC_URL', 'dw-superset': 'DW_BI_PUBLIC_URL',
+    'obs-grafana': 'DORIS_OBS_GRAFANA_PUBLIC_URL', 'obs-demo': 'DORIS_OBS_DEMO_PUBLIC_URL',
+    'obs-litefuse': 'DORIS_OBS_LITEFUSE_PUBLIC_URL',
+}
+
+
+def browser_environment(routes):
+    return ''.join(key + '=' + routes['services'][service] + '\n'
+                   for service, key in PUBLIC_URL_ENV.items() if service in routes.get('services', {}))
+
 
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -56,17 +67,22 @@ def initialize(activity, manifest_sha, runtime_sha, course_ref, *, root=Path('/'
     if check:
         require(json.loads((config / 'activity.json').read_text()) == activity, 'activity: metadata changed')
         browser.validate_routes(json.loads((config / 'browser-urls.json').read_text()), activity['event_id'], activity['learner_id'])
+        require((config / 'browser.env').read_text() == browser_environment(routes), 'activity: browser environment changed')
         return receipt
     config.mkdir(parents=True, exist_ok=True)
     for name, data in [('activity.json', activity), ('browser-urls.json', routes)]:
         path = config / name
         path.write_text(json.dumps(data, indent=2, sort_keys=True) + '\n')
         path.chmod(0o644)
+    environment = config / 'browser.env'
+    environment.write_text(browser_environment(routes))
+    environment.chmod(0o644)
     dropin = root / 'etc/systemd/system/doris-workshop-jupyter.service.d'
     dropin.mkdir(parents=True, exist_ok=True)
     (dropin / 'activity.conf').write_text('[Service]\n' + '\n'.join([
         'Environment=DORIS_WORKSHOP_EVENT_ID=' + activity['event_id'],
         'Environment=DORIS_WORKSHOP_LEARNER_ID=' + activity['learner_id'],
+        'EnvironmentFile=/etc/doris-workshop/browser.env',
         'Environment=DORIS_BROWSER_ROUTES_FILE=/etc/doris-workshop/browser-urls.json']) + '\n')
     receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
     receipt_path.chmod(0o600)

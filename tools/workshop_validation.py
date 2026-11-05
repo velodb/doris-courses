@@ -22,15 +22,17 @@ MODULE = wc.SPEC / 'terraform/image-validation'
 
 def named_browser_routes(config, routes):
     """Assign a stable browser origin even when Flink chooses a new host port."""
-    if 'dw-main' not in config['course_profiles']:
+    if not set(config['course_profiles']) & {'dw-main', 'obs-main'}:
         return {}
-    ports = {'dw-fe': '51030'}
+    ports = ({'obs-fe': '28030', 'obs-grafana': '23000', 'obs-demo': '28082',
+              'obs-mailpit': '28025', 'obs-litefuse': '23100'}
+             if 'obs-main' in config['course_profiles'] else {'dw-fe': '51030'})
     if 'dw-bi' in config['course_profiles']:
         ports['dw-superset'] = '51888'
     if 'dw-cdc' in config['course_profiles']:
         ports['dw-flink'] = '51881'
     pf.require(all(set(ports.values()) <= row.keys() for row in routes.values()),
-               'validation: Data Warehousing needs routes for every selected FE/BI/Flink service')
+               'validation: supply routes for every selected course browser service')
     return {learner: {service: row[port] for service, port in ports.items()}
             for learner, row in routes.items()}
 
@@ -142,9 +144,10 @@ subprocess.run(['runuser','--user','workshop','--','env','-i','HOME='+str(root),
  'PATH=/opt/doris-workshop/server-venv/bin:/usr/local/bin:/usr/bin:/bin','LANG=C.UTF-8','PYTHONNOUSERSITE=1',
  '/opt/doris-workshop/server-venv/bin/python','-I',str(code),str(inputs)],check=True)
 """ % encoded
-    command=send_file_command(aws,audit['instance_id'],driver,expected,timeout=7200)
+    execution_timeout = 14400 if 'obs-main' in config['course_profiles'] else 7200
+    command=send_file_command(aws,audit['instance_id'],driver,expected,timeout=execution_timeout)
     images.write(attempt/'command.json',{'command_id':command,'instance_id':audit['instance_id'],'expected':expected})
-    deadline=time.monotonic()+7500
+    deadline=time.monotonic()+execution_timeout+300
     while time.monotonic()<deadline:
         try:r=aws.client('ssm').get_command_invocation(CommandId=command,InstanceId=audit['instance_id'])
         except aws.client('ssm').exceptions.InvocationDoesNotExist:time.sleep(5);continue
@@ -159,6 +162,65 @@ subprocess.run(['runuser','--user','workshop','--','env','-i','HOME='+str(root),
         images.write(directory/'course-report.json',value)
         print(json.dumps({'passed':True,'notebook_count':value['notebook_count'],'code_cells':value['code_cells']}));return
     raise wc.ConfigError('validation: course timed out; inspect the remote execution and destroy resources')
+
+
+def checkpoint(directory, attempt, gate):
+    """Acknowledge a completed browser action without restarting the course run."""
+    attempt = attempt.resolve()
+    pf.require(attempt.parent == (directory / 'courses').resolve(), 'validation: select this run\'s exact course attempt')
+    b = wc.load_document(directory / 'binding.json')
+    command = wc.load_document(attempt / 'command.json')
+    expected = command['expected']
+    pf.require('obs-main' in b['config']['course_profiles'] and
+               gate in workshop_course._contract['OBS_BROWSER_GATES'].values() and
+               expected['instance_id'] == wc.load_document(directory / 'initial-audit.json')['instance_id'] and
+               expected['ami_id'] == b['candidate']['ami_id'] and
+               expected['course_ref'] == b['config']['course_ref'] and
+               expected['event_id'] == b['config']['event_id'] and
+               expected['learner_id'] == b['config']['learner_ids'][0] and
+               expected['course_output_dir'] == '/var/lib/doris-workshop/home/' + attempt.name,
+               'validation: browser checkpoint does not match the audited course attempt')
+    code = """import json,os,sys
+from pathlib import Path
+value=json.loads(Path(sys.argv[1]).read_text());root=Path(value['course_output_dir'])
+progress=json.loads((root/'progress.json').read_text())
+waiting=progress.get('waiting_browser',{})
+assert progress.get('done') is False and waiting.get('gate')==value['gate']
+assert progress['instance_id']==value['instance_id'] and progress['image_id']==value['ami_id']
+assert progress['course_ref']==value['course_ref']
+target=root/'browser-actions';target.mkdir(mode=0o755,exist_ok=True)
+record={k:value[k] for k in ('ami_id','instance_id','course_ref','event_id','learner_id','gate')}
+record.update(kind='doris-workshop-browser-checkpoint',passed=True,notebook=waiting['notebook'])
+path=target/(value['gate']+'.json')
+with path.open('x') as out: json.dump(record,out)
+os.chmod(path,0o644)
+print('Browser checkpoint acknowledged; independent browser evidence is still required.')
+"""
+    aws = pf.Aws(b['config'])
+    ssm = aws.client('ssm')
+    pf.require(aws.call('sts', 'get_caller_identity')['Account'] == b['config']['aws_account_id'],
+               'validation: wrong checkpoint account')
+    invocation = ssm.get_command_invocation(CommandId=command['command_id'], InstanceId=expected['instance_id'])
+    pf.require(invocation['Status'] in {'InProgress', 'Delayed'}, 'validation: course attempt is not running')
+    marker = attempt / (gate + '-command.json')
+    images.write(marker, {'phase': 'dispatching', 'instance_id': expected['instance_id'], 'gate': gate})
+    dispatch = send_file_command(aws, expected['instance_id'], code, {**expected, 'gate': gate})
+    ws.atomic_json(marker, {'phase': 'dispatched', 'command_id': dispatch, 'instance_id': expected['instance_id'], 'gate': gate})
+    deadline = time.monotonic() + 120
+    while time.monotonic() < deadline:
+        try:
+            result = ssm.get_command_invocation(CommandId=dispatch, InstanceId=expected['instance_id'])
+        except ssm.exceptions.InvocationDoesNotExist:
+            time.sleep(2)
+            continue
+        if result['Status'] in {'Pending', 'InProgress', 'Delayed'}:
+            time.sleep(2)
+            continue
+        images.write(attempt / (gate + '-invocation.json'), ws.ops.invocation_summary(result))
+        pf.require(result['Status'] == 'Success', 'validation: checkpoint failed; inspect the exact dispatched command before retrying')
+        print('Browser action acknowledged; this does not certify browser acceptance.')
+        return
+    raise wc.ConfigError('validation: checkpoint outcome unknown; inspect the dispatched command before retrying')
 
 
 def audit(directory):
@@ -266,12 +328,18 @@ def main():
     for name in ('config','settings','candidate-run','run-dir','routes'):planp.add_argument('--'+name,type=Path,required=True)
     for name in ('apply','audit','course','destroy'):
         q=s.add_parser(name);q.add_argument('--run-dir',type=Path,required=True)
+    browser=s.add_parser('checkpoint',help='Acknowledge an actually completed documented browser step')
+    browser.add_argument('--run-dir',type=Path,required=True)
+    browser.add_argument('--attempt',type=Path,required=True)
+    browser.add_argument('--gate',choices=sorted(workshop_course._contract['OBS_BROWSER_GATES'].values()),required=True)
     release=s.add_parser('publish')
     for name in ('run-dir','course-report','browser-report','output'):release.add_argument('--'+name,type=Path,required=True)
     release.add_argument('--release-ref',required=True)
     a=p.parse_args();os.umask(0o077)
     try:
         if a.command=='plan':plan(a.config,a.settings,a.candidate_run.resolve(),a.run_dir,a.routes)
+        elif a.command=='checkpoint':
+            with ws.run_lock(a.attempt):checkpoint(a.run_dir.resolve(),a.attempt,a.gate)
         elif a.command=='publish':
             import workshop_release
             b=wc.load_document(a.run_dir/'binding.json')

@@ -79,6 +79,11 @@ must cover the exact pinned file hashes, execution order and cell counts. The
 driver is compressed for SSM transport and rejects an oversized request before
 dispatch; this does not relax the execution or evidence checks.
 
+The [Observability selection](observability.md) uses the same command, with
+five named service origins and explicit pauses for its documented browser
+steps. It requires a complete selected-course report and its own real browser
+checks; acknowledgements coordinate the run without replacing those checks.
+
 After successful audit, course and browser validation **and** full environment
 cleanup, publish the exact candidate:
 

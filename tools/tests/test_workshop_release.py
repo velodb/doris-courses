@@ -27,6 +27,14 @@ class ReleaseTests(unittest.TestCase):
         checks = release.browser_checks({'course_profiles':['dw-main','dw-bi','dw-cdc']})
         self.assertEqual(checks - release.BROWSER_CHECKS, {'dw-superset-dashboard','dw-flink-rest'})
 
+    def test_obs_requires_browser_telemetry_live_alerts_load_and_selected_model(self):
+        checks = release.browser_checks({'course_profiles':['obs-main']})
+        self.assertEqual(len(checks - release.BROWSER_CHECKS), 7)
+        self.assertTrue({'obs-demo-browser-telemetry', 'obs-mailpit-alert-cycle', 'obs-cpu-load-entry',
+                         'obs-grafana-live', 'obs-service-restart'} <= checks)
+        self.assertEqual(release.browser_checks({'course_profiles':['obs-main','obs-local-model']}) - checks,
+                         {'obs-local-model-trace'})
+
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
         self.root=Path(self.temp.name);self.path=self.root/'release.json';self.value=fixture()
@@ -89,6 +97,24 @@ class ReleaseTests(unittest.TestCase):
             with self.subTest(key=key),mock.patch('workshop_image.record_candidate'),self.assertRaises(wc.ConfigError):
                 release.publish(self.root,self.root/'course.json',self.root/'browser.json','rta-v1',self.root/'out.json',cloud)
             cloud.client.assert_not_called();self.assertFalse((self.root/'out.json').exists())
+
+    def test_obs_publication_refuses_missing_browser_checks_and_wrong_selection(self):
+        for bad in ('missing-check', 'wrong-profiles'):
+            cloud, course, browser, _ = self.publish_inputs()
+            binding = wc.load_document(self.root/'binding.json')
+            binding['config']['course_profiles'] = ['obs-local-model', 'obs-main']
+            binding['manifest']['profiles'] = ['obs-local-model', 'obs-main']
+            self.write(self.root/'binding.json', binding)
+            browser.update(course_profiles=['obs-local-model','obs-main'],
+                           checks={k:True for k in release.browser_checks(binding['config'])})
+            if bad == 'missing-check': del browser['checks']['obs-local-model-trace']
+            else: browser['course_profiles'] = ['obs-main']
+            self.write(self.root/'browser.json', browser)
+            with self.subTest(bad=bad), mock.patch('workshop_image.record_candidate'), \
+                 mock.patch.object(release.workshop_course, 'verify_report', return_value=True), \
+                 self.assertRaisesRegex(wc.ConfigError, 'real browser validation'):
+                release.publish(self.root,self.root/'course.json',self.root/'browser.json','obs-v1',self.root/'out.json',cloud)
+            cloud.client.assert_not_called()
 
     def test_release_is_written_after_evidence_and_cannot_overwrite_another_version(self):
         cloud,*_=self.publish_inputs()

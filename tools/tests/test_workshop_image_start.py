@@ -68,6 +68,22 @@ class ImageStartTests(unittest.TestCase):
         with self.assertRaises(ValueError): self.initialize()
         self.assertFalse((self.root/'etc/doris-workshop/activity.json').exists())
 
+    def test_obs_public_application_origins_reach_jupyter_without_changing_internal_ports(self):
+        self.activity['services'] = {'obs-grafana': 'https://grafana.example.com',
+                                    'obs-demo': 'https://demo.example.com', 'obs-litefuse': 'https://litefuse.example.com'}
+        self.initialize()
+        config = self.root/'etc/doris-workshop'
+        environment = (config/'browser.env').read_text()
+        for service, key in start.PUBLIC_URL_ENV.items():
+            if service in self.activity['services']:
+                self.assertIn(key + '=' + self.activity['services'][service] + '\n', environment)
+        self.assertNotIn('PORT=', environment)
+        dropin = (self.root/'etc/systemd/system/doris-workshop-jupyter.service.d/activity.conf').read_text()
+        self.assertIn('EnvironmentFile=/etc/doris-workshop/browser.env', dropin)
+        self.initialize(check=True)
+        (config/'browser.env').write_text('DORIS_OBS_DEMO_PUBLIC_URL=http://localhost\n')
+        with self.assertRaisesRegex(ValueError, 'browser environment changed'): self.initialize(check=True)
+
     def test_check_does_not_initialize_an_unprepared_host(self):
         with self.assertRaisesRegex(ValueError,'has not completed'):self.initialize(check=True)
         self.assertFalse((self.root/'etc/doris-workshop/activity.json').exists())
