@@ -2,12 +2,13 @@
 
 The validated AWS course profile is **`rta-main` on Linux x86_64**, using
 Python 3.12, `us-east-1`, `m7i.2xlarge` and a 200 GiB root disk. The published
-private course image was validated at course commit
-`180aca72c993a784a5d9b25e903341a834f14458`. Three-learner shared HTTPS/Cognito startup, concurrent Lab 1, CPU pressure,
-single-host replacement and cleanup now have real-AWS evidence in the
-[scale rehearsal](scale-rehearsal.md). The pinned image's full main-course Lab
-execution was validated separately; the three-host round did not execute all
-Labs concurrently.
+private course image release `rta-db2620c-ui-v1` was validated at course commit
+`db2620cb51c29a5fb6577e242dadeb03c15c368e`. Its fresh three-learner shared
+HTTPS/Cognito round passed concurrent Lab 1, browser isolation, logout and
+single-service recovery. The [scale rehearsal](scale-rehearsal.md) records this
+round and the older CPU-pressure and host-replacement exercise separately.
+The pinned image's full main-course Lab execution was validated on a separate
+fresh instance; the three-host round did not execute all Labs concurrently.
 
 Browser validation includes the historical operator SSM/token entry and the
 formal-domain ALB/Cognito entry, learner ownership and RTA service routes.
@@ -47,9 +48,12 @@ perform cloud or browser acceptance.
   is implemented. Larger events require their own capacity acceptance.
 - Shared access, stable allocation, Cognito and service routing have local tests
   and real integration evidence for the declared RTA scope. The older validated
-  AMI still shares a Docker engine ID between clones. A new candidate includes
-  the sealing change and passed the fresh-instance audit and full RTA run;
-  GUI certification, repeated clone launches and release are still pending.
+  AMI shares a Docker engine ID between clones. The new private release includes
+  the sealing change, passed the fresh-instance audit, full RTA run and browser
+  gate, and produced three distinct Docker engine, machine and token identities.
+  Its new three-learner authenticated browser round passed all six directed
+  cross-learner HTTP/API and kernel/terminal WebSocket isolation checks,
+  entry logout/reauthentication and single-service failure/recovery.
 - The cleanup runner is a separate Linux amd64 image with its own
   [build, verification and scan requirements](ttl/README.md). Its isolated
   Fargate/TTL acceptance does not close its production security review or
@@ -102,12 +106,27 @@ but does not establish its exact cause. Preserve that failed run and confirm
 the current runtime suite on native amd64 CI. This arm64 test result does not
 add arm64 EC2/AMI support to the matrix above.
 
-A later private candidate at course/deployment commit
+A later private image at course/deployment commit
 `db2620cb51c29a5fb6577e242dadeb03c15c368e` completed all ten RTA Labs and ten
 quizzes (189 code cells) after a Module 9 BE disk-report readiness fix. Its
 native Linux x86_64 checks covered 389 tools/runtime tests, five UI tests and
-591 shared/course tests (two DOG-specific skips). The shared portal passed
-HTTPS and fixed-asset/CORS checks. Window-control failures prevented the new
-candidate's GUI certification and release, so it is not an activity-ready
-replacement for the older published image. The new three-learner UI round and
-remote GitHub Actions run remain pending.
+591 shared/course tests (two DOG-specific skips). On a separate fresh instance,
+the same image passed the full course again and all six actual browser checks:
+reader/images, Notebook create/run/save/download, kernel restart/reconnect,
+quiz navigation/feedback, terminal Docker access and an FE query-profile detail.
+That validation environment was destroyed and reconciled before private release.
+
+The new shared portal passed HTTPS and fixed-asset/CORS checks. Three clones
+passed identity checks and concurrent Lab 1 with 184.96 seconds of common
+execution overlap. Each account saw only its own five origins and passed
+Notebook SQL, terminal Docker and FE login. All six directed cross-learner pairs
+returned HTTP 403 for five page/API paths and failed both WebSocket handshakes,
+with successful owner controls. The browser test did not expose failed-handshake
+HTTP status. Three entry logout/reauthentication flows passed; other service
+origins retained their own sessions. Stopping and restarting one learner's
+Jupyter preserved the other two original kernels, processes and terminals.
+First-login password changes and hosted-login branding were not tested in this
+round. An operator-only signed-out-route review fix at `ab02729` passed
+391 local tools tests and seven focused native Linux x86_64 tests; it does not
+change the image payload or its source identity. Track remote GitHub Actions
+separately from these local and cloud results.

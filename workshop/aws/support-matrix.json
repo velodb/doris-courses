@@ -14,15 +14,18 @@
       "shared_browser": "verified",
       "browser_host": "not-required",
       "evidence": {
-        "course_sha": "180aca72c993a784a5d9b25e903341a834f14458",
+        "course_sha": "db2620cb51c29a5fb6577e242dadeb03c15c368e",
         "transport": "shared-https",
         "hosts": 3,
         "region": "us-east-1",
         "instance_type": "m7i.2xlarge",
-        "disk_gib": 200
+        "disk_gib": 200,
+        "image_release": "rta-db2620c-ui-v1",
+        "validated_on": "2026-11-05",
+        "operator_sha": "ab02729b9bd5a0d044487840f29cd211299ee8fb"
       },
-      "summary": "scale-rehearsal.md",
-      "limitations": "Full main-course Labs and the private AMI have historical execution evidence. Three-learner shared access, concurrent Lab 1, pressure and replacement were tested; all Labs were not run concurrently on every host. The older AMI still duplicates Docker engine IDs; its sealing fix needs a rebuilt image. Larger events and other variants require separate acceptance."
+      "summary": "scale-rehearsal.md#current-private-image-acceptance",
+      "limitations": "The private image passed all ten RTA Labs and ten quizzes (189 code cells) and six actual browser checks on one fresh validation instance. Three clones had distinct Docker engine, machine and token identities, completed concurrent Lab 1, and passed shared authentication, six-direction HTTP/API and kernel/terminal WebSocket isolation, entry logout/reauthentication and single-service recovery. All Labs were not run concurrently on every host. Pressure and host replacement have separate historical evidence. First-login password changes, hosted-login branding, remote GitHub Actions, larger events and other variants are outside this round."
     },
     "rta-metabase": {
       "course_dir": "doris-course/01-real-time-analytics",

@@ -1,5 +1,32 @@
 # Three-learner scale rehearsal
 
+## Current private-image acceptance
+
+On 2026-11-05, private release `rta-db2620c-ui-v1`, pinned to course commit
+`db2620cb51c29a5fb6577e242dadeb03c15c368e`, passed a new three-learner
+`rta-main` round in `us-east-1`. Each learner used Linux x86_64,
+`m7i.2xlarge` and a 200 GiB encrypted gp3 root disk. The portal used a separate
+`t3.small` with a 20 GiB root disk. There were no spares.
+
+| Exercise | Result |
+| --- | --- |
+| Image and clone identity | Fresh-image audit passed; all three Docker engine IDs, machine IDs and token identities were distinct |
+| Concurrent Lab 1 | Three Notebooks, 12 code cells each, zero execution errors; 184.96 seconds of common execution overlap |
+| Authenticated browser access | Three isolated sessions saw exactly their own five origins, executed Notebook SQL returning 42, ran terminal Docker commands and logged in to their own FE |
+| Cross-learner HTTP/API | All six directed pairs returned 403 for five page, status, contents, kernel and terminal paths: 30 denials |
+| Cross-learner WebSockets | All 12 kernel/terminal handshakes failed; all six owner controls opened successfully from the same document type; failed-handshake HTTP status was not exposed |
+| Entry logout and reauthentication | All three reached the branded signed-out page, required Cognito login and returned to the correct assignment; other service origins retained their own sessions |
+| Single-service fault and recovery | Only the third learner's Jupyter was stopped: its API returned 503 while the other two stayed at 200 with their original kernels, processes and terminals. Restart restored SQL and Docker access without replacing an EC2 instance |
+
+The same image passed all ten Labs and ten quizzes (189 code cells) and six
+actual browser checks on a separate fresh validation instance before private
+publication. The three-host round did not run every Lab concurrently, repeat
+CPU pressure or replace a host. Its disposable accounts had administratively
+prepared passwords; first-login password changes and hosted-login branding
+were not part of this round. Remote GitHub Actions is a separate release gate.
+
+## Historical pressure and replacement rehearsal
+
 On 2026-11-04, a three-learner `rta-main` event was exercised in `us-east-1`.
 Each learner had an independent Linux x86_64 `m7i.2xlarge` instance and a
 200 GiB encrypted gp3 root disk. A separate `t3.small`/20 GiB portal and
@@ -99,7 +126,7 @@ their own retirement: detach the portal while its host still exists, destroy
 the portal, then retire the remaining shared entry. Retained partner DNS,
 foundation state and published image artifacts have separate ownership.
 
-The activity's 73 access-binding and 12 pilot resources were deleted through
+In the historical 2026-11-04 round, 73 access-binding and 12 pilot resources were deleted through
 the reviewed cleanup command. Its fresh scan completed all 26 configured
 resource categories with zero residuals and ownership conflicts; nine stale
 Tagging observations were retained with exact native-API confirmations.
@@ -123,8 +150,8 @@ usage allowances, contingency and retained DNS/snapshot assumptions. It is an
 estimate and does not cap AWS charges. Cost Explorer denied the billing-tag
 query, so a settled activity bill was unavailable.
 
-The older validated image still duplicated Docker engine IDs across clones.
+The older image used in the historical rehearsal duplicated Docker engine IDs across clones.
 This rehearsal used EC2 IDs, disks, event/learner bindings and authenticated
-routes for ownership checks. The current sealing script removes the engine ID;
-that image change still needs its own rebuild and fresh-instance acceptance.
+routes for ownership checks. The newer private image passed its rebuild,
+fresh-instance audit and three-clone identity checks described above.
 Use the [support matrix](support.md) for the remaining release boundaries.
