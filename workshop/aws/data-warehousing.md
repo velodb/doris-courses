@@ -59,3 +59,10 @@ summary. Executed Notebooks and cell timings remain private because their
 outputs can include course credentials and connection strings. Publication
 requires the complete selected execution, real browser checks on the same
 audited fresh instance, and its completed cleanup reconciliation.
+
+The disposable-host validator samples CPU, available memory, free disk and
+non-loopback network counters every two seconds. Its report summarizes the
+observed minimum available capacity and maximum interval CPU use; the private
+sample file preserves the time series. These measurements describe the selected
+Lab run and its cache state, and do not certify larger datasets or classrooms.
+The report also records the activity-owned dynamic Flink port when CDC is selected.

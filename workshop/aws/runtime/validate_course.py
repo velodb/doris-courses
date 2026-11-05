@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import threading
 import time
 
 DW_PROFILES = {'dw-main', 'dw-kafka', 'dw-cdc', 'dw-bi', 'dw-backup', 'dw-extensions'}
@@ -18,6 +19,35 @@ DW_OPTIONALS = {
     'dw-cdc': [(5, 'level1/module05-ingestion/optional05_flink_mysql_cdc.ipynb')],
 }
 CONTINUOUS_QUIZ = 'level1/module05-ingestion/quiz05_continuous_ingestion.ipynb'
+
+
+def resource_sample():
+    cpu = list(map(int, Path('/proc/stat').read_text().splitlines()[0].split()[1:]))
+    memory = {line.split(':', 1)[0]: int(line.split()[1]) * 1024 for line in Path('/proc/meminfo').read_text().splitlines()}
+    interfaces = [line.split(':', 1)[1].split() for line in Path('/proc/net/dev').read_text().splitlines()[2:]
+                  if line.split(':', 1)[0].strip() != 'lo']
+    disk = os.statvfs('/')
+    return {'at': time.time(), 'cpu_total': sum(cpu[:8]), 'cpu_idle': cpu[3] + cpu[4],
+            'memory_total_gib': memory['MemTotal'] / 2**30, 'memory_available_gib': memory['MemAvailable'] / 2**30,
+            'disk_total_gib': disk.f_blocks * disk.f_frsize / 2**30,
+            'disk_available_gib': disk.f_bavail * disk.f_frsize / 2**30,
+            'network_rx_bytes': sum(int(r[0]) for r in interfaces),
+            'network_tx_bytes': sum(int(r[8]) for r in interfaces), 'load1': os.getloadavg()[0]}
+
+
+def summarize_resources(samples):
+    percentages = [100 * (1 - (b['cpu_idle'] - a['cpu_idle']) / (b['cpu_total'] - a['cpu_total']))
+                   for a, b in zip(samples, samples[1:]) if b['cpu_total'] > a['cpu_total']]
+    return {'sample_count': len(samples), 'interval_seconds': 2, 'logical_cpus': os.cpu_count(),
+            'duration_seconds': round(samples[-1]['at'] - samples[0]['at'], 2),
+            'memory_total_gib': round(samples[0]['memory_total_gib'], 3),
+            'minimum_memory_available_gib': round(min(s['memory_available_gib'] for s in samples), 3),
+            'disk_total_gib': round(samples[0]['disk_total_gib'], 3),
+            'minimum_disk_available_gib': round(min(s['disk_available_gib'] for s in samples), 3),
+            'maximum_cpu_busy_percent': round(max(percentages, default=0), 2),
+            'maximum_load1': max(s['load1'] for s in samples),
+            'network_rx_bytes': max(0, samples[-1]['network_rx_bytes'] - samples[0]['network_rx_bytes']),
+            'network_tx_bytes': max(0, samples[-1]['network_tx_bytes'] - samples[0]['network_tx_bytes'])}
 
 
 def selection_plan(course):
@@ -129,6 +159,15 @@ def main():
               'started_at': datetime.now(timezone.utc).isoformat(), 'modules': [], 'notebooks': [],
               'notebook_count': 0, 'code_cells': 0, 'documented_transitions': [], 'done': False, 'passed': False}
     timings = []
+    samples = [resource_sample()]
+    finished = threading.Event()
+
+    def sample_resources():
+        while not finished.wait(2):
+            samples.append(resource_sample())
+
+    monitor = threading.Thread(target=sample_resources, daemon=True)
+    monitor.start()
 
     def save():
         temp = root / 'progress.tmp'
@@ -210,6 +249,21 @@ def main():
         report['passed'] = valid_selection_report(report, steps, course['profiles'], originals)
     except Exception:
         report['error'] = {'type': 'course-transition-failed', 'message': 'Inspect the disposable validation host.'}
+    finally:
+        finished.set()
+        monitor.join(timeout=5)
+        samples.append(resource_sample())
+        (root / 'resource-samples.json').write_text(json.dumps(samples, indent=2) + '\n')
+        report['resource_summary'] = summarize_resources(samples)
+        if 'dw-cdc' in course['profiles']:
+            registry = Path('/run/doris-workshop/service-ports.json')
+            ports = json.loads(registry.read_text()) if registry.exists() else {}
+            dynamic = ports.get('ports', {}).get('dw-flink')
+            report['dynamic_ports'] = {'dw-flink': dynamic}
+            if (ports.get('event_id') != activity['event_id'] or ports.get('learner_id') != activity['learner_id'] or
+                    type(dynamic) is not int or not 1024 <= dynamic <= 65535 or dynamic == 8080):
+                report['passed'] = False
+                report['dynamic_port_error'] = 'Missing or mismatched Flink registry.'
     report['done'] = True
     report['finished_at'] = datetime.now(timezone.utc).isoformat()
     save()

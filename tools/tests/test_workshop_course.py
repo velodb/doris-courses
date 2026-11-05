@@ -75,6 +75,22 @@ class CourseContract(unittest.TestCase):
         config = {**self.config, 'course_profiles': ['obs-main']}
         with self.assertRaises(wc.ConfigError): course.selection(config)
 
+    def test_resource_summary_uses_interval_cpu_and_minimum_available_capacity(self):
+        first = dict(at=10, cpu_total=100, cpu_idle=50, memory_total_gib=32,
+                     memory_available_gib=24, disk_total_gib=190, disk_available_gib=140,
+                     network_rx_bytes=1000, network_tx_bytes=2000, load1=1)
+        middle = {**first, 'at':12, 'cpu_total':200, 'cpu_idle':75,
+                  'memory_available_gib':16, 'disk_available_gib':130, 'load1':4}
+        last = {**first, 'at':14, 'cpu_total':300, 'cpu_idle':125,
+                'network_rx_bytes':3000, 'network_tx_bytes':5000}
+        summary = course._contract['summarize_resources']([first, middle, last])
+        self.assertEqual(summary['maximum_cpu_busy_percent'], 75)
+        self.assertEqual(summary['minimum_memory_available_gib'], 16)
+        self.assertEqual(summary['minimum_disk_available_gib'], 130)
+        self.assertEqual(summary['network_rx_bytes'], 2000)
+        self.assertEqual(summary['network_tx_bytes'], 3000)
+        self.assertEqual(summary['duration_seconds'], 4)
+
 
 if __name__ == '__main__':
     unittest.main()
