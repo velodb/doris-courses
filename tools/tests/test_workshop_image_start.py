@@ -56,6 +56,18 @@ class ImageStartTests(unittest.TestCase):
         self.activity['ports']={'8030':'https://user:secret@example.com'}
         with self.assertRaises(ValueError):self.initialize()
 
+    def test_named_flink_origin_is_injected_without_baking_a_dynamic_port(self):
+        self.activity['services'] = {'dw-flink': 'http://127.0.0.1:49381'}
+        self.initialize()
+        routes = json.loads((self.root/'etc/doris-workshop/browser-urls.json').read_text())
+        self.assertEqual(routes['services'], self.activity['services'])
+        self.initialize(check=True)
+
+    def test_unsafe_named_origin_is_rejected_before_initialization(self):
+        self.activity['services'] = {'dw-flink': 'http://user:password@public.example.com'}
+        with self.assertRaises(ValueError): self.initialize()
+        self.assertFalse((self.root/'etc/doris-workshop/activity.json').exists())
+
     def test_check_does_not_initialize_an_unprepared_host(self):
         with self.assertRaisesRegex(ValueError,'has not completed'):self.initialize(check=True)
         self.assertFalse((self.root/'etc/doris-workshop/activity.json').exists())

@@ -63,6 +63,22 @@ performs the course's documented single-node/multi-node transitions. It writes
 executed Notebooks separately, preserves source workbooks, and records cell
 counts/timings and failures. Real browser checks remain a separate requirement.
 
+The [Data Warehousing selection](data-warehousing.md) uses the same `course`
+command. Supply FE port `51030`, Superset slot `51888` when `dw-bi` is selected,
+and Flink slot `51881` when `dw-cdc` is selected. The planner also injects their
+named browser origins. Flink's slot names its browser destination; Docker still
+chooses the actual loopback REST port, which the course records in the host's
+dynamic registry. For operator SSM validation, forward that discovered port to
+the configured local browser destination before browser checks. Shared access
+resolves the registry itself. Internal Flink clients keep the discovered
+loopback address.
+
+With all Data Warehousing profiles selected, run the 14 main modules, all
+selected optional Notebooks and the explicit Superset/backup opt-ins. Reports
+must cover the exact pinned file hashes, execution order and cell counts. The
+driver is compressed for SSM transport and rejects an oversized request before
+dispatch; this does not relax the execution or evidence checks.
+
 After successful audit, course and browser validation **and** full environment
 cleanup, publish the exact candidate:
 
@@ -85,6 +101,11 @@ absent. It hashes the evidence into the strict
 [release schema](image-release.schema.json), tags the exact private AMI as
 validated, and refuses to overwrite another published version. Keep the release
 JSON unchanged. It supplies the explicit release input for [prebuilt activity startup](prebuilt.md).
+
+Data Warehousing browser reports additionally name the exact sorted
+`course_profiles` selection. Selected Superset and CDC profiles require
+`dw-superset-dashboard` and `dw-flink-rest` checks respectively, after actual
+use of those browser interfaces on the same audited instance.
 
 Live acceptance covered a fresh private `rta-main` image on Ubuntu 24.04,
 `m7i.2xlarge` with an encrypted 200 GiB root in `us-east-1`: all 27 initial

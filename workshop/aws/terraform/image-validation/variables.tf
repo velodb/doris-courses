@@ -69,3 +69,7 @@ variable "release_ref" { type = string }
 variable "image_manifest_sha256" { type = string }
 variable "runtime_sha256" { type = string }
 variable "browser_routes" { type = map(map(string)) }
+variable "browser_services" {
+  type    = map(map(string))
+  default = {}
+}

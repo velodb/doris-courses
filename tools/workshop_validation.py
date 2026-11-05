@@ -20,6 +20,21 @@ import workshop_course
 MODULE = wc.SPEC / 'terraform/image-validation'
 
 
+def named_browser_routes(config, routes):
+    """Assign a stable browser origin even when Flink chooses a new host port."""
+    if 'dw-main' not in config['course_profiles']:
+        return {}
+    ports = {'dw-fe': '51030'}
+    if 'dw-bi' in config['course_profiles']:
+        ports['dw-superset'] = '51888'
+    if 'dw-cdc' in config['course_profiles']:
+        ports['dw-flink'] = '51881'
+    pf.require(all(set(ports.values()) <= row.keys() for row in routes.values()),
+               'validation: Data Warehousing needs routes for every selected FE/BI/Flink service')
+    return {learner: {service: row[port] for service, port in ports.items()}
+            for learner, row in routes.items()}
+
+
 def environment(directory):
     env = pf.explicit_environment()
     env['TF_DATA_DIR'] = str(directory / 'terraform-data')
@@ -55,13 +70,15 @@ def plan(config_path, settings_path, candidate_run, directory, routes_path):
         if 'rta-main' in config['course_profiles']:
             pf.require({'18030','18130','18131','18132'} <= ports.keys(),
                        'validation: RTA requires routes for the host FE ports 18030 and 18130-18132')
+    named_routes = named_browser_routes(config, routes)
     pf.require(not directory.exists(), 'validation: choose a new run directory')
     directory.mkdir(parents=True, mode=0o700)
     directory=directory.resolve()
     variables = {k:config[k] for k in ('aws_profile','region','owner_id','event_id','learner_ids','instance_type','disk_gib','expires_at','course_ref')}
     variables.update(expected_account_id=config['aws_account_id'],state_bucket_name=settings['state_bucket_name'],
         availability_zone=report['availability_zones'][0],ami_id=c['ami_id'],release_ref='candidate-validation',
-        image_manifest_sha256=c['manifest_sha256'],runtime_sha256=m['runtime_sha256'],browser_routes=routes)
+        image_manifest_sha256=c['manifest_sha256'],runtime_sha256=m['runtime_sha256'],browser_routes=routes,
+        browser_services=named_routes)
     images.write(directory/'inputs.tfvars.json',variables)
     images.write(directory/'preflight.json', {**report,'validation_ami_id':c['ami_id']})
     tf(directory,'init','-input=false','-lockfile=readonly','-backend-config=path='+str(directory/'terraform.tfstate'))
@@ -165,7 +182,8 @@ def audit(directory):
     expected={'ami_id':b['candidate']['ami_id'],'instance_id':instance,'builder_instance_ids':[builder],
         'launched_at':wc.utc_text(row['LaunchTime']),'manifest_sha256':b['candidate']['manifest_sha256'],
         'runtime_sha256':b['manifest']['runtime_sha256'],'course_ref':config['course_ref'],
-        'event_id':config['event_id'],'learner_id':learner,'ports':v['browser_routes'][learner]}
+        'event_id':config['event_id'],'learner_id':learner,'ports':v['browser_routes'][learner],
+        'services':v.get('browser_services',{}).get(learner,{})}
     images.write(attempt/'audit-input.json',expected)
     command=send_file_command(aws,instance,(wc.SPEC/'runtime/audit_image.py').read_text(),expected)
     images.write(attempt/'audit-command.json',{'instance_id':instance,'command_id':command})

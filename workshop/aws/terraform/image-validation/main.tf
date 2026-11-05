@@ -139,7 +139,8 @@ resource "aws_instance" "learner" {
   user_data = templatefile("${path.module}/user-data.sh.tftpl", {
     expires_at = var.expires_at,
     activity = base64encode(jsonencode({ schema_version = 1, event_id = var.event_id, learner_id = each.key,
-    release_ref = var.release_ref, expires_at = var.expires_at, ports = var.browser_routes[each.key] })),
+      release_ref = var.release_ref, expires_at = var.expires_at, ports = var.browser_routes[each.key],
+    services = lookup(var.browser_services, each.key, {}) })),
     init_script     = file("${path.module}/../../runtime/start_image.py"),
     manifest_sha256 = var.image_manifest_sha256, runtime_sha256 = var.runtime_sha256, course_ref = var.course_ref
   })

@@ -36,7 +36,8 @@ def main():
     checks['browser-identity'] = all(k + '=' + v in env for k, v in {
         'DORIS_WORKSHOP_EVENT_ID': expected['event_id'], 'DORIS_WORKSHOP_LEARNER_ID': expected['learner_id']}.items())
     routes = json.loads((config / 'browser-urls.json').read_text())
-    checks['browser-routes'] = routes['event_id'] == expected['event_id'] and routes['learner_id'] == expected['learner_id'] and routes['ports'] == expected['ports']
+    checks['browser-routes'] = (routes['event_id'] == expected['event_id'] and routes['learner_id'] == expected['learner_id'] and
+                                routes['ports'] == expected['ports'] and routes.get('services', {}) == expected.get('services', {}))
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     request = urllib.request.Request('http://169.254.169.254/latest/api/token', method='PUT', headers={'X-aws-ec2-metadata-token-ttl-seconds':'60'})
     with opener.open(request,timeout=5) as response: token = response.read().decode()

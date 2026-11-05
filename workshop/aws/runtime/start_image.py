@@ -38,6 +38,8 @@ def initialize(activity, manifest_sha, runtime_sha, course_ref, *, root=Path('/'
     spec.loader.exec_module(browser)
     routes = {'schema_version': 1, 'event_id': activity['event_id'], 'learner_id': activity['learner_id'],
               'ports': activity.get('ports', {})}
+    if activity.get('services'):
+        routes['services'] = activity['services']
     browser.validate_routes(routes, activity['event_id'], activity['learner_id'])
     receipt_path = state / 'image-start.json'
     if receipt_path.exists():
