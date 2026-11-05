@@ -91,5 +91,22 @@ class ImageStartTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'has not completed'):self.initialize(check=True)
         self.assertFalse((self.root/'etc/doris-workshop/activity.json').exists())
 
+    def test_prebuilt_obs_activity_derives_origins_before_gateway_installation(self):
+        config = self.root/'etc/doris-workshop'
+        manifest = json.loads((config/'image-manifest.json').read_text())
+        manifest['profiles'] = ['obs-main']
+        (config/'image-manifest.json').write_text(json.dumps(manifest))
+        self.manifest_hash = start.digest(config/'image-manifest.json')
+        self.activity['ports'] = {port:'https://' + service + '.example.com' for service,port in start.OBS_SERVICE_PORTS.items()}
+        missing = self.activity['ports'].pop('23100')
+        with self.assertRaisesRegex(ValueError, 'incomplete observability'): self.initialize()
+        self.assertFalse((config/'activity.json').exists())
+        self.activity['ports']['23100'] = missing
+        self.initialize()
+        routes = json.loads((config/'browser-urls.json').read_text())
+        self.assertEqual(set(routes['services']), set(start.OBS_SERVICE_PORTS))
+        self.assertIn('DORIS_OBS_DEMO_PUBLIC_URL=https://obs-demo.example.com', (config/'browser.env').read_text())
+        self.initialize(check=True)
+
 
 if __name__=='__main__':unittest.main()

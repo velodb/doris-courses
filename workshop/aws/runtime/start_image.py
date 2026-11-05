@@ -13,6 +13,8 @@ PUBLIC_URL_ENV = {
     'obs-grafana': 'DORIS_OBS_GRAFANA_PUBLIC_URL', 'obs-demo': 'DORIS_OBS_DEMO_PUBLIC_URL',
     'obs-litefuse': 'DORIS_OBS_LITEFUSE_PUBLIC_URL',
 }
+OBS_SERVICE_PORTS = {'obs-fe': '28030', 'obs-grafana': '23000', 'obs-demo': '28082',
+                     'obs-mailpit': '28025', 'obs-litefuse': '23100'}
 
 
 def browser_environment(routes):
@@ -51,6 +53,11 @@ def initialize(activity, manifest_sha, runtime_sha, course_ref, *, root=Path('/'
               'ports': activity.get('ports', {})}
     if activity.get('services'):
         routes['services'] = activity['services']
+    elif 'obs-main' in manifest.get('profiles', []) and set(OBS_SERVICE_PORTS.values()) & routes['ports'].keys():
+        # General prebuilt activity startup supplies canonical port routes. Make
+        # application origins available before the later gateway overlay too.
+        require(set(OBS_SERVICE_PORTS.values()) <= routes['ports'].keys(), 'activity: incomplete observability browser routes')
+        routes['services'] = {service: routes['ports'][port] for service, port in OBS_SERVICE_PORTS.items()}
     browser.validate_routes(routes, activity['event_id'], activity['learner_id'])
     receipt_path = state / 'image-start.json'
     if receipt_path.exists():
