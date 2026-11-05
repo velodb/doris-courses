@@ -25,6 +25,22 @@ CPU pressure or replace a host. Its disposable accounts had administratively
 prepared passwords; first-login password changes and hosted-login branding
 were not part of this round. Remote GitHub Actions is a separate release gate.
 
+The reviewed cleanup deleted 73 activity access-binding and 12 pilot resources.
+Its scan completed all 26 configured resource categories with zero residuals
+or ownership conflicts. Seven stale Tagging observations were retained with
+native-API absence confirmations. The dedicated portal's three routing resources,
+four portal resources and remaining 17 shared-entry resources were then retired
+under separate reviewed plans. An expired portal plan was archived and replaced
+with a fresh plan before any portal deletion.
+
+The final scoped API audit confirmed five empty validation/activity/shared
+states, five terminated instances, five missing known root volumes and 80 exact
+resource-absence checks. Both temporary VPCs had no ENIs. The partner DNS zone
+retained only NS/SOA; foundation state and the two published private images and
+encrypted snapshots were retained. Six disposable password files and the test
+browser sessions were removed. This audit covers the validation instance,
+three-learner activity and its dedicated entry.
+
 ## Historical pressure and replacement rehearsal
 
 On 2026-11-04, a three-learner `rta-main` event was exercised in `us-east-1`.

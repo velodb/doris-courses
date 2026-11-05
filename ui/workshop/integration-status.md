@@ -17,6 +17,8 @@ All three accounts reached the branded signed-out page, required Cognito reauthe
 
 The operator-only signed-out-route review fix at `ab02729` passed 391 local tools tests and seven focused native Linux x86_64 tests. These native checks do not establish a remote GitHub Actions result. The separate TTL runner keeps its own security-review requirements.
 
+The activity and its dedicated portal/shared entry were destroyed after browser acceptance. The activity's 26-category scan and final scoped API audit passed: five states were empty, five instances were terminated, five root volumes were absent and 80 exact resource-absence checks succeeded. Published image artifacts, partner DNS and foundation state were retained; disposable passwords and test browser sessions were removed.
+
 The original local integration checks were:
 
 | Check | Result |

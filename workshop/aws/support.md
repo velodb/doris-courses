@@ -130,3 +130,11 @@ round. An operator-only signed-out-route review fix at `ab02729` passed
 391 local tools tests and seven focused native Linux x86_64 tests; it does not
 change the image payload or its source identity. Track remote GitHub Actions
 separately from these local and cloud results.
+
+The new activity and its dedicated portal/shared entry were fully retired.
+The activity's 26-category scan found no residuals or ownership conflicts;
+a final scoped API audit confirmed five empty states, five terminated instances,
+five missing root volumes and 80 exact resource-absence checks. Published images,
+encrypted snapshots, partner DNS and foundation state were retained. See the
+[current acceptance summary](scale-rehearsal.md#current-private-image-acceptance)
+for the cleanup sequence and scope.
