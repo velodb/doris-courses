@@ -146,7 +146,16 @@ def validate_plan(variables, plan):
             require(host_values == [hosts[key]["hostname"]], "listener host differs")
             actions = after["action"]
             if kind == "logout":
-                require(len(actions) == 1 and actions[0]["type"] == "fixed-response", "logout rule differs")
+                paths = [block for condition in after["condition"] for block in condition.get("path_pattern", [])]
+                require([path for block in paths for path in block["values"]] == ["/_workshop/logged-out"] and
+                        not any(block.get("regex_values") for block in paths), "logout path differs")
+                if key == "portal":
+                    target = (variables["access"].get("portal") or {}).get("target_group_arn")
+                    require(bool(target) and len(actions) == 1 and actions[0]["type"] == "forward" and
+                            actions[0].get("target_group_arn") == target and not actions[0].get("forward"),
+                            "portal logout must forward only to the shared portal")
+                else:
+                    require(len(actions) == 1 and actions[0]["type"] == "fixed-response", "logout rule differs")
             else:
                 require(len(actions) == 2 and [a["type"] for a in actions] == ["authenticate-cognito", "forward"] and
                     actions[0]["authenticate_cognito"][0]["on_unauthenticated_request"] == ("deny" if kind == "api" else "authenticate"),

@@ -14,7 +14,7 @@ import workshop_bindings_create as create
 import workshop_config as wc
 
 
-def fixture():
+def fixture(*, portal=False):
     access = {"hosted_zone_id": "zone", "alb_arn": "alb", "alb_dns_name": "alb.example", "alb_zone_id": "azone",
               "https_listener_arn": "listener", "vpc_id": "vpc"}
     v = {"event_id": "event", "expected_account_id": "123456789012", "access": access,
@@ -35,12 +35,57 @@ def fixture():
     for offset, kind in enumerate(("logout", "api", "page")):
         action = [{"type": "fixed-response"}] if kind == "logout" else [{"type": "authenticate-cognito", "authenticate_cognito": [
             {"on_unauthenticated_request": "deny" if kind == "api" else "authenticate"}]}, {"type": "forward"}]
+        conditions = [{"host_header": [{"values": ["alice.example"]}]}]
+        if kind != "page":
+            conditions.append({"path_pattern": [{"values": ["/_workshop/logged-out"] if kind == "logout" else ["/api/*", "/terminals/*"]}]})
         add("aws_lb_listener_rule", "learner", {"listener_arn": "listener", "priority": 100 + offset,
-            "condition": [{"host_header": [{"values": ["alice.example"]}]}], "action": action}, "alice:jupyter-" + kind)
+            "condition": conditions, "action": action}, "alice:jupyter-" + kind)
+    if portal:
+        access["portal"] = {"target_group_arn": "owned-portal-target"}
+        v["portal"] = {"hostname": "event-entry.example", "priority": 200}
+        client = rows[1]["change"]["after"]
+        client["callback_urls"].append("https://event-entry.example/oauth2/idpresponse")
+        client["logout_urls"].append("https://event-entry.example/_workshop/logged-out")
+        add("aws_route53_record", "learner", {"zone_id": "zone", "type": "A", "name": "event-entry.example",
+            "alias": [{"name": "alb.example", "zone_id": "azone"}]}, "portal")
+        for offset, kind in enumerate(("logout", "api", "page")):
+            conditions = [{"host_header": [{"values": ["event-entry.example"]}]}]
+            if kind != "page":
+                conditions.append({"path_pattern": [{"values": ["/_workshop/logged-out"] if kind == "logout" else ["/api/*", "/terminals/*"]}]})
+            action = [{"type": "forward", "target_group_arn": "owned-portal-target", "forward": []}]
+            if kind != "logout":
+                action.insert(0, {"type": "authenticate-cognito", "authenticate_cognito": [
+                    {"on_unauthenticated_request": "deny" if kind == "api" else "authenticate"}]})
+            add("aws_lb_listener_rule", "learner", {"listener_arn": "listener", "priority": 200 + offset,
+                "condition": conditions, "action": action}, "portal-" + kind)
     return v, {"complete": True, "variables": {k: {"value": val} for k, val in v.items()}, "resource_changes": rows}
 
 
 class BindingCreateTests(unittest.TestCase):
+    def test_portal_signed_out_page_forwards_to_owned_portal(self):
+        variables, plan = fixture(portal=True)
+        self.assertEqual(len(create.validate_plan(variables, plan)), 13)
+
+    def test_logout_forward_cannot_expose_other_paths_hosts_or_targets(self):
+        variables, plan = fixture(portal=True)
+        portal = next(row for row in plan["resource_changes"] if row.get("index") == "portal-logout")
+        learner = next(row for row in plan["resource_changes"] if row.get("index") == "alice:jupyter-logout")
+        edits = [
+            (portal, lambda after: after["condition"][1]["path_pattern"][0].update(values=["/doris-courses/"])),
+            (portal, lambda after: after["condition"][1]["path_pattern"][0].update(values=["/_workshop/logged-out", "/*"])),
+            (portal, lambda after: after["condition"][1]["path_pattern"][0].update(regex_values=[".*"])),
+            (portal, lambda after: after["action"][0].update(target_group_arn="foreign-target")),
+            (portal, lambda after: after["action"][0].update(forward=[{"target_group": [{"arn": "foreign-target"}]}])),
+            (learner, lambda after: after.update(action=copy.deepcopy(portal["change"]["after"]["action"]))),
+        ]
+        for row, edit in edits:
+            with self.subTest(address=row["address"], edit=edit):
+                broken = copy.deepcopy(plan)
+                after = next(item["change"]["after"] for item in broken["resource_changes"] if item["address"] == row["address"])
+                edit(after)
+                with self.assertRaises(ValueError):
+                    create.validate_plan(variables, broken)
+
     def test_create_plan_checks_exact_addresses_and_security(self):
         v, plan = fixture()
         self.assertEqual(len(create.validate_plan(v, plan)), 9)
