@@ -3,6 +3,7 @@
 import argparse
 from datetime import datetime, timezone
 import base64
+import gzip
 import json
 import os
 from pathlib import Path
@@ -91,12 +92,14 @@ def apply(directory):
 def send_file_command(aws, instance, code, expected, timeout=600):
     # Keep each SSM StringList item short; only reviewed code and public metadata
     # are encoded. No operator credentials or browser tokens are transmitted.
-    encoded=base64.b64encode(code.encode()).decode()
+    encoded=base64.b64encode(gzip.compress(code.encode(),mtime=0)).decode()
     commands=['set -eu','umask 077','printf "" > /run/workshop-audit.b64']
     commands += ["printf '%s' '"+encoded[i:i+1000]+"' >> /run/workshop-audit.b64" for i in range(0,len(encoded),1000)]
-    commands += ['base64 -d /run/workshop-audit.b64 > /run/workshop-audit.py',
+    commands += ['base64 -d /run/workshop-audit.b64 > /run/workshop-audit.py.gz',
+       "python3.12 -c \"import gzip,pathlib; p=pathlib.Path('/run/workshop-audit.py'); p.write_bytes(gzip.decompress(p.with_suffix('.py.gz').read_bytes()))\"",
        "printf '%s' '"+base64.b64encode(json.dumps(expected).encode()).decode()+"' | base64 -d > /run/workshop-audit-input.json",
        'cloud-init status --wait >/dev/null', 'python3.12 /run/workshop-audit.py /run/workshop-audit-input.json']
+    pf.require(len(json.dumps(commands).encode()) < 24000, 'validation: SSM command payload exceeds its bound')
     return aws.client('ssm').send_command(InstanceIds=[instance],DocumentName='AWS-RunShellScript',
          Parameters={'commands':commands,'executionTimeout':[str(timeout)]},TimeoutSeconds=600)['Command']['CommandId']
 
