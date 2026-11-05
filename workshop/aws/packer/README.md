@@ -9,7 +9,7 @@ Independent launch, identity, course and browser validation must follow.
 
 The complete [data-warehousing selection](../data-warehousing.md#current-acceptance)
 has passed independent EC2 course/browser validation and private publication.
-Its final shared-browser acceptance remains pending cleanup and reconciliation.
+Its three-learner shared-browser acceptance and scoped cleanup also passed.
 RTA evidence below applies only to its recorded RTA versions.
 
 Two independent real builds in us-east-1 on 2026-10-30 UTC completed runtime

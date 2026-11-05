@@ -41,121 +41,121 @@
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
       "ec2_course": "verified",
-      "shared_browser": "pending",
+      "shared_browser": "verified",
       "browser_host": "not-required",
       "evidence": {
         "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
-        "transport": "operator-ssm-forward",
-        "hosts": 1,
+        "transport": "shared-https",
+        "hosts": 3,
         "region": "us-east-1",
         "instance_type": "m7i.2xlarge",
         "disk_gib": 200,
         "image_release": "dw-341f7de-full-v1",
-        "validated_on": "2026-11-05",
+        "validated_on": "2026-11-06",
         "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
       },
       "summary": "data-warehousing.md#current-acceptance",
-      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
+      "limitations": "Verified together as the complete six-profile selection on Linux x86_64/us-east-1/m7i.2xlarge/200GiB. The private image passed 34 Notebooks/204 code cells and eight real browser checks on one fresh validation instance; three shared clones each completed the entire selection (102 Notebooks/612 cells). All three passed ownership, SQL, terminal, six-direction HTTP/API and kernel/terminal WebSocket isolation and entry logout/reauthentication. FE/profile GUI was checked for s001, Superset/Flink GUI for s002; shared native Notebook save/rename/reopen/download/reload was checked for s001. All temporary cloud resources were retired and reconciled. Cold frontend loads produced recorded timeouts, so performance, larger classrooms and other combinations are not certified. First-login password changes, hosted-login branding and natural session/long-idle behavior remain outside this round."
     },
     "dw-kafka": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
       "ec2_course": "verified",
-      "shared_browser": "pending",
+      "shared_browser": "verified",
       "browser_host": "not-required",
       "evidence": {
         "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
-        "transport": "operator-ssm-forward",
-        "hosts": 1,
+        "transport": "shared-https",
+        "hosts": 3,
         "region": "us-east-1",
         "instance_type": "m7i.2xlarge",
         "disk_gib": 200,
         "image_release": "dw-341f7de-full-v1",
-        "validated_on": "2026-11-05",
+        "validated_on": "2026-11-06",
         "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
       },
       "summary": "data-warehousing.md#current-acceptance",
-      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
+      "limitations": "Verified together as the complete six-profile selection on Linux x86_64/us-east-1/m7i.2xlarge/200GiB. The private image passed 34 Notebooks/204 code cells and eight real browser checks on one fresh validation instance; three shared clones each completed the entire selection (102 Notebooks/612 cells). All three passed ownership, SQL, terminal, six-direction HTTP/API and kernel/terminal WebSocket isolation and entry logout/reauthentication. FE/profile GUI was checked for s001, Superset/Flink GUI for s002; shared native Notebook save/rename/reopen/download/reload was checked for s001. All temporary cloud resources were retired and reconciled. Cold frontend loads produced recorded timeouts, so performance, larger classrooms and other combinations are not certified. First-login password changes, hosted-login branding and natural session/long-idle behavior remain outside this round."
     },
     "dw-cdc": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
       "ec2_course": "verified",
-      "shared_browser": "pending",
+      "shared_browser": "verified",
       "browser_host": "not-required",
       "evidence": {
         "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
-        "transport": "operator-ssm-forward",
-        "hosts": 1,
+        "transport": "shared-https",
+        "hosts": 3,
         "region": "us-east-1",
         "instance_type": "m7i.2xlarge",
         "disk_gib": 200,
         "image_release": "dw-341f7de-full-v1",
-        "validated_on": "2026-11-05",
+        "validated_on": "2026-11-06",
         "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
       },
       "summary": "data-warehousing.md#current-acceptance",
-      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
+      "limitations": "Verified together as the complete six-profile selection on Linux x86_64/us-east-1/m7i.2xlarge/200GiB. The private image passed 34 Notebooks/204 code cells and eight real browser checks on one fresh validation instance; three shared clones each completed the entire selection (102 Notebooks/612 cells). All three passed ownership, SQL, terminal, six-direction HTTP/API and kernel/terminal WebSocket isolation and entry logout/reauthentication. FE/profile GUI was checked for s001, Superset/Flink GUI for s002; shared native Notebook save/rename/reopen/download/reload was checked for s001. All temporary cloud resources were retired and reconciled. Cold frontend loads produced recorded timeouts, so performance, larger classrooms and other combinations are not certified. First-login password changes, hosted-login branding and natural session/long-idle behavior remain outside this round."
     },
     "dw-bi": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
       "ec2_course": "verified",
-      "shared_browser": "pending",
+      "shared_browser": "verified",
       "browser_host": "not-required",
       "evidence": {
         "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
-        "transport": "operator-ssm-forward",
-        "hosts": 1,
+        "transport": "shared-https",
+        "hosts": 3,
         "region": "us-east-1",
         "instance_type": "m7i.2xlarge",
         "disk_gib": 200,
         "image_release": "dw-341f7de-full-v1",
-        "validated_on": "2026-11-05",
+        "validated_on": "2026-11-06",
         "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
       },
       "summary": "data-warehousing.md#current-acceptance",
-      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
+      "limitations": "Verified together as the complete six-profile selection on Linux x86_64/us-east-1/m7i.2xlarge/200GiB. The private image passed 34 Notebooks/204 code cells and eight real browser checks on one fresh validation instance; three shared clones each completed the entire selection (102 Notebooks/612 cells). All three passed ownership, SQL, terminal, six-direction HTTP/API and kernel/terminal WebSocket isolation and entry logout/reauthentication. FE/profile GUI was checked for s001, Superset/Flink GUI for s002; shared native Notebook save/rename/reopen/download/reload was checked for s001. All temporary cloud resources were retired and reconciled. Cold frontend loads produced recorded timeouts, so performance, larger classrooms and other combinations are not certified. First-login password changes, hosted-login branding and natural session/long-idle behavior remain outside this round."
     },
     "dw-backup": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
       "ec2_course": "verified",
-      "shared_browser": "pending",
+      "shared_browser": "verified",
       "browser_host": "not-required",
       "evidence": {
         "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
-        "transport": "operator-ssm-forward",
-        "hosts": 1,
+        "transport": "shared-https",
+        "hosts": 3,
         "region": "us-east-1",
         "instance_type": "m7i.2xlarge",
         "disk_gib": 200,
         "image_release": "dw-341f7de-full-v1",
-        "validated_on": "2026-11-05",
+        "validated_on": "2026-11-06",
         "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
       },
       "summary": "data-warehousing.md#current-acceptance",
-      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
+      "limitations": "Verified together as the complete six-profile selection on Linux x86_64/us-east-1/m7i.2xlarge/200GiB. The private image passed 34 Notebooks/204 code cells and eight real browser checks on one fresh validation instance; three shared clones each completed the entire selection (102 Notebooks/612 cells). All three passed ownership, SQL, terminal, six-direction HTTP/API and kernel/terminal WebSocket isolation and entry logout/reauthentication. FE/profile GUI was checked for s001, Superset/Flink GUI for s002; shared native Notebook save/rename/reopen/download/reload was checked for s001. All temporary cloud resources were retired and reconciled. Cold frontend loads produced recorded timeouts, so performance, larger classrooms and other combinations are not certified. First-login password changes, hosted-login branding and natural session/long-idle behavior remain outside this round."
     },
     "dw-extensions": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
       "ec2_course": "verified",
-      "shared_browser": "pending",
+      "shared_browser": "verified",
       "browser_host": "not-required",
       "evidence": {
         "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
-        "transport": "operator-ssm-forward",
-        "hosts": 1,
+        "transport": "shared-https",
+        "hosts": 3,
         "region": "us-east-1",
         "instance_type": "m7i.2xlarge",
         "disk_gib": 200,
         "image_release": "dw-341f7de-full-v1",
-        "validated_on": "2026-11-05",
+        "validated_on": "2026-11-06",
         "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
       },
       "summary": "data-warehousing.md#current-acceptance",
-      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
+      "limitations": "Verified together as the complete six-profile selection on Linux x86_64/us-east-1/m7i.2xlarge/200GiB. The private image passed 34 Notebooks/204 code cells and eight real browser checks on one fresh validation instance; three shared clones each completed the entire selection (102 Notebooks/612 cells). All three passed ownership, SQL, terminal, six-direction HTTP/API and kernel/terminal WebSocket isolation and entry logout/reauthentication. FE/profile GUI was checked for s001, Superset/Flink GUI for s002; shared native Notebook save/rename/reopen/download/reload was checked for s001. All temporary cloud resources were retired and reconciled. Cold frontend loads produced recorded timeouts, so performance, larger classrooms and other combinations are not certified. First-login password changes, hosted-login branding and natural session/long-idle behavior remain outside this round."
     },
     "obs-main": {
       "course_dir": "doris-course/03-observability",

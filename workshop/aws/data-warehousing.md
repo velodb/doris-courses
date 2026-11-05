@@ -2,9 +2,9 @@
 
 The complete six-profile selection has passed fresh-instance course and browser
 validation, and private image release `dw-341f7de-full-v1` is available in the
-operator account. Shared HTTPS/Cognito final acceptance is pending activity
-cleanup and reconciliation. See [current acceptance](#current-acceptance) and
-the [support matrix](support.md#validation-levels) for the exact scope.
+operator account. Its three-learner shared HTTPS/Cognito acceptance and
+complete temporary-resource cleanup have also passed. See
+[current acceptance](#current-acceptance) and the [support matrix](support.md#validation-levels) for the exact scope.
 
 Select all six profiles to include the main course and every optional Lab:
 
@@ -68,7 +68,6 @@ sample file preserves the time series. These measurements describe the selected
 Lab run and its cache state, and do not certify larger datasets or classrooms.
 The report also records the activity-owned dynamic Flink port when CDC is selected.
 
-
 ## Current acceptance
 
 On 2026-11-05, the private image at course/deployment commit
@@ -91,18 +90,38 @@ Superset metrics. These results describe the pinned teaching data and cached
 images; they do not establish performance for larger data or classrooms.
 
 A subsequent three-host shared exercise completed the full selection on each
-host (102 Notebooks and 612 code cells). Its original reports were read through
-authenticated kernels after the operator AWS session expired. Three-account
-assignment, owner SQL/terminal WebSockets, all six directed cross-account
-HTTP/API and WebSocket checks, 18 further cross-account FE/BI/Flink denials,
-and entry logout/reauthentication passed. Shared FE profile, Superset metrics
-and Flink TaskManager pages were observed. Some first frontend loads timed
-out; final checks used the real loaded applications and normal reloads, with
-no asset or API substitution. First-login password changes, hosted-login
-branding and a shared Notebook's first-save confirmation were not verified.
-The original SSM terminal statuses and complete activity/shared-resource
-cleanup still require operator authentication. Shared support remains pending
-until those final checks and reconciliation finish.
+host (102 Notebooks and 612 code cells). All three original SSM commands
+returned `Success` and their reports matched the files read through authenticated
+kernels during an operator-login interruption. Assignment for all three learner accounts, owner
+SQL/terminal WebSockets, all six directed cross-learner HTTP/API and WebSocket
+checks, 18 further cross-learner FE/BI/Flink denials, and entry
+logout/reauthentication passed. The browser did not expose failed WebSocket
+handshake HTTP codes. FE login and an actual query profile were checked for
+s001; Superset metrics 660.00/5/62.5% and the dynamic Flink dashboard,
+TaskManager and three finished CDC jobs were checked for s002. This does not
+claim every service GUI was individually exercised for every account.
+
+The shared s001 native Notebook was saved and renamed, reopened in a fresh
+authenticated browser, downloaded through the real UI and reloaded with its
+SQL 42 output intact. The 6,983-byte Notebook download matched SHA-256
+`a3727f1af8b123ce352588f237f5f95ee3310c2e33679ef5d67c0109d2a87c9a`.
+The receipts retain earlier test-driver selector and marker failures alongside
+the successful later checks. Some first frontend loads timed
+out; final checks used real loaded applications and normal reloads, with no
+asset or API substitution. First-login password changes, hosted-login branding,
+natural session expiry, long-idle behavior and frontend performance were not
+certified in this round.
+
+Final cleanup was confirmed on 2026-11-06 (Asia/Shanghai). The activity's
+26-category reconciliation found no residuals or ownership conflicts. The
+dedicated Portal and shared entry were then retired under separately reviewed
+plans. The final scoped API audit confirmed 6 empty states,
+5 terminated or absent test instances, 5 missing root volumes
+and 71 exact resource-absence checks. The builder had its own earlier
+retirement audit. Private published AMIs and encrypted snapshots, the partner
+DNS zone and foundation state were retained. Temporary test password files
+and isolated browser contexts were cleaned up. The audit covers the recorded
+test resources; unrelated account workloads were outside its scope.
 
 Each learner has one EC2 instance containing that learner's course services.
 Jupyter, FE, Superset and Flink are four protected origins for one learner.
