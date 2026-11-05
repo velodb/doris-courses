@@ -61,11 +61,31 @@ class ImageInputs(unittest.TestCase):
                 host.verify_bundle(bundle)
 
     def test_unvalidated_profile_is_rejected(self):
-        self.config['course_profiles'] = ['dw-main']
+        self.config['course_profiles'] = ['obs-main']
         self.path.write_text(json.dumps(self.config))
         with self.assertRaisesRegex(wc.ConfigError, 'rta-main'):
             self.prepare()
         self.assertFalse((self.root / 'bundle').exists())
+
+    def test_dw_image_contains_the_selected_locks_and_custom_build_contexts(self):
+        self.config['course_profiles'] = sorted(image.DW_PROFILES)
+        self.path.write_text(json.dumps(self.config))
+        bundle = self.prepare()
+        plan, _ = host.verify_bundle(bundle)
+        self.assertEqual(set(plan['python_locks']), {'server', 'doris-dw'})
+        self.assertEqual(len(plan['courses'][0]['notebooks']), 34)
+        inputs = json.loads((bundle / 'image-input.json').read_text())
+        self.assertEqual(inputs['images']['profiles'], sorted(image.DW_PROFILES))
+        self.assertEqual(len(inputs['images']['images']), 7)
+        self.assertEqual({b['base'] for b in inputs['images']['builds']},
+                         {'flink:1.20.1-scala_2.12-java11', 'apache/superset:4.1.2'})
+
+    def test_dw_main_excludes_unselected_streaming_and_bi_builds(self):
+        self.config['course_profiles'] = ['dw-main']
+        self.path.write_text(json.dumps(self.config))
+        inputs = json.loads((self.prepare() / 'image-input.json').read_text())
+        self.assertEqual(len(inputs['images']['images']), 3)
+        self.assertEqual(inputs['images']['builds'], [])
 
     def test_output_cannot_overwrite_an_existing_bundle(self):
         self.prepare()
@@ -203,9 +223,9 @@ class CandidateChecks(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         (self.root / 'binding.json').write_text(json.dumps({'build_id': 'test-image', 'config': {
-            'region': 'us-east-1', 'aws_account_id': '000000000000', 'course_ref': 'a' * 40}}))
+            'region': 'us-east-1', 'aws_account_id': '000000000000', 'course_ref': 'a' * 40, 'course_profiles': ['rta-main']}}))
         (self.root / 'packer-manifest.json').write_text(json.dumps({'builds': [{'artifact_id': 'us-east-1:ami-00000000000000000'}]}))
-        (self.root / 'image-manifest.json').write_text(json.dumps({'course_ref': 'a' * 40}))
+        (self.root / 'image-manifest.json').write_text(json.dumps({'course_ref': 'a' * 40, 'profiles': ['rta-main']}))
         self.image = {'State': 'available', 'Public': False, 'Architecture': 'x86_64', 'BlockDeviceMappings': [
             {'DeviceName': '/dev/sda1', 'Ebs': {'VolumeSize': 200, 'DeleteOnTermination': True, 'SnapshotId': 'snap-00000000000000000'}}],
             'Tags': [{'Key': 'ImageBuild', 'Value': 'test-image'}, {'Key': 'CourseRef', 'Value': 'a' * 40},
@@ -246,6 +266,11 @@ class CandidateChecks(unittest.TestCase):
 
     def test_wrong_build_tags_are_rejected(self):
         self.image['Tags'][0]['Value'] = 'another-image'
+        with self.assertRaisesRegex(wc.ConfigError, 'provenance'):
+            image.record_candidate(self.root, self.aws)
+
+    def test_candidate_cannot_relabel_rta_as_dw(self):
+        (self.root / 'image-manifest.json').write_text(json.dumps({'course_ref': 'a' * 40, 'profiles': ['dw-main']}))
         with self.assertRaisesRegex(wc.ConfigError, 'provenance'):
             image.record_candidate(self.root, self.aws)
 

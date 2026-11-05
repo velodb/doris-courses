@@ -14,6 +14,7 @@ import workshop_config as wc
 import workshop_preflight as pf
 import workshop_image as images
 import workshop as ws
+import workshop_course
 
 MODULE = wc.SPEC / 'terraform/image-validation'
 
@@ -102,13 +103,13 @@ def send_file_command(aws, instance, code, expected, timeout=600):
 
 def course(directory):
     b=wc.load_document(directory/'binding.json');config=b['config'];aws=pf.Aws(config)
-    pf.require(config['course_profiles']==['rta-main'], 'validation: full-course runner currently supports rta-main')
+    workshop_course.selection(config)
     audit=wc.load_document(directory/'initial-audit.json')
     pf.require(audit['passed'], 'validation: initial audit must pass before Labs')
     attempt=directory/'courses'/datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f')
     attempt.mkdir(parents=True,mode=0o700)
     expected={'ami_id':b['candidate']['ami_id'],'instance_id':audit['instance_id'],'course_ref':config['course_ref'],
-        'event_id':config['event_id'],'learner_id':config['learner_ids'][0],
+        'event_id':config['event_id'],'learner_id':config['learner_ids'][0], 'course_profiles':config['course_profiles'],
         'course_output_dir':'/var/lib/doris-workshop/home/'+attempt.name}
     encoded=base64.b64encode((wc.SPEC/'runtime/validate_course.py').read_bytes()).decode()
     driver="""import base64,json,subprocess,sys
@@ -132,7 +133,8 @@ subprocess.run(['runuser','--user','workshop','--','env','-i','HOME='+str(root),
         report=next((line[len('COURSE_REPORT='):] for line in r['StandardOutputContent'].splitlines() if line.startswith('COURSE_REPORT=')),None)
         pf.require(report is not None,'validation: course returned no report; inspect the private invocation')
         value=json.loads(report);images.write(attempt/'report.json',value)
-        pf.require(r['Status']=='Success' and value['passed'],'validation: full course failed; preserve the report and destroy resources')
+        pf.require(r['Status']=='Success' and value['passed'] and workshop_course.verify_report(config,value),
+                   'validation: complete selected course failed; preserve the report and destroy resources')
         pf.require(not (directory/'course-report.json').exists(),'validation: preserve the successful course report')
         images.write(directory/'course-report.json',value)
         print(json.dumps({'passed':True,'notebook_count':value['notebook_count'],'code_cells':value['code_cells']}));return

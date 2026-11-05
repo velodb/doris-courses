@@ -3,9 +3,19 @@ import json
 from pathlib import Path
 
 import workshop_config as wc
+import workshop_course
 
 BROWSER_CHECKS = {'reader-images', 'notebook-create-run-save-download', 'kernel-restart-reconnect',
                   'quiz-navigation-feedback', 'terminal-docker', 'fe-profile'}
+
+
+def browser_checks(config):
+    checks = set(BROWSER_CHECKS)
+    if 'dw-bi' in config['course_profiles']:
+        checks.add('dw-superset-dashboard')
+    if 'dw-cdc' in config['course_profiles']:
+        checks.add('dw-flink-rest')
+    return checks
 
 
 def require(condition,message):
@@ -55,13 +65,17 @@ def publish(validation_run,course_path,browser_path,release_ref,output,aws):
     require(audit['passed'] is True and all(v is True for v in audit['checks'].values()) and audit['image_id']==candidate['ami_id'] and
         audit['course_ref']==config['course_ref'] and audit['image_manifest_sha256']==candidate['manifest_sha256'],
         'release: fresh-image audit failed or belongs to another image')
+    legacy_rta = config['course_profiles'] == ['rta-main'] and course.get('schema_version',1) == 1
+    selected_complete = (course.get('notebook_count')==20 and len(course.get('modules',[]))==10 and
+                        course.get('code_cells',0)>=189 and all(m.get('passed') is True for m in course['modules'])) if legacy_rta else workshop_course.verify_report(config,course)
     require(course['kind']=='doris-workshop-course-validation' and course['done'] is True and course['passed'] is True and
         course['image_id']==candidate['ami_id'] and course['instance_id']==instance and course['course_ref']==config['course_ref'] and
-        course['notebook_count']==20 and len(course['modules'])==10 and course['code_cells']>=189 and all(m['passed'] is True for m in course['modules']),
+        selected_complete,
         'release: the complete selected course must pass on the audited instance')
     require(browser['kind']=='doris-workshop-browser-validation' and browser['passed'] is True and browser['instance_id']==instance and
         browser['image_id']==candidate['ami_id'] and browser['course_ref']==config['course_ref'] and
-        BROWSER_CHECKS <= browser['checks'].keys() and all(v is True for v in browser['checks'].values()),
+        browser_checks(config) <= browser['checks'].keys() and all(v is True for v in browser['checks'].values()) and
+        ('dw-main' not in config['course_profiles'] or browser.get('course_profiles') == sorted(config['course_profiles'])),
         'release: real browser validation must pass on the audited instance')
     require(instance in cleanup['known_instances'] and not any(cleanup[k] for k in
         ('managed_resources','active_instances','remaining_volumes','remaining_network_resources','role_exists','profile_exists','remaining_enis')),

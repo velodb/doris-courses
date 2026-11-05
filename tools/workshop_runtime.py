@@ -19,8 +19,9 @@ PAYLOAD = ("install_host.sh", "host.py", "kernel.py", "check.py", "serve.py", "p
            "doris-workshop-jupyter.service", "packages.json", "operations.py", "ui.tar")
 
 
-def create_bundle(config_path, output, *, repo=config_tool.REPO):
-    config, resolved, runtime = config_tool.validate_config(config_tool.load_document(config_path), repo=repo)
+def course_selection(config, *, repo=config_tool.REPO):
+    """Resolve only pinned teaching files, also for post-expiry evidence checks."""
+    resolved, _ = config_tool.resolve_profiles(config, repo)
     courses = {}
     files = set(config_tool.git(repo, "ls-tree", "-r", "--name-only", config["course_ref"]).splitlines())
     for profile_id, profile in resolved.items():
@@ -46,6 +47,12 @@ def create_bundle(config_path, output, *, repo=config_tool.REPO):
         course["notebooks"].extend(path for path in profile["optional_paths"] if path.endswith(".ipynb"))
     for course in courses.values():
         course["notebooks"] = sorted(set(course["notebooks"]))
+    return list(courses.values())
+
+
+def create_bundle(config_path, output, *, repo=config_tool.REPO):
+    config, _, runtime = config_tool.validate_config(config_tool.load_document(config_path), repo=repo)
+    courses = course_selection(config, repo=repo)
     output = Path(output).absolute()
     if output.exists() or output.is_symlink():
         raise config_tool.ConfigError("output: already exists; choose a new bundle directory")
@@ -68,7 +75,7 @@ def create_bundle(config_path, output, *, repo=config_tool.REPO):
         plan = {
             "schema_version": 1, "kind": "doris-workshop-runtime",
             "course_ref": config["course_ref"], "runtime": runtime,
-            "courses": list(courses.values()),
+            "courses": courses,
             "sha256": {},
         }
         for name in (*PAYLOAD, "source.tar"):

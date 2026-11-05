@@ -1,10 +1,15 @@
 # Private workshop AMI builds
 
-This pipeline prepares a private **candidate** AMI for `rta-main` on Ubuntu
+This pipeline prepares a private **candidate** AMI for `rta-main`, or `dw-main`
+with its selected optional profiles, on Ubuntu
 24.04 amd64, using one `m7i.2xlarge` and one encrypted 200 GiB gp3 root volume.
 It is separate from the learner activity and its Terraform state. Building an
 image does not certify a fresh instance or publish the image for activities.
 Independent launch, identity, course and browser validation must follow.
+
+The [data-warehousing selection](../data-warehousing.md) has build and execution
+interfaces; its independent EC2 and shared-browser acceptance is pending.
+RTA evidence below applies only to its recorded RTA versions.
 
 Two independent real builds in us-east-1 on 2026-10-30 UTC completed runtime
 installation, cache preparation, sealing and private AMI creation. Their full
@@ -28,6 +33,11 @@ The source requirements, project metadata and runtime package list are hashed
 in `locks/metadata.json`; changed inputs require reviewed lock regeneration.
 Installed freezes remain at `/var/lib/doris-workshop/installed-packages/` and
 their hashes appear in `/etc/doris-workshop/image-manifest.json`.
+
+Data Warehousing uses `locks/doris-dw.in`, `doris-dw.requirements.lock` and
+`metadata-dw.json`, including the PyArrow dependency for its extensions. The
+resolver cutoff and platform are recorded in that metadata. Only the selected
+course kernel and server locks enter its bundle.
 
 To regenerate both locks, use the resolver and flags recorded in metadata:
 
@@ -55,6 +65,16 @@ on the root snapshot. No separate cache disk can be lost at capture time.
 No Lab containers or volumes are created. This profile needs no extra model,
 plugin, or custom container build. Optional Metabase and other profiles are
 excluded.
+
+For Data Warehousing, `images-dw.json` selects the lake images required by its
+main path, Kafka for `dw-kafka`, MySQL/Flink for `dw-cdc`, and Superset for
+`dw-bi`. Custom Flink/Superset images are built from the exact course commit
+with the base image digest fixed. Their content IDs, source-context hashes,
+and installed Python or connector inventories enter the image manifest. The
+builder runs only temporary inventory containers, removes them and verifies
+that no containers or data volumes remain before sealing. Debian/PyPI/Maven
+inputs for these custom builds can change; independent builds are audited,
+without a claim of byte-identical rebuilds.
 
 The seal step stops Docker and removes its engine ID while preserving the image
 cache, so a newly built image can generate a separate ID on each host. This

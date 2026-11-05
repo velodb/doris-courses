@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "profiles": [
+    "dw-backup",
+    "dw-bi",
+    "dw-cdc",
+    "dw-extensions",
+    "dw-kafka",
+    "dw-main"
+  ],
+  "images": [
+    {
+      "tag": "apache/doris:all-in-one-4.1.3",
+      "digest": "sha256:82a5cabc7900ebcd3d080412d636c0cebd6602799fffe2605c652b2ea7d42609",
+      "required_by": [
+        "dw-main"
+      ]
+    },
+    {
+      "tag": "pgsty/silo:RELEASE.2026-10-18T00-00-00Z",
+      "digest": "sha256:2636fc4155d9a7e41ff58cdb65ddd13ba9304e67184e13c25bc5cb34016269d7",
+      "required_by": [
+        "dw-main"
+      ]
+    },
+    {
+      "tag": "apache/iceberg-rest-fixture:1.10.0",
+      "digest": "sha256:df2e9dd421928b7aab01557678ce8e2bb73064d0e253baebd72adad3439ffc2e",
+      "required_by": [
+        "dw-main"
+      ]
+    },
+    {
+      "tag": "apache/kafka:3.9.0",
+      "digest": "sha256:fbc7d7c428e3755cf36518d4976596002477e4c052d1f80b5b9eafd06d0fff2f",
+      "required_by": [
+        "dw-kafka"
+      ]
+    },
+    {
+      "tag": "mysql:8.0.33",
+      "digest": "sha256:ea68e51ffe9b96fef6076f1218af11301aeaf13c6201e0ec9aaef5791d5ddc5d",
+      "required_by": [
+        "dw-cdc"
+      ]
+    },
+    {
+      "tag": "flink:1.20.1-scala_2.12-java11",
+      "digest": "sha256:b9d7f306720ef6e8ba1b4cc0b3474197ba9fe3169e18ef4089f59930fcb12f26",
+      "required_by": [
+        "dw-cdc"
+      ]
+    },
+    {
+      "tag": "apache/superset:4.1.2",
+      "digest": "sha256:15e110b8533d3cb6a0d529512ea71252b0ac62e3f72b1f7a5000f1361822ac26",
+      "required_by": [
+        "dw-bi"
+      ]
+    }
+  ],
+  "builds": [
+    {
+      "tag": "doris-course-flink:1.20.1-cdc3.4.0-doris25.0.0",
+      "context": "doris-course/02-data-warehousing/environments/streaming",
+      "base": "flink:1.20.1-scala_2.12-java11",
+      "required_by": [
+        "dw-cdc"
+      ]
+    },
+    {
+      "tag": "doris-course-superset:4.1.2-pydoris1.1.0",
+      "context": "doris-course/02-data-warehousing/environments/bi",
+      "base": "apache/superset:4.1.2",
+      "required_by": [
+        "dw-bi"
+      ]
+    }
+  ],
+  "online_dependencies": [
+    "The image caches the selected upstream container digests and builds the selected Flink/Superset images from the exact course source. No Labs or completed tables are baked into the image.",
+    "The first image build needs Ubuntu/Docker APT, PyPI, Docker Hub, deb.debian.org and repo.maven.apache.org. Custom-image IDs, context hashes and installed package/artifact inventories are recorded; byte-identical custom-image rebuilds are not promised.",
+    "Lab 5 reads the course-bundled WWI history. Lab 4 creates a local temporary lake. The backup drill uses temporary local Silo storage, without a platform backup service.",
+    "The ordinary course uses cached containers when available. A source-directed custom-image rebuild can still contact Debian/PyPI/Maven; Docker registry availability is not an offline guarantee.",
+    "Only the selected data-warehousing profiles are included; RTA, observability and AI/model access are separate selections."
+  ]
+}

@@ -68,7 +68,8 @@ def main():
     checks['installed-freezes'] = all(digest(Path('/var/lib/doris-workshop/installed-packages')/(name+'.txt')) == sha for name,sha in manifest['freeze_sha256'].items())
     actual_freezes = {}
     for name in manifest['freeze_sha256']:
-        venv = Path('/opt/doris-workshop/server-venv') if name=='server' else Path('/opt/doris-courses/doris-course/01-real-time-analytics/.venv')
+        venv = (Path('/opt/doris-workshop/server-venv') if name=='server' else
+                Path('/opt/doris-courses') / next(c['course_dir'] for c in runtime['courses'] if c['kernel']==name) / '.venv')
         freeze = subprocess.check_output([str(venv/'bin/python'),'-m','pip','freeze'])
         actual_freezes[name] = hashlib.sha256(freeze).hexdigest()
     checks['actual-freezes'] = actual_freezes == manifest['freeze_sha256']
@@ -76,6 +77,8 @@ def main():
     checks['system-packages'] = hashlib.sha256(system.encode()).hexdigest() == manifest['system_packages_sha256']
     checks['docker-packages'] = digest('/var/lib/doris-workshop/installed-packages/docker.txt') == manifest['docker_packages_sha256']
     checks['cached-images'] = all(json.loads(call('docker','image','inspect',i['tag']))[0]['Id'] == i['id'] for i in manifest['images'])
+    if manifest.get('custom_builds'):
+        checks['custom-image-inventories'] = all(digest(Path('/var/lib/doris-workshop/installed-packages') / b['inventory_file']) == b['inventory_sha256'] for b in manifest['custom_builds'])
     device = call('findmnt','-n','-o','SOURCE','-T','/')
     checks['cache-on-root'] = all(call('findmnt','-n','-o','SOURCE','-T',p)==device for p in ('/var/lib/docker','/var/lib/containerd'))
     probe = subprocess.run(['runuser','--user','workshop','--','env','-i','HOME=/var/lib/doris-workshop/home',

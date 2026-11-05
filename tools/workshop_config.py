@@ -177,6 +177,8 @@ def resolve_profiles(config, repo=REPO):
         optional = {
             part["path"] for m in course["modules"] for part in m.get("optional", [])
         }
+        optional.update(str(Path(part['quiz']).with_suffix('.ipynb'))
+                        for m in course['modules'] for part in m.get('optional', []) if part.get('quiz'))
         for path in profile["optional_paths"]:
             if path not in optional or f"{directory}/{path}" not in files:
                 raise ConfigError(f"course_profiles: {profile_id} has an unavailable optional path")

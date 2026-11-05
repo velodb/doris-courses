@@ -47,7 +47,8 @@
       "conflicts": [],
       "module_ids": [],
       "optional_paths": [
-        "level1/module05-ingestion/optional05_kafka_routine_load.ipynb"
+        "level1/module05-ingestion/optional05_kafka_routine_load.ipynb",
+        "level1/module05-ingestion/quiz05_continuous_ingestion.ipynb"
       ],
       "requires_browser_host": false
     },
@@ -60,7 +61,8 @@
       "conflicts": [],
       "module_ids": [],
       "optional_paths": [
-        "level1/module05-ingestion/optional05_flink_mysql_cdc.ipynb"
+        "level1/module05-ingestion/optional05_flink_mysql_cdc.ipynb",
+        "level1/module05-ingestion/quiz05_continuous_ingestion.ipynb"
       ],
       "requires_browser_host": false
     },

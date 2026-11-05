@@ -35,7 +35,7 @@ source "amazon-ebs" "workshop" {
   region                      = var.region
   source_ami                  = var.base_ami_id
   ami_name                    = "doris-workshop-${var.build_id}"
-  ami_description             = "rta-main candidate; independent launch validation required"
+  ami_description             = "Selected course candidate; independent launch validation required"
   instance_type               = "m7i.2xlarge"
   subnet_id                   = var.subnet_id
   security_group_id           = var.security_group_id

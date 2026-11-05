@@ -19,6 +19,22 @@ import workshop_runtime as runtime
 import workshop_operations as operations
 
 SPEC = wc.SPEC / 'packer'
+DW_PROFILES = {'dw-main', 'dw-kafka', 'dw-cdc', 'dw-bi', 'dw-backup', 'dw-extensions'}
+
+
+def image_selection(config):
+    profiles = set(config['course_profiles'])
+    if profiles == {'rta-main'}:
+        return 'doris-rta', wc.load_document(SPEC / 'images.json')
+    preflight.require('dw-main' in profiles and profiles <= DW_PROFILES,
+                      'image: supported selections are rta-main or dw-main with its optional profiles')
+    catalog = wc.load_document(SPEC / 'images-dw.json')
+    selected = {'schema_version': 1, 'profiles': sorted(profiles),
+                'online_dependencies': catalog['online_dependencies']}
+    for key in ('images', 'builds'):
+        selected[key] = [{k: v for k, v in row.items() if k != 'required_by'}
+                         for row in catalog[key] if profiles.intersection(row['required_by'])]
+    return 'doris-dw', selected
 
 
 def deployment_dirty(*, repo=None):
@@ -27,7 +43,7 @@ def deployment_dirty(*, repo=None):
     # would silently omit deleted tracked files.
     paths = ['tools/workshop_image.py', 'tools/workshop_preflight.py',
              'tools/workshop_runtime.py', 'tools/workshop_config.py', 'tools/workshop_ui.py',
-             'workshop/aws/runtime', 'workshop/aws/operations/node.py',
+             'workshop/aws/runtime', 'workshop/aws/profiles.json', 'workshop/aws/operations/node.py',
              'workshop/aws/terraform/image-build', 'workshop/aws/packer',
              'ui/workshop']
     return bool(wc.git(repo or wc.REPO, 'status', '--porcelain=v1',
@@ -48,11 +64,11 @@ def write(path, value):
 
 def prepare(config_path, output):
     config, _, _ = wc.validate_config(wc.load_document(config_path))
-    preflight.require(config['course_profiles'] == ['rta-main'], 'image: only the validated rta-main profile is supported')
+    kernel, images = image_selection(config)
     preflight.require(config['image']['mode'] == 'base' and config['image']['owner_account_id'] == preflight.CANONICAL,
                       'image: require a pinned Canonical base AMI')
     preflight.require(not output.exists(), 'image: choose a new output directory')
-    metadata = wc.load_document(SPEC / 'locks/metadata.json')
+    metadata = wc.load_document(SPEC / ('locks/metadata.json' if kernel == 'doris-rta' else 'locks/metadata-dw.json'))
     for name, expected in metadata['source_sha256'].items():
         actual = hashlib.sha256(subprocess.check_output(['git', 'show', f"{config['course_ref']}:{name}"])).hexdigest()
         preflight.require(actual == expected, 'image: course dependency inputs changed; regenerate and review locks')
@@ -60,23 +76,32 @@ def prepare(config_path, output):
                       'image: runtime package inputs changed; regenerate locks')
     plan = runtime.create_bundle(config_path, output)
     plan['python_locks'] = {}
-    for name in ('server', 'doris-rta'):
+    for name in ('server', kernel):
         filename = name + '.requirements.lock'
         preflight.require(checksum(SPEC / 'locks' / filename) == metadata['locks_sha256'][filename], 'image: lock checksum mismatch')
         shutil.copyfile(SPEC / 'locks' / filename, output / filename)
         plan['python_locks'][name] = filename
         plan['sha256'][filename] = checksum(output / filename)
     (output / 'runtime.json').write_text(json.dumps(plan, indent=2, sort_keys=True) + '\n')
-    images = wc.load_document(SPEC / 'images.json')
-    preflight.require(images['profiles'] == ['rta-main'], 'image: cache selection mismatch')
+    preflight.require(images['profiles'] == config['course_profiles'], 'image: cache selection mismatch')
     # Digest pins must agree with the selected course commit's reviewed image table.
     table = wc.git(wc.REPO, 'show', f"{config['course_ref']}:maintenance/images.md")
     for image in images['images']:
-        preflight.require(re.fullmatch(r'[a-z0-9./:_-]+', image['tag']) and
+        preflight.require(re.fullmatch(r'[a-z0-9./_-]+:[A-Za-z0-9_][A-Za-z0-9_.-]*', image['tag']) and
                           re.fullmatch(r'sha256:[0-9a-f]{64}', image['digest']), 'image: invalid container pin')
         preflight.require(any(line.startswith('|') and f"`{image['tag']}`" in line and
                               f"`{image['digest']}`" in line for line in table.splitlines()),
                           'image: container pin differs from selected course source')
+    for build in images.get('builds', []):
+        preflight.require(build['context'] in {
+            'doris-course/02-data-warehousing/environments/streaming',
+            'doris-course/02-data-warehousing/environments/bi'} and
+            build['base'] in {i['tag'] for i in images['images']} and
+            re.fullmatch(r'doris-course-[a-z]+:[A-Za-z0-9_.-]+', build['tag']),
+            'image: invalid custom cache selection')
+        dockerfile = wc.git(wc.REPO, 'show', f"{config['course_ref']}:{build['context']}/Dockerfile")
+        preflight.require(dockerfile.startswith('FROM ' + build['base'] + '\n'),
+                          'image: custom build base differs from pinned source')
     for name in ('image_host.py', 'seal.sh'):
         shutil.copyfile(SPEC / name, output / name)
     image_input = {
@@ -99,11 +124,13 @@ def payload_hash(bundle):
 def plan_build(config_path, settings_path, run_dir, build_id):
     preflight.require(bool(re.fullmatch(r'[a-z][a-z0-9-]{2,31}', build_id)), 'image: invalid build ID')
     config, settings = preflight.load_inputs(config_path, settings_path)
-    preflight.require(config['instance_type'] == 'm7i.2xlarge' and config['disk_gib'] == 200 and
-                      config['course_profiles'] == ['rta-main'], 'image: require validated rta-main hardware')
+    image_selection(config)
+    preflight.require(config['instance_type'] == 'm7i.2xlarge' and config['disk_gib'] == 200,
+                      'image: require the selected m7i.2xlarge/200 GiB build hardware')
     bundle = Path(settings['runtime_bundle_dir'])
     image_input = wc.load_document(bundle / 'image-input.json')
-    preflight.require(image_input['base_ami'] == config['image'] and not image_input['deployment_dirty'] and
+    preflight.require(image_input['base_ami'] == config['image'] and image_input['course_ref'] == config['course_ref'] and
+                      image_input['images']['profiles'] == config['course_profiles'] and not image_input['deployment_dirty'] and
                       not deployment_dirty() and image_input['deployment_ref'] == wc.git(wc.REPO, 'rev-parse', 'HEAD').strip(),
                       'image: use matching base AMI and a clean committed deployment checkout')
     aws = preflight.Aws(config)
@@ -214,7 +241,8 @@ def record_candidate(run_dir, aws):
     tags = {t['Key']: t['Value'] for t in image.get('Tags', [])}
     manifest = wc.load_document(run_dir / 'image-manifest.json')
     preflight.require(tags.get('ImageBuild') == binding['build_id'] and tags.get('CourseRef') == config['course_ref'] and
-                      tags.get('Scope') == 'image' and manifest['course_ref'] == config['course_ref'],
+                      tags.get('Scope') == 'image' and manifest['course_ref'] == config['course_ref'] and
+                      manifest.get('profiles') == config['course_profiles'],
                       'image: AMI provenance does not match this build manifest')
     attrs = aws.call('ec2', 'describe_image_attribute', ImageId=ami, Attribute='launchPermission')
     preflight.require(not attrs.get('LaunchPermissions'), 'image: candidate must have no sharing grants')

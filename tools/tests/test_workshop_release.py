@@ -22,6 +22,11 @@ def fixture():
 
 
 class ReleaseTests(unittest.TestCase):
+    def test_dw_browser_checks_include_selected_actual_services(self):
+        self.assertEqual(release.browser_checks({'course_profiles':['dw-main']}), release.BROWSER_CHECKS)
+        checks = release.browser_checks({'course_profiles':['dw-main','dw-bi','dw-cdc']})
+        self.assertEqual(checks - release.BROWSER_CHECKS, {'dw-superset-dashboard','dw-flink-rest'})
+
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
         self.root=Path(self.temp.name);self.path=self.root/'release.json';self.value=fixture()

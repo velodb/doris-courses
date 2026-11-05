@@ -1,0 +1,13 @@
+{
+  "locks_sha256": {
+    "server.requirements.lock": "8dd531a3886eef40d0ae2c7f170e5d142d1e43aa9e70f8b2e6f66212ca35f91e",
+    "doris-dw.requirements.lock": "1812b3285c85dcc71e515776f582d24bd41d197f11ea39a83c3ca16b2ef75de6"
+  },
+  "packages_sha256": "24f0e9737487594c4ddea4345e5b2819e3622dec449f05528a2cf5d0a784cb80",
+  "resolver": "uv 0.12.5; Linux x86_64 manylinux_2_39; Python 3.12; PyPI; wheel-only; exclude-newer 2026-11-05T00:00:00Z; pyarrow included for dw-extensions",
+  "source_sha256": {
+    "doris-course/02-data-warehousing/pyproject.toml": "451a52d001a173b69a316f466475e05bcafaaa262e4fff5d6c254540cb9b9438",
+    "doris-course/02-data-warehousing/requirements.txt": "8a4c91b2d35fbc7400923974385c782be0b919828e614342fc2daa9dbf919545",
+    "doris-course/common/pyproject.toml": "d7057c069e13a45a9609a1309c4d91e1e526f6a3a51b0562a6730f7499f7f1e0"
+  }
+}
