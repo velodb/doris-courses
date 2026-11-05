@@ -112,13 +112,19 @@ class ObservabilityContract(unittest.TestCase):
             gates = [{'gate': course._contract['OBS_BROWSER_GATES'][c['id']], 'notebook': s['notebook'], 'cell': c['id']}
                      for s in steps for c in json.loads(sources[s['notebook']])['cells']
                      if c.get('id') in course._contract['OBS_BROWSER_GATES']]
-            self.assertEqual(len(gates), 5)
+            self.assertEqual(len(gates), 6)
+            self.assertEqual(gates[1], {
+                'gate': 'obs-grafana-discover-trace',
+                'notebook': 'level1/module03-data-visualization/lab03_data_visualization.ipynb',
+                'cell': 'ob14-trace',
+            })
             report = dict(course_profiles=profiles, notebooks=rows, notebook_count=count,
                           code_cells=sum(r['code_cells'] for r in rows), browser_checkpoints=gates,
                           modules=[{'module': s['module'], 'passed': True} for s in steps if s['kind'] == 'lab'])
             verify = lambda value: course.valid_selection_report(value, steps, profiles, sources)
             self.assertTrue(verify(report))
             for change in [dict(browser_checkpoints=[]), dict(browser_checkpoints=gates[::-1]),
+                           dict(browser_checkpoints=gates[:1] + gates[2:]),
                            dict(waiting_browser=gates[0]), dict(notebook_count=count-1), dict(course_profiles=['rta-main'])]:
                 self.assertFalse(verify({**report, **change}))
             bad = copy.deepcopy(report); bad['notebooks'][0]['code_cells'] -= 1

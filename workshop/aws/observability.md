@@ -67,6 +67,7 @@ Complete the course's preceding browser instructions before acknowledging:
 | Checkpoint | Required browser action |
 | --- | --- |
 | `obs-payment-failure-on` | Set and save `paymentFailure` to `50%` in the demo flag UI |
+| `obs-grafana-discover-trace` | Complete Lab 3's Discover searches and open a failed checkout trace at least one minute old, including the payment error details |
 | `obs-grafana-dashboard` | Create and save the two-panel `Payment incident` dashboard from Lab 3 |
 | `obs-grafana-contact-test` | Create the Lab 8 Mailpit contact point, send its test notification and configure its matching notification policy |
 | `obs-grafana-cpu-rule` | Create the documented `Host CPU busy` rule and verify its initial state |
@@ -84,6 +85,9 @@ python tools/workshop_validation.py checkpoint \
 The acknowledgement is bound to the exact image, instance, course, event,
 learner, Notebook and pending step. It neither performs the browser action nor
 certifies it. The original Notebook checks the resulting application state.
+The trace step needs an access log at least one minute old because services
+export spans in batches. Keep the course paused while completing the documented
+Discover investigation before acknowledging that step.
 Dispatch records are preserved: if dispatch fails or its outcome is unknown,
 inspect the original command before retrying. Never restart the whole course
 to resume a checkpoint.

@@ -25,6 +25,7 @@ OBS_OPTIONAL = 'level2/module07-data-analysis-litefuse/optional07_trace_a_real_m
 # is still mandatory at publication.
 OBS_BROWSER_GATES = {
     'ob10-incident-flag': 'obs-payment-failure-on',
+    'ob14-trace': 'obs-grafana-discover-trace',
     'ob14-dashboard': 'obs-grafana-dashboard',
     'ob06-test-email': 'obs-grafana-contact-test',
     'ob06-rule-state': 'obs-grafana-cpu-rule',
