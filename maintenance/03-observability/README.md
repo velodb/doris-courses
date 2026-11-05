@@ -123,6 +123,16 @@ upgrading the demo.
 
 ## Linux
 
+The public DOG/demo checkout must be readable by Grafana's UID 472 and the
+Collector's UID 10001. A Jupyter service with umask `0077` otherwise creates
+configuration files as `0600` and directories as `0700`, and both containers
+restart with permission errors. The checkout helper uses a scoped `0022`
+umask for Git and repairs read/traverse permissions for files and directories
+in the pinned commit. The repair preserves which files are executable and
+leaves Git metadata and private files untouched, including locally staged files
+absent from the pinned commit. It does not follow tracked symlinks, and the
+caller keeps its original umask.
+
 The course has run only on Docker Desktop for macOS. What follows was checked on
 2026-10-21 by reading the code and by simulating Linux on Docker Desktop:
 

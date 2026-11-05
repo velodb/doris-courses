@@ -8,6 +8,7 @@ import os
 import re
 import shlex
 import subprocess
+import sys
 import time
 import urllib.error
 import urllib.parse
@@ -91,6 +92,8 @@ MIN_COMPOSE_VERSION = (2, 24, 4)
 
 # Fetch only the pinned commit, and nothing when the checkout is already there.
 CHECKOUT_STACK = r"""
+(
+umask 022
 if [ ! -d "$STACK_DIR/.git" ]; then
   git -c init.defaultBranch=main init --quiet "$STACK_DIR"
   git -C "$STACK_DIR" remote add origin "$STACK_REPOSITORY"
@@ -101,6 +104,11 @@ else
   git -C "$STACK_DIR" fetch --depth 1 origin "$STACK_COMMIT"
   git -C "$STACK_DIR" -c advice.detachedHead=false checkout --force "$STACK_COMMIT"
 fi
+)
+# Only tracked public files and their directories need to be readable by the
+# Grafana and Collector UIDs. Keep private/untracked files and the caller's
+# restrictive umask unchanged, including when repairing a prior checkout.
+"$STACK_PYTHON" -I "$STACK_PERMISSION_HELPER" "$STACK_DIR"
 """
 
 
@@ -861,6 +869,8 @@ COURSE_ROOT="$(pwd -P)"
 STACK_DIR="$COURSE_ROOT/{self.RUNTIME_DIRECTORY}/{self.STACK_DIRECTORY}"
 STACK_REPOSITORY={shlex.quote(env.STACK_REPOSITORY)}
 STACK_COMMIT={env.STACK_COMMIT}
+STACK_PYTHON={shlex.quote(sys.executable)}
+STACK_PERMISSION_HELPER={shlex.quote(str(Path(__file__).with_name('public_stack.py')))}
 export DORIS_OBS_COURSE_ROOT="$COURSE_ROOT"
 
 # The upstream Compose files with this course's overrides (environments/dog-stack/).

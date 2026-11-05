@@ -27,6 +27,11 @@ Weights live in the temporary course volume and are not baked into the AMI.
 Cached containers do not establish offline operation. The `obs-openai` image
 path is refused pending an explicit model, credential and spending contract.
 
+The pinned public DOG/demo checkout is made readable by its non-root container
+users even under the workshop's restrictive umask. Only paths in that public
+commit receive read/traverse permissions; private files, Git metadata and
+uncommitted additions keep their existing permissions.
+
 ## Independent launch
 
 Follow [fresh-image validation](image-validation.md). Supply browser routes for
