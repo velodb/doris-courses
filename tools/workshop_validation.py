@@ -189,6 +189,7 @@ assert progress.get('done') is False and waiting.get('gate')==value['gate']
 assert progress['instance_id']==value['instance_id'] and progress['image_id']==value['ami_id']
 assert progress['course_ref']==value['course_ref']
 target=root/'browser-actions';target.mkdir(mode=0o755,exist_ok=True)
+os.chmod(target,0o755)
 record={k:value[k] for k in ('ami_id','instance_id','course_ref','event_id','learner_id','gate')}
 record.update(kind='doris-workshop-browser-checkpoint',passed=True,notebook=waiting['notebook'])
 path=target/(value['gate']+'.json')

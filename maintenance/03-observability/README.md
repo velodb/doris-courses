@@ -133,6 +133,12 @@ leaves Git metadata and private files untouched, including locally staged files
 absent from the pinned commit. It does not follow tracked symlinks, and the
 caller keeps its original umask.
 
+The demo's Kafka health check keeps the upstream TCP probe but allows a
+two-minute start period and 36 retries. A cold EC2 snapshot took just over a
+minute to start its broker and crossed the upstream health window before
+recovering. Dependent services still wait for a successful probe; extending
+this window does not mark an unavailable broker ready.
+
 The course has run only on Docker Desktop for macOS. What follows was checked on
 2026-10-21 by reading the code and by simulating Linux on Docker Desktop:
 

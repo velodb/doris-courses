@@ -78,6 +78,11 @@ services:
     ports: !reset []
   kafka:
     container_name: doris-obs-demo-kafka
+    # A fresh EC2 snapshot can need more than the upstream one-minute window.
+    # Keep its TCP probe and require readiness before dependent demo services.
+    healthcheck:
+      start_period: 120s
+      retries: 36
   valkey-cart:
     container_name: doris-obs-demo-valkey-cart
     image: valkey/valkey:8.1.10-alpine3.24

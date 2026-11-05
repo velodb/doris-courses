@@ -4,6 +4,8 @@ import base64
 import gzip
 import json
 from pathlib import Path
+import stat
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -90,6 +92,24 @@ class BrowserCheckpointDispatch(unittest.TestCase):
         receipt = json.loads((self.attempt/(self.gate+'-command.json')).read_text())
         self.assertEqual(receipt['command_id'], 'acknowledgement')
         self.assertEqual(receipt['phase'], 'dispatched')
+
+    def test_real_checkpoint_writer_remains_readable_under_ssm_private_umask(self):
+        with patch.object(validation.pf, 'Aws', return_value=self.cloud), \
+             patch.object(validation, 'send_file_command', return_value='acknowledgement') as send:
+            validation.checkpoint(self.directory, self.attempt, self.gate)
+        code, expected = send.call_args.args[2:4]
+        output = self.directory/'remote-output'; output.mkdir(mode=0o700)
+        expected = {**expected, 'course_output_dir':str(output)}
+        self.write(output/'progress.json', dict(done=False, waiting_browser=dict(gate=self.gate, notebook='lab.ipynb'),
+                   instance_id=expected['instance_id'], image_id=expected['ami_id'], course_ref=expected['course_ref']))
+        inputs = self.directory/'remote-input.json'; self.write(inputs, expected)
+        wrapper = 'import os; os.umask(0o077); exec(' + repr(code) + ')'
+        result = subprocess.run([sys.executable, '-c', wrapper, str(inputs)], capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(stat.S_IMODE((output/'browser-actions').stat().st_mode), 0o755)
+        record = output/'browser-actions'/(self.gate+'.json')
+        self.assertEqual(stat.S_IMODE(record.stat().st_mode), 0o644)
+        self.assertEqual(json.loads(record.read_text())['notebook'], 'lab.ipynb')
 
     def test_uncertain_dispatch_cannot_be_replayed(self):
         self.cloud.client.return_value.get_command_invocation.side_effect = None
