@@ -40,62 +40,122 @@
     "dw-main": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
-      "ec2_course": "unverified",
+      "ec2_course": "verified",
       "shared_browser": "pending",
       "browser_host": "not-required",
-      "evidence": null,
-      "summary": "support.md#validation-levels",
-      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+      "evidence": {
+        "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
+        "transport": "operator-ssm-forward",
+        "hosts": 1,
+        "region": "us-east-1",
+        "instance_type": "m7i.2xlarge",
+        "disk_gib": 200,
+        "image_release": "dw-341f7de-full-v1",
+        "validated_on": "2026-11-05",
+        "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
+      },
+      "summary": "data-warehousing.md#current-acceptance",
+      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
     },
     "dw-kafka": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
-      "ec2_course": "unverified",
+      "ec2_course": "verified",
       "shared_browser": "pending",
       "browser_host": "not-required",
-      "evidence": null,
-      "summary": "support.md#validation-levels",
-      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+      "evidence": {
+        "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
+        "transport": "operator-ssm-forward",
+        "hosts": 1,
+        "region": "us-east-1",
+        "instance_type": "m7i.2xlarge",
+        "disk_gib": 200,
+        "image_release": "dw-341f7de-full-v1",
+        "validated_on": "2026-11-05",
+        "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
+      },
+      "summary": "data-warehousing.md#current-acceptance",
+      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
     },
     "dw-cdc": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
-      "ec2_course": "unverified",
+      "ec2_course": "verified",
       "shared_browser": "pending",
       "browser_host": "not-required",
-      "evidence": null,
-      "summary": "support.md#validation-levels",
-      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+      "evidence": {
+        "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
+        "transport": "operator-ssm-forward",
+        "hosts": 1,
+        "region": "us-east-1",
+        "instance_type": "m7i.2xlarge",
+        "disk_gib": 200,
+        "image_release": "dw-341f7de-full-v1",
+        "validated_on": "2026-11-05",
+        "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
+      },
+      "summary": "data-warehousing.md#current-acceptance",
+      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
     },
     "dw-bi": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
-      "ec2_course": "unverified",
+      "ec2_course": "verified",
       "shared_browser": "pending",
       "browser_host": "not-required",
-      "evidence": null,
-      "summary": "support.md#validation-levels",
-      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+      "evidence": {
+        "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
+        "transport": "operator-ssm-forward",
+        "hosts": 1,
+        "region": "us-east-1",
+        "instance_type": "m7i.2xlarge",
+        "disk_gib": 200,
+        "image_release": "dw-341f7de-full-v1",
+        "validated_on": "2026-11-05",
+        "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
+      },
+      "summary": "data-warehousing.md#current-acceptance",
+      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
     },
     "dw-backup": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
-      "ec2_course": "unverified",
+      "ec2_course": "verified",
       "shared_browser": "pending",
       "browser_host": "not-required",
-      "evidence": null,
-      "summary": "support.md#validation-levels",
-      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+      "evidence": {
+        "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
+        "transport": "operator-ssm-forward",
+        "hosts": 1,
+        "region": "us-east-1",
+        "instance_type": "m7i.2xlarge",
+        "disk_gib": 200,
+        "image_release": "dw-341f7de-full-v1",
+        "validated_on": "2026-11-05",
+        "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
+      },
+      "summary": "data-warehousing.md#current-acceptance",
+      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
     },
     "dw-extensions": {
       "course_dir": "doris-course/02-data-warehousing",
       "kernel": "doris-dw",
-      "ec2_course": "unverified",
+      "ec2_course": "verified",
       "shared_browser": "pending",
       "browser_host": "not-required",
-      "evidence": null,
-      "summary": "support.md#validation-levels",
-      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+      "evidence": {
+        "course_sha": "341f7de639bc1b4807015de2db08712d12a09871",
+        "transport": "operator-ssm-forward",
+        "hosts": 1,
+        "region": "us-east-1",
+        "instance_type": "m7i.2xlarge",
+        "disk_gib": 200,
+        "image_release": "dw-341f7de-full-v1",
+        "validated_on": "2026-11-05",
+        "operator_sha": "60bea79fe5e1b6a583919f819a68e798142c50fc"
+      },
+      "summary": "data-warehousing.md#current-acceptance",
+      "limitations": "Verified only as the complete six-profile selection: 14 main modules, all selected optional Labs and quizzes (34 Notebooks, 204 code cells), explicit Superset and backup drills, and eight real browser checks on the same fresh instance. That validation and the image builder were fully retired before private publication. Shared HTTPS/Cognito final acceptance is pending activity cleanup and reconciliation. Other combinations, larger classrooms and performance are unverified."
     },
     "obs-main": {
       "course_dir": "doris-course/03-observability",

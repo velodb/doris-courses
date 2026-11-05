@@ -7,8 +7,9 @@ It is separate from the learner activity and its Terraform state. Building an
 image does not certify a fresh instance or publish the image for activities.
 Independent launch, identity, course and browser validation must follow.
 
-The [data-warehousing selection](../data-warehousing.md) has build and execution
-interfaces; its independent EC2 and shared-browser acceptance is pending.
+The complete [data-warehousing selection](../data-warehousing.md#current-acceptance)
+has passed independent EC2 course/browser validation and private publication.
+Its final shared-browser acceptance remains pending cleanup and reconciliation.
 RTA evidence below applies only to its recorded RTA versions.
 
 Two independent real builds in us-east-1 on 2026-10-30 UTC completed runtime

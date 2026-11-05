@@ -1,6 +1,6 @@
 # Workshop support and validation
 
-The validated AWS course profile is **`rta-main` on Linux x86_64**, using
+The validated RTA profile is **`rta-main` on Linux x86_64**, using
 Python 3.12, `us-east-1`, `m7i.2xlarge` and a 200 GiB root disk. The published
 private course image release `rta-db2620c-ui-v1` was validated at course commit
 `db2620cb51c29a5fb6577e242dadeb03c15c368e`. Its fresh three-learner shared
@@ -16,14 +16,18 @@ Configured-range cleanup and natural TTL have separate acceptance evidence;
 the TTL image's production security review remains open. A local check, mock
 or kernel probe does not certify a course Lab, browser flow or model conversation.
 
+The complete six-profile Data Warehousing selection also passed independent
+EC2 course/browser validation and private publication. Its final shared
+acceptance remains pending; see [the recorded scope](data-warehousing.md#current-acceptance).
+
 ## Validation levels
 
 | Profile | Configuration | EC2 course execution | Shared HTTPS/Cognito |
 | --- | --- | --- | --- |
 | `rta-main` | Implemented | Verified within the limits above | Verified; three-learner scope above |
 | `rta-metabase` | Implemented | Unverified | Pending |
-| `dw-main`, `dw-kafka`, `dw-cdc`, `dw-bi`, `dw-backup`, `dw-extensions` | Implemented | Unverified; delivery scope not selected | Pending |
-| `obs-main`, `obs-local-model`, `obs-openai` | Implemented | Unverified; delivery scope not selected | Pending |
+| `dw-main`, `dw-kafka`, `dw-cdc`, `dw-bi`, `dw-backup`, `dw-extensions` | Implemented | Verified together; [exact scope](data-warehousing.md#current-acceptance) | Pending final cleanup/reconciliation |
+| `obs-main`, `obs-local-model`, `obs-openai` | Implemented | Unverified; main course delivery selected, optional scope pending | Pending |
 | `ai-mcp`, `ai-functions` | Draft configuration | Unverified; scope, model access and quotas pending | Pending |
 
 `ai-mcp` requires a separately implemented browser/cloud Host. A stdio MCP

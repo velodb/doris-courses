@@ -1,9 +1,10 @@
 # Data Warehousing on AWS
 
-The build and full-course validation tools accept `dw-main` and its optional
-profiles. EC2 course, private-image and shared-browser acceptance for this
-selection is pending. See the [support matrix](support.md#validation-levels)
-for the current accepted versions. Declaring a profile does not certify it.
+The complete six-profile selection has passed fresh-instance course and browser
+validation, and private image release `dw-341f7de-full-v1` is available in the
+operator account. Shared HTTPS/Cognito final acceptance is pending activity
+cleanup and reconciliation. See [current acceptance](#current-acceptance) and
+the [support matrix](support.md#validation-levels) for the exact scope.
 
 Select all six profiles to include the main course and every optional Lab:
 
@@ -44,8 +45,8 @@ Use the [private-image build](packer/README.md) and
 expiry and run directory. The operator must refresh identity, prices, quotas
 and the budget, review the saved plan and reconcile all resources after testing.
 The initial build hardware remains one Linux x86_64 `m7i.2xlarge` with a 200 GiB
-encrypted root volume; suitability for the whole selection still requires the
-actual course run. An old RTA AMI cannot be relabeled as a Data Warehousing image.
+encrypted root volume. The measured whole-selection run is described below.
+An old RTA AMI cannot be relabeled as a Data Warehousing image.
 
 Shared access declares separate protected origins for Jupyter, Doris FE,
 Superset and the dynamically assigned Flink REST port. Internal SQL and API
@@ -66,3 +67,47 @@ observed minimum available capacity and maximum interval CPU use; the private
 sample file preserves the time series. These measurements describe the selected
 Lab run and its cache state, and do not certify larger datasets or classrooms.
 The report also records the activity-owned dynamic Flink port when CDC is selected.
+
+
+## Current acceptance
+
+On 2026-11-05, the private image at course/deployment commit
+`341f7de639bc1b4807015de2db08712d12a09871` passed 28 fresh-instance checks,
+all 34 selected Notebooks and 204 code cells, and eight actual browser checks
+on the same new Linux x86_64 instance. The browser checks covered the reader
+and images, Notebook creation/execution/save/download, kernel restart and
+reconnection, quiz navigation and feedback, terminal Docker access, a real FE
+query profile, the Superset dashboard, and the dynamic Flink dashboard.
+The builder and independent validation environment were destroyed and reconciled
+before the private release was published. The AMI is private; partners must
+build and validate in their own accounts.
+
+The 646.94-second course run used an `m7i.2xlarge` with a 200 GiB encrypted
+root disk in `us-east-1`. Two-second samples observed at least 23.752 GiB
+available memory and 176.987 GiB free disk, with a maximum interval CPU use of
+64.81%. The separate ordinary → 6 GiB streaming → ordinary transition drill
+preserved both data volumes, lake/BI/backup network attachments and live
+Superset metrics. These results describe the pinned teaching data and cached
+images; they do not establish performance for larger data or classrooms.
+
+A subsequent three-host shared exercise completed the full selection on each
+host (102 Notebooks and 612 code cells). Its original reports were read through
+authenticated kernels after the operator AWS session expired. Three-account
+assignment, owner SQL/terminal WebSockets, all six directed cross-account
+HTTP/API and WebSocket checks, 18 further cross-account FE/BI/Flink denials,
+and entry logout/reauthentication passed. Shared FE profile, Superset metrics
+and Flink TaskManager pages were observed. Some first frontend loads timed
+out; final checks used the real loaded applications and normal reloads, with
+no asset or API substitution. First-login password changes, hosted-login
+branding and a shared Notebook's first-save confirmation were not verified.
+The original SSM terminal statuses and complete activity/shared-resource
+cleanup still require operator authentication. Shared support remains pending
+until those final checks and reconciliation finish.
+
+Each learner has one EC2 instance containing that learner's course services.
+Jupyter, FE, Superset and Flink are four protected origins for one learner.
+Three learners therefore use three learner instances plus a separate shared
+Portal instance. Sharing one learner instance among several people is not
+implemented. The lifecycle pilot currently permits one to five learners and
+has been exercised with three; a 12-person event needs expansion and its own
+capacity acceptance.
