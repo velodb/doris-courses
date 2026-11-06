@@ -593,6 +593,7 @@ def tool_hash():
     paths.extend(SPEC / 'access' / name for name in ('gateway.py', 'portal.py', 'jupyter_gateway.py', 'requirements.txt',
                  'doris-workshop-gateway.service', 'install_gateway.sh', 'doris-workshop-portal.service', 'install_portal.sh'))
     paths.append(SPEC / 'operations/node.py')
+    paths.append(wc.REPO / 'ui/workshop/service_guidance.py')
     return wc.canonical_hash({str(p.relative_to(wc.REPO)): file_hash(p) for p in paths})
 
 

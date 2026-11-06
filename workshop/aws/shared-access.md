@@ -40,6 +40,14 @@ until explicitly destroyed; an activity's expiry does not remove it.
    bindings and install the learner gateways. ALB `/healthz` checks only the gateway process, not the course,
    Docker, kernel or optional services.
 
+Service links are assigned before the corresponding Lab starts its containers.
+For RTA, the single-FE sandbox starts in Lab 1; FE 1–3 belong to the separate
+three-FE, three-BE cluster started in Lab 9. The workspace explains this distinction
+and links to Lab 9. If an authenticated browser cannot reach a service, its error
+page explains the startup step and offers the assigned Lab, course and retry links.
+This guidance does not start containers or report a live cluster inventory.
+API and WebSocket failures keep their existing status and non-HTML responses.
+
 The guarded pilot CLI can also consume the private exported `access` object via
 `shared_access_file` in the pilot inputs. Its read-only preflight checks the
 account, resource ownership tags, ALB/listener/VPC/subnet relationships,

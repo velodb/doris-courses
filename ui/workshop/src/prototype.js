@@ -132,7 +132,7 @@ function auth(view) {
   return `<main class="auth" id="main" tabindex="-1"><section class="auth-box" aria-label="Hosted authentication visual preview"><img src="${MODEL.assets.logo}" alt="Apache Doris"><h1>${title}</h1>${first || mfa ? `<p>${first ? "Set a new password." : "Enter your authenticator code."}</p>` : ""}${view === "login-error" ? `<div class="auth-error" role="alert">${COPY["login-error"].error}</div>` : ""}${first ? '<label for="new-password">New password</label><input id="new-password" type="password" readonly placeholder="Preview only" aria-describedby="password-policy"><p class="auth-hint" id="password-policy">14+ characters: uppercase, lowercase, numbers and symbols.</p><label for="confirm-password">Confirm password</label><input id="confirm-password" type="password" readonly placeholder="Preview only">' : mfa ? '<label for="authentication-code">Authentication code</label><input id="authentication-code" readonly inputmode="numeric" placeholder="6-digit code">' : `<label for="username">Username</label><input id="username" value="${MODEL.assignment.learner_id}" readonly autocomplete="off"><label for="password">Password</label><input id="password" type="password" readonly placeholder="Preview only" autocomplete="off">`}<button type="button" class="primary" data-route="${destination}">${first ? "Change password" : mfa ? "Verify" : "Sign in"}</button></section></main>`;
 }
 function toolRow(number, name, route, target, icon = false) {
-  return `<a class="tool-row" href="#${route}" data-route="${route}" ${target ? `data-tool="${escapeHtml(name)}" data-target="${escapeHtml(target)}"` : ""}><span class="tool-number" aria-hidden="true">${number}</span><h3>${icon ? `<img class="jupyter" src="${MODEL.assets.jupyter}" alt="Jupyter">` : ""}${name}</h3>${arrow(route === "external")}</a>`;
+  return `<a class="tool-row" href="#${route}" data-route="${route}" ${target ? `data-tool="${escapeHtml(name)}" data-target="${escapeHtml(target)}"` : ""}><span class="tool-number" aria-hidden="true">${number}</span><div><h3>${icon ? `<img class="jupyter" src="${MODEL.assets.jupyter}" alt="Jupyter">` : ""}${name}</h3>${name === "Doris · single FE" ? '<p>Single-node sandbox · 1 FE + 1 BE. Start it in Lab 1.</p>' : ""}</div>${arrow(route === "external")}</a>`;
 }
 
 function workspace() {
@@ -151,7 +151,7 @@ function workspace() {
           `FE ${index + 1} ↗`,
         ),
       )
-      .join("")}</div></section></div>${fileNotice()}`,
+      .join("")}</div><div class="service-guidance"><p>Lab 9 only · a separate cluster with 3 FEs + 3 BEs. Follow Lab 9 to stop the single-node sandbox and start this cluster before opening FE 1–3.</p></div></section></div>${fileNotice()}`,
   );
 }
 

@@ -40,7 +40,7 @@ PUBLIC_ENV = {"rta-metabase": "DORIS_RTA_METABASE_PUBLIC_URL", "dw-superset": "D
     "obs-grafana": "DORIS_OBS_GRAFANA_PUBLIC_URL", "obs-demo": "DORIS_OBS_DEMO_PUBLIC_URL", "obs-litefuse": "DORIS_OBS_LITEFUSE_PUBLIC_URL"}
 DEFAULT_REDIRECTS = {f"rta-fe{index + 1}": [f"http://172.31.91.{40 + index}:8030"] for index in range(3)}
 OVERLAY = wc.REPO / "workshop/aws/access"
-OVERLAY_FILES = {"gateway.py", "jupyter_gateway.py", "requirements.txt", "doris-workshop-gateway.service", "install_gateway.sh", "operations.py"}
+OVERLAY_FILES = {"gateway.py", "jupyter_gateway.py", "requirements.txt", "doris-workshop-gateway.service", "install_gateway.sh", "operations.py", "service_guidance.py"}
 PORTAL_FILES = {"portal.py", "gateway.py", "requirements.txt", "install_portal.sh", "doris-workshop-portal.service", "ui.tar"}
 
 
@@ -146,10 +146,18 @@ def bundle(directory, *, portal=False):
         for name, data in portal_sources().items():
             (directory / name).write_bytes(data)
     for name in sorted(files if not portal else ()):
-        source = wc.SPEC / "operations/node.py" if name == "operations.py" else OVERLAY / name
+        source = overlay_source(name)
         shutil.copyfile(source, directory / name)
     wc.write_manifest(directory / "overlay.json", {"schema_version": 1,
         "sha256": {name: hashlib.sha256((directory / name).read_bytes()).hexdigest() for name in sorted(files)}})
+
+
+def overlay_source(name):
+    if name == 'operations.py':
+        return wc.SPEC / 'operations/node.py'
+    if name == 'service_guidance.py':
+        return wc.REPO / 'ui/workshop/service_guidance.py'
+    return OVERLAY / name
 
 
 def portal_sources():

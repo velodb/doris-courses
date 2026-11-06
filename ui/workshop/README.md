@@ -9,6 +9,7 @@ ui/workshop/
   contracts/           后续接入使用的展示数据契约草案
   scripts/             UI 预览构建与浏览器验证
   doris_workshop_ui.py  纯展示渲染器
+  service_guidance.py   服务用途、对应 Lab 及服务未就绪页面
   package.py           确定性 UI 安装归档
   install_assets.py    安装期官方静态资源校验
   dist/                生成的独立 HTML，不提交
@@ -39,6 +40,8 @@ node ui/workshop/scripts/verify-preview.cjs
 现有门户和课程handler通过薄适配调用独立渲染器，UI只消费已验证的展示数据。账号认证、subject与服务归属继续在服务端，前端不根据learner ID拼接资源URL。[展示schema](contracts/view-model.schema.json)仍是后续独立API的草案，当前通过Python函数传递数据。
 
 运行期课程正文继续由现有 Markdown 渲染和路径白名单提供。UI样式与页面模板在此维护；Python handler保留路由、校验与数据适配。实际页面使用服务端渲染与固定CSS资源，无内联脚本；原型脚本不进入运行安装包。资源策略、归档与SSM分阶段安装见 [接入说明](architecture.md)。
+
+RTA 服务入口标明启动实验：single FE 是 Lab 1 启动的 1 FE + 1 BE 环境；Multi-FE 是 Lab 9 的独立 3 FE + 3 BE 集群，并提供 Lab 9 链接。入口显示不代表服务已运行。已认证学员打开尚不可连接的服务页面时，会看到对应启动步骤、Lab 链接与重试入口；API 和 WebSocket 仍返回原来的错误状态。此页面不启动或重置实验服务。
 
 不提供学习记录、持久成绩、证书或资源管理 UI。唯一 localStorage 数据是设计预览的布局密度和字号，账号、会话、路径、模块和成绩均不写入。
 

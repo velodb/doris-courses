@@ -85,6 +85,8 @@ p { text-wrap:pretty; }
 .jupyter { width:23px; height:29px; object-fit:contain; }
 .fe-links { display:flex; gap:22px; align-items:center; flex-wrap:wrap; margin-top:14px; font-size:13px; }
 .fe-links a { display:inline-flex; align-items:center; min-height:40px; }
+.service-guidance { color:var(--muted); font-size:14px; margin-top:8px; max-width:60ch; }
+.service-guidance .text-link { margin-top:4px; }
 .notice { display:flex; gap:17px; margin-top:28px; padding:20px 0; border-top:1px solid var(--line); color:var(--muted); font-size:14px; }
 .notice strong { display:block; color:var(--ink); margin-bottom:3px; }
 .footer { display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px 24px; padding-top:18px; margin-top:28px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); }

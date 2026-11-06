@@ -6,6 +6,8 @@ from collections import OrderedDict
 from contextlib import AsyncExitStack
 from datetime import datetime, timezone
 import hashlib
+import importlib.util
+from functools import lru_cache
 from http.cookies import SimpleCookie
 import json
 import math
@@ -205,6 +207,35 @@ def resolve_port(service, config, registry_file):
         raise Denied(503) from None
 
 
+@lru_cache(maxsize=1)
+def guidance_renderer():
+    path = Path(__file__).with_name('service_guidance.py')
+    if not path.is_file():
+        path = Path(__file__).resolve().parents[3] / 'ui/workshop/service_guidance.py'
+    spec = importlib.util.spec_from_file_location('gateway_service_guidance', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.unavailable_page
+
+
+def unavailable_response(request, config, host, authorized):
+    headers = {'Cache-Control': 'no-store', 'Retry-After': '5', 'X-Content-Type-Options': 'nosniff'}
+    if (authorized and request.method in {'GET', 'HEAD'} and 'text/html' in request.headers.get('Accept', '')
+            and request.headers.get('Upgrade', '').lower() != 'websocket'
+            and request.path != '/api' and not request.path.startswith('/api/')):
+        prefix = config['event_id'] + '-' + config['learner_id'] + '-'
+        service_id = host.split('.', 1)[0].removeprefix(prefix)
+        domain = host.split('.', 1)[1]
+        workspace = next(('https://' + name + '/workshop/' for name, service in config['services'].items() if service['jupyter']), None)
+        assets = 'https://' + domain + '/doris-courses/static'
+        html = guidance_renderer()(service_id, origin='https://' + host, workspace=workspace, assets=assets)
+        headers['Content-Security-Policy'] = ("default-src 'none'; style-src https://" + domain +
+            '; img-src https://' + domain + '; font-src https://' + domain +
+            "; base-uri 'none'; frame-ancestors 'none'; form-action 'none'")
+        return web.Response(status=503, text=html, content_type='text/html', headers=headers)
+    return web.Response(status=503, text='Service unavailable. Start the course service and retry.\n', headers=headers)
+
+
 def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/token"),
                 registry_file=Path("/run/doris-workshop/service-ports.json")):
     activity_expiry = validate_config(config)
@@ -219,6 +250,7 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
     app.cleanup_ctx.append(session_context)
 
     async def handle(request):
+        host, authorized = None, False
         try:
             if request.path == "/healthz" and request.method in {"GET", "HEAD"}:
                 return web.Response(status=200 if time.time() < activity_expiry else 503, text="gateway\n")
@@ -234,6 +266,7 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
             if len(request.headers.getall("X-Amzn-Oidc-Data", [])) != 1:
                 raise Denied()
             expiry = min(activity_expiry, await app[VERIFIER].verify(request.headers["X-Amzn-Oidc-Data"]))
+            authorized = True
             websocket = request.headers.get("Upgrade", "").lower() == "websocket"
             if request.method not in {"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}:
                 raise Denied(405)
@@ -328,10 +361,11 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                 await response.write_eof()
                 return response
         except Denied as error:
-            message = "Service unavailable. Start the course service and retry.\n" if error.status == 503 else "Workshop access denied.\n"
-            return web.Response(status=error.status, text=message, headers={"Cache-Control": "no-store"})
+            if error.status == 503:
+                return unavailable_response(request, config, host, authorized)
+            return web.Response(status=error.status, text="Workshop access denied.\n", headers={"Cache-Control": "no-store"})
         except (OSError, asyncio.TimeoutError, ClientError):
-            return web.Response(status=503, text="Service unavailable. Start the course service and retry.\n", headers={"Cache-Control": "no-store"})
+            return unavailable_response(request, config, host, authorized)
 
     app.router.add_route("*", "/{tail:.*}", handle)
     return app

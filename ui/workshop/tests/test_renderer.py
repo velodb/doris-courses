@@ -45,6 +45,16 @@ class RendererTests(unittest.TestCase):
         self.assertEqual(mime, 'text/css')
         self.assertIn(b"url('manrope.ttf')", css)
 
+    def test_rta_service_guidance_links_only_to_the_assigned_notebook_origin(self):
+        html = self.renderer.workspace(event='class-a', learner='alice', course='https://own.example.com/workshop/',
+            tools=[{'id': 'rta-fe', 'title': 'Doris · single FE', 'href': 'https://fe.example.com', 'external': True}],
+            extra=[{'id': 'rta-fe2', 'title': 'FE 2', 'href': 'https://fe2.example.com'}], logout='/_workshop/logout')
+        self.assertIn('1 FE + 1 BE. Start it in Lab 1', html)
+        self.assertIn('3 FEs + 3 BEs', html)
+        self.assertIn('stop the single-node sandbox', html)
+        self.assertIn('https://own.example.com/lab/tree/doris-course/01-real-time-analytics/level3/module09-sharding-replication/lab09_observe_sharding_and_replication.ipynb', html)
+        self.assertNotIn('http://127.0.0.1', html)
+
     def test_runtime_archive_has_no_course_or_operator_content_and_is_deterministic(self):
         spec = importlib.util.spec_from_file_location('ui_package_test', ROOT / 'package.py')
         package = importlib.util.module_from_spec(spec)

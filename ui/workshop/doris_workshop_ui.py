@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 from string import Template
 from urllib.parse import urlsplit
+import service_guidance
 
 ROOT = Path(__file__).resolve().parent
 
@@ -69,13 +70,19 @@ class Renderer:
         identity = f'<div class="identity"><span class="mono activity-id">{text(event)}</span><span class="mono learner">{text(learner)}</span><form method="post" action="{href(logout)}"><button class="signout" type="submit">Sign out of this entry</button></form></div>'
         rows = ''.join(f'<a class="tool-row" href="{href(row["href"])}"' +
             (' target="_blank" rel="noopener"' if row.get('external') else '') +
-            f'><span class="tool-number" aria-hidden="true">{i:02}</span><h3>' +
+            f'><span class="tool-number" aria-hidden="true">{i:02}</span><div><h3>' +
             (f'<img class="jupyter" src="{href(self.asset_base)}/jupyter.svg" alt="Jupyter">' if row['id'] == 'jupyter' else '') +
-            f'{text(row["title"])}</h3><span class="arrow" aria-hidden="true">↗</span></a>'
+            f'{text(row["title"])}</h3>' +
+            (f'<p>{text(service_guidance.details(row["id"])["description"])}</p>' if service_guidance.details(row['id']).get('description') else '') +
+            '</div><span class="arrow" aria-hidden="true">↗</span></a>'
             for i, row in enumerate(tools, 2))
         extra_label = 'Multi-FE' if extra and all(self.service_role(row.get('id')) == 'fe' for row in extra) else 'More tools'
         extras = f'<div class="fe-links"><span class="muted">{extra_label}</span>' + ''.join(
             f'<a class="text-link" href="{href(row["href"])}" target="_blank" rel="noopener">{text(row["title"])} ↗</a>' for row in extra) + '</div>' if extra else ''
+        if any(row.get('id') in {'rta-fe1', 'rta-fe2', 'rta-fe3'} for row in extra):
+            guide = service_guidance.details('rta-multi-fe')
+            extras += (f'<div class="service-guidance"><p>{text(guide["description"])}</p>'
+                f'<a class="text-link" href="{href(service_guidance.lab_url(course, guide["lab"]))}" target="_blank" rel="noopener">{text(guide["lab_label"])} ↗</a></div>')
         body = self.template('workspace', breadcrumb=self.breadcrumb('My workspace'), learner=text(learner),
             course=href(course), tools=rows, extra=extras)
         return self.page('My workspace', body, identity=identity)

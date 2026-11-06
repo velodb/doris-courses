@@ -30,7 +30,7 @@ def payload(plan, config, learner):
     """Pack only checked-in installer files and the validated learner config."""
     files = {}
     for name in access.OVERLAY_FILES:
-        source = wc.SPEC / "operations/node.py" if name == "operations.py" else access.OVERLAY / name
+        source = access.overlay_source(name)
         require(source.is_file() and not source.is_symlink(), "fixed overlay file is missing or unsafe")
         files[name] = source.read_bytes()
     manifest = {"schema_version": 1, "sha256": {name: hashlib.sha256(data).hexdigest() for name, data in files.items()}}
@@ -52,8 +52,8 @@ def payload(plan, config, learner):
     digest = hashlib.sha256(packed).hexdigest()
     commands = ["set -eu", "umask 077", "install -d -m 0700 /var/lib/doris-workshop-gateway-install",
                 ": > /var/lib/doris-workshop-gateway-install/bundle.b64"]
-    commands.extend("printf '%s' '" + encoded[i:i + 1200] + "' >> /var/lib/doris-workshop-gateway-install/bundle.b64"
-                    for i in range(0, len(encoded), 1200))
+    commands.extend("printf '%s' '" + encoded[i:i + 4000] + "' >> /var/lib/doris-workshop-gateway-install/bundle.b64"
+                    for i in range(0, len(encoded), 4000))
     commands.append("python3.12 - <<'PY'\nimport base64,hashlib,io,pathlib,tarfile\n"
         "p=pathlib.Path('/var/lib/doris-workshop-gateway-install')\n"
         "b=base64.b64decode((p/'bundle.b64').read_text(),validate=True)\n"

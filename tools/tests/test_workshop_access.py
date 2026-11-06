@@ -182,6 +182,41 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status, 503)
         self.assertIn("Start the course service", await response.text())
 
+    async def test_unavailable_rta_page_guides_the_owner_to_lab9_but_keeps_api_and_denials_plain(self):
+        fe_port = self.server.port
+        await self.server.close()
+        c = copy.deepcopy(self.c)
+        c['services'][HOST]['port'] = 18888
+        fe_host = HOST.replace('-jupyter.', '-rta-fe2.')
+        c['services'][fe_host] = {'port': fe_port, 'jupyter': False, 'redirect_origins': []}
+        client = TestClient(TestServer(gateway.application(c, verifier=LocalVerifier(c, None))))
+        await client.start_server()
+        try:
+            headers = {'Host': fe_host, 'X-Amzn-Oidc-Data': token(), 'Accept': 'text/html'}
+            response = await client.get('/', headers=headers)
+            html = await response.text()
+            self.assertEqual(response.status, 503)
+            self.assertEqual(response.content_type, 'text/html')
+            self.assertIn('FE 2 is not responding', html)
+            self.assertIn('3 FEs + 3 BEs', html)
+            self.assertIn('Open Lab 9', html)
+            self.assertIn('https://' + HOST + '/lab/tree/doris-course/', html)
+            self.assertIn('Try opening again', html)
+            self.assertIn("default-src 'none'", response.headers['Content-Security-Policy'])
+            self.assertNotIn('127.0.0.1', html)
+            response = await client.get('/api/query', headers=headers)
+            self.assertEqual(response.status, 503)
+            self.assertEqual(response.content_type, 'text/plain')
+            for credential, expected in ((None, 401), (token('subject-bob'), 403)):
+                denied = {'Host': fe_host, 'Accept': 'text/html'}
+                if credential:
+                    denied['X-Amzn-Oidc-Data'] = credential
+                response = await client.get('/', headers=denied)
+                self.assertEqual(response.status, expected)
+                self.assertNotIn('Open Lab 9', await response.text())
+        finally:
+            await client.close()
+
     async def test_websocket_text_binary_subprotocol_and_ownership(self):
         for header in (self.headers(Origin="https://bob.example.com"),
                        self.headers(Origin="https://" + HOST, **{"X-Amzn-Oidc-Data": token("subject-bob")})):
