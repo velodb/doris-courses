@@ -2,6 +2,7 @@ import asyncio
 import copy
 import hashlib
 import json
+import socket
 from pathlib import Path
 import sys
 import tempfile
@@ -49,6 +50,23 @@ class LocalVerifier(gateway.Verifier):
 
 
 class IdentityTests(unittest.IsolatedAsyncioTestCase):
+    def test_connection_diagnostics_do_not_enable_general_service_output(self):
+        with tempfile.TemporaryDirectory(prefix='ws-syslog-', dir='/tmp') as tmp:
+            address = Path(tmp) / 'log'
+            listener = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+            listener.bind(str(address)); listener.settimeout(2)
+            propagate = gateway.LOG.propagate
+            handler = gateway.configure_diagnostics(address)
+            try:
+                gateway.LOG.warning('workshop_access_denied status=%s', 401)
+                self.assertIn(b'doris-workshop-connection: workshop_access_denied status=401', listener.recv(1024))
+                self.assertFalse(gateway.LOG.propagate)
+            finally:
+                gateway.LOG.removeHandler(handler); handler.close()
+                gateway.LOG.propagate = propagate
+                listener.close()
+        self.assertIsNone(gateway.configure_diagnostics(Path('/no-workshop-syslog-socket')))
+
     async def test_signed_alb_header_expiry_is_validated(self):
         v = LocalVerifier(config(), None)
         self.assertGreater(await v.verify(token()), time.time())

@@ -11,6 +11,7 @@ from functools import lru_cache
 from http.cookies import SimpleCookie
 import json
 import logging
+from logging.handlers import SysLogHandler
 import math
 from pathlib import Path
 import re
@@ -31,6 +32,18 @@ KID = re.compile(r"[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}")
 SESSION = web.AppKey("session", ClientSession)
 VERIFIER = web.AppKey("verifier", object)
 LOG = logging.getLogger('workshop.connection')
+
+
+def configure_diagnostics(address=Path('/dev/log')):
+    """Send only our fixed metadata events to syslog; keep process output muted."""
+    if not address.is_socket():
+        return None
+    handler = SysLogHandler(address=str(address))
+    handler.setFormatter(logging.Formatter('doris-workshop-connection: %(message)s'))
+    LOG.addHandler(handler)
+    LOG.setLevel(logging.WARNING)
+    LOG.propagate = False
+    return handler
 
 
 class Denied(ValueError):
@@ -429,6 +442,7 @@ def main():
     parser.add_argument("--bind", default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8080)
     args = parser.parse_args()
+    configure_diagnostics()
     app = application(json.loads(args.config.read_text()))
     web.run_app(app, host=args.bind, port=args.port, access_log=None, print=None)
 

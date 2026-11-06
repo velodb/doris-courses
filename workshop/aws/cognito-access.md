@@ -181,9 +181,11 @@ kernel rather than a refreshable login. Genuine network failures retain their
 network error handling. Activity expiry has a separate terminal message and
 cannot be extended through re-login.
 
-Gateway journal diagnostics record close reasons and denial status only; they
+Gateway syslog diagnostics record close reasons and denial status only; they
 do not record credentials, request query strings, notebook content or cell
-messages. A gateway-only rollout preserves Jupyter and kernel processes, but
+messages. General process stdout/stderr remain muted by the operations policy;
+the gateway sends only its fixed metadata messages to the local syslog socket.
+A gateway-only rollout preserves Jupyter and kernel processes, but
 existing browser tabs must save their work and refresh once to load the recovery
 script. The normal full installer also configures the Jupyter launch wrapper and
 therefore restarts Jupyter; do not use it for a live gateway-only patch.
