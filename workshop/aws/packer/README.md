@@ -185,6 +185,28 @@ python tools/workshop_image.py verify --run-dir workshop/aws/.local/image-run-01
 Verification queries AWS again. An identical existing candidate record is
 retained; a conflicting record is refused for review.
 
+If `CreateImage` returned an AMI but Packer exited before writing its manifest,
+keep the failure log and finish the original build cleanup. Use the exact AMI
+and the builder root volume captured before cleanup:
+
+```bash
+python tools/workshop_image.py recover \
+  --run-dir workshop/aws/.local/image-run-01 \
+  --ami-id CAPTURED_AMI_ID --source-volume-id CAPTURED_ROOT_VOLUME_ID
+```
+
+Recovery checks the saved clean inputs, successful native preparation, sealing
+receipt, terminated builder, private image and encrypted snapshot. The snapshot
+must name the same builder and AMI and match the captured root volume. New build
+receipts include `root_volume_id`; older runs need their original captured
+volume evidence. Wait for the AMI and snapshot to finish before recovering.
+
+The command restores the planned candidate tags and writes
+`recovered-artifact.json` separately from Packer's output. Repeating it checks
+the same artifact; `verify` also accepts this recovery record. The original
+Packer failure remains part of the build history. Publication still requires
+the complete independent instance, course, browser and cleanup checks.
+
 The build command runs cleanup in a `finally` block. It terminates only live
 instances with this build's ID and scope tags, waits for termination, then
 destroys the build Terraform resources. For an interrupted process, retry:

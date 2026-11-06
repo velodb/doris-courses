@@ -224,13 +224,11 @@ def build_image(run_dir):
         cleanup_build(run_dir)
 
 
-def record_candidate(run_dir, aws):
+def checked_candidate(run_dir, aws, region, ami, *, unfinished_tags=False):
     binding = wc.load_document(run_dir / 'binding.json')
     config = binding['config']
-    packer = wc.load_document(run_dir / 'packer-manifest.json')
-    region, ami = packer['builds'][-1]['artifact_id'].split(':')
     preflight.require(region == config['region'] and bool(re.fullmatch(r'ami-[0-9a-f]{17}', ami)),
-                      'image: invalid Packer artifact')
+                      'image: invalid image artifact')
     images = aws.call('ec2', 'describe_images', ImageIds=[ami], Owners=[config['aws_account_id']])['Images']
     preflight.require(len(images) == 1, 'image: built AMI missing')
     image = images[0]
@@ -245,7 +243,8 @@ def record_candidate(run_dir, aws):
     tags = {t['Key']: t['Value'] for t in image.get('Tags', [])}
     manifest = wc.load_document(run_dir / 'image-manifest.json')
     preflight.require(tags.get('ImageBuild') == binding['build_id'] and tags.get('CourseRef') == config['course_ref'] and
-                      tags.get('Scope') == 'image' and manifest['course_ref'] == config['course_ref'] and
+                      tags.get('Scope') in ({'image', 'image-build'} if unfinished_tags else {'image'}) and
+                      manifest['course_ref'] == config['course_ref'] and
                       manifest.get('profiles') == config['course_profiles'],
                       'image: AMI provenance does not match this build manifest')
     attrs = aws.call('ec2', 'describe_image_attribute', ImageId=ami, Attribute='launchPermission')
@@ -257,11 +256,128 @@ def record_candidate(run_dir, aws):
           'snapshots': [s['SnapshotId'] for s in snapshots], 'manifest_sha256': checksum(run_dir / 'image-manifest.json'),
           'release_requirement': 'Independent new-instance verification remains required.',
           'retention': 'Keep for the next validation task; review after seven days. Tags do not delete snapshots.'}
+    return record, image, snapshots[0]
+
+
+def recovery_reference(run_dir):
+    recovery = wc.load_document(run_dir / 'recovered-artifact.json')
+    binding = wc.load_document(run_dir / 'binding.json')
+    preflight.require(recovery.get('kind') == 'doris-workshop-image-artifact-recovery' and
+                      recovery.get('schema_version') == 1 and recovery.get('build_id') == binding['build_id'] and
+                      recovery.get('binding_sha256') == checksum(run_dir / 'binding.json') and
+                      recovery.get('image_manifest_sha256') == checksum(run_dir / 'image-manifest.json') and
+                      recovery.get('region') == binding['config']['region'] and
+                      bool(re.fullmatch(r'vol-[0-9a-f]{17}', recovery.get('source_volume_id', ''))),
+                      'image: recovered artifact provenance changed; preserve it for review')
+    return recovery
+
+
+def record_candidate(run_dir, aws):
+    recovery = None
+    if (run_dir / 'packer-manifest.json').exists():
+        packer = wc.load_document(run_dir / 'packer-manifest.json')
+        region, ami = packer['builds'][-1]['artifact_id'].split(':')
+    else:
+        recovery = recovery_reference(run_dir)
+        region, ami = recovery['region'], recovery['ami_id']
+    record, _, snapshot = checked_candidate(run_dir, aws, region, ami)
+    if recovery:
+        preflight.require(snapshot.get('VolumeId') == recovery['source_volume_id'],
+                          'image: recovered snapshot source volume changed')
     path = run_dir / 'candidate.json'
     if path.exists():
         preflight.require(wc.load_document(path) == record, 'image: existing candidate record differs; preserve it for review')
     else:
         write(path, record)
+
+
+def recover_artifact(run_dir, ami, source_volume_id, aws):
+    """Finish candidate metadata after CreateImage succeeded but Packer polling failed."""
+    preflight.require(not deployment_dirty(), 'image: use a clean committed recovery tool')
+    preflight.require(not (run_dir / 'packer-manifest.json').exists(),
+                      'image: a Packer manifest exists; use verify instead of recovery')
+    preflight.require(bool(re.fullmatch(r'ami-[0-9a-f]{17}', ami)) and
+                      bool(re.fullmatch(r'vol-[0-9a-f]{17}', source_volume_id)),
+                      'image: recovery requires exact AMI and captured source volume IDs')
+    binding = wc.load_document(run_dir / 'binding.json')
+    config = binding['config']
+    if (run_dir / 'recovered-artifact.json').exists():
+        recovery = recovery_reference(run_dir)
+        preflight.require(recovery['ami_id'] == ami and recovery['source_volume_id'] == source_volume_id,
+                          'image: preserve the existing recovery; another artifact was requested')
+        record_candidate(run_dir, aws)
+        return
+    state = wc.load_document(run_dir / 'terraform.tfstate')
+    preflight.require(not any(r.get('mode') == 'managed' and r.get('instances') for r in state.get('resources', [])),
+                      'image: finish build cleanup before recovering an artifact')
+    bundle = Path(binding['settings']['runtime_bundle_dir'])
+    preflight.require(payload_hash(bundle) == binding['payload_sha256'] and
+                      checksum(run_dir / 'inputs.tfvars.json') == binding['vars_sha256'],
+                      'image: recovery inputs changed')
+    manifest = wc.load_document(run_dir / 'image-manifest.json')
+    inputs = wc.load_document(bundle / 'image-input.json')
+    preflight.require(manifest.get('image_input_sha256') == checksum(bundle / 'image-input.json') and
+                      manifest.get('runtime_sha256') == checksum(bundle / 'runtime.json') and
+                      manifest.get('deployment_ref') == inputs['deployment_ref'] and not inputs['deployment_dirty'],
+                      'image: recovery host manifest differs from the saved clean inputs')
+    instance = wc.load_document(run_dir / 'build-instance.json')['instance_id']
+    prepare_command = wc.load_document(run_dir / 'build-command.json')
+    seal_command = wc.load_document(run_dir / 'seal-command.json')
+    preflight.require(prepare_command['instance_id'] == seal_command['instance_id'] == instance,
+                      'image: preparation and sealing receipts belong to another host')
+    preflight.require(aws.call('sts', 'get_caller_identity')['Account'] == config['aws_account_id'],
+                      'image: recovery account changed')
+    hosts = aws.call('ec2', 'describe_instances', Filters=[{'Name': 'instance-id', 'Values': [instance]}])['Reservations']
+    preflight.require(all(i['State']['Name'] == 'terminated' for r in hosts for i in r['Instances']),
+                      'image: the original builder is still active')
+    invocations = aws.call('ssm', 'list_command_invocations', CommandId=prepare_command['command_id'],
+                           InstanceId=instance, Details=True)['CommandInvocations']
+    preflight.require(len(invocations) == 1 and invocations[0]['Status'] == 'Success' and
+                      {p['Name'] for p in invocations[0].get('CommandPlugins', [])} ==
+                      {'downloadRuntime', 'installRuntime', 'prepareImage'} and
+                      all(p['Status'] == 'Success' and p['ResponseCode'] == 0 for p in invocations[0]['CommandPlugins']),
+                      'image: the original native preparation did not complete successfully')
+    record, image, snapshot = checked_candidate(run_dir, aws, config['region'], ami, unfinished_tags=True)
+    tags = {t['Key']: t['Value'] for t in image.get('Tags', [])}
+    preflight.require(image.get('Name') == 'doris-workshop-' + binding['build_id'] and
+                      image.get('OwnerId') == config['aws_account_id'] and
+                      tags.get('Project') == 'doris-workshop' and tags.get('Owner') == config['owner_id'] and
+                      tags.get('ImageStatus') in (None, 'candidate') and not tags.get('ReleaseRef'),
+                      'image: recovery cannot retag another or published image')
+    preflight.require(snapshot.get('VolumeId') == source_volume_id and snapshot.get('VolumeSize') == 200 and
+                      'CreateImage(' + instance + ')' in snapshot.get('Description', '') and
+                      ami in snapshot.get('Description', ''),
+                      'image: snapshot does not come from the captured builder root')
+    root = wc.load_document(run_dir / 'build-instance.json').get('root_volume_id')
+    preflight.require(root is None or root == source_volume_id, 'image: captured builder root differs')
+    original_tags = {t['Key']: t['Value'] for t in snapshot.get('Tags', [])}
+    preflight.require(all(k not in original_tags or original_tags[k] == v for k, v in {
+        'Project': 'doris-workshop', 'ImageBuild': binding['build_id'], 'Owner': config['owner_id'],
+        'CourseRef': config['course_ref']}.items()) and original_tags.get('Scope') in (None, 'image-build', 'image'),
+        'image: snapshot ownership tags conflict with this recovery')
+    retain = wc.load_document(run_dir / 'build.pkrvars.json')['retain_until']
+    preflight.require(wc.timestamp(retain, 'retain_until') > datetime.now(timezone.utc),
+                      'image: original candidate retention expired; review before recovery')
+    expected = {'Project': 'doris-workshop', 'Scope': 'image', 'ImageBuild': binding['build_id'],
+                'Owner': config['owner_id'], 'CourseRef': config['course_ref'], 'ExpiresAt': retain,
+                'ImageStatus': 'candidate'}
+    if any(any(current.get(k) != v for k, v in expected.items()) for current in (tags, original_tags)):
+        aws.client('ec2').create_tags(Resources=[ami, snapshot['SnapshotId']],
+            Tags=[{'Key': k, 'Value': v} for k, v in expected.items()])
+    _, current_image, current_snapshot = checked_candidate(run_dir, aws, config['region'], ami)
+    preflight.require(all(all({t['Key']: t['Value'] for t in item.get('Tags', [])}.get(k) == v
+                              for k, v in expected.items()) for item in (current_image, current_snapshot)),
+                      'image: candidate tags not yet reconciled; verify current metadata before retrying')
+    write(run_dir / 'recovered-artifact.json', {
+        'schema_version': 1, 'kind': 'doris-workshop-image-artifact-recovery',
+        'checked_at': wc.utc_text(datetime.now(timezone.utc)), 'build_id': binding['build_id'],
+        'region': config['region'], 'ami_id': ami, 'source_instance_id': instance,
+        'source_volume_id': source_volume_id, 'binding_sha256': checksum(run_dir / 'binding.json'),
+        'image_manifest_sha256': record['manifest_sha256'], 'prepare_command_id': prepare_command['command_id'],
+        'seal_command_id': seal_command['command_id'], 'operator_ref': wc.git(wc.REPO, 'rev-parse', 'HEAD').strip(),
+        'operator_tool_sha256': checksum(__file__),
+        'scope': 'Recovered candidate metadata; original Packer failure is preserved. Independent validation remains required.'})
+    record_candidate(run_dir, aws)
 
 
 def cleanup_build(run_dir):
@@ -317,7 +433,12 @@ def provision(run_dir):
         time.sleep(10)
     else:
         raise preflight.PreflightError('image: build host did not register with SSM')
-    write(run_dir / 'build-instance.json', {'instance_id': instance, 'build_id': settings['build_id']})
+    receipt = {'instance_id': instance, 'build_id': settings['build_id']}
+    roots = [m['Ebs']['VolumeId'] for m in instances[0].get('BlockDeviceMappings', [])
+             if m.get('DeviceName') == '/dev/sda1' and 'Ebs' in m]
+    if len(roots) == 1:
+        receipt['root_volume_id'] = roots[0]
+    write(run_dir / 'build-instance.json', receipt)
     command = ssm.send_command(InstanceIds=[instance], DocumentName=settings['install_document'], TimeoutSeconds=7200)['Command']['CommandId']
     write(run_dir / 'build-command.json', {'instance_id': instance, 'command_id': command})
     deadline = time.monotonic() + 7200
@@ -384,6 +505,10 @@ def main():
     for command in ('build', 'cleanup', 'verify'):
         command_parser = subs.add_parser(command)
         command_parser.add_argument('--run-dir', type=Path, required=True)
+    recovery = subs.add_parser('recover')
+    recovery.add_argument('--run-dir', type=Path, required=True)
+    recovery.add_argument('--ami-id', required=True)
+    recovery.add_argument('--source-volume-id', required=True)
     args = parser.parse_args()
     try:
         if args.command == 'prepare':
@@ -400,6 +525,11 @@ def main():
             config = wc.load_document(run_dir / 'binding.json')['config']
             record_candidate(run_dir, preflight.Aws(config))
             print('Private candidate image verified; independent new-instance validation remains required.')
+        elif args.command == 'recover':
+            run_dir = args.run_dir.resolve()
+            config = wc.load_document(run_dir / 'binding.json')['config']
+            recover_artifact(run_dir, args.ami_id, args.source_volume_id, preflight.Aws(config))
+            print('Created image recovered as a candidate; original Packer failure and independent validation gate retained.')
         else:
             provision(args.run_dir.resolve())
         return 0

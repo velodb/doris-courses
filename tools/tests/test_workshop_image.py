@@ -3,7 +3,7 @@ import importlib.util
 import itertools
 import json
 import subprocess
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import sys
 import tempfile
@@ -191,6 +191,13 @@ class SsmSealing(unittest.TestCase):
         self.assertEqual(json.loads((self.root / 'image-manifest.json').read_text()), self.report)
         self.ec2.create_image.assert_not_called()  # Snapshot is Packer's responsibility after this function returns.
 
+    def test_preserves_the_builder_root_volume_before_snapshot_cleanup(self):
+        self.ec2.describe_instances.return_value['Reservations'][0]['Instances'][0]['BlockDeviceMappings'] = [
+            {'DeviceName': '/dev/sda1', 'Ebs': {'VolumeId': 'vol-00000000000000000'}}]
+        image.provision(self.root)
+        receipt = json.loads((self.root / 'build-instance.json').read_text())
+        self.assertEqual(receipt['root_volume_id'], 'vol-00000000000000000')
+
     def test_failed_install_never_schedules_sealing(self):
         self.ssm.list_commands.return_value = {'Commands': [{'Status': 'Failed',
             'StandardErrorContent': 'fixture-password-do-not-persist',
@@ -312,6 +319,147 @@ class CandidateChecks(unittest.TestCase):
     def test_missing_cache_volume_mapping_is_rejected(self):
         self.image['BlockDeviceMappings'].append({'DeviceName': '/dev/sdf', 'Ebs': {'VolumeSize': 100}})
         with self.assertRaises(wc.ConfigError):
+            image.record_candidate(self.root, self.aws)
+
+
+class ArtifactRecovery(unittest.TestCase):
+    def setUp(self):
+        CandidateChecks.setUp(self)
+        (self.root / 'packer-manifest.json').unlink()
+        bundle = self.root / 'bundle'
+        bundle.mkdir()
+        (bundle / 'runtime.json').write_text('{"courses": []}\n')
+        (bundle / 'image-input.json').write_text(json.dumps({
+            'deployment_ref': 'a' * 40, 'deployment_dirty': False}))
+        manifest = {'course_ref': 'a' * 40, 'profiles': ['rta-main'], 'deployment_ref': 'a' * 40,
+                    'image_input_sha256': image.checksum(bundle / 'image-input.json'),
+                    'runtime_sha256': image.checksum(bundle / 'runtime.json')}
+        (self.root / 'image-manifest.json').write_text(json.dumps(manifest))
+        (self.root / 'inputs.tfvars.json').write_text('{"build_id":"test-image"}\n')
+        binding = wc.load_document(self.root / 'binding.json')
+        binding['config']['owner_id'] = 'owner'
+        binding.update(settings={'runtime_bundle_dir': str(bundle)}, payload_sha256=image.payload_hash(bundle),
+                       vars_sha256=image.checksum(self.root / 'inputs.tfvars.json'))
+        (self.root / 'binding.json').write_text(json.dumps(binding))
+        (self.root / 'terraform.tfstate').write_text('{"resources": []}\n')
+        self.instance = 'i-00000000000000000'
+        self.volume = 'vol-00000000000000000'
+        self.ami = 'ami-00000000000000000'
+        for name, command in [('build-instance', None), ('build-command', 'prepare-command'),
+                              ('seal-command', 'seal-command')]:
+            value = {'instance_id': self.instance}
+            if command:
+                value['command_id'] = command
+            (self.root / (name + '.json')).write_text(json.dumps(value))
+        (self.root / 'build.pkrvars.json').write_text(json.dumps({
+            'retain_until': wc.utc_text(datetime.now(timezone.utc) + timedelta(days=7))}))
+        self.image.update(Name='doris-workshop-test-image', OwnerId='000000000000')
+        self.image['Tags'] = [{'Key': k, 'Value': v} for k, v in {
+            'ImageBuild': 'test-image', 'CourseRef': 'a' * 40, 'Scope': 'image-build',
+            'Project': 'doris-workshop', 'Owner': 'owner'}.items()]
+        self.snapshot.update(VolumeId=self.volume, VolumeSize=200, Tags=[],
+                             Description=f'Created by CreateImage({self.instance}) for {self.ami}')
+        self.preparation = {'Status': 'Success', 'CommandPlugins': [
+            {'Name': name, 'Status': 'Success', 'ResponseCode': 0}
+            for name in ['downloadRuntime', 'installRuntime', 'prepareImage']]}
+        self.hosts = []
+        self.aws.call.side_effect = lambda service, operation, **kwargs: {
+            'get_caller_identity': {'Account': '000000000000'},
+            'describe_instances': {'Reservations': self.hosts},
+            'list_command_invocations': {'CommandInvocations': [self.preparation]},
+            'describe_images': {'Images': [self.image]}, 'describe_snapshots': {'Snapshots': [self.snapshot]},
+            'describe_image_attribute': self.attrs}[operation]
+        self.ec2 = MagicMock()
+        self.aws.client.return_value = self.ec2
+        def tag(**kwargs):
+            self.assertEqual(kwargs['Resources'], [self.ami, self.snapshot['SnapshotId']])
+            for item in [self.image, self.snapshot]:
+                current = {t['Key']: t['Value'] for t in item['Tags']}
+                current.update({t['Key']: t['Value'] for t in kwargs['Tags']})
+                item['Tags'] = [{'Key': k, 'Value': v} for k, v in current.items()]
+        self.ec2.create_tags.side_effect = tag
+        clean = patch.object(image, 'deployment_dirty', return_value=False)
+        clean.start()
+        self.addCleanup(clean.stop)
+
+    def recover(self):
+        image.recover_artifact(self.root, self.ami, self.volume, self.aws)
+
+    def assert_no_recovery(self):
+        self.ec2.create_tags.assert_not_called()
+        self.assertFalse((self.root / 'candidate.json').exists())
+        self.assertFalse((self.root / 'recovered-artifact.json').exists())
+
+    def test_recovers_partial_tags_without_fabricating_packer_success(self):
+        self.recover()
+        self.assertFalse((self.root / 'packer-manifest.json').exists())
+        proof = wc.load_document(self.root / 'recovered-artifact.json')
+        self.assertEqual(proof['kind'], 'doris-workshop-image-artifact-recovery')
+        self.assertEqual(proof['source_instance_id'], self.instance)
+        self.assertEqual(proof['source_volume_id'], self.volume)
+        self.assertEqual(wc.load_document(self.root / 'candidate.json')['status'], 'candidate')
+        self.ec2.create_tags.assert_called_once()
+        self.ec2.create_image.assert_not_called()
+        self.ec2.run_instances.assert_not_called()
+        self.ec2.send_command.assert_not_called()
+
+    def test_repeat_and_normal_verify_preserve_the_recovery(self):
+        self.recover()
+        paths = [self.root / 'candidate.json', self.root / 'recovered-artifact.json']
+        before = [p.stat().st_mtime_ns for p in paths]
+        self.recover()
+        image.record_candidate(self.root, self.aws)
+        self.assertEqual(before, [p.stat().st_mtime_ns for p in paths])
+        self.ec2.create_tags.assert_called_once()
+
+    def test_rejects_wrong_source_volume_before_tagging(self):
+        self.snapshot['VolumeId'] = 'vol-11111111111111111'
+        with self.assertRaisesRegex(wc.ConfigError, 'captured builder root'):
+            self.recover()
+        self.assert_no_recovery()
+
+    def test_rejects_another_builder_description_before_tagging(self):
+        self.snapshot['Description'] = 'Created by CreateImage(i-11111111111111111) for ' + self.ami
+        with self.assertRaisesRegex(wc.ConfigError, 'captured builder root'):
+            self.recover()
+        self.assert_no_recovery()
+
+    def test_requires_finished_cleanup_and_original_preparation(self):
+        self.hosts = [{'Instances': [{'State': {'Name': 'running'}}]}]
+        with self.assertRaisesRegex(wc.ConfigError, 'still active'):
+            self.recover()
+        self.hosts = []
+        self.preparation['CommandPlugins'][-1]['Status'] = 'Failed'
+        with self.assertRaisesRegex(wc.ConfigError, 'preparation'):
+            self.recover()
+        self.assert_no_recovery()
+
+    def test_never_retags_a_published_image(self):
+        self.image['Tags'].append({'Key': 'ImageStatus', 'Value': 'validated'})
+        with self.assertRaisesRegex(wc.ConfigError, 'published image'):
+            self.recover()
+        self.assert_no_recovery()
+
+    def test_changed_payload_and_public_image_remain_rejected(self):
+        runtime = self.root / 'bundle/runtime.json'
+        original = runtime.read_bytes()
+        runtime.write_text('changed')
+        with self.assertRaisesRegex(wc.ConfigError, 'inputs changed'):
+            self.recover()
+        runtime.write_bytes(original)
+        self.image['Public'] = True
+        with self.assertRaisesRegex(wc.ConfigError, 'privacy'):
+            self.recover()
+        self.assert_no_recovery()
+
+    def test_verify_rechecks_recovered_volume_and_proof_hashes(self):
+        self.recover()
+        self.snapshot['VolumeId'] = 'vol-11111111111111111'
+        with self.assertRaisesRegex(wc.ConfigError, 'source volume changed'):
+            image.record_candidate(self.root, self.aws)
+        self.snapshot['VolumeId'] = self.volume
+        (self.root / 'image-manifest.json').write_text('{}')
+        with self.assertRaisesRegex(wc.ConfigError, 'provenance changed'):
             image.record_candidate(self.root, self.aws)
 
 
