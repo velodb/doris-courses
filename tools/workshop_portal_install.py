@@ -6,6 +6,7 @@ import gzip
 import hashlib
 import io
 import json
+import lzma
 import os
 from pathlib import Path
 import re
@@ -130,10 +131,10 @@ def payload(shared, *, sources=None):
 
 def ui_payload(data):
     digest = hashlib.sha256(data).hexdigest()
-    encoded = base64.b64encode(gzip.compress(data, mtime=0)).decode()
+    encoded = base64.b64encode(lzma.compress(data, preset=9)).decode()
     commands = ["set -eu", "umask 077", "install -d -m 0700 /var/lib/doris-workshop-portal-install",
-        "python3 - <<'PY'\nimport base64,gzip,hashlib,os,pathlib,tempfile\n"
-        + "data=gzip.decompress(base64.b64decode(" + repr(encoded) + ",validate=True))\n"
+        "python3 - <<'PY'\nimport base64,lzma,hashlib,os,pathlib,tempfile\n"
+        + "data=lzma.decompress(base64.b64decode(" + repr(encoded) + ",validate=True))\n"
         + "assert len(data)<=1024*1024 and hashlib.sha256(data).hexdigest()==" + repr(digest) + "\n"
         + "target=pathlib.Path('/var/lib/doris-workshop-portal-install/ui-" + digest + ".tar')\n"
         + "assert not target.is_symlink()\n"

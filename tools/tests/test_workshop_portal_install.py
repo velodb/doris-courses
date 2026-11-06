@@ -2,6 +2,7 @@
 import copy
 import io
 import json
+import subprocess
 from pathlib import Path
 import sys
 import tempfile
@@ -54,6 +55,15 @@ class PortalInstallTests(unittest.TestCase):
         staged, ui_digest = install.ui_payload(install.access.portal_sources()["ui.tar"])
         self.assertLess(len(json.dumps(staged)), 24000)
         self.assertTrue(any(ui_digest in command for command in commands))
+
+    def test_ui_transfer_reconstructs_the_exact_archive_locally(self):
+        data = install.access.portal_sources()['ui.tar']
+        commands, digest = install.ui_payload(data)
+        script = '\n'.join(commands).replace('/var/lib/doris-workshop-portal-install', str(self.root))
+        result = subprocess.run(['bash', '-c', script], capture_output=True, text=True, timeout=15)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), 'ui-ready')
+        self.assertEqual((self.root / ('ui-' + digest + '.tar')).read_bytes(), data)
 
     def test_success_receipt_is_reused_and_unknown_dispatch_not_resent(self):
         with mock.patch.object(install, "verify", return_value="i-portal"):

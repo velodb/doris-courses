@@ -202,12 +202,16 @@ class CourseQuiz:
         title: str,
         description: str,
         questions: tuple[QuizQuestion, ...],
+        passing_score_percent: int = 80,
+        source_path: str | Path | None = None,
     ) -> None:
         if not questions:
             raise ValueError("A quiz must contain at least one question.")
         self.title = title
         self.description = description
         self.questions = questions
+        self.passing_score_percent = passing_score_percent
+        self.source_path = Path(source_path).resolve() if source_path is not None else None
         self._current = 0
         self._answers: dict[str, str] = {}
         self._drafts: dict[str, str] = {}
@@ -226,6 +230,8 @@ class CourseQuiz:
             title=quiz.title,
             description=quiz.description,
             questions=quiz.questions,
+            passing_score_percent=quiz.passing_score_percent,
+            source_path=path,
         )
 
     def show(self) -> widgets.VBox:
@@ -361,6 +367,7 @@ class CourseQuiz:
 
     def _render_results(self) -> None:
         total = len(self.questions)
+        complete = all(self._answers.get(q.question_id) in {o.option_id for o in q.options} for q in self.questions)
         correct_count = sum(
             self._answers.get(question.question_id) == question.answer
             for question in self.questions
@@ -371,6 +378,25 @@ class CourseQuiz:
             if self._answers.get(question.question_id) != question.answer
         ]
         percent = round(correct_count / total * 100)
+        passed = correct_count * 100 >= self.passing_score_percent * total
+        saved_text = ""
+        save_failed = False
+        if complete and self.source_path is not None:
+            from .progress import save_quiz_from_environment
+            try:
+                record = save_quiz_from_environment(self.source_path, correct_count, total, self.passing_score_percent)
+                if record is not None and record.get('optional'):
+                    saved_text = "Optional Quiz complete. This exercise has no separate module identity and does not change module progress."
+                elif record is not None:
+                    saved_text = ("Progress saved. Quiz passed; return to the course outline to see your progress."
+                                  if record["quiz_passed"] else "Progress saved. Reach the passing score to earn Quiz credit.")
+                    if record["quiz_passed"] and not passed:
+                        saved_text = "Progress saved. Your earlier Quiz pass and best score are retained."
+            except Exception:
+                save_failed = True
+                saved_text = "Progress was not saved. Your answers are still here. Retry saving before closing this quiz."
+        elif not complete:
+            saved_text = "Answer and submit every question before completing the quiz. Progress was not saved."
 
         if missed:
             review_items = []
@@ -404,8 +430,10 @@ class CourseQuiz:
         result = widgets.HTML(
             value=(
                 '<div class="doris-quiz-shell">'
-                '<div class="doris-quiz-kicker">Quiz complete</div>'
+                '<div class="doris-quiz-kicker">' + ('Quiz complete' if complete else 'Quiz incomplete') + '</div>'
                 f'<div class="doris-quiz-result">{correct_count} of {total} correct ({percent}%)</div>'
+                f'<p>Passing score: {self.passing_score_percent}%. ' + ('Passed.' if complete and passed else 'Not passed.') + '</p>'
+                f'<p role="status">{escape(saved_text)}</p>'
                 '<div class="doris-quiz-result-description">'
                 f"{escape(self.description)}</div>{review}</div>"
             )
@@ -429,6 +457,10 @@ class CourseQuiz:
         retry.on_click(restart)
         previous_button.on_click(review_last_question)
         controls = widgets.HBox([previous_button, retry])
+        if save_failed:
+            save_again = widgets.Button(description="Retry saving", icon="save")
+            save_again.on_click(lambda _: self._render_results())
+            controls.children = (*controls.children, save_again)
         controls.add_class("doris-quiz-controls")
         content = widgets.VBox([result, controls])
         content.layout = widgets.Layout(max_width="920px")

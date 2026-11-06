@@ -11,7 +11,8 @@ systemctl stop rsyslog.service systemd-journald.service systemd-journald.socket 
 systemctl disable --now doris-image-expiry.timer
 rm -f /etc/systemd/system/doris-image-expiry.{timer,service}
 rm -rf /var/lib/amazon/ssm /var/log/amazon/ssm /run/doris-workshop
-rm -rf /var/lib/doris-workshop/home /var/lib/doris-workshop/workspace
+rm -rf /var/lib/doris-workshop/home /var/lib/doris-workshop/workspace /var/lib/doris-workshop/progress
+install -d -m 0700 -o workshop -g workshop /var/lib/doris-workshop/progress
 install -d -m 0700 -o workshop -g workshop /var/lib/doris-workshop/home
 # Recreate only pristine selected notebooks and helpers, never verification output.
 python3.12 - <<'PY'

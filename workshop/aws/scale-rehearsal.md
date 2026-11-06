@@ -124,7 +124,8 @@ Sample aggregate host CPU, available memory, disk headroom and network counters
 before and during a bounded workload. Keep the workload and sample timestamps
 so another operator can identify their overlap. Retain file checksums and
 kernel/terminal IDs for unaffected learners. These are infrastructure test
-records; the workshop does not add learning-progress or grading storage.
+records; new runtimes can separately keep [personal progress](runtime/progress.md)
+on the learner's instance. The earlier scale rehearsal did not validate that feature.
 
 For a failure, use [SSM diagnostics](operations.md), record accurate failure
 status, and [review a single-learner replacement](prebuilt.md).

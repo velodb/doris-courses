@@ -192,8 +192,9 @@ therefore restarts Jupyter; do not use it for a live gateway-only patch.
 
 Applications retain their own login where required. Each service gets its own
 origin and host-only Secure cookies. The outer ALB session never grants a user
-another learner's service. No progress, grades, certificate or learning analytics
-service is created.
+another learner's service. New source runtimes can store [personal progress](runtime/progress.md)
+on that learner's instance. Authentication does not create a central learning,
+certificate or analytics service, or synchronize records between activities.
 
 Send a same-origin POST to `/_workshop/logout` to clear this service's ALB cookie
 and its shards, then visit Cognito's logout endpoint. The exact registered

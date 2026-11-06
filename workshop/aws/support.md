@@ -76,11 +76,13 @@ through the course's documented requirements; do not combine the courses'
 same-named Python packages in one environment.
 
 Published course IDs, completion rules and certificate metadata remain in the
-[content contract](../../contracts/v1/schema.json). The temporary workshop
-reader independently hides progress, persistent grading and course-certificate
-actions. It does not add a learning-record API/database or rewrite the normal
-website's metadata. Notebook edits and experiment data remain temporary, and
-manual Notebook download is available while the activity exists.
+[content contract](../../contracts/v1/schema.json). New source bundles add
+[instance-local progress](runtime/progress.md) and manual JSON transfer without
+changing the content contract or normal website records. Local acceptance does
+not qualify an older published image; new image/cloud validation remains pending.
+Certificates and a long-term learning service remain outside the workshop.
+Notebook edits and experiment data remain temporary, and manual Notebook
+download is available while the activity exists.
 
 ## Release checks
 

@@ -30,7 +30,7 @@ Terraform中只有精确的门户退出落地路径改为转发门户，其余�
 
 门户和学员runtime均增加hash绑定的 `ui.tar`。学员包离线包含完整字体和图片；门户包保留官方资源的固定URL与hash，在安装时校验下载。运行页面无CDN依赖。
 
-门户SSM安装分UI暂存和主体安装两段，各段继续小于24KB。每段绑定目标实例与payload hash，并保留自己的dispatch receipt；未知派发结果、失败或输入变化均要求对账，不自动重发。旧安装记录缺少新operation metadata时拒绝复用。
+门户SSM安装分UI暂存和主体安装两段，各段继续小于24KB。UI暂存的传输层使用标准库XZ压缩，解压后仍按原始tar的SHA256校验。每段绑定目标实例与payload hash，并保留自己的dispatch receipt；未知派发结果、失败或输入变化均要求对账，不自动重发。旧安装记录缺少新operation metadata时拒绝复用。
 
 UI在目标机安装到独立的 `ui/` 目录，由root拥有。归档拒绝路径越界、链接、特殊文件和重复项。新bundle含UI且重新计算runtime hash；既有AMI、旧runtime、TTL binding和runner镜像没有被改写或重标。使用新UI需要构建新包/新镜像并完成对应真实验收。
 

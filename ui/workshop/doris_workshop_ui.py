@@ -87,7 +87,32 @@ class Renderer:
             course=href(course), tools=rows, extra=extras)
         return self.page('My workspace', body, identity=identity)
 
-    def course(self, courses, *, course_url, notebooks, terminal):
+    def form(self, action, xsrf, label, fields=None, *, disabled=False, style='text-link', new_tab=False):
+        inputs = ''.join(f'<input type="hidden" name="{text(k)}" value="{text(v)}">' for k, v in (fields or {}).items())
+        target = ' target="_blank" rel="noopener"' if new_tab else ''
+        return (f'<form class="progress-form" method="post" action="{href(action)}"{target}>{xsrf}{inputs}'
+                f'<button class="{text(style)}" type="submit"' + (' disabled' if disabled else '') + f'>{text(label)}</button></form>')
+
+    def progress_controls(self, module, xsrf, *, lesson=False):
+        state = module['progress']
+        flags = [('course_read', 'Lesson'), ('lab_declared_complete', 'Lab'), ('quiz_passed', 'Quiz')]
+        badges = ''.join(f'<span class="credit {"earned" if state[k] else ""}">{label}: {"done" if state[k] else "to do"}</span>' for k, label in flags)
+        status = f'<div class="credit-status">{badges}<strong>{"Complete" if state["complete"] else str(state["parts"]) + " / 3"}</strong></div>'
+        if not module.get('required', True):
+            status += '<p>Optional module · excluded from main course progress.</p>'
+        if state['content_updated']:
+            status += '<p class="content-updated">Content updated since this record. Earlier credit is retained; review the current lesson and Lab.</p>'
+        if state['best_total']:
+            status += f'<p>Best Quiz score: {state["best_correct"]} / {state["best_total"]}.</p>'
+        field = 'course_read' if lesson else 'lab_declared_complete'
+        label = ('Undo read' if state[field] else 'Mark as read') if lesson else ('Undo Lab completion' if state[field] else 'Mark Lab complete')
+        status += self.form(module['mark'], xsrf, label, {'field': field, 'value': 'false' if state[field] else 'true', 'return': 'lesson' if lesson else 'outline'},
+                            disabled=not lesson and not state['lab_opened'])
+        if not lesson and not state['lab_opened']:
+            status += '<p>Open this Lab, then refresh progress to mark it complete.</p>'
+        return status
+
+    def course(self, courses, *, course_url, notebooks, terminal, progress=None):
         sections = []
         for course in courses:
             blocks = []
@@ -96,18 +121,34 @@ class Renderer:
             for level, modules in groupby(numbered, key=lambda item: item[1].get('level') if grouped else None):
                 label = course.get('levels', {}).get(str(level), f'Level {level}') if level is not None else ''
                 level_heading = f'<div class="section-heading"><h2>{text(label)}</h2><span class="muted">LEVEL {level}</span></div>' if label else ''
-                rows = ''.join(f'<article class="module"><span class="module-number" aria-hidden="true">{i:02}</span><h3>{text(module["title"])}</h3><div class="actions">'
-                    f'<a class="text-link" href="{href(module["lesson"])}">Read lesson →</a><a class="text-link" href="{href(module["lab"])}" target="_blank" rel="noopener">Open Lab ↗</a></div></article>'
-                    for i, module in modules)
+                rows = ''
+                for i, module in modules:
+                    lab = (self.form(module['open_lab'], progress['xsrf'], 'Open Lab ↗', new_tab=True) if module.get('progress') is not None else
+                           f'<a class="text-link" href="{href(module["lab"])}" target="_blank" rel="noopener">Open Lab ↗</a>')
+                    quiz = f'<a class="text-link" href="{href(module["quiz"])}" target="_blank" rel="noopener">Open Quiz ↗</a>' if module.get('quiz') else ''
+                    controls = '<div class="module-progress">' + self.progress_controls(module, progress['xsrf']) + '</div>' if module.get('progress') is not None else ''
+                    rows += (f'<article class="module"><span class="module-number" aria-hidden="true">{i:02}</span><h3>{text(module["title"])}</h3><div class="actions">'
+                             f'<a class="text-link" href="{href(module["lesson"])}">Read lesson →</a>{lab}{quiz}</div>{controls}</article>')
                 blocks.append(f'<section class="level-block">{level_heading}{rows}</section>')
             heading = f'<div class="section-heading"><h2>{text(course["title"])}</h2></div>' if len(courses) > 1 else ''
-            sections.append(f'<section class="course-outline">{heading}{"".join(blocks)}</section>')
+            overall = ''
+            if course.get('progress') is not None:
+                score = course['progress']
+                label = f'{score["percent"]:.1f}%' if score['total'] else 'Not applicable'
+                overall = (f'<div class="progress-panel"><h2>Course progress: {label}</h2>'
+                           f'<p>{score["complete"]} / {score["modules"]} required modules complete · {score["parts"]} / {score["total"]} completion items.</p>'
+                           + (f'<progress aria-label="Course progress" max="{score["total"]}" value="{score["parts"]}"></progress>' if score['total'] else '') + '</div>')
+            optional = ''
+            if course.get('optional'):
+                links = ''.join(f'<li><a href="{href(part["href"])}" target="_blank" rel="noopener">{text(part["title"])}</a></li>' for part in course['optional'])
+                optional = '<section class="progress-panel"><h2>Optional Labs</h2><p>Separate practice; these exercises do not change required module progress.</p><ul>' + links + '</ul></section>'
+            sections.append(f'<section class="course-outline">{heading}{overall}{"".join(blocks)}{optional}</section>')
         title = courses[0]['title'] if len(courses) == 1 else 'Courses & Labs'
         body = self.template('course', breadcrumb=self.breadcrumb('Course outline'), title=text(title),
-            notebooks=href(notebooks), modules=''.join(sections))
+            notebooks=href(notebooks), modules=''.join(sections), progress=self.progress_links(progress))
         return self.page(title, body, navigation=self.course_nav(course_url, notebooks, terminal, 'course'))
 
-    def lesson(self, title, html, *, course, notebooks, terminal, lab=None):
+    def lesson(self, title, html, *, course, notebooks, terminal, lab=None, module=None, xsrf=''):
         # Only the caller's existing safe Markdown renderer may supply html.
         html = re.sub(r'(<table(?: [^>]+)?>)', r'<div class="scrollbox" tabindex="0" role="region" aria-label="Scrollable lesson table">\1', html).replace('</table>', '</table></div>')
         html = html.replace('<pre>', '<pre tabindex="0" role="region" aria-label="Scrollable code example">')
@@ -117,9 +158,54 @@ class Renderer:
             contents.append(f'<a href="#{text(slug)}">{text(label)}</a>')
         toc = '<details class="toc"><summary>In this lesson</summary><nav aria-label="On this page">' + ''.join(contents) + '</nav></details>' if contents else ''
         lab_html = f'<a class="primary" href="{href(lab)}" target="_blank" rel="noopener">Open Lab <span class="arrow" aria-hidden="true">↗</span></a><p>Opens in a new tab.</p>' if lab else ''
+        controls = ''
+        if module is not None:
+            lab_html = self.form(module['open_lab'], xsrf, 'Open Lab ↗', style='primary', new_tab=True)
+            lab_html += f'<a class="text-link" href="{href(module["quiz"])}" target="_blank" rel="noopener">Open Quiz ↗</a>' if module.get('quiz') else ''
+            controls = '<section class="progress-panel" aria-label="Module progress">' + self.progress_controls(module, xsrf, lesson=True) + '</section>'
         body = self.template('lesson', breadcrumb=self.breadcrumb(title), title=text(title),
-            content=html, course=href(course), lab=lab_html, contents=toc)
+            content=html, course=href(course), lab=lab_html, contents=toc, progress=controls)
         return self.page(title, body, navigation=self.course_nav(course, notebooks, terminal, 'course'))
+
+    def progress_links(self, progress):
+        if not progress:
+            return ''
+        if progress.get('error'):
+            return '<p class="progress-alert" role="alert">Progress is unavailable. Existing records have not been reset. Reload or contact the workshop operator.</p>'
+        return (f'<section class="progress-panel"><h2>Your learning record</h2><p>Lesson, Lab and Quiz each count for one third. '
+                'Mark lessons and Labs explicitly; pass Quizzes to earn credit. Optional modules are separate.</p>'
+                f'<div class="actions"><a class="text-link" href="{href(progress["export"])}">Download progress JSON</a>'
+                f'<a class="text-link" href="{href(progress["import"])}">Import progress</a>'
+                f'<a class="text-link" href="{href(self.home)}">Refresh progress</a></div>'
+                '<details class="progress-notes"><summary>Saving and transfer</summary><p>Download before this environment expires. '
+                'Reload the outline after using a Lab or Quiz. Imports restore learning records; prepare Lab services and data again. '
+                'People sharing this account share its progress. This is a self-study record, not a certificate or examination result.</p></details></section>')
+
+    def progress_page(self, *, action, xsrf, rows=None, payload='', message='', error=False):
+        if rows is None:
+            form = (f'<form class="progress-upload" method="post" enctype="multipart/form-data" action="{href(action)}">{xsrf}'
+                    '<label for="progress-file">Progress JSON file (up to 1 MiB)</label><input id="progress-file" type="file" name="file" accept="application/json,.json" required>'
+                    '<button class="primary" type="submit">Preview import</button></form>')
+        else:
+            items = ''
+            for row in rows:
+                r = row['record']
+                state = 'Match · merge completion and best score' if row['matched'] else 'Unknown or unselected module · skip'
+                if row['content_updated']:
+                    state += ' · content updated; historical credit retained'
+                after = row['result']
+                outcome = (' · '.join(f'{label}: {"done" if after[key] else "to do"}' for key, label in
+                           [('course_read', 'Lesson'), ('lab_declared_complete', 'Lab'), ('quiz_passed', 'Quiz')])
+                           + f' · best Quiz {after["best_correct"]} / {after["best_total"]}') if after else 'Skipped'
+                items += (f'<tr><td>{text(r["course_slug"])} / {text(r["module_id"])}</td><td>{text(state)}</td>'
+                          f'<td>{text(outcome)}</td><td>{text(r["source_ref"][:12])}<br>{text(r["updated_at"])}</td></tr>')
+            form = ('<div class="scrollbox" tabindex="0" role="region" aria-label="Import matches"><table class="progress-table"><thead><tr><th>Module</th><th>Import action</th><th>After import</th><th>Source / updated</th></tr></thead><tbody>' + items + '</tbody></table></div>'
+                    '<p>Completed items are merged with your current record. Your best score and earlier Quiz pass stay. '
+                    'Importing can restore a read or Lab mark you previously cancelled. Repeated imports do not lower progress.</p>'
+                    + self.form(action, xsrf, 'Confirm import', {'payload': payload, 'confirm': 'yes'}, style='primary'))
+        notice = f'<p class="progress-alert" role="{"alert" if error else "status"}">{text(message)}</p>' if message else ''
+        body = self.template('progress', breadcrumb=self.breadcrumb('Import progress'), form=form, message=notice, home=href(self.home))
+        return self.page('Import progress', body)
 
     def terminal(self, *, course, notebooks, terminal):
         body = self.template('terminal', breadcrumb=self.breadcrumb('Web Terminal'),

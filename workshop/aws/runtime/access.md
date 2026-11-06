@@ -5,8 +5,10 @@ server as `/lab`, the Notebook APIs and terminal WebSockets. It reads the
 selected modules from `runtime.json`, built from the pinned course manifests.
 Lessons and images come from the pinned source; Lab links open the learner's
 working copies with the selected course kernel. JupyterLab retains its normal
-Save and Download actions. This reader has no learning-record API, grade store,
-completion controls, certificate service or external frontend dependency.
+Save and Download actions. New source bundles include [personal progress](progress.md)
+with explicit completion marks, Quiz credit and manual JSON export/import.
+The record stays on the assigned instance; certificates and an external
+learning-record service are outside this feature. Existing AMIs require a new release.
 
 ## Start and verify locally
 

@@ -96,5 +96,6 @@ force-unlock or lease stealing.
 
 Retain state, releases and necessary private operational evidence under the
 operator's policy. These records manage infrastructure; they are separate
-from learning progress, grades and course certificates, which the workshop
-does not persist.
+from the [personal progress record](runtime/progress.md) stored on a new learner
+runtime. Download that record before expiry to import it manually into another
+workshop. Certificates and automatic learner-data backups remain outside this scope.

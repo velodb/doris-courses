@@ -208,7 +208,8 @@ known absence and protected resources. Protected resources require cost review;
 the report does not calculate their bill. `ok` applies to the supplied module
 and state evidence at collection time. `account_globally_empty` is always false.
 Cross-account DNS, full untagged discovery and real end-to-end cleanup remain
-unverified. No progress, grades, certificates or automatic archives are added.
+unverified. New runtimes can keep [instance-local progress](runtime/progress.md),
+which learners must download before cleanup. Certificates and automatic archives are not added.
 
 Exit codes: `0` for prepared evidence, fully collected requested catalogs, or a
 passing report; `1` for incomplete catalogs or a non-passing report; `2` for invalid

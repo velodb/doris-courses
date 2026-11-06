@@ -72,6 +72,8 @@ def main(argv=None):
     parser.add_argument("--base-url", default="/")
     parser.add_argument("--certfile", type=Path)
     parser.add_argument("--keyfile", type=Path)
+    parser.add_argument("--progress-db", type=Path)
+    parser.add_argument("--no-progress", action="store_true")
     args = parser.parse_args(argv)
     # runtime_dir is selected by jupyter_core through this environment variable;
     # it is not a configurable ServerApp trait.
@@ -88,7 +90,19 @@ def main(argv=None):
     # jupyter_client. Setting it through Config is silently ineffective.
     server.kernel_spec_manager.kernel_dirs = [str(args.kernel_dir)]
     from portal import register
-    register(server, plan, args.source)
+    progress_db = None
+    if not args.no_progress and plan.get('learning_progress') is True and all(c.get('slug') for c in plan['courses']):
+        progress_db = args.progress_db or args.workspace.parent / 'progress/progress.sqlite3'
+        if progress_db.resolve().is_relative_to(args.workspace.resolve()):
+            raise ValueError('Progress storage must be outside the Notebook root.')
+        # Managed kernels and the reader share the exact same store and plan.
+        os.environ.update(DORIS_WORKSHOP_PROGRESS_DB=str(progress_db.resolve()),
+                          DORIS_WORKSHOP_PROGRESS_PLAN=str(args.runtime_json.resolve()),
+                          DORIS_WORKSHOP_PROGRESS_SOURCE=str(args.source.resolve()))
+    else:
+        for name in ('DORIS_WORKSHOP_PROGRESS_DB', 'DORIS_WORKSHOP_PROGRESS_PLAN', 'DORIS_WORKSHOP_PROGRESS_SOURCE'):
+            os.environ.pop(name, None)
+    register(server, plan, args.source, progress_db=progress_db)
     server.start()
 
 

@@ -28,23 +28,36 @@ def course_selection(config, *, repo=config_tool.REPO):
         metadata = config_tool.yaml.load(config_tool.git(repo, "show", f"{config['course_ref']}:{profile['course_dir']}/course.yaml"), Loader=config_tool.StrictLoader)
         titles = {m["id"]: m.get("title", m["id"]) for m in metadata["modules"]}
         levels = {m["id"]: m.get("level") for m in metadata["modules"]}
+        identities = {m["id"]: m for m in metadata["modules"]}
         course = courses.setdefault(profile["kernel"], {
             "course_dir": profile["course_dir"], "kernel": profile["kernel"],
             "package": "dw_course" if profile["kernel"] == "doris-dw" else "doris_course",
-            "profiles": [], "notebooks": [], "modules": [], "extensions": False,
+            "profiles": [], "notebooks": [], "modules": [], "optional": [], "extensions": False,
             "title": metadata.get("title", profile["course_dir"].rsplit("/", 1)[-1]),
             "levels": metadata.get("levels", {}),
+            "slug": metadata.get("slug"), "status": metadata["status"],
         })
         course["profiles"].append(profile_id)
         course["extensions"] |= profile_id == "dw-extensions"
         for module in profile["modules"]:
             if not any(m["id"] == module["id"] for m in course["modules"]):
-                course["modules"].append({**module, "title": titles[module["id"]], "level": levels[module["id"]]})
+                identity = identities[module["id"]]
+                version = hashlib.sha256()
+                for kind in ("course", "lab", "quiz"):
+                    version.update(config_tool.git(repo, "show", f"{config['course_ref']}:{profile['course_dir']}/{module[kind]}").encode())
+                    version.update(b"\0")
+                course["modules"].append({**module, "title": titles[module["id"]], "level": levels[module["id"]],
+                    "required": identity.get("required", False), "status": identity["status"],
+                    "content_version": version.hexdigest()})
             course["notebooks"].append(module["lab"])
             quiz = str(Path(module["quiz"]).with_suffix(".ipynb"))
             if profile["course_dir"] + "/" + quiz in files:
                 course["notebooks"].append(quiz)
         course["notebooks"].extend(path for path in profile["optional_paths"] if path.endswith(".ipynb"))
+        for module in metadata['modules']:
+            for part in module.get('optional', []):
+                if part['path'] in profile['optional_paths'] and part not in course['optional']:
+                    course['optional'].append(part)
     for course in courses.values():
         course["notebooks"] = sorted(set(course["notebooks"]))
     return list(courses.values())
@@ -77,6 +90,8 @@ def create_bundle(config_path, output, *, repo=config_tool.REPO):
             "course_ref": config["course_ref"], "runtime": runtime,
             "courses": courses,
             "sha256": {},
+            "learning_progress": "doris-course/common/doris_labkit/progress.py" in
+                config_tool.git(repo, "ls-tree", "-r", "--name-only", config["course_ref"]).splitlines(),
         }
         for name in (*PAYLOAD, "source.tar"):
             with (temporary / name).open("rb") as stream:

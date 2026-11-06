@@ -282,6 +282,10 @@ def install(bundle):
     user_config.mkdir(parents=True, exist_ok=True)
     user_config.chmod(0o700)
     os.chown(user_config, user.pw_uid, user.pw_gid)
+    progress_directory = layout.state / 'progress'
+    progress_directory.mkdir(mode=0o700, exist_ok=True)
+    progress_directory.chmod(0o700)
+    os.chown(progress_directory, user.pw_uid, user.pw_gid)
     layout.server.parent.mkdir(parents=True, exist_ok=True)
     os.chown(layout.server.parent, user.pw_uid, user.pw_gid)
     for name, directory, requirements, cwd in [

@@ -76,6 +76,7 @@ class Quiz:
     title: str
     description: str
     questions: tuple[QuizQuestion, ...]
+    passing_score_percent: int = 80
 
 
 def _text(value: Any) -> str | None:
@@ -211,6 +212,7 @@ def parse_quiz(document: Any, source: str = "quiz") -> Quiz:
         title=_text(document["title"]),
         description=_text(document["description"]),
         questions=questions,
+        passing_score_percent=document.get("passing_score_percent", 80),
     )
 
 

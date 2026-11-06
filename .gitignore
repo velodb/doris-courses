@@ -18,6 +18,8 @@ course_secrets.env
 __pycache__/
 *.egg-info/
 .ipynb_checkpoints/
+progress.sqlite3*
+doris-workshop-progress*.json
 
 # Operating system
 .DS_Store

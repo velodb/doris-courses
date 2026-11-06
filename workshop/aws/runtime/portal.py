@@ -1,10 +1,12 @@
-"""Authenticated, read-only course navigation inside the existing Jupyter server."""
+"""Authenticated course navigation and optional instance-local learning records."""
 
+import json
 import mimetypes
 from pathlib import Path
 import posixpath
 import re
 import sys
+import sqlite3
 from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 from jupyter_server.base.handlers import JupyterHandler
@@ -65,8 +67,16 @@ def render_markdown(text, current, base):
 
 
 class PortalHandler(JupyterHandler):
-    def initialize(self, plan, source):
+    def initialize(self, plan, source, progress_db=None):
         self.plan, self.source = plan, Path(source).resolve()
+        self.progress = None
+        self.modules = {}
+        if progress_db is not None:
+            sys.path.insert(0, str(self.source / 'doris-course/common'))
+            from doris_labkit import progress
+            self.progress = progress
+            self.store = progress.Store(progress_db)
+            self.modules = progress.registry(plan)
         self.ui = Renderer(asset_base=url_path_join(self.base_url, "workshop/static"),
             home=url_path_join(self.base_url, "workshop/"), help_url=url_path_join(self.base_url, "workshop/help"), home_label="Course outline")
 
@@ -80,21 +90,51 @@ class PortalHandler(JupyterHandler):
         return {"course": url_path_join(self.base_url, "workshop/"), "notebooks": url_path_join(self.base_url, "lab"),
             "terminal": url_path_join(self.base_url, "workshop/terminal")}
 
+    def module_view(self, course, module, records):
+        directory = course['course_dir']
+        row = {**module, 'lesson': content_url(self.base_url, directory + '/' + module['course']),
+               'lab': notebook_url(self.base_url, directory + '/' + module['lab'])}
+        quiz = str(Path(module['quiz']).with_suffix('.ipynb'))
+        if quiz in course.get('notebooks', []):
+            row['quiz'] = notebook_url(self.base_url, directory + '/' + quiz)
+        key = course.get('slug'), module['id']
+        if self.progress and records is not None and key in self.modules:
+            row['progress'] = self.progress.view(self.modules[key], records.get(key))
+            route = url_path_join(self.base_url, 'workshop/progress', *key)
+            row.update(mark=route + '/mark', open_lab=route + '/lab')
+        return row
+
+    def xsrf_html(self):
+        return self.xsrf_form_html()
+
+    def progress_error(self, message='Progress was not saved. Your existing record is unchanged. Reload and try again.', status=503):
+        self.set_status(status)
+        self.page(self.ui.progress_page(action=url_path_join(self.base_url, 'workshop/progress/import'),
+                                      xsrf=self.xsrf_html(), message=message, error=True))
+
 
 class IndexHandler(PortalHandler):
     @web.authenticated
     def get(self):
         courses = []
+        records, progress_ui = None, None
+        if self.progress:
+            progress_ui = {'xsrf': self.xsrf_html(), 'export': url_path_join(self.base_url, 'workshop/progress/export'),
+                           'import': url_path_join(self.base_url, 'workshop/progress/import')}
+            try:
+                records = self.store.records()
+            except (OSError, sqlite3.Error, ValueError):
+                progress_ui['error'] = True
         for course in self.plan["courses"]:
-            directory = course["course_dir"]
-            modules = []
-            for module in course.get("modules", []):
-                lesson = content_url(self.base_url, directory + "/" + module["course"])
-                lab = notebook_url(self.base_url, directory + "/" + module["lab"])
-                modules.append({"title": module.get("title", module["id"]), "lesson": lesson, "lab": lab, "level": module.get("level")})
-            courses.append({"title": course.get("title", directory.rsplit("/", 1)[-1]), "modules": modules, "levels": course.get("levels", {})})
+            modules = [self.module_view(course, module, records) for module in course.get('modules', [])]
+            row = {'title': course.get('title', course['course_dir'].rsplit('/', 1)[-1]), 'modules': modules, 'levels': course.get('levels', {})}
+            row['optional'] = [{'title': part['title'], 'href': notebook_url(self.base_url, course['course_dir'] + '/' + part['path'])}
+                               for part in course.get('optional', []) if part['path'] in course.get('notebooks', [])]
+            if self.progress and records is not None:
+                row['progress'] = self.progress.summary([m for (slug, _), m in self.modules.items() if slug == course['slug']], records)
+            courses.append(row)
         links = self.course_links()
-        self.page(self.ui.course(courses, course_url=links["course"], notebooks=links["notebooks"], terminal=links["terminal"]))
+        self.page(self.ui.course(courses, course_url=links["course"], notebooks=links["notebooks"], terminal=links["terminal"], progress=progress_ui))
 
 
 class ContentHandler(PortalHandler):
@@ -109,10 +149,21 @@ class ContentHandler(PortalHandler):
             heading = re.match(r"^#\s+([^\n]+)\n", source)
             title = heading[1] if heading else target.stem
             source = source[heading.end():] if heading else source
-            lab = next((notebook_url(self.base_url, course["course_dir"] + "/" + module["lab"])
-                for course in self.plan["courses"] for module in course.get("modules", [])
-                if path == course["course_dir"] + "/" + module["course"]), None)
-            self.page(self.ui.lesson(title, render_markdown(source, path, self.base_url), lab=lab, **self.course_links()))
+            selected = next(((course, module) for course in self.plan['courses'] for module in course.get('modules', [])
+                             if path == course['course_dir'] + '/' + module['course']), None)
+            lab, row = None, None
+            if selected:
+                course, module = selected
+                lab = notebook_url(self.base_url, course['course_dir'] + '/' + module['lab'])
+                if self.progress:
+                    try:
+                        row = self.module_view(course, module, self.store.records())
+                        if 'progress' not in row:
+                            row = None
+                    except (OSError, sqlite3.Error, ValueError):
+                        return self.progress_error()
+            self.page(self.ui.lesson(title, render_markdown(source, path, self.base_url), lab=lab,
+                                     module=row, xsrf=self.xsrf_html() if row else '', **self.course_links()))
         elif target.suffix.lower() in {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"}:
             self.set_header("Content-Type", mimetypes.guess_type(str(target))[0])
             self.set_header("X-Content-Type-Options", "nosniff")
@@ -153,13 +204,105 @@ class HelpHandler(PortalHandler):
         self.page(self.ui.state("help"))
 
 
-def register(server, plan, source):
+class ProgressHandler(PortalHandler):
+    def check_xsrf_cookie(self):
+        # Jupyter normally exempts token-authenticated requests. The gateway
+        # injects its token for every learner request, so require form XSRF here.
+        web.RequestHandler.check_xsrf_cookie(self)
+        origin = self.request.headers.get('Origin')
+        if origin and origin not in {f'{self.request.protocol}://{self.request.host}', f'https://{self.request.host}'}:
+            raise web.HTTPError(403, 'Cross-origin progress writes are not allowed.')
+
+    def require_progress(self):
+        if not self.progress:
+            raise web.HTTPError(404)
+        if len(self.request.body) > self.progress.MAX_BYTES * 4 + 65536:
+            raise web.HTTPError(413, 'Progress files must be at most 1 MiB.')
+
+
+class MarkHandler(ProgressHandler):
+    @web.authenticated
+    def post(self, slug, module_id, action):
+        self.require_progress()
+        module = self.modules.get((slug, module_id))
+        if module is None:
+            raise web.HTTPError(404)
+        try:
+            if action == 'lab':
+                self.store.mark(module, 'lab_opened')
+                destination = notebook_url(self.base_url, module['course_dir'] + '/' + module['lab'])
+            else:
+                field, value = self.get_body_argument('field'), self.get_body_argument('value')
+                if field not in {'course_read', 'lab_declared_complete'} or value not in {'true', 'false'}:
+                    raise self.progress.ProgressError('Invalid completion operation.')
+                self.store.mark(module, field, value == 'true')
+                destination = (content_url(self.base_url, module['course_dir'] + '/' + module['course'])
+                               if self.get_body_argument('return', 'outline') == 'lesson' else self.course_links()['course'])
+        except self.progress.ProgressError as exc:
+            return self.progress_error(str(exc), 400)
+        except (OSError, sqlite3.Error, ValueError):
+            return self.progress_error()
+        self.redirect(destination, status=303)
+
+
+class ExportHandler(ProgressHandler):
+    @web.authenticated
+    def get(self):
+        self.require_progress()
+        try:
+            data = self.store.export()
+        except (OSError, sqlite3.Error, ValueError):
+            return self.progress_error('The progress file could not be downloaded. Your record has not been reset.')
+        self.set_header('Cache-Control', 'no-store')
+        self.set_header('Content-Type', 'application/json')
+        self.set_header('Content-Disposition', 'attachment; filename="doris-workshop-progress.json"')
+        self.set_header('X-Content-Type-Options', 'nosniff')
+        self.finish(data)
+
+
+class ImportHandler(ProgressHandler):
+    def render_import(self, **kwargs):
+        self.page(self.ui.progress_page(action=url_path_join(self.base_url, 'workshop/progress/import'),
+                                       xsrf=self.xsrf_html(), **kwargs))
+
+    @web.authenticated
+    def get(self):
+        self.require_progress()
+        self.render_import()
+
+    @web.authenticated
+    def post(self):
+        self.require_progress()
+        try:
+            if self.get_body_argument('confirm', '') == 'yes':
+                raw = self.get_body_argument('payload')
+                document = self.progress.validate_document(raw)
+                count = self.store.import_document(document, self.modules)
+                self.render_import(message=f'Import saved for {count} matching modules. Unknown or unselected modules were skipped. Return to the outline to see your progress.')
+            else:
+                files = self.request.files.get('file', [])
+                if len(files) != 1:
+                    raise self.progress.ProgressError('Choose one progress JSON file.')
+                raw = files[0]['body']
+                document = self.progress.validate_document(raw)
+                rows = self.store.preview(document, self.modules)
+                self.render_import(rows=rows, payload=json.dumps(document, separators=(',', ':')))
+        except self.progress.ProgressError as exc:
+            self.progress_error(str(exc), 400)
+        except (OSError, sqlite3.Error, ValueError):
+            self.progress_error()
+
+
+def register(server, plan, source, progress_db=None):
     prefix = url_path_join(server.base_url, "workshop")
-    options = {"plan": plan, "source": source}
+    options = {"plan": plan, "source": source, "progress_db": progress_db}
     server.web_app.add_handlers(".*$", [
         (prefix + "/?", IndexHandler, options),
         (prefix + "/terminal", TerminalHandler, options),
         (prefix + "/help", HelpHandler, options),
         (prefix + "/static/([^/]+)", AssetHandler, options),
         (prefix + "/content/(.*)", ContentHandler, options),
+        (prefix + "/progress/([a-z0-9-]+)/([a-z0-9-]+)/(mark|lab)", MarkHandler, options),
+        (prefix + "/progress/export", ExportHandler, options),
+        (prefix + "/progress/import", ImportHandler, options),
     ])

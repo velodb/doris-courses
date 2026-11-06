@@ -183,8 +183,9 @@ controlled process. `auth.config_ref` identifies that configuration and never
 contains its secret values. Keep Terraform state and deployment credentials
 off learner instances. `aws_profile` is local input and is omitted from manifests.
 
-This configuration adds no learning progress, persistent grades, completion
-certificates, automatic learner backups or required learning-record backend.
+New source runtimes support [instance-local progress and manual JSON
+transfer](runtime/progress.md); existing AMIs require a new verified release.
+No long-term learning backend, certificates or automatic learner backups are required.
 Lab files and teaching data can still persist on the instance during an event;
 destroying or rebuilding an instance does not preserve them.
 

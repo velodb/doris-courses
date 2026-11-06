@@ -218,10 +218,17 @@ class RuntimeTests(unittest.TestCase):
             course = self.plan["courses"][0]
             notebook = self.layout.workspace / course["course_dir"] / self.lab
             notebook.write_text("learner exercise\n")
+            import sqlite3
+            progress_file = self.layout.state / 'progress/progress.sqlite3'
+            with sqlite3.connect(progress_file) as connection:
+                connection.execute('CREATE TABLE preserved (record TEXT)')
+                connection.execute("INSERT INTO preserved VALUES ('learner progress')")
+            progress_bytes = progress_file.read_bytes()
             calls.clear()
             host.install(self.bundle)
             self.assertEqual(calls, [])
             self.assertEqual(notebook.read_text(), "learner exercise\n")
+            self.assertEqual(progress_file.read_bytes(), progress_bytes)
 
     def test_locked_install_keeps_root_owned_locks_readable_with_private_umask(self):
         bundle = Path(self.case_dir.name) / "locked-bundle"

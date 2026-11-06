@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import pwd
+import sqlite3
 import subprocess
 import sys
 import urllib.request
@@ -65,6 +66,14 @@ def main():
     server_token = Path('/run/doris-workshop/token')
     checks['no-containers'] = not call('docker','ps','-aq')
     checks['no-volumes'] = not call('docker','volume','ls','-q')
+    progress_db = Path('/var/lib/doris-workshop/progress/progress.sqlite3')
+    checks['no-learning-records'] = True
+    if progress_db.exists():
+        try:
+            with sqlite3.connect(f'file:{progress_db}?mode=ro', uri=True) as progress_connection:
+                checks['no-learning-records'] = progress_connection.execute('SELECT count(*) FROM progress').fetchone()[0] == 0
+        except sqlite3.Error:
+            checks['no-learning-records'] = False
     workspace = Path('/var/lib/doris-workshop/workspace')
     notebooks = []
     for course in runtime['courses']:

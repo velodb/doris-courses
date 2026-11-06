@@ -149,7 +149,8 @@ Each activity entry has its own origin and `/oauth2/idpresponse` callback.
 Multiple activity pools therefore do not compete for one root-host callback.
 The root list contains activity IDs, with no accounts or service assignments.
 Other root paths retain the listener's 403 response. Portal pages are not cached
-and do not record progress, grades or course completion.
+and do not themselves store learning progress. New learner runtimes support
+[instance-local progress](runtime/progress.md) behind the same assignment checks.
 
 Deploy this explicit interface using separately reviewed Terraform plans:
 

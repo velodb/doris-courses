@@ -6,7 +6,7 @@ import tarfile
 ROOT = Path(__file__).resolve().parent
 FILES = ('doris_workshop_ui.py', 'service_guidance.py', 'install_assets.py', 'src/styles.css', 'src/copy.json', 'src/services.json',
     'assets/doris-trimmed.svg', 'assets/runtime-downloads.json', 'assets/manrope-OFL.txt',
-    *(f'src/templates/{name}.html' for name in ('page', 'activities', 'workspace', 'course', 'lesson', 'terminal', 'state')))
+    *(f'src/templates/{name}.html' for name in ('page', 'activities', 'workspace', 'course', 'lesson', 'terminal', 'state', 'progress')))
 
 
 def archive(*, offline=False):

@@ -43,6 +43,6 @@ node ui/workshop/scripts/verify-preview.cjs
 
 RTA 服务入口标明启动实验：single FE 是 Lab 1 启动的 1 FE + 1 BE 环境；Multi-FE 是 Lab 9 的独立 3 FE + 3 BE 集群，并提供 Lab 9 链接。入口显示不代表服务已运行。已认证学员打开尚不可连接的服务页面时，会看到对应启动步骤、Lab 链接与重试入口；API 和 WebSocket 仍返回原来的错误状态。此页面不启动或重置实验服务。
 
-不提供学习记录、持久成绩、证书或资源管理 UI。唯一 localStorage 数据是设计预览的布局密度和字号，账号、会话、路径、模块和成绩均不写入。
+新增的本地学习进度沿用现有组件：讲义 / Lab / Quiz 各占 1/3，由服务端 SQLite 保存，支持 JSON 下载、预览和确认合并导入。UI 负责展示和表单，存储与校验仍在公共运行组件及课程 handler；详见[英文使用说明](../../workshop/aws/runtime/progress.md)。此功能尚待新的云端制品 / 新实例验收，旧 AMI 不因此获得新功能。证书和资源管理 UI 未纳入。localStorage 仍只用于设计预览的布局密度和字号。
 
 设计规格和状态交接见 [A 设计规范](review/selected/design-system.md)、[页面及状态](review/selected/pages-and-states.md)、[实现交接](review/selected/implementation.md)。方向选择见 [确认记录](review/direction-approved.md)。初稿保留在 三版比较页 `review/index.html`。

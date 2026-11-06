@@ -40,8 +40,9 @@ fields in the event configuration are deferred for this SSM-only run.
 Use stable learner map keys and Project/Event/Owner/Scope tags. Tags help
 reconciliation; they do not replace state or grant authority to delete a
 resource. Keep bootstrap state, backend configuration and operational records
-outside learner instances. No LMS, progress database, persistent grades,
-completion certificates or automatic learner-data archive is required.
+outside learner instances. New runtimes keep [personal progress](runtime/progress.md)
+in SQLite on each assigned instance. No central LMS, long-term grade backend,
+completion certificate or automatic learner-data archive is required.
 
 The learner can control Docker, so treat the instance role as learner-accessible.
 It receives SSM agent channels and read access to its exact runtime-code prefix,

@@ -1,7 +1,9 @@
 # Host runtime for AWS workshops
 
 The authenticated [course reader and terminal entry](access.md) share the
-Jupyter login at `/workshop/`. The page contains no learning-record controls.
+Jupyter login at `/workshop/`. New source bundles add [personal learning
+progress](progress.md), including local saving and manual JSON export/import.
+Existing published AMIs require a new release before supporting that feature.
 
 The runtime bundle installs the selected courses on a dedicated Ubuntu 24.04
 x86_64 host. Each course gets a Python 3.12 virtual environment, a distinct
@@ -133,6 +135,7 @@ the learner runs the Labs; the image guide lists the remaining online access.
 | `/opt/doris-workshop/server-venv` | Separate JupyterLab server environment |
 | `/var/lib/doris-workshop/workspace` | Repository-shaped course materials and selected Notebook working copies |
 | `/var/lib/doris-workshop/home` | Fresh local home for `workshop` |
+| `/var/lib/doris-workshop/progress/progress.sqlite3` | Private instance-local learning record; outside the Notebook root |
 | `/usr/local/share/doris-workshop/jupyter/kernels` | Managed `doris-rta`, `doris-dw`, `doris-obs` and/or `doris-ai` kernelspecs |
 | `/usr/local/lib/doris-workshop` | Runtime helper programs |
 | `/etc/doris-workshop/runtime.json` | Non-secret installed runtime plan |
