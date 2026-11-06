@@ -17,7 +17,7 @@ PrivateTmp=true
 UMask=0077
 LimitNOFILE=4096
 StandardOutput=null
-StandardError=null
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target

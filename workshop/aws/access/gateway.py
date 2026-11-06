@@ -10,6 +10,7 @@ import importlib.util
 from functools import lru_cache
 from http.cookies import SimpleCookie
 import json
+import logging
 import math
 from pathlib import Path
 import re
@@ -29,6 +30,7 @@ HOST = re.compile(r"(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}")
 KID = re.compile(r"[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}")
 SESSION = web.AppKey("session", ClientSession)
 VERIFIER = web.AppKey("verifier", object)
+LOG = logging.getLogger('workshop.connection')
 
 
 class Denied(ValueError):
@@ -259,6 +261,9 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
             host = request.headers["Host"]
             service = config["services"].get(host)
             if service is None or time.time() >= activity_expiry:
+                if service is not None:
+                    return web.Response(status=403, text='Workshop has ended.\n',
+                        headers={'Cache-Control': 'no-store', 'X-Workshop-Access': 'expired'})
                 raise Denied(403)
             # This landing page must not trigger a fresh ALB login after logout.
             if request.path == "/_workshop/logged-out":
@@ -273,6 +278,20 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
             if websocket or request.method not in {"GET", "HEAD", "OPTIONS"}:
                 if request.headers.get("Origin") != "https://" + host:
                     raise Denied(403)
+            if service['jupyter'] and request.method in {'GET', 'HEAD'}:
+                if request.path == '/_workshop/session':
+                    return web.json_response({'expires_at': config['expires_at']}, headers={'Cache-Control': 'no-store'})
+                if request.path in {'/_workshop/session_recovery.js', '/_workshop/session_recovery.css'}:
+                    name = request.path.rsplit('/', 1)[1]
+                    return web.Response(body=Path(__file__).with_name(name).read_bytes(),
+                        content_type='text/javascript' if name.endswith('.js') else 'text/css',
+                        headers={'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff'})
+                if request.path == '/_workshop/reauth':
+                    return web.Response(text='<!doctype html><html><head><meta charset="utf-8">'
+                        '<title>Workshop sign-in restored</title><script src="/_workshop/session_recovery.js" defer></script>'
+                        '</head><body><p>Sign-in restored. You can close this window and return to your notebook.</p></body></html>',
+                        content_type='text/html', headers={'Cache-Control': 'no-store',
+                            'Content-Security-Policy': "default-src 'none'; script-src 'self'; base-uri 'none'; frame-ancestors 'none'"})
             if request.path == "/_workshop/logout":
                 if request.method != "POST":
                     raise Denied(405)
@@ -292,13 +311,23 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                 headers["Cookie"] = "; ".join(safe)
             if service["jupyter"]:
                 headers["Authorization"] = "token " + Path(token_file).read_text().strip()
+            lab_document = (service['jupyter'] and request.method == 'GET' and
+                (request.path == '/lab' or request.path.startswith('/lab/')) and
+                'text/html' in request.headers.get('Accept', ''))
+            if lab_document:
+                headers['Accept-Encoding'] = 'identity'
+                # A pre-overlay cached page must not bypass bootstrap injection
+                # through an upstream 304 after the learner refreshes the tab.
+                headers.pop('If-None-Match', None)
+                headers.pop('If-Modified-Since', None)
             port = resolve_port(service, config, registry_file)
             target = URL(f'http://127.0.0.1:{port}{request.raw_path}', encoded=True)
             if websocket:
                 protocols = tuple(s.strip() for s in request.headers.get("Sec-WebSocket-Protocol", "").split(",") if s.strip())
                 async with app[SESSION].ws_connect(target, headers=headers, protocols=protocols,
-                                                      autoclose=True, max_msg_size=64 * 1024**2) as upstream:
-                    downstream = web.WebSocketResponse(protocols=[upstream.protocol] if upstream.protocol else (), max_msg_size=64 * 1024**2)
+                                                      autoclose=True, heartbeat=30, max_msg_size=64 * 1024**2) as upstream:
+                    downstream = web.WebSocketResponse(protocols=[upstream.protocol] if upstream.protocol else (),
+                        heartbeat=30, max_msg_size=64 * 1024**2)
                     await downstream.prepare(request)
 
                     async def pump(source, destination):
@@ -319,7 +348,13 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                         for task in tasks:
                             task.cancel()
                         await asyncio.gather(*tasks, return_exceptions=True)
-                        await downstream.close()
+                        expired = time.time() >= expiry
+                        ended = time.time() >= activity_expiry
+                        reason = 'workshop_expired' if ended else 'identity_expired' if expired else 'peer_closed'
+                        LOG.warning('workshop_socket_closed reason=%s service=%s', reason,
+                                    'jupyter' if service['jupyter'] else 'course')
+                        await downstream.close(code=4003 if ended else 4001 if expired else 1000,
+                            message=reason.encode())
                     return downstream
             # A browser cannot follow a cross-origin 307 with Authorization and an
             # unsafe Origin. Only opted-in FEs of this learner may relay such a
@@ -344,6 +379,21 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                         upstream = await stack.enter_async_context(app[SESSION].request(
                             request.method, next_target, headers=headers, data=body, allow_redirects=False))
                 outgoing = [(k, v) for k, v in clean_headers(upstream.headers) if k.lower() not in {"set-cookie", "location"}]
+                if lab_document and upstream.status == 200 and upstream.content_type == 'text/html':
+                    document = await upstream.read()
+                    if (not upstream.headers.get('Content-Encoding') and len(document) < 2 * 1024**2
+                            and b'</head>' in document):
+                        document = document.replace(b'</head>',
+                            b'<link rel="stylesheet" href="/_workshop/session_recovery.css">'
+                            b'<script src="/_workshop/session_recovery.js"></script></head>', 1)
+                        outgoing = [(k, v) for k, v in outgoing if k.lower() not in {'etag', 'content-md5', 'cache-control'}]
+                        outgoing.append(('Cache-Control', 'no-store'))
+                    response = web.Response(status=upstream.status, body=document, headers=outgoing)
+                    response.headers['Strict-Transport-Security'] = 'max-age=31536000'
+                    response.headers['X-Content-Type-Options'] = 'nosniff'
+                    for value in secure_cookies(upstream.headers):
+                        response.headers.add('Set-Cookie', value)
+                    return response
                 response = web.StreamResponse(status=upstream.status, headers=outgoing)
                 response.headers["Strict-Transport-Security"] = "max-age=31536000"
                 response.headers["X-Content-Type-Options"] = "nosniff"
@@ -361,10 +411,12 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                 await response.write_eof()
                 return response
         except Denied as error:
+            LOG.warning('workshop_access_denied status=%s', error.status)
             if error.status == 503:
                 return unavailable_response(request, config, host, authorized)
             return web.Response(status=error.status, text="Workshop access denied.\n", headers={"Cache-Control": "no-store"})
         except (OSError, asyncio.TimeoutError, ClientError):
+            LOG.warning('workshop_upstream_unavailable')
             return unavailable_response(request, config, host, authorized)
 
     app.router.add_route("*", "/{tail:.*}", handle)

@@ -132,6 +132,10 @@ directories, with operator-only permissions. Install
    explicit `--retry-failed` with at most three attempts. Enrolled TTL revisions
    must be cancelled before rollout and supplied with `--ttl-binding`.
 
+   Recovery assets and the installer use separate bounded SSM stages, each with
+   its own durable dispatch receipt. The installer verifies the complete overlay
+   manifest, including the previously staged assets, before installing anything.
+
    The installer checks activity, learner, expiry and overlay hashes. It installs
    an independent gateway venv and Jupyter launch wrapper; it does not modify
    the fixed AMI. Gateway installation is not authenticated browser acceptance.
@@ -161,6 +165,29 @@ configuration; the gateway authenticates to loopback Jupyter with that token.
 The Jupyter wrapper accepts the gateway's canonical proxy headers while keeping
 the original loopback-only listener.
 
+The gateway adds a small recovery script before JupyterLab starts. A same-origin
+session check every 30 seconds lets ALB refresh its identity claims. WebSocket
+ping/pong keeps idle network connections responsive; sockets still close at the
+signed identity or activity expiry. JupyterLab reconnects using a fresh signed
+handshake without restarting the Python kernel.
+
+If an API read encounters an authentication denial or login redirect, the script
+keeps that read pending and offers **Sign in to reconnect**. The button opens a
+separate sign-in window, preserving the notebook page and unsaved edits. After
+the authenticated session check succeeds, only GET/HEAD requests resume. Writes,
+kernel starts/restarts and cell messages are never replayed by the recovery
+script. Aborted reads remain abortable. HTTP 404 still represents a missing
+kernel rather than a refreshable login. Genuine network failures retain their
+network error handling. Activity expiry has a separate terminal message and
+cannot be extended through re-login.
+
+Gateway journal diagnostics record close reasons and denial status only; they
+do not record credentials, request query strings, notebook content or cell
+messages. A gateway-only rollout preserves Jupyter and kernel processes, but
+existing browser tabs must save their work and refresh once to load the recovery
+script. The normal full installer also configures the Jupyter launch wrapper and
+therefore restarts Jupyter; do not use it for a live gateway-only patch.
+
 Applications retain their own login where required. Each service gets its own
 origin and host-only Secure cookies. The outer ALB session never grants a user
 another learner's service. No progress, grades, certificate or learning analytics
@@ -187,6 +214,23 @@ entry logout and re-login. A real ALB-signed identity was rejected after natural
 expiry and its idle WebSocket closed; a separate 3600-second ALB authentication
 session also expired while a later session remained usable. These checks cover
 the tested events and do not certify account recovery or every future deployment.
+
+The recovery browser acceptance uses a real local JupyterLab and gateway with
+simulated ALB authentication; it does not require or change an AWS account:
+
+```bash
+PYTHONPATH=tools/tests python tools/tests/session_recovery_fixture.py \
+  --output workshop/aws/.local/recovery-acceptance --soak-seconds 3700
+```
+
+Install the runtime test requirements and Playwright first, and set
+`PLAYWRIGHT_MODULE` to its installed module path. The fixture checks identity
+expiry during execution, authentication denial and redirects, a separate sign-in
+window, two browsers on one notebook, process/variable/edit preservation, write
+non-replay, missing kernels and workshop expiry. Its optional soak crosses
+15-minute signed-identity and 3600-second authentication-session boundaries.
+These local simulations supplement the earlier cloud checks; they do not certify
+the recovery behavior of a future live ALB deployment by themselves.
 
 References: [ALB signed claims and logout](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/listener-authenticate-users.html),
 [Cognito user pools](https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools.html).

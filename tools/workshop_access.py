@@ -40,7 +40,7 @@ PUBLIC_ENV = {"rta-metabase": "DORIS_RTA_METABASE_PUBLIC_URL", "dw-superset": "D
     "obs-grafana": "DORIS_OBS_GRAFANA_PUBLIC_URL", "obs-demo": "DORIS_OBS_DEMO_PUBLIC_URL", "obs-litefuse": "DORIS_OBS_LITEFUSE_PUBLIC_URL"}
 DEFAULT_REDIRECTS = {f"rta-fe{index + 1}": [f"http://172.31.91.{40 + index}:8030"] for index in range(3)}
 OVERLAY = wc.REPO / "workshop/aws/access"
-OVERLAY_FILES = {"gateway.py", "jupyter_gateway.py", "requirements.txt", "doris-workshop-gateway.service", "install_gateway.sh", "operations.py", "service_guidance.py"}
+OVERLAY_FILES = {"gateway.py", "jupyter_gateway.py", "requirements.txt", "doris-workshop-gateway.service", "install_gateway.sh", "operations.py", "service_guidance.py", "session_recovery.js", "session_recovery.css"}
 PORTAL_FILES = {"portal.py", "gateway.py", "requirements.txt", "install_portal.sh", "doris-workshop-portal.service", "ui.tar"}
 
 

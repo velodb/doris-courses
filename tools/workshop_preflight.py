@@ -591,7 +591,8 @@ def tool_hash():
              Path(__file__).with_name('workshop_release.py'), SPEC / 'runtime/start_image.py']
     paths.extend(Path(__file__).with_name(name) for name in ('workshop_access.py', 'workshop_routing.py', 'workshop_batch.py', 'workshop_cleanup.py', 'workshop_scan.py', 'workshop_ttl.py', 'workshop_shared_preflight.py', 'workshop_shared_cleanup.py', 'workshop_gateway_deploy.py', 'workshop_bindings_create.py', 'workshop_bindings_review.py', 'workshop_bindings_update.py', 'workshop_portal_install.py', 'workshop_portal_update.py', 'workshop.py'))
     paths.extend(SPEC / 'access' / name for name in ('gateway.py', 'portal.py', 'jupyter_gateway.py', 'requirements.txt',
-                 'doris-workshop-gateway.service', 'install_gateway.sh', 'doris-workshop-portal.service', 'install_portal.sh'))
+                 'doris-workshop-gateway.service', 'install_gateway.sh', 'doris-workshop-portal.service', 'install_portal.sh',
+                 'session_recovery.js', 'session_recovery.css'))
     paths.append(SPEC / 'operations/node.py')
     paths.append(wc.REPO / 'ui/workshop/service_guidance.py')
     return wc.canonical_hash({str(p.relative_to(wc.REPO)): file_hash(p) for p in paths})

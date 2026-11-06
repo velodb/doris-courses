@@ -3,7 +3,7 @@
 
 import argparse
 import base64
-import gzip
+import lzma
 import hashlib
 import io
 import json
@@ -26,7 +26,7 @@ def require(condition, message):
         raise wc.ConfigError("gateway deployment: " + message)
 
 
-def payload(plan, config, learner):
+def payload(plan, config, learner, *, assets=False):
     """Pack only checked-in installer files and the validated learner config."""
     files = {}
     for name in access.OVERLAY_FILES:
@@ -41,32 +41,34 @@ def payload(plan, config, learner):
     require(all(re.fullmatch(r"[A-Z][A-Z0-9_]*", key) and re.fullmatch(r"[a-zA-Z0-9:/._-]+", value)
                 for key, value in values.items()), "unsafe environment value")
     files["browser.env"] = "".join(f"{k}={v}\n" for k, v in sorted(values.items())).encode()
+    recovery_assets = {'session_recovery.js', 'session_recovery.css'}
+    files = {name: data for name, data in files.items() if (name in recovery_assets) == assets}
     archive = io.BytesIO()
     with tarfile.open(fileobj=archive, mode="w") as tar:
         for name, data in sorted(files.items()):
             entry = tarfile.TarInfo(name)
             entry.size, entry.mode, entry.mtime = len(data), 0o600, 0
             tar.addfile(entry, io.BytesIO(data))
-    packed = gzip.compress(archive.getvalue(), mtime=0)
-    encoded = base64.b64encode(packed).decode()
+    packed = lzma.compress(archive.getvalue(), preset=9)
+    encoded = base64.b85encode(packed).decode()
+    require("'" not in encoded, 'unsafe archive encoding')
     digest = hashlib.sha256(packed).hexdigest()
-    commands = ["set -eu", "umask 077", "install -d -m 0700 /var/lib/doris-workshop-gateway-install",
-                ": > /var/lib/doris-workshop-gateway-install/bundle.b64"]
-    commands.extend("printf '%s' '" + encoded[i:i + 4000] + "' >> /var/lib/doris-workshop-gateway-install/bundle.b64"
+    commands = ["set -eu", "umask 077", "gateway_stage=/var/lib/doris-workshop-gateway-install",
+                'install -d -m 0700 "$gateway_stage"', ': > "$gateway_stage/bundle.b85"']
+    commands.extend("printf '%s' '" + encoded[i:i + 4000] + "' >> \"$gateway_stage/bundle.b85\""
                     for i in range(0, len(encoded), 4000))
     commands.append("python3.12 - <<'PY'\nimport base64,hashlib,io,pathlib,tarfile\n"
         "p=pathlib.Path('/var/lib/doris-workshop-gateway-install')\n"
-        "b=base64.b64decode((p/'bundle.b64').read_text(),validate=True)\n"
+        "b=base64.b85decode((p/'bundle.b85').read_text())\n"
         + "assert hashlib.sha256(b).hexdigest()==" + repr(digest) + "\n"
-        "with tarfile.open(fileobj=io.BytesIO(b),mode='r:gz') as t:\n"
+        "with tarfile.open(fileobj=io.BytesIO(b),mode='r:xz') as t:\n"
         + " assert {m.name for m in t.getmembers()}==" + repr(set(files)) + "\n"
         " for m in t.getmembers():\n"
         "  assert m.isfile() and m.size<100000\n"
         "  (p/m.name).write_bytes(t.extractfile(m).read())\nPY")
-    commands.extend([
-        "bash /var/lib/doris-workshop-gateway-install/install_gateway.sh /var/lib/doris-workshop-gateway-install "
-        "/var/lib/doris-workshop-gateway-install/gateway.json /var/lib/doris-workshop-gateway-install/browser-urls.json "
-        "/var/lib/doris-workshop-gateway-install/browser.env",
+    commands.extend(["printf 'gateway-assets-ready\\n'"] if assets else [
+        'bash "$gateway_stage/install_gateway.sh" "$gateway_stage" "$gateway_stage/gateway.json" '
+        '"$gateway_stage/browser-urls.json" "$gateway_stage/browser.env"',
         "systemctl is-active --quiet doris-workshop-gateway.service",
         "systemctl is-active --quiet doris-workshop-jupyter.service", "printf 'gateway-ready\\n'",
     ])
@@ -137,53 +139,63 @@ def install(controller, plan, identity, subjects, *, learner=None, timeout=900, 
     selected = sorted(instances if learner is None else [learner])
     deadline = clock() + timeout
     results = {}
-    installs = controller.record.setdefault("gateway_installations", {})
     for who in selected:
         instance = instances[who]
-        commands, digest = payload(plan, configs[who], who)
-        require(controller.binding.get("tool_sha256") == pf.tool_hash(),
-                "gateway source changed while preparing the installation")
-        previous = installs.get(instance)
-        if previous:
-            require(previous.get("learner_id") == who and previous.get("payload_sha256") == digest,
-                    "existing installation is bound to different inputs; reconcile it first")
-            require(previous.get("status") != "dispatching" and previous.get("command_id"),
-                    "dispatch outcome unknown; reconcile SSM history before retrying")
-            if previous.get("status") == "Success":
-                results[who] = {"instance_id": instance, "status": "Success", "reused": True}
-                continue
-            if previous.get("status") in {"Failed", "Cancelled", "TimedOut"}:
-                require(retry_failed and previous.get("attempts", 0) < 3, "failed installation requires explicit bounded retry")
-                previous = None
-        if previous is None:
-            attempts = installs.get(instance, {}).get("attempts", 0) + 1
-            installs[instance] = {"learner_id": who, "payload_sha256": digest, "attempts": attempts, "status": "dispatching"}
-            controller.save()
-            result = controller.cloud.dispatch_client().send_command(InstanceIds=[instance], DocumentName="AWS-RunShellScript",
-                Parameters={"commands": commands, "executionTimeout": ["600"]}, TimeoutSeconds=600)
-            installs[instance].update(status="Pending", command_id=result["Command"]["CommandId"])
-            controller.save()
-        row = installs[instance]
-        while True:
-            try:
-                result = controller.cloud.client("ssm").get_command_invocation(CommandId=row["command_id"], InstanceId=instance)
-            except controller.cloud.client("ssm").exceptions.InvocationDoesNotExist:
-                result = {"Status": "Pending"}
-            status = result["Status"]
-            require(status in {"Pending", "InProgress", "Delayed", "Success", "Failed", "Cancelled", "Cancelling", "TimedOut"},
-                    "unknown SSM status; reconcile before retrying")
-            row["status"] = ("Failed" if status == "Success" and
-                             "gateway-ready" not in result.get("StandardOutputContent", "") else status)
-            controller.save()
-            if status in {"Success", "Failed", "Cancelled", "TimedOut"}:
-                break
-            require(clock() < deadline, "installation is still pending; reconcile before retrying")
-            sleep(min(5, max(0, deadline - clock())))
-        require(row["status"] == "Success",
-                "gateway installation failed or returned an invalid result; inspect private target logs")
-        results[who] = {"instance_id": instance, "status": "Success", "reused": False}
+        asset_reused = install_step(controller, plan, configs[who], who, instance, assets=True,
+            deadline=deadline, retry_failed=retry_failed, clock=clock, sleep=sleep)
+        reused = install_step(controller, plan, configs[who], who, instance, assets=False,
+            deadline=deadline, retry_failed=retry_failed, clock=clock, sleep=sleep)
+        results[who] = {"instance_id": instance, "status": "Success", "reused": reused and asset_reused}
     return {"event_id": controller.config["event_id"], "gateways": results,
             "readiness_scope": "gateway-installation-only", "authenticated_access_verified": False}
+
+
+def install_step(controller, plan, config, who, instance, *, assets, deadline, retry_failed, clock, sleep):
+    # Each stage has its own durable receipt. Never replay an unknown dispatch.
+    installs = controller.record.setdefault('gateway_asset_installations' if assets else 'gateway_installations', {})
+    commands, digest = payload(plan, config, who, assets=assets)
+    marker = 'gateway-assets-ready' if assets else 'gateway-ready'
+    require(controller.binding.get("tool_sha256") == pf.tool_hash(),
+            "gateway source changed while preparing the installation")
+    previous = installs.get(instance)
+    if previous:
+        require(previous.get("learner_id") == who and previous.get("payload_sha256") == digest,
+                "existing installation is bound to different inputs; reconcile it first")
+        require(previous.get("status") != "dispatching" and previous.get("command_id"),
+                "dispatch outcome unknown; reconcile SSM history before retrying")
+        if previous.get("status") == "Success":
+            return True
+        if previous.get("status") in {"Failed", "Cancelled", "TimedOut"}:
+            require(retry_failed and previous.get("attempts", 0) < 3, "failed installation requires explicit bounded retry")
+            previous = None
+    if previous is None:
+        require(clock() < deadline, 'installation deadline reached; reconcile before continuing')
+        attempts = installs.get(instance, {}).get("attempts", 0) + 1
+        installs[instance] = {"learner_id": who, "payload_sha256": digest, "attempts": attempts, "status": "dispatching"}
+        controller.save()
+        result = controller.cloud.dispatch_client().send_command(InstanceIds=[instance], DocumentName="AWS-RunShellScript",
+            Parameters={"commands": commands, "executionTimeout": ["600"]}, TimeoutSeconds=600)
+        installs[instance].update(status="Pending", command_id=result["Command"]["CommandId"])
+        controller.save()
+    row = installs[instance]
+    while True:
+        try:
+            result = controller.cloud.client("ssm").get_command_invocation(CommandId=row["command_id"], InstanceId=instance)
+        except controller.cloud.client("ssm").exceptions.InvocationDoesNotExist:
+            result = {"Status": "Pending"}
+        status = result["Status"]
+        require(status in {"Pending", "InProgress", "Delayed", "Success", "Failed", "Cancelled", "Cancelling", "TimedOut"},
+                "unknown SSM status; reconcile before retrying")
+        row["status"] = ("Failed" if status == "Success" and
+                         marker not in result.get("StandardOutputContent", "") else status)
+        controller.save()
+        if status in {"Success", "Failed", "Cancelled", "TimedOut"}:
+            break
+        require(clock() < deadline, "installation is still pending; reconcile before retrying")
+        sleep(min(5, max(0, deadline - clock())))
+    require(row["status"] == "Success",
+            "gateway installation failed or returned an invalid result; inspect private target logs")
+    return False
 
 
 def main(argv=None):

@@ -14,7 +14,7 @@ import hashlib, json, pathlib, sys
 import re
 bundle, config_path, browser_path, environment_path = map(pathlib.Path, sys.argv[1:])
 manifest = json.loads((bundle/'overlay.json').read_text())
-expected = {'gateway.py', 'jupyter_gateway.py', 'requirements.txt', 'doris-workshop-gateway.service', 'install_gateway.sh', 'operations.py', 'service_guidance.py'}
+expected = {'gateway.py', 'jupyter_gateway.py', 'requirements.txt', 'doris-workshop-gateway.service', 'install_gateway.sh', 'operations.py', 'service_guidance.py', 'session_recovery.js', 'session_recovery.css'}
 assert manifest['schema_version'] == 1 and set(manifest['sha256']) == expected
 for name, checksum in manifest['sha256'].items():
     assert not (bundle/name).is_symlink()
@@ -43,7 +43,7 @@ from gateway import validate_config
 validate_config(json.loads(pathlib.Path(sys.argv[2]).read_text()))
 PY
 install -d -m 0755 /opt/doris-workshop/access
-for overlay_file in gateway.py jupyter_gateway.py requirements.txt overlay.json service_guidance.py; do
+for overlay_file in gateway.py jupyter_gateway.py requirements.txt overlay.json service_guidance.py session_recovery.js session_recovery.css; do
   install -m 0644 "$bundle_dir/$overlay_file" "/opt/doris-workshop/access/$overlay_file"
 done
 /opt/doris-workshop/gateway-venv/bin/python -m pip freeze > /opt/doris-workshop/access/installed-packages.txt

@@ -88,6 +88,9 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
             if request.path == "/cookie":
                 return web.Response(headers=[("Set-Cookie", "app=one; Domain=example.com; Path=/; HttpOnly"),
                                              ("Set-Cookie", "second=two; Path=/")])
+            if request.path == '/lab':
+                return web.Response(text='<!doctype html><html><head><title>Lab</title></head><body>Lab</body></html>',
+                    content_type='text/html', headers={'Set-Cookie': '_xsrf=fixture; Path=/', 'ETag': 'old-document'})
             if request.path == "/socket":
                 ws = web.WebSocketResponse(protocols=("v1.kernel.websocket.jupyter.org",))
                 await ws.prepare(request)
@@ -236,6 +239,54 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
                 **{"X-Amzn-Oidc-Data": token(headers={"exp": time.time() + 0.3})}))
         message = await asyncio.wait_for(ws.receive(), 2)
         self.assertEqual(message.type, WSMsgType.CLOSE)
+        self.assertEqual(message.data, 4001)
+        # A fresh signed request reconnects without any kernel restart action.
+        fresh = await self.client.ws_connect('/socket', headers=self.headers(Origin='https://' + HOST))
+        await fresh.send_str('same-session-after-renewal')
+        self.assertEqual((await fresh.receive()).data, 'same-session-after-renewal')
+        await fresh.close()
+
+    async def test_recovery_endpoints_require_owner_and_do_not_contact_jupyter(self):
+        for path in ('/_workshop/session', '/_workshop/session_recovery.js', '/_workshop/session_recovery.css', '/_workshop/reauth'):
+            self.assertEqual((await self.client.get(path, headers={'Host': HOST})).status, 401)
+            self.assertEqual((await self.client.get(path, headers=self.headers(**{'X-Amzn-Oidc-Data': token('subject-bob')}))).status, 403)
+            response = await self.client.get(path, headers=self.headers())
+            self.assertEqual(response.status, 200)
+            self.assertEqual(response.headers['Cache-Control'], 'no-store')
+        self.assertEqual(self.requests, [])
+        response = await self.client.get('/_workshop/session', headers=self.headers())
+        self.assertEqual(await response.json(), {'expires_at': self.c['expires_at']})
+        self.assertNotIn('token', await response.text())
+
+    async def test_lab_bootstrap_runs_before_app_and_preserves_xsrf_and_security_headers(self):
+        response = await self.client.get('/lab', headers=self.headers(Accept='text/html',
+            **{'If-None-Match': 'pre-overlay-document', 'If-Modified-Since': 'Fri, 06 Nov 2026 00:00:00 GMT'}))
+        html = await response.text()
+        self.assertIn('<script src="/_workshop/session_recovery.js"></script></head>', html)
+        self.assertIn('/_workshop/session_recovery.css', html)
+        self.assertIn('_xsrf=fixture', response.headers['Set-Cookie'])
+        self.assertIn('Secure', response.headers['Set-Cookie'])
+        self.assertEqual(response.headers['Cache-Control'], 'no-store')
+        self.assertEqual(response.headers['X-Content-Type-Options'], 'nosniff')
+        self.assertNotIn('ETag', response.headers)
+        self.assertEqual(self.requests[-1][1]['Accept-Encoding'], 'identity')
+        self.assertNotIn('If-None-Match', self.requests[-1][1])
+        self.assertNotIn('If-Modified-Since', self.requests[-1][1])
+        response = await self.client.get('/lab', headers=self.headers(Accept='application/json'))
+        self.assertNotIn('session_recovery', await response.text())
+
+    async def test_workshop_expiry_is_not_reclassified_as_a_refreshable_login(self):
+        c = copy.deepcopy(self.c)
+        c['expires_at'] = '2000-01-01T00:00:00Z'
+        client = TestClient(TestServer(gateway.application(c, verifier=LocalVerifier(c, None), token_file=self.token_file)))
+        await client.start_server()
+        try:
+            response = await client.get('/_workshop/session', headers=self.headers())
+            self.assertEqual(response.status, 403)
+            self.assertEqual(response.headers['X-Workshop-Access'], 'expired')
+            self.assertEqual(self.requests, [])
+        finally:
+            await client.close()
 
     async def test_logout_clears_sharded_service_cookie_and_redirects_to_cognito(self):
         response = await self.client.post("/_workshop/logout", headers=self.headers(Origin="https://" + HOST), allow_redirects=False)

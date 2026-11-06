@@ -1,0 +1,5 @@
+#workshop-connection[hidden],#workshop-connection button[hidden]{display:none}
+#workshop-connection{position:fixed;z-index:100000;bottom:16px;left:16px;right:16px;max-width:880px;margin:auto;box-sizing:border-box;display:flex;align-items:center;gap:16px;padding:16px 20px;border:1px solid #9cb3aa;border-radius:8px;background:#f8faf7;color:#202b35;box-shadow:0 4px 20px #17251e26;font:14px/1.5 system-ui,sans-serif}
+#workshop-connection button{flex-shrink:0;border:1px solid #006c52;border-radius:4px;padding:8px 12px;background:#006c52;color:white;font:inherit;cursor:pointer}
+#workshop-connection button:focus-visible{outline:3px solid #308a72;outline-offset:3px}
+@media(max-width:600px){#workshop-connection{left:8px;right:8px;bottom:8px;align-items:flex-start;flex-direction:column;gap:10px;padding:12px}}
