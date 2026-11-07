@@ -320,13 +320,20 @@ class ExportHandler(ProgressHandler):
     def get(self):
         self.require_progress()
         try:
-            data = self.store.export()
+            version = self.get_query_argument('version', '2')
+            if version not in {'1', '2'}:
+                raise self.progress.ProgressError('Unsupported progress schema_version; expected 1 or 2.')
+            data = self.store.export(version=int(version))
+        except self.progress.ProgressError as exc:
+            return self.progress_error(self.ui.t.error(exc), 400)
         except (OSError, sqlite3.Error, ValueError):
             return self.progress_error(self.ui.t('progress.download-failed'))
         self.set_header('Cache-Control', 'no-store')
         self.set_header('Content-Type', 'application/json')
         self.set_header('Content-Disposition', 'attachment; filename="doris-workshop-progress.json"')
         self.set_header('X-Content-Type-Options', 'nosniff')
+        if version == '1':
+            self.set_header('Warning', '299 - "v1 omits attempt, language and version history; retain the v2 export"')
         self.finish(data)
 
 

@@ -32,7 +32,7 @@ let browser;
   const base = fixture.a.base, mark = '/workshop/progress/real-time-analytics/module-1/mark';
   if(phase==='interactive') {
     assert.equal(await record(page),undefined);
-    const row = () => page.locator('.module').filter({has:page.locator('form[action="'+mark+'"]')});
+    const row = () => page.locator('.module').filter({has:page.locator('form[action^="'+mark+'"]')});
     await row().getByRole('link',{name:'Read lesson'}).click();
     assert.equal(await record(page),undefined,'opening a lesson grants no credit');
     await page.getByRole('button',{name:'Mark as read',exact:true}).click();
@@ -58,6 +58,15 @@ let browser;
     await quizPage.locator('.jp-CodeCell .cm-content').first().click();
     await quizPage.keyboard.press('Shift+Enter');
     await quizPage.locator('.doris-quiz-question').waitFor({timeout:60000});
+    if(fixture.bilingual) {
+      await quizPage.getByRole('radio',{name:fixture.correct[0],exact:true}).check();
+      await quizPage.getByRole('button',{name:'Synthetic Cyrillic',exact:true}).click();
+      await quizPage.getByRole('radio',{name:'Ә '+fixture.correct[0],exact:true}).waitFor();
+      assert.equal(await quizPage.getByRole('radio',{name:'Ә '+fixture.correct[0],exact:true}).isChecked(),true);
+      assert.equal((await (await page.request.get(base+'/workshop/progress/export')).json()).attempts.length,0);
+      checks.push('synthetic presentation switch preserves an unsubmitted stable option and creates no attempt');
+      await snapshot(quizPage,'quiz-synthetic-draft-preserved');
+    }
     async function answer(values, partialCheck=false) {
       for(let i=0;i<values.length;i++) {
         await quizPage.locator('.doris-quiz-kicker').filter({hasText:'Question '+(i+1)+' of '}).waitFor();
@@ -67,10 +76,15 @@ let browser;
         await quizPage.getByRole('button',{name:i===values.length-1?/View results/:/Next question/}).click();
       }
     }
-    await answer(fixture.correct,true);
+    await answer(fixture.correct.map(v=>fixture.bilingual?'Ә '+v:v),true);
     await quizPage.getByText('Progress saved. Quiz passed;',{exact:false}).waitFor();
     await snapshot(quizPage,'quiz-passed');
     assert.equal((await record(page)).quiz_passed,true);
+    const firstHistory = (await (await page.request.get(base+'/workshop/progress/export')).json()).attempts;
+    assert.equal(firstHistory.length,1);
+    assert.equal(firstHistory[0].locale,fixture.bilingual?'kk-Cyrl':'en');
+    if(fixture.bilingual) await quizPage.getByRole('button',{name:'English',exact:true}).click();
+    assert.equal((await (await page.request.get(base+'/workshop/progress/export')).json()).attempts.length,1);
     await quizPage.getByRole('button',{name:/Try again/}).click();
     await answer(fixture.wrong);
     await quizPage.getByText('Your earlier Quiz pass and best score are retained.',{exact:false}).waitFor();
@@ -92,7 +106,7 @@ let browser;
     // A second tab updates a different field without replacing the Quiz write.
     const second = await context.newPage();
     await second.goto(base+'/workshop/');
-    await second.locator('form[action="'+mark+'"]').getByRole('button',{name:'Undo Lab completion',exact:true}).click();
+    await second.locator('form[action^="'+mark+'"]').getByRole('button',{name:'Undo Lab completion',exact:true}).click();
     await second.close();
     await page.reload();
     await row().getByRole('button',{name:'Mark Lab complete',exact:true}).click();
@@ -110,7 +124,9 @@ let browser;
     const file = path.join(output,'transfer.json');
     await download.saveAs(file);
     const exported = JSON.parse(fs.readFileSync(file));
-    assert.equal(exported.schema_version,1);
+    assert.equal(exported.schema_version,2);
+    assert.equal(exported.attempts.length,2);
+    assert.equal(exported.attempts[0].trust,'self-study');
     await page.goto(base+'/logout');
     await context.close();
     ({context,page} = await login('a'));
@@ -128,8 +144,9 @@ let browser;
     await b.page.setViewportSize({width:1440,height:1050});
     await snapshot(b.page,'import-preview-desktop');
     await b.page.getByRole('button',{name:'Confirm import',exact:true}).click();
-    await b.page.getByText('Import saved for 1 matching modules.',{exact:false}).waitFor();
+    await b.page.getByText('Import saved for 1 matching module.',{exact:false}).waitFor();
     assert.equal((await record(b.page,'b')).quiz_passed,true);
+    assert.deepEqual((await (await b.page.request.get(fixture.b.base+'/workshop/progress/export')).json()).attempts,exported.attempts);
     // Reimport an older record without reducing current completion.
     await b.page.goto(fixture.b.base+'/workshop/progress/import');
     await b.page.getByLabel('Progress JSON file (up to 1 MiB)').setInputFiles(file);

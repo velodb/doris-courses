@@ -208,7 +208,8 @@ download MIME types; producer admission does not replace browser boundaries.
 | Generated v1 English projection | Must independently pass the old schema and full English-tree checks. | Record it as a distinct artifact; never overwrite an old release binding. |
 | v1 event config / runtime / image release | Keep their existing tools and cleanup ownership. | Dispatch by that interface's own version and kind before adapting to English. Content v2 does not implicitly upgrade these formats. |
 | Portable progress v1 | Existing self-study import remains unchanged. | Explicit legacy adapter preserves IDs, passed flags, best score and historical content binding. Locale is display metadata only. |
-| Future portable progress/runtime format | Reject unsupported versions. | Requires its own schema, version dispatch, migration and downgrade behavior. This content schema does not define those formats. |
+| Portable progress v2 | Reject as unsupported. | Uses its [own schemas and migration](../../doris-course/common/quiz-progress-v2.md); preserves v1 summaries, unknown legacy history and fixed new Quiz attempts. |
+| Future runtime format | Reject unsupported versions. | Requires its own schema and version dispatch. Content v2 does not upgrade runtime plans. |
 
 The original English adapter reads the original files at the recorded SHA and
 uses the original website `questionDigest` algorithm. It does not translate or

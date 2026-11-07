@@ -101,7 +101,7 @@ def _id_problems(value: Any, where: str, kind: str) -> list[str]:
     return []
 
 
-def structure_problems(document: Any) -> list[str]:
+def structure_problems(document: Any, *, localized: bool = False) -> list[str]:
     """List every way a loaded quiz document breaks the quiz structure."""
     if not isinstance(document, dict):
         return ["the file must contain a mapping with title, description and questions"]
@@ -113,7 +113,7 @@ def structure_problems(document: Any) -> list[str]:
         if key in document and _text(document[key]) is None:
             problems.append(f"'{key}' must be non-empty text")
     title = _text(document.get("title"))
-    if title is not None and not TITLE.match(title):
+    if title is not None and not localized and not TITLE.match(title):
         problems.append("the title must start with 'Module N Quiz: ' followed by the module name")
     questions = document.get("questions")
     if "questions" in document and (not isinstance(questions, list) or not questions):
@@ -186,9 +186,9 @@ def structure_problems(document: Any) -> list[str]:
     return problems
 
 
-def parse_quiz(document: Any, source: str = "quiz") -> Quiz:
+def parse_quiz(document: Any, source: str = "quiz", *, localized: bool = False) -> Quiz:
     """Build a quiz from a loaded YAML document, or raise QuizFormatError."""
-    problems = structure_problems(document)
+    problems = structure_problems(document, localized=localized)
     if problems:
         raise QuizFormatError(
             f"{source} does not follow the quiz structure:\n"
@@ -216,12 +216,12 @@ def parse_quiz(document: Any, source: str = "quiz") -> Quiz:
     )
 
 
-def load_quiz(path: str | Path) -> Quiz:
+def load_quiz(path: str | Path, *, localized: bool = False) -> Quiz:
     """Read a quiz YAML file; options keep the order of the file."""
     quiz_path = Path(path).expanduser().resolve()
     with quiz_path.open("r", encoding="utf-8") as stream:
         document = yaml.safe_load(stream)
-    return parse_quiz(document, source=str(quiz_path))
+    return parse_quiz(document, source=str(quiz_path), localized=localized)
 
 
 def _rank(*parts: str) -> int:

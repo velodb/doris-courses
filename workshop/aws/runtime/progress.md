@@ -36,7 +36,7 @@ empty record. Logging out, using another browser, or restarting the kernel or
 Jupyter keeps committed records on this instance. People sharing one assigned
 account/instance share one record; use separate allocations for personal work.
 
-Before the environment expires, select **Download progress JSON**. Keep this
+Before the environment expires, select **Download progress JSON** (v2). Keep this
 file on your computer. In the next workshop:
 
 1. Sign in to your newly assigned environment and select **Import progress**.
@@ -91,6 +91,11 @@ select an account, database path or other instance. The UI remains server
 rendered under the existing CSP, without inline scripts or browser storage.
 
 ## Portable JSON v1
+
+Both v1 and v2 are accepted. The default v2 download retains Quiz attempts and
+presentation history. See the [session and migration contract](../../../doris-course/common/quiz-progress-v2.md)
+for schemas, fixed submissions, legacy unknown metadata, backups and rollback.
+An explicit `?version=1` download warns about history loss. Keep the v2 file.
 
 The independent format has exactly four top-level keys: `schema_version: 1`,
 `kind: "doris-workshop-progress"`, timezone-aware `exported_at`, and `records`.

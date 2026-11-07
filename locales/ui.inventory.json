@@ -124,6 +124,16 @@
       ]
     },
     {
+      "key": "import.history",
+      "parameters": {
+        "attempts": "integer",
+        "legacy": "integer"
+      },
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
       "key": "import.invalid",
       "parameters": {},
       "consumers": [
@@ -541,6 +551,86 @@
     },
     {
       "key": "progress.error.22",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.v2-1",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.v2-10",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.v2-2",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.v2-3",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.v2-4",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.v2-5",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.v2-6",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.v2-7",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.v2-8",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.v2-9",
       "parameters": {},
       "consumers": [
         "doris-course/common/doris_labkit/messages.py",
@@ -1435,6 +1525,13 @@
       "parameters": {},
       "consumers": [
         "ui/workshop/src/templates/page.html"
+      ]
+    },
+    {
+      "key": "template.progress.formats",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/progress.html"
       ]
     },
     {

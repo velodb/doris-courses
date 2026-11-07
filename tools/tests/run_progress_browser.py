@@ -15,11 +15,16 @@ from doris_labkit.quizbank import display_order, load_quiz
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--bilingual', action='store_true', help='Use a synthetic bilingual Quiz adapter')
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='workshop-progress-browser-') as temporary:
         base = Path(temporary)
-        a, b = ProgressFixture(base / 'a'), ProgressFixture(base / 'b')
+        fixture_type = ProgressFixture
+        if args.bilingual:
+            from quiz_progress_fixture import QuizProgressFixture
+            fixture_type = QuizProgressFixture
+        a, b = fixture_type(base / 'a'), fixture_type(base / 'b')
         try:
             a.start()
             b.start()
@@ -33,6 +38,7 @@ def main():
                 bank = display_order(load_quiz(ROOT / 'doris-course/01-real-time-analytics' / module['quiz']))
                 ready = base / 'ready.json'
                 ready.write_text(json.dumps({'a': a.credentials(), 'b': b.credentials(),
+                    'bilingual': args.bilingual,
                     'correct': [q.option_text(q.answer) for q in bank.questions],
                     'wrong': [next(o.text for o in q.options if o.option_id != q.answer) for q in bank.questions]}))
                 ready.chmod(0o600)

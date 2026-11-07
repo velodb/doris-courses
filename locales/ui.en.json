@@ -214,6 +214,18 @@
     "template.workspace.text-7": "Download your files before the workshop ends or your environment is replaced.",
     "workspace.assigned": "Assigned to {learner}",
     "workspace.more": "More tools",
-    "workspace.signout": "Sign out of this entry"
+    "workspace.signout": "Sign out of this entry",
+    "import.history": "Quiz attempts: {attempts}; legacy records with unknown language and answers: {legacy}.",
+    "progress.error.v2-1": "Unsupported progress schema_version; expected 1 or 2.",
+    "progress.error.v2-2": "Invalid Quiz attempt history.",
+    "progress.error.v2-3": "Invalid Quiz attempt identity.",
+    "progress.error.v2-4": "Invalid Quiz release binding.",
+    "progress.error.v2-5": "Invalid Quiz attempt answers.",
+    "progress.error.v2-6": "Invalid legacy progress history.",
+    "progress.error.v2-7": "Quiz history must belong to an included module record.",
+    "progress.error.v2-8": "Duplicate Quiz attempt identity.",
+    "progress.error.v2-9": "Invalid progress backup.",
+    "progress.error.v2-10": "Conflicting Quiz attempt identity.",
+    "template.progress.formats": "Both v1 and v2 files are accepted. V2 preserves Quiz attempt and language history. A v1 projection omits that history: keep your v2 file. Imports create a private database backup. These records cannot grant website certificates."
   }
 }

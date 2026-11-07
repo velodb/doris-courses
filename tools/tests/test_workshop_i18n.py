@@ -145,7 +145,21 @@ class LocaleTests(unittest.TestCase):
         from doris_labkit.quiz import CourseQuiz
         path = next((ROOT / 'doris-course/01-real-time-analytics/level1').glob('*/quiz*.yaml'))
         en = CourseQuiz.from_yaml(path)
-        target = CourseQuiz.from_yaml(path, messages=installed().context(explicit='kk').messages)
+        from doris_labkit.quizsession import Presentation, QuizConflict
+        from doris_labkit.quizbank import load_quiz
+        import hashlib
+        with self.assertRaises(QuizConflict):
+            CourseQuiz.from_yaml(path, messages=installed().context(explicit='kk').messages)
+        # Synthetic admitted presentation: verifies UI wiring, not translation.
+        bank = load_quiz(path)
+        descriptor = {'id': 'fixture.quiz', 'semantic_revision': 'fixture.semantic',
+            'passing_score_percent': bank.passing_score_percent,
+            'questions': [{'id': q.question_id, 'option_ids': [o.option_id for o in q.options], 'answer': q.answer}
+                          for q in bank.questions],
+            'presentations': [{'locale': 'kk-Cyrl', 'presentation_revision': 'e' * 64}]}
+        presentation = Presentation.admitted(bank, descriptor, locale='kk-Cyrl',
+            policy_revision='fixture.policy', source_digest=hashlib.sha256(path.read_bytes()).hexdigest())
+        target = CourseQuiz.from_yaml(path, messages=installed().context(explicit='kk').messages, presentation=presentation)
         self.assertEqual(en.questions, target.questions)
         self.assertEqual(en.source_path, target.source_path)
         target._render_question()

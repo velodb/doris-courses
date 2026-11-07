@@ -152,7 +152,7 @@ class ProgressTests(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(p.ProgressError):
                 self.store.import_document(doc, self.modules)
             self.assertEqual(before, self.store.records())
-        for field, value in [('schema_version', 2), ('schema_version', True), ('records', {}), ('exported_at', None), ('identity', 'x')]:
+        for field, value in [('schema_version', 3), ('schema_version', True), ('records', {}), ('exported_at', None), ('identity', 'x')]:
             doc = {**valid, field: value}
             with self.subTest(field=field), self.assertRaises(p.ProgressError):
                 p.validate_document(json.dumps(doc).encode())
@@ -186,14 +186,18 @@ class ProgressTests(unittest.TestCase):
         path.write_text(QUIZ_YAML + '\npassing_score_percent: 50\n')
         quiz = CourseQuiz.from_yaml(path)
         self.assertEqual(quiz.passing_score_percent, 50)
-        with mock.patch.object(p, 'save_quiz_from_environment') as save:
+        with mock.patch.object(p, 'save_submission_from_environment') as save:
             quiz._render_results()
             save.assert_not_called()
             quiz._answers = {q.question_id: q.answer for q in quiz.questions}
             save.return_value = {**p.empty(self.module), 'quiz_passed': True}
             quiz._render_results()
-            save.assert_called_once_with(path.resolve(), 2, 2, 50)
+            save.assert_called_once_with(path.resolve(), quiz.presentation, quiz._attempt_id, quiz._answers)
+            quiz._render_results()
+            self.assertEqual(save.call_count, 1)
             self.assertIn('Progress saved', quiz._root.children[0].children[0].value)
+            quiz._restart()
+            quiz._answers = {q.question_id: q.answer for q in quiz.questions}
             save.side_effect = OSError('private path should not appear')
             quiz._render_results()
             self.assertIn('Progress was not saved', quiz._root.children[0].children[0].value)

@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Doris portable self-study progress v2",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 2,
+      "type": "integer"
+    },
+    "kind": {
+      "const": "doris-workshop-progress"
+    },
+    "exported_at": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 40
+    },
+    "records": {
+      "type": "array",
+      "maxItems": 2000,
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    },
+    "attempts": {
+      "type": "array",
+      "maxItems": 2000,
+      "items": {
+        "$ref": "#/$defs/attempt"
+      }
+    },
+    "legacy_records": {
+      "type": "array",
+      "maxItems": 2000,
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "exported_at",
+    "records",
+    "attempts",
+    "legacy_records"
+  ],
+  "$defs": {
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "course_slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])",
+          "maxLength": 100
+        },
+        "module_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])",
+          "maxLength": 100
+        },
+        "course_read": {
+          "type": "boolean"
+        },
+        "lab_opened": {
+          "type": "boolean"
+        },
+        "lab_declared_complete": {
+          "type": "boolean"
+        },
+        "quiz_passed": {
+          "type": "boolean"
+        },
+        "best_correct": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "best_total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "content_version": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "source_ref": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$(?![\\s\\S])"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        }
+      },
+      "required": [
+        "course_slug",
+        "module_id",
+        "course_read",
+        "lab_opened",
+        "lab_declared_complete",
+        "quiz_passed",
+        "best_correct",
+        "best_total",
+        "content_version",
+        "source_ref",
+        "updated_at"
+      ]
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$(?![\\s\\S])"
+        },
+        "course_slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])",
+          "maxLength": 100
+        },
+        "module_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])",
+          "maxLength": 100
+        },
+        "quiz_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$(?![\\s\\S])",
+          "maxLength": 200
+        },
+        "locale": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,8}$(?![\\s\\S])"
+        },
+        "semantic_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]*$(?![\\s\\S])",
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "policy_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]*$(?![\\s\\S])",
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "presentation_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "content_version": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "source_ref": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$(?![\\s\\S])"
+        },
+        "answers": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 10000,
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$(?![\\s\\S])"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$(?![\\s\\S])"
+          }
+        },
+        "correct": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "threshold": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "submitted_at": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "trust": {
+          "const": "self-study"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "course_slug",
+        "module_id",
+        "quiz_id",
+        "locale",
+        "semantic_revision",
+        "policy_revision",
+        "presentation_revision",
+        "source_digest",
+        "content_version",
+        "source_ref",
+        "answers",
+        "correct",
+        "total",
+        "threshold",
+        "passed",
+        "submitted_at",
+        "trust"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "semantic_revision": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "policy_revision": {
+                "type": "null"
+              },
+              "presentation_revision": {
+                "type": "null"
+              },
+              "locale": {
+                "const": "en"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "policy_revision": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9._-]*$(?![\\s\\S])",
+                "maxLength": 200
+              },
+              "presentation_revision": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

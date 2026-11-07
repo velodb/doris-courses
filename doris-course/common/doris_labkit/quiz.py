@@ -8,13 +8,18 @@ from __future__ import annotations
 
 from html import escape
 from pathlib import Path
+from functools import wraps
+import hashlib
+import threading
+import uuid
 from .messages import Messages
 
 try:
     import ipywidgets as widgets
     from IPython.display import display
 
-    from .quizbank import QuizOption, QuizQuestion, display_order, load_quiz
+    from .quizbank import Quiz, QuizOption, QuizQuestion, display_order, load_quiz
+    from .quizsession import Presentation, QuizConflict, digest
 except ImportError as exc:  # pragma: no cover - learner environment diagnostic
     raise RuntimeError(Messages()('quiz.dependencies')) from exc
 
@@ -190,6 +195,14 @@ _QUIZ_STYLES = """
 """
 
 
+def synchronized(method):
+    @wraps(method)
+    def run(self, *args, **kwargs):
+        with self._lock:
+            return method(self, *args, **kwargs)
+    return run
+
+
 class CourseQuiz:
     """Render a one-question-at-a-time, self-assessed course quiz."""
 
@@ -203,11 +216,22 @@ class CourseQuiz:
         source_path: str | Path | None = None,
         messages: Messages | None = None,
         locale: str = "en",
+        presentation: Presentation | None = None,
     ) -> None:
         if not questions:
             raise ValueError("A quiz must contain at least one question.")
+        self._lock = threading.RLock()
         self.t = messages or Messages(locale)
         self.locale = self.t.locale
+        bank = Quiz(title, description, questions, passing_score_percent)
+        if presentation is None:
+            presentation = Presentation.legacy(bank, digest({'quiz': repr(bank)}))
+            bank = presentation.quiz
+            questions = bank.questions
+        self.presentation = presentation
+        self.presentation.check()
+        if self.presentation.quiz != bank or self.presentation.locale != self.locale:
+            raise QuizConflict('Quiz content and UI must use the bound presentation locale.')
         self.title = title
         self.description = description
         self.questions = questions
@@ -216,37 +240,101 @@ class CourseQuiz:
         self._current = 0
         self._answers: dict[str, str] = {}
         self._drafts: dict[str, str] = {}
+        self._generation = 0
+        self._results_visible = False
+        self._attempt_id = uuid.uuid4().hex
+        self._submission = None
+        self._save_complete = False
+        self._receipt = None
         self._root = widgets.VBox()
         self._root.add_class("doris-quiz-root")
 
     @classmethod
-    def from_yaml(cls, path: str | Path, *, messages: Messages | None = None, locale: str = "en") -> "CourseQuiz":
+    def from_yaml(cls, path: str | Path, *, messages: Messages | None = None, locale: str = "en",
+                  presentation: Presentation | None = None) -> "CourseQuiz":
         """Load a quiz file and show its options in the quiz's fixed shuffled order.
 
         Raises ``doris_labkit.quizbank.QuizFormatError`` (a ValueError) listing
         every problem when the file does not follow the quiz structure.
         """
-        quiz = display_order(load_quiz(path))
+        if presentation is None:
+            quiz = display_order(load_quiz(path))
+            presentation = Presentation.legacy(load_quiz(path), hashlib.sha256(Path(path).read_bytes()).hexdigest())
+        else:
+            quiz = presentation.quiz
+            raw = Path(path).read_bytes()
+            if hashlib.sha256(raw).hexdigest() != presentation.source_digest:
+                raise QuizConflict('Installed Quiz bytes changed; reload before submitting.')
+            loaded = Presentation.admitted(load_quiz(path, localized=True), {
+                'id': presentation.quiz_id, 'semantic_revision': presentation.semantic_revision,
+                'passing_score_percent': quiz.passing_score_percent,
+                'questions': [{'id': q.question_id, 'option_ids': [o.option_id for o in q.options], 'answer': q.answer}
+                              for q in quiz.questions],
+                'presentations': [{'locale': presentation.locale, 'presentation_revision': presentation.presentation_revision}]},
+                locale=presentation.locale, policy_revision=presentation.policy_revision, source_digest=presentation.source_digest)
+            if loaded.in_order_of(presentation).snapshot() != presentation.snapshot():
+                raise QuizConflict('Quiz content does not match its admitted presentation.')
         return cls(
             title=quiz.title,
             description=quiz.description,
             questions=quiz.questions,
             passing_score_percent=quiz.passing_score_percent,
             source_path=path,
-            messages=messages, locale=locale,
+            messages=messages, locale=locale, presentation=presentation,
         )
 
+    @synchronized
     def show(self) -> widgets.VBox:
         """Display the quiz and reset any answers from an earlier attempt."""
-        self._current = 0
-        self._answers = {}
-        self._drafts = {}
+        self._restart()
         display(widgets.HTML(_QUIZ_STYLES))
         display(self._root)
         self._render_question()
         return self._root
 
+    @synchronized
+    def _restart(self):
+        self._current = 0
+        self._answers = {}
+        self._drafts = {}
+        self._attempt_id = uuid.uuid4().hex
+        self._submission = None
+        self._receipt = None
+        self._save_complete = False
+        self._results_visible = False
+
+    @synchronized
+    def switch_presentation(self, presentation: Presentation, *, messages: Messages,
+                            source_path: str | Path | None = None):
+        """Replace equivalent display text without starting/submitting an attempt."""
+        presentation.check()
+        if not self.presentation.equivalent(presentation) or messages.locale != presentation.locale:
+            raise QuizConflict('Quiz presentation is not equivalent to its admitted release.')
+        presentation = presentation.in_order_of(self.presentation)
+        self.presentation = presentation
+        self.t, self.locale = messages, messages.locale
+        self.title, self.description = presentation.quiz.title, presentation.quiz.description
+        self.questions = presentation.quiz.questions
+        if source_path is not None:
+            self.source_path = Path(source_path).resolve()
+        if self._results_visible:
+            self._render_results(save=False)
+        else:
+            self._render_question()
+        return self._root
+
+    def _live(self, callback):
+        generation = self._generation
+        def run(event):
+            with self._lock:
+                if generation == self._generation:
+                    callback(event)
+        return run
+
+    @synchronized
     def _render_question(self) -> None:
+        self._generation += 1
+        self._results_visible = False
         question = self.questions[self._current]
         number = self._current + 1
         total = len(self.questions)
@@ -269,6 +357,7 @@ class CourseQuiz:
             value=saved_selection,
             description="",
             layout=widgets.Layout(width="100%"),
+            disabled=self._submission is not None,
         )
         feedback = widgets.HTML()
         previous_button = widgets.Button(
@@ -311,8 +400,12 @@ class CourseQuiz:
             submit.disabled = True
             next_button.layout.visibility = "visible"
             show_feedback(saved_answer)
+        if self._submission is not None:
+            submit.disabled = True
 
         def submit_answer(_: widgets.Button) -> None:
+            if self._submission is not None:
+                return
             selected = choices.value
             if selected is None:
                 feedback.value = (
@@ -328,6 +421,8 @@ class CourseQuiz:
             show_feedback(str(selected))
 
         def change_selection(change: dict) -> None:
+            if self._submission is not None:
+                return
             self._answers.pop(question.question_id, None)
             if change["new"] is not None:
                 self._drafts[question.question_id] = str(change["new"])
@@ -335,7 +430,7 @@ class CourseQuiz:
             next_button.layout.visibility = "hidden"
             feedback.value = ""
 
-        choices.observe(change_selection, names="value")
+        choices.observe(self._live(change_selection), names="value")
 
         def go_back(_: widgets.Button) -> None:
             if question.question_id not in self._answers and choices.value is not None:
@@ -350,9 +445,9 @@ class CourseQuiz:
                 self._current += 1
                 self._render_question()
 
-        submit.on_click(submit_answer)
-        next_button.on_click(advance)
-        previous_button.on_click(go_back)
+        submit.on_click(self._live(submit_answer))
+        next_button.on_click(self._live(advance))
+        previous_button.on_click(self._live(go_back))
         for button in (previous_button, submit, next_button):
             button.layout.width = "170px"
             button.layout.flex = "0 0 170px"
@@ -366,7 +461,10 @@ class CourseQuiz:
         content.layout = widgets.Layout(max_width="920px")
         self._root.children = (content,)
 
-    def _render_results(self) -> None:
+    @synchronized
+    def _render_results(self, *, save=True) -> None:
+        self._generation += 1
+        self._results_visible = True
         total = len(self.questions)
         complete = all(self._answers.get(q.question_id) in {o.option_id for o in q.options} for q in self.questions)
         correct_count = sum(
@@ -382,10 +480,18 @@ class CourseQuiz:
         passed = correct_count * 100 >= self.passing_score_percent * total
         saved_text = ""
         save_failed = False
+        if complete and self._submission is None:
+            self._submission = (self.source_path, self.presentation, self._attempt_id, dict(self._answers))
         if complete and self.source_path is not None:
-            from .progress import save_quiz_from_environment
+            from .progress import save_submission_from_environment
             try:
-                record = save_quiz_from_environment(self.source_path, correct_count, total, self.passing_score_percent)
+                if save and not self._save_complete:
+                    self._receipt = save_submission_from_environment(*self._submission)
+                    self._save_complete = True
+                record = self._receipt
+                if not self._save_complete:
+                    save_failed = True
+                    saved_text = self.t('quiz.text-21')
                 if record is not None and record.get('optional'):
                     saved_text = self.t("quiz.text-26")
                 elif record is not None:
@@ -445,21 +551,19 @@ class CourseQuiz:
         )
 
         def restart(_: widgets.Button) -> None:
-            self._current = 0
-            self._answers = {}
-            self._drafts = {}
+            self._restart()
             self._render_question()
 
         def review_last_question(_: widgets.Button) -> None:
             self._current = len(self.questions) - 1
             self._render_question()
 
-        retry.on_click(restart)
-        previous_button.on_click(review_last_question)
+        retry.on_click(self._live(restart))
+        previous_button.on_click(self._live(review_last_question))
         controls = widgets.HBox([previous_button, retry])
         if save_failed:
             save_again = widgets.Button(description=self.t("quiz.retry-save"), icon="save")
-            save_again.on_click(lambda _: self._render_results())
+            save_again.on_click(self._live(lambda _: self._render_results()))
             controls.children = (*controls.children, save_again)
         controls.add_class("doris-quiz-controls")
         content = widgets.VBox([result, controls])

@@ -61,6 +61,13 @@ class ProgressHTTPTests(unittest.TestCase):
             self.assertEqual(status, 200)
             self.assertIn('attachment', headers['Content-Disposition'])
             document = json.loads(exported)
+            self.assertEqual(document['schema_version'], 2)
+            self.assertEqual(document['attempts'], [])
+            v1_status, v1_exported, v1_headers = request('/workshop/progress/export?version=1')
+            self.assertEqual(v1_status, 200)
+            self.assertEqual(json.loads(v1_exported)['schema_version'], 1)
+            self.assertIn('omits attempt', v1_headers['Warning'])
+            self.assertEqual(request('/workshop/progress/export?version=3')[0], 400)
             self.assertTrue(document['records'][0]['lab_declared_complete'])
             self.assertNotIn('token', exported.decode())
             # A database write failure must be visible and must not grant credit.

@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Doris portable self-study progress v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "kind": {
+      "const": "doris-workshop-progress"
+    },
+    "exported_at": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 40
+    },
+    "records": {
+      "type": "array",
+      "maxItems": 2000,
+      "items": {
+        "$ref": "#/$defs/record"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "kind",
+    "exported_at",
+    "records"
+  ],
+  "$defs": {
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "course_slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])",
+          "maxLength": 100
+        },
+        "module_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$(?![\\s\\S])",
+          "maxLength": 100
+        },
+        "course_read": {
+          "type": "boolean"
+        },
+        "lab_opened": {
+          "type": "boolean"
+        },
+        "lab_declared_complete": {
+          "type": "boolean"
+        },
+        "quiz_passed": {
+          "type": "boolean"
+        },
+        "best_correct": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "best_total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "content_version": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"
+        },
+        "source_ref": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$(?![\\s\\S])"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        }
+      },
+      "required": [
+        "course_slug",
+        "module_id",
+        "course_read",
+        "lab_opened",
+        "lab_declared_complete",
+        "quiz_passed",
+        "best_correct",
+        "best_total",
+        "content_version",
+        "source_ref",
+        "updated_at"
+      ]
+    }
+  }
+}

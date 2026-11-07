@@ -217,6 +217,7 @@ class Renderer:
                 state = self.t('import.match' if row['matched'] else 'import.skip')
                 if row['content_updated']:
                     state += self.t('import.updated')
+                state += ' ' + self.t('import.history', attempts=row.get('attempt_count', 0), legacy=row.get('legacy_count', 0))
                 after = row['result']
                 outcome = (' · '.join(f'{label}: {self.t("progress.done" if after[key] else "progress.todo")}' for key, label in
                            [('course_read', self.t('progress.lesson')), ('lab_declared_complete', self.t('progress.lab')), ('quiz_passed', self.t('progress.quiz'))])

@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "kind": "doris-workshop-progress",
+  "exported_at": "2026-01-02T03:04:06+00:00",
+  "records": [
+    {
+      "course_slug": "real-time-analytics",
+      "module_id": "module-1",
+      "course_read": true,
+      "lab_opened": true,
+      "lab_declared_complete": false,
+      "quiz_passed": true,
+      "best_correct": 9,
+      "best_total": 10,
+      "content_version": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_ref": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "updated_at": "2026-01-02T03:04:05+00:00"
+    }
+  ],
+  "attempts": [
+    {
+      "attempt_id": "11111111111111111111111111111111",
+      "course_slug": "real-time-analytics",
+      "module_id": "module-1",
+      "quiz_id": "fixture.quiz",
+      "locale": "kk-Cyrl",
+      "semantic_revision": "fixture.meaning.1",
+      "policy_revision": "fixture.policy.1",
+      "presentation_revision": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "source_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "content_version": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "source_ref": "ffffffffffffffffffffffffffffffffffffffff",
+      "answers": {
+        "first": "option_one",
+        "second": "option_two"
+      },
+      "correct": 1,
+      "total": 2,
+      "threshold": 80,
+      "passed": false,
+      "submitted_at": "2026-01-03T03:04:05+00:00",
+      "trust": "self-study"
+    }
+  ],
+  "legacy_records": [
+    {
+      "course_slug": "real-time-analytics",
+      "module_id": "module-1",
+      "course_read": true,
+      "lab_opened": true,
+      "lab_declared_complete": false,
+      "quiz_passed": true,
+      "best_correct": 9,
+      "best_total": 10,
+      "content_version": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_ref": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "updated_at": "2026-01-02T03:04:05+00:00"
+    }
+  ]
+}
