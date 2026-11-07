@@ -31,7 +31,9 @@ complete output directory. A failed admission leaves no output artifact.
 | --- | --- |
 | [source-map.json](source-map.json) | Committed, assigned unit IDs, exact canonical English text/hashes and current locators. |
 | [producer.json](producer.json) | Explicit profiles, optional selections, immutable policy/quiz revision bindings, glossary version and shared-image treatment. |
-| [ui.en.json](ui.en.json) | English message corpus for workshop state copy, template text and Quiz controls. Wiring the messages into UI/runtime consumers is a separate change. |
+| [ui.en.json](ui.en.json) | Canonical English messages for entry, reader, progress, service guidance, Quiz controls and recovery. See the [consumer interface](../ui/workshop/i18n.md). |
+| [ui.contract.json](ui.contract.json) | Typed placeholders and explicit count forms, validated by producer and consumers. |
+| [ui.inventory.json](ui.inventory.json) | Auditable message-key/consumer inventory; check with `tools/check_ui_messages.py`. |
 | [glossary.json](glossary.json) | Versioned initial product/identifier preservation rules. This is not a translated course glossary. |
 | `locales/kk-Cyrl/overlay.json` | A formal `locale_overlay`, supplied by the current-session LLM with attributed checks. No real course overlay is included yet. |
 | `locales/kk-Cyrl/assets.json` | Optional JSON object mapping English image paths to committed localized image files. |
@@ -119,8 +121,8 @@ A preview keeps the declared draft locale and reports missing units/assets/Quiz
 bindings. It exposes English only. A release publishes every requested locale
 and fails if any required content is missing, stale, unchecked or withdrawn.
 Target-language tests use synthetic overlays; they establish no real Kazakh
-readiness or native review. Runtime/website message integration, real translation
-and installation remain separate consumer tasks.
+readiness or native review. The workshop UI consumes the canonical message contract. Website integration,
+real translation and package installation remain separate consumer tasks.
 
 ## Artifact layout and consumers
 

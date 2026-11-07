@@ -28,12 +28,13 @@ class Source:
                       for path in (c.CONTRACT / 'examples').rglob('*') if path.is_file()
                       and path.relative_to(c.CONTRACT / 'examples').as_posix().startswith(('doris-course/', 'shared/'))}
         self.files['catalog.yaml'] = (c.CONTRACT / 'examples/catalog.yaml').read_bytes()
-        for path in ('tools/content_producer.py', 'tools/build_content_package.py',
+        for path in (p.MESSAGE_ENGINE, 'tools/content_producer.py', 'tools/build_content_package.py',
                      'tools/content_contract_v2.py', 'tools/check_content_contract.py',
                      'tools/requirements.txt', 'contracts/v1/schema.json', 'contracts/v2/schema.json',
                      'contracts/v2/locales.json', 'contracts/v2/registry.schema.json'):
             self.files[path] = (REPO / path).read_bytes()
         self.put(p.UI, {'kind': 'doris-ui-messages', 'messages': {'quiz.next': 'Next question', 'greeting': 'Hello {name}'}})
+        self.put(p.UI_CONTRACT, {'version': 1, 'parameters': {'quiz.next': {}, 'greeting': {'name': 'text'}}, 'plurals': {}})
         self.files[BASE + 'lesson.md'] += b'\n![Diagram](../../shared/diagram.svg)\n'
         shell = self.doc(BASE + 'lab.ipynb')
         shell['cells'][1]['source'] = ['CourseQuiz.from_yaml(\"quiz.yaml\")\n']

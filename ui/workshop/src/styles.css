@@ -288,3 +288,11 @@ body[data-density=compact] .main { padding-top:24px; }
 .progress-table { width:100%; min-width:700px; border-collapse:collapse; font-size:14px; }
 .progress-table th,.progress-table td { padding:12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
 .progress-table td:first-child { width:22%; }
+.language-area { max-width:1180px; margin:12px auto; padding:0 32px; }
+.language-form { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.language-form select,.language-form button { font:inherit; padding:8px; max-width:100%; }
+.language-area details { margin-top:8px; font-size:13px; color:var(--muted); }
+.language-area p { overflow-wrap:anywhere; }
+.topbar,.page-head,.actions,.tools-head { flex-wrap:wrap; }
+h1,h2,h3,.primary,.secondary,.tool-row { overflow-wrap:anywhere; }
+@media(max-width:600px) { .language-area { padding:0 20px; } .identity { max-width:100%; } }

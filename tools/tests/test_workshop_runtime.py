@@ -491,7 +491,7 @@ class RuntimeTests(unittest.TestCase):
         lesson.write_text(f'# Lesson\n[Lab]({self.lab}?x=1#cell)\n![Image](image.png)\n<script>alert(1)</script>')
         with request("/workshop/content/doris-course/01-real-time-analytics/course.md") as response:
             page = response.read().decode()
-            self.assertIn("?x=1#cell", page)
+            self.assertIn("?x=1&amp;locale=en#cell", page)
             self.assertIn("/workshop/content/doris-course/01-real-time-analytics/image.png", page)
             self.assertNotIn("<script>", page)
         with request("/workshop/content/doris-course/01-real-time-analytics/image.png") as response:
@@ -499,7 +499,7 @@ class RuntimeTests(unittest.TestCase):
         with request("/api/contents/doris-course/01-real-time-analytics/" + self.lab) as response:
             self.assertEqual(json.load(response)["content"]["metadata"]["kernelspec"]["name"], "doris-rta")
         with request("/workshop/terminal") as response:
-            self.assertIn('href="/lab"', response.read().decode())
+            self.assertIn('href="/lab?locale=en"', response.read().decode())
         with request("/api/terminals", method="POST", body=b"{}") as response:
             terminal = json.load(response)["name"]
         # A real kernel and terminal ensure rejection is authentication, not a

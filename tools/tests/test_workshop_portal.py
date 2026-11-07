@@ -217,7 +217,9 @@ class PortalHTTPTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('class="course-board"', html)
         self.assertNotIn("demo-rta", html)
         self.assertNotIn("s001", html)
-        self.assertNotIn("<script", html)
+        self.assertEqual(html.count("<script"), 1)
+        self.assertIn('src="https://workshops.example.com/doris-courses/static/locale.js" defer', html)
+        self.assertNotIn("<script>", html)
         self.assertNotIn("<style", html)
         policy = response.headers["Content-Security-Policy"]
         self.assertNotIn("unsafe-inline", policy)

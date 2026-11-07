@@ -20,6 +20,7 @@ if not UI_ROOT.is_dir():
     UI_ROOT = Path(__file__).resolve().parents[3] / "ui/workshop"
 sys.path.insert(0, str(UI_ROOT))
 from doris_workshop_ui import Renderer, asset as ui_asset
+from i18n import InstalledUI, LocaleUnavailable
 
 PATH = "/doris-courses/"
 VERIFIERS = web.AppKey("portal_verifiers", dict)
@@ -68,18 +69,31 @@ def page(html, *, status=200):
     return web.Response(text=html, status=status, content_type="text/html")
 
 
-def application(config, *, verifiers=None):
+def application(config, *, verifiers=None, installed_ui=None):
     validate_config(config)
-    ui = Renderer(asset_base="https://" + config["domain"] + PATH + "static",
+    installed_ui = installed_ui or InstalledUI()
+
+    def renderer(request, *, activity="", learner=""):
+        context = installed_ui.context(explicit=request.query.get("locale"), browser=request.headers.get("Accept-Language", ""),
+                                       activity=activity, learner=learner, scope=config["domain"])
+        return Renderer(context=context, current_url=request.path, asset_base="https://" + config["domain"] + PATH + "static",
         home="https://" + config["domain"] + PATH)
 
     @web.middleware
     async def security(request, handler):
         try:
             response = await handler(request)
+        except LocaleUnavailable:
+            context = installed_ui.context(explicit="en")
+            ui = Renderer(asset_base="https://" + config["domain"] + PATH + "static", home=PATH, context=context, current_url=request.path)
+            response = page(ui.unavailable(language=True), status=406)
         except Denied as denied:
             entry = next((f'https://{event}-entry.{config["domain"]}{PATH}' for event in config["activities"]
                 if request.headers.get("Host") == f'{event}-entry.{config["domain"]}'), None)
+            try:
+                ui = renderer(request)
+            except LocaleUnavailable:
+                ui = Renderer(asset_base="https://" + config["domain"] + PATH + "static", home=PATH)
             response = page(ui.state("expired" if denied.status == 401 else "denied",
                 destination=entry if denied.status == 401 else None), status=denied.status)
         # Chrome applies form-action to the logout redirect as well as the POST.
@@ -88,7 +102,7 @@ def application(config, *, verifiers=None):
             if request.headers.get("Host") == f'{event}-entry.{config["domain"]}'), None)
         form_action = "'self'" + (" " + activity["login_origin"] + "/logout" if activity else "")
         response.headers.update({"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff",
-            "Content-Security-Policy": "default-src 'none'; style-src 'self' https://" + config["domain"] +
+            "Content-Security-Policy": "default-src 'none'; script-src 'self' https://" + config["domain"] + "; style-src 'self' https://" + config["domain"] +
                 "; img-src 'self' https://" + config["domain"] + "; font-src 'self' https://" + config["domain"] +
                 "; base-uri 'none'; frame-ancestors 'none'; form-action " + form_action,
             # no-referrer makes a same-origin form POST send Origin: null in
@@ -111,10 +125,11 @@ def application(config, *, verifiers=None):
     async def handle(request):
         if request.path == "/healthz" and request.method in {"GET", "HEAD"}:
             return web.Response(text="portal\n")
-        if len(request.headers.getall("Host", [])) != 1 or request.query_string:
+        if len(request.headers.getall("Host", [])) != 1 or set(request.query) - {"locale"} or len(request.query.getall("locale", [])) > 1:
             raise Denied(400)
         host = request.headers["Host"]
         if host == config["domain"]:
+            ui = renderer(request)
             if request.path.startswith(PATH + "static/") and request.method in {"GET", "HEAD"}:
                 try:
                     data, mime = ui_asset(request.path[len(PATH + "static/"):])
@@ -133,7 +148,7 @@ def application(config, *, verifiers=None):
             raise Denied(403)
         activity = config["activities"][event]
         if request.path == "/_workshop/logged-out" and request.method in {"GET", "HEAD"}:
-            return page(ui.state("signed-out"))
+            return page(renderer(request).state("signed-out"))
         if request.path not in {PATH, PATH.rstrip("/"), "/_workshop/logout"}:
             raise Denied(403)
         if len(request.headers.getall("X-Amzn-Oidc-Data", [])) != 1:
@@ -155,10 +170,11 @@ def application(config, *, verifiers=None):
             return response
         if request.method not in {"GET", "HEAD"} or request.headers.get("Upgrade"):
             raise Denied(405)
+        ui = renderer(request, activity=event, learner=assignment["learner_id"])
         services = assignment["services"]
         jupyter = services["jupyter"]
-        tools = [{"id": "jupyter", "title": "Notebooks", "href": jupyter + "/lab", "external": True},
-            {"id": "terminal", "title": "Web Terminal", "href": jupyter + "/workshop/terminal", "external": True}]
+        tools = [{"id": "jupyter", "title": ui.t("nav.notebooks"), "href": jupyter + "/lab", "external": True},
+            {"id": "terminal", "title": ui.t("nav.terminal"), "href": jupyter + "/workshop/terminal", "external": True}]
         primary = next((name for name in services if ui.service_role(name) == "doris"), None)
         if primary:
             tools.append({"id": primary, "title": ui.service_label(primary), "href": services[primary] + "/", "external": True})

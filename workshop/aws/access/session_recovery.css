@@ -3,3 +3,6 @@
 #workshop-connection button{flex-shrink:0;border:1px solid #006c52;border-radius:4px;padding:8px 12px;background:#006c52;color:white;font:inherit;cursor:pointer}
 #workshop-connection button:focus-visible{outline:3px solid #308a72;outline-offset:3px}
 @media(max-width:600px){#workshop-connection{left:8px;right:8px;bottom:8px;align-items:flex-start;flex-direction:column;gap:10px;padding:12px}}
+
+#workshop-connection span{min-width:0;overflow-wrap:anywhere}
+#workshop-connection button{max-width:100%;overflow-wrap:anywhere}

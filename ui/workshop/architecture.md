@@ -22,7 +22,7 @@ UI 源码独立于管控和课程。现有门户和课程 handler 已接入服�
 
 共享门户只在已配置apex的 `/doris-courses/static/` 提供四项公开资源：CSS、Doris标识、Jupyter标识和字体。个人页及退出页使用同一apex资源，避免退出后资源请求再次触发认证。仅这些固定公开资源返回CORS头；活动/个人数据不开放CORS。
 
-自有页面没有内联脚本，CSS也使用固定资源地址；不启用 `unsafe-inline` 或 `unsafe-eval`。课程表格对齐改为CSS类，保持原正文含义并满足严格CSP。表格和代码有可聚焦滚动区。
+自有页面通过固定外部脚本恢复语言偏好，没有内联脚本，CSS 也使用固定资源地址；不启用 `unsafe-inline` 或 `unsafe-eval`。课程表格对齐改为CSS类，保持原正文含义并满足严格CSP。表格和代码有可聚焦滚动区。
 
 Terraform中只有精确的门户退出落地路径改为转发门户，其余学习服务的退出仍返回原固定文本。退出请求仍要求签名身份、同Origin和POST；不承诺全站会话同步撤销。Cognito托管表单与认证版本未改，登录页品牌化仍需在后续真实环境中单独应用和验证。
 
@@ -30,7 +30,7 @@ Terraform中只有精确的门户退出落地路径改为转发门户，其余�
 
 门户和学员runtime均增加hash绑定的 `ui.tar`。学员包离线包含完整字体和图片；门户包保留官方资源的固定URL与hash，在安装时校验下载。运行页面无CDN依赖。
 
-门户SSM安装分UI暂存和主体安装两段，各段继续小于24KB。UI暂存的传输层使用标准库XZ压缩，解压后仍按原始tar的SHA256校验。每段绑定目标实例与payload hash，并保留自己的dispatch receipt；未知派发结果、失败或输入变化均要求对账，不自动重发。旧安装记录缺少新operation metadata时拒绝复用。
+门户 SSM 安装分 UI 暂存和主体安装。UI 暂存使用标准库 XZ 压缩后按 16,000 字符分片，每个请求继续小于 24 KB；最后一片拼合后按原始 tar 的 SHA256 校验，缺片或损坏不生成归档。每片和主体安装各自绑定目标实例与 payload hash，并保留自己的 dispatch receipt；未知派发结果、失败或输入变化均要求对账，不自动重发。旧安装记录缺少新operation metadata时拒绝复用。
 
 UI在目标机安装到独立的 `ui/` 目录，由root拥有。归档拒绝路径越界、链接、特殊文件和重复项。新bundle含UI且重新计算runtime hash；既有AMI、旧runtime、TTL binding和runner镜像没有被改写或重标。使用新UI需要构建新包/新镜像并完成对应真实验收。
 

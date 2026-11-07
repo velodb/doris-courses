@@ -15,6 +15,7 @@ from logging.handlers import SysLogHandler
 import math
 from pathlib import Path
 import re
+import sys
 import time
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
@@ -22,6 +23,12 @@ from aiohttp import ClientError, ClientSession, ClientTimeout, DummyCookieJar, W
 import jwt
 from multidict import CIMultiDict
 from yarl import URL
+
+UI_ROOT = Path(__file__).resolve().parent
+if not (UI_ROOT / 'i18n.py').exists():
+    UI_ROOT = Path(__file__).resolve().parents[3] / 'ui/workshop'
+sys.path.insert(0, str(UI_ROOT))
+from i18n import InstalledUI, LocaleUnavailable
 
 HOP_HEADERS = {"connection", "keep-alive", "proxy-authenticate", "proxy-authorization",
                "te", "trailer", "transfer-encoding", "upgrade", "content-length"}
@@ -233,7 +240,7 @@ def guidance_renderer():
     return module.unavailable_page
 
 
-def unavailable_response(request, config, host, authorized):
+def unavailable_response(request, config, host, authorized, context=None):
     headers = {'Cache-Control': 'no-store', 'Retry-After': '5', 'X-Content-Type-Options': 'nosniff'}
     if (authorized and request.method in {'GET', 'HEAD'} and 'text/html' in request.headers.get('Accept', '')
             and request.headers.get('Upgrade', '').lower() != 'websocket'
@@ -243,7 +250,7 @@ def unavailable_response(request, config, host, authorized):
         domain = host.split('.', 1)[1]
         workspace = next(('https://' + name + '/workshop/' for name, service in config['services'].items() if service['jupyter']), None)
         assets = 'https://' + domain + '/doris-courses/static'
-        html = guidance_renderer()(service_id, origin='https://' + host, workspace=workspace, assets=assets)
+        html = guidance_renderer()(service_id, origin='https://' + host, workspace=workspace, assets=assets, context=context)
         headers['Content-Security-Policy'] = ("default-src 'none'; style-src https://" + domain +
             '; img-src https://' + domain + '; font-src https://' + domain +
             "; base-uri 'none'; frame-ancestors 'none'; form-action 'none'")
@@ -252,7 +259,8 @@ def unavailable_response(request, config, host, authorized):
 
 
 def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/token"),
-                registry_file=Path("/run/doris-workshop/service-ports.json")):
+                registry_file=Path("/run/doris-workshop/service-ports.json"), installed_ui=None):
+    installed_ui = installed_ui or InstalledUI()
     activity_expiry = validate_config(config)
     app = web.Application(client_max_size=64 * 1024**2)
 
@@ -280,11 +288,24 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                 raise Denied(403)
             # This landing page must not trigger a fresh ALB login after logout.
             if request.path == "/_workshop/logged-out":
-                return web.Response(text="Signed out of this service. Close other course tabs.\n", headers={"Cache-Control": "no-store"})
+                try:
+                    context = installed_ui.context(explicit=request.query.get('locale'), browser=request.headers.get('Accept-Language', ''))
+                except LocaleUnavailable:
+                    context = installed_ui.context(explicit='en')
+                return web.Response(text=context.messages('recovery.signed-out') + "\n", headers={"Cache-Control": "no-store", "Content-Language": context.locale})
             if len(request.headers.getall("X-Amzn-Oidc-Data", [])) != 1:
                 raise Denied()
             expiry = min(activity_expiry, await app[VERIFIER].verify(request.headers["X-Amzn-Oidc-Data"]))
             authorized = True
+            try:
+                explicit_locale = request.query.get('locale') if (request.path.startswith('/_workshop/') or
+                    (request.method in {'GET', 'HEAD'} and 'text/html' in request.headers.get('Accept', ''))) else None
+                if explicit_locale is not None and len(request.query.getall('locale')) != 1:
+                    raise Denied(400)
+                locale_context = installed_ui.context(explicit=explicit_locale, browser=request.headers.get('Accept-Language', ''),
+                    activity=config['event_id'], learner=config['learner_id'], scope=host)
+            except LocaleUnavailable:
+                raise Denied(406)
             websocket = request.headers.get("Upgrade", "").lower() == "websocket"
             if request.method not in {"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}:
                 raise Denied(405)
@@ -296,13 +317,20 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                     return web.json_response({'expires_at': config['expires_at']}, headers={'Cache-Control': 'no-store'})
                 if request.path in {'/_workshop/session_recovery.js', '/_workshop/session_recovery.css'}:
                     name = request.path.rsplit('/', 1)[1]
-                    return web.Response(body=Path(__file__).with_name(name).read_bytes(),
+                    body = Path(__file__).with_name(name).read_bytes()
+                    if name.endswith('.js'):
+                        # JSON remains JS data, never HTML. No tokens or diagnostics.
+                        messages = json.dumps(locale_context.messages.subset('recovery.'), ensure_ascii=True)
+                        locale = json.dumps(locale_context.locale)
+                        body = ('(() => {const workshopMessages=' + messages + ';const workshopLocale=' + locale + ';\n').encode() + body + b'\n})();'
+                    return web.Response(body=body,
                         content_type='text/javascript' if name.endswith('.js') else 'text/css',
                         headers={'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff'})
                 if request.path == '/_workshop/reauth':
-                    return web.Response(text='<!doctype html><html><head><meta charset="utf-8">'
-                        '<title>Workshop sign-in restored</title><script src="/_workshop/session_recovery.js" defer></script>'
-                        '</head><body><p>Sign-in restored. You can close this window and return to your notebook.</p></body></html>',
+                    h = locale_context.messages.html
+                    return web.Response(text=f'<!doctype html><html lang="{locale_context.locale}"><head><meta charset="utf-8">'
+                        f'<title>{h("recovery.restored-title")}</title><script src="{locale_context.url("/_workshop/session_recovery.js")}" defer></script>'
+                        f'</head><body><p>{h("recovery.restored")}</p></body></html>',
                         content_type='text/html', headers={'Cache-Control': 'no-store',
                             'Content-Security-Policy': "default-src 'none'; script-src 'self'; base-uri 'none'; frame-ancestors 'none'"})
             if request.path == "/_workshop/logout":
@@ -396,9 +424,9 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
                     document = await upstream.read()
                     if (not upstream.headers.get('Content-Encoding') and len(document) < 2 * 1024**2
                             and b'</head>' in document):
-                        document = document.replace(b'</head>',
-                            b'<link rel="stylesheet" href="/_workshop/session_recovery.css">'
-                            b'<script src="/_workshop/session_recovery.js"></script></head>', 1)
+                        script_url = locale_context.url('/_workshop/session_recovery.js') if 'locale' in request.query else '/_workshop/session_recovery.js'
+                        injection = '<link rel="stylesheet" href="/_workshop/session_recovery.css">' + f'<script src="{script_url}"></script></head>'
+                        document = document.replace(b'</head>', injection.encode(), 1)
                         outgoing = [(k, v) for k, v in outgoing if k.lower() not in {'etag', 'content-md5', 'cache-control'}]
                         outgoing.append(('Cache-Control', 'no-store'))
                     response = web.Response(status=upstream.status, body=document, headers=outgoing)
@@ -426,11 +454,11 @@ def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/t
         except Denied as error:
             LOG.warning('workshop_access_denied status=%s', error.status)
             if error.status == 503:
-                return unavailable_response(request, config, host, authorized)
+                return unavailable_response(request, config, host, authorized, locals().get('locale_context'))
             return web.Response(status=error.status, text="Workshop access denied.\n", headers={"Cache-Control": "no-store"})
         except (OSError, asyncio.TimeoutError, ClientError):
             LOG.warning('workshop_upstream_unavailable')
-            return unavailable_response(request, config, host, authorized)
+            return unavailable_response(request, config, host, authorized, locals().get('locale_context'))
 
     app.router.add_route("*", "/{tail:.*}", handle)
     return app

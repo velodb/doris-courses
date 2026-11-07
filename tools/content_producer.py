@@ -11,6 +11,7 @@ import gzip
 from html.parser import HTMLParser
 import io
 import posixpath
+import importlib.util
 from pathlib import Path
 import re
 import subprocess
@@ -29,8 +30,20 @@ CONFIG = 'locales/producer.json'
 MAP = 'locales/source-map.json'
 GLOSSARY = 'locales/glossary.json'
 UI = 'locales/ui.en.json'
+UI_CONTRACT = 'locales/ui.contract.json'
+MESSAGE_ENGINE = 'doris-course/common/doris_labkit/messages.py'
+_spec = importlib.util.spec_from_file_location('producer_messages', Path(__file__).resolve().parents[1] / MESSAGE_ENGINE)
+_messages = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_messages)
 IMAGE = {'.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'}
 PARSER = MarkdownIt('commonmark').enable('table')
+
+
+def validate_messages(locale, source, target, contract):
+    try:
+        _messages.Messages(locale, source=source, messages=target, contract=contract)
+    except (ValueError, KeyError, TypeError) as error:
+        c.fail('invalid UI messages/placeholder contract: ' + str(error))
 
 
 def checked_path(path):
@@ -290,6 +303,7 @@ def candidates(source):
                          f'question.{question["id"]}.option.{option["id"]}')
     ui = load(source.read(UI), UI)
     c.shape(ui, 'ui_messages')
+    validate_messages('en', ui['messages'], ui['messages'], load(source.read(UI_CONTRACT), UI_CONTRACT))
     for key, text in ui['messages'].items():
         leaf(UI, '/messages/' + key, text)
     return result
@@ -510,10 +524,10 @@ def build_tree(source, selected, locales=('en',), *, state='release', default='e
     for path in source.paths():
         if path.startswith('doris-course/') and c.PATH.fullmatch(path):
             include(path)
-    for path in (CONFIG, MAP, UI, GLOSSARY):
+    for path in (CONFIG, MAP, UI, GLOSSARY, UI_CONTRACT):
         include(path)
     # Freeze the actual builder and admission implementation as provenance data.
-    for path in ('tools/content_producer.py', 'tools/build_content_package.py',
+    for path in (MESSAGE_ENGINE, 'tools/content_producer.py', 'tools/build_content_package.py',
                  'tools/content_contract_v2.py', 'tools/check_content_contract.py',
                  'tools/requirements.txt', 'contracts/v1/schema.json', 'contracts/v2/schema.json',
                  'contracts/v2/locales.json', 'contracts/v2/registry.schema.json'):
@@ -550,6 +564,8 @@ def build_tree(source, selected, locales=('en',), *, state='release', default='e
             locale = 'en'
         elif path == UI:
             kind, locale = 'ui', 'en'
+        elif path == UI_CONTRACT:
+            kind, locale = 'data', 'shared'
         elif suffix in IMAGE:
             kind = 'image'; locale = 'shared' if path in config['shared_images'] else 'en'
         elif path.startswith('doris-course/') and suffix not in {'.md', '.ipynb'}:
@@ -581,7 +597,7 @@ def build_tree(source, selected, locales=('en',), *, state='release', default='e
     closure_paths = set()
     for pid in selected:
         selection = profiles_config[pid]
-        needed = {'catalog.yaml', UI}
+        needed = {'catalog.yaml', UI, UI_CONTRACT}
         keys, allowed_optional = [], set()
         for chosen in selection['modules']:
             slug, mid = chosen['course_slug'], chosen['module_id']
@@ -686,6 +702,8 @@ def build_tree(source, selected, locales=('en',), *, state='release', default='e
                 continue
             target_path = f'rendered/{tag}/' + path.removeprefix('rendered/en/')
             data = apply_units(files[path], original_path, file_units, entries)
+            if original_path == UI:
+                validate_messages(tag, load(files[UI], UI)['messages'], load(data, UI)['messages'], load(files[UI_CONTRACT], UI_CONTRACT))
             files[target_path] = data
             assets.append({'id': asset['id'] + '.' + tag.lower(), 'kind': asset['kind'], 'locale': tag,
                            'file': file_record(target_path, data), 'source_asset_hash': asset['file']['sha256']})

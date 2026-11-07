@@ -1,5 +1,5 @@
 {
-  "source_ref": "60ad53da8f885a5a22de409cf866b01e7ab10b7e",
+  "source_ref": "c486d15e93650041b24454822c6ad41be7b36b78",
   "course_manifest": "doris-course/01-real-time-analytics/course.yaml",
   "modules": [
     {
@@ -55,5 +55,5 @@
   ],
   "embedded_images": 58,
   "output": "dist/prototype.html",
-  "output_sha256": "ba54b7d48cc8fc555ad0e20a34fe9832acf9c9b1abb743898d9481c8821a779b"
+  "output_sha256": "33c4d524c11b00fbd80b7191658b20185c34cdba428abef5df3b8960313e6e4a"
 }

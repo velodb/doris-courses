@@ -34,7 +34,7 @@ function forward(request,port,host,extra={}){
  async function snapshot(name){
   await page.evaluate(()=>document.fonts.ready);
   const result=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth,h1:document.querySelectorAll('h1').length,missing:[...document.images].filter(i=>!i.complete||!i.naturalWidth).map(i=>i.alt),scripts:document.querySelectorAll('script').length,font:document.fonts.check('16px Manrope'),brand:getComputedStyle(document.querySelector('.course-board')||document.body).backgroundColor}));
-  if(result.overflow||result.h1!==1||result.missing.length||result.scripts||!result.font)issues.push({name,...result});
+  if(result.overflow||result.h1!==1||result.missing.length||result.scripts!==1||!result.font)issues.push({name,...result});
   const file='integrated-'+name+'.png';await page.screenshot({path:path.join(out,file),fullPage:false});screenshots.push(file);
  }
  await page.goto(apex);await page.getByRole('heading',{name:'Workshops',exact:true}).waitFor();

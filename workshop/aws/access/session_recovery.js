@@ -2,6 +2,8 @@
 (() => {
   'use strict';
   const origin = location.origin;
+  const messages = workshopMessages;
+  const localized = path => path + '?locale=' + encodeURIComponent(workshopLocale);
   if (location.pathname === '/_workshop/reauth') {
     if (window.opener) {
       window.opener.postMessage({type: 'doris-workshop-authenticated'}, origin);
@@ -27,15 +29,16 @@
       if (!banner) {
         banner = document.createElement('section');
         banner.id = 'workshop-connection';
+        banner.lang = workshopLocale;
         banner.setAttribute('role', 'status');
         banner.setAttribute('aria-live', 'polite');
         const text = document.createElement('span');
         const action = document.createElement('button');
         action.type = 'button';
-        action.textContent = 'Sign in to reconnect';
+        action.textContent = messages['recovery.action'];
         action.addEventListener('click', () => {
-          popup = window.open('/_workshop/reauth', 'doris-workshop-reauth', 'width=720,height=760');
-          if (!popup) text.textContent = 'Allow the sign-in window, then select Sign in to reconnect. Keep this notebook open.';
+          popup = window.open(localized('/_workshop/reauth'), 'doris-workshop-reauth', 'width=720,height=760');
+          if (!popup) text.textContent = messages['recovery.popup'];
         });
         banner.append(text, action);
         document.body.append(banner);
@@ -44,9 +47,9 @@
       banner.dataset.state = state;
       banner.firstChild.textContent = {
         connected: '',
-        network: 'Connection interrupted. Reconnecting automatically. Keep this notebook open.',
-        auth: 'Sign-in expired or access needs attention. Sign in again to reconnect. Keep this notebook open to preserve unsaved edits.',
-        ended: 'This workshop has ended. Keep this notebook open and contact your instructor to continue.'
+        network: messages['recovery.network'],
+        auth: messages['recovery.auth'],
+        ended: messages['recovery.ended']
       }[state];
       banner.lastChild.hidden = state !== 'auth';
     };
@@ -85,7 +88,7 @@
     if (pendingProbe) return pendingProbe;
     pendingProbe = (async () => {
       try {
-        const response = await nativeFetch('/_workshop/session', {
+        const response = await nativeFetch(localized('/_workshop/session'), {
           credentials: 'same-origin', cache: 'no-store', redirect: 'manual',
           signal: AbortSignal.timeout(10000)
         });

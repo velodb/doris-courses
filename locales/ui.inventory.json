@@ -1,0 +1,1585 @@
+{
+  "version": 1,
+  "source": "locales/ui.en.json",
+  "contract": "locales/ui.contract.json",
+  "messages": [
+    {
+      "key": "activity.signin",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "course.level",
+      "parameters": {
+        "level": "integer"
+      },
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "course.level-label",
+      "parameters": {
+        "level": "integer"
+      },
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "course.open-lab",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "course.open-quiz",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "course.optional",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "course.optional-detail",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "course.read",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "error.body",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "error.title",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "import.action",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.after",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.best",
+      "parameters": {
+        "correct": "integer",
+        "total": "integer"
+      },
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.choose",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/runtime/portal.py"
+      ]
+    },
+    {
+      "key": "import.confirm",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.file",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.invalid",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py"
+      ]
+    },
+    {
+      "key": "import.match",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.matches",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.merge",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.module",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.preview",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.saved.one",
+      "parameters": {
+        "count": "integer"
+      },
+      "consumers": [
+        "workshop/aws/runtime/portal.py"
+      ]
+    },
+    {
+      "key": "import.saved.other",
+      "parameters": {
+        "count": "integer"
+      },
+      "consumers": [
+        "workshop/aws/runtime/portal.py"
+      ]
+    },
+    {
+      "key": "import.skip",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.skipped",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.source",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "import.updated",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "lesson.code",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "lesson.contents",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "lesson.new-tab",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "lesson.on-page",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "lesson.open-lab",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "lesson.table",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "locale.apply",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "locale.boundary",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "locale.english",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "locale.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "locale.storage",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/i18n.py"
+      ]
+    },
+    {
+      "key": "locale.unavailable",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "nav.breadcrumb",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "nav.notebooks",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "workshop/aws/access/portal.py"
+      ]
+    },
+    {
+      "key": "nav.outline",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "nav.terminal",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "workshop/aws/access/portal.py"
+      ]
+    },
+    {
+      "key": "nav.workshop",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.best",
+      "parameters": {
+        "correct": "integer",
+        "total": "integer"
+      },
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.complete",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.done",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.download",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "workshop/aws/runtime/portal.py"
+      ]
+    },
+    {
+      "key": "progress.download-failed",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/runtime/portal.py"
+      ]
+    },
+    {
+      "key": "progress.error.01",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.02",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.03",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.04",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.05",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.06",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.07",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.08",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.09",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.10",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.11",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.12",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.13",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.14",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.15",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.16",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.17",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.18",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.19",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.20",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.21",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.error.22",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/messages.py",
+        "doris-course/common/doris_labkit/progress.py"
+      ]
+    },
+    {
+      "key": "progress.failed",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/runtime/portal.py"
+      ]
+    },
+    {
+      "key": "progress.heading",
+      "parameters": {
+        "score": "text"
+      },
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.instructions",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.lab",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.lesson",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.mark-lab",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.mark-read",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.module",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.na",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.open-first",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.optional",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.quiz",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.record",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.refresh",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.saving",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.summary",
+      "parameters": {
+        "complete": "integer",
+        "modules": "integer",
+        "parts": "integer",
+        "total": "integer"
+      },
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "workshop/aws/runtime/portal.py"
+      ]
+    },
+    {
+      "key": "progress.todo",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.transfer",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.unavailable",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.undo-lab",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.undo-read",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "progress.updated",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "quiz.dependencies",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.no-answer",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.retry-save",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-1",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-10",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-11",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-12",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-13",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-14",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-15",
+      "parameters": {
+        "number": "integer",
+        "total": "integer"
+      },
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-16",
+      "parameters": {
+        "correct_count": "integer",
+        "percent": "integer",
+        "total": "integer"
+      },
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-17",
+      "parameters": {
+        "passing_score_percent": "integer"
+      },
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-18",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-19",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-2",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-20",
+      "parameters": {
+        "correct_text": "text"
+      },
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-21",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-22",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-23",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-24",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-25",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-26",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-27",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-3",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-4",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-5",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-6",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-7",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-8",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "quiz.text-9",
+      "parameters": {},
+      "consumers": [
+        "doris-course/common/doris_labkit/quiz.py"
+      ]
+    },
+    {
+      "key": "recovery.action",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/access/session_recovery.js"
+      ]
+    },
+    {
+      "key": "recovery.auth",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/access/session_recovery.js"
+      ]
+    },
+    {
+      "key": "recovery.ended",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/access/session_recovery.js"
+      ]
+    },
+    {
+      "key": "recovery.network",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/access/session_recovery.js"
+      ]
+    },
+    {
+      "key": "recovery.popup",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/access/session_recovery.js"
+      ]
+    },
+    {
+      "key": "recovery.restored",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/access/gateway.py"
+      ]
+    },
+    {
+      "key": "recovery.restored-title",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/access/gateway.py"
+      ]
+    },
+    {
+      "key": "recovery.signed-out",
+      "parameters": {},
+      "consumers": [
+        "workshop/aws/access/gateway.py"
+      ]
+    },
+    {
+      "key": "service.check",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.description",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.jupyter.description",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.jupyter.startup",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.multi.description",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.multi.lab",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.multi.startup",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.single.description",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.single.lab",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.single.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.single.startup",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.startup",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "service.title",
+      "parameters": {
+        "service": "text"
+      },
+      "consumers": [
+        "ui/workshop/service_guidance.py"
+      ]
+    },
+    {
+      "key": "state.denied.body",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.denied.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.denied.primary",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.denied.title",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.ended.body",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.ended.detail",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.ended.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.ended.primary",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.ended.title",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.expired.body",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.expired.detail",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.expired.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.expired.primary",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.expired.title",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.help.body",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.help.detail",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.help.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.help.primary",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.help.title",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.login-error.error",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.login-error.title",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.no-activity.body",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.no-activity.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.no-activity.primary",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.no-activity.title",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.not-ready.body",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.not-ready.detail",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.not-ready.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.not-ready.primary",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py",
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.not-ready.title",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.signed-out.body",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.signed-out.detail",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.signed-out.label",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.signed-out.primary",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "state.signed-out.title",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/copy.json"
+      ]
+    },
+    {
+      "key": "template.activities.text-1",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "ui/workshop/src/templates/activities.html"
+      ]
+    },
+    {
+      "key": "template.activities.text-2",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/activities.html"
+      ]
+    },
+    {
+      "key": "template.course.text-1",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/course.html"
+      ]
+    },
+    {
+      "key": "template.lesson.text-1",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/lesson.html"
+      ]
+    },
+    {
+      "key": "template.lesson.text-2",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/lesson.html"
+      ]
+    },
+    {
+      "key": "template.lesson.text-3",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/lesson.html"
+      ]
+    },
+    {
+      "key": "template.lesson.text-4",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/lesson.html"
+      ]
+    },
+    {
+      "key": "template.lesson.text-5",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py",
+        "ui/workshop/src/templates/lesson.html"
+      ]
+    },
+    {
+      "key": "template.page.text-1",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/page.html"
+      ]
+    },
+    {
+      "key": "template.page.text-2",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py",
+        "ui/workshop/src/templates/page.html"
+      ]
+    },
+    {
+      "key": "template.page.text-3",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py",
+        "ui/workshop/src/templates/page.html"
+      ]
+    },
+    {
+      "key": "template.page.text-4",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/service_guidance.py",
+        "ui/workshop/src/templates/page.html"
+      ]
+    },
+    {
+      "key": "template.page.text-5",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/page.html"
+      ]
+    },
+    {
+      "key": "template.progress.text-1",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "ui/workshop/src/templates/progress.html"
+      ]
+    },
+    {
+      "key": "template.progress.text-2",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/progress.html"
+      ]
+    },
+    {
+      "key": "template.progress.text-3",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/progress.html"
+      ]
+    },
+    {
+      "key": "template.terminal.text-1",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/terminal.html"
+      ]
+    },
+    {
+      "key": "template.terminal.text-2",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/terminal.html"
+      ]
+    },
+    {
+      "key": "template.terminal.text-3",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/terminal.html"
+      ]
+    },
+    {
+      "key": "template.terminal.text-4",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/terminal.html"
+      ]
+    },
+    {
+      "key": "template.terminal.text-5",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/terminal.html"
+      ]
+    },
+    {
+      "key": "template.terminal.text-6",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/terminal.html"
+      ]
+    },
+    {
+      "key": "template.workspace.text-1",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "ui/workshop/src/templates/workspace.html"
+      ]
+    },
+    {
+      "key": "template.workspace.text-2",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/workspace.html"
+      ]
+    },
+    {
+      "key": "template.workspace.text-3",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py",
+        "ui/workshop/src/templates/workspace.html"
+      ]
+    },
+    {
+      "key": "template.workspace.text-4",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/workspace.html"
+      ]
+    },
+    {
+      "key": "template.workspace.text-5",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/workspace.html"
+      ]
+    },
+    {
+      "key": "template.workspace.text-6",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/workspace.html"
+      ]
+    },
+    {
+      "key": "template.workspace.text-7",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/src/templates/workspace.html"
+      ]
+    },
+    {
+      "key": "workspace.assigned",
+      "parameters": {
+        "learner": "text"
+      },
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "workspace.more",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    },
+    {
+      "key": "workspace.signout",
+      "parameters": {},
+      "consumers": [
+        "ui/workshop/doris_workshop_ui.py"
+      ]
+    }
+  ],
+  "boundaries": {
+    "offline_design_preview": "English review tool; not installed in learner runtime",
+    "machine_diagnostics": "Exceptions, logs, API denial bodies and third-party applications retain machine semantics",
+    "progress_errors": "Only exact static allowlisted diagnostics become translated learner copy; unknown errors use a generic message",
+    "content": "Lesson text, module titles, questions and image descriptions come from admitted content adapters"
+  }
+}

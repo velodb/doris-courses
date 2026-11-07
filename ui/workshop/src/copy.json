@@ -1,62 +1,62 @@
 {
   "no-activity": {
-    "label": "WORKSHOP ENTRY",
-    "title": "No active workshops",
-    "body": "Ask your organizer for an activity link.",
+    "label": "state.no-activity.label",
+    "title": "state.no-activity.title",
+    "body": "state.no-activity.body",
     "detail": "",
-    "primary": "Check activities",
+    "primary": "state.no-activity.primary",
     "destination": "activity"
   },
   "ended": {
-    "label": "ACTIVITY CLOSED",
-    "title": "This workshop has ended",
-    "body": "Contact your organizer to join another workshop.",
-    "detail": "Files from this workshop may no longer be available.",
-    "primary": "Back to activities",
+    "label": "state.ended.label",
+    "title": "state.ended.title",
+    "body": "state.ended.body",
+    "detail": "state.ended.detail",
+    "primary": "state.ended.primary",
     "destination": "activity"
   },
   "not-ready": {
-    "label": "SERVICE UNAVAILABLE",
-    "title": "Your environment is not ready",
-    "body": "Wait a moment, then try again.",
-    "detail": "Still unavailable? Send your activity and learner ID to your organizer.",
-    "primary": "Try opening again",
+    "label": "state.not-ready.label",
+    "title": "state.not-ready.title",
+    "body": "state.not-ready.body",
+    "detail": "state.not-ready.detail",
+    "primary": "state.not-ready.primary",
     "destination": "external"
   },
   "denied": {
-    "label": "ACCESS UNAVAILABLE",
-    "title": "Access unavailable",
-    "body": "Open the services linked from your own workshop.",
+    "label": "state.denied.label",
+    "title": "state.denied.title",
+    "body": "state.denied.body",
     "detail": "",
-    "primary": "Back to activities",
+    "primary": "state.denied.primary",
     "destination": "activity"
   },
   "expired": {
-    "label": "SESSION EXPIRED",
-    "title": "Sign in to continue",
-    "body": "Your session has expired.",
-    "detail": "Check your notebook’s last result before rerunning a cell.",
-    "primary": "Sign in again",
+    "label": "state.expired.label",
+    "title": "state.expired.title",
+    "body": "state.expired.body",
+    "detail": "state.expired.detail",
+    "primary": "state.expired.primary",
     "destination": "sign-in"
   },
   "signed-out": {
-    "label": "ENTRY SIGN-OUT",
-    "title": "Signed out of this entry",
-    "body": "Close other course and service tabs.",
-    "detail": "Other tabs may still be signed in.",
-    "primary": "Back to activities",
+    "label": "state.signed-out.label",
+    "title": "state.signed-out.title",
+    "body": "state.signed-out.body",
+    "detail": "state.signed-out.detail",
+    "primary": "state.signed-out.primary",
     "destination": "activity"
   },
   "help": {
-    "label": "ACCOUNT HELP",
-    "title": "Contact your organizer",
-    "body": "Ask for a workshop account or a new temporary password.",
-    "detail": "Never share your password.",
-    "primary": "Back to activities",
+    "label": "state.help.label",
+    "title": "state.help.title",
+    "body": "state.help.body",
+    "detail": "state.help.detail",
+    "primary": "state.help.primary",
     "destination": "activity"
   },
   "login-error": {
-    "title": "Sign in",
-    "error": "Incorrect username or password. Try again."
+    "title": "state.login-error.title",
+    "error": "state.login-error.error"
   }
 }

@@ -15,5 +15,11 @@ dependencies = [
   "PyYAML>=6.0,<7",
 ]
 
-[tool.setuptools.packages.find]
-include = ["doris_labkit*"]
+[tool.setuptools]
+packages = ["doris_labkit", "doris_workshop_locales"]
+
+[tool.setuptools.package-dir]
+doris_workshop_locales = "../../locales"
+
+[tool.setuptools.package-data]
+doris_workshop_locales = ["ui.en.json", "ui.contract.json"]

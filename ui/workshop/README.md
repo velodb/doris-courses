@@ -1,6 +1,6 @@
 # Workshop UI
 
-Workshop 的独立 UI 工作区。采用用户选定的精简 A「实验手册」，页面英文，使用 Apache Doris 官方标识。自有门户与课程页面已接入运行时。新私有镜像已通过原生测试、完整 RTA 和同一新实例的六项实际 GUI 验收并发布；新三人共享浏览器登录、隔离、退出重登和单人服务恢复验收通过，Cognito 托管认证版本未改。验证结果见 [接入状态](integration-status.md)。
+Workshop 的独立 UI 工作区。采用用户选定的精简 A「实验手册」，默认英语，使用 Apache Doris 官方标识；学员可在已安装的语言集合内选择，接口与边界见 [语言上下文](i18n.md)。自有门户与课程页面已接入运行时。新私有镜像已通过原生测试、完整 RTA 和同一新实例的六项实际 GUI 验收并发布；新三人共享浏览器登录、隔离、退出重登和单人服务恢复验收通过，Cognito 托管认证版本未改。验证结果见 [接入状态](integration-status.md)。
 
 ```text
 ui/workshop/
@@ -33,16 +33,16 @@ node ui/workshop/scripts/verify-preview.cjs
 
 独立安装时，在本目录创建 Python venv 并安装 `requirements-preview.txt`，使用 `npm install` 和 `npx playwright install chromium` 准备浏览器，再执行 `npm run build:preview` / `npm run verify:preview`。以上版本取自本轮实际验证环境，不表示各工具最新版本；不需要安装任何AWS SDK。
 
-`dist/prototype.html` 是设计产物，内嵌课程快照便于离线评审；它不是部署包或另一个课程内容来源。修改课程后重新生成。来源与哈希见 [source-manifest.json](review/selected/source-manifest.json)。源码中的英文 UI 状态文案集中在 [copy.json](src/copy.json)，课程正文仍从课程源生成。
+`dist/prototype.html` 是设计产物，内嵌课程快照便于离线评审；它不是部署包或另一个课程内容来源。修改课程后重新生成。来源与哈希见 [source-manifest.json](review/selected/source-manifest.json)。英语 UI 文案集中在 [ui.en.json](../../locales/ui.en.json)，[copy.json](src/copy.json) 保存状态消息键和目标类型，课程正文仍从课程源生成。
 
 ## 已接入的运行边界
 
 现有门户和课程handler通过薄适配调用独立渲染器，UI只消费已验证的展示数据。账号认证、subject与服务归属继续在服务端，前端不根据learner ID拼接资源URL。[展示schema](contracts/view-model.schema.json)仍是后续独立API的草案，当前通过Python函数传递数据。
 
-运行期课程正文继续由现有 Markdown 渲染和路径白名单提供。UI样式与页面模板在此维护；Python handler保留路由、校验与数据适配。实际页面使用服务端渲染与固定CSS资源，无内联脚本；原型脚本不进入运行安装包。资源策略、归档与SSM分阶段安装见 [接入说明](architecture.md)。
+运行期课程正文继续由现有 Markdown 渲染和路径白名单提供。UI样式与页面模板在此维护；Python handler保留路由、校验与数据适配。实际页面使用服务端渲染、固定 CSS 资源及外部语言偏好脚本，无内联脚本；原型脚本不进入运行安装包。资源策略、归档与SSM分阶段安装见 [接入说明](architecture.md)。
 
 RTA 服务入口标明启动实验：single FE 是 Lab 1 启动的 1 FE + 1 BE 环境；Multi-FE 是 Lab 9 的独立 3 FE + 3 BE 集群，并提供 Lab 9 链接。入口显示不代表服务已运行。已认证学员打开尚不可连接的服务页面时，会看到对应启动步骤、Lab 链接与重试入口；API 和 WebSocket 仍返回原来的错误状态。此页面不启动或重置实验服务。
 
-新增的本地学习进度沿用现有组件：讲义 / Lab / Quiz 各占 1/3，由服务端 SQLite 保存，支持 JSON 下载、预览和确认合并导入。UI 负责展示和表单，存储与校验仍在公共运行组件及课程 handler；详见[英文使用说明](../../workshop/aws/runtime/progress.md)。此功能尚待新的云端制品 / 新实例验收，旧 AMI 不因此获得新功能。证书和资源管理 UI 未纳入。localStorage 仍只用于设计预览的布局密度和字号。
+新增的本地学习进度沿用现有组件：讲义 / Lab / Quiz 各占 1/3，由服务端 SQLite 保存，支持 JSON 下载、预览和确认合并导入。UI 负责展示和表单，存储与校验仍在公共运行组件及课程 handler；详见[英文使用说明](../../workshop/aws/runtime/progress.md)。此功能尚待新的云端制品 / 新实例验收，旧 AMI 不因此获得新功能。证书和资源管理 UI 未纳入。学员页面以 localStorage 保存按活动和学员隔离的语言偏好，已有标签由 URL 保持原语言；设计预览另存布局密度和字号。真实多语言安装与共享进度迁移由后续任务完成。
 
 设计规格和状态交接见 [A 设计规范](review/selected/design-system.md)、[页面及状态](review/selected/pages-and-states.md)、[实现交接](review/selected/implementation.md)。方向选择见 [确认记录](review/direction-approved.md)。初稿保留在 三版比较页 `review/index.html`。

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from html import escape
 from pathlib import Path
+from .messages import Messages
 
 try:
     import ipywidgets as widgets
@@ -15,11 +16,7 @@ try:
 
     from .quizbank import QuizOption, QuizQuestion, display_order, load_quiz
 except ImportError as exc:  # pragma: no cover - learner environment diagnostic
-    raise RuntimeError(
-        "Quiz dependencies are missing. From the course root, run "
-        "`.venv/bin/python -m pip install -r requirements.txt`, restart the "
-        "Jupyter kernel, and run the initialization cell again."
-    ) from exc
+    raise RuntimeError(Messages()('quiz.dependencies')) from exc
 
 __all__ = ["CourseQuiz", "QuizOption", "QuizQuestion"]
 
@@ -204,9 +201,13 @@ class CourseQuiz:
         questions: tuple[QuizQuestion, ...],
         passing_score_percent: int = 80,
         source_path: str | Path | None = None,
+        messages: Messages | None = None,
+        locale: str = "en",
     ) -> None:
         if not questions:
             raise ValueError("A quiz must contain at least one question.")
+        self.t = messages or Messages(locale)
+        self.locale = self.t.locale
         self.title = title
         self.description = description
         self.questions = questions
@@ -219,7 +220,7 @@ class CourseQuiz:
         self._root.add_class("doris-quiz-root")
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "CourseQuiz":
+    def from_yaml(cls, path: str | Path, *, messages: Messages | None = None, locale: str = "en") -> "CourseQuiz":
         """Load a quiz file and show its options in the quiz's fixed shuffled order.
 
         Raises ``doris_labkit.quizbank.QuizFormatError`` (a ValueError) listing
@@ -232,6 +233,7 @@ class CourseQuiz:
             questions=quiz.questions,
             passing_score_percent=quiz.passing_score_percent,
             source_path=path,
+            messages=messages, locale=locale,
         )
 
     def show(self) -> widgets.VBox:
@@ -252,7 +254,7 @@ class CourseQuiz:
 
         header = widgets.HTML(
             value=(
-                f'<div class="doris-quiz-kicker">Question {number} of {total}</div>'
+                f'<div class="doris-quiz-kicker">{self.t.html("quiz.text-15", number=number, total=total)}</div>'
                 f'<span class="doris-quiz-objective">{escape(question.objective)}</span>'
                 f'<div class="doris-quiz-question">{number}. {escape(question.prompt)}</div>'
                 '<div class="doris-quiz-progress-track">'
@@ -270,19 +272,19 @@ class CourseQuiz:
         )
         feedback = widgets.HTML()
         previous_button = widgets.Button(
-            description="Previous question",
+            description=self.t("quiz.text-1"),
             icon="arrow-left",
             layout=widgets.Layout(
                 visibility="hidden" if self._current == 0 else "visible"
             ),
         )
         submit = widgets.Button(
-            description="Submit answer",
+            description=self.t("quiz.text-2"),
             button_style="success",
             icon="check",
         )
         next_label = (
-            "View results" if number == total else "Next question"
+            self.t("quiz.text-3") if number == total else self.t("quiz.text-4")
         )
         next_button = widgets.Button(
             description=next_label,
@@ -294,15 +296,14 @@ class CourseQuiz:
             correct = selected == question.answer
             if correct:
                 feedback.value = (
-                    '<div class="doris-quiz-feedback"><strong>Correct.</strong> '
+                    f'<div class="doris-quiz-feedback"><strong>{self.t.html("quiz.text-5")}</strong> '
                     f"{escape(question.explanation)}</div>"
                 )
             else:
                 correct_text = question.option_text(question.answer)
                 feedback.value = (
                     '<div class="doris-quiz-feedback incorrect">'
-                    "<strong>Not quite.</strong> The correct answer is "
-                    f"<strong>{escape(correct_text)}</strong>. "
+                    f'<strong>{self.t.html("quiz.text-6")}</strong> {self.t.html("quiz.text-20", correct_text=correct_text)} '
                     f"{escape(question.explanation)}</div>"
                 )
 
@@ -316,7 +317,7 @@ class CourseQuiz:
             if selected is None:
                 feedback.value = (
                     '<div class="doris-quiz-feedback warning">'
-                    "Select one answer before submitting.</div>"
+                    f'{self.t.html("quiz.text-7")}</div>'
                 )
                 return
 
@@ -386,17 +387,17 @@ class CourseQuiz:
             try:
                 record = save_quiz_from_environment(self.source_path, correct_count, total, self.passing_score_percent)
                 if record is not None and record.get('optional'):
-                    saved_text = "Optional Quiz complete. This exercise has no separate module identity and does not change module progress."
+                    saved_text = self.t("quiz.text-26")
                 elif record is not None:
-                    saved_text = ("Progress saved. Quiz passed; return to the course outline to see your progress."
-                                  if record["quiz_passed"] else "Progress saved. Reach the passing score to earn Quiz credit.")
+                    saved_text = (self.t("quiz.text-23")
+                                  if record["quiz_passed"] else self.t("quiz.text-24"))
                     if record["quiz_passed"] and not passed:
-                        saved_text = "Progress saved. Your earlier Quiz pass and best score are retained."
+                        saved_text = self.t("quiz.text-22")
             except Exception:
                 save_failed = True
-                saved_text = "Progress was not saved. Your answers are still here. Retry saving before closing this quiz."
+                saved_text = self.t("quiz.text-21")
         elif not complete:
-            saved_text = "Answer and submit every question before completing the quiz. Progress was not saved."
+            saved_text = self.t("quiz.text-25")
 
         if missed:
             review_items = []
@@ -405,42 +406,41 @@ class CourseQuiz:
                 review_items.append(
                     '<div class="doris-quiz-review-item">'
                     f"<strong>{number}. {escape(question.prompt)}</strong><br>"
-                    '<div class="doris-quiz-review-answer-label">Your answer:</div>'
+                    f'<div class="doris-quiz-review-answer-label">{self.t.html("quiz.text-8")}</div>'
                     '<div class="doris-quiz-review-answer">'
-                    f"{escape(question.option_text(selected))}</div>"
-                    '<div class="doris-quiz-review-answer-label">Correct answer:</div>'
+                    f"{escape(question.option_text(selected) if selected is not None else self.t('quiz.no-answer'))}</div>"
+                    f'<div class="doris-quiz-review-answer-label">{self.t.html("quiz.text-9")}</div>'
                     '<div class="doris-quiz-review-answer">'
                     f"{escape(question.option_text(question.answer))}</div>"
-                    '<div class="doris-quiz-review-description-label">Description:</div>'
+                    f'<div class="doris-quiz-review-description-label">{self.t.html("quiz.text-10")}</div>'
                     '<div class="doris-quiz-review-description">'
                     f"{escape(question.explanation)}</div></div>"
                 )
             review = (
                 '<div class="doris-quiz-review">'
-                '<strong class="doris-quiz-review-title">Review missed questions</strong>'
+                f'<strong class="doris-quiz-review-title">{self.t.html("quiz.text-11")}</strong>'
                 + "".join(review_items)
                 + "</div>"
             )
         else:
             review = (
-                '<div class="doris-quiz-review">All learning objectives in this '
-                "knowledge check were answered correctly.</div>"
+                f'<div class="doris-quiz-review">{self.t.html("quiz.text-27")}</div>'
             )
 
         result = widgets.HTML(
             value=(
-                '<div class="doris-quiz-shell">'
-                '<div class="doris-quiz-kicker">' + ('Quiz complete' if complete else 'Quiz incomplete') + '</div>'
-                f'<div class="doris-quiz-result">{correct_count} of {total} correct ({percent}%)</div>'
-                f'<p>Passing score: {self.passing_score_percent}%. ' + ('Passed.' if complete and passed else 'Not passed.') + '</p>'
+                f'<div class="doris-quiz-shell" lang="{escape(self.locale)}">'
+                '<div class="doris-quiz-kicker">' + (self.t.html("quiz.text-12") if complete else self.t.html("quiz.text-13")) + '</div>'
+                f'<div class="doris-quiz-result">{self.t.html("quiz.text-16", correct_count=correct_count, total=total, percent=percent)}</div>'
+                f'<p>{self.t.html("quiz.text-17", passing_score_percent=self.passing_score_percent)} ' + (self.t.html("quiz.text-18") if complete and passed else self.t.html("quiz.text-19")) + '</p>'
                 f'<p role="status">{escape(saved_text)}</p>'
                 '<div class="doris-quiz-result-description">'
                 f"{escape(self.description)}</div>{review}</div>"
             )
         )
-        retry = widgets.Button(description="Try again", icon="refresh")
+        retry = widgets.Button(description=self.t("quiz.text-14"), icon="refresh")
         previous_button = widgets.Button(
-            description="Previous question",
+            description=self.t("quiz.text-1"),
             icon="arrow-left",
         )
 
@@ -458,7 +458,7 @@ class CourseQuiz:
         previous_button.on_click(review_last_question)
         controls = widgets.HBox([previous_button, retry])
         if save_failed:
-            save_again = widgets.Button(description="Retry saving", icon="save")
+            save_again = widgets.Button(description=self.t("quiz.retry-save"), icon="save")
             save_again.on_click(lambda _: self._render_results())
             controls.children = (*controls.children, save_again)
         controls.add_class("doris-quiz-controls")

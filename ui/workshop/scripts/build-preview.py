@@ -103,6 +103,11 @@ font = embed(ROOT / 'assets/manrope.ttf')
 css = f"@font-face{{font-family:Manrope;src:url('{font}') format('truetype');font-weight:200 800;font-display:swap}}\n" + (ROOT / 'src/styles.css').read_text()
 script = (ROOT / 'src/prototype.js').read_text()
 copy = json.loads((ROOT / 'src/copy.json').read_text())
+messages = json.loads((REPO / 'locales/ui.en.json').read_text())['messages']
+for row in copy.values():
+    for field, value in row.items():
+        if field != 'destination' and value:
+            row[field] = messages[value]
 payload = json.dumps({'data': data, 'copy': copy}, ensure_ascii=False).replace('<', '\\u003c')
 license_text = (ROOT / 'assets/manrope-OFL.txt').read_text()
 html = f'''<!doctype html>

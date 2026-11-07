@@ -41,7 +41,7 @@ def payload(plan, config, learner, *, assets=False):
     require(all(re.fullmatch(r"[A-Z][A-Z0-9_]*", key) and re.fullmatch(r"[a-zA-Z0-9:/._-]+", value)
                 for key, value in values.items()), "unsafe environment value")
     files["browser.env"] = "".join(f"{k}={v}\n" for k, v in sorted(values.items())).encode()
-    recovery_assets = {'session_recovery.js', 'session_recovery.css'}
+    recovery_assets = {'session_recovery.js', 'session_recovery.css', 'i18n.py', 'workshop_messages.py', 'ui.en.json', 'ui.contract.json', 'locale-registry.json'}
     files = {name: data for name, data in files.items() if (name in recovery_assets) == assets}
     archive = io.BytesIO()
     with tarfile.open(fileobj=archive, mode="w") as tar:

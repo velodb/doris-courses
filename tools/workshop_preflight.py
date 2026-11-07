@@ -594,7 +594,8 @@ def tool_hash():
                  'doris-workshop-gateway.service', 'install_gateway.sh', 'doris-workshop-portal.service', 'install_portal.sh',
                  'session_recovery.js', 'session_recovery.css'))
     paths.append(SPEC / 'operations/node.py')
-    paths.append(wc.REPO / 'ui/workshop/service_guidance.py')
+    paths.extend(wc.REPO / name for name in ('ui/workshop/service_guidance.py', 'ui/workshop/i18n.py',
+                 'doris-course/common/doris_labkit/messages.py', 'locales/ui.en.json', 'locales/ui.contract.json', 'contracts/v2/locales.json'))
     return wc.canonical_hash({str(p.relative_to(wc.REPO)): file_hash(p) for p in paths})
 
 

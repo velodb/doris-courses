@@ -53,30 +53,44 @@ class PortalInstallTests(unittest.TestCase):
         self.assertTrue(any("test ! -e /etc/doris-workshop-portal/portal.json" in c for c in commands))
         self.assertLess(len(json.dumps(commands)), 24000)
         staged, ui_digest = install.ui_payload(install.access.portal_sources()["ui.tar"])
-        self.assertLess(len(json.dumps(staged)), 24000)
+        self.assertTrue(all(len(json.dumps(commands)) < 24000 for commands, _ in staged))
         self.assertTrue(any(ui_digest in command for command in commands))
 
     def test_ui_transfer_reconstructs_the_exact_archive_locally(self):
         data = install.access.portal_sources()['ui.tar']
         commands, digest = install.ui_payload(data)
-        script = '\n'.join(commands).replace('/var/lib/doris-workshop-portal-install', str(self.root))
+        script = '\n'.join(command for stage, _ in commands for command in stage).replace('/var/lib/doris-workshop-portal-install', str(self.root))
         result = subprocess.run(['bash', '-c', script], capture_output=True, text=True, timeout=15)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(result.stdout.strip(), 'ui-ready')
+        self.assertEqual(result.stdout.splitlines(), ['ui-ready'] * len(commands))
         self.assertEqual((self.root / ('ui-' + digest + '.tar')).read_bytes(), data)
+
+    def test_missing_or_corrupt_ui_chunk_never_publishes_the_archive(self):
+        stages, digest = install.ui_payload(install.access.portal_sources()['ui.tar'])
+        self.assertGreater(len(stages), 1)
+        def execute(stage):
+            return subprocess.run(['bash', '-c', '\n'.join(stage).replace('/var/lib/doris-workshop-portal-install', str(self.root))],
+                                  capture_output=True, text=True, timeout=15)
+        self.assertNotEqual(execute(stages[-1][0]).returncode, 0)
+        self.assertFalse((self.root / ('ui-' + digest + '.tar')).exists())
+        for commands, _ in stages[:-1]:
+            self.assertEqual(execute(commands).returncode, 0)
+        (self.root / ('ui-' + digest + '.0.part')).write_text('corrupt')
+        self.assertNotEqual(execute(stages[-1][0]).returncode, 0)
+        self.assertFalse((self.root / ('ui-' + digest + '.tar')).exists())
 
     def test_success_receipt_is_reused_and_unknown_dispatch_not_resent(self):
         with mock.patch.object(install, "verify", return_value="i-portal"):
             args = (self.config, self.shared, self.root, self.root / "install", self.cloud)
             self.assertFalse(install.install(*args)["reused_receipt"])
             self.assertTrue(install.install(*args)["reused_receipt"])
-            self.assertEqual(self.cloud.sent, 2)
+            self.assertEqual(self.cloud.sent, len(install.ui_payload(install.access.portal_sources()["ui.tar"])[0]) + 1)
             record = json.loads((self.root / "install/dispatch.json").read_text())
             record["status"] = "dispatching"
             record.pop("command_id")
             (self.root / "install/dispatch.json").write_text(json.dumps(record))
             with self.assertRaisesRegex(ValueError, "dispatch outcome unknown"): install.install(*args)
-            self.assertEqual(self.cloud.sent, 2)
+            self.assertEqual(self.cloud.sent, len(install.ui_payload(install.access.portal_sources()["ui.tar"])[0]) + 1)
 
     def test_unknown_ui_stage_is_not_resent_and_other_inputs_cannot_reuse_it(self):
         with mock.patch.object(install, "verify", return_value="i-portal"):
@@ -89,7 +103,7 @@ class PortalInstallTests(unittest.TestCase):
             record_path.write_text(json.dumps(record))
             with self.assertRaisesRegex(ValueError, "dispatch outcome unknown"):
                 install.install(*args)
-            self.assertEqual(self.cloud.sent, 2)
+            self.assertEqual(self.cloud.sent, len(install.ui_payload(install.access.portal_sources()["ui.tar"])[0]) + 1)
             changed = {**self.shared, "domain": "other.example.com"}
             with self.assertRaisesRegex(ValueError, "operation inputs differ"):
                 install.install(self.config, changed, self.root, self.root / "stage", self.cloud)

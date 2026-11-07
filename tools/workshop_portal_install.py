@@ -130,18 +130,33 @@ def payload(shared, *, sources=None):
 
 
 def ui_payload(data):
+    """Bounded, independently receipted chunks; the final chunk verifies all bytes."""
+    require(len(data) <= 1024 * 1024, "UI archive exceeds its size bound")
     digest = hashlib.sha256(data).hexdigest()
     encoded = base64.b64encode(lzma.compress(data, preset=9)).decode()
-    commands = ["set -eu", "umask 077", "install -d -m 0700 /var/lib/doris-workshop-portal-install",
-        "python3 - <<'PY'\nimport base64,lzma,hashlib,os,pathlib,tempfile\n"
-        + "data=lzma.decompress(base64.b64decode(" + repr(encoded) + ",validate=True))\n"
-        + "assert len(data)<=1024*1024 and hashlib.sha256(data).hexdigest()==" + repr(digest) + "\n"
-        + "target=pathlib.Path('/var/lib/doris-workshop-portal-install/ui-" + digest + ".tar')\n"
-        + "assert not target.is_symlink()\n"
-        + "with tempfile.NamedTemporaryFile(dir=target.parent,delete=False) as f:\n f.write(data)\n temp=pathlib.Path(f.name)\n"
-        + "try:\n temp.chmod(0o600)\n os.replace(temp,target)\nfinally:\n temp.unlink(missing_ok=True)\nprint('ui-ready')\nPY"]
-    require(len(json.dumps(commands)) < 24000, "UI stage exceeds its SSM payload bound")
-    return commands, digest
+    chunks = [encoded[i:i + 16000] for i in range(0, len(encoded), 16000)]
+    stages = []
+    for index, chunk in enumerate(chunks):
+        target = '/var/lib/doris-workshop-portal-install/ui-' + digest
+        code = ("import base64,lzma,hashlib,os,pathlib,tempfile\n"
+                + "part=pathlib.Path(" + repr(target + '.' + str(index) + '.part') + ")\n"
+                + "payload=" + repr(chunk) + ".encode()\n"
+                + "assert not part.is_symlink()\n"
+                + "with tempfile.NamedTemporaryFile(dir=part.parent,delete=False) as f:\n f.write(payload)\n temp=pathlib.Path(f.name)\n"
+                + "try:\n temp.chmod(0o600)\n os.replace(temp,part)\nfinally:\n temp.unlink(missing_ok=True)\n")
+        if index == len(chunks) - 1:
+            code += ("parts=[pathlib.Path(" + repr(target) + "+'.'+str(i)+'.part') for i in range(" + str(len(chunks)) + ")]\n"
+                     + "assert all(p.is_file() and not p.is_symlink() for p in parts)\n"
+                     + "data=lzma.decompress(base64.b64decode(b''.join(p.read_bytes() for p in parts),validate=True))\n"
+                     + "assert len(data)<=1024*1024 and hashlib.sha256(data).hexdigest()==" + repr(digest) + "\n"
+                     + "target=pathlib.Path(" + repr(target + '.tar') + ")\nassert not target.is_symlink()\n"
+                     + "with tempfile.NamedTemporaryFile(dir=target.parent,delete=False) as f:\n f.write(data)\n temp=pathlib.Path(f.name)\n"
+                     + "try:\n temp.chmod(0o600)\n os.replace(temp,target)\nfinally:\n temp.unlink(missing_ok=True)\n")
+        code += "print('ui-ready')\n"
+        commands = ["set -eu", "umask 077", "install -d -m 0700 /var/lib/doris-workshop-portal-install", "python3 - <<'PY'\n" + code + "PY"]
+        require(len(json.dumps(commands)) < 24000, "UI chunk exceeds its SSM payload bound")
+        stages.append((commands, hashlib.sha256(json.dumps(commands).encode()).hexdigest()))
+    return stages, digest
 
 
 def dispatch_step(instance, commands, digest, record_path, marker, cloud, *, timeout, clock, sleep):
@@ -193,7 +208,7 @@ def install(config, shared, portal_run, output, cloud, *, timeout=900, clock=tim
     instance = verify(config, shared, portal_run, cloud)
     sources = access.portal_sources()
     commands, digest, registry_bytes = payload(shared, sources=sources)
-    stage_commands, stage_digest = ui_payload(sources["ui.tar"])
+    stages, stage_digest = ui_payload(sources["ui.tar"])
     operation = {"schema_version": 1, "instance_id": instance, "payload_sha256": digest, "ui_sha256": stage_digest}
     operation_path = output / "operation.json"
     if output.exists():
@@ -205,8 +220,10 @@ def install(config, shared, portal_run, output, cloud, *, timeout=900, clock=tim
         (output / "portal-empty.json").write_bytes(registry_bytes)
         os.chmod(output / "portal-empty.json", 0o600)
     deadline = clock() + timeout
-    dispatch_step(instance, stage_commands, stage_digest, output / "ui-dispatch.json", "ui-ready", cloud,
-        timeout=max(0, deadline-clock()), clock=clock, sleep=sleep)
+    for index, (stage_commands, chunk_digest) in enumerate(stages):
+        receipt = 'ui-dispatch.json' if index == len(stages) - 1 else f'ui-part-{index:03}-dispatch.json'
+        dispatch_step(instance, stage_commands, chunk_digest, output / receipt, "ui-ready", cloud,
+            timeout=max(0, deadline-clock()), clock=clock, sleep=sleep)
     require(clock() < deadline, "portal installation is pending; reconcile before retrying")
     reused = dispatch_step(instance, commands, digest, output / "dispatch.json", "portal-ready", cloud,
         timeout=max(0, deadline-clock()), clock=clock, sleep=sleep)
