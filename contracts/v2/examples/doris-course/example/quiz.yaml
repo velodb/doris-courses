@@ -1,0 +1,15 @@
+title: Example quiz
+description: One synthetic question.
+passing_score_percent: 100
+questions:
+- id: same_identity
+  type: single_choice
+  objective: Preserve the learner identity.
+  prompt: Which identity remains stable?
+  options:
+  - id: module_id
+    text: The module ID
+  - id: locale
+    text: The language preference
+  answer: module_id
+  explanation: The module ID remains stable when the language changes.

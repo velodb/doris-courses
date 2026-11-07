@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "kind": "doris-public-quiz",
+  "id": "example.quiz",
+  "locale": "kk-Cyrl",
+  "semantic_revision": "example-semantics-1",
+  "presentation_revision": "767844fd223ed13aa153d11c82a124b85ab9186b790f96ed35164cfaf169bd5a",
+  "questions": [
+    {
+      "id": "same_identity",
+      "type": "single_choice",
+      "objective": "Оқушының идентификаторын сақтаңыз.",
+      "prompt": "Қай идентификатор өзгермейді?",
+      "options": [
+        {
+          "id": "module_id",
+          "text": "Модуль идентификаторы"
+        },
+        {
+          "id": "locale",
+          "text": "Тіл таңдауы"
+        }
+      ]
+    }
+  ]
+}

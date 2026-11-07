@@ -1,0 +1,2407 @@
+{
+  "source_ref": "0c2c60252b182dbc45e9b59a28937f8a4a01955b",
+  "website_ref": "b643705eea4cf1dce2082df2692be0af91f2921a",
+  "v1_schema_sha256": "d51018b31fc4e428448fab7da41d714fe623880147416b12696586baa5632915",
+  "catalog_sha256": "884f70cb3d4fe6084a710f5da88c3f1054d42d435be5e06b12eccf19add58d61",
+  "programs": [
+    {
+      "id": "apache-doris-program",
+      "title": "Apache Doris Learning Program",
+      "required_courses": [
+        "real-time-analytics",
+        "data-warehousing",
+        "observability",
+        "ai-integrations"
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "slug": "real-time-analytics",
+      "manifest": "doris-course/01-real-time-analytics/course.yaml",
+      "manifest_sha256": "572cd70ca6613637099794fb1a7376e116f730dc469e0b0077a0bb521fc2bda5",
+      "certificate_code": "RTA",
+      "modules": [
+        {
+          "id": "module-1",
+          "slug": "introduction",
+          "english_route": "/courses/real-time-analytics/level-1/module-1",
+          "source_paths": {
+            "course": "doris-course/01-real-time-analytics/level1/module01-introduction/course.md",
+            "lab": "doris-course/01-real-time-analytics/level1/module01-introduction/lab01_start_doris_and_build_baseline.ipynb",
+            "quiz": "doris-course/01-real-time-analytics/level1/module01-introduction/quiz01_doris_fundamentals.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/01-real-time-analytics/level1/module01-introduction/quiz01_doris_fundamentals.yaml",
+              "question_digest": "6227d5289895c6830abf27693ccaf9ce9c92c123279a5f1ba89cf25e017d1694",
+              "question_ids": [
+                "define_doris",
+                "identify_olap",
+                "choose_cdc_reporting",
+                "fe_be_responsibilities",
+                "choose_architecture",
+                "check_the_load"
+              ],
+              "option_ids": {
+                "define_doris": [
+                  "bi_application",
+                  "object_store",
+                  "realtime_analytics",
+                  "oltp_plugin"
+                ],
+                "identify_olap": [
+                  "update_address",
+                  "revenue_by_region",
+                  "payment_token",
+                  "reserve_inventory"
+                ],
+                "choose_cdc_reporting": [
+                  "dashboard_on_oltp",
+                  "nightly_export",
+                  "object_storage_only",
+                  "cdc_to_doris"
+                ],
+                "fe_be_responsibilities": [
+                  "be_plans_fe_executes",
+                  "client_plans",
+                  "fe_plans_be_executes",
+                  "fe_renders_charts"
+                ],
+                "choose_architecture": [
+                  "decoupled",
+                  "integrated",
+                  "oltp_replica",
+                  "files_without_doris"
+                ],
+                "check_the_load": [
+                  "count_and_range",
+                  "rerun_s3_select",
+                  "show_backends",
+                  "container_health"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-2",
+          "slug": "architecture",
+          "english_route": "/courses/real-time-analytics/level-1/module-2",
+          "source_paths": {
+            "course": "doris-course/01-real-time-analytics/level1/module02-architecture/course.md",
+            "lab": "doris-course/01-real-time-analytics/level1/module02-architecture/lab02_scan_less_data.ipynb",
+            "quiz": "doris-course/01-real-time-analytics/level1/module02-architecture/quiz02_doris_architecture_and_physical_design.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/01-real-time-analytics/level1/module02-architecture/quiz02_doris_architecture_and_physical_design.yaml",
+              "question_digest": "cca3d128ba92ff7296633b295ed84153ae88e9f8ba57ac33bc27993903b38207",
+              "question_ids": [
+                "trace_query_execution",
+                "columnar_and_vectorized",
+                "storage_hierarchy_compaction",
+                "choose_table_model",
+                "choose_physical_design",
+                "interpret_explain_profile"
+              ],
+              "option_ids": {
+                "trace_query_execution": [
+                  "client_fragments",
+                  "be_plans_fe_scans",
+                  "fe_plans_be_executes",
+                  "fe_executes_all"
+                ],
+                "columnar_and_vectorized": [
+                  "columns_and_batches",
+                  "row_index",
+                  "stored_sum",
+                  "rows_together"
+                ],
+                "storage_hierarchy_compaction": [
+                  "segment_contains_tablet",
+                  "load_adds_rowsets",
+                  "rowset_global",
+                  "compaction_changes_result"
+                ],
+                "choose_table_model": [
+                  "correct_models",
+                  "duplicate_unique",
+                  "aggregate_detail",
+                  "all_reject"
+                ],
+                "choose_physical_design": [
+                  "correct_design",
+                  "all_prefix",
+                  "random_user_pruning",
+                  "partition_uniqueness"
+                ],
+                "interpret_explain_profile": [
+                  "pruning_and_runtime",
+                  "result_changed",
+                  "compaction_ran",
+                  "pushdown_only"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-3",
+          "slug": "loading-data",
+          "english_route": "/courses/real-time-analytics/level-1/module-3",
+          "source_paths": {
+            "course": "doris-course/01-real-time-analytics/level1/module03-loading-data/course.md",
+            "lab": "doris-course/01-real-time-analytics/level1/module03-loading-data/lab03_load_data.ipynb",
+            "quiz": "doris-course/01-real-time-analytics/level1/module03-loading-data/quiz03_load_methods_and_retry_safety.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/01-real-time-analytics/level1/module03-loading-data/quiz03_load_methods_and_retry_safety.yaml",
+              "question_digest": "e30dccce9819630c70fef34dc79a8e800b25b81ce60b58e1dbf2ab7f6ed23d51",
+              "question_ids": [
+                "choose_load_method",
+                "choose_group_commit_mode",
+                "interpret_quality_rejection",
+                "distinguish_s3_tvf_insert",
+                "reason_about_routine_load",
+                "retry_stream_load"
+              ],
+              "option_ids": {
+                "choose_load_method": [
+                  "s3_insert_select",
+                  "stream_load_each",
+                  "routine_load_s3",
+                  "group_commit_s3"
+                ],
+                "choose_group_commit_mode": [
+                  "sync_group_commit",
+                  "async_group_commit",
+                  "s3_tvf",
+                  "routine_load"
+                ],
+                "interpret_quality_rejection": [
+                  "reject_transaction",
+                  "partial_commit",
+                  "cast_to_zero",
+                  "where_rejection"
+                ],
+                "distinguish_s3_tvf_insert": [
+                  "correct_s3_boundary",
+                  "tvf_persists",
+                  "tvf_tracks_offsets",
+                  "insert_reuses_label"
+                ],
+                "reason_about_routine_load": [
+                  "routine_mapping_offsets",
+                  "s3_jsonpaths",
+                  "stream_label_offsets",
+                  "group_commit_consumer"
+                ],
+                "retry_stream_load": [
+                  "same_label",
+                  "new_label",
+                  "insert_select",
+                  "publish_kafka"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-4",
+          "slug": "modeling",
+          "english_route": "/courses/real-time-analytics/level-2/module-4",
+          "source_paths": {
+            "course": "doris-course/01-real-time-analytics/level2/module04-modeling/course.md",
+            "lab": "doris-course/01-real-time-analytics/level2/module04-modeling/lab04_model_data.ipynb",
+            "quiz": "doris-course/01-real-time-analytics/level2/module04-modeling/quiz04_schema_and_modeling_choices.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/01-real-time-analytics/level2/module04-modeling/quiz04_schema_and_modeling_choices.yaml",
+              "question_digest": "f290c9a5182eeefe9607b383c6a61da4062a84ae7189238d18001adea0738455",
+              "question_ids": [
+                "separate_grains",
+                "duplicate_key_columns",
+                "additive_summary",
+                "decimal_and_varchar",
+                "omission_and_null",
+                "layout_from_workload"
+              ],
+              "option_ids": {
+                "separate_grains": [
+                  "decimal_type",
+                  "separate_grains",
+                  "unique_per_customer",
+                  "row_type_sort_key"
+                ],
+                "duplicate_key_columns": [
+                  "retains_both",
+                  "keeps_latest",
+                  "adds_values",
+                  "rejects_repeat"
+                ],
+                "additive_summary": [
+                  "unique_key",
+                  "aggregate_by_day_only",
+                  "aggregate_sum",
+                  "revenue_in_key"
+                ],
+                "decimal_and_varchar": [
+                  "double_and_bigint",
+                  "varchar_for_both",
+                  "decimal_and_varchar",
+                  "bigint_and_int"
+                ],
+                "omission_and_null": [
+                  "both_null",
+                  "both_default",
+                  "omitted_null_explicit_default",
+                  "omitted_default_explicit_null"
+                ],
+                "layout_from_workload": [
+                  "month_partitions_device_buckets",
+                  "region_partitions",
+                  "device_partitions",
+                  "region_buckets"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-5",
+          "slug": "analyzing",
+          "english_route": "/courses/real-time-analytics/level-2/module-5",
+          "source_paths": {
+            "course": "doris-course/01-real-time-analytics/level2/module05-analyzing/course.md",
+            "lab": "doris-course/01-real-time-analytics/level2/module05-analyzing/lab05_analyze_data.ipynb",
+            "quiz": "doris-course/01-real-time-analytics/level2/module05-analyzing/quiz05_analytical_query_semantics.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/01-real-time-analytics/level2/module05-analyzing/quiz05_analytical_query_semantics.yaml",
+              "question_digest": "3e8e657214b62971feef602ff8ee2e1ac86930b012ce83b5543c4c0ef03450dd",
+              "question_ids": [
+                "table_function_and_tvf",
+                "where_and_having",
+                "any_value_meaning",
+                "cte_and_missing_dates",
+                "rank_and_row_number",
+                "reusable_logic"
+              ],
+              "option_ids": {
+                "table_function_and_tvf": [
+                  "table_function_and_tvf",
+                  "both_aggregate",
+                  "explode_is_tvf",
+                  "both_scalar"
+                ],
+                "where_and_having": [
+                  "both_with_pending",
+                  "both_paid_only",
+                  "store_a_only",
+                  "store_b_only"
+                ],
+                "any_value_meaning": [
+                  "last_inserted",
+                  "total_decides",
+                  "use_max",
+                  "group_by_every_date"
+                ],
+                "cte_and_missing_dates": [
+                  "generated_zero_row",
+                  "previous_available_row",
+                  "null_without_july_2",
+                  "cte_fills_dates"
+                ],
+                "rank_and_row_number": [
+                  "three_and_three",
+                  "three_and_two",
+                  "two_and_two",
+                  "one_and_one"
+                ],
+                "reusable_logic": [
+                  "lambda_alias_udf",
+                  "all_java_udf",
+                  "lambda_registers",
+                  "cte_permanent"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-6",
+          "slug": "joining",
+          "english_route": "/courses/real-time-analytics/level-2/module-6",
+          "source_paths": {
+            "course": "doris-course/01-real-time-analytics/level2/module06-joining/course.md",
+            "lab": "doris-course/01-real-time-analytics/level2/module06-joining/lab06_join_data.ipynb",
+            "quiz": "doris-course/01-real-time-analytics/level2/module06-joining/quiz06_join_semantics_and_execution.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/01-real-time-analytics/level2/module06-joining/quiz06_join_semantics_and_execution.yaml",
+              "question_digest": "0b909c364e93e7a2cac2a1c1321d810e416fb00402c6c038b1f9eb1b5af8a49e",
+              "question_ids": [
+                "predict_multiplication",
+                "return_missing_relationships",
+                "on_or_where",
+                "hash_or_nested_loop",
+                "choose_distribution",
+                "runtime_filter_plan"
+              ],
+              "option_ids": {
+                "predict_multiplication": [
+                  "sum_80",
+                  "sum_110",
+                  "sum_160",
+                  "sum_50"
+                ],
+                "return_missing_relationships": [
+                  "left_semi",
+                  "inner",
+                  "left_anti",
+                  "left_outer_unfiltered"
+                ],
+                "on_or_where": [
+                  "on_keeps_events",
+                  "same_result",
+                  "where_keeps_more",
+                  "both_inner"
+                ],
+                "hash_or_nested_loop": [
+                  "hash_plus_residual",
+                  "both_nested_loop",
+                  "both_hash",
+                  "time_ignored"
+                ],
+                "choose_distribution": [
+                  "bucket_shuffle",
+                  "broadcast_orders",
+                  "partition_both",
+                  "colocate_auto"
+                ],
+                "runtime_filter_plan": [
+                  "planned_only",
+                  "no_pages_read",
+                  "faster_than_shuffle",
+                  "replaces_join"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-7",
+          "slug": "updating-deleting",
+          "english_route": "/courses/real-time-analytics/level-2/module-7",
+          "source_paths": {
+            "course": "doris-course/01-real-time-analytics/level2/module07-updating-deleting/course.md",
+            "lab": "doris-course/01-real-time-analytics/level2/module07-updating-deleting/lab07_update_delete_data.ipynb",
+            "quiz": "doris-course/01-real-time-analytics/level2/module07-updating-deleting/quiz07_state_changes_and_deletion.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/01-real-time-analytics/level2/module07-updating-deleting/quiz07_state_changes_and_deletion.yaml",
+              "question_digest": "83194c95edf6414b9063dc17f3d6517a296b37c14c279a80fd697c67ece06b9f",
+              "question_ids": [
+                "merge_staged_changes",
+                "sequence_order",
+                "omitted_columns",
+                "identify_deleted_rows",
+                "replace_partition",
+                "visibility_and_cleanup"
+              ],
+              "option_ids": {
+                "merge_staged_changes": [
+                  "merge_into",
+                  "sql_update",
+                  "insert_rows",
+                  "partial_update"
+                ],
+                "sequence_order": [
+                  "last_arrival_wins",
+                  "three_rows",
+                  "first_record_wins",
+                  "highest_sequence_wins"
+                ],
+                "omitted_columns": [
+                  "both_retain",
+                  "both_use_defaults",
+                  "full_row_defaults_partial_retains",
+                  "full_row_retains_partial_defaults"
+                ],
+                "identify_deleted_rows": [
+                  "delete_sign_and_predicate",
+                  "truncate_both",
+                  "partial_update_null",
+                  "upsert_and_overwrite"
+                ],
+                "replace_partition": [
+                  "truncate_then_insert",
+                  "insert_into",
+                  "delete_then_load",
+                  "insert_overwrite"
+                ],
+                "visibility_and_cleanup": [
+                  "deletion_failed",
+                  "visible_now_cleanup_later",
+                  "query_compacted",
+                  "same_object"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-8",
+          "slug": "query-acceleration",
+          "english_route": "/courses/real-time-analytics/level-3/module-8",
+          "source_paths": {
+            "course": "doris-course/01-real-time-analytics/level3/module08-query-acceleration/course.md",
+            "lab": "doris-course/01-real-time-analytics/level3/module08-query-acceleration/lab08_accelerate_queries.ipynb",
+            "quiz": "doris-course/01-real-time-analytics/level3/module08-query-acceleration/quiz08_acceleration_choices.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/01-real-time-analytics/level3/module08-query-acceleration/quiz08_acceleration_choices.yaml",
+              "question_digest": "be5a3bad99cbbfa1ca83a20f8936c5a9d3374eafdead0deb3d15a7327ec89392",
+              "question_ids": [
+                "reuse_a_definition",
+                "choose_materialization",
+                "stored_grain",
+                "choose_an_index",
+                "estimates_and_actuals",
+                "worth_the_cost"
+              ],
+              "option_ids": {
+                "reuse_a_definition": [
+                  "regular_view",
+                  "manual_summary_table",
+                  "synchronous_mv",
+                  "asynchronous_mv"
+                ],
+                "choose_materialization": [
+                  "synchronous_mv",
+                  "asynchronous_mv_with_policy",
+                  "regular_view",
+                  "manual_summary"
+                ],
+                "stored_grain": [
+                  "both_measures",
+                  "daily_revenue_only",
+                  "distinct_buyers_only",
+                  "neither_measure"
+                ],
+                "choose_an_index": [
+                  "inverted_index",
+                  "ngram_bloomfilter",
+                  "stored_runtime_filter",
+                  "longer_prefix_index"
+                ],
+                "estimates_and_actuals": [
+                  "estimate_vs_actual",
+                  "stale_statistics",
+                  "profile_wrong",
+                  "rewrite_used"
+                ],
+                "worth_the_cost": [
+                  "drop_the_mv",
+                  "keep_after_one_run",
+                  "refresh_less",
+                  "replace_base_table"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-9",
+          "slug": "sharding-replication",
+          "english_route": "/courses/real-time-analytics/level-3/module-9",
+          "source_paths": {
+            "course": "doris-course/01-real-time-analytics/level3/module09-sharding-replication/course.md",
+            "lab": "doris-course/01-real-time-analytics/level3/module09-sharding-replication/lab09_observe_sharding_and_replication.ipynb",
+            "quiz": "doris-course/01-real-time-analytics/level3/module09-sharding-replication/quiz09_distribution_and_availability.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/01-real-time-analytics/level3/module09-sharding-replication/quiz09_distribution_and_availability.yaml",
+              "question_digest": "5edb28ff7880e38ca3d769baec4bde939ec78a3545dfbab7622f8762c1d25e81",
+              "question_ids": [
+                "tablets_and_replicas",
+                "expansion_moves_replicas",
+                "fe_failure_and_reconnect",
+                "replicas_and_scan_tasks",
+                "majority_and_recovery",
+                "bucket_shuffle_or_colocate"
+              ],
+              "option_ids": {
+                "tablets_and_replicas": [
+                  "tablets_8_replicas_24",
+                  "tablets_24_replicas_8",
+                  "tablets_8_replicas_8",
+                  "tablets_6_replicas_18"
+                ],
+                "expansion_moves_replicas": [
+                  "placement_changed_only",
+                  "partitions_split",
+                  "key_replaced",
+                  "rows_copied"
+                ],
+                "fe_failure_and_reconnect": [
+                  "session_migrates",
+                  "session_fails_then_reconnect",
+                  "haproxy_elects_master",
+                  "proxy_proves_availability"
+                ],
+                "replicas_and_scan_tasks": [
+                  "one_replica_scanned",
+                  "tasks_are_replicas",
+                  "every_replica_scans",
+                  "partial_rows"
+                ],
+                "majority_and_recovery": [
+                  "table_a_blocked_table_b_commits",
+                  "both_commit",
+                  "only_table_a_commits",
+                  "alive_proves_latest"
+                ],
+                "bucket_shuffle_or_colocate": [
+                  "bucket_shuffle_not_colocate",
+                  "random_auto_colocated",
+                  "matching_ddl_colocates",
+                  "different_join_types"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-10",
+          "slug": "managing-data",
+          "english_route": "/courses/real-time-analytics/level-3/module-10",
+          "source_paths": {
+            "course": "doris-course/01-real-time-analytics/level3/module10-managing-data/course.md",
+            "lab": "doris-course/01-real-time-analytics/level3/module10-managing-data/lab10_manage_data.ipynb",
+            "quiz": "doris-course/01-real-time-analytics/level3/module10-managing-data/quiz10_data_lifecycle_and_recovery.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/01-real-time-analytics/level3/module10-managing-data/quiz10_data_lifecycle_and_recovery.yaml",
+              "question_digest": "53616303e0050f39205af5258e84b9f722ba59b27632421aa213d48b98874f02",
+              "question_ids": [
+                "compression_goal",
+                "fair_comparison",
+                "partition_modes",
+                "hourly_window",
+                "expiry_evidence",
+                "recovery_boundary"
+              ],
+              "option_ids": {
+                "compression_goal": [
+                  "measure_fast_decompression",
+                  "highest_ratio_unmeasured",
+                  "disable_encoding",
+                  "single_fastest_run"
+                ],
+                "fair_comparison": [
+                  "layouts_not_comparable",
+                  "lz4f_better",
+                  "zstd_tripled_rows",
+                  "divide_by_three"
+                ],
+                "partition_modes": [
+                  "manual_auto_dynamic",
+                  "dynamic_manual_auto",
+                  "auto_dynamic_manual",
+                  "dynamic_for_all"
+                ],
+                "hourly_window": [
+                  "four_hourly_ranges",
+                  "latest_two_hours",
+                  "right_closed_ranges",
+                  "minute_partition"
+                ],
+                "expiry_evidence": [
+                  "scheduler_not_yet",
+                  "rule_ignored",
+                  "rows_expire_individually",
+                  "needs_manual_drop"
+                ],
+                "recovery_boundary": [
+                  "recover_drop_backup_for_rest",
+                  "compaction_erased",
+                  "replicas_restore",
+                  "recycle_bin_forever"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "data-warehousing",
+      "manifest": "doris-course/02-data-warehousing/course.yaml",
+      "manifest_sha256": "4aafba4c6cdeef4f6828796e219b45e00da3356f107370f839dbe6cb9fa74402",
+      "certificate_code": "DW",
+      "modules": [
+        {
+          "id": "module-1",
+          "slug": "introduction",
+          "english_route": "/courses/data-warehousing/level-1/module-1",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level1/module01-introduction/course.md",
+            "lab": "doris-course/02-data-warehousing/level1/module01-introduction/lab01_connect_and_query.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level1/module01-introduction/quiz01_doris_fundamentals.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level1/module01-introduction/quiz01_doris_fundamentals.yaml",
+              "question_digest": "d69e21ad7b2f1e60592cf4197a8a64398a1108f33fab460cdec512399f57a9c5",
+              "question_ids": [
+                "transaction_or_analysis",
+                "doris_between_systems",
+                "fe_and_be_roles",
+                "what_the_mysql_protocol_gives",
+                "filter_and_group_by_date",
+                "what_an_amount_shows"
+              ],
+              "option_ids": {
+                "transaction_or_analysis": [
+                  "submit_and_deduct",
+                  "summarize_orders_by_date",
+                  "address_lookup",
+                  "record_payment_status"
+                ],
+                "doris_between_systems": [
+                  "source_transactions_doris_analytics",
+                  "doris_handles_checkout",
+                  "analysts_query_source",
+                  "doris_only_stores"
+                ],
+                "fe_and_be_roles": [
+                  "fe_plans_be_executes",
+                  "fe_scans_be_persists",
+                  "client_splits_plan",
+                  "fe_stores_table_data"
+                ],
+                "what_the_mysql_protocol_gives": [
+                  "tools_send_sql_only",
+                  "doris_mirrors_mysql",
+                  "everything_like_mysql_57",
+                  "mysql_server_retired"
+                ],
+                "filter_and_group_by_date": [
+                  "where_then_group_by_date",
+                  "group_by_order_id",
+                  "order_by_without_group",
+                  "average_instead_of_sum"
+                ],
+                "what_an_amount_shows": [
+                  "sample_pre_tax_total",
+                  "whole_day_total",
+                  "all_unpaid",
+                  "amount_received"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-2",
+          "slug": "architecture",
+          "english_route": "/courses/data-warehousing/level-1/module-2",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level1/module02-architecture/course.md",
+            "lab": "doris-course/02-data-warehousing/level1/module02-architecture/lab02_observe_storage.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level1/module02-architecture/quiz02_storage_and_write_batches.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level1/module02-architecture/quiz02_storage_and_write_batches.yaml",
+              "question_digest": "8ffc030b1584feeb93e40fa93b3f77eb8938fa51e639adbc10a34edf6c308597",
+              "question_ids": [
+                "planning_then_execution",
+                "tablets_rowsets_segments",
+                "visibility_and_compaction",
+                "compare_one_thing_at_a_time",
+                "versions_and_rowsets",
+                "plan_and_profile"
+              ],
+              "option_ids": {
+                "planning_then_execution": [
+                  "planned_then_failed_on_be",
+                  "roles_swapped",
+                  "explain_proves_scans",
+                  "compaction_before_scan"
+                ],
+                "tablets_rowsets_segments": [
+                  "fifteen_tablets",
+                  "five_shared_tablets",
+                  "three_tablets",
+                  "fifteen_tablets_one_rowset"
+                ],
+                "visibility_and_compaction": [
+                  "published_rows_queryable",
+                  "wait_for_merge",
+                  "wait_for_single_rowset",
+                  "compaction_changes_results"
+                ],
+                "compare_one_thing_at_a_time": [
+                  "control_then_repeat",
+                  "credit_batch_size",
+                  "shortest_time",
+                  "compare_rowset_counts"
+                ],
+                "versions_and_rowsets": [
+                  "ten_loads_then_merged",
+                  "eleven_orders",
+                  "compaction_failed",
+                  "stale_are_replicas"
+                ],
+                "plan_and_profile": [
+                  "read_ten_dropped_nine",
+                  "index_skipped_nine",
+                  "plan_was_wrong",
+                  "nine_rows_deleted"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-3",
+          "slug": "table-design",
+          "english_route": "/courses/data-warehousing/level-1/module-3",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level1/module03-table-design/course.md",
+            "lab": "doris-course/02-data-warehousing/level1/module03-table-design/lab03_models_and_pruning.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level1/module03-table-design/quiz03_models_and_data_distribution.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level1/module03-table-design/quiz03_models_and_data_distribution.yaml",
+              "question_digest": "0ca176aebefae319297b9e24d39aa8b2cd13958613e15ab2932f11d2eb570108",
+              "question_ids": [
+                "same_writes_three_models",
+                "model_and_keys",
+                "four_design_choices",
+                "partition_and_bucket_pruning",
+                "merge_on_write",
+                "smaller_plan_not_speedup"
+              ],
+              "option_ids": {
+                "same_writes_three_models": [
+                  "three_rows_85_175",
+                  "all_keep_latest",
+                  "duplicate_rejects",
+                  "unique_keeps_larger"
+                ],
+                "model_and_keys": [
+                  "order_id_and_event_id",
+                  "order_id_for_both",
+                  "aggregate_by_status",
+                  "duplicate_for_events"
+                ],
+                "four_design_choices": [
+                  "neither_removes_duplicates",
+                  "more_buckets_deduplicate",
+                  "sort_key_is_unique",
+                  "partition_by_order_id"
+                ],
+                "partition_and_bucket_pruning": [
+                  "date_partitions_id_bucket",
+                  "id_pruned_partitions",
+                  "both_prune_partitions",
+                  "plan_reads_one_row"
+                ],
+                "merge_on_write": [
+                  "marks_old_row_on_write",
+                  "merges_at_query_time",
+                  "adds_on_write",
+                  "rejects_second_write"
+                ],
+                "smaller_plan_not_speedup": [
+                  "less_planned_work_measure_speed",
+                  "four_times_faster",
+                  "more_accurate_result",
+                  "table_rebucketed"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-4",
+          "slug": "external-access",
+          "english_route": "/courses/data-warehousing/level-1/module-4",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level1/module04-external-access/course.md",
+            "lab": "doris-course/02-data-warehousing/level1/module04-external-access/lab04_query_iceberg.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level1/module04-external-access/quiz04_internal_files_and_lake_tables.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level1/module04-external-access/quiz04_internal_files_and_lake_tables.yaml",
+              "question_digest": "1abe2b538be4f67d40e51804f4a8b59a0c2900e0b6f1b304207c6928abd3fe40",
+              "question_ids": [
+                "files_tables_catalogs",
+                "catalog_database_table",
+                "snapshots_and_files",
+                "query_in_place_or_load",
+                "s3_function_and_load",
+                "join_fanout_and_missing"
+              ],
+              "option_ids": {
+                "files_tables_catalogs": [
+                  "format_table_entry",
+                  "parquet_is_iceberg",
+                  "catalog_converts_files",
+                  "internal_after_query"
+                ],
+                "catalog_database_table": [
+                  "three_part_name",
+                  "two_part_name",
+                  "file_path_name",
+                  "internal_name"
+                ],
+                "snapshots_and_files": [
+                  "current_snapshot_files",
+                  "every_file_ever",
+                  "first_snapshot",
+                  "whole_directory"
+                ],
+                "query_in_place_or_load": [
+                  "explore_then_load",
+                  "always_load_first",
+                  "never_load",
+                  "load_then_stop_lake"
+                ],
+                "s3_function_and_load": [
+                  "s3_select_then_insert",
+                  "iceberg_catalog_over_files",
+                  "routine_load_bucket",
+                  "select_stores_rows"
+                ],
+                "join_fanout_and_missing": [
+                  "check_join_key_matches",
+                  "switch_to_inner_join",
+                  "drop_customers_and_reload",
+                  "accept_new_total"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-5",
+          "slug": "ingestion",
+          "english_route": "/courses/data-warehousing/level-1/module-5",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level1/module05-ingestion/course.md",
+            "lab": "doris-course/02-data-warehousing/level1/module05-ingestion/lab05_stream_load.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level1/module05-ingestion/quiz05_load_methods_and_retry_safety.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level1/module05-ingestion/quiz05_load_methods_and_retry_safety.yaml",
+              "question_digest": "341461789981a4a01749d810ddd4ac83b027310aa0a36ed0d488f32657339acd",
+              "question_ids": [
+                "choose_a_load_method",
+                "map_fields_to_columns",
+                "judge_a_load",
+                "retry_with_the_label",
+                "group_commit_visibility",
+                "grains_and_definitions"
+              ],
+              "option_ids": {
+                "choose_a_load_method": [
+                  "stream_s3_group_commit",
+                  "broker_load_for_everything",
+                  "routine_load_for_files",
+                  "catalog_for_laptop_file"
+                ],
+                "map_fields_to_columns": [
+                  "columns_names_and_no_payment_default",
+                  "trust_the_table_order",
+                  "default_payment_paid",
+                  "csv_separator_for_parquet"
+                ],
+                "judge_a_load": [
+                  "two_rows_missing",
+                  "http_200_is_success",
+                  "success_means_all_rows",
+                  "filtered_rows_are_duplicates"
+                ],
+                "retry_with_the_label": [
+                  "same_label_soon",
+                  "new_label_now",
+                  "same_label_after_days",
+                  "same_label_group_commit"
+                ],
+                "group_commit_visibility": [
+                  "maybe_none_yet",
+                  "all_ten_visible",
+                  "ten_transactions",
+                  "needs_commit_statement"
+                ],
+                "grains_and_definitions": [
+                  "lines_by_order_receipts_apart",
+                  "count_lines_as_orders",
+                  "split_receipts_evenly",
+                  "drop_simulated_flag"
+                ]
+              }
+            },
+            {
+              "source_path": "doris-course/02-data-warehousing/level1/module05-ingestion/quiz05_continuous_ingestion.yaml",
+              "question_digest": "b74994130631cb4e1e89f267c76b962846c761c316e15632e2265166d4b360d1",
+              "question_ids": [
+                "progress_or_version",
+                "pause_resume_or_stop",
+                "what_a_savepoint_keeps",
+                "where_a_new_job_starts",
+                "deletes_reach_doris",
+                "files_found_by_name"
+              ],
+              "option_ids": {
+                "progress_or_version": [
+                  "offsets_resume_versions_decide",
+                  "later_offset_wins",
+                  "version_is_the_resume_point",
+                  "offset_orders_partitions"
+                ],
+                "pause_resume_or_stop": [
+                  "pause_then_resume",
+                  "stop_then_recreate",
+                  "stop_then_resume",
+                  "pause_then_recreate"
+                ],
+                "what_a_savepoint_keeps": [
+                  "position_state_and_binlog",
+                  "snapshot_again",
+                  "master_status",
+                  "latest_update_time"
+                ],
+                "where_a_new_job_starts": [
+                  "initial_snapshot_then_binlog",
+                  "latest_offset",
+                  "timestamp_of_oldest_order",
+                  "export_then_latest_offset"
+                ],
+                "deletes_reach_doris": [
+                  "connector_sends_delete",
+                  "nightly_cleanup",
+                  "next_snapshot",
+                  "compaction_removes_keys"
+                ],
+                "files_found_by_name": [
+                  "only_008",
+                  "both_by_arrival",
+                  "only_006",
+                  "neither_without_insert"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-6",
+          "slug": "data-quality",
+          "english_route": "/courses/data-warehousing/level-1/module-6",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level1/module06-data-quality/course.md",
+            "lab": "doris-course/02-data-warehousing/level1/module06-data-quality/lab06_validate_orders.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level1/module06-data-quality/quiz06_data_quality_and_rejection.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level1/module06-data-quality/quiz06_data_quality_and_rejection.yaml",
+              "question_digest": "bb0a224cd835f830cc69d54cad78c48635a4423fd661e7c57296e6e3cbb0829f",
+              "question_ids": [
+                "type_check_or_business_rule",
+                "stage_raw_text_with_input_id",
+                "route_with_independent_dimension",
+                "totals_are_not_details",
+                "break_the_checks_on_purpose",
+                "schema_change_effects"
+              ],
+              "option_ids": {
+                "type_check_or_business_rule": [
+                  "reject_under_amount_rule",
+                  "accept_valid_decimal",
+                  "change_sign",
+                  "drop_silently"
+                ],
+                "stage_raw_text_with_input_id": [
+                  "raw_text_input_id_reason",
+                  "typed_staging_table",
+                  "accepted_table_only",
+                  "keep_error_url"
+                ],
+                "route_with_independent_dimension": [
+                  "route_48_and_2",
+                  "add_missing_customers",
+                  "reject_whole_batch",
+                  "accept_with_null_customer"
+                ],
+                "totals_are_not_details": [
+                  "compare_ids_and_fields",
+                  "totals_match_so_fine",
+                  "recount_rows",
+                  "compare_averages"
+                ],
+                "break_the_checks_on_purpose": [
+                  "duplicate_fails_restore_passes",
+                  "all_checks_pass",
+                  "cutoff_proves_freshness",
+                  "total_check_fails"
+                ],
+                "schema_change_effects": [
+                  "positional_writes_break",
+                  "metadata_only_no_effect",
+                  "old_rows_get_values",
+                  "rebuild_table_first"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-7",
+          "slug": "state-changes",
+          "english_route": "/courses/data-warehousing/level-1/module-7",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level1/module07-state-changes/course.md",
+            "lab": "doris-course/02-data-warehousing/level1/module07-state-changes/lab07_current_state_and_replay.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level1/module07-state-changes/quiz07_state_changes_and_replay.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level1/module07-state-changes/quiz07_state_changes_and_replay.yaml",
+              "question_digest": "7e339b28226ce852af4886e1ec542ec70b426776af796d4a425165b09ced8411",
+              "question_ids": [
+                "three_grains",
+                "versions_decide",
+                "partial_update",
+                "kinds_of_deletion",
+                "replay_after_interruption",
+                "reconcile_with_ledger"
+              ],
+              "option_ids": {
+                "three_grains": [
+                  "current_history_deliveries",
+                  "one_table_by_order",
+                  "one_table_by_event",
+                  "deliveries_only"
+                ],
+                "versions_decide": [
+                  "delivered_three_events",
+                  "last_arrival_wins",
+                  "highest_amount_wins",
+                  "duplicate_breaks_order"
+                ],
+                "partial_update": [
+                  "enable_partial_update",
+                  "omit_columns_is_enough",
+                  "write_without_version",
+                  "delete_then_insert"
+                ],
+                "kinds_of_deletion": [
+                  "flag_delete_and_keep_facts",
+                  "delete_the_refund",
+                  "delete_mark_frees_space",
+                  "soft_delete_frees_space"
+                ],
+                "replay_after_interruption": [
+                  "replay_whole_batch",
+                  "skip_events_in_history",
+                  "rebuild_current_by_time",
+                  "patch_by_hand"
+                ],
+                "reconcile_with_ledger": [
+                  "compare_with_independent_ledger",
+                  "replay_again",
+                  "count_records",
+                  "non_negative_net"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-8",
+          "slug": "views-materialized-views",
+          "english_route": "/courses/data-warehousing/level-2/module-8",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level2/module08-views-materialized-views/course.md",
+            "lab": "doris-course/02-data-warehousing/level2/module08-views-materialized-views/lab08_views_and_materialized_views.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level2/module08-views-materialized-views/quiz08_views_and_materialized_views.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level2/module08-views-materialized-views/quiz08_views_and_materialized_views.yaml",
+              "question_digest": "78144c9e945fc98a7afc0d3ea5e45cba2f90833487a2e605d83e31e2dd56eb47",
+              "question_ids": [
+                "view_or_stored_result",
+                "refresh_scope",
+                "check_after_create",
+                "explain_rewrite",
+                "stable_contract",
+                "worth_storing"
+              ],
+              "option_ids": {
+                "view_or_stored_result": [
+                  "regular_view",
+                  "manual_refresh_mv",
+                  "nightly_copy",
+                  "three_queries"
+                ],
+                "refresh_scope": [
+                  "one_date_then_all",
+                  "one_date_both",
+                  "all_both",
+                  "nothing"
+                ],
+                "check_after_create": [
+                  "state_and_rows",
+                  "nothing_more",
+                  "fast_query",
+                  "definition_text"
+                ],
+                "explain_rewrite": [
+                  "filter_not_applied",
+                  "rewrite_happened",
+                  "view_broken",
+                  "wrong_answer"
+                ],
+                "stable_contract": [
+                  "point_view_at_mv",
+                  "expose_mv",
+                  "add_customer",
+                  "rename_amount"
+                ],
+                "worth_storing": [
+                  "repeated_costly_query",
+                  "one_off",
+                  "tiny_table",
+                  "changing_shapes"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-9",
+          "slug": "modeling-and-joins",
+          "english_route": "/courses/data-warehousing/level-2/module-9",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level2/module09-modeling-and-joins/course.md",
+            "lab": "doris-course/02-data-warehousing/level2/module09-modeling-and-joins/lab09_modeling_and_joins.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level2/module09-modeling-and-joins/quiz09_modeling_and_joins.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level2/module09-modeling-and-joins/quiz09_modeling_and_joins.yaml",
+              "question_digest": "2ac6d2b770eea8b23dc630d51b6b0e400d5968f8e629a7bdbcf847fbcf173b53",
+              "question_ids": [
+                "declare_grain",
+                "model_for_source",
+                "three_join_checks",
+                "find_missing",
+                "read_join_plan",
+                "layers_rebuild"
+              ],
+              "option_ids": {
+                "declare_grain": [
+                  "grains",
+                  "join_type",
+                  "distinct_sum",
+                  "more_buckets"
+                ],
+                "model_for_source": [
+                  "unique_customer",
+                  "duplicate_customer",
+                  "aggregate_sum",
+                  "duplicate_with_count"
+                ],
+                "three_join_checks": [
+                  "not_yet",
+                  "yes_rows",
+                  "yes_inner",
+                  "check_plan"
+                ],
+                "find_missing": [
+                  "left_is_null",
+                  "inner_is_null",
+                  "compare_counts",
+                  "dimension_first"
+                ],
+                "read_join_plan": [
+                  "broadcast_plan",
+                  "measured_fast",
+                  "colocated",
+                  "keeps_unmatched"
+                ],
+                "layers_rebuild": [
+                  "rebuild_layers",
+                  "final_only",
+                  "clean_in_place",
+                  "summary_from_ods"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-10",
+          "slug": "metric-processing",
+          "english_route": "/courses/data-warehousing/level-2/module-10",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level2/module10-metric-processing/course.md",
+            "lab": "doris-course/02-data-warehousing/level2/module10-metric-processing/lab10_metric_processing.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level2/module10-metric-processing/quiz10_metric_processing.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level2/module10-metric-processing/quiz10_metric_processing.yaml",
+              "question_digest": "58252a8766094e25d957c1cd97f8201e8c9de03b1cd062a65075abde2261c69c",
+              "question_ids": [
+                "metric_contract",
+                "rebuild_service",
+                "full_outer_reconcile",
+                "window_grain",
+                "paid_gmv",
+                "distinct_and_proof"
+              ],
+              "option_ids": {
+                "metric_contract": [
+                  "write_contract",
+                  "same_table",
+                  "round_both",
+                  "take_higher"
+                ],
+                "rebuild_service": [
+                  "rebuild",
+                  "keep_inserting",
+                  "store_average",
+                  "divide_by_retries"
+                ],
+                "full_outer_reconcile": [
+                  "misses_day",
+                  "shows_zero",
+                  "raises_error",
+                  "shows_null"
+                ],
+                "window_grain": [
+                  "cte_then_window",
+                  "window_on_regions",
+                  "sum_of_window",
+                  "lag_only"
+                ],
+                "paid_gmv": [
+                  "paid_then_net",
+                  "order_amount",
+                  "refund_first",
+                  "status_based"
+                ],
+                "distinct_and_proof": [
+                  "exact_and_prove",
+                  "hll_matched",
+                  "timing_enough",
+                  "bitmap_strings"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-11",
+          "slug": "bi-and-ai",
+          "english_route": "/courses/data-warehousing/level-2/module-11",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level2/module11-bi-and-ai/course.md",
+            "lab": "doris-course/02-data-warehousing/level2/module11-bi-and-ai/lab11_bi_and_ai_delivery.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level2/module11-bi-and-ai/quiz11_bi_and_ai.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level2/module11-bi-and-ai/quiz11_bi_and_ai.yaml",
+              "question_digest": "4314fdcef3c36512b3c255b2d60da994b8c1f37158d51b718d61478ebcd881cb",
+              "question_ids": [
+                "semantic_view",
+                "ratio_over_days",
+                "checks_fail_on_purpose",
+                "calendar_features",
+                "who_checks_what",
+                "mcp_boundary"
+              ],
+              "option_ids": {
+                "semantic_view": [
+                  "semantic_view",
+                  "fact_table",
+                  "service_rows",
+                  "wide_view"
+                ],
+                "ratio_over_days": [
+                  "recompute",
+                  "average_ratios",
+                  "sum_ratios",
+                  "higher_ratio"
+                ],
+                "checks_fail_on_purpose": [
+                  "prove_checks",
+                  "fix_view",
+                  "time_checks",
+                  "business_clock"
+                ],
+                "calendar_features": [
+                  "zero_row",
+                  "no_row",
+                  "zero_average",
+                  "proves_accuracy"
+                ],
+                "who_checks_what": [
+                  "speed_only",
+                  "fresh",
+                  "correct",
+                  "tool_free"
+                ],
+                "mcp_boundary": [
+                  "readonly_account",
+                  "root_with_filters",
+                  "inside_fe",
+                  "prompt_rules"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-12",
+          "slug": "publishing-permissions-audit",
+          "english_route": "/courses/data-warehousing/level-3/module-12",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level3/module12-publishing-permissions-audit/course.md",
+            "lab": "doris-course/02-data-warehousing/level3/module12-publishing-permissions-audit/lab12_publishing_permissions_audit.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level3/module12-publishing-permissions-audit/quiz12_publishing_permissions_audit.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level3/module12-publishing-permissions-audit/quiz12_publishing_permissions_audit.yaml",
+              "question_digest": "3c297126d5d0b787cf430f49cc2bb577495c6710d7657b385e788a0d8e3b3c8a",
+              "question_ids": [
+                "contract_first",
+                "role_select",
+                "kinds_of_evidence",
+                "retire_one",
+                "rollback_window",
+                "rows_columns"
+              ],
+              "option_ids": {
+                "contract_first": [
+                  "contract_object",
+                  "root_password",
+                  "global_select",
+                  "detail_table"
+                ],
+                "role_select": [
+                  "role_select",
+                  "user_admin",
+                  "role_grant",
+                  "database_scope"
+                ],
+                "kinds_of_evidence": [
+                  "audit_table",
+                  "show_grants",
+                  "change_record",
+                  "show_roles"
+                ],
+                "retire_one": [
+                  "membership",
+                  "role_privilege",
+                  "drop_role",
+                  "root_check"
+                ],
+                "rollback_window": [
+                  "not_blindly",
+                  "yes_atomic",
+                  "yes_retained",
+                  "never"
+                ],
+                "rows_columns": [
+                  "policy_and_columns",
+                  "dashboard_filter",
+                  "table_select",
+                  "masking_only"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-13",
+          "slug": "storage-lifecycle",
+          "english_route": "/courses/data-warehousing/level-3/module-13",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level3/module13-storage-lifecycle/course.md",
+            "lab": "doris-course/02-data-warehousing/level3/module13-storage-lifecycle/lab13_storage_and_lifecycle.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level3/module13-storage-lifecycle/quiz13_storage_lifecycle.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level3/module13-storage-lifecycle/quiz13_storage_lifecycle.yaml",
+              "question_digest": "9c0e8baf98f9389304b57cf62a677e0e963d328649b79038b2596466cfcb308c",
+              "question_ids": [
+                "partition_key",
+                "tablet_count",
+                "lagging_count",
+                "truncate_stages",
+                "recover_by_id",
+                "runbook"
+              ],
+              "option_ids": {
+                "partition_key": [
+                  "monthly_order_date",
+                  "monthly_load_time",
+                  "yearly_delete",
+                  "rolling_days"
+                ],
+                "tablet_count": [
+                  "replicas_312",
+                  "tablets_104",
+                  "partitions_13",
+                  "buckets_24"
+                ],
+                "lagging_count": [
+                  "count_partition",
+                  "trust_minus_one",
+                  "tablet_rowcount",
+                  "show_create"
+                ],
+                "truncate_stages": [
+                  "visible_and_id",
+                  "space_freed",
+                  "after_compaction",
+                  "same_id"
+                ],
+                "recover_by_id": [
+                  "drop_then_recover_id",
+                  "recover_by_name",
+                  "restore_needed",
+                  "truncate_again"
+                ],
+                "runbook": [
+                  "complete",
+                  "force_drop",
+                  "truncate_table",
+                  "delete_rows"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-14",
+          "slug": "resource-isolation",
+          "english_route": "/courses/data-warehousing/level-3/module-14",
+          "source_paths": {
+            "course": "doris-course/02-data-warehousing/level3/module14-resource-isolation/course.md",
+            "lab": "doris-course/02-data-warehousing/level3/module14-resource-isolation/lab14_resource_isolation.ipynb",
+            "quiz": "doris-course/02-data-warehousing/level3/module14-resource-isolation/quiz14_resource_isolation.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/02-data-warehousing/level3/module14-resource-isolation/quiz14_resource_isolation.yaml",
+              "question_digest": "7329983f13d8a789f70e19568f4d603df9ac37dfa97e7c1b2a5ea9c378bd548d",
+              "question_ids": [
+                "routing_order",
+                "no_queue",
+                "cpu_cgroup",
+                "route_and_bypass",
+                "block_before_run",
+                "rollback_order"
+              ],
+              "option_ids": {
+                "routing_order": [
+                  "session_group",
+                  "account_default",
+                  "normal_fallback",
+                  "free_slot"
+                ],
+                "no_queue": [
+                  "rejected",
+                  "waits",
+                  "moves_normal",
+                  "times_out"
+                ],
+                "cpu_cgroup": [
+                  "no_cgroup",
+                  "needs_restart",
+                  "waiting_only",
+                  "cluster_share"
+                ],
+                "route_and_bypass": [
+                  "skips_queue",
+                  "admin_only",
+                  "moves_normal",
+                  "any_group"
+                ],
+                "block_before_run": [
+                  "block_rule",
+                  "session_timeout",
+                  "workload_policy",
+                  "concurrency_one"
+                ],
+                "rollback_order": [
+                  "dependency_order",
+                  "group_first",
+                  "defaults_only",
+                  "keep_grant"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "observability",
+      "manifest": "doris-course/03-observability/course.yaml",
+      "manifest_sha256": "6c6ceccb2637ef2f61aea5f0c8166104643553a97d73aee2cf58e8c19888bb24",
+      "certificate_code": "OBS",
+      "modules": [
+        {
+          "id": "module-1",
+          "slug": "observability-introduction",
+          "english_route": "/courses/observability/level-1/module-1",
+          "source_paths": {
+            "course": "doris-course/03-observability/level1/module01-observability-introduction/course.md",
+            "lab": "doris-course/03-observability/level1/module01-observability-introduction/lab01_observability_introduction.ipynb",
+            "quiz": "doris-course/03-observability/level1/module01-observability-introduction/quiz01_observability_foundations.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/03-observability/level1/module01-observability-introduction/quiz01_observability_foundations.yaml",
+              "question_digest": "947ad96e8ea750be6062c44b52ea1d903f939dcb62ee58994fb87f6a7d9fc91d",
+              "question_ids": [
+                "choose_signal_for_failing_step",
+                "join_spans_by_their_ids",
+                "assign_dog_responsibilities",
+                "follow_demo_telemetry_path",
+                "prove_demo_telemetry_reached_doris",
+                "confirm_payment_failure"
+              ],
+              "option_ids": {
+                "choose_signal_for_failing_step": [
+                  "traces",
+                  "metrics",
+                  "logs",
+                  "dashboard"
+                ],
+                "join_spans_by_their_ids": [
+                  "b_child_of_a",
+                  "c_parent_of_a",
+                  "same_service",
+                  "b_reports_error"
+                ],
+                "assign_dog_responsibilities": [
+                  "collector_doris_grafana",
+                  "grafana_stores",
+                  "doris_collects",
+                  "services_store"
+                ],
+                "follow_demo_telemetry_path": [
+                  "demo_rows_stop",
+                  "services_switch",
+                  "doris_pulls_later",
+                  "all_tables_stop"
+                ],
+                "prove_demo_telemetry_reached_doris": [
+                  "recent_rows",
+                  "containers_running",
+                  "storefront_answers",
+                  "collector_ready"
+                ],
+                "confirm_payment_failure": [
+                  "error_spans",
+                  "flag_page",
+                  "error_logs",
+                  "host_cpu"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-2",
+          "slug": "data-ingest",
+          "english_route": "/courses/observability/level-1/module-2",
+          "source_paths": {
+            "course": "doris-course/03-observability/level1/module02-data-ingest/course.md",
+            "lab": "doris-course/03-observability/level1/module02-data-ingest/lab02_ingest_observability_data.ipynb",
+            "quiz": "doris-course/03-observability/level1/module02-data-ingest/quiz02_ingesting_observability_data.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/03-observability/level1/module02-data-ingest/quiz02_ingesting_observability_data.yaml",
+              "question_digest": "f305de9cef944def7849be35cbd289e7e1600f9c37dd146f40df683726790f9d",
+              "question_ids": [
+                "name_the_pipeline_parts",
+                "distinguish_pull_and_push",
+                "predict_batch_export_timing",
+                "table_settings_apply_at_creation",
+                "judge_flush_evidence",
+                "explain_missing_payment_logs"
+              ],
+              "option_ids": {
+                "name_the_pipeline_parts": [
+                  "resource_processor",
+                  "filelog_receiver",
+                  "doris_exporter",
+                  "file_storage"
+                ],
+                "distinguish_pull_and_push": [
+                  "prometheus_and_otlp",
+                  "otlp_for_both",
+                  "prometheus_for_both",
+                  "filelog_for_both"
+                ],
+                "predict_batch_export_timing": [
+                  "at_timeout",
+                  "immediately",
+                  "when_full",
+                  "on_restart"
+                ],
+                "table_settings_apply_at_creation": [
+                  "nothing_changes",
+                  "keeps_30_days",
+                  "recreated",
+                  "refuses_to_start"
+                ],
+                "judge_flush_evidence": [
+                  "export_not_proven",
+                  "span_stored",
+                  "query_wrong",
+                  "grafana_needed"
+                ],
+                "explain_missing_payment_logs": [
+                  "not_sent_to_collector",
+                  "errors_filtered",
+                  "logs_come_later",
+                  "stored_with_traces"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-3",
+          "slug": "data-visualization",
+          "english_route": "/courses/observability/level-1/module-3",
+          "source_paths": {
+            "course": "doris-course/03-observability/level1/module03-data-visualization/course.md",
+            "lab": "doris-course/03-observability/level1/module03-data-visualization/lab03_data_visualization.ipynb",
+            "quiz": "doris-course/03-observability/level1/module03-data-visualization/quiz03_observability_visualization.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/03-observability/level1/module03-data-visualization/quiz03_observability_visualization.yaml",
+              "question_digest": "50d36ecb872642a1a04dc871213354c32cc356b057df6d88d58959c39ff28ae6",
+              "question_ids": [
+                "search_failed_checkouts",
+                "explain_quiet_error_search",
+                "fix_empty_time_range",
+                "find_error_origin",
+                "measure_host_cpu",
+                "use_time_macros"
+              ],
+              "option_ids": {
+                "search_failed_checkouts": [
+                  "two_phrases",
+                  "one_phrase",
+                  "either_phrase",
+                  "severity"
+                ],
+                "explain_quiet_error_search": [
+                  "not_logged_as_errors",
+                  "no_failures",
+                  "hidden_from_visitors",
+                  "other_scale"
+                ],
+                "fix_empty_time_range": [
+                  "absolute_utc_range",
+                  "rows_delayed",
+                  "cached_result",
+                  "rows_deleted"
+                ],
+                "find_error_origin": [
+                  "payment_charge",
+                  "root_span",
+                  "place_order",
+                  "charge_child"
+                ],
+                "measure_host_cpu": [
+                  "one_minus_idle",
+                  "average_all_rows",
+                  "largest_value",
+                  "share_above_0_9"
+                ],
+                "use_time_macros": [
+                  "follow_time_range",
+                  "convert_to_local",
+                  "last_minute_only",
+                  "lucene_search"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-4",
+          "slug": "table-model",
+          "english_route": "/courses/observability/level-2/module-4",
+          "source_paths": {
+            "course": "doris-course/03-observability/level2/module04-table-model/course.md",
+            "lab": "doris-course/03-observability/level2/module04-table-model/lab04_table_models.ipynb",
+            "quiz": "doris-course/03-observability/level2/module04-table-model/quiz04_observability_table_models.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/03-observability/level2/module04-table-model/quiz04_observability_table_models.yaml",
+              "question_digest": "9e97672e510a39089b1b86cf7c7384911ce7ab70da0c6c53a42361c0da2f9d6c",
+              "question_ids": [
+                "choose_model_for_recount",
+                "keep_spans_with_one_key",
+                "choose_summary_grain",
+                "predict_repeated_load",
+                "stable_alert_identity",
+                "read_one_alert_row"
+              ],
+              "option_ids": {
+                "choose_model_for_recount": [
+                  "unique_latest",
+                  "aggregate_sum",
+                  "duplicate_both",
+                  "aggregate_min"
+                ],
+                "keep_spans_with_one_key": [
+                  "keep_one",
+                  "keep_all_unique",
+                  "reject_load",
+                  "merge_spans"
+                ],
+                "choose_summary_grain": [
+                  "minute_and_service",
+                  "span_timestamp",
+                  "trace_and_service",
+                  "service_only"
+                ],
+                "predict_repeated_load": [
+                  "eighteen",
+                  "eleven",
+                  "three_rows",
+                  "seven"
+                ],
+                "stable_alert_identity": [
+                  "normalized_hash",
+                  "message_hash",
+                  "span_id",
+                  "trace_hash"
+                ],
+                "read_one_alert_row": [
+                  "open_one_row",
+                  "resolved_kept",
+                  "two_rows",
+                  "row_per_span"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-5",
+          "slug": "partition-bucket",
+          "english_route": "/courses/observability/level-2/module-5",
+          "source_paths": {
+            "course": "doris-course/03-observability/level2/module05-partition-bucket/course.md",
+            "lab": "doris-course/03-observability/level2/module05-partition-bucket/lab05_partition_and_bucket.ipynb",
+            "quiz": "doris-course/03-observability/level2/module05-partition-bucket/quiz05_partition_and_bucket_choices.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/03-observability/level2/module05-partition-bucket/quiz05_partition_and_bucket_choices.yaml",
+              "question_digest": "3d5cff2618c2452aaa0ea082d5b30f9db146c1978606b793b3a4c85e8c6a5589",
+              "question_ids": [
+                "count_tablets",
+                "predict_partition_pruning",
+                "predict_dynamic_partitions",
+                "choose_partitioning",
+                "choose_bucketing",
+                "explain_auto_buckets"
+              ],
+              "option_ids": {
+                "count_tablets": [
+                  "fifty_in_partition",
+                  "ten_shared",
+                  "five_one",
+                  "fifty_all"
+                ],
+                "predict_partition_pruning": [
+                  "empty_skipped",
+                  "filter_ignored",
+                  "service_pruning",
+                  "plan_cache"
+                ],
+                "predict_dynamic_partitions": [
+                  "seven_today_tomorrow",
+                  "ten_today_tomorrow",
+                  "today_only",
+                  "no_tomorrow"
+                ],
+                "choose_partitioning": [
+                  "daily_retention",
+                  "hourly_forever",
+                  "monthly",
+                  "unpartitioned_delete"
+                ],
+                "choose_bucketing": [
+                  "hash_trace",
+                  "more_service_buckets",
+                  "random_lookup",
+                  "one_bucket"
+                ],
+                "explain_auto_buckets": [
+                  "default_then_floor",
+                  "hash_only",
+                  "per_megabyte",
+                  "per_disk"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-6",
+          "slug": "property-mv-index",
+          "english_route": "/courses/observability/level-2/module-6",
+          "source_paths": {
+            "course": "doris-course/03-observability/level2/module06-property-mv-index/course.md",
+            "lab": "doris-course/03-observability/level2/module06-property-mv-index/lab06_properties_mv_index.ipynb",
+            "quiz": "doris-course/03-observability/level2/module06-property-mv-index/quiz06_properties_mv_and_indexes.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/03-observability/level2/module06-property-mv-index/quiz06_properties_mv_and_indexes.yaml",
+              "question_digest": "cb7e778ffa546367b0afd01c466d01896c2a19578e953c801f2073328c0b965a",
+              "question_ids": [
+                "read_missing_compression",
+                "fair_compression_test",
+                "match_phrase_tokens",
+                "read_scan_counters",
+                "view_lifecycle",
+                "predict_view_rewrite"
+              ],
+              "option_ids": {
+                "read_missing_compression": [
+                  "default_omitted",
+                  "lz4f_default",
+                  "uncompressed",
+                  "per_partition"
+                ],
+                "fair_compression_test": [
+                  "same_rows_once",
+                  "copy_vs_original",
+                  "query_speed",
+                  "alter_before_after"
+                ],
+                "match_phrase_tokens": [
+                  "two_short_phrases",
+                  "one_long_phrase",
+                  "like_lowercase",
+                  "match_all_currency"
+                ],
+                "read_scan_counters": [
+                  "read_every_body",
+                  "speedup_ratio",
+                  "zone_maps",
+                  "every_search"
+                ],
+                "view_lifecycle": [
+                  "job_then_loads",
+                  "ready_at_return",
+                  "scheduled_refresh",
+                  "separate_table"
+                ],
+                "predict_view_rewrite": [
+                  "coarser_grain",
+                  "raw_end_time",
+                  "all_spans",
+                  "max_duration"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-7",
+          "slug": "data-analysis-litefuse",
+          "english_route": "/courses/observability/level-2/module-7",
+          "source_paths": {
+            "course": "doris-course/03-observability/level2/module07-data-analysis-litefuse/course.md",
+            "lab": "doris-course/03-observability/level2/module07-data-analysis-litefuse/lab07_data_analysis_litefuse.ipynb",
+            "quiz": "doris-course/03-observability/level2/module07-data-analysis-litefuse/quiz07_analysis_and_litefuse.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/03-observability/level2/module07-data-analysis-litefuse/quiz07_analysis_and_litefuse.yaml",
+              "question_digest": "e0f6cfb5b908051b63eabc20baee22506b52cfd6488866056e6b804449af8876",
+              "question_ids": [
+                "break_down_by_operation",
+                "read_p99",
+                "find_failure_start",
+                "rolling_share",
+                "llm_trace_contents",
+                "locate_litefuse_traces"
+              ],
+              "option_ids": {
+                "break_down_by_operation": [
+                  "per_operation",
+                  "store_healthy",
+                  "checkout_cause",
+                  "loaded_twice"
+                ],
+                "read_p99": [
+                  "tail_one_percent",
+                  "all_slow",
+                  "average_between",
+                  "users_affected"
+                ],
+                "find_failure_start": [
+                  "no_failed_call",
+                  "first_ended",
+                  "most_errors",
+                  "no_error_child"
+                ],
+                "rolling_share": [
+                  "avg_over_frame",
+                  "group_by_ten",
+                  "partition_by_trace",
+                  "limit_ten"
+                ],
+                "llm_trace_contents": [
+                  "prompts_and_tokens",
+                  "host_load",
+                  "error_logs",
+                  "service_calls"
+                ],
+                "locate_litefuse_traces": [
+                  "otel_traces",
+                  "spans_table",
+                  "postgres",
+                  "object_storage"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-8",
+          "slug": "alerting",
+          "english_route": "/courses/observability/level-2/module-8",
+          "source_paths": {
+            "course": "doris-course/03-observability/level2/module08-alerting/course.md",
+            "lab": "doris-course/03-observability/level2/module08-alerting/lab08_alerting.ipynb",
+            "quiz": "doris-course/03-observability/level2/module08-alerting/quiz08_alerting_rules.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/03-observability/level2/module08-alerting/quiz08_alerting_rules.yaml",
+              "question_digest": "a6b87584fc3b3bb868bf695c4aa41e87f449dd3064cfb4cca3d7f2637024eddf",
+              "question_ids": [
+                "choose_alert_expression",
+                "predict_pending_states",
+                "find_the_routing_problem",
+                "preserve_host_dimension",
+                "distinguish_missing_data_from_low_value",
+                "provision_rule_with_uid"
+              ],
+              "option_ids": {
+                "choose_alert_expression": [
+                  "every_row",
+                  "all_states",
+                  "count_rows",
+                  "busy_share"
+                ],
+                "predict_pending_states": [
+                  "after_reset",
+                  "first_minute",
+                  "count_true",
+                  "stays_normal"
+                ],
+                "find_the_routing_problem": [
+                  "policy_labels",
+                  "contact_address",
+                  "rule_recipient",
+                  "smtp_server"
+                ],
+                "preserve_host_dimension": [
+                  "body_only",
+                  "random_node",
+                  "keep_dimension",
+                  "drop_dimension"
+                ],
+                "distinguish_missing_data_from_low_value": [
+                  "delete_series",
+                  "no_data_state",
+                  "low_cpu",
+                  "always_fire"
+                ],
+                "provision_rule_with_uid": [
+                  "post_first",
+                  "disable_provenance",
+                  "export_first",
+                  "sign_in_first"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "ai-integrations",
+      "manifest": "doris-course/04-ai-integrations/course.yaml",
+      "manifest_sha256": "2b62d89e679ddedb2234198c3730e389a4a8b988b1b399e80168aed6153092eb",
+      "certificate_code": "AI",
+      "modules": [
+        {
+          "id": "module-1",
+          "slug": "doris-mcp",
+          "english_route": "/courses/ai-integrations/level-1/module-1",
+          "source_paths": {
+            "course": "doris-course/04-ai-integrations/level1/module01-doris-mcp/course.md",
+            "lab": "doris-course/04-ai-integrations/level1/module01-doris-mcp/lab01_connect_agent_to_doris.ipynb",
+            "quiz": "doris-course/04-ai-integrations/level1/module01-doris-mcp/quiz01_doris_mcp.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/04-ai-integrations/level1/module01-doris-mcp/quiz01_doris_mcp.yaml",
+              "question_digest": "c3799fb59f694b34e55b2c175dc2cbd6b989b19b8148af16a5018cdef4a664a6",
+              "question_ids": [
+                "who_decides_to_call_a_tool",
+                "unavailable_child",
+                "why_least_privilege",
+                "accept_which_number",
+                "table_comment_injection",
+                "diagnose_failed_start"
+              ],
+              "option_ids": {
+                "who_decides_to_call_a_tool": [
+                  "host_and_its_model",
+                  "mcp_client_transport",
+                  "mcp_server_reads_prompts",
+                  "doris_privilege_check"
+                ],
+                "unavailable_child": [
+                  "report_the_reason",
+                  "call_it_anyway",
+                  "switch_to_flat_mode",
+                  "switch_to_root"
+                ],
+                "why_least_privilege": [
+                  "doris_enforces_grants",
+                  "faster_for_readers",
+                  "server_rejects_root",
+                  "audit_skips_root"
+                ],
+                "accept_which_number": [
+                  "structured_result",
+                  "answer_text",
+                  "neither_without_profile",
+                  "ask_again_until_stable"
+                ],
+                "table_comment_injection": [
+                  "model_may_follow_it",
+                  "server_runs_it_as_sql",
+                  "no_risk_read_only",
+                  "server_rejects_table"
+                ],
+                "diagnose_failed_start": [
+                  "log_in_as_mcp_reader",
+                  "grant_admin_privilege",
+                  "switch_exposure_mode",
+                  "reinstall_the_host"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-2",
+          "slug": "doris-ai-functions",
+          "english_route": "/courses/ai-integrations/level-1/module-2",
+          "source_paths": {
+            "course": "doris-course/04-ai-integrations/level1/module02-doris-ai-functions/course.md",
+            "lab": "doris-course/04-ai-integrations/level1/module02-doris-ai-functions/lab02_doris_ai_functions.ipynb",
+            "quiz": "doris-course/04-ai-integrations/level1/module02-doris-ai-functions/quiz02_doris_ai_functions.yaml"
+          },
+          "quizzes": [
+            {
+              "source_path": "doris-course/04-ai-integrations/level1/module02-doris-ai-functions/quiz02_doris_ai_functions.yaml",
+              "question_digest": "ae91705ec140769142feba80780a7ab8f0e68db54a5683e32b9d73f43d7d609b",
+              "question_ids": [
+                "which_address_the_resource_uses",
+                "protect_a_hosted_provider_key",
+                "function_for_one_label_from_a_list",
+                "requests_for_two_functions",
+                "extracted_value_not_in_the_text",
+                "report_that_calls_the_model"
+              ],
+              "option_ids": {
+                "which_address_the_resource_uses": [
+                  "server_name_on_the_shared_network",
+                  "port_that_the_notebook_uses",
+                  "port_inside_the_server_container",
+                  "any_address_that_the_fe_reaches"
+                ],
+                "protect_a_hosted_provider_key": [
+                  "dedicated_key_and_audit_log_readers",
+                  "usage_privilege_for_callers",
+                  "masked_in_show_resources",
+                  "one_key_per_analyst_notebook"
+                ],
+                "function_for_one_label_from_a_list": [
+                  "classify_and_check_the_label",
+                  "sentiment_with_the_labels",
+                  "extract_a_topic_field",
+                  "filter_once_per_label"
+                ],
+                "requests_for_two_functions": [
+                  "one_per_function_and_row",
+                  "one_per_row",
+                  "one_per_function",
+                  "one_per_statement"
+                ],
+                "extracted_value_not_in_the_text": [
+                  "reject_what_is_not_in_the_text",
+                  "trust_a_temperature_of_zero",
+                  "doris_checks_the_extract",
+                  "rerun_until_two_agree"
+                ],
+                "report_that_calls_the_model": [
+                  "store_once_and_report_on_the_table",
+                  "one_row_per_request",
+                  "session_default_resource",
+                  "temperature_zero_for_stable_counts"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "module-3",
+          "slug": "hybrid-search-lakehouse",
+          "english_route": "/courses/ai-integrations/level-1/module-3",
+          "source_paths": {},
+          "quizzes": []
+        }
+      ]
+    }
+  ],
+  "legacy_quiz_sample": {
+    "source_path": "doris-course/01-real-time-analytics/level1/module01-introduction/quiz01_doris_fundamentals.yaml",
+    "authoring_quiz": {
+      "title": "Module 1 Quiz: Introduction to Apache Doris",
+      "description": "Six questions check the workload, architecture, and first-workflow decisions of Module 1, one question for each learning objective.",
+      "questions": [
+        {
+          "id": "define_doris",
+          "type": "single_choice",
+          "objective": "Define Apache Doris as an open-source, real-time analytics and search database built on an MPP architecture.",
+          "prompt": "Which statement best describes Apache Doris?",
+          "options": [
+            {
+              "id": "bi_application",
+              "text": "A BI application that stores the charts and dashboards of analysts"
+            },
+            {
+              "id": "object_store",
+              "text": "An object storage service that keeps Parquet files for query engines"
+            },
+            {
+              "id": "realtime_analytics",
+              "text": "An open-source real-time analytics and search database with MPP execution"
+            },
+            {
+              "id": "oltp_plugin",
+              "text": "A row-oriented transactional database with an analytical plug-in for reports"
+            }
+          ],
+          "answer": "realtime_analytics",
+          "explanation": "Doris is an open-source, real-time analytics and search database built on an MPP architecture: it stores data in columns and runs analytical queries in parallel. A BI tool and an object store can work with Doris, but neither one is Doris, and Doris is not a transactional database with an analytical add-on."
+        },
+        {
+          "id": "identify_olap",
+          "type": "single_choice",
+          "objective": "Distinguish OLAP from OLTP by the work that a request does, not by the product that runs it.",
+          "prompt": "Which request is the clearest example of an OLAP workload?",
+          "options": [
+            {
+              "id": "update_address",
+              "text": "Update the delivery address of one order and commit the change"
+            },
+            {
+              "id": "revenue_by_region",
+              "text": "Scan 100 million events and total the revenue by region and hour"
+            },
+            {
+              "id": "payment_token",
+              "text": "Look up the current payment token of one checkout session by its key"
+            },
+            {
+              "id": "reserve_inventory",
+              "text": "Reserve one unit of a product for a cart and commit the transaction"
+            }
+          ],
+          "answer": "revenue_by_region",
+          "explanation": "The revenue request scans and aggregates many records, which is the work of an analytical workload. Updating one address, looking up one token by its key, and reserving one unit each touch a single business entity in a small transaction, which is the work of OLTP, whichever product runs it."
+        },
+        {
+          "id": "choose_cdc_reporting",
+          "type": "single_choice",
+          "objective": "Recognize workloads that suit Doris, such as real-time dashboards, customer-facing analytics, observability, lakehouse analytics, and CDC-driven reporting.",
+          "prompt": "An ecommerce company must keep its OLTP database as the system of record, but its dashboards need committed order changes within seconds, without running large scans on that database. Which design fits best?",
+          "options": [
+            {
+              "id": "dashboard_on_oltp",
+              "text": "Run every dashboard aggregation directly against the OLTP database"
+            },
+            {
+              "id": "nightly_export",
+              "text": "Export a full snapshot of the OLTP database to Doris once each night"
+            },
+            {
+              "id": "object_storage_only",
+              "text": "Copy the changed rows into object storage files without a query engine"
+            },
+            {
+              "id": "cdc_to_doris",
+              "text": "Deliver committed changes to Doris continuously through CDC"
+            }
+          ],
+          "answer": "cdc_to_doris",
+          "explanation": "Change data capture keeps the operational database responsible for transactions and delivers each committed change to Doris, where the dashboards run their analytical queries. Scanning the OLTP database adds analytical load to it, a nightly snapshot is a day old, and files without a query engine do not answer the dashboards."
+        },
+        {
+          "id": "fe_be_responsibilities",
+          "type": "single_choice",
+          "objective": "Summarize what the Frontend (FE) and the Backend (BE) each do with a query.",
+          "prompt": "Which description follows a query through Doris correctly?",
+          "options": [
+            {
+              "id": "be_plans_fe_executes",
+              "text": "The BE creates the distributed plan, and the FE executes each plan fragment"
+            },
+            {
+              "id": "client_plans",
+              "text": "The MySQL client plans the query, and the FE and BE only store replicas"
+            },
+            {
+              "id": "fe_plans_be_executes",
+              "text": "The FE plans the query and assigns its fragments; the BE nodes execute them"
+            },
+            {
+              "id": "fe_renders_charts",
+              "text": "The FE renders charts in a browser, and the BE turns the charts into SQL"
+            }
+          ],
+          "answer": "fe_plans_be_executes",
+          "explanation": "The FE accepts and analyzes the SQL, creates and optimizes the distributed query plan, and assigns its plan fragments; the BE nodes execute the fragments and, in the integrated architecture, also store the table data. The roles are not reversed, the client only sends SQL, and \"Frontend\" does not mean a graphical interface."
+        },
+        {
+          "id": "choose_architecture",
+          "type": "single_choice",
+          "objective": "Distinguish the integrated storage and compute architecture from the decoupled storage and compute architecture.",
+          "prompt": "A team wants its persistent data in shared object storage, and separate compute groups that scale independently and isolate workloads. Which architecture matches these requirements?",
+          "options": [
+            {
+              "id": "decoupled",
+              "text": "The decoupled storage and compute architecture"
+            },
+            {
+              "id": "integrated",
+              "text": "The integrated storage and compute architecture"
+            },
+            {
+              "id": "oltp_replica",
+              "text": "A read replica of the transactional database"
+            },
+            {
+              "id": "files_without_doris",
+              "text": "Parquet files in object storage, queried without Doris"
+            }
+          ],
+          "answer": "decoupled",
+          "explanation": "In the decoupled storage and compute architecture, persistent data lives in shared storage, and compute groups scale and isolate workloads independently. In the integrated architecture, stateful BE nodes store the data on local disks, so storage and compute grow together. A transactional read replica and bare files offer neither."
+        },
+        {
+          "id": "check_the_load",
+          "type": "single_choice",
+          "objective": "Connect to Doris through its MySQL-compatible protocol, create a table, load data, and check the result with an aggregation query.",
+          "prompt": "In Lab 1, INSERT INTO events SELECT ... FROM S3(...) reports 10,158,080 affected rows. Which check shows what the internal table events now holds?",
+          "options": [
+            {
+              "id": "count_and_range",
+              "text": "Query COUNT(*), MIN(event_time), and MAX(event_time) from events"
+            },
+            {
+              "id": "rerun_s3_select",
+              "text": "Run the S3 TVF query with LIMIT 10 again and compare its ten rows"
+            },
+            {
+              "id": "show_backends",
+              "text": "Run SHOW BACKENDS and check that the BE reports Alive = true"
+            },
+            {
+              "id": "container_health",
+              "text": "Check that docker ps shows the doris-rta container as healthy"
+            }
+          ],
+          "answer": "count_and_range",
+          "explanation": "The insert reports what one statement wrote; a query of the table shows what it now holds: 10,158,080 rows from 2019-12-01 00:00:12 to 2020-03-11 04:53:08, the values that Lab 1 checks. The S3 TVF reads the files in S3, not the table, and SHOW BACKENDS and the container's health show that Doris runs, not what the table contains."
+        }
+      ],
+      "passing_score_percent": 80
+    },
+    "question_digest": "6227d5289895c6830abf27693ccaf9ce9c92c123279a5f1ba89cf25e017d1694",
+    "release_revision": null,
+    "release_note": "Digest is derived from committed source using the legacy website algorithm. No production DB release IDs or revision counters were queried."
+  },
+  "raw_url_template": "https://raw.githubusercontent.com/velodb/doris-courses/{source_ref}/{source_path}",
+  "legacy_progress_sample": {
+    "schema_version": 1,
+    "kind": "doris-workshop-progress",
+    "exported_at": "2026-11-07T00:00:00Z",
+    "records": [
+      {
+        "course_slug": "real-time-analytics",
+        "module_id": "module-1",
+        "course_read": true,
+        "lab_opened": true,
+        "lab_declared_complete": true,
+        "quiz_passed": true,
+        "best_correct": 6,
+        "best_total": 6,
+        "content_version": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "source_ref": "0c2c60252b182dbc45e9b59a28937f8a4a01955b",
+        "updated_at": "2026-11-07T00:00:00Z"
+      }
+    ]
+  }
+}

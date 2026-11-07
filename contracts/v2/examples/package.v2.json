@@ -1,0 +1,1240 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-content-package",
+  "package_state": "release",
+  "catalog": "catalog.yaml",
+  "courses": [
+    {
+      "slug": "contract-example",
+      "manifest": "doris-course/example/course.yaml",
+      "policy_revision": "example-policy-1"
+    }
+  ],
+  "variants": [
+    {
+      "locale": "en",
+      "publication_state": "published"
+    },
+    {
+      "locale": "kk-Cyrl",
+      "publication_state": "published"
+    }
+  ],
+  "default_locale": "en",
+  "available_locales": [
+    "en",
+    "kk-Cyrl"
+  ],
+  "locale_digests": {
+    "en": "36e48dcf59ca86397ea7bdd1f0d6f3055ccaf6ebd69ac4870b15c0cf10e52773",
+    "kk-Cyrl": "59fc453060307509ea6dc541b39ffe40246684d06b3b34aac3ada45a5d9cae21"
+  },
+  "profiles": [
+    {
+      "id": "example-main",
+      "modules": [
+        {
+          "course_slug": "contract-example",
+          "module_id": "module-1"
+        }
+      ],
+      "unit_ids": [
+        "catalog.title",
+        "catalog.description",
+        "program.title",
+        "course.title",
+        "course.short_title",
+        "course.description",
+        "course.badge",
+        "course.level",
+        "module.title",
+        "module.summary",
+        "quiz.title",
+        "quiz.description",
+        "quiz.question.objective",
+        "quiz.question.prompt",
+        "quiz.question.explanation",
+        "quiz.option.module_id",
+        "quiz.option.locale",
+        "lesson.introduction",
+        "notebook.intro",
+        "ui.choose-language",
+        "guide.introduction"
+      ],
+      "asset_ids": [
+        "lesson.en",
+        "notebook.en",
+        "quiz.en",
+        "ui.en",
+        "diagram"
+      ],
+      "quiz_ids": [
+        "example.quiz"
+      ]
+    }
+  ],
+  "selected_profiles": [
+    "example-main"
+  ],
+  "source_units": [
+    {
+      "id": "catalog.title",
+      "scope": {
+        "course_slug": null,
+        "module_id": null
+      },
+      "source_path": "catalog.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/title"
+      },
+      "source_text": "Contract example",
+      "source_hash": "036dad35a9e09bbcb4ad15f6187d502a8a4d46425a8dfcb93a510faaa3247986"
+    },
+    {
+      "id": "catalog.description",
+      "scope": {
+        "course_slug": null,
+        "module_id": null
+      },
+      "source_path": "catalog.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/description"
+      },
+      "source_text": "Synthetic content for admission tests.",
+      "source_hash": "83115472d821eac5d52b417861aeb56fdb1365500a520e539d6533a627bab8bf"
+    },
+    {
+      "id": "program.title",
+      "scope": {
+        "course_slug": null,
+        "module_id": null
+      },
+      "source_path": "catalog.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/programs/0/title"
+      },
+      "source_text": "Example program",
+      "source_hash": "f70cc827d37520fae57040da014edecf0440c2a2b0064df7b1208dce37494884"
+    },
+    {
+      "id": "course.title",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": null
+      },
+      "source_path": "doris-course/example/course.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/title"
+      },
+      "source_text": "Contract example",
+      "source_hash": "036dad35a9e09bbcb4ad15f6187d502a8a4d46425a8dfcb93a510faaa3247986"
+    },
+    {
+      "id": "course.short_title",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": null
+      },
+      "source_path": "doris-course/example/course.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/short_title"
+      },
+      "source_text": "Example",
+      "source_hash": "d029f87e3d80f8fd9b1be67c7426b4cc1ff47b4a9d0a8461c826a59d8c5eb6cd"
+    },
+    {
+      "id": "course.description",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": null
+      },
+      "source_path": "doris-course/example/course.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/description"
+      },
+      "source_text": "Synthetic content for admission tests.",
+      "source_hash": "83115472d821eac5d52b417861aeb56fdb1365500a520e539d6533a627bab8bf"
+    },
+    {
+      "id": "course.badge",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": null
+      },
+      "source_path": "doris-course/example/course.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/presentation/badge_label"
+      },
+      "source_text": "EXAMPLE",
+      "source_hash": "f2e8378c30d317abfcddf9e67472c7569cfaf24573095ccead2969adae665cff"
+    },
+    {
+      "id": "course.level",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": null
+      },
+      "source_path": "doris-course/example/course.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/levels/1"
+      },
+      "source_text": "Introduction",
+      "source_hash": "b605350bc00209520b7cd8f546322663356ba630708f71bbf30aead6b3dd608e"
+    },
+    {
+      "id": "module.title",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": null
+      },
+      "source_path": "doris-course/example/course.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/modules/0/title"
+      },
+      "source_text": "Choose a language",
+      "source_hash": "f8416d793a642faa027935eb7b5a975533baa3705a806c57cde08be442c95d46"
+    },
+    {
+      "id": "module.summary",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": null
+      },
+      "source_path": "doris-course/example/course.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/modules/0/summary"
+      },
+      "source_text": "Keep the same learning identity.",
+      "source_hash": "8043ffb73668e05841b2d9f7b8414ffddbe38f57dbf51bafe237d0c831bd1280"
+    },
+    {
+      "id": "quiz.title",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": "module-1"
+      },
+      "source_path": "doris-course/example/quiz.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/title"
+      },
+      "source_text": "Example quiz",
+      "source_hash": "8691de6746edbac6d4cd72fb0367278cc20638125e8b986516d8c3c28902ef2f"
+    },
+    {
+      "id": "quiz.description",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": "module-1"
+      },
+      "source_path": "doris-course/example/quiz.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/description"
+      },
+      "source_text": "One synthetic question.",
+      "source_hash": "0153754057ebaf4c7bc6920c3f094f0bc16b6c9b6f1be939e7e87c1a21d6fb3f"
+    },
+    {
+      "id": "quiz.question.objective",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": "module-1"
+      },
+      "source_path": "doris-course/example/quiz.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/questions/0/objective"
+      },
+      "source_text": "Preserve the learner identity.",
+      "source_hash": "5fbc30a89394fda7a223cfb0d58e2196aa1f996db7ad5c88d650b67c8a44dfc8"
+    },
+    {
+      "id": "quiz.question.prompt",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": "module-1"
+      },
+      "source_path": "doris-course/example/quiz.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/questions/0/prompt"
+      },
+      "source_text": "Which identity remains stable?",
+      "source_hash": "f474d48b629386e915b2fb40288c1a66ce29e2f7b276cdb37f71b90b76eb8948"
+    },
+    {
+      "id": "quiz.question.explanation",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": "module-1"
+      },
+      "source_path": "doris-course/example/quiz.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/questions/0/explanation"
+      },
+      "source_text": "The module ID remains stable when the language changes.",
+      "source_hash": "4a8ea898cb153b0cf8c3a4f9481470b66efb48bf4e7015fbbd7e235076cd642b"
+    },
+    {
+      "id": "quiz.option.module_id",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": "module-1"
+      },
+      "source_path": "doris-course/example/quiz.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/questions/0/options/0/text"
+      },
+      "source_text": "The module ID",
+      "source_hash": "bf38655980b374be8c4566da3554e70321d8edc2f8e357f4fb14176c1dcb0e8c"
+    },
+    {
+      "id": "quiz.option.locale",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": "module-1"
+      },
+      "source_path": "doris-course/example/quiz.yaml",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/questions/0/options/1/text"
+      },
+      "source_text": "The language preference",
+      "source_hash": "c9834b3511e3115a44bd7c96bae74cffc64b7551b4d7bcbbe3d239f4a81efa0a"
+    },
+    {
+      "id": "lesson.introduction",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": "module-1"
+      },
+      "source_path": "doris-course/example/lesson.md",
+      "locator": {
+        "kind": "markdown-block",
+        "value": "introduction"
+      },
+      "source_text": "# Choose a language\n\nKeep the same learning identity.\n",
+      "source_hash": "5c54406acce8730f2e5cc546a97afdb5bf6dee504ca3cd45ebdcdb350cff0fc9"
+    },
+    {
+      "id": "notebook.intro",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": "module-1"
+      },
+      "source_path": "doris-course/example/lab.ipynb",
+      "locator": {
+        "kind": "notebook-cell",
+        "value": "intro"
+      },
+      "source_text": "# Choose a language\n",
+      "source_hash": "d87f693e99d5df26eef3c3e29dee4b21bbf0e82f0790ec5265823a1e46922a29"
+    },
+    {
+      "id": "ui.choose-language",
+      "scope": {
+        "course_slug": null,
+        "module_id": null
+      },
+      "source_path": "ui/en.json",
+      "locator": {
+        "kind": "json-pointer",
+        "value": "/messages/choose_language"
+      },
+      "source_text": "Choose a language",
+      "source_hash": "f8416d793a642faa027935eb7b5a975533baa3705a806c57cde08be442c95d46"
+    },
+    {
+      "id": "guide.introduction",
+      "scope": {
+        "course_slug": "contract-example",
+        "module_id": null
+      },
+      "source_path": "doris-course/example/README.md",
+      "locator": {
+        "kind": "markdown-block",
+        "value": "introduction"
+      },
+      "source_text": "# Synthetic example\n",
+      "source_hash": "5593abf7c152485a361b5b59e5ee9eceec0fa73180d05f0ad2d7d3ca8a778ac2"
+    }
+  ],
+  "translations": [
+    {
+      "locale": "kk-Cyrl",
+      "units": [
+        {
+          "unit_id": "catalog.title",
+          "source_hash": "036dad35a9e09bbcb4ad15f6187d502a8a4d46425a8dfcb93a510faaa3247986",
+          "target_text": "Келісімшарт мысалы",
+          "target_hash": "1cb53a788f9ec539459c92ddd0393d19a779701a429aaf391ee49bbfc341b4c4",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "036dad35a9e09bbcb4ad15f6187d502a8a4d46425a8dfcb93a510faaa3247986",
+              "target_hash": "1cb53a788f9ec539459c92ddd0393d19a779701a429aaf391ee49bbfc341b4c4"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "036dad35a9e09bbcb4ad15f6187d502a8a4d46425a8dfcb93a510faaa3247986",
+              "target_hash": "1cb53a788f9ec539459c92ddd0393d19a779701a429aaf391ee49bbfc341b4c4"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "catalog.description",
+          "source_hash": "83115472d821eac5d52b417861aeb56fdb1365500a520e539d6533a627bab8bf",
+          "target_text": "Тексеруге арналған жасанды мазмұн.",
+          "target_hash": "a36305f98726e43d9efd3b16a1880239e79e84f75eed5a0fa9b2ca0221a9ab98",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "83115472d821eac5d52b417861aeb56fdb1365500a520e539d6533a627bab8bf",
+              "target_hash": "a36305f98726e43d9efd3b16a1880239e79e84f75eed5a0fa9b2ca0221a9ab98"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "83115472d821eac5d52b417861aeb56fdb1365500a520e539d6533a627bab8bf",
+              "target_hash": "a36305f98726e43d9efd3b16a1880239e79e84f75eed5a0fa9b2ca0221a9ab98"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "program.title",
+          "source_hash": "f70cc827d37520fae57040da014edecf0440c2a2b0064df7b1208dce37494884",
+          "target_text": "Мысал бағдарлама",
+          "target_hash": "6961ea1404da76811da1be5e0c53d67b792ebf4eeb171d3ea7c57354159c3923",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "f70cc827d37520fae57040da014edecf0440c2a2b0064df7b1208dce37494884",
+              "target_hash": "6961ea1404da76811da1be5e0c53d67b792ebf4eeb171d3ea7c57354159c3923"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "f70cc827d37520fae57040da014edecf0440c2a2b0064df7b1208dce37494884",
+              "target_hash": "6961ea1404da76811da1be5e0c53d67b792ebf4eeb171d3ea7c57354159c3923"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "course.title",
+          "source_hash": "036dad35a9e09bbcb4ad15f6187d502a8a4d46425a8dfcb93a510faaa3247986",
+          "target_text": "Келісімшарт мысалы",
+          "target_hash": "1cb53a788f9ec539459c92ddd0393d19a779701a429aaf391ee49bbfc341b4c4",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "036dad35a9e09bbcb4ad15f6187d502a8a4d46425a8dfcb93a510faaa3247986",
+              "target_hash": "1cb53a788f9ec539459c92ddd0393d19a779701a429aaf391ee49bbfc341b4c4"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "036dad35a9e09bbcb4ad15f6187d502a8a4d46425a8dfcb93a510faaa3247986",
+              "target_hash": "1cb53a788f9ec539459c92ddd0393d19a779701a429aaf391ee49bbfc341b4c4"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "course.short_title",
+          "source_hash": "d029f87e3d80f8fd9b1be67c7426b4cc1ff47b4a9d0a8461c826a59d8c5eb6cd",
+          "target_text": "Мысал",
+          "target_hash": "ea64eb4eefff04ca17b296183cf241c9501a08a21b360d0959891ca881253f5b",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "d029f87e3d80f8fd9b1be67c7426b4cc1ff47b4a9d0a8461c826a59d8c5eb6cd",
+              "target_hash": "ea64eb4eefff04ca17b296183cf241c9501a08a21b360d0959891ca881253f5b"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "d029f87e3d80f8fd9b1be67c7426b4cc1ff47b4a9d0a8461c826a59d8c5eb6cd",
+              "target_hash": "ea64eb4eefff04ca17b296183cf241c9501a08a21b360d0959891ca881253f5b"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "course.description",
+          "source_hash": "83115472d821eac5d52b417861aeb56fdb1365500a520e539d6533a627bab8bf",
+          "target_text": "Тексеруге арналған жасанды мазмұн.",
+          "target_hash": "a36305f98726e43d9efd3b16a1880239e79e84f75eed5a0fa9b2ca0221a9ab98",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "83115472d821eac5d52b417861aeb56fdb1365500a520e539d6533a627bab8bf",
+              "target_hash": "a36305f98726e43d9efd3b16a1880239e79e84f75eed5a0fa9b2ca0221a9ab98"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "83115472d821eac5d52b417861aeb56fdb1365500a520e539d6533a627bab8bf",
+              "target_hash": "a36305f98726e43d9efd3b16a1880239e79e84f75eed5a0fa9b2ca0221a9ab98"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "course.badge",
+          "source_hash": "f2e8378c30d317abfcddf9e67472c7569cfaf24573095ccead2969adae665cff",
+          "target_text": "МЫСАЛ",
+          "target_hash": "fb37f9c2afd90f6e80bc7a1238a72f9d1b64a689b3d0580acad52703e6f533e8",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "f2e8378c30d317abfcddf9e67472c7569cfaf24573095ccead2969adae665cff",
+              "target_hash": "fb37f9c2afd90f6e80bc7a1238a72f9d1b64a689b3d0580acad52703e6f533e8"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "f2e8378c30d317abfcddf9e67472c7569cfaf24573095ccead2969adae665cff",
+              "target_hash": "fb37f9c2afd90f6e80bc7a1238a72f9d1b64a689b3d0580acad52703e6f533e8"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "course.level",
+          "source_hash": "b605350bc00209520b7cd8f546322663356ba630708f71bbf30aead6b3dd608e",
+          "target_text": "Кіріспе",
+          "target_hash": "dde97faccb6fee7057c01979308f435e41e6ac062d8fb03d70b5973965b02770",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "b605350bc00209520b7cd8f546322663356ba630708f71bbf30aead6b3dd608e",
+              "target_hash": "dde97faccb6fee7057c01979308f435e41e6ac062d8fb03d70b5973965b02770"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "b605350bc00209520b7cd8f546322663356ba630708f71bbf30aead6b3dd608e",
+              "target_hash": "dde97faccb6fee7057c01979308f435e41e6ac062d8fb03d70b5973965b02770"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "module.title",
+          "source_hash": "f8416d793a642faa027935eb7b5a975533baa3705a806c57cde08be442c95d46",
+          "target_text": "Тілді таңдаңыз",
+          "target_hash": "cd14f91c2327692cafda7cf8b14ac11c92d72a2c0f243652ac8af56c2c28ebb6",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "f8416d793a642faa027935eb7b5a975533baa3705a806c57cde08be442c95d46",
+              "target_hash": "cd14f91c2327692cafda7cf8b14ac11c92d72a2c0f243652ac8af56c2c28ebb6"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "f8416d793a642faa027935eb7b5a975533baa3705a806c57cde08be442c95d46",
+              "target_hash": "cd14f91c2327692cafda7cf8b14ac11c92d72a2c0f243652ac8af56c2c28ebb6"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "module.summary",
+          "source_hash": "8043ffb73668e05841b2d9f7b8414ffddbe38f57dbf51bafe237d0c831bd1280",
+          "target_text": "Оқу идентификаторын сақтаңыз.",
+          "target_hash": "a7dcf27b58ec570ed1c046a162dc372953f129509811824f4e22b8ed627cc824",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "8043ffb73668e05841b2d9f7b8414ffddbe38f57dbf51bafe237d0c831bd1280",
+              "target_hash": "a7dcf27b58ec570ed1c046a162dc372953f129509811824f4e22b8ed627cc824"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "8043ffb73668e05841b2d9f7b8414ffddbe38f57dbf51bafe237d0c831bd1280",
+              "target_hash": "a7dcf27b58ec570ed1c046a162dc372953f129509811824f4e22b8ed627cc824"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "quiz.title",
+          "source_hash": "8691de6746edbac6d4cd72fb0367278cc20638125e8b986516d8c3c28902ef2f",
+          "target_text": "Мысал тест",
+          "target_hash": "acf967cb39c1723b978857534a13a22a094df22167583539162552e069588961",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "8691de6746edbac6d4cd72fb0367278cc20638125e8b986516d8c3c28902ef2f",
+              "target_hash": "acf967cb39c1723b978857534a13a22a094df22167583539162552e069588961"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "8691de6746edbac6d4cd72fb0367278cc20638125e8b986516d8c3c28902ef2f",
+              "target_hash": "acf967cb39c1723b978857534a13a22a094df22167583539162552e069588961"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "quiz.description",
+          "source_hash": "0153754057ebaf4c7bc6920c3f094f0bc16b6c9b6f1be939e7e87c1a21d6fb3f",
+          "target_text": "Бір жасанды сұрақ.",
+          "target_hash": "fe77b44736cc5121e0a0260e652e8d29502207582a49c78495adddb8adbfc5a4",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "0153754057ebaf4c7bc6920c3f094f0bc16b6c9b6f1be939e7e87c1a21d6fb3f",
+              "target_hash": "fe77b44736cc5121e0a0260e652e8d29502207582a49c78495adddb8adbfc5a4"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "0153754057ebaf4c7bc6920c3f094f0bc16b6c9b6f1be939e7e87c1a21d6fb3f",
+              "target_hash": "fe77b44736cc5121e0a0260e652e8d29502207582a49c78495adddb8adbfc5a4"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "quiz.question.objective",
+          "source_hash": "5fbc30a89394fda7a223cfb0d58e2196aa1f996db7ad5c88d650b67c8a44dfc8",
+          "target_text": "Оқушының идентификаторын сақтаңыз.",
+          "target_hash": "eee2f25e11b07eadfdca1206972ffead7e961e19bcb0390df67ad4f617dd7a58",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "5fbc30a89394fda7a223cfb0d58e2196aa1f996db7ad5c88d650b67c8a44dfc8",
+              "target_hash": "eee2f25e11b07eadfdca1206972ffead7e961e19bcb0390df67ad4f617dd7a58"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "5fbc30a89394fda7a223cfb0d58e2196aa1f996db7ad5c88d650b67c8a44dfc8",
+              "target_hash": "eee2f25e11b07eadfdca1206972ffead7e961e19bcb0390df67ad4f617dd7a58"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "quiz.question.prompt",
+          "source_hash": "f474d48b629386e915b2fb40288c1a66ce29e2f7b276cdb37f71b90b76eb8948",
+          "target_text": "Қай идентификатор өзгермейді?",
+          "target_hash": "e060ad588a70a4a54884faf943b5f27704c89fb92947ba07c0c1385df07b5e7a",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "f474d48b629386e915b2fb40288c1a66ce29e2f7b276cdb37f71b90b76eb8948",
+              "target_hash": "e060ad588a70a4a54884faf943b5f27704c89fb92947ba07c0c1385df07b5e7a"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "f474d48b629386e915b2fb40288c1a66ce29e2f7b276cdb37f71b90b76eb8948",
+              "target_hash": "e060ad588a70a4a54884faf943b5f27704c89fb92947ba07c0c1385df07b5e7a"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "quiz.question.explanation",
+          "source_hash": "4a8ea898cb153b0cf8c3a4f9481470b66efb48bf4e7015fbbd7e235076cd642b",
+          "target_text": "Тіл өзгергенде модуль идентификаторы өзгермейді.",
+          "target_hash": "0e3cc6669d491122419d3603ae2eb033dcaa593db1a114999b4db9b4d0cd2f80",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "4a8ea898cb153b0cf8c3a4f9481470b66efb48bf4e7015fbbd7e235076cd642b",
+              "target_hash": "0e3cc6669d491122419d3603ae2eb033dcaa593db1a114999b4db9b4d0cd2f80"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "4a8ea898cb153b0cf8c3a4f9481470b66efb48bf4e7015fbbd7e235076cd642b",
+              "target_hash": "0e3cc6669d491122419d3603ae2eb033dcaa593db1a114999b4db9b4d0cd2f80"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "quiz.option.module_id",
+          "source_hash": "bf38655980b374be8c4566da3554e70321d8edc2f8e357f4fb14176c1dcb0e8c",
+          "target_text": "Модуль идентификаторы",
+          "target_hash": "e23675c298557ff5abae933af5cd5e237c543d110466e068b42e2eb4d63acd29",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "bf38655980b374be8c4566da3554e70321d8edc2f8e357f4fb14176c1dcb0e8c",
+              "target_hash": "e23675c298557ff5abae933af5cd5e237c543d110466e068b42e2eb4d63acd29"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "bf38655980b374be8c4566da3554e70321d8edc2f8e357f4fb14176c1dcb0e8c",
+              "target_hash": "e23675c298557ff5abae933af5cd5e237c543d110466e068b42e2eb4d63acd29"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "quiz.option.locale",
+          "source_hash": "c9834b3511e3115a44bd7c96bae74cffc64b7551b4d7bcbbe3d239f4a81efa0a",
+          "target_text": "Тіл таңдауы",
+          "target_hash": "d0a1a393e74d7cd8c954ffe9bd9abe6ad9d8c1ef7d897c77735fd3639c37db2e",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "c9834b3511e3115a44bd7c96bae74cffc64b7551b4d7bcbbe3d239f4a81efa0a",
+              "target_hash": "d0a1a393e74d7cd8c954ffe9bd9abe6ad9d8c1ef7d897c77735fd3639c37db2e"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "c9834b3511e3115a44bd7c96bae74cffc64b7551b4d7bcbbe3d239f4a81efa0a",
+              "target_hash": "d0a1a393e74d7cd8c954ffe9bd9abe6ad9d8c1ef7d897c77735fd3639c37db2e"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "lesson.introduction",
+          "source_hash": "5c54406acce8730f2e5cc546a97afdb5bf6dee504ca3cd45ebdcdb350cff0fc9",
+          "target_text": "# Тілді таңдаңыз\n\nОқу идентификаторын сақтаңыз.\n",
+          "target_hash": "9d27e41e853cce64ef0bf6c271a32d27b76823376c52014f27b91674845f2bbd",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "5c54406acce8730f2e5cc546a97afdb5bf6dee504ca3cd45ebdcdb350cff0fc9",
+              "target_hash": "9d27e41e853cce64ef0bf6c271a32d27b76823376c52014f27b91674845f2bbd"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "5c54406acce8730f2e5cc546a97afdb5bf6dee504ca3cd45ebdcdb350cff0fc9",
+              "target_hash": "9d27e41e853cce64ef0bf6c271a32d27b76823376c52014f27b91674845f2bbd"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "notebook.intro",
+          "source_hash": "d87f693e99d5df26eef3c3e29dee4b21bbf0e82f0790ec5265823a1e46922a29",
+          "target_text": "# Тілді таңдаңыз\n",
+          "target_hash": "795a850bc1db6c996ce1d60a401b5acb6d64efb49bd91b0f19297ee0fb4592be",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "d87f693e99d5df26eef3c3e29dee4b21bbf0e82f0790ec5265823a1e46922a29",
+              "target_hash": "795a850bc1db6c996ce1d60a401b5acb6d64efb49bd91b0f19297ee0fb4592be"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "d87f693e99d5df26eef3c3e29dee4b21bbf0e82f0790ec5265823a1e46922a29",
+              "target_hash": "795a850bc1db6c996ce1d60a401b5acb6d64efb49bd91b0f19297ee0fb4592be"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "ui.choose-language",
+          "source_hash": "f8416d793a642faa027935eb7b5a975533baa3705a806c57cde08be442c95d46",
+          "target_text": "Тілді таңдаңыз",
+          "target_hash": "cd14f91c2327692cafda7cf8b14ac11c92d72a2c0f243652ac8af56c2c28ebb6",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "f8416d793a642faa027935eb7b5a975533baa3705a806c57cde08be442c95d46",
+              "target_hash": "cd14f91c2327692cafda7cf8b14ac11c92d72a2c0f243652ac8af56c2c28ebb6"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "f8416d793a642faa027935eb7b5a975533baa3705a806c57cde08be442c95d46",
+              "target_hash": "cd14f91c2327692cafda7cf8b14ac11c92d72a2c0f243652ac8af56c2c28ebb6"
+            },
+            "native_review": null
+          }
+        },
+        {
+          "unit_id": "guide.introduction",
+          "source_hash": "5593abf7c152485a361b5b59e5ee9eceec0fa73180d05f0ad2d7d3ca8a778ac2",
+          "target_text": "# Жасанды мысал\n",
+          "target_hash": "78e9d505f61fddbd027a78518f8174e338025f9b543631e545b9ee5f4987096a",
+          "state": "llm_checked",
+          "provenance": {
+            "translator": "current-session-llm",
+            "session_id": "contract-example",
+            "batch_id": "synthetic-1",
+            "glossary_version": "example-1"
+          },
+          "checks": {
+            "llm_self_check": {
+              "method": "current-session-llm",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "5593abf7c152485a361b5b59e5ee9eceec0fa73180d05f0ad2d7d3ca8a778ac2",
+              "target_hash": "78e9d505f61fddbd027a78518f8174e338025f9b543631e545b9ee5f4987096a"
+            },
+            "technical_admission": {
+              "method": "technical-validator",
+              "actor": "synthetic-example",
+              "record": "Synthetic contract evidence only; no native human review.",
+              "source_hash": "5593abf7c152485a361b5b59e5ee9eceec0fa73180d05f0ad2d7d3ca8a778ac2",
+              "target_hash": "78e9d505f61fddbd027a78518f8174e338025f9b543631e545b9ee5f4987096a"
+            },
+            "native_review": null
+          }
+        }
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "lesson.en",
+      "kind": "lesson",
+      "locale": "en",
+      "file": {
+        "path": "doris-course/example/lesson.md",
+        "size": 54,
+        "sha256": "5c54406acce8730f2e5cc546a97afdb5bf6dee504ca3cd45ebdcdb350cff0fc9"
+      },
+      "source_asset_hash": null
+    },
+    {
+      "id": "lesson.kk",
+      "kind": "lesson",
+      "locale": "kk-Cyrl",
+      "file": {
+        "path": "kk-Cyrl/lesson.md",
+        "size": 87,
+        "sha256": "9d27e41e853cce64ef0bf6c271a32d27b76823376c52014f27b91674845f2bbd"
+      },
+      "source_asset_hash": "5c54406acce8730f2e5cc546a97afdb5bf6dee504ca3cd45ebdcdb350cff0fc9"
+    },
+    {
+      "id": "notebook.en",
+      "kind": "notebook",
+      "locale": "en",
+      "file": {
+        "path": "doris-course/example/lab.ipynb",
+        "size": 409,
+        "sha256": "4ccf0f4f50378bafdc1558d6082541f9ad887e23dfdb60ea5ef1c4df83373d42"
+      },
+      "source_asset_hash": null
+    },
+    {
+      "id": "notebook.kk",
+      "kind": "notebook",
+      "locale": "kk-Cyrl",
+      "file": {
+        "path": "kk-Cyrl/lab.ipynb",
+        "size": 419,
+        "sha256": "e9fc60bfb7853deb92dc5a97f70617c66d65c51ce7458c98dabe28f75f50681a"
+      },
+      "source_asset_hash": "4ccf0f4f50378bafdc1558d6082541f9ad887e23dfdb60ea5ef1c4df83373d42"
+    },
+    {
+      "id": "quiz.en",
+      "kind": "quiz",
+      "locale": "en",
+      "file": {
+        "path": "doris-course/example/quiz.yaml",
+        "size": 415,
+        "sha256": "0b5ed111fcbea7334956162ae798beed673d9aa7994f6cf40529c2ef3c74d7eb"
+      },
+      "source_asset_hash": null
+    },
+    {
+      "id": "quiz.kk",
+      "kind": "quiz",
+      "locale": "kk-Cyrl",
+      "file": {
+        "path": "kk-Cyrl/quiz.yaml",
+        "size": 554,
+        "sha256": "1632e180eeb1f7a5295281a0c3c98ebf8557f1cb7b40a161ed4662a0ba4b9f75"
+      },
+      "source_asset_hash": "0b5ed111fcbea7334956162ae798beed673d9aa7994f6cf40529c2ef3c74d7eb"
+    },
+    {
+      "id": "ui.en",
+      "kind": "ui",
+      "locale": "en",
+      "file": {
+        "path": "ui/en.json",
+        "size": 98,
+        "sha256": "b31473d9a3ebb4b725ac20f2a0994b08d8c42d7766949788d7360a3b3f7fe19b"
+      },
+      "source_asset_hash": null
+    },
+    {
+      "id": "ui.kk",
+      "kind": "ui",
+      "locale": "kk-Cyrl",
+      "file": {
+        "path": "kk-Cyrl/ui.json",
+        "size": 108,
+        "sha256": "765a7a5357bef8755532713b8d13decc0e85bcd0d40b5528f7fd946d2224f3d9"
+      },
+      "source_asset_hash": "b31473d9a3ebb4b725ac20f2a0994b08d8c42d7766949788d7360a3b3f7fe19b"
+    },
+    {
+      "id": "diagram",
+      "kind": "image",
+      "locale": "shared",
+      "file": {
+        "path": "shared/diagram.svg",
+        "size": 112,
+        "sha256": "2f309f07b5c2853632183d95bcb854171a9b6550fdb1e05b345547fca38aa873"
+      },
+      "source_asset_hash": null
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "example.quiz",
+      "course_slug": "contract-example",
+      "module_id": "module-1",
+      "source_path": "doris-course/example/quiz.yaml",
+      "semantic_revision": "example-semantics-1",
+      "passing_score_percent": 100,
+      "questions": [
+        {
+          "id": "same_identity",
+          "type": "single_choice",
+          "option_ids": [
+            "module_id",
+            "locale"
+          ],
+          "answer": "module_id"
+        }
+      ],
+      "presentations": [
+        {
+          "locale": "en",
+          "presentation_revision": "c2f716601493e77f1df5f2a88504dd18aade299a7eb071c91f0ac8489bbe1e39",
+          "unit_ids": [
+            "quiz.title",
+            "quiz.description",
+            "quiz.question.objective",
+            "quiz.question.prompt",
+            "quiz.option.module_id",
+            "quiz.option.locale"
+          ]
+        },
+        {
+          "locale": "kk-Cyrl",
+          "presentation_revision": "767844fd223ed13aa153d11c82a124b85ab9186b790f96ed35164cfaf169bd5a",
+          "unit_ids": [
+            "quiz.title",
+            "quiz.description",
+            "quiz.question.objective",
+            "quiz.question.prompt",
+            "quiz.option.module_id",
+            "quiz.option.locale"
+          ]
+        }
+      ]
+    }
+  ],
+  "snapshot": {
+    "source_ref": "0c2c60252b182dbc45e9b59a28937f8a4a01955b",
+    "source_schema_digest": "d51018b31fc4e428448fab7da41d714fe623880147416b12696586baa5632915",
+    "contract_digest": "36c6218ad0929783787e71fc17987595ee23a3082406b12ef31ec7c1c7cc9335",
+    "registry_version": "1.0.0",
+    "registry_digest": "360d7da6640979038ba64101e43b060ca614bda94647a454ce0de7eaa01c1747",
+    "builder_version": "contract-example-1",
+    "files": [
+      {
+        "path": "catalog.yaml",
+        "size": 236,
+        "sha256": "e3e73e0cd6904ff9ce8b36bb5e8f1652a40fab6a33e4f1d0c5570b87019144f3"
+      },
+      {
+        "path": "doris-course/example/README.md",
+        "size": 20,
+        "sha256": "5593abf7c152485a361b5b59e5ee9eceec0fa73180d05f0ad2d7d3ca8a778ac2"
+      },
+      {
+        "path": "doris-course/example/course.yaml",
+        "size": 910,
+        "sha256": "6c8540a505a9ffa73fc666fb8fefafea4ffff3fe11f07d3259a5d6695c010944"
+      },
+      {
+        "path": "doris-course/example/lab.ipynb",
+        "size": 409,
+        "sha256": "4ccf0f4f50378bafdc1558d6082541f9ad887e23dfdb60ea5ef1c4df83373d42"
+      },
+      {
+        "path": "doris-course/example/lesson.md",
+        "size": 54,
+        "sha256": "5c54406acce8730f2e5cc546a97afdb5bf6dee504ca3cd45ebdcdb350cff0fc9"
+      },
+      {
+        "path": "doris-course/example/quiz.yaml",
+        "size": 415,
+        "sha256": "0b5ed111fcbea7334956162ae798beed673d9aa7994f6cf40529c2ef3c74d7eb"
+      },
+      {
+        "path": "doris-course/example/requirements.txt",
+        "size": 18,
+        "sha256": "977a475494524215ade194811a00e726b15b13f2fd8211c349aea036fb198569"
+      },
+      {
+        "path": "kk-Cyrl/lab.ipynb",
+        "size": 419,
+        "sha256": "e9fc60bfb7853deb92dc5a97f70617c66d65c51ce7458c98dabe28f75f50681a"
+      },
+      {
+        "path": "kk-Cyrl/lesson.md",
+        "size": 87,
+        "sha256": "9d27e41e853cce64ef0bf6c271a32d27b76823376c52014f27b91674845f2bbd"
+      },
+      {
+        "path": "kk-Cyrl/quiz.yaml",
+        "size": 554,
+        "sha256": "1632e180eeb1f7a5295281a0c3c98ebf8557f1cb7b40a161ed4662a0ba4b9f75"
+      },
+      {
+        "path": "kk-Cyrl/ui.json",
+        "size": 108,
+        "sha256": "765a7a5357bef8755532713b8d13decc0e85bcd0d40b5528f7fd946d2224f3d9"
+      },
+      {
+        "path": "shared/diagram.svg",
+        "size": 112,
+        "sha256": "2f309f07b5c2853632183d95bcb854171a9b6550fdb1e05b345547fca38aa873"
+      },
+      {
+        "path": "ui/en.json",
+        "size": 98,
+        "sha256": "b31473d9a3ebb4b725ac20f2a0994b08d8c42d7766949788d7360a3b3f7fe19b"
+      }
+    ],
+    "translation_digest": "1d196d3f06cf6b6aa919db5f16be70945731981936a4e508c84145b4e88d78fe",
+    "teaching_digest": "12e7f316f72e0a5769183e4a1df32c442b3c501e94e35b8ca81f2e824ec9bcef",
+    "package_digest": "523499195defa9bf7e8cf5c59ff2f2abb9883ea57b81c38c45a12b1955499292"
+  },
+  "purpose": "contract-fixture"
+}

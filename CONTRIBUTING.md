@@ -30,6 +30,12 @@ See [contract v1](contracts/v1/README.md) for its schema, permanent module IDs,
 completion rules, Lab metadata and quiz format. Register new courses in the
 catalog and preserve existing IDs when moving or renaming content.
 
+[Contract v2](contracts/v2/README.md) defines multilingual resolved packages,
+the locale registry and independent presentation, quiz and policy bindings.
+It uses a separate entry point and leaves the v1 English interface unchanged.
+Its synthetic examples validate the interface; production content extraction
+and consumer integration must also pass their own checks.
+
 Each course lists its modules in `course.yaml`: the order, titles, times, and the lesson, Lab, quiz and optional parts of each module, for a course catalog to publish. When you add, rename or retime a module, change `course.yaml`, the lesson's heading and "Estimated time" row, the quiz title and the course README's outline together. The structure is described at the top of `tools/check_course_manifests.py`, which checks that they agree and that every Lab, quiz and optional part in the course is listed.
 
 ## Checks

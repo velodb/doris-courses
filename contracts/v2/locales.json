@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "registry_version": "1.0.0",
+  "source_locale": "en",
+  "locales": [
+    {
+      "tag": "en",
+      "route_key": "en",
+      "aliases": [
+        "en-US",
+        "en-GB"
+      ],
+      "script": "Latn",
+      "dir": "ltr",
+      "format_locale": "en-US",
+      "display_name": "English",
+      "audience": "English readers"
+    },
+    {
+      "tag": "kk-Cyrl",
+      "route_key": "kk-Cyrl",
+      "aliases": [
+        "kk",
+        "kk-KZ"
+      ],
+      "script": "Cyrl",
+      "dir": "ltr",
+      "format_locale": "kk-KZ",
+      "display_name": "Қазақша",
+      "audience": "Kazakh readers using Cyrillic"
+    }
+  ]
+}

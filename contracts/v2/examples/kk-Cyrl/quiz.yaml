@@ -1,0 +1,15 @@
+title: Мысал тест
+description: Бір жасанды сұрақ.
+passing_score_percent: 100
+questions:
+- id: same_identity
+  type: single_choice
+  objective: Оқушының идентификаторын сақтаңыз.
+  prompt: Қай идентификатор өзгермейді?
+  options:
+  - id: module_id
+    text: Модуль идентификаторы
+  - id: locale
+    text: Тіл таңдауы
+  answer: module_id
+  explanation: Тіл өзгергенде модуль идентификаторы өзгермейді.

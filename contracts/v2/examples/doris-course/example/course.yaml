@@ -1,0 +1,46 @@
+slug: contract-example
+title: Contract example
+short_title: Example
+description: Synthetic content for admission tests.
+status: published
+language: en
+doris_version: 4.1.3
+estimated_minutes: 5
+presentation:
+  theme: blue
+  badge_label: EXAMPLE
+lab_setup:
+  python_version: '3.12'
+  requirements: requirements.txt
+  guide: README.md
+  supported_platforms:
+  - linux
+  dependencies:
+  - Python
+completion:
+  enabled: true
+  strategy: all_required_modules
+  quiz_credit_policy: preserve_passed
+certificate:
+  enabled: true
+  code: EXAMPLE
+  template: course_completion
+levels:
+  '1': Introduction
+modules:
+- id: module-1
+  slug: introduction
+  level: 1
+  order: 1
+  title: Choose a language
+  summary: Keep the same learning identity.
+  status: published
+  estimated_minutes: 5
+  course: lesson.md
+  lab: lab.ipynb
+  quiz: quiz.yaml
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - quiz_passed
