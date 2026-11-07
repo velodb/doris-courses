@@ -118,6 +118,8 @@ and how to remove only that course's containers, volumes, and networks.
 - `doris-course/common/`: `doris_labkit`, the notebook runtime that every
   course installs.
 - `tools/`: the repository checks, which CI runs on every pull request.
+- `locales/`: [stable translation units and v2 package builds](locales/README.md).
+  Real target-language course translation and consumer integration are pending.
 - `workshop/aws/`: [AWS workshop configuration](workshop/aws/README.md), with
   planning manifests, a [host runtime installer](workshop/aws/runtime/README.md)
   and [Terraform integration scripts](workshop/aws/terraform/README.md).

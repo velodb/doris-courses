@@ -5,9 +5,9 @@ English source, translation units, rendered assets and grading bindings. The
 entry point is `package.v2.json`. Consumers select this interface explicitly;
 the existing root `catalog.yaml` remains the English v1 entry point.
 
-The contract and its admission tests are implemented. Course extraction,
-production packaging, website ingestion, workshop installation and learner
-language switching require their respective consumer implementations. The
+The contract, admission tests and [offline producer](../../locales/README.md)
+are implemented. Website ingestion, workshop installation and learner language
+switching require their respective consumer implementations. The
 [example](examples/README.md) is synthetic and cannot establish course readiness.
 
 ## Pinned interfaces
@@ -182,11 +182,15 @@ is a learner-run download only.
 Canonical declared paths use ASCII letters, digits, `_`, `-`, dots and slashes;
 absolute paths, empty/dot/parent components, encodings, backslashes and symlinks
 are rejected. Declared files are limited to 16 MiB each, 10,000 files and 128 MiB
-in total. Documents allow at most 64 levels and 1,000,000 values. YAML aliases,
-anchors, duplicate YAML/JSON keys and non-finite JSON values are rejected.
+in total. Documents allow at most 64 levels and 1,000,000 values. Content-authoring YAML aliases, anchors, duplicate YAML/JSON keys and
+non-finite JSON values are rejected. Shared code/data downloads are opaque and
+are never parsed or executed; a structured content reference forces strict
+parsing even if the file also has a shared asset record.
 
 Markdown permits inert code examples and a restricted HTML subset. Active HTML,
-event handlers, inline CSS and unsafe URL protocols are rejected. Relative
+event handlers, inline CSS and unsafe URL protocols are rejected. The literal
+SQL notation `<db>` in legacy display leaves is treated as inert text; consumers
+must escape those display strings. Relative
 links/images must remain inside the frozen file inventory. Remote images are
 rejected; HTTP(S) text links, mail links and website-owned absolute routes have
 explicit handling. SVG admits a
@@ -233,6 +237,7 @@ python -m unittest discover -s tools/tests -p 'test_content_contract*.py'
 ```
 
 For a real producer output, use `--root <frozen-tree>` without `--allow-fixture`.
-The checker validates declared coverage; the producer must separately verify
-extraction completeness, optional/profile closure, asset treatment and
-deterministic output against real source files before publishing that output.
+The checker validates declared coverage. The producer separately verifies
+extraction completeness and optional/profile closure against the selected Git
+commit, binds asset treatment and admits the completed tree before emitting
+deterministic artifacts. See the [build instructions](../../locales/README.md).

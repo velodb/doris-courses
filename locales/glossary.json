@@ -1,0 +1,47 @@
+{
+  "version": "initial-1",
+  "source_locale": "en",
+  "target_locale": "kk-Cyrl",
+  "entries": [
+    {
+      "source": "Apache Doris",
+      "target": "Apache Doris",
+      "rule": "Keep this product name or technical identifier unchanged."
+    },
+    {
+      "source": "FE",
+      "target": "FE",
+      "rule": "Keep this product name or technical identifier unchanged."
+    },
+    {
+      "source": "BE",
+      "target": "BE",
+      "rule": "Keep this product name or technical identifier unchanged."
+    },
+    {
+      "source": "SQL",
+      "target": "SQL",
+      "rule": "Keep this product name or technical identifier unchanged."
+    },
+    {
+      "source": "JupyterLab",
+      "target": "JupyterLab",
+      "rule": "Keep this product name or technical identifier unchanged."
+    },
+    {
+      "source": "Stream Load",
+      "target": "Stream Load",
+      "rule": "Keep this product name or technical identifier unchanged."
+    },
+    {
+      "source": "Routine Load",
+      "target": "Routine Load",
+      "rule": "Keep this product name or technical identifier unchanged."
+    },
+    {
+      "source": "Group Commit",
+      "target": "Group Commit",
+      "rule": "Keep this product name or technical identifier unchanged."
+    }
+  ]
+}

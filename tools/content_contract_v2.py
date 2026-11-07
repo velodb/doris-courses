@@ -232,7 +232,10 @@ def safe_markdown(text, source_path, files):
                 link(token.attrGet("href"))
             if token.children:
                 tokens(token.children)
-    tokens(parser.parse(text))
+    # Legacy quiz display leaves contain the literal SQL notation <db>.
+    # It has no attributes or executable meaning; consumers render display
+    # leaves as escaped text. Do not admit arbitrary custom HTML elements.
+    tokens(parser.parse(text.replace('<db>', '&lt;db&gt;')))
 
 
 def protected_markup(text):
@@ -382,6 +385,15 @@ def validate_package(root, entry="package.v2.json", *, allow_fixture=False):
         fail("file inventory must be sorted and exclude the package manifest")
     if sum(item["size"] for item in inventory.values()) > MAX_TOTAL_BYTES:
         fail("package exceeds 128 MiB")
+    # Shared code/data are opaque learner downloads. In particular, Docker
+    # Compose anchors are not content-authoring YAML and must not be expanded
+    # during ingestion. Any structured reference still forces strict parsing.
+    structured_paths = {package['catalog'], *(b['manifest'] for b in package['courses']),
+                        *(q['source_path'] for q in package['quizzes']),
+                        *(u['source_path'] for u in package['source_units']
+                          if u['locator']['kind'] != 'markdown-block')}
+    opaque_paths = {a['file']['path'] for a in package['assets']
+                    if a['kind'] in {'code', 'data'} and a['locale'] == 'shared'} - structured_paths
     files, documents = {}, {}
     for relative, record in inventory.items():
         data = safe_path(root, relative).read_bytes()
@@ -389,11 +401,11 @@ def validate_package(root, entry="package.v2.json", *, allow_fixture=False):
             fail(f"file hash/size mismatch: {relative}")
         files[relative] = data
         suffix = Path(relative).suffix.lower()
-        if suffix in {".yaml", ".yml"}:
+        if suffix in {".yaml", ".yml"} and relative not in opaque_paths:
             if any(isinstance(token, (yaml.AliasToken, yaml.AnchorToken)) for token in yaml.scan(data)):
                 fail("YAML aliases and anchors are not contract data")
             documents[relative] = bounded(v1.load(data.decode("utf-8")))
-        elif suffix in {".json", ".ipynb"}:
+        elif suffix in {".json", ".ipynb"} and relative not in opaque_paths:
             documents[relative] = read_json(data)
         elif suffix == ".svg":
             safe_svg(data)
