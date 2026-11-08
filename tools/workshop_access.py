@@ -14,7 +14,7 @@ import workshop_routing as routing
 
 SERVICES = {
     "jupyter": (8888, None),
-    "rta-fe": (18030, "rta-main"),
+    "rta-fe": (18030, ("rta-main", "rta-module-1")),
     "rta-fe1": (18130, "rta-main"),
     "rta-fe2": (18131, "rta-main"),
     "rta-fe3": (18132, "rta-main"),
@@ -50,7 +50,12 @@ def require(condition, message):
 
 
 def routes(config, access, instances, *, overrides=None, redirect_origins=None, priority_base=1000,
-           priority_limit=None, previous=None, dns=None):
+           priority_limit=None, previous=None, dns=None, runtime_bundle=None):
+    ui_snapshot = None
+    if config.get('schema_version', 1) == 2:
+        from workshop_content import ui_from_bundle
+        require(runtime_bundle is not None, 'v2 routes require the complete bound --runtime-bundle')
+        ui_snapshot = ui_from_bundle(runtime_bundle, config['content'])
     require(access["account_id"] == config["aws_account_id"] and access["region"] == config["region"] and
             access["domain"] == config["domain"], "shared access must match the event account, Region and domain")
     dns_account = access.get("dns_account_id", config["aws_account_id"])
@@ -110,7 +115,8 @@ def routes(config, access, instances, *, overrides=None, redirect_origins=None, 
     ledger_count = 3 * sum(host["active"] for event in ledger["events"].values() for host in event["hosts"].values())
     require(ledger_count + (1 if access.get("portal") is not None else 0) <= 100,
         "active reservations across this listener exceed the local 100-rule ceiling")
-    return {"schema_version": 1, "event_id": config["event_id"], "expires_at": config["expires_at"],
+    return {"schema_version": config.get('schema_version', 1), "event_id": config["event_id"], "expires_at": config["expires_at"],
+            **({'content': config['content'], 'ui_snapshot': ui_snapshot} if ui_snapshot else {}),
             "alb_arn": access["alb_arn"], "region": config["region"], "services": services,
             "browser_routes": browser,
             "routing_allocations": ledger,
@@ -121,6 +127,8 @@ def routes(config, access, instances, *, overrides=None, redirect_origins=None, 
 
 
 def gateway_configs(plan, identity, subjects):
+    require(type(plan.get('schema_version')) is int and plan['schema_version'] in (1, 2), 'unsupported route plan version')
+    require((plan['schema_version'] == 2) == ('ui_snapshot' in plan), 'route language capability differs from its version')
     require(identity["event_id"] == plan["event_id"], "identity belongs to another activity")
     require(set(subjects) == set(plan["services"]), "supply subjects for exactly the assigned learners")
     assigned = [s for values in subjects.values() for s in values]
@@ -133,6 +141,8 @@ def gateway_configs(plan, identity, subjects):
             "expires_at": plan["expires_at"], "region": plan["region"], "alb_arn": plan["alb_arn"],
             "issuer": identity["issuer"], "client_id": identity["client_id"], "login_origin": identity["login_origin"],
             "subjects": subjects[learner], "services": services}
+        if plan['schema_version'] == 2:
+            config.update(schema_version=2, ui_snapshot=plan['ui_snapshot'])
         validate_config(config)
         result[learner] = config
     return result
@@ -186,6 +196,9 @@ def portal_config(plans, identities, assignments):
             **{key: identity[key] for key in ("issuer", "client_id", "login_origin")},
             "assignments": {subject: {"learner_id": learner, "services": browser_routes(plan, learner)["services"]}
                 for learner, config in gateways.items() for subject in config["subjects"]}}
+        if plan['schema_version'] == 2:
+            result['schema_version'] = 2
+            result['activities'][plan['event_id']]['ui_snapshot'] = plan['ui_snapshot']
     sys.path.insert(0, str(OVERLAY))
     from portal import validate_config
     validate_config(result)
@@ -226,6 +239,7 @@ def main():
     planp.add_argument("--ports", type=Path)
     planp.add_argument("--dns", type=Path, help="Private DNS account/profile or role configuration for a separate DNS account")
     planp.add_argument("--redirects", type=Path, help="Per-learner service-to-internal-origin lists for explicit FE redirects")
+    planp.add_argument('--runtime-bundle', type=Path, help='Required for v2; exact admitted runtime bundle for entry messages')
     planp.add_argument("--priority-base", type=int, required=True)
     planp.add_argument("--priority-limit", type=int, required=True)
     planp.add_argument("--allocations", type=Path, required=True, help="Private shared-listener allocation file, reused for every route generation")
@@ -260,6 +274,7 @@ def main():
                     redirect_origins=wc.load_document(args.redirects) if args.redirects else None,
                     priority_base=args.priority_base, priority_limit=args.priority_limit,
                     dns=wc.load_document(args.dns) if args.dns else None,
+                    runtime_bundle=args.runtime_bundle,
                     previous=wc.load_document(args.allocations) if args.allocations.exists() else None)
                 # Persist reservations first. A failed output write can be retried
                 # with fresh paths; it must never leave an unreserved route plan.

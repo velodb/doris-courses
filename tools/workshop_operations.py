@@ -97,10 +97,11 @@ def project(value, config, binding, kernels):
     # The remote projection has no original version strings. Revalidate every
     # field and require all expected checks, rather than trusting ready alone.
     checks = runtime.get("checks", [])
-    required = node.required_checks(kernels)
+    locales = config.get('content', {}).get('available_locales', [])
+    required = node.required_checks(kernels, locales)
     clean = node.probe_projection({"scope": "host-runtime", "course_ref": config["course_ref"],
         "runtime_sha256": binding["runtime_sha256"], "checks": checks, "ready": runtime.get("ready")},
-        config["course_ref"], binding["runtime_sha256"], kernels)
+        config["course_ref"], binding["runtime_sha256"], kernels, locales)
     clean["version_matches"] = runtime.get("version_matches") is True
     clean["ready"] = bool(clean["ready"] and clean["version_matches"] and required.issubset(r["check"] for r in clean["checks"]))
     logs = value.get("logs", {})

@@ -74,6 +74,7 @@ def main(argv=None):
     parser.add_argument("--keyfile", type=Path)
     parser.add_argument("--progress-db", type=Path)
     parser.add_argument("--no-progress", action="store_true")
+    parser.add_argument("--content-root", type=Path, default=Path('/var/lib/doris-workshop/content/tree'))
     args = parser.parse_args(argv)
     # runtime_dir is selected by jupyter_core through this environment variable;
     # it is not a configurable ServerApp trait.
@@ -81,6 +82,13 @@ def main(argv=None):
     from jupyterlab.labapp import LabApp
 
     plan = json.loads(args.runtime_json.read_text())
+    content = None
+    if plan.get('schema_version') == 2:
+        from multilingual import Content, verify_tree
+        verify_tree(args.content_root, plan['content'], full=True, source=args.source)
+        content = Content(plan, args.content_root, args.workspace)
+    elif plan.get('schema_version', 1) != 1 or 'content' in plan or 'capabilities' in plan:
+        raise ValueError('runtime: unsupported version or undeclared capability')
     config = make_config(plan, args.workspace, args.runtime_dir, args.kernel_dir, args.port,
                          base_url=args.base_url, certfile=args.certfile, keyfile=args.keyfile)
     # LabApp.launch_instance drops its kwargs when creating ServerApp. Pass
@@ -102,7 +110,14 @@ def main(argv=None):
     else:
         for name in ('DORIS_WORKSHOP_PROGRESS_DB', 'DORIS_WORKSHOP_PROGRESS_PLAN', 'DORIS_WORKSHOP_PROGRESS_SOURCE'):
             os.environ.pop(name, None)
-    register(server, plan, args.source, progress_db=progress_db)
+    if content:
+        from host import atomic_json
+        private_plan = (progress_db.parent if progress_db else args.workspace.parent / 'progress') / 'runtime-v2.json'
+        atomic_json(private_plan, content.enrich(), 0o600)
+        os.environ.update(DORIS_WORKSHOP_PROGRESS_PLAN=str(private_plan.resolve()),
+                          DORIS_WORKSHOP_PROGRESS_SOURCE=str(args.content_root.resolve()))
+    register(server, plan, args.source, progress_db=progress_db,
+             **({'installed_ui': content.ui(), 'content_adapter': content} if content else {}))
     server.start()
 
 

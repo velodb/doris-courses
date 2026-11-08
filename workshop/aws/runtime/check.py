@@ -56,7 +56,8 @@ def probe_kernel(course, source_root, kernel_dir, *, check_docker=True):
     root = Path(source_root) / course["course_dir"]
     # Start from a nested Notebook directory, as the browser will. The launcher
     # must override that cwd and retain its own interpreter after restart.
-    nested = root / Path(course["notebooks"][0]).parent
+    nested = Path(course.get('_probe_cwd', root / Path(course["notebooks"][0]).parent))
+    nested.mkdir(parents=True, exist_ok=True)
     specs = KernelSpecManager(kernel_dirs=[str(kernel_dir)], ensure_native_kernel=False)
     manager = KernelManager(kernel_name=course["kernel"], kernel_spec_manager=specs)
     client = None
@@ -193,7 +194,8 @@ def course_services():
 
 def collect_checks(plan, *, source=Path("/opt/doris-courses"),
                    workspace=Path("/var/lib/doris-workshop/workspace"),
-                   kernels=Path("/usr/local/share/doris-workshop/jupyter/kernels")):
+                   kernels=Path("/usr/local/share/doris-workshop/jupyter/kernels"),
+                   content_root=Path('/var/lib/doris-workshop/content/tree')):
     checks = []
 
     def check(name, function):
@@ -215,13 +217,34 @@ def collect_checks(plan, *, source=Path("/opt/doris-courses"),
           expected_kernels={course["kernel"] for course in plan["courses"]}))
     check("course-entry", lambda: portal_ready(Path("/run/doris-workshop/token")))
     check("jupyter-widget-frontend", lambda: widget_frontend_ready(Path("/run/doris-workshop/token")))
+    if plan.get('schema_version') == 2:
+        from multilingual import Content
+        for locale in plan['content']['available_locales']:
+            def language_ready(locale=locale):
+                content = Content(plan, content_root, workspace)
+                content.ui().context(explicit=locale)
+                for path in content.notebooks:
+                    _, actual = content.resolve(path, 'notebook', locale)
+                    if actual != locale:
+                        return False
+                content.enrich()
+                return True
+            check('content:' + locale, language_ready)
     for course in plan["courses"]:
         def copies_valid():
+            if plan.get('schema_version') == 2:
+                from multilingual import Content
+                content = Content(plan, content_root, workspace)
+                return all(content.resolve(course['course_dir'] + '/' + p, 'notebook', tag)[1] == tag
+                           for p in course['notebooks'] for tag in content.links)
             return all(json.loads((workspace / course["course_dir"] / path).read_text())["metadata"]["kernelspec"]["name"] == course["kernel"]
                        for path in course["notebooks"])
         check(course["kernel"] + ":notebook-bindings", copies_valid)
+        probe = dict(course)
+        if plan.get('schema_version') == 2:
+            probe['_probe_cwd'] = workspace / 'work' / plan['content']['default_locale'] / course['course_dir'] / Path(course['notebooks'][0]).parent
         check(course["kernel"] + ":interpreter-imports-cwd-restart-docker",
-              lambda: len(probe_kernel(course, source, kernels)) == 2)
+              lambda: len(probe_kernel(probe, source, kernels)) == 2)
     return checks
 
 

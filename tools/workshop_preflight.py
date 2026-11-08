@@ -142,6 +142,19 @@ def validate_inputs(config, pilot, now=None):
     runtime = wc.load_document(bundle / 'runtime.json')
     require(isinstance(runtime, dict) and runtime.get('kind') == 'doris-workshop-runtime',
             'runtime: build a real host runtime bundle')
+    require(type(runtime.get('schema_version')) is int and runtime['schema_version'] == config['schema_version'],
+            'runtime: config/runtime versions differ')
+    multilingual = set()
+    if config['schema_version'] == 2:
+        from workshop_content import consumer
+        try:
+            consumer.validate_plan(runtime)
+        except (ValueError, KeyError, TypeError) as error:
+            raise wc.ConfigError('runtime: incompatible multilingual capability') from error
+        require(runtime['content'] == config['content'], 'runtime: content binding changed; explicit update required')
+        multilingual = {'multilingual.py', 'teaching.tar.gz'}
+    else:
+        require('content' not in runtime and 'capabilities' not in runtime, 'runtime: v1 cannot declare multilingual capability')
     require(runtime.get('course_ref') == config['course_ref'], 'runtime: course SHA must match config')
     require(sorted(p for c in runtime['courses'] for p in c['profiles']) == config['course_profiles'],
             'runtime: profiles must match config')
@@ -160,7 +173,7 @@ def validate_inputs(config, pilot, now=None):
     operations = {'operations.py'} if 'operations.py' in runtime['sha256'] else set()
     ui = {'ui.tar'} if 'ui.tar' in runtime['sha256'] else set()
     require({'install_host.sh', 'source.tar', 'host.py', 'check.py', 'kernel.py', 'serve.py', 'portal.py',
-             'packages.json', 'doris-workshop-jupyter.service'} | operations | ui | set(locks.values()) == runtime['sha256'].keys(),
+             'packages.json', 'doris-workshop-jupyter.service'} | operations | ui | multilingual | set(locks.values()) == runtime['sha256'].keys(),
             'runtime: incomplete production bundle')
     if config['image']['mode'] == 'prebuilt':
         require(file_hash(bundle / 'runtime.json') == release['runtime_sha256'], 'image: local runtime does not match the released image')
@@ -589,6 +602,9 @@ def tool_hash():
     paths = [Path(__file__), Path(wc.__file__), SPEC / 'config.schema.json',
              SPEC / 'pilot.schema.json', SPEC / 'profiles.json', SPEC / 'image-release.schema.json',
              Path(__file__).with_name('workshop_release.py'), SPEC / 'runtime/start_image.py']
+    paths.extend(SPEC / name for name in ('config.v2.schema.json', 'manifest.v2.schema.json', 'profiles.v2.json',
+                                        'content-binding.schema.json', 'image-release.v2.schema.json', 'runtime/multilingual.py'))
+    paths.append(Path(__file__).with_name('workshop_content.py'))
     paths.extend(Path(__file__).with_name(name) for name in ('workshop_access.py', 'workshop_routing.py', 'workshop_batch.py', 'workshop_cleanup.py', 'workshop_scan.py', 'workshop_ttl.py', 'workshop_shared_preflight.py', 'workshop_shared_cleanup.py', 'workshop_gateway_deploy.py', 'workshop_bindings_create.py', 'workshop_bindings_review.py', 'workshop_bindings_update.py', 'workshop_portal_install.py', 'workshop_portal_update.py', 'workshop.py'))
     paths.extend(SPEC / 'access' / name for name in ('gateway.py', 'portal.py', 'jupyter_gateway.py', 'requirements.txt',
                  'doris-workshop-gateway.service', 'install_gateway.sh', 'doris-workshop-portal.service', 'install_portal.sh',

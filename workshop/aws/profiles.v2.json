@@ -1,0 +1,22 @@
+{
+  "schema_version": 2,
+  "runtime": {
+    "os": "linux",
+    "architecture": "x86_64",
+    "python_version": "3.12",
+    "repository_root": "/opt/doris-courses"
+  },
+  "profiles": {
+    "rta-module-1": {
+      "course_dir": "doris-course/01-real-time-analytics",
+      "kernel": "doris-rta",
+      "requires": [],
+      "conflicts": [],
+      "module_ids": [
+        "module-1"
+      ],
+      "optional_paths": [],
+      "requires_browser_host": false
+    }
+  }
+}

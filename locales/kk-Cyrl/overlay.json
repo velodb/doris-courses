@@ -665,6 +665,36 @@
       }
     },
     {
+      "unit_id": "u.0ebf6ca7338f4714a891b68e8de6cf78",
+      "source_hash": "1c09e42f0cf14cbab5e9de85b48efb2e018b6f6c7d69275155fb9ce0148ee13f",
+      "target_text": "Сақталған Notebook файлын жүктеп алу",
+      "target_hash": "ef220c374865efc977931d697738fd9c1246d738810b9fa6cc8e18edaca0185b",
+      "state": "llm_checked",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml05-workshop",
+        "batch_id": "ml05-notebook-ui",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / GPT-6 family / ML-05",
+          "record": "Separate source/target comparison: checked saving before download/reload, one saved copy per language, open notebook/kernel preservation and shared services/files with separate Python memory. JupyterLab File → Save Notebook is retained as the actual product command. No native human review.",
+          "source_hash": "1c09e42f0cf14cbab5e9de85b48efb2e018b6f6c7d69275155fb9ce0148ee13f",
+          "target_hash": "ef220c374865efc977931d697738fd9c1246d738810b9fa6cc8e18edaca0185b"
+        },
+        "technical_admission": {
+          "method": "technical-validator",
+          "actor": "ML-05 message/producer tests",
+          "record": "Typed message contract, stable source/target hashes, safe text and complete release admission.",
+          "source_hash": "1c09e42f0cf14cbab5e9de85b48efb2e018b6f6c7d69275155fb9ce0148ee13f",
+          "target_hash": "ef220c374865efc977931d697738fd9c1246d738810b9fa6cc8e18edaca0185b"
+        },
+        "native_review": null
+      }
+    },
+    {
       "unit_id": "u.0ee57ea261da468597f4b414cd6a61cd",
       "source_hash": "184b74d81f6b4bd922e817b02e6a494c62b4f738ef919cfce3b8bfdf70de1eac",
       "target_text": "Өнімділік пен ақауға төзімділікті қамтамасыз ету",
@@ -2405,6 +2435,36 @@
       }
     },
     {
+      "unit_id": "u.3988d0893a8b42cba80eccece8b74b31",
+      "source_hash": "bd63e26750f2a90fe310fa75d66893f7b1e8683b3b3442400b3445350f33c31c",
+      "target_text": "Әр тілдің жеке сақталған көшірмесі бар. Жүктеп алу не қайта ашу алдында JupyterLab ішіндегі File → Save Notebook пәрменін қолданыңыз. Басқа тілдегі көшірмеге оралу үшін оны осы жерден ашыңыз; ағымдағы Notebook пен kernel ашық қалады. Kernel-дер бір Lab қызметтері мен файлдарын пайдаланады, ал Python жады әрқайсысында бөлек.",
+      "target_hash": "5e47d58a8ebee15d3795a26da933037d2a8db2550c9487d8d3b18d51fb583672",
+      "state": "llm_checked",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml05-workshop",
+        "batch_id": "ml05-notebook-ui",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / GPT-6 family / ML-05",
+          "record": "Separate source/target comparison: checked saving before download/reload, one saved copy per language, open notebook/kernel preservation and shared services/files with separate Python memory. JupyterLab File → Save Notebook is retained as the actual product command. No native human review.",
+          "source_hash": "bd63e26750f2a90fe310fa75d66893f7b1e8683b3b3442400b3445350f33c31c",
+          "target_hash": "5e47d58a8ebee15d3795a26da933037d2a8db2550c9487d8d3b18d51fb583672"
+        },
+        "technical_admission": {
+          "method": "technical-validator",
+          "actor": "ML-05 message/producer tests",
+          "record": "Typed message contract, stable source/target hashes, safe text and complete release admission.",
+          "source_hash": "bd63e26750f2a90fe310fa75d66893f7b1e8683b3b3442400b3445350f33c31c",
+          "target_hash": "5e47d58a8ebee15d3795a26da933037d2a8db2550c9487d8d3b18d51fb583672"
+        },
+        "native_review": null
+      }
+    },
+    {
       "unit_id": "u.3a4ca3aab38c4ccda80bdf3caccc3a0a",
       "source_hash": "b34ec331584c2c2870d47dab6a71fd3ca3015ab5fc11780871374d53580e4f72",
       "target_text": "## 5. Алғашқы Doris ішкі кестесін құру\n\nІшкі кесте деректерін BE сақтау орнында сақтайды. Бір BE бар осы сынақ ортасы үшін баған атауларын, дерек типтерін, NULL мәніне рұқсатты және бір репликаны анықтаңыз. Кейін Doris қайтарған кесте анықтамасын зерттеңіз.",
@@ -4140,6 +4200,36 @@
           "record": "Exact unit/source/target hashes, complete 356-unit profile coverage, protected code/URLs/anchors/placeholders, safe Markdown and the complete 226-message typed contract checked. Remaining numeric additions are only BE 01/02/03 labels transcribed from the frozen images.",
           "source_hash": "a4fe65264ef7dbb38d104b1e81eb3350f3142f3d16f32bdec39b1d9b42c1b8d1",
           "target_hash": "6a556f525b7e6daa908f719731fce8b073ae926315f04c73f367a6997e2d5827"
+        },
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.60c99abbe1e0457faf53e6c8dbad31c2",
+      "source_hash": "d4566e8c4e579cec11fa832fc8431375ec19f262be5978902685259ad853ce9d",
+      "target_text": "Notebook жұмыс көшірмесі",
+      "target_hash": "c584d0bedc34868a491c24c937aba0d30952f1b5dfdad55984c5955778d95efe",
+      "state": "llm_checked",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml05-workshop",
+        "batch_id": "ml05-notebook-ui",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / GPT-6 family / ML-05",
+          "record": "Separate source/target comparison: checked saving before download/reload, one saved copy per language, open notebook/kernel preservation and shared services/files with separate Python memory. JupyterLab File → Save Notebook is retained as the actual product command. No native human review.",
+          "source_hash": "d4566e8c4e579cec11fa832fc8431375ec19f262be5978902685259ad853ce9d",
+          "target_hash": "c584d0bedc34868a491c24c937aba0d30952f1b5dfdad55984c5955778d95efe"
+        },
+        "technical_admission": {
+          "method": "technical-validator",
+          "actor": "ML-05 message/producer tests",
+          "record": "Typed message contract, stable source/target hashes, safe text and complete release admission.",
+          "source_hash": "d4566e8c4e579cec11fa832fc8431375ec19f262be5978902685259ad853ce9d",
+          "target_hash": "c584d0bedc34868a491c24c937aba0d30952f1b5dfdad55984c5955778d95efe"
         },
         "native_review": null
       }
@@ -6810,6 +6900,36 @@
           "record": "Exact unit/source/target hashes, complete 356-unit profile coverage, protected code/URLs/anchors/placeholders, safe Markdown and the complete 226-message typed contract checked. Remaining numeric additions are only BE 01/02/03 labels transcribed from the frozen images.",
           "source_hash": "3adee60b233635b88b8c06e298e09126880a7bff3cbaeda68eb9850094a23db4",
           "target_hash": "353ca39a72780db65b56a58cde1132fdb2f2b3b65c744b76e18755fe71c67dd7"
+        },
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9cbd3319d52a4ae5884748e2604c5140",
+      "source_hash": "e31746823d611546f2f4207ccc7eafc69a68703f4841cc02af99a291c795b42e",
+      "target_text": "Осы көшірменің сілтемелерін жаңарту",
+      "target_hash": "b4142814d5c44b5e0510aec310c0c900ef225b755f9982d7d6830e21cee49236",
+      "state": "llm_checked",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml05-workshop",
+        "batch_id": "ml05-notebook-ui",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / GPT-6 family / ML-05",
+          "record": "Separate source/target comparison: checked saving before download/reload, one saved copy per language, open notebook/kernel preservation and shared services/files with separate Python memory. JupyterLab File → Save Notebook is retained as the actual product command. No native human review.",
+          "source_hash": "e31746823d611546f2f4207ccc7eafc69a68703f4841cc02af99a291c795b42e",
+          "target_hash": "b4142814d5c44b5e0510aec310c0c900ef225b755f9982d7d6830e21cee49236"
+        },
+        "technical_admission": {
+          "method": "technical-validator",
+          "actor": "ML-05 message/producer tests",
+          "record": "Typed message contract, stable source/target hashes, safe text and complete release admission.",
+          "source_hash": "e31746823d611546f2f4207ccc7eafc69a68703f4841cc02af99a291c795b42e",
+          "target_hash": "b4142814d5c44b5e0510aec310c0c900ef225b755f9982d7d6830e21cee49236"
         },
         "native_review": null
       }
@@ -9810,6 +9930,36 @@
           "record": "Exact unit/source/target hashes, complete 356-unit profile coverage, protected code/URLs/anchors/placeholders, safe Markdown and the complete 226-message typed contract checked. Remaining numeric additions are only BE 01/02/03 labels transcribed from the frozen images.",
           "source_hash": "c7c16d691fc0f8b84f5942276d162d1f6e5da0349a62c3bc0f2de3fa6a7e0110",
           "target_hash": "e97cfa862a1eda98bb580ed655310ba634e9a84711c08a1d547e4b5d3581e20f"
+        },
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e524e66b29eb4c76b4cdc0e59beb1c46",
+      "source_hash": "c557cc4c2d75163217f6ea180bf0fbc9d56983875381aa237fb693911623c20e",
+      "target_text": "Сақталған жұмыс көшірмесін ашу ↗",
+      "target_hash": "a2c52e3c649df286ebc64893727b079861c4326c79755ae17a5bcea3d95505b7",
+      "state": "llm_checked",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml05-workshop",
+        "batch_id": "ml05-notebook-ui",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / GPT-6 family / ML-05",
+          "record": "Separate source/target comparison: checked saving before download/reload, one saved copy per language, open notebook/kernel preservation and shared services/files with separate Python memory. JupyterLab File → Save Notebook is retained as the actual product command. No native human review.",
+          "source_hash": "c557cc4c2d75163217f6ea180bf0fbc9d56983875381aa237fb693911623c20e",
+          "target_hash": "a2c52e3c649df286ebc64893727b079861c4326c79755ae17a5bcea3d95505b7"
+        },
+        "technical_admission": {
+          "method": "technical-validator",
+          "actor": "ML-05 message/producer tests",
+          "record": "Typed message contract, stable source/target hashes, safe text and complete release admission.",
+          "source_hash": "c557cc4c2d75163217f6ea180bf0fbc9d56983875381aa237fb693911623c20e",
+          "target_hash": "a2c52e3c649df286ebc64893727b079861c4326c79755ae17a5bcea3d95505b7"
         },
         "native_review": null
       }

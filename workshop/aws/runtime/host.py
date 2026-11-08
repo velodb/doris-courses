@@ -40,6 +40,7 @@ class Layout:
         self.kernels = root / "usr/local/share/doris-workshop/jupyter/kernels"
         self.state = root / "var/lib/doris-workshop"
         self.workspace = self.state / "workspace"
+        self.content = self.state / "content/tree"
         self.home = self.state / "home"
         self.config = root / "etc/doris-workshop"
         self.units = root / "etc/systemd/system"
@@ -78,7 +79,7 @@ def relative_path(value):
 def verify_bundle(bundle):
     bundle = Path(bundle)
     plan = json.loads((bundle / "runtime.json").read_text())
-    if not isinstance(plan, dict) or type(plan.get("schema_version")) is not int or plan.get("schema_version") != 1 or plan.get("kind") != "doris-workshop-runtime":
+    if not isinstance(plan, dict) or type(plan.get("schema_version")) is not int or plan.get("schema_version") not in (1, 2) or plan.get("kind") != "doris-workshop-runtime":
         raise RuntimeErrorDetail("bundle: unsupported runtime format")
     if not re.fullmatch(r"[0-9a-f]{40}", plan.get("course_ref", "")):
         raise RuntimeErrorDetail("bundle: invalid course commit")
@@ -89,11 +90,20 @@ def verify_bundle(bundle):
     if not isinstance(locks, dict) or (locks and (set(locks) != expected_locks or
                   any(path != name + ".requirements.lock" for name, path in locks.items()))):
         raise RuntimeErrorDetail("bundle: invalid Python lock mapping")
-    if not isinstance(plan.get("sha256"), dict) or set(plan["sha256"]) != PAYLOAD | set(locks.values()):
+    extra = {'multilingual.py', 'teaching.tar.gz'} if plan['schema_version'] == 2 else set()
+    if not isinstance(plan.get("sha256"), dict) or set(plan["sha256"]) != PAYLOAD | set(locks.values()) | extra:
         raise RuntimeErrorDetail("bundle: incomplete payload hashes")
     for name, checksum in plan["sha256"].items():
         if (bundle / name).is_symlink() or digest(bundle / name) != checksum:
             raise RuntimeErrorDetail("bundle: payload checksum mismatch")
+    if plan['schema_version'] == 2:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('admitted_multilingual', bundle / 'multilingual.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        adapter.validate_plan(plan)
+    elif 'content' in plan or 'capabilities' in plan:
+        raise RuntimeErrorDetail('bundle: v1 cannot declare multilingual capabilities')
     courses = plan.get("courses")
     if not isinstance(courses, list) or not courses:
         raise RuntimeErrorDetail("bundle: no selected courses")
@@ -196,7 +206,7 @@ def materialize(plan, files, layout):
     }
     if not set(selected).issubset(files):
         raise RuntimeErrorDetail("source: a selected Notebook is missing from the archive")
-    for name in files:
+    for name in ([] if plan['schema_version'] == 2 else files):
         relative_path(name)
         source = layout.source / name
         target = layout.workspace / name
@@ -229,7 +239,23 @@ def materialize(plan, files, layout):
             "env": {"PYTHONNOUSERSITE": "1", "VIRTUAL_ENV": str(root / ".venv"),
                     "PATH": str(root / ".venv/bin") + ":/usr/local/bin:/usr/bin:/bin"},
         }
+        if plan['schema_version'] == 2:
+            spec['env'].update(DORIS_WORKSHOP_CONTENT_ROOT=str(layout.content),
+                DORIS_WORKSHOP_WORKSPACE=str(layout.workspace), DORIS_WORKSHOP_SHARED_SOURCE=str(layout.source),
+                DORIS_WORKSHOP_RUNTIME_PLAN=str(layout.config / 'runtime.json'))
         atomic_json(spec_dir / "kernel.json", spec, 0o644)
+    layout.workspace.mkdir(parents=True, exist_ok=True)
+
+
+def install_content(bundle, plan, layout):
+    if plan['schema_version'] == 2:
+        # The payload hash is verified before importing this helper.
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('install_multilingual', Path(bundle) / 'multilingual.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        adapter.validate_plan(plan)
+        adapter.unpack(Path(bundle) / 'teaching.tar.gz', layout.content, plan['content'])
 
 
 def learner_user(layout):
@@ -277,6 +303,7 @@ def install(bundle):
     if receipt["bundle_sha256"] != fingerprint:
         raise RuntimeErrorDetail("install: runtime bundle differs; rebuild on a fresh instance")
     files = install_source(bundle, plan, layout)
+    install_content(bundle, plan, layout)
     chown_tree(layout.source, user)
     user_config = layout.home / "jupyter-config"
     user_config.mkdir(parents=True, exist_ok=True)
@@ -321,7 +348,7 @@ def install(bundle):
         atomic_json(receipt_path, receipt)
     layout.helpers.mkdir(parents=True, exist_ok=True)
     layout.helpers.chmod(0o755)
-    for name in ("host.py", "kernel.py", "check.py", "serve.py", "portal.py", "operations.py"):
+    for name in ("host.py", "kernel.py", "check.py", "serve.py", "portal.py", "operations.py", *(['multilingual.py'] if plan['schema_version'] == 2 else [])):
         shutil.copyfile(Path(bundle) / name, layout.helpers / name)
         (layout.helpers / name).chmod(0o644)
     install_ui(bundle, layout)

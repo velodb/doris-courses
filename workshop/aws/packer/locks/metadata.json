@@ -9,5 +9,11 @@
     "doris-course/01-real-time-analytics/pyproject.toml": "feb27413286f606b0cd72c0709dfd18e645f422568860c752bb17b5c5e13a052",
     "doris-course/01-real-time-analytics/requirements.txt": "aed165f19236b27b0701aa66d8d39667acdd7ea65e3e556796953d350e49c56f",
     "doris-course/common/pyproject.toml": "d7057c069e13a45a9609a1309c4d91e1e526f6a3a51b0562a6730f7499f7f1e0"
-  }
+  },
+  "compatible_source_sha256": {
+    "doris-course/common/pyproject.toml": [
+      "337832ab1eb1d4802e457e20e240333a5964b5d5c80d11d979823d9e32c14344"
+    ]
+  },
+  "compatibility_note": "Reviewed ML-03 package-data mapping for the two local UI JSON resources only; project dependencies and build requirements are unchanged. Existing lock hashes remain exact."
 }

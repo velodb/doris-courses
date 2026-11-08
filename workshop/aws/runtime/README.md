@@ -236,3 +236,5 @@ needed for these live local tests.
 Installation details follow the [official Docker Ubuntu instructions](https://docs.docker.com/engine/install/ubuntu/).
 Kernel registration follows the [Jupyter client kernelspec contract](https://jupyter-client.readthedocs.io/en/stable/kernels.html),
 and server controls use the [Jupyter Server configuration API](https://jupyter-server.readthedocs.io/en/stable/other/full-config.html).
+
+For the explicitly versioned English/Kazakh Module 1 installation, see [multilingual runtime](multilingual.md).

@@ -63,9 +63,17 @@ def course_selection(config, *, repo=config_tool.REPO):
     return list(courses.values())
 
 
-def create_bundle(config_path, output, *, repo=config_tool.REPO):
+def create_bundle(config_path, output, *, repo=config_tool.REPO, content_package=None):
     config, _, runtime = config_tool.validate_config(config_tool.load_document(config_path), repo=repo)
     courses = course_selection(config, repo=repo)
+    content = None
+    if config['schema_version'] == 2:
+        import workshop_content
+        if content_package is None:
+            raise config_tool.ConfigError('content: v2 requires --content-package with the complete admitted release')
+        content = workshop_content.admit(content_package, config)
+    elif content_package is not None:
+        raise config_tool.ConfigError('content: v1 bundles cannot acquire multilingual capabilities')
     output = Path(output).absolute()
     if output.exists() or output.is_symlink():
         raise config_tool.ConfigError("output: already exists; choose a new bundle directory")
@@ -86,14 +94,20 @@ def create_bundle(config_path, output, *, repo=config_tool.REPO):
         if result.returncode:
             raise config_tool.ConfigError("course_ref: cannot export pinned source")
         plan = {
-            "schema_version": 1, "kind": "doris-workshop-runtime",
+            "schema_version": config['schema_version'], "kind": "doris-workshop-runtime",
             "course_ref": config["course_ref"], "runtime": runtime,
             "courses": courses,
             "sha256": {},
             "learning_progress": "doris-course/common/doris_labkit/progress.py" in
                 config_tool.git(repo, "ls-tree", "-r", "--name-only", config["course_ref"]).splitlines(),
         }
-        for name in (*PAYLOAD, "source.tar"):
+        payload = list(PAYLOAD) + ['source.tar']
+        if content is not None:
+            shutil.copyfile(Path(content_package) / 'teaching.tar.gz', temporary / 'teaching.tar.gz')
+            shutil.copyfile(RUNTIME / 'multilingual.py', temporary / 'multilingual.py')
+            plan.update(content=content, capabilities=workshop_content.consumer.CAPABILITIES)
+            payload.extend(['teaching.tar.gz', 'multilingual.py'])
+        for name in payload:
             with (temporary / name).open("rb") as stream:
                 plan["sha256"][name] = hashlib.file_digest(stream, "sha256").hexdigest()
         (temporary / "runtime.json").write_text(json.dumps(plan, indent=2, sort_keys=True) + "\n")
@@ -109,9 +123,10 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--content-package", type=Path)
     args = parser.parse_args(argv)
     try:
-        plan = create_bundle(args.config, args.output)
+        plan = create_bundle(args.config, args.output, content_package=args.content_package)
         print(f"Runtime bundle written for {len(plan['courses'])} courses; nothing installed or deployed.")
         return 0
     except (config_tool.ConfigError, OSError) as exc:

@@ -25,6 +25,14 @@ OBS_PROFILES = {'obs-main', 'obs-local-model'}
 
 def image_selection(config):
     profiles = set(config['course_profiles'])
+    if config.get('schema_version', 1) == 2 and profiles == {'rta-module-1'}:
+        catalog = wc.load_document(SPEC / 'images.json')
+        return 'doris-rta', {'schema_version': 2, 'profiles': ['rta-module-1'],
+            'images': [i for i in catalog['images'] if i['tag'].startswith('apache/doris:')],
+            'online_dependencies': [
+                'Module 1 reads its public events Parquet dataset from S3.',
+                'SSM and administration need AWS endpoints; a new image build needs APT and PyPI.',
+                'Both admitted languages are installed before readiness; no online translation is used.']}
     if profiles == {'rta-main'}:
         return 'doris-rta', wc.load_document(SPEC / 'images.json')
     dw = 'dw-main' in profiles and profiles <= DW_PROFILES
@@ -65,7 +73,7 @@ def write(path, value):
     wc.write_manifest(path, json.loads(json.dumps(value, default=timestamp_value)))
 
 
-def prepare(config_path, output):
+def prepare(config_path, output, *, content_package=None):
     config, _, _ = wc.validate_config(wc.load_document(config_path))
     kernel, images = image_selection(config)
     preflight.require(config['image']['mode'] == 'base' and config['image']['owner_account_id'] == preflight.CANONICAL,
@@ -75,10 +83,11 @@ def prepare(config_path, output):
     metadata = wc.load_document(SPEC / 'locks' / metadata_name)
     for name, expected in metadata['source_sha256'].items():
         actual = hashlib.sha256(subprocess.check_output(['git', 'show', f"{config['course_ref']}:{name}"])).hexdigest()
-        preflight.require(actual == expected, 'image: course dependency inputs changed; regenerate and review locks')
+        preflight.require(actual == expected or actual in metadata.get('compatible_source_sha256', {}).get(name, []),
+                          'image: course dependency inputs changed; regenerate and review locks')
     preflight.require(checksum(runtime.RUNTIME / 'packages.json') == metadata['packages_sha256'],
                       'image: runtime package inputs changed; regenerate locks')
-    plan = runtime.create_bundle(config_path, output)
+    plan = runtime.create_bundle(config_path, output, content_package=content_package)
     plan['python_locks'] = {}
     for name in ('server', kernel):
         filename = name + '.requirements.lock'
@@ -109,7 +118,7 @@ def prepare(config_path, output):
     for name in ('image_host.py', 'seal.sh'):
         shutil.copyfile(SPEC / name, output / name)
     image_input = {
-        'schema_version': 1, 'kind': 'doris-workshop-image-input',
+        'schema_version': config.get('schema_version', 1), 'kind': 'doris-workshop-image-input',
         'base_ami': config['image'], 'course_ref': config['course_ref'],
         'deployment_ref': wc.git(wc.REPO, 'rev-parse', 'HEAD').strip(),
         'deployment_dirty': deployment_dirty(),
@@ -117,6 +126,8 @@ def prepare(config_path, output):
         'images': images, 'payload_sha256': {name: checksum(output / name) for name in ('image_host.py', 'seal.sh')},
         'online_dependencies': images['online_dependencies'],
     }
+    if config.get('schema_version', 1) == 2:
+        image_input['content'] = config['content']
     (output / 'image-input.json').write_text(json.dumps(image_input, indent=2, sort_keys=True) + '\n')
     return image_input
 
@@ -495,6 +506,7 @@ def main():
     make = subs.add_parser('prepare')
     make.add_argument('--config', type=Path, required=True)
     make.add_argument('--output', type=Path, required=True)
+    make.add_argument('--content-package', type=Path)
     build = subs.add_parser('provision')
     build.add_argument('--run-dir', type=Path, required=True)
     planned = subs.add_parser('plan')
@@ -512,7 +524,7 @@ def main():
     args = parser.parse_args()
     try:
         if args.command == 'prepare':
-            prepare(args.config, args.output.absolute())
+            prepare(args.config, args.output.absolute(), content_package=args.content_package)
             print('Fixed image inputs prepared locally; no AWS resources created.')
         elif args.command == 'plan':
             plan_build(args.config, args.settings, args.run_dir, args.build_id)

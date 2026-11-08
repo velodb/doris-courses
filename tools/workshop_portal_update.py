@@ -10,6 +10,7 @@ import re
 import sys
 import tempfile
 import time
+import zlib
 from urllib.parse import urlsplit
 
 import workshop as lifecycle
@@ -105,6 +106,8 @@ def verify(controller, bindings_run, current_route, route, identity, subjects, p
     else:
         activities = {**previous["activities"], c["event_id"]: activity}
     next_registry = {**previous, "activities": activities}
+    if any('ui_snapshot' in a for a in activities.values()):
+        next_registry['schema_version'] = 2
     validate_config(next_registry)
     controller.save()
     return portal["instance_id"], next_registry
@@ -113,13 +116,19 @@ def verify(controller, bindings_run, current_route, route, identity, subjects, p
 def remote_commands(old_bytes, new_bytes):
     old_hash = hashlib.sha256(old_bytes).hexdigest()
     new_hash = hashlib.sha256(new_bytes).hexdigest()
-    encoded = base64.b64encode(new_bytes).decode()
+    try:
+        compressed = json.loads(new_bytes).get('schema_version') == 2
+    except (ValueError, AttributeError):
+        compressed = False
+    require(len(new_bytes) <= 1024 * 1024, 'registry exceeds its decoded size bound')
+    encoded = base64.b64encode(zlib.compress(new_bytes) if compressed else new_bytes).decode()
     portal_hash = pf.file_hash(access.OVERLAY / "portal.py")
     gateway_hash = pf.file_hash(access.OVERLAY / "gateway.py")
-    code = """import base64,fcntl,grp,hashlib,os,pathlib,subprocess,tempfile,time,urllib.request
+    code = """import base64,fcntl,grp,hashlib,os,pathlib,subprocess,tempfile,time,urllib.request,zlib
 old_hash=OLD_HASH
 new_hash=NEW_HASH
 payload=base64.b64decode(PAYLOAD,validate=True)
+if COMPRESSED: payload=zlib.decompress(payload)
 assert hashlib.sha256(payload).hexdigest()==new_hash
 path=pathlib.Path('/etc/doris-workshop-portal/portal.json')
 with open('/run/lock/doris-workshop-portal-registry.lock','a') as lock:
@@ -145,7 +154,7 @@ with open('/run/lock/doris-workshop-portal-registry.lock','a') as lock:
   print('portal-update-ready')
  finally:
   if os.path.exists(name): os.unlink(name)
-""".replace("OLD_HASH", repr(old_hash)).replace("NEW_HASH", repr(new_hash)).replace("PORTAL_HASH", repr(portal_hash)).replace("GATEWAY_HASH", repr(gateway_hash)).replace("PAYLOAD", repr(encoded))
+""".replace("OLD_HASH", repr(old_hash)).replace("NEW_HASH", repr(new_hash)).replace("PORTAL_HASH", repr(portal_hash)).replace("GATEWAY_HASH", repr(gateway_hash)).replace("COMPRESSED", repr(compressed)).replace("PAYLOAD", repr(encoded))
     commands = ["set -eu", "umask 077", "python3.12 - <<'PY'\n" + code + "\nPY"]
     require(len(json.dumps(commands)) < 24000, "registry exceeds the bounded SSM payload")
     return commands, old_hash, new_hash

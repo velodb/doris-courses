@@ -36,7 +36,11 @@ def verify_route(controller, route):
     ledger = route["routing_allocations"]
     allocation = ledger["events"][config["event_id"]]
     regenerated = access.routes(config, shared, variables["learners"], priority_base=allocation["priority_base"],
-                                priority_limit=allocation["priority_limit"], previous=ledger)
+                                priority_limit=allocation["priority_limit"], previous=ledger,
+                                runtime_bundle=controller.pilot.get('runtime_bundle_dir'))
+    if config.get('schema_version', 1) == 2:
+        require(route.get('schema_version') == 2 and route.get('content') == regenerated['content'] and
+                route.get('ui_snapshot') == regenerated['ui_snapshot'], 'entry content differs from the bound runtime')
     require(regenerated["terraform"] == variables and regenerated["routing_allocations"] == ledger,
             "routes differ from fixed service generation and ledger")
     return variables

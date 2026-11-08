@@ -37,3 +37,5 @@ Build a private bilingual teaching package using the producer documented in
 The teaching tree contains source courses and answers; use its answer-free
 public projection for public Quiz delivery. Workshop installation and website
 integration follow their separate consumer workflows.
+
+ML-05 adds five checked Notebook working-copy UI messages. Their incremental provenance is in `revision.json`; the original 356 translation records remain unchanged. The pilot now requires 361 units and the UI corpus has 231 messages. Native human review remains unperformed.

@@ -283,6 +283,8 @@ class Controller:
                 checks = report["checks"]
                 required = {"target-platform", "learner-identity", "source-version", "jupyter-systemd",
                             "jupyter-authenticated-loopback", "course-entry", "docker-daemon-and-permission", "compose"}
+                if self.config['schema_version'] == 2:
+                    required.update('content:' + locale for locale in self.config['content']['available_locales'])
                 for course in wc.load_document(Path(self.pilot["runtime_bundle_dir"]) / "runtime.json")["courses"]:
                     required.update({course["kernel"] + ":interpreter-imports-cwd-restart-docker",
                                      course["kernel"] + ":notebook-bindings"})

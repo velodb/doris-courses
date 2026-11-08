@@ -26,7 +26,7 @@ def require(condition, message):
         raise wc.ConfigError("gateway deployment: " + message)
 
 
-def payload(plan, config, learner, *, assets=False):
+def payload(plan, config, learner, *, assets=False, languages=False):
     """Pack only checked-in installer files and the validated learner config."""
     files = {}
     for name in access.OVERLAY_FILES:
@@ -42,7 +42,9 @@ def payload(plan, config, learner, *, assets=False):
                 for key, value in values.items()), "unsafe environment value")
     files["browser.env"] = "".join(f"{k}={v}\n" for k, v in sorted(values.items())).encode()
     recovery_assets = {'session_recovery.js', 'session_recovery.css', 'i18n.py', 'workshop_messages.py', 'ui.en.json', 'ui.contract.json', 'locale-registry.json'}
-    files = {name: data for name, data in files.items() if (name in recovery_assets) == assets}
+    language_files = {'gateway.json'} if config['schema_version'] == 2 else set()
+    files = {name: data for name, data in files.items() if
+             (name in language_files if languages else name not in language_files and (name in recovery_assets) == assets)}
     archive = io.BytesIO()
     with tarfile.open(fileobj=archive, mode="w") as tar:
         for name, data in sorted(files.items()):
@@ -66,7 +68,7 @@ def payload(plan, config, learner, *, assets=False):
         " for m in t.getmembers():\n"
         "  assert m.isfile() and m.size<100000\n"
         "  (p/m.name).write_bytes(t.extractfile(m).read())\nPY")
-    commands.extend(["printf 'gateway-assets-ready\\n'"] if assets else [
+    commands.extend(["printf 'gateway-languages-ready\\n'"] if languages else ["printf 'gateway-assets-ready\\n'"] if assets else [
         'bash "$gateway_stage/install_gateway.sh" "$gateway_stage" "$gateway_stage/gateway.json" '
         '"$gateway_stage/browser-urls.json" "$gateway_stage/browser.env"',
         "systemctl is-active --quiet doris-workshop-gateway.service",
@@ -79,6 +81,11 @@ def payload(plan, config, learner, *, assets=False):
 def verify_assignments(controller, plan, identity, subjects):
     shared = controller.binding.get("shared_access")
     config = controller.config
+    if config.get('schema_version', 1) == 2:
+        from workshop_content import ui_from_bundle
+        require(plan.get('schema_version') == 2 and plan.get('content') == config['content'] and
+                plan.get('ui_snapshot') == ui_from_bundle(controller.pilot['runtime_bundle_dir'], config['content']),
+                'entry messages differ from the bound complete runtime')
     require(controller.binding.get("tool_sha256") == pf.tool_hash(),
             "gateway source changed since the reviewed pilot plan")
     require(isinstance(shared, dict) and plan.get("event_id") == config["event_id"] and
@@ -141,20 +148,24 @@ def install(controller, plan, identity, subjects, *, learner=None, timeout=900, 
     results = {}
     for who in selected:
         instance = instances[who]
+        languages_reused = True
+        if configs[who]['schema_version'] == 2:
+            languages_reused = install_step(controller, plan, configs[who], who, instance, assets=False, languages=True,
+                deadline=deadline, retry_failed=retry_failed, clock=clock, sleep=sleep)
         asset_reused = install_step(controller, plan, configs[who], who, instance, assets=True,
             deadline=deadline, retry_failed=retry_failed, clock=clock, sleep=sleep)
         reused = install_step(controller, plan, configs[who], who, instance, assets=False,
             deadline=deadline, retry_failed=retry_failed, clock=clock, sleep=sleep)
-        results[who] = {"instance_id": instance, "status": "Success", "reused": reused and asset_reused}
+        results[who] = {"instance_id": instance, "status": "Success", "reused": reused and asset_reused and languages_reused}
     return {"event_id": controller.config["event_id"], "gateways": results,
             "readiness_scope": "gateway-installation-only", "authenticated_access_verified": False}
 
 
-def install_step(controller, plan, config, who, instance, *, assets, deadline, retry_failed, clock, sleep):
+def install_step(controller, plan, config, who, instance, *, assets, deadline, retry_failed, clock, sleep, languages=False):
     # Each stage has its own durable receipt. Never replay an unknown dispatch.
-    installs = controller.record.setdefault('gateway_asset_installations' if assets else 'gateway_installations', {})
-    commands, digest = payload(plan, config, who, assets=assets)
-    marker = 'gateway-assets-ready' if assets else 'gateway-ready'
+    installs = controller.record.setdefault('gateway_language_installations' if languages else 'gateway_asset_installations' if assets else 'gateway_installations', {})
+    commands, digest = payload(plan, config, who, assets=assets, languages=languages)
+    marker = 'gateway-languages-ready' if languages else 'gateway-assets-ready' if assets else 'gateway-ready'
     require(controller.binding.get("tool_sha256") == pf.tool_hash(),
             "gateway source changed while preparing the installation")
     previous = installs.get(instance)

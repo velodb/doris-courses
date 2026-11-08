@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "event_id": "example-rta",
+  "owner_id": "workshop-team",
+  "aws_partition": "aws",
+  "aws_account_id": "000000000000",
+  "aws_profile": "workshop-admin",
+  "region": "ap-southeast-1",
+  "network_mode": "public-egress",
+  "domain": "workshops.example.com",
+  "auth": {
+    "mode": "temporary",
+    "config_ref": "example-auth"
+  },
+  "course_ref": "ffffffffffffffffffffffffffffffffffffffff",
+  "course_profiles": [
+    "rta-module-1"
+  ],
+  "allow_draft_courses": false,
+  "image": {
+    "mode": "base",
+    "ami_id": "ami-00000000000000000",
+    "architecture": "x86_64",
+    "region": "ap-southeast-1",
+    "owner_account_id": "000000000000"
+  },
+  "instance_type": "r7i.xlarge",
+  "disk_gib": 100,
+  "learner_ids": [
+    "s001"
+  ],
+  "spare_count": 0,
+  "expires_at": "2030-01-01T12:00:00+08:00",
+  "budget_usd": 50,
+  "content": {
+    "schema_version": 1,
+    "abi": "doris-workshop-content-2.1",
+    "capabilities": [
+      "content-v2",
+      "notebook-copies-v1",
+      "quiz-presentations-v2"
+    ],
+    "source_ref": "ffffffffffffffffffffffffffffffffffffffff",
+    "package_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "default_locale": "en",
+    "available_locales": [
+      "en",
+      "kk-Cyrl"
+    ],
+    "locale_digests": {
+      "en": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "kk-Cyrl": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "profiles": [
+      "rta-module-1"
+    ],
+    "code_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "dependency_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  }
+}

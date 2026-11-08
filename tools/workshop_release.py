@@ -11,6 +11,9 @@ BROWSER_CHECKS = {'reader-images', 'notebook-create-run-save-download', 'kernel-
 
 def browser_checks(config):
     checks = set(BROWSER_CHECKS)
+    if config.get('schema_version', 1) == 2:
+        checks.update({'all-installed-languages', 'language-working-copies', 'language-kernel-preservation',
+                       'shared-module-progress', 'source-fragment-aliases'})
     if 'dw-bi' in config['course_profiles']:
         checks.add('dw-superset-dashboard')
     if 'dw-cdc' in config['course_profiles']:
@@ -31,6 +34,8 @@ def require(condition,message):
 def load_release(path,config=None):
     value=wc.load_document(path);wc.schema_check(value,'image-release.schema.json')
     if config:
+        require(value['schema_version'] == config.get('schema_version', 1) and value.get('content') == config.get('content'),
+                'image: release lacks the exact multilingual capability/content binding')
         image=config['image']
         require(image['mode']=='prebuilt' and value['status']=='validated' and
           value['aws_account_id']==image['owner_account_id']==config['aws_account_id'] and
@@ -87,13 +92,17 @@ def publish(validation_run,course_path,browser_path,release_ref,output,aws):
     require(instance in cleanup['known_instances'] and not any(cleanup[k] for k in
         ('managed_resources','active_instances','remaining_volumes','remaining_network_resources','role_exists','profile_exists','remaining_enis')),
         'release: validation resources must be destroyed and reconciled before publication')
-    value={'schema_version':1,'kind':'doris-workshop-image-release','status':'validated','release_ref':release_ref,
+    value={'schema_version':config.get('schema_version', 1),'kind':'doris-workshop-image-release','status':'validated','release_ref':release_ref,
         'aws_account_id':config['aws_account_id'],'region':config['region'],'ami_id':candidate['ami_id'],'architecture':'x86_64',
         'course_ref':config['course_ref'],'deployment_ref':manifest['deployment_ref'],'course_profiles':manifest['profiles'],
         'runtime_sha256':manifest['runtime_sha256'],'image_manifest_sha256':candidate['manifest_sha256'],
         'root_gib':manifest['root_volume']['size_gib'],'snapshot_ids':candidate['snapshots'],
         'validation':{'instance_id':instance,'checked_at':cleanup['checked_at'],'initial_audit_sha256':wi.checksum(directory/'initial-audit.json'),
          'course_report_sha256':wi.checksum(course_path),'browser_report_sha256':wi.checksum(browser_path),'cleanup_sha256':wi.checksum(directory/'reconciliation.json')}}
+    if config.get('schema_version', 1) == 2:
+        require(manifest.get('schema_version') == 2 and manifest.get('content') == config['content'],
+                'release: multilingual image manifest differs from config')
+        value['content'] = config['content']
     wc.schema_check(value,'image-release.schema.json')
     old=aws.call('ec2','describe_images',ImageIds=[candidate['ami_id']],Owners=[config['aws_account_id']])['Images'][0]
     tags={t['Key']:t['Value'] for t in old.get('Tags',[])}

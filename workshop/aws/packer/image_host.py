@@ -79,7 +79,7 @@ def main():
         subprocess.run([str(venv / 'bin/python'), '-m', 'pip', 'check'], check=True, stdout=sys.stderr)
         freezes[name] = digest(Path('/var/lib/doris-workshop/installed-packages') / (name + '.txt'))
     manifest = {
-        'schema_version': 1, 'kind': 'doris-workshop-private-image', 'status': 'candidate',
+        'schema_version': runtime['schema_version'], 'kind': 'doris-workshop-private-image', 'status': 'candidate',
         'image_input_sha256': digest(bundle / 'image-input.json'),
         'course_ref': spec['course_ref'], 'deployment_ref': spec['deployment_ref'],
         'deployment_dirty': spec['deployment_dirty'], 'runtime_sha256': spec['runtime_sha256'],
@@ -92,6 +92,8 @@ def main():
         'online_dependencies': spec['online_dependencies'],
         'validation': 'Build-time runtime checks only. Independent launch and course/browser certification are required before release.'
     }
+    if runtime['schema_version'] == 2:
+        manifest['content'] = runtime['content']
     if builds:
         manifest['custom_builds'] = builds
     installed = Path('/var/lib/doris-workshop/installed-packages/system.txt')

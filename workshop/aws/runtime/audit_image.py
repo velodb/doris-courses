@@ -78,8 +78,17 @@ def main():
     notebooks = []
     for course in runtime['courses']:
         for name in course['notebooks']:
-            nb = json.loads((workspace/course['course_dir']/name).read_text())
-            notebooks.append(nb)
+            if runtime['schema_version'] == 2:
+                sys.path.insert(0, '/usr/local/lib/doris-workshop')
+                from multilingual import Content
+                content = Content(runtime, Path('/var/lib/doris-workshop/content/tree'), workspace)
+                for locale in content.links:
+                    template, actual = content.resolve(course['course_dir'] + '/' + name, 'notebook', locale)
+                    checks['content:' + locale] = actual == locale and manifest.get('content') == runtime['content']
+                    notebooks.append(json.loads((content.root / template).read_text()))
+                checks['no-working-copies'] = not list(workspace.rglob('*.ipynb'))
+            else:
+                notebooks.append(json.loads((workspace/course['course_dir']/name).read_text()))
     checks['pristine-notebooks'] = all(not cell.get('outputs') and cell.get('execution_count') is None for nb in notebooks for cell in nb['cells'] if cell['cell_type']=='code')
     checks['python-version'] = call('/usr/bin/python3.12','--version') == manifest['python']
     checks['installed-freezes'] = all(digest(Path('/var/lib/doris-workshop/installed-packages')/(name+'.txt')) == sha for name,sha in manifest['freeze_sha256'].items())

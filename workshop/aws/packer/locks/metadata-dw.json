@@ -9,5 +9,11 @@
     "doris-course/02-data-warehousing/pyproject.toml": "451a52d001a173b69a316f466475e05bcafaaa262e4fff5d6c254540cb9b9438",
     "doris-course/02-data-warehousing/requirements.txt": "8a4c91b2d35fbc7400923974385c782be0b919828e614342fc2daa9dbf919545",
     "doris-course/common/pyproject.toml": "d7057c069e13a45a9609a1309c4d91e1e526f6a3a51b0562a6730f7499f7f1e0"
-  }
+  },
+  "compatible_source_sha256": {
+    "doris-course/common/pyproject.toml": [
+      "337832ab1eb1d4802e457e20e240333a5964b5d5c80d11d979823d9e32c14344"
+    ]
+  },
+  "compatibility_note": "Reviewed ML-03 package-data mapping for the two local UI JSON resources only; project dependencies and build requirements are unchanged. Existing lock hashes remain exact."
 }

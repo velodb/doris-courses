@@ -37,7 +37,7 @@ def inventory():
         rows.append({'key': key, 'parameters': messages.contract['parameters'][key], 'consumers': sorted(set(refs))})
     # Typoed literal keys must fail instead of being silently unused.
     for path, value in texts.items():
-        for key in re.findall(r'''["']((?:quiz|recovery|template|state|locale|progress|import|nav|workspace|activity|course|lesson|service)\.[a-z][a-z0-9_.-]*[a-z0-9])["']''', value):
+        for key in re.findall(r'''["']((?:notebook|quiz|recovery|template|state|locale|progress|import|nav|workspace|activity|course|lesson|service)\.[a-z][a-z0-9_.-]*[a-z0-9])["']''', value):
             if key in messages.contract['plurals'] or key.endswith(('.js', '.json', '.yaml')):
                 continue  # Machine file names, not message references.
             if key not in messages.source:

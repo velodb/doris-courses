@@ -50,6 +50,24 @@ class InstalledUI:
             raise ValueError('Installed locale set is invalid')
         self.default, self.content, self.labels, self.anchors = default, content, labels, anchors
 
+    def snapshot(self, package_digest):
+        dictionaries = {tag: value.messages for tag, value in self.messages.items()}
+        encoded = json.dumps(dictionaries, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
+        return {'schema_version': 1, 'package_digest': package_digest, 'default_locale': self.default,
+                'dictionaries': dictionaries, 'sha256': hashlib.sha256(encoded).hexdigest()}
+
+    @classmethod
+    def from_snapshot(cls, value):
+        if (not isinstance(value, dict) or set(value) != {'schema_version', 'package_digest', 'default_locale', 'dictionaries', 'sha256'}
+                or type(value['schema_version']) is not int or value['schema_version'] != 1
+                or not re.fullmatch('[0-9a-f]{64}', value['package_digest'])
+                or set(value['dictionaries']) != {'en', 'kk-Cyrl'}):
+            raise ValueError('Invalid installed UI snapshot')
+        result = cls(value['dictionaries'], default=value['default_locale'])
+        if result.snapshot(value['package_digest']) != value:
+            raise ValueError('Installed UI snapshot hash differs')
+        return result
+
     def display(self, kind, identity, values, locale):
         if locale == 'en':
             return values

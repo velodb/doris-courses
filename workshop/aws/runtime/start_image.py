@@ -40,6 +40,10 @@ def initialize(activity, manifest_sha, runtime_sha, course_ref, *, root=Path('/'
     require(digest(config / 'runtime.json') == runtime_sha, 'image: runtime checksum mismatch')
     manifest = json.loads((config / 'image-manifest.json').read_text())
     runtime = json.loads((config / 'runtime.json').read_text())
+    require(runtime.get('schema_version', 1) in (1, 2) and manifest.get('schema_version', 1) == runtime.get('schema_version', 1),
+            'image: unsupported or different runtime/image versions')
+    if runtime.get('schema_version', 1) == 2:
+        require(manifest.get('content') == runtime.get('content'), 'image: multilingual capability mismatch')
     require(manifest['course_ref'] == runtime['course_ref'] == course_ref, 'image: course revision mismatch')
     require(manifest['runtime_sha256'] == runtime_sha, 'image: unexpected runtime revision')
     require(activity.get('schema_version') == 1 and

@@ -27,7 +27,7 @@ VERIFIERS = web.AppKey("portal_verifiers", dict)
 
 
 def validate_config(config):
-    if set(config) != {"schema_version", "domain", "alb_arn", "region", "activities"} or config["schema_version"] != 1:
+    if set(config) != {"schema_version", "domain", "alb_arn", "region", "activities"} or type(config['schema_version']) is not int or config["schema_version"] not in (1, 2):
         raise ValueError("Invalid portal fields")
     if not isinstance(config["domain"], str) or not HOST.fullmatch(config["domain"]) or len(config["domain"]) > 190:
         raise ValueError("Invalid portal namespace")
@@ -40,7 +40,11 @@ def validate_config(config):
     if not isinstance(config["activities"], dict):
         raise ValueError("Register activities as an explicit map")
     for event, activity in config["activities"].items():
-        if not ID.fullmatch(event) or set(activity) != {"expires_at", "issuer", "client_id", "login_origin", "assignments"}:
+        fields = {"expires_at", "issuer", "client_id", "login_origin", "assignments"}
+        if config['schema_version'] == 2 and 'ui_snapshot' in activity:
+            fields.add('ui_snapshot')
+            InstalledUI.from_snapshot(activity['ui_snapshot'])
+        if not ID.fullmatch(event) or set(activity) != fields:
             raise ValueError("Invalid portal activity")
         assignments = activity["assignments"]
         if not isinstance(assignments, dict) or not assignments:
@@ -72,9 +76,12 @@ def page(html, *, status=200):
 def application(config, *, verifiers=None, installed_ui=None):
     validate_config(config)
     installed_ui = installed_ui or InstalledUI()
+    activity_uis = {event: InstalledUI.from_snapshot(a['ui_snapshot']) for event, a in config['activities'].items() if 'ui_snapshot' in a}
 
     def renderer(request, *, activity="", learner=""):
-        context = installed_ui.context(explicit=request.query.get("locale"), browser=request.headers.get("Accept-Language", ""),
+        event = activity or next((event for event in config['activities'] if request.headers.get('Host') == f'{event}-entry.{config["domain"]}'), '')
+        selected_ui = activity_uis.get(event, installed_ui)
+        context = selected_ui.context(explicit=request.query.get("locale"), browser=request.headers.get("Accept-Language", ""),
                                        activity=activity, learner=learner, scope=config["domain"])
         return Renderer(context=context, current_url=request.path, asset_base="https://" + config["domain"] + PATH + "static",
         home="https://" + config["domain"] + PATH)

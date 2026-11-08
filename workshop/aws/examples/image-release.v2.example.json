@@ -1,0 +1,54 @@
+{
+  "schema_version": 2,
+  "kind": "doris-workshop-image-release",
+  "status": "validated",
+  "release_ref": "rta-module-1-v2-example",
+  "aws_account_id": "000000000000",
+  "region": "us-east-1",
+  "ami_id": "ami-00000000000000000",
+  "architecture": "x86_64",
+  "course_ref": "ffffffffffffffffffffffffffffffffffffffff",
+  "deployment_ref": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "course_profiles": [
+    "rta-module-1"
+  ],
+  "runtime_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "image_manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "root_gib": 200,
+  "snapshot_ids": [
+    "snap-00000000000000000"
+  ],
+  "validation": {
+    "instance_id": "i-00000000000000000",
+    "checked_at": "2026-01-01T00:00:00Z",
+    "initial_audit_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "course_report_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "browser_report_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "cleanup_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "content": {
+    "schema_version": 1,
+    "abi": "doris-workshop-content-2.1",
+    "capabilities": [
+      "content-v2",
+      "notebook-copies-v1",
+      "quiz-presentations-v2"
+    ],
+    "source_ref": "ffffffffffffffffffffffffffffffffffffffff",
+    "package_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "default_locale": "en",
+    "available_locales": [
+      "en",
+      "kk-Cyrl"
+    ],
+    "locale_digests": {
+      "en": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "kk-Cyrl": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "profiles": [
+      "rta-module-1"
+    ],
+    "code_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "dependency_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  }
+}

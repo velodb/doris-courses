@@ -66,11 +66,12 @@ def selection_plan(course):
     """One exact ordered execution list; an unimplemented profile fails closed."""
     profiles = set(course['profiles'])
     rta = course['kernel'] == 'doris-rta' and profiles == {'rta-main'}
+    pilot = course['kernel'] == 'doris-rta' and profiles == {'rta-module-1'}
     dw = course['kernel'] == 'doris-dw' and 'dw-main' in profiles and profiles <= DW_PROFILES
     obs = course['kernel'] == 'doris-obs' and 'obs-main' in profiles and profiles <= {'obs-main', 'obs-local-model'}
-    if not (rta or dw or obs):
+    if not (rta or pilot or dw or obs):
         raise ValueError('course validation: unsupported profile selection')
-    expected_modules = [f'module-{i}' for i in range(1, 11 if rta else 15 if dw else 9)]
+    expected_modules = ['module-1'] if pilot else [f'module-{i}' for i in range(1, 11 if rta else 15 if dw else 9)]
     if [m['id'] for m in course['modules']] != expected_modules:
         raise ValueError('course validation: incomplete or reordered main path')
     steps = []
@@ -124,7 +125,15 @@ def enable_opt_ins(notebook, flags):
     return enabled
 
 
-def valid_selection_report(report, steps, profiles, source_notebooks):
+def valid_selection_report(report, steps, profiles, source_notebooks, *, _language=False):
+    if profiles == ['rta-module-1'] and not _language:
+        languages = report.get('language_reports', {})
+        return (report.get('schema_version') == 3 and set(languages) == {'en', 'kk-Cyrl'} and
+                all(value.get('locale') == locale and value.get('passed') is True and
+                    valid_selection_report(value, steps, profiles, source_notebooks, _language=True)
+                    for locale, value in languages.items()) and
+                report.get('notebook_count') == sum(v['notebook_count'] for v in languages.values()) and
+                report.get('code_cells') == sum(v['code_cells'] for v in languages.values()))
     """Require every selected file and cell, with its original source hash."""
     rows = report.get('notebooks', [])
     if report.get('course_profiles') != sorted(profiles) or len(rows) != len(steps):
@@ -148,6 +157,79 @@ def valid_selection_report(report, steps, profiles, source_notebooks):
             return False
     return (report.get('notebook_count') == len(rows) and
             report.get('code_cells') == sum(r['code_cells'] for r in rows))
+
+
+def run_multilingual(expected, runtime, root):
+    """Certify every installed language; execute the exact same selected code."""
+    import nbformat
+    from nbclient import NotebookClient
+    from multilingual import Content
+    source_root = Path('/opt/doris-courses')
+    content = Content(runtime, Path('/var/lib/doris-workshop/content/tree'), Path('/var/lib/doris-workshop/workspace'))
+    course = runtime['courses'][0]
+    steps = selection_plan(course)
+    sources = {s['notebook']: (source_root / course['course_dir'] / s['notebook']).read_bytes() for s in steps}
+    report = {'schema_version': 3, 'kind': 'doris-workshop-course-validation',
+              'image_id': expected['ami_id'], 'instance_id': expected['instance_id'],
+              'course_ref': runtime['course_ref'], 'content': runtime['content'],
+              'course_profiles': course['profiles'], 'language_reports': {},
+              'notebook_count': 0, 'code_cells': 0, 'passed': False, 'done': False}
+    def save():
+        (root / 'progress.tmp').write_text(json.dumps(report, indent=2) + '\n')
+        (root / 'progress.tmp').replace(root / 'progress.json')
+    try:
+        for locale in runtime['content']['available_locales']:
+            row = {'locale': locale, 'course_profiles': course['profiles'], 'notebooks': [], 'modules': [],
+                   'notebook_count': 0, 'code_cells': 0, 'passed': False}
+            report['language_reports'][locale] = row
+            for step in steps:
+                canonical_path = course['course_dir'] + '/' + step['notebook']
+                path = content.workspace / content.copy(canonical_path, locale)
+                nb = nbformat.read(path, as_version=4)
+                pinned = nbformat.reads(sources[step['notebook']].decode(), as_version=4)
+                if ([(c.id, c.source) for c in nb.cells if c.cell_type == 'code'] !=
+                        [(c.id, c.source) for c in pinned.cells if c.cell_type == 'code']):
+                    raise ValueError('course validation: learner code differs from pinned source')
+                entry = {**step, 'source_sha256': hashlib.sha256(sources[step['notebook']]).hexdigest(),
+                         'code_cells': 0, 'errors': 0, 'enabled_opt_ins': [], 'passed': False}
+                row['notebooks'].append(entry)
+                try:
+                    client = NotebookClient(nb, timeout=3600, kernel_name=course['kernel'],
+                                            resources={'metadata': {'path': str(path.parent)}})
+                    with client.setup_kernel():
+                        for index, cell in enumerate(nb.cells):
+                            if cell.cell_type != 'code':
+                                continue
+                            try:
+                                client.execute_cell(cell, index)
+                            finally:
+                                entry['code_cells'] += 1
+                                entry['errors'] += sum(o.get('output_type') == 'error' for o in cell.get('outputs', []))
+                                save()
+                    entry['passed'] = entry['errors'] == 0
+                finally:
+                    target = root / locale / step['notebook']
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    nbformat.write(nb, target)
+                row['notebook_count'] += 1
+                row['code_cells'] += entry['code_cells']
+                if step['kind'] == 'lab':
+                    row['modules'].append({'module': step['module'], 'passed': entry['passed']})
+                elif not entry['passed']:
+                    row['modules'][-1]['passed'] = False
+                if not entry['passed']:
+                    raise ValueError('course validation: language execution failed')
+                print(json.dumps({'locale': locale, 'notebook': step['notebook'], 'passed': True}), flush=True)
+            row['passed'] = valid_selection_report(row, steps, course['profiles'], sources, _language=True)
+        report['notebook_count'] = sum(r['notebook_count'] for r in report['language_reports'].values())
+        report['code_cells'] = sum(r['code_cells'] for r in report['language_reports'].values())
+        report['passed'] = valid_selection_report(report, steps, course['profiles'], sources)
+    except Exception:
+        report['error'] = {'type': 'language-execution-failed', 'message': 'Inspect the private validation Notebook.'}
+    finally:
+        report['done'] = True
+        save()
+    return 0 if report['passed'] else 1
 
 
 def main():
@@ -180,6 +262,8 @@ def main():
     steps = selection_plan(course)
     if sorted(course['profiles']) != sorted(expected['course_profiles']):
         raise ValueError('course validation: profile binding mismatch')
+    if runtime.get('schema_version') == 2:
+        return run_multilingual(expected, runtime, root)
     source = Path('/opt/doris-courses') / course['course_dir']
     workspace = Path('/var/lib/doris-workshop/workspace') / course['course_dir']
     report = {'schema_version': 2, 'kind': 'doris-workshop-course-validation',

@@ -1,7 +1,9 @@
 """Authenticated course navigation and optional instance-local learning records."""
 
 import json
+from html import escape
 import mimetypes
+import os
 from pathlib import Path
 import posixpath
 import re
@@ -30,18 +32,29 @@ def notebook_url(base, path):
     return url_path_join(base, "lab/tree", quote(path, safe="/"))
 
 
-def rewrite_link(value, current, base, context=None):
+def rewrite_link(value, current, base, context=None, adapter=None):
     """Resolve only a Markdown link's URL, preserving its query and fragment."""
     parts = urlsplit(value)
     if parts.scheme or parts.netloc or not parts.path or parts.path.startswith("/"):
         return value
     path = posixpath.normpath(posixpath.join(posixpath.dirname(current), unquote(parts.path)))
     route = notebook_url if path.endswith(".ipynb") else content_url
+    if adapter:
+        if path.endswith('.ipynb'):
+            route = lambda base, path: url_path_join(base, 'workshop/notebook', quote(path, safe='/'))
+        elif not path.endswith(('.md', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg')):
+            try:
+                resolved, actual = adapter.resolve(path, 'asset', context.locale)
+                record = next(r for r in adapter.assets['downloads'] if r['path'] == resolved)
+                artifact = url_path_join(base, 'workshop/artifact', record['sha256'], quote(resolved, safe='/'))
+                return with_locale(urlunsplit(('', '', artifact, parts.query, parts.fragment)), actual)
+            except (ValueError, StopIteration):
+                pass
     result = urlunsplit(("", "", route(base, path), parts.query, parts.fragment))
     return context.url(result) if context else result
 
 
-def render_markdown(text, current, base, context=None):
+def render_markdown(text, current, base, context=None, aliases=None, adapter=None):
     renderer = MarkdownIt("commonmark", {"html": False}).enable("table")
     tokens = renderer.parse(text)
     used = {}
@@ -71,16 +84,25 @@ def render_markdown(text, current, base, context=None):
             for key in ("href", "src"):
                 value = token.attrGet(key)
                 if value:
-                    token.attrSet(key, rewrite_link(value, current, base, context))
+                    token.attrSet(key, rewrite_link(value, current, base, context, adapter))
             if token.children:
                 rewrite(token.children)
     rewrite(tokens)
-    return renderer.renderer.render(tokens, renderer.options, {})
+    rendered = renderer.renderer.render(tokens, renderer.options, {})
+    if aliases is not None:
+        if len(aliases) != heading_index:
+            raise ValueError('Source alias count differs from lesson headings')
+        index = iter(aliases)
+        rendered = re.sub(r'<h[1-6] id="', lambda m: '<span id="' + escape(next(index), quote=True) + '"></span>' + m[0], rendered)
+    return rendered
 
 
 class PortalHandler(JupyterHandler):
-    def initialize(self, plan, source, progress_db=None, installed_ui=None):
+    def initialize(self, plan, source, progress_db=None, installed_ui=None, content_adapter=None):
         self.plan, self.source = plan, Path(source).resolve()
+        self.content_adapter = content_adapter
+        if content_adapter:
+            self.source = content_adapter.root.resolve()
         self.installed_ui = installed_ui or InstalledUI()
         self.progress = None
         self.modules = {}
@@ -107,7 +129,8 @@ class PortalHandler(JupyterHandler):
             # parameter can choose an identity or another preference namespace.
             context = self.installed_ui.context(explicit=self.get_query_argument('locale', None),
                 browser=self.request.headers.get('Accept-Language', ''),
-                activity=self.plan.get('event_id', ''), learner=self.plan.get('learner_id', ''),
+                activity=self.plan.get('event_id', os.environ.get('DORIS_WORKSHOP_EVENT_ID', '')),
+                learner=self.plan.get('learner_id', os.environ.get('DORIS_WORKSHOP_LEARNER_ID', '')),
                 scope=self.request.host + self.base_url)
             self.ui = self.renderer(context)
         except LocaleUnavailable:
@@ -131,6 +154,10 @@ class PortalHandler(JupyterHandler):
             "terminal": url_path_join(self.base_url, "workshop/terminal")}.items()}
 
     def notebook(self, path, kind="notebook"):
+        if self.content_adapter:
+            # Navigation does not create files, execute code or change sessions.
+            self.content_adapter.resolve(path, kind, self.ui.context.locale)
+            return self.ui.context.url(url_path_join(self.base_url, 'workshop/notebook', quote(path, safe='/')))
         try:
             resolved, actual = self.ui.context.resolve_content(path, kind)
         except LocaleUnavailable:
@@ -203,7 +230,8 @@ class ContentHandler(PortalHandler):
         if actual != self.ui.context.locale:
             return self.redirect(with_locale(content_url(self.base_url, path), actual))
         target = (self.source / resolved).resolve()
-        allowed = any(target.is_relative_to((self.source / c["course_dir"]).resolve()) for c in self.plan["courses"])
+        allowed = (target.is_relative_to(self.source) if self.content_adapter else
+                   any(target.is_relative_to((self.source / c["course_dir"]).resolve()) for c in self.plan["courses"]))
         if not allowed or not target.is_file() or any(p.startswith(".") for p in Path(path).parts):
             raise web.HTTPError(404)
         if target.suffix == ".md":
@@ -228,7 +256,9 @@ class ContentHandler(PortalHandler):
                     except (OSError, sqlite3.Error, ValueError):
                         return self.progress_error()
             try:
-                html = render_markdown(source, path, self.base_url, self.ui.context)
+                html = render_markdown(source, path, self.base_url, self.ui.context,
+                    aliases=self.content_adapter.aliases(path) if self.content_adapter else None,
+                    adapter=self.content_adapter)
             except LocaleUnavailable:
                 self.set_status(406)
                 return self.page(self.ui.unavailable(language=True))
@@ -245,6 +275,48 @@ class ContentHandler(PortalHandler):
             self.redirect(self.notebook(path))
         else:
             raise web.HTTPError(404)
+
+
+class NotebookHandler(PortalHandler):
+    @web.authenticated
+    def get(self, path):
+        if not self.content_adapter:
+            raise web.HTTPError(404)
+        try:
+            work = self.content_adapter.copy(path, self.ui.context.locale, self.base_url)
+        except (ValueError, LocaleUnavailable):
+            raise web.HTTPError(406)
+        ui, t = self.ui, self.ui.t
+        opened = ui.context.url(notebook_url(self.base_url, work))
+        download = url_path_join(self.base_url, 'files', quote(work, safe='/')) + '?download=1'
+        body = '<section class="panel"><h1>' + escape(t('notebook.title')) + '</h1><p>' + escape(t('notebook.help')) + '</p>'
+        for label, url in [('notebook.open', opened), ('notebook.download', download),
+                           ('notebook.reload', self.request.path)]:
+            fragment_link = ' data-notebook-fragment' if label in {'notebook.open', 'notebook.reload'} else ''
+            body += '<p><a target="_blank" rel="noopener"' + fragment_link + ' href="' + escape(ui.context.url(url), quote=True) + '">' + escape(t(label)) + '</a></p>'
+        body += '<p><a href="' + escape(self.course_links()['course'], quote=True) + '">' + escape(t('nav.outline')) + '</a></p></section>'
+        self.page(ui.page(t('notebook.title'), body))
+
+
+class DownloadHandler(PortalHandler):
+    @web.authenticated
+    def get(self, checksum, path):
+        if not self.content_adapter:
+            raise web.HTTPError(404)
+        if path not in self.content_adapter.allowed_paths:
+            raise web.HTTPError(404)
+        matches = [r for r in self.content_adapter.assets['downloads'] if r['path'] == path and r['sha256'] == checksum]
+        assets = [a for a in self.content_adapter.package['assets'] if a['file']['path'] == path]
+        if not matches or not assets or assets[0]['kind'] not in {'code', 'data', 'image', 'notebook', 'lesson'}:
+            raise web.HTTPError(404)
+        from multilingual import safe, digest
+        raw = safe(self.source, path).read_bytes()
+        if digest(raw) != checksum:
+            raise web.HTTPError(409)
+        self.set_header('Content-Type', 'application/octet-stream')
+        self.set_header('Content-Disposition', 'attachment; filename="' + Path(path).name + '"')
+        self.set_header('X-Content-Type-Options', 'nosniff')
+        self.finish(raw)
 
 
 class TerminalHandler(PortalHandler):
@@ -370,16 +442,19 @@ class ImportHandler(ProgressHandler):
             self.progress_error()
 
 
-def register(server, plan, source, progress_db=None, installed_ui=None):
+def register(server, plan, source, progress_db=None, installed_ui=None, content_adapter=None):
     prefix = url_path_join(server.base_url, "workshop")
     installed_ui = installed_ui or InstalledUI()
-    options = {"plan": plan, "source": source, "progress_db": progress_db, "installed_ui": installed_ui}
+    options = {"plan": content_adapter.enrich() if content_adapter else plan, "source": source, "progress_db": progress_db, "installed_ui": installed_ui,
+               'content_adapter': content_adapter}
     server.web_app.add_handlers(".*$", [
         (prefix + "/?", IndexHandler, options),
         (prefix + "/terminal", TerminalHandler, options),
         (prefix + "/help", HelpHandler, options),
         (prefix + "/static/([^/]+)", AssetHandler, options),
         (prefix + "/content/(.*)", ContentHandler, options),
+        (prefix + "/notebook/(.*)", NotebookHandler, options),
+        (prefix + "/artifact/([0-9a-f]{64})/(.*)", DownloadHandler, options),
         (prefix + "/progress/([a-z0-9-]+)/([a-z0-9-]+)/(mark|lab)", MarkHandler, options),
         (prefix + "/progress/export", ExportHandler, options),
         (prefix + "/progress/import", ImportHandler, options),

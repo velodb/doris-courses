@@ -26,4 +26,7 @@ def verify_report(config, report):
     source = {step['notebook']: wc.git(wc.REPO, 'show',
               f"{config['course_ref']}:{course['course_dir']}/{step['notebook']}").encode()
               for step in steps}
+    if config.get('schema_version', 1) == 2:
+        if report.get('schema_version') != 3 or report.get('content') != config['content']:
+            return False
     return valid_selection_report(report, steps, config['course_profiles'], source)

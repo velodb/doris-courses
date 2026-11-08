@@ -1904,5 +1904,54 @@
         }
       ]
     }
+  ],
+  "incremental_revisions": [
+    {
+      "id": "ml05-notebook-ui",
+      "date": "2026-11-08",
+      "source_base_ref": "4e598a1536fe9afac86ede403a63fdf184949fce",
+      "scope": "Five new Workshop Notebook working-copy UI messages; original 356 translations and hashes unchanged.",
+      "translator": {
+        "kind": "current-session-llm",
+        "model_family": "GPT-6",
+        "exact_model": "not provided"
+      },
+      "llm_self_check": "completed separately for these five source/target pairs",
+      "native_review": null,
+      "units": [
+        {
+          "unit_id": "u.0ebf6ca7338f4714a891b68e8de6cf78",
+          "key": "notebook.download",
+          "source_hash": "1c09e42f0cf14cbab5e9de85b48efb2e018b6f6c7d69275155fb9ce0148ee13f",
+          "target_hash": "ef220c374865efc977931d697738fd9c1246d738810b9fa6cc8e18edaca0185b"
+        },
+        {
+          "unit_id": "u.3988d0893a8b42cba80eccece8b74b31",
+          "key": "notebook.help",
+          "source_hash": "bd63e26750f2a90fe310fa75d66893f7b1e8683b3b3442400b3445350f33c31c",
+          "target_hash": "5e47d58a8ebee15d3795a26da933037d2a8db2550c9487d8d3b18d51fb583672"
+        },
+        {
+          "unit_id": "u.60c99abbe1e0457faf53e6c8dbad31c2",
+          "key": "notebook.title",
+          "source_hash": "d4566e8c4e579cec11fa832fc8431375ec19f262be5978902685259ad853ce9d",
+          "target_hash": "c584d0bedc34868a491c24c937aba0d30952f1b5dfdad55984c5955778d95efe"
+        },
+        {
+          "unit_id": "u.9cbd3319d52a4ae5884748e2604c5140",
+          "key": "notebook.reload",
+          "source_hash": "e31746823d611546f2f4207ccc7eafc69a68703f4841cc02af99a291c795b42e",
+          "target_hash": "b4142814d5c44b5e0510aec310c0c900ef225b755f9982d7d6830e21cee49236"
+        },
+        {
+          "unit_id": "u.e524e66b29eb4c76b4cdc0e59beb1c46",
+          "key": "notebook.open",
+          "source_hash": "c557cc4c2d75163217f6ea180bf0fbc9d56983875381aa237fb693911623c20e",
+          "target_hash": "a2c52e3c649df286ebc64893727b079861c4326c79755ae17a5bcea3d95505b7"
+        }
+      ],
+      "source_map_sha256": "46de491085a345ce9b0d09342767961b472ee002988781c1bf4f5135a8eb2f61",
+      "source_binding": "The containing commit stores these new English strings and their exact stable source-map IDs/hashes. source_base_ref identifies the task baseline before the five additions."
+    }
   ]
 }

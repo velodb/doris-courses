@@ -23,6 +23,10 @@
     "import.choose": {},
     "import.confirm": {},
     "import.file": {},
+    "import.history": {
+      "attempts": "integer",
+      "legacy": "integer"
+    },
     "import.invalid": {},
     "import.match": {},
     "import.matches": {},
@@ -56,6 +60,11 @@
     "nav.outline": {},
     "nav.terminal": {},
     "nav.workshop": {},
+    "notebook.download": {},
+    "notebook.help": {},
+    "notebook.open": {},
+    "notebook.reload": {},
+    "notebook.title": {},
     "progress.best": {
       "correct": "integer",
       "total": "integer"
@@ -86,6 +95,16 @@
     "progress.error.20": {},
     "progress.error.21": {},
     "progress.error.22": {},
+    "progress.error.v2-1": {},
+    "progress.error.v2-10": {},
+    "progress.error.v2-2": {},
+    "progress.error.v2-3": {},
+    "progress.error.v2-4": {},
+    "progress.error.v2-5": {},
+    "progress.error.v2-6": {},
+    "progress.error.v2-7": {},
+    "progress.error.v2-8": {},
+    "progress.error.v2-9": {},
     "progress.failed": {},
     "progress.heading": {
       "score": "text"
@@ -229,6 +248,7 @@
     "template.page.text-3": {},
     "template.page.text-4": {},
     "template.page.text-5": {},
+    "template.progress.formats": {},
     "template.progress.text-1": {},
     "template.progress.text-2": {},
     "template.progress.text-3": {},
@@ -249,22 +269,7 @@
       "learner": "text"
     },
     "workspace.more": {},
-    "workspace.signout": {},
-    "import.history": {
-      "attempts": "integer",
-      "legacy": "integer"
-    },
-    "progress.error.v2-1": {},
-    "progress.error.v2-2": {},
-    "progress.error.v2-3": {},
-    "progress.error.v2-4": {},
-    "progress.error.v2-5": {},
-    "progress.error.v2-6": {},
-    "progress.error.v2-7": {},
-    "progress.error.v2-8": {},
-    "progress.error.v2-9": {},
-    "progress.error.v2-10": {},
-    "template.progress.formats": {}
+    "workspace.signout": {}
   },
   "plurals": {
     "import.saved": {

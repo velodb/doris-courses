@@ -59,6 +59,10 @@ def load_document(path):
 
 
 def schema_check(value, name):
+    if isinstance(value, dict) and 'schema_version' in value and type(value['schema_version']) is not int:
+        raise ConfigError('schema_version: expected an integer without a decimal point')
+    if name in {"config.schema.json", "manifest.schema.json", "image-release.schema.json"} and isinstance(value, dict) and value.get("schema_version") == 2:
+        name = name.replace(".schema.json", ".v2.schema.json")
     schema = json.loads((SPEC / name).read_text(encoding="utf-8"))
     errors = list(Draft202012Validator(schema).iter_errors(value))
     if errors:
@@ -118,9 +122,11 @@ def git(repo, *args):
 
 def resolve_profiles(config, repo=REPO):
     """Read course metadata at the pinned commit, never the working-tree course files."""
-    registry = json.loads((SPEC / "profiles.json").read_text(encoding="utf-8"))
+    registry = json.loads((SPEC / ("profiles.v2.json" if config.get('schema_version') == 2 else "profiles.json")).read_text(encoding="utf-8"))
     profiles = registry["profiles"]
     chosen = set(config["course_profiles"])
+    if "rta-module-1" in chosen and (config.get("schema_version") != 2 or chosen != {"rta-module-1"}):
+        raise ConfigError("course_profiles: rta-module-1 requires the explicit v2 content binding")
     ref = config["course_ref"]
     if git(repo, "rev-parse", "--verify", ref + "^{commit}").strip() != ref:
         raise ConfigError("course_ref: must identify the exact local commit")
@@ -197,6 +203,14 @@ def resolve_profiles(config, repo=REPO):
 def validate_config(value, *, now=None, repo=REPO):
     schema_check(value, "config.schema.json")
     check_plain_strings(value)
+    if value["schema_version"] == 2:
+        import workshop_content
+        try:
+            workshop_content.consumer.validate_binding(value['content'])
+        except ValueError as error:
+            raise ConfigError(str(error)) from error
+        if value['content']['source_ref'] != value['course_ref'] or value['content']['profiles'] != value['course_profiles']:
+            raise ConfigError('content: revision and profiles must match config')
     # JSON Schema accepts 1.0 as an integer; Python's range() does not.
     for key in ("schema_version", "disk_gib", "spare_count"):
         if type(value[key]) is not int:
@@ -233,7 +247,9 @@ def validate_config(value, *, now=None, repo=REPO):
 
 
 def tooling_version(repo):
-    paths = [Path(__file__).resolve(), SPEC / "profiles.json", SPEC / "config.schema.json", SPEC / "manifest.schema.json"]
+    paths = [Path(__file__).resolve(), SPEC / "profiles.json", SPEC / "config.schema.json", SPEC / "manifest.schema.json",
+             SPEC / 'profiles.v2.json', SPEC / 'config.v2.schema.json', SPEC / 'manifest.v2.schema.json',
+             SPEC / 'content-binding.schema.json', Path(__file__).with_name('workshop_content.py'), SPEC / 'runtime/multilingual.py']
     hashes = {str(path.relative_to(REPO)): hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
     return {
         "git_sha": git(repo, "rev-parse", "HEAD").strip(),
@@ -255,6 +271,8 @@ def build_manifest(config, resolved, runtime, *, previous=None, now=None, repo=R
     if previous is not None:
         schema_check(previous, "manifest.schema.json")
         check_plain_strings(previous)
+        if previous['schema_version'] != config['schema_version'] or previous['desired'].get('content') != config.get('content'):
+            raise ConfigError('previous: content binding changed; use an explicit update on a fresh installation')
         if previous["event"] != event or previous["state"] != state:
             raise ConfigError("previous: account, partition, region, event, owner and state must match")
         # Check ownership as well as JSON types before reusing local operational data.
@@ -275,7 +293,7 @@ def build_manifest(config, resolved, runtime, *, previous=None, now=None, repo=R
             "active": True,
         }
     manifest = {
-        "schema_version": 1,
+        "schema_version": config['schema_version'],
         "kind": "aws-workshop-plan",
         "status": "planned",
         "generated_at": utc_text(now),
@@ -297,6 +315,8 @@ def build_manifest(config, resolved, runtime, *, previous=None, now=None, repo=R
         },
         "allocations": dict(sorted(allocations.items())),
     }
+    if config['schema_version'] == 2:
+        manifest['desired']['content'] = config['content']
     schema_check(manifest, "manifest.schema.json")
     return manifest
 

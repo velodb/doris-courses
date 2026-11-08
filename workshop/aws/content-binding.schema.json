@@ -1,0 +1,84 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "abi": {
+      "const": "doris-workshop-content-2.1"
+    },
+    "capabilities": {
+      "const": [
+        "content-v2",
+        "notebook-copies-v1",
+        "quiz-presentations-v2"
+      ]
+    },
+    "source_ref": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "available_locales": {
+      "const": [
+        "en",
+        "kk-Cyrl"
+      ]
+    },
+    "default_locale": {
+      "enum": [
+        "en",
+        "kk-Cyrl"
+      ]
+    },
+    "locale_digests": {
+      "type": "object",
+      "properties": {
+        "en": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "kk-Cyrl": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "en",
+        "kk-Cyrl"
+      ],
+      "additionalProperties": false
+    },
+    "profiles": {
+      "const": [
+        "rta-module-1"
+      ]
+    },
+    "package_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "code_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "dependency_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "abi",
+    "capabilities",
+    "source_ref",
+    "available_locales",
+    "default_locale",
+    "locale_digests",
+    "profiles",
+    "package_digest",
+    "code_digest",
+    "dependency_digest"
+  ]
+}

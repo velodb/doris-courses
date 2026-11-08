@@ -203,3 +203,5 @@ the existing `tools/tests` suite. They require no AWS identity or Docker.
 Fixed private-image construction is described in the [Packer build guide](packer/README.md). Images remain candidates until independently validated on a new instance.
 
 The [fresh-image validation guide](image-validation.md) describes isolated candidate validation and cleanup before activity publication.
+
+The [multilingual runtime](runtime/multilingual.md) documents the v2 Module 1 profile, complete content binding, persistent language copies and local verification. Existing English AMIs remain v1.

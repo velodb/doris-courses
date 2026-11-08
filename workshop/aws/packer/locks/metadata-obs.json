@@ -9,5 +9,11 @@
     "doris-course/03-observability/pyproject.toml": "54912b63f8087e25c80a4fbbdab1deffc64bfe96e7c2c97657da2845a1a57017",
     "doris-course/03-observability/requirements.txt": "0b5c5a6e05cc62c4b81cb5a25493e96c4ef59365fca57a6a7653edeffa88cdbb",
     "doris-course/common/pyproject.toml": "d7057c069e13a45a9609a1309c4d91e1e526f6a3a51b0562a6730f7499f7f1e0"
-  }
+  },
+  "compatible_source_sha256": {
+    "doris-course/common/pyproject.toml": [
+      "337832ab1eb1d4802e457e20e240333a5964b5d5c80d11d979823d9e32c14344"
+    ]
+  },
+  "compatibility_note": "Reviewed ML-03 package-data mapping for the two local UI JSON resources only; project dependencies and build requirements are unchanged. Existing lock hashes remain exact."
 }

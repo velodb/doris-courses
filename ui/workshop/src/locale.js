@@ -19,6 +19,15 @@
     location.replace(current.href);
     return;
   }
+  const notebookFragments = () => {
+    for (const link of document.querySelectorAll('[data-notebook-fragment]')) {
+      const destination = new URL(link.href, location.href);
+      destination.hash = location.hash;
+      link.href = destination.href;
+    }
+  };
+  notebookFragments();
+  window.addEventListener('hashchange', notebookFragments);
   const form = document.querySelector('.language-form');
   if (!form) return;
   form.action = location.pathname + location.hash;

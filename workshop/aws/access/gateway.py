@@ -62,8 +62,13 @@ def validate_config(config):
     """No deployment credentials, client secrets or TLS keys belong on the host."""
     required = {"schema_version", "event_id", "learner_id", "region", "alb_arn", "issuer",
                 "client_id", "subjects", "expires_at", "services", "login_origin"}
-    if set(config) != required or config["schema_version"] != 1:
+    version = config.get('schema_version')
+    if version == 2:
+        required.add('ui_snapshot')
+    if type(version) is not int or version not in (1, 2) or set(config) != required:
         raise ValueError("Invalid gateway configuration fields")
+    if version == 2:
+        InstalledUI.from_snapshot(config['ui_snapshot'])
     if not all(isinstance(config[k], str) and ID.fullmatch(config[k]) for k in ("event_id", "learner_id")):
         raise ValueError("Invalid event or learner")
     if not re.fullmatch(r"[a-z]{2}-[a-z-]+-\d", config["region"]):
@@ -260,8 +265,8 @@ def unavailable_response(request, config, host, authorized, context=None):
 
 def application(config, *, verifier=None, token_file=Path("/run/doris-workshop/token"),
                 registry_file=Path("/run/doris-workshop/service-ports.json"), installed_ui=None):
-    installed_ui = installed_ui or InstalledUI()
     activity_expiry = validate_config(config)
+    installed_ui = installed_ui or (InstalledUI.from_snapshot(config['ui_snapshot']) if config['schema_version'] == 2 else InstalledUI())
     app = web.Application(client_max_size=64 * 1024**2)
 
     async def session_context(app):
