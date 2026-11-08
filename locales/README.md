@@ -122,7 +122,7 @@ bindings. It exposes English only. A release publishes every requested locale
 and fails if any required content is missing, stale, unchecked or withdrawn.
 The committed Kazakh pilot contains current-session LLM translations and a
 separate source/target self-check. Native human review is unperformed. Automated
-producer regression tests still use synthetic overlays. The workshop UI consumes the canonical message contract. The [Workshop v2 installer](../workshop/aws/runtime/multilingual.md) consumes this private release. Website integration remains a separate consumer task.
+producer regression tests still use synthetic overlays. The workshop UI consumes the canonical message contract. The [Workshop v2 installer](../workshop/aws/runtime/multilingual.md) and separately pinned [website consumer](../contracts/v2/website-consumer.md) consume this private release. Combined release qualification and cloud publication remain separate checks.
 
 ## Artifact layout and consumers
 

@@ -6,8 +6,9 @@ entry point is `package.v2.json`. Consumers select this interface explicitly;
 the existing root `catalog.yaml` remains the English v1 entry point.
 
 The contract, admission tests and [offline producer](../../locales/README.md)
-are implemented. Website ingestion, workshop installation and learner language
-switching require their respective consumer implementations. The
+are implemented, together with the [Workshop v2 installer](../../workshop/aws/runtime/multilingual.md)
+and the separately pinned [website consumer](website-consumer.md). Combined
+release and cloud publication qualification remain separate. The
 [example](examples/README.md) is synthetic and cannot establish course readiness.
 
 ## Pinned interfaces
