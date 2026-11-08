@@ -51,6 +51,10 @@ function forward(request, port, host, extra = {}) {
     catch (_) { throw new Error('Expected locale ' + locale + ' at ' + tab.url() + '; page: ' + (await tab.locator('body').innerText()).slice(0, 200)); }
     await tab.locator('html[lang="' + locale + '"]').waitFor();
   }
+  async function chooseLocale(tab, locale) {
+    await tab.locator('#workshop-language').click();
+    await tab.locator('.language-menu a[data-locale="' + locale + '"]').click();
+  }
   await page.goto(entry); await waitLocale(page, phase === 'restart' ? 'kk-Cyrl' : 'en');
   if (phase === 'restart') {
     check('preference survives browser session and full handler/Jupyter restart');
@@ -59,7 +63,7 @@ function forward(request, port, host, extra = {}) {
   }
   const oldTab = await context.newPage(); await oldTab.goto(entry + '?locale=en');
   const before = requests.length;
-  await page.selectOption('#workshop-language', 'kk-Cyrl'); await page.locator('.language-form button').click(); await waitLocale(page, 'kk-Cyrl');
+  await chooseLocale(page, 'kk-Cyrl'); await waitLocale(page, 'kk-Cyrl');
   assert(!requests.slice(before).some(r => r.method !== 'GET' || /\/progress\/|\/lab/.test(r.path)));
   assert.equal(new URL(oldTab.url()).searchParams.get('locale'), 'en');
   check('switch only navigates the current tab; no download, Lab, progress, identity or deployment write');
@@ -79,10 +83,10 @@ function forward(request, port, host, extra = {}) {
   await page.locator('.module .actions a').first().click(); await waitLocale(page, 'kk-Cyrl');
   await page.evaluate(() => location.hash = 'section.fixture');
   const selectedPath = new URL(page.url()).pathname;
-  await page.selectOption('#workshop-language', 'en'); await page.locator('.language-form button').click(); await waitLocale(page, 'en');
+  await chooseLocale(page, 'en'); await waitLocale(page, 'en');
   assert.equal(new URL(page.url()).pathname, selectedPath); assert.equal(new URL(page.url()).hash, '#section.fixture');
   assert.equal(await page.locator('.article h2').getAttribute('id'), 'section.fixture');
-  await page.selectOption('#workshop-language', 'kk-Cyrl'); await page.locator('.language-form button').click(); await waitLocale(page, 'kk-Cyrl');
+  await chooseLocale(page, 'kk-Cyrl'); await waitLocale(page, 'kk-Cyrl');
   assert.equal(await page.locator('.article img').getAttribute('alt'), 'kk-Cyrl image description');
   assert((await page.locator('.article img').getAttribute('src')).includes('locale=kk-Cyrl'));
   assert((await page.locator('.reading-side form').getAttribute('action')).includes('locale=kk-Cyrl'));
@@ -96,7 +100,13 @@ function forward(request, port, host, extra = {}) {
   }
   await page.keyboard.press('Tab');
   await page.locator('#workshop-language').focus(); assert.equal(await page.evaluate(() => document.activeElement.id), 'workshop-language');
-  await page.keyboard.press('Tab'); assert.equal(await page.evaluate(() => document.activeElement.tagName), 'BUTTON');
+  await page.keyboard.press('ArrowDown');
+  assert.equal(await page.evaluate(() => document.activeElement.getAttribute('role')), 'menuitemradio');
+  await page.keyboard.press('Escape');
+  assert.equal(await page.locator('.language-picker').getAttribute('open'), null);
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'workshop-language');
+  await page.keyboard.press('Tab'); assert.equal(await page.evaluate(() => document.activeElement.tagName), 'SUMMARY');
+  assert.equal(await page.locator('.language-form button:visible').count(), 0);
   const glyphs = await page.evaluate(async () => {
     await document.fonts.ready;
     const c = document.createElement('canvas').getContext('2d'); c.font = '20px sans-serif';

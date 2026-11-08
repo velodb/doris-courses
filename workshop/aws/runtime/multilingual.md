@@ -134,3 +134,26 @@ executes unchanged code for both languages on one shared sandbox and checks the
 10,158,080-row baseline. It requires unused `doris-rta` resource names and removes
 only its created sandbox/network/volumes. It uses Docker and the public S3 dataset.
 It does not establish Linux AMI, gateway, TTL, website or native-language review.
+
+For a local website/Workshop comparison, give both consumers the same admitted
+package and record its full source SHA, package digest, locale digests, profile,
+contract and registry versions. Website compilation rewrites navigation for its
+own routes, so its final bundle digest differs from the Workshop bundle. Compare
+the shared teaching inputs, stable anchors, Notebook cell IDs/code/metadata and
+Quiz question/option mappings instead. Website Notebook downloads must match
+the corresponding package artifact byte for byte.
+
+Keep the website database separate from production. Test English and Kazakh in
+two tabs, then test two learners. Save a Notebook before comparing its download
+or restarting services. Language switching preserves the original live kernel;
+an explicit kernel or service restart clears Python memory and requires running
+the initialization cell again. Saved files, outputs and recorded progress must
+survive. Website and Workshop progress remain separate stores; portable imports
+do not grant website credit.
+
+The browser check inserts a fresh code cell through Jupyter's toolbar and checks
+that every existing cell keeps its ID, type and source. Jupyter mounts only part
+of a large Notebook, so the last visible editor cannot identify its last cell.
+These local checks do not qualify cloud ingress, operating-system user isolation
+or a production rollback. Retain the installed content, private progress store
+and saved learner copies when stopping a review environment.

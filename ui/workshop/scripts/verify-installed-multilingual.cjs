@@ -43,7 +43,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
  await b.page.goto(b.base+'/workshop/content/'+guide+'?locale=kk-Cyrl#environment');
  await b.page.locator('#environment').waitFor({state:'attached'});
  assert.equal(await b.page.locator('#environment').evaluate(el=>Math.abs(el.getBoundingClientRect().top)<64),true);
- await b.page.selectOption('select[name="locale"]','en');await b.page.getByRole('button',{name:f.messages['kk-Cyrl']['locale.apply'],exact:true}).click();
+ await b.page.locator('#workshop-language').click();await b.page.locator('.language-menu a[data-locale="en"]').click();
  await b.page.locator('html[lang="en"]').waitFor();assert.equal(new URL(b.page.url()).hash,'#environment');
  await b.page.goto(b.base+'/workshop/content/'+lesson+'?locale=kk-Cyrl');
  assert.equal(await b.page.locator('article img,.lesson img,main img').count()>=6,true);
@@ -71,13 +71,19 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
  const anchors=en.page.locator('[id^="unit-u."],[data-jupyter-id^="unit-u."]');
  assert.equal(await anchors.count()>0,true,'stable Notebook anchors');
  const fragment=await anchors.first().evaluate(el=>el.id||el.getAttribute('data-jupyter-id'));
- await en.page.locator('.jp-CodeCell .cm-content').last().click();await en.page.keyboard.press('Escape');await en.page.keyboard.press('b');
- const editor=en.page.locator('.jp-CodeCell .cm-content').last();await editor.click();
+ // Jupyter virtualizes cells, so the last mounted editor is not necessarily
+ // the last Notebook cell. Insert through its toolbar and edit the active cell.
+ const beforeEdit=(await json(a.page,a.base,'/api/contents/'+en.work)).content;
+ await en.page.locator('.jp-CodeCell .cm-content').first().click();await en.page.keyboard.press('Escape');
+ await en.page.getByRole('button',{name:'Insert a cell below (B)',exact:true}).click();
+ const editor=en.page.locator('.jp-Notebook .jp-Cell.jp-mod-active .cm-content');await editor.click();
+ assert.equal(await editor.textContent(),'');
  await en.page.keyboard.insertText("ml05_sentinel = 731\nprint('ML05_SAVED_OUTPUT', ml05_sentinel)");
  await en.page.keyboard.press('Shift+Enter');await en.page.getByText('ML05_SAVED_OUTPUT 731',{exact:true}).waitFor({timeout:60000});
  await en.page.keyboard.press(process.platform==='darwin'?'Meta+s':'Control+s');
  await poll(async()=>JSON.stringify((await json(a.page,a.base,'/api/contents/'+en.work)).content).includes('ML05_SAVED_OUTPUT'));
  const saved=(await json(a.page,a.base,'/api/contents/'+en.work)).content;
+ for(const cell of beforeEdit.cells){const after=saved.cells.find(c=>c.id===cell.id);assert.ok(after);assert.equal(after.cell_type,cell.cell_type);assert.deepEqual(after.source,cell.source);}
  const session=(await json(a.page,a.base,'/api/sessions')).find(s=>s.path===en.work);assert.ok(session);
  assert.equal((await execute(en.page,a.base,session.kernel.id,'print(ml05_sentinel)')).trim(),'731');
  await shot(en.page,'alice-en-edited-notebook');
