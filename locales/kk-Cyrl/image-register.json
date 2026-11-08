@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "locale": "kk-Cyrl",
+  "images": [
+    {
+      "asset_id": "a.f58950e0b6ed1ebd1e700be678fffe98",
+      "source_path": "doris-course/01-real-time-analytics/level1/module01-introduction/images/01-fresh-data-to-analytical-answers.png",
+      "source_hash": "ec67d20eb4946837497476c426891fd726c0ae5c32d221ccd021b7577abacac5",
+      "source_ref": "7e4ef9f5e9752f2812385fd555ff1cf0acea443e",
+      "treatment": "shared_original",
+      "editable_source": null,
+      "text_regions": "Title, component boxes, arrow labels and bottom annotations; repeated BE labels are mapped once in the adjacent legend. Technical IDs, product names and column names stay unchanged.",
+      "translated_legend_unit_id": "u.1db8934f97934c8bbd7352d620064e43",
+      "translated_legend_target_hash": "cee31fa64ffbf34fb0dde09bec901adb0363c78df14987ff358163b75f3e5ebb",
+      "license_source": "LICENSE (Apache-2.0); existing repository artwork, no new external asset.",
+      "review": "Current-session LLM inspected all six original PNGs and checked the translated label mapping and direction against each figure. Native human review not performed."
+    },
+    {
+      "asset_id": "a.6be2fb01bfb3b9b159ca528c759c47fe",
+      "source_path": "doris-course/01-real-time-analytics/level1/module01-introduction/images/02-one-business-process-two-workloads.png",
+      "source_hash": "07bcc5bc3e05b2a3302a1420cc63e4ff4ed996d7fd7806e631ad4c2abe190219",
+      "source_ref": "7e4ef9f5e9752f2812385fd555ff1cf0acea443e",
+      "treatment": "shared_original",
+      "editable_source": null,
+      "text_regions": "Title, component boxes, arrow labels and bottom annotations; repeated BE labels are mapped once in the adjacent legend. Technical IDs, product names and column names stay unchanged.",
+      "translated_legend_unit_id": "u.bfad31b7da4046f3a0c0ed1769eec89c",
+      "translated_legend_target_hash": "da397549eeb7f26d489182bba1ffcecbe5836356b5ddbc2b25ceccb376f088cd",
+      "license_source": "LICENSE (Apache-2.0); existing repository artwork, no new external asset.",
+      "review": "Current-session LLM inspected all six original PNGs and checked the translated label mapping and direction against each figure. Native human review not performed."
+    },
+    {
+      "asset_id": "a.5af58892fcb22f4b8c7caaa1899fc107",
+      "source_path": "doris-course/01-real-time-analytics/level1/module01-introduction/images/03-where-apache-doris-fits.png",
+      "source_hash": "7c9af281069b0d0c14bbbce1b7986ea2aba3c30580f8c5395decd5a0af92772f",
+      "source_ref": "7e4ef9f5e9752f2812385fd555ff1cf0acea443e",
+      "treatment": "shared_original",
+      "editable_source": null,
+      "text_regions": "Title, component boxes, arrow labels and bottom annotations; repeated BE labels are mapped once in the adjacent legend. Technical IDs, product names and column names stay unchanged.",
+      "translated_legend_unit_id": "u.9a474378140a42dfa32e78c35f958d1f",
+      "translated_legend_target_hash": "79ccf1e6b27e9c5cacde78a0e3ba2b8ca271fe5737107e09038edd12f68c6558",
+      "license_source": "LICENSE (Apache-2.0); existing repository artwork, no new external asset.",
+      "review": "Current-session LLM inspected all six original PNGs and checked the translated label mapping and direction against each figure. Native human review not performed."
+    },
+    {
+      "asset_id": "a.b3aba670f5b79d4f71727f59094f0ef4",
+      "source_path": "doris-course/01-real-time-analytics/level1/module01-introduction/images/04-lakehouse-query-and-load.png",
+      "source_hash": "624330a0d6d50068a1342a3576044dad2f4c00531f7f3c5a7cfb5c68710c5080",
+      "source_ref": "7e4ef9f5e9752f2812385fd555ff1cf0acea443e",
+      "treatment": "shared_original",
+      "editable_source": null,
+      "text_regions": "Title, component boxes, arrow labels and bottom annotations; repeated BE labels are mapped once in the adjacent legend. Technical IDs, product names and column names stay unchanged.",
+      "translated_legend_unit_id": "u.af338a667c1746b2b1caf1766f7f906c",
+      "translated_legend_target_hash": "7050d549bdafa77d22d7c0b2a706bab8f1b9fd291d95a17f3898913b89bce04c",
+      "license_source": "LICENSE (Apache-2.0); existing repository artwork, no new external asset.",
+      "review": "Current-session LLM inspected all six original PNGs and checked the translated label mapping and direction against each figure. Native human review not performed."
+    },
+    {
+      "asset_id": "a.820d4b6b82d84d056270b1fdcd69bca7",
+      "source_path": "doris-course/01-real-time-analytics/level1/module01-introduction/images/05-sql-execution-through-fe-and-be.png",
+      "source_hash": "dd6e47f9ead67ae490586f8815c78c7829271f3223d1b0feeec9a469ce25ba99",
+      "source_ref": "7e4ef9f5e9752f2812385fd555ff1cf0acea443e",
+      "treatment": "shared_original",
+      "editable_source": null,
+      "text_regions": "Title, component boxes, arrow labels and bottom annotations; repeated BE labels are mapped once in the adjacent legend. Technical IDs, product names and column names stay unchanged.",
+      "translated_legend_unit_id": "u.34372e1abc9d46b48435cc5d7d4104bb",
+      "translated_legend_target_hash": "9b223a236b5c649f899a70565239bf2ef8878ab9750cb077f727c1caac0d0f11",
+      "license_source": "LICENSE (Apache-2.0); existing repository artwork, no new external asset.",
+      "review": "Current-session LLM inspected all six original PNGs and checked the translated label mapping and direction against each figure. Native human review not performed."
+    },
+    {
+      "asset_id": "a.e03da8b3dcc805aad57c10d3a03f7dda",
+      "source_path": "doris-course/01-real-time-analytics/level1/module01-introduction/images/06-two-apache-doris-architectures.png",
+      "source_hash": "b270fb397517ea5b8dd08f7dda9a9ab6655bc9ad2f2fe540b76243a00616018d",
+      "source_ref": "7e4ef9f5e9752f2812385fd555ff1cf0acea443e",
+      "treatment": "shared_original",
+      "editable_source": null,
+      "text_regions": "Title, component boxes, arrow labels and bottom annotations; repeated BE labels are mapped once in the adjacent legend. Technical IDs, product names and column names stay unchanged.",
+      "translated_legend_unit_id": "u.e0c2a41b562f467db0c8093374ef6973",
+      "translated_legend_target_hash": "d1a14d164a17d772ba3737747798de67a3d758b73245d727a48b6fcc0d03394c",
+      "license_source": "LICENSE (Apache-2.0); existing repository artwork, no new external asset.",
+      "review": "Current-session LLM inspected all six original PNGs and checked the translated label mapping and direction against each figure. Native human review not performed."
+    }
+  ]
+}

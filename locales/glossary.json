@@ -1,5 +1,5 @@
 {
-  "version": "initial-1",
+  "version": "kk-rta-m1-1",
   "source_locale": "en",
   "target_locale": "kk-Cyrl",
   "entries": [
@@ -42,6 +42,286 @@
       "source": "Group Commit",
       "target": "Group Commit",
       "rule": "Keep this product name or technical identifier unchanged."
+    },
+    {
+      "source": "real-time analytics",
+      "target": "нақты уақыттағы аналитика",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "data freshness",
+      "target": "деректердің өзектілігі",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "query latency",
+      "target": "сұрау кідірісі",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "workload",
+      "target": "жұмыс жүктемесі",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "analytical query",
+      "target": "талдамалық сұрау",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "columnar storage",
+      "target": "бағандық сақтау",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "vectorized execution",
+      "target": "векторланған орындау",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "Massively Parallel Processing",
+      "target": "жаппай параллель өңдеу",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "scan",
+      "target": "сканерлеу",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "filter",
+      "target": "сүзу",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "aggregation",
+      "target": "агрегаттау",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "query plan",
+      "target": "сұрау жоспары",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "plan fragment",
+      "target": "жоспар фрагменті",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "integrated storage and compute architecture",
+      "target": "сақтау мен есептеуі біріктірілген архитектура",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "decoupled storage and compute architecture",
+      "target": "сақтау мен есептеуі ажыратылған архитектура",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "Compute Group",
+      "target": "есептеу тобы",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "shared storage",
+      "target": "ортақ сақтау",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "persistent data",
+      "target": "тұрақты деректер",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "internal table",
+      "target": "ішкі кесте",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "object storage",
+      "target": "объектілік сақтау",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "sandbox",
+      "target": "сынақ ортасы",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "baseline dataset",
+      "target": "бастапқы деректер жиыны",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "change data capture",
+      "target": "өзгерістерді тіркеу",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "committed change",
+      "target": "бекітілген өзгеріс",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "revenue",
+      "target": "түсім",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "dashboard",
+      "target": "бақылау тақтасы",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "customer-facing analytics",
+      "target": "тұтынушыларға арналған аналитика",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "observability",
+      "target": "жүйені бақылау",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "Lab",
+      "target": "зертханалық жұмыс",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "lesson",
+      "target": "сабақ",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "Quiz",
+      "target": "тест",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "Notebook",
+      "target": "ноутбук",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "kernel",
+      "target": "ядро",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "cell",
+      "target": "ұяшық",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "attempt",
+      "target": "тест тапсыру әрекеті",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "progress",
+      "target": "оқу барысы",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "passing threshold",
+      "target": "өту шегі",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "named volume",
+      "target": "атаулы том",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "replica",
+      "target": "реплика",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "idempotent",
+      "target": "идемпотентті",
+      "rule": "Use this Kazakh term in explanatory prose. Preserve code, field names, IDs and machine values unchanged."
+    },
+    {
+      "source": "OLTP",
+      "target": "OLTP",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "OLAP",
+      "target": "OLAP",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "MPP",
+      "target": "MPP",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "CDC",
+      "target": "CDC",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "S3 TVF",
+      "target": "S3 TVF",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "Catalog",
+      "target": "Catalog",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "Duplicate Key",
+      "target": "Duplicate Key",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "RANDOM",
+      "target": "RANDOM",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "AUTO",
+      "target": "AUTO",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "Meta Service",
+      "target": "Meta Service",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "Shared Storage",
+      "target": "Shared Storage",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "lakehouse",
+      "target": "lakehouse",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "Query Profile",
+      "target": "Query Profile",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "Run All",
+      "target": "Run All",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "File → New → Terminal",
+      "target": "File → New → Terminal",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
+    },
+    {
+      "source": "Running Terminals and Kernels",
+      "target": "Running Terminals and Kernels",
+      "rule": "Preserve the technical name or actual product control label; add a Kazakh explanation where needed."
     }
   ]
 }

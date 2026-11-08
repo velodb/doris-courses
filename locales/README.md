@@ -34,8 +34,8 @@ complete output directory. A failed admission leaves no output artifact.
 | [ui.en.json](ui.en.json) | Canonical English messages for entry, reader, progress, service guidance, Quiz controls and recovery. See the [consumer interface](../ui/workshop/i18n.md). |
 | [ui.contract.json](ui.contract.json) | Typed placeholders and explicit count forms, validated by producer and consumers. |
 | [ui.inventory.json](ui.inventory.json) | Auditable message-key/consumer inventory; check with `tools/check_ui_messages.py`. |
-| [glossary.json](glossary.json) | Versioned initial product/identifier preservation rules. This is not a translated course glossary. |
-| `locales/kk-Cyrl/overlay.json` | A formal `locale_overlay`, supplied by the current-session LLM with attributed checks. No real course overlay is included yet. |
+| [glossary.json](glossary.json) | Versioned product/identifier rules and the Kazakh RTA Module 1 terminology. |
+| `locales/kk-Cyrl/overlay.json` | A formal `locale_overlay`, supplied by the current-session LLM with attributed checks. The RTA Module 1 pilot is included; see [revision and quality scope](kk-Cyrl/README.md). |
 | `locales/kk-Cyrl/assets.json` | Optional JSON object mapping English image paths to committed localized image files. |
 
 Source discovery covers catalog/course display leaves, each course guide,
@@ -120,8 +120,9 @@ python tools/build_content_package.py --source-ref "$SOURCE_REF" build \
 A preview keeps the declared draft locale and reports missing units/assets/Quiz
 bindings. It exposes English only. A release publishes every requested locale
 and fails if any required content is missing, stale, unchecked or withdrawn.
-Target-language tests use synthetic overlays; they establish no real Kazakh
-readiness or native review. The workshop UI consumes the canonical message contract. Website integration,
+The committed Kazakh pilot contains current-session LLM translations and a
+separate source/target self-check. Native human review is unperformed. Automated
+producer regression tests still use synthetic overlays. The workshop UI consumes the canonical message contract. Website integration,
 real translation and package installation remain separate consumer tasks.
 
 ## Artifact layout and consumers
