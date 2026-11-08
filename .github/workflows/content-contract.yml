@@ -31,19 +31,20 @@ jobs:
             python tools/check_content_contract.py
           fi
       - name: Verify the admission checks
-        run: python -m unittest discover -s tools/tests -p 'test_content*.py' -v
+        run: |
+          python -m unittest discover -s tools/tests -p 'test_content*.py' -v
+          python -m unittest discover -s tools/tests -p 'test_course_files*.py' -v
+          python -m unittest discover -s tools/tests -p 'test_migrate_course_translations.py' -v
       - name: Validate the independent v1 and v2 contract examples
         run: |
           python tools/check_content_contract.py --root contracts/v2/examples
           python tools/check_content_contract_v2.py --root contracts/v2/examples --allow-fixture
-      - name: Build real English content twice from the exact commit
+      - name: Build native bilingual course files twice from the exact commit
         run: |
           SOURCE_REF=$(git rev-parse HEAD)
           BUILD_ROOT=$(mktemp -d)
           trap 'rm -rf "$BUILD_ROOT"' EXIT
-          python tools/build_content_package.py --source-ref "$SOURCE_REF" check-map
-          python tools/build_content_package.py --source-ref "$SOURCE_REF" build --profile rta-module-1 --output "$BUILD_ROOT/one"
-          python tools/build_content_package.py --source-ref "$SOURCE_REF" build --profile rta-module-1 --output "$BUILD_ROOT/two"
+          python tools/build_course_files.py --source-ref "$SOURCE_REF" --profile real-time-analytics-complete --profile data-warehousing-complete --profile observability-complete --output "$BUILD_ROOT/one"
+          python tools/build_course_files.py --source-ref "$SOURCE_REF" --profile real-time-analytics-complete --profile data-warehousing-complete --profile observability-complete --output "$BUILD_ROOT/two"
           cmp "$BUILD_ROOT/one/teaching.tar.gz" "$BUILD_ROOT/two/teaching.tar.gz"
-          cmp "$BUILD_ROOT/one/public.tar.gz" "$BUILD_ROOT/two/public.tar.gz"
           cmp "$BUILD_ROOT/one/build-report.json" "$BUILD_ROOT/two/build-report.json"

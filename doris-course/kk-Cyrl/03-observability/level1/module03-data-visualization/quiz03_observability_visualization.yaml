@@ -1,0 +1,141 @@
+title: '3-модуль тесті: Жүйені бақылау деректерін визуализациялау'
+description: Алты сұрақ Discover ішінде журнал іздеп, тыныш қате іздеуін түсіндіре,
+  Doris-ке сәйкес уақыт аралығын орната, трасса қатесінің бастауын таба, хост CPU-ын
+  өлшей және Grafana уақыт макростарын қолдана алатыныңызды тексереді.
+questions:
+- id: search_failed_checkouts
+  type: single_choice
+  objective: Doris App-тың Discover бетінде Lucene және SQL шарттарымен журнал іздеу.
+  prompt: Жүктеме генераторы POST /api/checkout, ал дүкен беті POST /api/checkout?currencyCode=USD
+    жібереді. Қай Discover іздеуі екеуінің де HTTP 500 күйімен аяқталған checkout
+    сұрауларын және тек соларды табады?
+  options:
+  - id: two_phrases
+    text: body:"POST /api/checkout" AND body:"HTTP/1.1 500"
+  - id: one_phrase
+    text: body:"POST /api/checkout HTTP/1.1 500"
+  - id: either_phrase
+    text: body:"POST /api/checkout" OR body:"HTTP/1.1 500"
+  - id: severity
+    text: severity_number:>=17 AND body:checkout
+  answer: two_phrases
+  explanation: 'Тырнақшалы фраза сөздері қатар әрі ретімен тұрса сәйкеседі. AND арқылы
+    қосылған екі фраза жолдың екі түріне де сәйкес: беттің сұрау параметрлері checkout
+    пен HTTP арасында тұрса да, әр фраза сәйкеседі. Бір ұзын фраза беттің сұрауларын
+    өткізіп алады, өйткені currencycode пен usd сөздері оны бұзады. OR барлық checkout
+    сұраулары мен барлық 500 жауаптарын табады. Қатынас журналында маңыздылық деңгейі
+    жоқ, сондықтан маңыздылық шарты бұл жолдардың ешқайсысын таппайды.'
+- id: explain_quiet_error_search
+  type: single_choice
+  objective: Маңыздылық бойынша іздеу сервис қате ретінде жазбайтын ақауларды неге
+    өткізіп алатынын түсіндіру.
+  prompt: Инцидент кезінде соңғы сағатқа severity_number:>=17 іздеуі Doris FE-нің
+    бірнеше қатесін ғана тауып, төлем туралы ештеңе таппайды. Қай түсіндіру ең негізді?
+  options:
+  - id: not_logged_as_errors
+    text: Ақаулы сервистер журнал жібермейді, ал ақаулардың қатынас журналы жолдарында
+      маңыздылық деңгейі жоқ
+  - id: no_failures
+    text: Осы сағатта ешбір тапсырыс сәтсіз болған жоқ, өйткені әр ақау ERROR деңгейіндегі
+      журнал жазбасын қалдырады
+  - id: hidden_from_visitors
+    text: Grafana-ға кірмесеңіз, Discover демо сервистерінің қате журналдарын жасырады
+  - id: other_scale
+    text: Демо сервистері өз шкаласын қолданады, онда severity_number 17 — INFO
+  answer: not_logged_as_errors
+  explanation: Маңыздылық бойынша іздеу дереккөз қате ретінде жазғанын ғана табады.
+    Payment пен checkout Collector-ға журнал жібермейді, ал әр сәтсіз checkout-ты
+    500 күйімен тіркейтін прокси қатынас журналының severity_number мәні 0. Сондықтан
+    тыныш қате іздеуі ештеңе сәтсіз болмағанын дәлелдемейді. Discover барлық келушіге
+    бір жолдарды көрсетеді, ал severity_number барлық дереккөзді ортақ OpenTelemetry
+    шкаласына келтіреді; онда 17–20 — ERROR.
+- id: fix_empty_time_range
+  type: single_choice
+  objective: Doris уақытты сақтауына сәйкес уақыт аралығын орнату.
+  prompt: UTC+8 компьютерінде Discover Last 15 minutes үшін нәтиже көрсетпейді, ал
+    SQL бір минут бұрынғы уақыт белгісі бар жолдарды табады. Себебі қандай және қалай
+    түзетіледі?
+  options:
+  - id: absolute_utc_range
+    text: Қолданба жергілікті уақытты Doris-тегі UTC-мен салыстырады; абсолют UTC
+      аралығын орнату керек
+  - id: rows_delayed
+    text: Doris жаңа жолдарды мәтіндік іздеуге тек 15 минуттан кейін көрсетеді; күтіп,
+      қайта іздеу керек
+  - id: cached_result
+    text: Grafana аралықтың бос нәтижесін кэштейді; Grafana контейнерін қайта іске
+      қосу керек
+  - id: rows_deleted
+    text: SQL сұрауынан кейін жолдар жойылған; телеметрияны қайта жүктеу керек
+  answer: absolute_utc_range
+  explanation: Doris UTC сақтайды, ал Doris App аралықты компьютердің жергілікті уақытына
+    айналдырып, Doris-тегі UTC уақытымен салыстырады; UTC+8 ішінде Last 15 minutes
+    болашақтағы 8 сағат кейінгі жолдарды сұрайды. UTC бойынша енгізілген абсолют аралық
+    жолдарды табады. Жолдар жүктелгеннен бірнеше секунд кейін ізделеді, Grafana бұл
+    нәтижені кэштемейді, SQL оларды жаңа ғана тапты, демек жойылмаған.
+- id: find_error_origin
+  type: single_choice
+  objective: Журнал жолынан трасса арқылы қате басталған span-ға өту.
+  prompt: Сәтсіз checkout сарқырамасында қате белгілері load-generator POST, frontend-proxy
+    ingress, frontend POST, checkout PlaceOrder, checkout-тың payment шақыруы және
+    payment Charge сервер span-ында тұр. Payment-тің charge бала span-ында қате жоқ.
+    Ақау қайдан басталады?
+  options:
+  - id: payment_charge
+    text: Payment-тің Charge сервер span-ында, ең терең қате span-ында
+  - id: root_span
+    text: Load-generator POST ішінде, өйткені әр қате түбір span-ынан басталады
+  - id: place_order
+    text: Checkout PlaceOrder span-ында, өйткені оның бала span-дары ең көп
+  - id: charge_child
+    text: Charge span-ында, өйткені ол payment тіркеген соңғы span
+  answer: payment_charge
+  explanation: 'Қате шақырылғаннан шақырушыға жоғары таралады, сондықтан қызыл жолдардың
+    көбі төменнен келген қатені ғана хабарлайды. Ақау балалары қатесіз болатын ең
+    терең қате span-ынан басталады: бұл — атрибуттарында қате хабары бар payment Charge
+    сервер span-ы. Түбір span сұрау басталған орынды көрсетеді, ақау орнын емес; бала
+    саны қатені білдірмейді; charge span-ының қате күйі жоқ.'
+- id: measure_host_cpu
+  type: single_choice
+  objective: Әр ядро мен әр күйдің үлгілерінен хост CPU-ын өлшеу.
+  prompt: system.cpu.utilization әр жолы бір CPU ядросының бір күйде болған уақыт
+    үлесін 0–1 арасында сақтайды. Қай есеп соңғы минуттағы хосттың жұмысбасты уақыт
+    үлесін береді?
+  options:
+  - id: one_minus_idle
+    text: 1-ден барлық ядроның idle жолдарының орташа мәнін шегеріп, 100-ге көбейту
+  - id: average_all_rows
+    text: Күйіне қарамастан барлық жолдың орташа мәнін 100-ге көбейту
+  - id: largest_value
+    text: Соңғы минуттағы кез келген жолдың ең үлкен мәнін 100-ге көбейту
+  - id: share_above_0_9
+    text: 0.9-дан жоғары жолдар санын барлық жолдардың пайызы ретінде алу
+  answer: one_minus_idle
+  explanation: Ядро күйлерінің қосындысы 1 болады, сондықтан жұмысбасты үлесі — 1-ден
+    бос үлесті шегеру; барлық ядро мен үлгі бойынша орташалау хостты өлшейді. Барлық
+    жолды орташалау әр күйді араластырып, әрдайым бір үлес береді. Ең үлкен мән әдетте
+    бос ядроның бос тұру үлесі. 0.9-дан жоғары жолдар көбіне бос ядролардың idle жолдары,
+    сондықтан value > 0.9 сүзгісі жұмысбасты емес, бос ядроларды табады.
+- id: use_time_macros
+  type: single_choice
+  objective: Grafana уақыт макростары бар SQL-ден бақылау тақтасының панельдерін құру.
+  prompt: Панель SQL-і $__timeFilter(timestamp) және $__timeGroupAlias(timestamp,
+    1m) қолданады, Format мәні — Time series. Екі макрос не істейді?
+  options:
+  - id: follow_time_range
+    text: Олар тақтаның уақыт аралығындағы жолдарды қалдырып, минут бойынша топтайды
+  - id: convert_to_local
+    text: Олар сұрауға дейін сақталған уақыт белгілерін компьютердің жергілікті уақытына
+      айналдырады
+  - id: last_minute_only
+    text: Олар нәтижені соңғы минутпен шектеп, аралықтың ескі жолдарын алып тастайды
+  - id: lucene_search
+    text: Олар панельге Discover сияқты timestamp бағанында Lucene іздеуін орындауға
+      мүмкіндік береді
+  answer: follow_time_range
+  explanation: Grafana $__timeFilter(timestamp) мәнін нақты уақыт сәттерімен берілген
+    тақта аралығының шартымен, ал $__timeGroupAlias(timestamp, 1m) мәнін әр жол минуты
+    басталатын time атты уақытпен алмастырады. Сақталған уақыт белгілері UTC болып
+    қалады; Grafana тек көрсететін уақытты түрлендіреді. Сұрау аралықтың әр минутын
+    қайтарады, макростар Lucene-ге емес, SQL-ге жатады.
+passing_score_percent: 80

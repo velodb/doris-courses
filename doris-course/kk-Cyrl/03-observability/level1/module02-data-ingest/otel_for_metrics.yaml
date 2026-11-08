@@ -1,0 +1,55 @@
+receivers:
+  # Pulls the metrics that Doris publishes in the Prometheus text format.
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'doris_cluster'
+          scrape_interval: 15s
+          metrics_path: '/metrics'
+          static_configs:
+            - targets: ['doris-obs:8030']
+              labels:
+                group: 'doris_fe'
+            - targets: ['doris-obs:8040']
+              labels:
+                group: 'doris_be'
+
+processors:
+  batch:
+    send_batch_size: 10000
+    timeout: 10s
+
+exporters:
+  doris:
+    endpoint: http://doris-obs:8040
+    database: otel
+    username: root
+    password:
+    table:
+      # A prefix: the exporter writes each metric type to its own table, such
+      # as otel_metrics_gauge and otel_metrics_sum.
+      metrics: otel_metrics
+    # The DOG Collector created the otel_metrics_* tables when Module 1 started
+    # it. This collector only loads rows, so it does not create tables.
+    create_schema: false
+    timezone: UTC
+    timeout: 60s
+    log_response: true
+    headers:
+      load_to_single_tablet: "true"
+    sending_queue:
+      enabled: true
+      num_consumers: 10
+      queue_size: 1000
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+
+service:
+  pipelines:
+    metrics:
+      receivers: [prometheus]
+      processors: [batch]
+      exporters: [doris]

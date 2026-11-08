@@ -1,0 +1,146 @@
+title: '7-модуль тесті: Apache Doris жүйесінде деректерді жаңарту және жою'
+description: Алты дербес бизнес сценарийі 7-модульдің жаңарту және жою шешімдерін
+  тексереді; әр оқу мақсатына бір сұрақтан. Жалғастырмас бұрын түсіндірмені оқып,
+  кез келген жауапты түзетіңіз.
+questions:
+- id: merge_staged_changes
+  type: single_choice
+  objective: Кіріс өзгерістердің пішіні мен иелігіне қарай толық жолдық upsert, ішінара
+    баған жаңарту, SQL `UPDATE` немесе `MERGE INTO` таңдау.
+  prompt: Аралық кестеде әр order_id үшін change_type мәні UPSERT немесе DELETE болатын
+    бір жол бар. Кей тапсырыс Unique Key мақсатта бар, кейбірі жоқ. Бір оператор сәйкес
+    UPSERT тапсырыстарын жаңартып, сәйкес DELETE тапсырыстарын жойып, сәйкес емес
+    UPSERT тапсырыстарын енгізуі тиіс. Қай амал сай келеді?
+  options:
+  - id: merge_into
+    text: Әр өзгеріс түрі үшін WHEN MATCHED және WHEN NOT MATCHED тармақтары бар MERGE
+      INTO
+  - id: sql_update
+    text: Барлық дайындалған тапсырыс ID мәндерін таңдайтын WHERE шарты бар SQL UPDATE
+  - id: insert_rows
+    text: DELETE деп белгіленген тапсырыстарды да жоятын дайындалған жолдардың INSERT
+      амалы
+  - id: partial_update
+    text: Әр тапсырыстың тек change_type мәнін жазатын ішінара баған жаңарту
+  answer: merge_into
+  explanation: 'MERGE INTO дайындалған өзгерістерді мақсатпен біріктіріп, бір операторда
+    сәйкес және сәйкес емес жолдарға әртүрлі әрекет қолданады. SQL UPDATE тек бар
+    жолдарды өзгертеді, қалыпты INSERT upsert жасайды, бірақ жоймайды, ал change_type
+    жазу тек бағанды сақтайды. Алдымен аралық кестеде әр order_id үшін бір жол барын
+    тексеріңіз: бір мақсатты жолға бірнеше бастапқы жол анықталмаған нәтиже береді.'
+- id: sequence_order
+  type: single_choice
+  objective: Қай күй жеңетінін келу реті емес, дереккөз реті шешуі үшін Sequence бағанын
+    пайдалану.
+  prompt: 'Unique Key package_status кестесі әр package_id үшін бір жол сақтап, source_version
+    бағанын Sequence деп жариялайды. 41 сәлемдемесі үшін үш толық жазба мына ретпен
+    келеді: 8-нұсқада in_transit, 10-нұсқада delivered, содан кейін кешіккен ескі
+    жаңарту — 9-нұсқада in_transit. Сұрау 41 сәлемдемесі үшін не көрсетеді?'
+  options:
+  - id: last_arrival_wins
+    text: Бір жол, 9-нұсқадағы in_transit, өйткені ол жазба соңынан келді
+  - id: three_rows
+    text: Кесте қабылдаған үш күй жазбасының әрқайсысына біреуден үш жол
+  - id: first_record_wins
+    text: Бір жол, 8-нұсқадағы in_transit, өйткені бірінші жазба сақталады
+  - id: highest_sequence_wins
+    text: Бір жол, 10-нұсқадағы delivered, өйткені ең үлкен Sequence жеңеді
+  answer: highest_sequence_wins
+  explanation: Sequence бағаны бір кілт күйлерін дереккөз нұсқасымен реттейді, сондықтан
+    кешіккен 9-нұсқа 10-нұсқаны ауыстыра алмайды. Unique Key кестесі әр қабылданған
+    жазуды емес, бір ағымдағы жолды көрсетеді және нұсқаға ұқсас аталған баған кесте
+    оны function_column.sequence_col арқылы жариялағанша ештеңені реттемейді.
+- id: omitted_columns
+  type: single_choice
+  objective: Толық жолдық және ішінара жазулар түсірілген бағандарға не істейтінін
+    және түсіріп қалдырудың `NULL` мәнінен айырмасын болжау.
+  prompt: Бар Unique Key жолының екі көшірмесінде balance 75.00 және note 'verified'
+    бар. balance үшін DEFAULT '0.00', ал note NULL рұқсат етеді және әдепкісі жоқ.
+    Бір көшірмеге толық жолдық upsert, екіншісіне ішінара баған жаңарту келеді; екеуі
+    де тек кілт пен күйді береді. Не болады?
+  options:
+  - id: both_retain
+    text: Екі жазу да оларды бермегендіктен, екі көшірме де 75.00 және verified сақтайды
+  - id: both_use_defaults
+    text: Екі жазу да сол бағандарды түсіргендіктен, екі көшірме де 0.00 және NULL
+      болады
+  - id: full_row_defaults_partial_retains
+    text: Толық жолдық көшірме 0.00 және NULL алады; ішінара көшірме 75.00 және verified
+      сақтайды
+  - id: full_row_retains_partial_defaults
+    text: Толық жолдық көшірме 75.00 және verified сақтайды; ішінара көшірме 0.00
+      және NULL алады
+  answer: full_row_defaults_partial_retains
+  explanation: Толық жолдық upsert жолды ауыстырады, сондықтан түсірілген бағандар
+    әдепкісін немесе NULL алады. Ішінара баған жаңарту бар жолды ішінара өзгертіп,
+    бермеген бағандарын сақтайды. NULL айқын жіберу түсіріп қалдыру емес, ал жаңа
+    кілт үшін ішінара жазуға жеке саясат қажет, өйткені ескі жол жоқ.
+- id: identify_deleted_rows
+  type: single_choice
+  objective: Жойылатын жолдардың анықталуына қарай предикаттық `DELETE` немесе Delete
+    Sign таңдау.
+  prompt: CDC топтамасы Unique Key кестесі үшін жойылған тұтынушылардың кілттерін
+    алып келеді. Бөлек күтім тапсырмасы category мәні test жолдарын жоюы тиіс. Қай
+    сәйкестік екі дереккөзге сай?
+  options:
+  - id: delete_sign_and_predicate
+    text: CDC кілттері үшін Delete Sign жолдары, category = test үшін предикаттық
+      DELETE
+  - id: truncate_both
+    text: Екеуі де кесте жолдарын жоятындықтан, екеуіне де TRUNCATE PARTITION
+  - id: partial_update_null
+    text: CDC кілттерін NULL орнататын ішінара жаңарту және сынақ жолдары үшін UPDATE
+  - id: upsert_and_overwrite
+    text: CDC кілттерінің қалыпты upsert амалы және сынақ жолдарының INSERT OVERWRITE
+      амалы
+  answer: delete_sign_and_predicate
+  explanation: Дерек ретінде келген кілттер жүктеу арқылы жасырын Delete Sign (__DORIS_DELETE_SIGN__
+    = 1) көмегімен жойылады, ал шарт таңдаған жолдар предикаттық DELETE арқылы жойылады.
+    Бағандарды NULL орнату немесе upsert күйді жоюдың орнына жазады, сынақ жолдарымен
+    үстінен жазу қате жолдарды сақтайды, ал truncate тұтас Partition бөлімдерін тазартады.
+- id: replace_partition
+  type: single_choice
+  objective: Толық Partition жою немесе ауыстыру үшін `TRUNCATE` немесе `INSERT OVERWRITE`
+    таңдау.
+  prompt: Бір күндік Partition толық түзетілген деректер жиынынан қайта құрылуы тиіс.
+    Оқу сұраулары алмастыру көрінгенше ескі мазмұнды көруді жалғастыруы тиіс, екеуінің
+    арасында бос аралық болмауы керек. Қай амал сай?
+  options:
+  - id: truncate_then_insert
+    text: Partition TRUNCATE жасап, содан кейін екінші операторда түзетілген жолдарды
+      INSERT INTO арқылы енгізу
+  - id: insert_into
+    text: Бірдей мәндері бар жолдарды ауыстыратын бар Partition ішіне INSERT INTO
+  - id: delete_then_load
+    text: Күннің әр ескі жолын DELETE жасап, содан кейін басқа операторда түзетілген
+      жолдарды жүктеу
+  - id: insert_overwrite
+    text: Тек сол Partition бөлімін толық түзетілген деректерімен INSERT OVERWRITE
+      арқылы ауыстыру
+  answer: insert_overwrite
+  explanation: INSERT OVERWRITE жаңа мазмұнды құрып, Partition бөлімін оған атомарлы
+    ауыстырады. Алдымен truncate немесе delete жасау күн бос болатын аралық қалдырады,
+    ал Duplicate Key кестесіне қалыпты INSERT INTO алмастырудың орнына қосады. Зертханалық
+    жұмыс алдындағы және кейінгі мазмұнды көрсетеді; атомарлы ауысу — құжатталған
+    әрекет.
+- id: visibility_and_cleanup
+  type: single_choice
+  objective: Жарияланған өзгерістің көрінуін кейінгі Compaction физикалық тазалауынан
+    ажырату.
+  prompt: Unique Key Merge-on-Write кестесіндегі жою жарияланды. Жаңа SELECT кілтті
+    енді қайтармайды, бірақ кестенің диск қолдануы азаймаған. Қай түсіндіру негізді?
+  options:
+  - id: deletion_failed
+    text: Жою сәтсіз болды, өйткені жойылған жол байттары босатылғанша көрінетін қалады
+  - id: visible_now_cleanup_later
+    text: Жою көрінеді; Compaction ескі деректерді кейін босата алады
+  - id: query_compacted
+    text: SELECT жолды жасыру үшін Compaction орындады, ал орын келесіде босатылады
+  - id: same_object
+    text: Delete Sign бағаны мен delete bitmap бір нысан, сондықтан орын қалады
+  answer: visible_now_cleanup_later
+  explanation: 'Көріну және физикалық тазалау — бөлек кезеңдер: жариялаудан кейін
+    жаңа сұраулар жойылған кілтті бірден алып тастайды, ал ескі деректер фондық Compaction
+    Rowset жиынтықтарын қайта жазғанша дискіде қала алады. Сұрау Compaction іске қоспайды
+    және кіріс Delete Sign Merge-on-Write ішкі delete bitmap құрылымы емес.'
+passing_score_percent: 80

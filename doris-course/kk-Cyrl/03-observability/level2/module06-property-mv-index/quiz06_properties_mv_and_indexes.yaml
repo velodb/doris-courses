@@ -1,0 +1,152 @@
+title: '6-модуль тесті: Кесте қасиеттері, материалданған көріністер және индекстер'
+description: Алты сұрақ кесте сақтау қасиеттерін оқи, сығуды әділ салыстыра, кері
+  индекстің мәтіндік іздеуге жауабын түсіндіре, Query Profile санауыштарын оқи және
+  синхронды материалданған көріністі түсіндіріп, әрекетін болжай алатыныңызды тексереді.
+questions:
+- id: read_missing_compression
+  type: single_choice
+  objective: '`SHOW CREATE TABLE` арқылы кесте сақтау қасиеттерін, соның ішінде онда
+    көрсетілмейтіндерін түсіну.'
+  prompt: Экспорттаушы otel_logs кестесін "compression" = "zstd" арқылы құрады, бірақ
+    Doris 4.1.3 ішіндегі SHOW CREATE TABLE otel_logs ішінде compression жолы жоқ.
+    Қай қорытынды дұрыс?
+  options:
+  - id: default_omitted
+    text: 'ZSTD қолданады: SHOW CREATE TABLE әдепкі қасиеттерді көрсетпейді, 4.x әдепкісі
+      — ZSTD'
+  - id: lz4f_default
+    text: Әдепкі LZ4F қолданады, өйткені Doris экспорттаушының compression қасиетін
+      елемеді
+  - id: uncompressed
+    text: Деректі сығусыз сақтайды, өйткені SHOW CREATE TABLE көрсетпеген қасиет орнатылмаған
+  - id: per_partition
+    text: Әр бөлім өз сығуын орнатады; оны кесте орнына SHOW PARTITIONS көрсетеді
+  answer: default_omitted
+  explanation: 'SHOW CREATE TABLE әдепкі мәнді қасиеттерді көрсетпейді; Doris 4.x
+    әдепкі сығуы — ZSTD, экспорттаушы баптауы соған тең болғандықтан көрсетілмейді.
+    LZ4F — 4.x әдепкісі емес, Doris экспорттаушы қасиетін қолданған. Жоқ жол қасиет
+    орнатылмағанын білдірмейді: әр кесте дерегін сығады. Сығу — әр бөлімнің емес,
+    кесте құрылғанда орнатылатын қасиет.'
+- id: fair_compression_test
+  type: single_choice
+  objective: Тек алгоритмді өзгертетін сығу алгоритмдерінің салыстыруын жобалау.
+  prompt: Курс журналдарына LZ4 ZSTD-мен салыстырғанда қанша диск қажет екенін білгіңіз
+    келеді. Қай өлшем алгоритмнің жеке әсерін көрсетеді?
+  options:
+  - id: same_rows_once
+    text: Тек compression бойынша ерекшеленетін, бірдей жолдар бір рет жүктелген екі
+      жаңа кесте; өлшем BE есептерінен кейін алынады
+  - id: copy_vs_original
+    text: otel_logs дерегін жаңа LZ4 кестесіне көшіріп, INSERT-тен кейін бірден өлшемін
+      otel_logs өлшемімен салыстыру
+  - id: query_speed
+    text: LZ4 пен ZSTD кестесіне бір сұрау орындап, уақытын салыстыру, өйткені жылдамырақ
+      — кішірек деген сөз
+  - id: alter_before_after
+    text: otel_logs кестесін ALTER арқылы LZ4 етіп, өзгеріске дейінгі/кейінгі SHOW
+      DATA өлшемін салыстыру
+  answer: same_rows_once
+  explanation: 'Тек алгоритм ерекшеленуі тиіс: бірдей орналасқан кестелерге бірдей
+    жолдар бірдей тәсілмен жүктеліп, өлшем BE-лер хабарлағаннан кейін, шамамен бір
+    минуттан соң алынады. otel_logs мыңдаған ұсақ жүктеу алған, индекстері бар; жаңа
+    көшірме одан тек алгоритммен ерекшеленбейді, INSERT-тен кейін бірден есепті өлшем
+    әлі 0. Сұрау ұзақтығы басқа көп нәрсені өлшейді, орын туралы айтпайды. Doris 4.1.3
+    compression өзгертуге ALTER қабылдамайды: ол кесте құрылғанда орнатылады.'
+- id: match_phrase_tokens
+  type: single_choice
+  objective: Мәтін бағанының кері индексі `MATCH_ANY`, `MATCH_ALL`, `MATCH_PHRASE`
+    сұрауларына қалай жауап беретінін түсіндіру.
+  prompt: idx_body unicode парсерін lower_case және support_phrase арқылы қолданады.
+    Қай шарт "POST /api/checkout?currencyCode=USD HTTP/1.1" 500 қатынас журналы жолын
+    табады?
+  options:
+  - id: two_short_phrases
+    text: body MATCH_PHRASE 'post api checkout' AND body MATCH_PHRASE 'http 1.1 500'
+  - id: one_long_phrase
+    text: body MATCH_PHRASE 'POST /api/checkout HTTP/1.1 500', ол жол сөздерін көшіреді
+  - id: like_lowercase
+    text: body LIKE '%post /api/checkout%' AND body LIKE '%HTTP/1.1" 500%'
+  - id: match_all_currency
+    text: body MATCH_ALL 'checkout currency 500', жолда бар сөздер
+  answer: two_short_phrases
+  explanation: 'Парсер жолды кіші әріпті post, api, checkout, currencycode, usd, http,
+    1.1 және 500 сөздеріне бөледі; фраза регистр мен тыныс белгісіне қарамастан қатар
+    әрі ретімен тұрған сөздерге сәйкеседі: екі қысқа фраза да сәйкес. Ұзын фразада
+    currencycode пен usd жолдағы checkout пен http арасында тұр, сондықтан сәйкес
+    емес. LIKE таңбаларды салыстырады, регистрге сезімтал: post POST-қа сәйкес емес,
+    әр жол оқылады. MATCH_ALL әр сөзді талап етеді, currency ондай сөз емес: жолда
+    currencycode бар.'
+- id: read_scan_counters
+  type: single_choice
+  objective: Query Profile жол санауыштарын олар көрсеткеннен артық қорытынды жасамай
+    түсіндіру.
+  prompt: Сәтсіз checkout іздеуінің индекссіз профилі RowsExprPredFiltered 79,840
+    және RowsRead 27; индекспен RowsInvertedIndexFiltered 79,840 және RowsRead 27
+    көрсетеді. Қай қорытындыны қолдайды?
+  options:
+  - id: read_every_body
+    text: Индекссіз Doris 27 жолды табу үшін әр жолдың body мәтінін оқыды; индекспен
+      сәйкес емес жолдарды оқымай өткізді
+  - id: speedup_ratio
+    text: Индекспен сұрау шамамен 3,000 есе жылдам болды; бұл — өткізілген жолдардың
+      оқылғанға қатынасы
+  - id: zone_maps
+    text: Екі орындалуда да body zone map-тері 79,840 жолды жоққа шығарды, индекс
+      оларды тек санады
+  - id: every_search
+    text: Индекс қосылған соң otel_logs әр іздеуі оқымай тұрып сол 79,840 жолды өткізеді
+  answer: read_every_body
+  explanation: 'Санауыштар осы сканерлеудің әр жолы қайда кеткенін тіркейді: оқылып,
+    токенделіп, сүзгі өрнегімен тасталды ма, әлде оқылмай тұрып индекс өткізді ме.
+    Уақыт өлшемейді, сондықтан жылдамдау коэффициентін бермейді. Zone map әр сегмент
+    пен бетке ең кіші/үлкен мәнді сақтайды, мәтіндегі сөздерді жоққа шығара алмайды;
+    RowsStatsFiltered 0 соны көрсетеді. Сандар осы деректегі осы сұрауға тиесілі:
+    басқа іздеу басқа жолдарды өткізеді.'
+- id: view_lifecycle
+  type: single_choice
+  objective: Синхронды материалданған көріністің құрылуын, өзекті ұсталуын және сақталуын
+    түсіндіру.
+  prompt: otel_traces үстіндегі CREATE MATERIALIZED VIEW server_minutes_mv жаңа ғана
+    қайтты. Көріністің қай сипаттамасы дұрыс?
+  options:
+  - id: job_then_loads
+    text: Тапсырма бұрынғы жолдардан құрады; кейін әр жүктеу сол транзакцияда жаңартады
+  - id: ready_at_return
+    text: Бұрынғы барлық жол қазірдің өзінде бар, өйткені CREATE көрініс аяқталғанда
+      ғана қайтады
+  - id: scheduled_refresh
+    text: Doris оны сервистер графының экспорттаушы тапсырмасындай әр 10 минутта кестеден
+      жаңартады
+  - id: separate_table
+    text: Бұл — сұраулар FROM ішінде otel_traces орнына атауы тиіс бөлек кесте
+  answer: job_then_loads
+  explanation: Doris көріністі қабылдаған бойда CREATE қайтады. Тапсырма оны кесте
+    жолдарынан құрады; SHOW ALTER TABLE MATERIALIZED VIEW FINISHED болғанын көрсетеді.
+    Содан кейін otel_traces әр жүктеуі сол жүктеу транзакциясында көріністі жаңартады,
+    сондықтан артта қалмайды. Жоспарлы жаңарту асинхронды материалданған көріністерге
+    жатады. Синхрондысы кесте индексі, DESC ... ALL ішінде AGG_KEYS ретінде сақталады;
+    сұраулар кесте атауын қолдана береді.
+- id: predict_view_rewrite
+  type: single_choice
+  objective: Doris сұрауға материалданған көріністен жауап бере алатынын болжау.
+  prompt: server_minutes_mv сервер span-дарын date_trunc(end_time, 'minute') және
+    service_name бойынша, COUNT пен SUM бағандарымен топтайды. Doris қай сұрауға содан
+    жауап бере алады?
+  options:
+  - id: coarser_grain
+    text: date_trunc(end_time, 'minute') бойынша сүзілген соңғы 30 минуттың сервис
+      бойынша сервер span-дары
+  - id: raw_end_time
+    text: end_time >= UTC_TIMESTAMP() - INTERVAL 30 MINUTE бойынша сүзілген соңғы
+      30 минуттың сервис бойынша сервер span-дары
+  - id: all_spans
+    text: Клиенттік және ішкілерін қоса, сервис пен минут бойынша барлық span-дар
+  - id: max_duration
+    text: MAX(duration) арқылы әр сервис пен минуттың ең ұзақ сервер span-ы
+  answer: coarser_grain
+  explanation: 'Doris бұл нәтижені көрініс жолдарынан есептей алады: сүзгі көріністің
+    өз өрнегін қолданады, сервистің минуттарын қосу — ірірек түйіршіктілік. Көрініс
+    end_time емес, минутты сақтайды, сондықтан end_time сүзгісі жолдарына қолданылмайды.
+    Тек сервер span-дары бар, басқаларын санай алмайды. Ұзақтық емес, санақ пен қосынды
+    сақтайды, сондықтан одан ең үлкен ұзақтық есептелмейді.'
+passing_score_percent: 80

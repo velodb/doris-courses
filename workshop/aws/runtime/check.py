@@ -54,6 +54,7 @@ def probe_kernel(course, source_root, kernel_dir, *, check_docker=True):
     from jupyter_client.kernelspec import KernelSpecManager
 
     root = Path(source_root) / course["course_dir"]
+    execution_root = Path(source_root) / course.get('_execution_course_dir', course['course_dir'])
     # Start from a nested Notebook directory, as the browser will. The launcher
     # must override that cwd and retain its own interpreter after restart.
     nested = Path(course.get('_probe_cwd', root / Path(course["notebooks"][0]).parent))
@@ -86,12 +87,13 @@ print('WORKSHOP_PROBE=' + json.dumps(result))
                 manager.restart_kernel(now=True)
                 client.wait_for_ready(timeout=30)
             result = execute_json(manager, client, probe_code)
-            expected_interpreter = root / ".venv/bin/python"
+            environment = Path(course.get('_environment_dir', root / '.venv'))
+            expected_interpreter = environment / 'bin/python'
             if (Path(result["executable"]).parent.resolve() != expected_interpreter.parent.resolve()
                     or Path(result["executable"]).name != expected_interpreter.name
-                    or Path(result["prefix"]).resolve() != (root / ".venv").resolve()
-                    or Path(result["cwd"]).resolve() != root.resolve()
-                    or not Path(result["package_file"]).resolve().is_relative_to(root.resolve())
+                    or Path(result["prefix"]).resolve() != environment.resolve()
+                    or Path(result["cwd"]).resolve() != execution_root.resolve()
+                    or not Path(result["package_file"]).resolve().is_relative_to(execution_root.resolve())
                     or not Path(result["shared_file"]).resolve().is_relative_to((Path(source_root) / "doris-course/common").resolve())
                     or result["python"] != [3, 12] or result["loopback"] != "127.0.0.1"
                     or (check_docker and not (result.get("docker") and result.get("compose")))):
@@ -241,6 +243,16 @@ def collect_checks(plan, *, source=Path("/opt/doris-courses"),
                        for path in course["notebooks"])
         check(course["kernel"] + ":notebook-bindings", copies_valid)
         probe = dict(course)
+        if plan.get('schema_version') == 2 and plan['content']['abi'] == 'doris-workshop-content-3.0':
+            from multilingual import Content
+            content = Content(plan, content_root, workspace)
+            for locale in content.links:
+                localized = {**probe, '_execution_course_dir': content.source_course(course, locale),
+                    '_environment_dir': content.environment(source, course, locale),
+                    '_probe_cwd': workspace / 'work' / locale / course['course_dir'] / Path(course['notebooks'][0]).parent}
+                check(course['kernel'] + ':' + locale + ':interpreter-imports-cwd-restart-docker',
+                      lambda localized=localized: len(probe_kernel(localized, source, kernels)) == 2)
+            continue
         if plan.get('schema_version') == 2:
             probe['_probe_cwd'] = workspace / 'work' / plan['content']['default_locale'] / course['course_dir'] / Path(course['notebooks'][0]).parent
         check(course["kernel"] + ":interpreter-imports-cwd-restart-docker",

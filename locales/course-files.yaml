@@ -1,0 +1,350 @@
+# Course-file roots, selections and historical grading identities. Teaching content lives in each language tree.
+schema_version: 1
+locales:
+  en:
+    root: doris-course
+    catalog: catalog.yaml
+    ui: locales/ui.en.json
+  kk-Cyrl:
+    root: doris-course/kk-Cyrl
+    catalog: doris-course/kk-Cyrl/catalog.yaml
+    ui: doris-course/kk-Cyrl/ui.yaml
+profiles:
+- id: rta-module-1
+  modules:
+  - course_slug: real-time-analytics
+    module_id: module-1
+    optional_paths: []
+- id: real-time-analytics-primary
+  modules:
+  - course_slug: real-time-analytics
+    module_id: module-1
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-2
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-3
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-4
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-5
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-6
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-7
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-8
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-9
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-10
+    optional_paths: []
+- id: data-warehousing-primary
+  modules:
+  - course_slug: data-warehousing
+    module_id: module-1
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-2
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-3
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-4
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-5
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-6
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-7
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-8
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-9
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-10
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-11
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-12
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-13
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-14
+    optional_paths: []
+- id: observability-primary
+  modules:
+  - course_slug: observability
+    module_id: module-1
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-2
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-3
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-4
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-5
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-6
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-7
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-8
+    optional_paths: []
+- id: real-time-analytics-complete
+  modules:
+  - course_slug: real-time-analytics
+    module_id: module-1
+    optional_paths:
+    - level1/module01-introduction/optional01_metabase_dashboard.ipynb
+  - course_slug: real-time-analytics
+    module_id: module-2
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-3
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-4
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-5
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-6
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-7
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-8
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-9
+    optional_paths: []
+  - course_slug: real-time-analytics
+    module_id: module-10
+    optional_paths: []
+- id: data-warehousing-complete
+  modules:
+  - course_slug: data-warehousing
+    module_id: module-1
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-2
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-3
+    optional_paths:
+    - level1/extensions/extension23_physical_design.ipynb
+  - course_slug: data-warehousing
+    module_id: module-4
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-5
+    optional_paths:
+    - level1/module05-ingestion/optional05_continuous_ingestion.md
+    - level1/module05-ingestion/optional05_invoice_and_receipts.md
+    - level1/module05-ingestion/optional05_kafka_routine_load.ipynb
+    - level1/module05-ingestion/optional05_flink_mysql_cdc.ipynb
+    - level1/extensions/extension45_files_and_group_commit.ipynb
+  - course_slug: data-warehousing
+    module_id: module-6
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-7
+    optional_paths:
+    - level1/extensions/extension67_schema_and_delete.ipynb
+  - course_slug: data-warehousing
+    module_id: module-8
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-9
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-10
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-11
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-12
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-13
+    optional_paths: []
+  - course_slug: data-warehousing
+    module_id: module-14
+    optional_paths: []
+- id: observability-complete
+  modules:
+  - course_slug: observability
+    module_id: module-1
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-2
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-3
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-4
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-5
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-6
+    optional_paths: []
+  - course_slug: observability
+    module_id: module-7
+    optional_paths:
+    - level2/module07-data-analysis-litefuse/optional07_trace_a_real_model.ipynb
+  - course_slug: observability
+    module_id: module-8
+    optional_paths: []
+legacy_revisions:
+  policies:
+    ai-integrations:
+      payload_digest: 6c909e6c3ad5e72f1629128cb848d67e84d0952f1b6a88a3b787f43ebd0b81dd
+      revision: policy.8be9e1a41ab44b16bfd4ad0dd06d77db
+    data-warehousing:
+      payload_digest: b41f2c0355718408addd9ef31b7548ee03e7977ce7a2e372dca69ffb6dfea456
+      revision: policy.a0aed713849d45998ef24d77fe363498
+    observability:
+      payload_digest: a7d8a333985767cf01cd1102d1ecfc85c9fc4f613296f5338a3880293938d2c2
+      revision: policy.0e20e42c229b446eb7c8f797326ceb89
+    real-time-analytics:
+      payload_digest: 170e9ea865602e423a71c873216b0f93480fa17271d5339d56c1da6a6a83deb3
+      revision: policy.893f2a80a56149b29d82f914ff912e9d
+  quizzes:
+    doris-course/01-real-time-analytics/level1/module01-introduction/quiz01_doris_fundamentals.yaml:
+      revision: quiz.872f505e3d1e41e2ae8d6828880aab44
+      grading_digest: ac496ee718decfe88fe846e1dd98a7f9bd8cc56b687e89191defbe9812d3a7f2
+    doris-course/01-real-time-analytics/level1/module02-architecture/quiz02_doris_architecture_and_physical_design.yaml:
+      revision: quiz.9d156437e981448ca36f90141a041718
+      grading_digest: e093dfc3bafd33cda2a0681936a30b82959ab9e1994086e715733f20a12d555e
+    doris-course/01-real-time-analytics/level1/module03-loading-data/quiz03_load_methods_and_retry_safety.yaml:
+      revision: quiz.7b228325834244aebe4e2a1a1794f5d2
+      grading_digest: 3177fdb26506924232b29a9ca2d43153d6508737773370aaa0b153148cf1848e
+    doris-course/01-real-time-analytics/level2/module04-modeling/quiz04_schema_and_modeling_choices.yaml:
+      revision: quiz.7980a1af75a948bfb4c54cb2d7dc1277
+      grading_digest: ebd9985c18874c23c39b008388cdffcb49438911498ab2702d568b6edbf204f8
+    doris-course/01-real-time-analytics/level2/module05-analyzing/quiz05_analytical_query_semantics.yaml:
+      revision: quiz.2f8a78acfad94f488076f54410e2c6a5
+      grading_digest: 617d3eed999d6b78625e7a366bb0875355c7d0921126c309a41ff87a7f2043f3
+    doris-course/01-real-time-analytics/level2/module06-joining/quiz06_join_semantics_and_execution.yaml:
+      revision: quiz.d89bb0f7c4644209a859cc1e35aef6f5
+      grading_digest: 16749149ce44e748bd8c7e27485bad5176958727f789489b504103ed17174395
+    doris-course/01-real-time-analytics/level2/module07-updating-deleting/quiz07_state_changes_and_deletion.yaml:
+      revision: quiz.ccc5ce4193fc4a7f84a16c6c3c66bba3
+      grading_digest: d4f36a783e966ccc9ad91eaf382961eff5d094606e8d0640cf99472ea0a43225
+    doris-course/01-real-time-analytics/level3/module08-query-acceleration/quiz08_acceleration_choices.yaml:
+      revision: quiz.fb31ba756c1d4a8dbe990c8d37cfe049
+      grading_digest: 8fcb36bf43b9a90cca9eb0d97c7dee0c25c8cd83ae7d2bff19f3465fe4aa99b2
+    doris-course/01-real-time-analytics/level3/module09-sharding-replication/quiz09_distribution_and_availability.yaml:
+      revision: quiz.70f0729c11a440c187aaf901e5edb856
+      grading_digest: ba307f7b0ae1d0e96329c5c06f2eb988048ab581c55507505d6db77d666bb586
+    doris-course/01-real-time-analytics/level3/module10-managing-data/quiz10_data_lifecycle_and_recovery.yaml:
+      revision: quiz.6c78886ff56c4b35bbdfdb554f0460df
+      grading_digest: 2cf981553e256c6325048973f2fd79e1274500994af574b23a9838f8a136cb54
+    doris-course/02-data-warehousing/level1/module01-introduction/quiz01_doris_fundamentals.yaml:
+      revision: quiz.c6840ab862b2482f95264d054c94aeb2
+      grading_digest: 4b6aba0ff49b510f8229d662b21eda81d6e7a4b9bcb36b3b1f27bf129a65d59f
+    doris-course/02-data-warehousing/level1/module02-architecture/quiz02_storage_and_write_batches.yaml:
+      revision: quiz.38cacaa321f24cac9c3d844c4f51e2af
+      grading_digest: b6ca1c7d2669e7a51377205b473c13af305ea73b8bb817cd554fcfbde529639a
+    doris-course/02-data-warehousing/level1/module03-table-design/quiz03_models_and_data_distribution.yaml:
+      revision: quiz.fc0b332d00ff475ab8c7bd9f2b833ad7
+      grading_digest: 446dda02dc5514d4725934e0ac6024a1ee9e604eadd46bf204094ea177d59ad8
+    doris-course/02-data-warehousing/level1/module04-external-access/quiz04_internal_files_and_lake_tables.yaml:
+      revision: quiz.56b537486d2e4146ba35eda3ea0e65dd
+      grading_digest: 6c9dd725614aecdab9a7f038ff5f03a3ae6259ae5b698a6569896f35e9a6a390
+    doris-course/02-data-warehousing/level1/module05-ingestion/quiz05_continuous_ingestion.yaml:
+      revision: quiz.7c74729064c74d8b85256fb27f155a78
+      grading_digest: 9e5a070bbe3daaf0858bbf952961a1924c0e99b62cdc4098a72ab1b8e244a4be
+    doris-course/02-data-warehousing/level1/module05-ingestion/quiz05_load_methods_and_retry_safety.yaml:
+      revision: quiz.efb52e99bf70498880cb457050d90f3d
+      grading_digest: 305f81dda35ed8237909c2949dc89fc8af9964ca97ff96b5dd8f10a97c4e1ffd
+    doris-course/02-data-warehousing/level1/module06-data-quality/quiz06_data_quality_and_rejection.yaml:
+      revision: quiz.be65ac0d5b4f46a5adf4a8c2cf9a9c24
+      grading_digest: 569b6e00da9cc6506e5bbe058b2db561d841ed87f7ad56cb162dcae7bdcee849
+    doris-course/02-data-warehousing/level1/module07-state-changes/quiz07_state_changes_and_replay.yaml:
+      revision: quiz.77cdca3503ad407fac181d21ac3d27dd
+      grading_digest: 162aa05e3d8613f100fbeb7d6a496de699af7824716768f369e67f44cad162d9
+    doris-course/02-data-warehousing/level2/module08-views-materialized-views/quiz08_views_and_materialized_views.yaml:
+      revision: quiz.08bf03571252400182cd763fc9c4693e
+      grading_digest: f822615687d69ddfcf259766727f17dca5b4d65a23966bd67807b5af820e106a
+    doris-course/02-data-warehousing/level2/module09-modeling-and-joins/quiz09_modeling_and_joins.yaml:
+      revision: quiz.16ca5128d48d4c0cb5febfbfcf5f84cb
+      grading_digest: 943424f70073d6847368db512108c867a40525732e91faca0d50459094ef2899
+    doris-course/02-data-warehousing/level2/module10-metric-processing/quiz10_metric_processing.yaml:
+      revision: quiz.401acc35447b41029ecbaccaa5e269b8
+      grading_digest: d2c44c1c997387e117b578ae15e857523d37c2195ad51f043a370d0a2ea0cfff
+    doris-course/02-data-warehousing/level2/module11-bi-and-ai/quiz11_bi_and_ai.yaml:
+      revision: quiz.fd1be7e5fb354a6ca646956c63458669
+      grading_digest: da38650fb49fc1b9ec7187f9311fea01f133c678177d34591355826913571f59
+    doris-course/02-data-warehousing/level3/module12-publishing-permissions-audit/quiz12_publishing_permissions_audit.yaml:
+      revision: quiz.6b7c5204dd1b4e0fabaea403af75f00a
+      grading_digest: e46f26522162906c63eaceeb41da4e4616e0c202ffb2ed2667ef8b98c23e5a94
+    doris-course/02-data-warehousing/level3/module13-storage-lifecycle/quiz13_storage_lifecycle.yaml:
+      revision: quiz.3ef0d2a598824ca4b94414c8ea9d6f57
+      grading_digest: a09ab0c29ed627499dcbff342a27bdf7b1f1df8a4712c62a80c4e8f711f24643
+    doris-course/02-data-warehousing/level3/module14-resource-isolation/quiz14_resource_isolation.yaml:
+      revision: quiz.c2e39101d4a84a22b1d9b5a2aec9ce6d
+      grading_digest: 16d3ad5d977cfc6acb9b99694228dc82e2396f6e4db1fd9d5a6fd59a35eaf282
+    doris-course/03-observability/level1/module01-observability-introduction/quiz01_observability_foundations.yaml:
+      revision: quiz.d5c1221f66da454292dd7f97ede9fae7
+      grading_digest: a2f9a82bb2c24b595287de120148ce6a006e5b91bcb1a12bfca98d8337eaf7e3
+    doris-course/03-observability/level1/module02-data-ingest/quiz02_ingesting_observability_data.yaml:
+      revision: quiz.3ba12c2449924590985d30daff431955
+      grading_digest: 8685a6c60735f980eee957ae67d2c5d86ead4c63177a7377e36b5db0a3c750e5
+    doris-course/03-observability/level1/module03-data-visualization/quiz03_observability_visualization.yaml:
+      revision: quiz.e0a88bb9cf7f4d80aaabfce0690aaaaa
+      grading_digest: ff1635d04f5915a912d5e61ea682114a6838aa70aba43a68c262f501f6c5a8cc
+    doris-course/03-observability/level2/module04-table-model/quiz04_observability_table_models.yaml:
+      revision: quiz.746d70fd503542ca9cb471316f7f02d4
+      grading_digest: 9eb0242718bb7520e8bf7a434ec402c66847f070409a399e968d77a32f736f8f
+    doris-course/03-observability/level2/module05-partition-bucket/quiz05_partition_and_bucket_choices.yaml:
+      revision: quiz.463cc22859e24b1fbb3d2cff9d2b8c5c
+      grading_digest: 64cb992a0a51bac67d253c3ed26b5156dcc92aba691bde9eb28aa950a05072f3
+    doris-course/03-observability/level2/module06-property-mv-index/quiz06_properties_mv_and_indexes.yaml:
+      revision: quiz.fbcd9c3d1cac445ba6bc618b385a6470
+      grading_digest: 5ea475aa409edb500ded194fd5ba91671474f2e6ff22e329a1505f177269bdb1
+    doris-course/03-observability/level2/module07-data-analysis-litefuse/quiz07_analysis_and_litefuse.yaml:
+      revision: quiz.ba917d93418b4e1c9e3fcf933641ba1d
+      grading_digest: e401e1a7c83507217ff5f017ddd5caaddbe484aa37398839a81d92d59d06c901
+    doris-course/03-observability/level2/module08-alerting/quiz08_alerting_rules.yaml:
+      revision: quiz.b1d9ed1723c94c64a49f361e0e7e4b48
+      grading_digest: 010bab3b1f714a6a39368a0873630aadf5972b668f2b25810f91787c978520ca
+    doris-course/04-ai-integrations/level1/module01-doris-mcp/quiz01_doris_mcp.yaml:
+      revision: quiz.1ff66a108ba8408e935786793cfc4ab7
+      grading_digest: 03a0b5e47e13b39c64dc3e08dbf94ac9443abb1cf386a9e90e4a5243ad76f3fd
+    doris-course/04-ai-integrations/level1/module02-doris-ai-functions/quiz02_doris_ai_functions.yaml:
+      revision: quiz.4e2a78c044cb449897280536c5de71c4
+      grading_digest: e64887c252ef46bc72180dbad9441a9bd4117e6f079854fd27c31f10f82dc3ed

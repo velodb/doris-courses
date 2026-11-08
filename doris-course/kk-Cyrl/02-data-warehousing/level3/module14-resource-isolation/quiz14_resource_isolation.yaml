@@ -1,0 +1,125 @@
+title: '14-модуль тесті: Ресурстарды оқшаулау және сұрауларды қорғау'
+description: Бір жауап таңдалатын алты сұрақ; дерекқор қосылымы қажет емес. Түсіндірмені
+  жауап бергеннен кейін көресіз.
+questions:
+- id: routing_order
+  type: single_choice
+  objective: Doris Workload Group таңдау ретін түсіндіру.
+  prompt: Әдепкісі course_dashboard_l3, екі топты да қолдана алады. Сеанста SET workload_group
+    = 'course_adhoc_l3', кейін hint-сіз сұрау. Қай топ?
+  options:
+  - id: session_group
+    text: 'course_adhoc_l3: сеанс тобы тіркелгі әдепкісінен бұрын'
+  - id: account_default
+    text: 'course_dashboard_l3: тіркелгі әдепкісі сеанстан бұрын'
+  - id: normal_fallback
+    text: 'normal: сеанс пен тіркелгі келіспесе, Doris соған ауысады'
+  - id: free_slot
+    text: FE-ге келгенде қай екеуінде орын бос болса, сол
+  answer: session_group
+  explanation: 'Рет: hint, бос емес сеанс тобы, тіркелгі әдепкісі, normal. Тіркелгі
+    сеанс тобын қолдана алады, сұрауды сонда орындайды. Әдепкі сеанстан кейін; сәйкессіздік
+    әдепкіге кері ауыстырмайды. Сыйымдылық таңдалған топтың ішінде не болатынын шешеді,
+    топ таңдамайды.'
+- id: no_queue
+  type: single_choice
+  objective: max_concurrency, max_queue_size, queue_timeout бойынша орындала ма, күте
+    ме, қабылданбай ма болжау.
+  prompt: max_concurrency 2, max_queue_size 0. Бір FE-де әрқайсысы бір минуттық екі
+    сұрау орындалады, үшіншісі сонда келеді. Не болады?
+  options:
+  - id: rejected
+    text: Бірден query waiting queue is full қатесімен қабылданбайды
+  - id: waits
+    text: Екі сұраудың бірі біткенше күтеді
+  - id: moves_normal
+    text: Бос орны бар normal тобына ауысады
+  - id: times_out
+    text: Топ queue_timeout мәнін күтіп, кейін сәтсіз болады
+  answer: rejected
+  explanation: Осы FE-нің екі орны бос емес, кезек жоқ, бірден қабылданбайды. 0 —
+    ештеңе күтпейді. Тобы толса, сұрау басқаға ауыспайды. Кезекте орын жоқта күтпейді,
+    timeout күтетін де ештеңе жоқ.
+- id: cpu_cgroup
+  type: single_choice
+  objective: Жады/CPU шектері қайда қатысты, CPU-ға не қажет екенін түсіндіру.
+  prompt: BE-де doris_cgroup_cpu_path жоқ. Ad hoc max_cpu_percent 10, max_memory_percent
+    30, жалғыз өзі бүкіл CPU қолданады. Неге?
+  options:
+  - id: no_cgroup
+    text: CPU cgroup жоқта CPU шегі орындалмайды, жады шегі әлі бар
+  - id: needs_restart
+    text: Өзгерген CPU шегі күшіне енуі үшін FE қайта іске қосылуы керек
+  - id: waiting_only
+    text: max_cpu_percent тек күткенді, орындалғанды емес, шектейді
+  - id: cluster_share
+    text: Шек бүкіл кластер үлесі, сондықтан бір топ жалғыз BE-ні толтыра алады
+  answer: no_cgroup
+  explanation: CPU үшін BE cgroup керек; doris_cgroup_cpu_path болмаса, max_cpu_percent
+    орындатылмайды, жады әр BE-де Doris есебімен шектеле береді. FE қайта қосылуы
+    BE-ге cgroup қоспайды. Кезек қасиеттері күтуді, CPU орындалғанды басқарады. Шек
+    әр BE-ге, орындатылатын максимум бос CPU-ға да қатысты.
+- id: route_and_bypass
+  type: single_choice
+  objective: USAGE_PRIV, default_workload_group арқылы бағыттап, bypass_workload_group
+    неге оқшаулау шекарасы еместігін түсіндіру.
+  prompt: Аналитик тек ad hoc қолданады, әдепкісі де сол. Орын/кезек толы, bypass_workload_group
+    = true орнатады. Келесі сұрауға не болады?
+  options:
+  - id: skips_queue
+    text: FE кезегін өткізіп, BE жады шегіндегі ad hoc топта орындалады
+  - id: admin_only
+    text: SET өтпейді, өйткені сеанс bypass_workload_group мәнін тек әкімші өзгертеді
+  - id: moves_normal
+    text: Ad hoc шектеулері жоқ normal ішінде орындалады
+  - id: any_group
+    text: Пайдалану тексеруін де өткізеді, аналитик енді тақта тобына кіре алады
+  answer: skips_queue
+  explanation: 'Тек FE кезегін өткізеді: топ сол, пайдалану тексеруі мен BE жады шегі
+    қалады. Сондықтан қарапайым пайдаланушы өте алмайтын шекара емес. Әр пайдаланушы
+    сеансына қоя алады, топты өзгертпейді. USAGE_PRIV жоқ топты таңдау орындалғанда
+    әлі сәтсіз.'
+- id: block_before_run
+  type: single_choice
+  objective: query_timeout, Workload Policy, SQL Block Rule-ды уақыты/орны бойынша
+    ажырату.
+  prompt: Екіден көп бөлім сканерлеуі басталмай қабылданбауы, аналитик шекті көтере
+    алмауы тиіс. Қай тетік?
+  options:
+  - id: block_rule
+    text: Әкімші sql_block_rules арқылы тіркелгіге байлаған partition_num SQL Block
+      Rule
+  - id: session_timeout
+    text: Әр сканерлеуден бұрын аналитик сеансында SET query_timeout = 60
+  - id: workload_policy
+    text: 60000 ms кейін тоқтататын Workload Policy
+  - id: concurrency_one
+    text: Бір уақытта біреуін ғана орындататын max_concurrency 1
+  answer: block_rule
+  explanation: Scan ережесі орындалуға дейін жоспарды оқып қабылдамайды; аналитикке
+    байлайтын тіркелгі қасиетін тек әкімші орнатады. Timeout орындалғанды тоқтатады,
+    аналитик сеанс мәнін өзгерте алады. Workload Policy орындалуда, scan ауқымы емес,
+    өткен уақытпен әрекет етеді. Қатар орындалу санды шектейді, әрқайсысының не оқитынын
+    емес.
+- id: rollback_order
+  type: single_choice
+  objective: Топ, бағыттау, қорғаныс, бақылау, тәуелділік ретімен қайтаруы бар ресурс
+    нұсқаулығын жазу.
+  prompt: Ad hoc тобы тоқтатылады. Екі тіркелгіге әдепкі, Workload Policy сілтейді,
+    басқа мақсаты жоқ рөл USAGE_PRIV ұстайды. Қандай ретпен жоясыз?
+  options:
+  - id: dependency_order
+    text: Саясат, әдепкілер, пайдалану рұқсаты/рөл, кейін топ; бәрін тексеру
+  - id: group_first
+    text: Алдымен топ, Doris әдепкі/саясат/рұқсатты бірге жояды
+  - id: defaults_only
+    text: 'Тек екі әдепкі: ешкім қолданбаса саясат пен рұқсат зиянсыз'
+  - id: keep_grant
+    text: Саясат пен топ, келесі сол атаулы топқа рөл рұқсатын сақтау
+  answer: dependency_order
+  explanation: Саясат сілтесе не тіркелгі әдепкісі болса, Doris топты жоймайды; жою
+    пайдалану рұқсатын қалдырады. Алдымен сілтемелер, кейін рұқсат/рөл, соңында топ,
+    әрқайсысы SHOW-мен тексеріледі. Алдымен топты жою сілтемелер барда сәтсіз. Саясат
+    тәуелділік болып қалады, ескі рұқсат сол атаулы жаңа топпен қайтады, оны сақтау
+    да қате.
+passing_score_percent: 80

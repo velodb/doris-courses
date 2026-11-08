@@ -126,11 +126,13 @@ def enable_opt_ins(notebook, flags):
 
 
 def valid_selection_report(report, steps, profiles, source_notebooks, *, _language=False):
-    if profiles == ['rta-module-1'] and not _language:
+    file_package = report.get('content', {}).get('abi') == 'doris-workshop-content-3.0'
+    if (profiles == ['rta-module-1'] or file_package) and not _language:
         languages = report.get('language_reports', {})
         return (report.get('schema_version') == 3 and set(languages) == {'en', 'kk-Cyrl'} and
                 all(value.get('locale') == locale and value.get('passed') is True and
-                    valid_selection_report(value, steps, profiles, source_notebooks, _language=True)
+                    valid_selection_report(value, steps, profiles,
+                        source_notebooks[locale] if file_package else source_notebooks, _language=True)
                     for locale, value in languages.items()) and
                 report.get('notebook_count') == sum(v['notebook_count'] for v in languages.values()) and
                 report.get('code_cells') == sum(v['code_cells'] for v in languages.values()))
@@ -169,6 +171,7 @@ def run_multilingual(expected, runtime, root):
     course = runtime['courses'][0]
     steps = selection_plan(course)
     sources = {s['notebook']: (source_root / course['course_dir'] / s['notebook']).read_bytes() for s in steps}
+    language_sources = {}
     report = {'schema_version': 3, 'kind': 'doris-workshop-course-validation',
               'image_id': expected['ami_id'], 'instance_id': expected['instance_id'],
               'course_ref': runtime['course_ref'], 'content': runtime['content'],
@@ -179,6 +182,10 @@ def run_multilingual(expected, runtime, root):
         (root / 'progress.tmp').replace(root / 'progress.json')
     try:
         for locale in runtime['content']['available_locales']:
+            if content.course_files:
+                sources = {s['notebook']: (source_root / content.source_course(course, locale) / s['notebook']).read_bytes()
+                           for s in steps}
+                language_sources[locale] = sources
             row = {'locale': locale, 'course_profiles': course['profiles'], 'notebooks': [], 'modules': [],
                    'notebook_count': 0, 'code_cells': 0, 'passed': False}
             report['language_reports'][locale] = row
@@ -223,7 +230,8 @@ def run_multilingual(expected, runtime, root):
             row['passed'] = valid_selection_report(row, steps, course['profiles'], sources, _language=True)
         report['notebook_count'] = sum(r['notebook_count'] for r in report['language_reports'].values())
         report['code_cells'] = sum(r['code_cells'] for r in report['language_reports'].values())
-        report['passed'] = valid_selection_report(report, steps, course['profiles'], sources)
+        report['passed'] = valid_selection_report(report, steps, course['profiles'],
+                                                 language_sources if content.course_files else sources)
     except Exception:
         report['error'] = {'type': 'language-execution-failed', 'message': 'Inspect the private validation Notebook.'}
     finally:

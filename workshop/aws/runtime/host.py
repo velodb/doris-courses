@@ -87,7 +87,10 @@ def verify_bundle(bundle):
         raise RuntimeErrorDetail("bundle: incompatible runtime")
     locks = plan.get("python_locks", {})
     expected_locks = {"server", *(c.get("kernel") for c in plan.get("courses", []) if isinstance(c, dict))}
-    if not isinstance(locks, dict) or (locks and (set(locks) != expected_locks or
+    optional_locks = ({c['kernel'] + '.' + tag for c in plan['courses']
+                      for tag in plan.get('content', {}).get('available_locales', []) if tag != 'en'}
+                     if plan.get('content', {}).get('abi') == 'doris-workshop-content-3.0' else set())
+    if not isinstance(locks, dict) or (locks and (not expected_locks <= set(locks) <= expected_locks | optional_locks or
                   any(path != name + ".requirements.lock" for name, path in locks.items()))):
         raise RuntimeErrorDetail("bundle: invalid Python lock mapping")
     extra = {'multilingual.py', 'teaching.tar.gz'} if plan['schema_version'] == 2 else set()
@@ -258,6 +261,18 @@ def install_content(bundle, plan, layout):
         spec.loader.exec_module(adapter)
         adapter.validate_plan(plan)
         adapter.unpack(Path(bundle) / 'teaching.tar.gz', layout.content, plan['content'])
+        if plan['content']['abi'] == 'doris-workshop-content-3.0':
+            content = adapter.Content(plan, layout.content, layout.workspace)
+            files = set(archive_files(Path(bundle) / 'source.tar'))
+            for course in plan['courses']:
+                for locale in content.links:
+                    root = content.source_course(course, locale)
+                    required = {root + '/course.yaml', *(root + '/' + n for n in course['notebooks'])}
+                    if not required.issubset(files):
+                        raise RuntimeErrorDetail('source: language course files missing from frozen archive')
+                    content.environment(layout.source, course, locale, require_installed=False)
+            return content
+    return None
 
 
 def learner_user(layout):
@@ -305,7 +320,7 @@ def install(bundle):
     if receipt["bundle_sha256"] != fingerprint:
         raise RuntimeErrorDetail("install: runtime bundle differs; rebuild on a fresh instance")
     files = install_source(bundle, plan, layout)
-    install_content(bundle, plan, layout)
+    content = install_content(bundle, plan, layout)
     chown_tree(layout.source, user)
     user_config = layout.home / "jupyter-config"
     user_config.mkdir(parents=True, exist_ok=True)
@@ -317,12 +332,24 @@ def install(bundle):
     os.chown(progress_directory, user.pw_uid, user.pw_gid)
     layout.server.parent.mkdir(parents=True, exist_ok=True)
     os.chown(layout.server.parent, user.pw_uid, user.pw_gid)
-    for name, directory, requirements, cwd in [
+    environments = [
         ("server", layout.server, packages["server_pip"], layout.source),
         *((course["kernel"], layout.source / course["course_dir"] / ".venv",
            ["-r", "requirements.txt", "-e", ".[extensions]" if course["extensions"] else "."],
            layout.source / course["course_dir"]) for course in plan["courses"]),
-    ]:
+    ]
+    course_environments = {course['kernel']: course for course in plan['courses']}
+    if content:
+        for course in plan['courses']:
+            for locale in content.links:
+                environment = content.environment(layout.source, course, locale, require_installed=False)
+                if environment == layout.source / course['course_dir'] / '.venv':
+                    continue
+                key = course['kernel'] + '.' + locale
+                course_environments[key] = course
+                environments.append((key, environment,
+                    ['-r', 'requirements.txt', '-e', '.[extensions]' if course['extensions'] else '.'], environment.parent))
+    for name, directory, requirements, cwd in environments:
         if name in receipt["environments"] and (directory / "bin/python").is_file():
             continue
         as_learner(["/usr/bin/python3.12", "-m", "venv", directory], layout)
@@ -337,8 +364,9 @@ def install(bundle):
             as_learner([*pip, "--require-hashes", "--only-binary=:all:", "--no-deps", "-r",
                         lock], layout, cwd=cwd)
             if name != "server":
-                local = ".[extensions]" if next(c for c in plan["courses"] if c["kernel"] == name)["extensions"] else "."
-                as_learner([*pip, "--no-deps", "--no-build-isolation", "-e", "../common", "-e", local], layout, cwd=cwd)
+                local = ".[extensions]" if course_environments[name]["extensions"] else "."
+                common = os.path.relpath(layout.source / 'doris-course/common', cwd)
+                as_learner([*pip, "--no-deps", "--no-build-isolation", "-e", common, "-e", local], layout, cwd=cwd)
         else:
             as_learner([*pip, *requirements], layout, cwd=cwd)
         as_learner([directory / "bin/python", "-m", "pip", "check"], layout, cwd=cwd)

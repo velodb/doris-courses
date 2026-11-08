@@ -1,0 +1,9 @@
+courses:
+- doris-course/kk-Cyrl/01-real-time-analytics/course.yaml
+- doris-course/kk-Cyrl/02-data-warehousing/course.yaml
+- doris-course/kk-Cyrl/03-observability/course.yaml
+description: Нақты уақыттағы аналитика, деректер қоймасы, жүйені бақылау және AI интеграциялары бойынша
+  Apache Doris тегін практикалық курстары.
+programs: []
+schema_version: 1
+title: Apache Doris курстары

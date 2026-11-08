@@ -6,14 +6,13 @@
       "const": 1
     },
     "abi": {
-      "const": "doris-workshop-content-2.1"
+      "enum": [
+        "doris-workshop-content-2.1",
+        "doris-workshop-content-3.0"
+      ]
     },
     "capabilities": {
-      "const": [
-        "content-v2",
-        "notebook-copies-v1",
-        "quiz-presentations-v2"
-      ]
+      "type": "array"
     },
     "source_ref": {
       "type": "string",
@@ -89,5 +88,35 @@
     "package_digest",
     "code_digest",
     "dependency_digest"
+  ],
+  "oneOf": [
+    {
+      "properties": {
+        "abi": {
+          "const": "doris-workshop-content-2.1"
+        },
+        "capabilities": {
+          "const": [
+            "content-v2",
+            "notebook-copies-v1",
+            "quiz-presentations-v2"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "abi": {
+          "const": "doris-workshop-content-3.0"
+        },
+        "capabilities": {
+          "const": [
+            "course-files-v1",
+            "notebook-copies-v1",
+            "quiz-presentations-v2"
+          ]
+        }
+      }
+    }
   ]
 }

@@ -15,6 +15,7 @@ import uuid
 from .messages import Messages
 
 try:
+    import yaml
     import ipywidgets as widgets
     from IPython.display import display
 
@@ -203,6 +204,43 @@ def synchronized(method):
     return run
 
 
+_SOURCE_LOCALES = {'en', 'kk-Cyrl'}
+
+
+def _checked_locale(value):
+    if not isinstance(value, str) or value not in _SOURCE_LOCALES:
+        raise ValueError('Unsupported Quiz locale.')
+    return value
+
+
+def _native_yaml(path):
+    # These are fixed adjacent source files, never a locale-supplied path or a
+    # search for dictionaries elsewhere in the user's filesystem.
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > 1024 * 1024:
+        raise ValueError('Native Quiz metadata must be a regular local YAML file.')
+    return yaml.safe_load(path.read_text(encoding='utf-8'))
+
+
+def _course_context(path):
+    """Use the actual Quiz location, including when a caller supplied a symlink."""
+    for parent in path.parents:
+        manifest = parent / 'course.yaml'
+        if manifest.is_symlink() or manifest.is_file():
+            document = _native_yaml(manifest)
+            if not isinstance(document, dict):
+                raise ValueError('Native Quiz course metadata must be a mapping.')
+            return _checked_locale(document.get('language', 'en')), parent
+    return 'en', None
+
+
+def _source_messages(course_root, locale):
+    if locale == 'en':
+        return Messages()
+    if course_root is None or course_root.parent.name != locale:
+        raise ValueError('Native Quiz messages require the matching language source root.')
+    return Messages(locale, messages=_native_yaml(course_root.parent / 'ui.yaml'))
+
+
 class CourseQuiz:
     """Render a one-question-at-a-time, self-assessed course quiz."""
 
@@ -217,21 +255,33 @@ class CourseQuiz:
         messages: Messages | None = None,
         locale: str = "en",
         presentation: Presentation | None = None,
+        _self_study: bool = False,
     ) -> None:
         if not questions:
             raise ValueError("A quiz must contain at least one question.")
         self._lock = threading.RLock()
+        _checked_locale(locale)
         self.t = messages or Messages(locale)
+        _checked_locale(self.t.locale)
         self.locale = self.t.locale
+        self.source_locale = self.locale
         bank = Quiz(title, description, questions, passing_score_percent)
+        if _self_study and presentation is not None:
+            raise QuizConflict('Unbound self-study cannot carry an admitted release.')
         if presentation is None:
-            presentation = Presentation.legacy(bank, digest({'quiz': repr(bank)}))
-            bank = presentation.quiz
+            if self.locale == 'en' and not _self_study:
+                presentation = Presentation.legacy(bank, digest({'quiz': repr(bank)}))
+                bank = presentation.quiz
+            else:
+                # Native non-English self-study has no admitted or legacy
+                # English identity. Its result is never sent to a credit store.
+                bank = display_order(bank)
             questions = bank.questions
         self.presentation = presentation
-        self.presentation.check()
-        if self.presentation.quiz != bank or self.presentation.locale != self.locale:
-            raise QuizConflict('Quiz content and UI must use the bound presentation locale.')
+        if self.presentation is not None:
+            self.presentation.check()
+            if self.presentation.quiz != bank or self.presentation.locale != self.locale:
+                raise QuizConflict('Quiz content and UI must use the bound presentation locale.')
         self.title = title
         self.description = description
         self.questions = questions
@@ -250,16 +300,37 @@ class CourseQuiz:
         self._root.add_class("doris-quiz-root")
 
     @classmethod
-    def from_yaml(cls, path: str | Path, *, messages: Messages | None = None, locale: str = "en",
+    def from_yaml(cls, path: str | Path, *, messages: Messages | None = None, locale: str | None = None,
                   presentation: Presentation | None = None) -> "CourseQuiz":
         """Load a quiz file and show its options in the quiz's fixed shuffled order.
+
+        Explicit messages and locale precede native course language detection.
+        Native non-English sources without admission run as unbound self-study.
 
         Raises ``doris_labkit.quizbank.QuizFormatError`` (a ValueError) listing
         every problem when the file does not follow the quiz structure.
         """
+        if locale is not None:
+            _checked_locale(locale)
+        if messages is not None:
+            _checked_locale(messages.locale)
+        path = Path(path).resolve(strict=True)
+        if not path.is_file():
+            raise ValueError('Quiz source must be a regular local file.')
+        source_locale, course_root = _course_context(path) if presentation is None else ('en', None)
+        # Source language decides whether a bank is native self-study. Explicit
+        # UI preferences cannot turn that source into a legacy English release.
+        # Admitted callers continue supplying their own release and context.
+        selected_locale = messages.locale if messages is not None else (locale or source_locale)
+        if messages is None and selected_locale != 'en':
+            if course_root is None:
+                _, course_root = _course_context(path)
+            messages = _source_messages(course_root, selected_locale)
         if presentation is None:
-            quiz = display_order(load_quiz(path))
-            presentation = Presentation.legacy(load_quiz(path), hashlib.sha256(Path(path).read_bytes()).hexdigest())
+            raw_quiz = load_quiz(path, localized=source_locale != 'en' or selected_locale != 'en')
+            quiz = display_order(raw_quiz)
+            if source_locale == 'en' and selected_locale == 'en':
+                presentation = Presentation.legacy(raw_quiz, hashlib.sha256(path.read_bytes()).hexdigest())
         else:
             quiz = presentation.quiz
             raw = Path(path).read_bytes()
@@ -274,14 +345,17 @@ class CourseQuiz:
                 locale=presentation.locale, policy_revision=presentation.policy_revision, source_digest=presentation.source_digest)
             if loaded.in_order_of(presentation).snapshot() != presentation.snapshot():
                 raise QuizConflict('Quiz content does not match its admitted presentation.')
-        return cls(
+        result = cls(
             title=quiz.title,
             description=quiz.description,
             questions=quiz.questions,
             passing_score_percent=quiz.passing_score_percent,
             source_path=path,
-            messages=messages, locale=locale, presentation=presentation,
+            messages=messages, locale=selected_locale, presentation=presentation,
+            _self_study=presentation is None and source_locale != 'en',
         )
+        result.source_locale = source_locale if presentation is None else presentation.locale
+        return result
 
     @synchronized
     def show(self) -> widgets.VBox:
@@ -308,7 +382,7 @@ class CourseQuiz:
                             source_path: str | Path | None = None):
         """Replace equivalent display text without starting/submitting an attempt."""
         presentation.check()
-        if not self.presentation.equivalent(presentation) or messages.locale != presentation.locale:
+        if self.presentation is None or not self.presentation.equivalent(presentation) or messages.locale != presentation.locale:
             raise QuizConflict('Quiz presentation is not equivalent to its admitted release.')
         presentation = presentation.in_order_of(self.presentation)
         self.presentation = presentation
@@ -482,7 +556,12 @@ class CourseQuiz:
         save_failed = False
         if complete and self._submission is None:
             self._submission = (self.source_path, self.presentation, self._attempt_id, dict(self._answers))
-        if complete and self.source_path is not None:
+        if complete and self.presentation is None:
+            # An unbound native Quiz is a local knowledge check even if a caller
+            # inherited Workshop environment variables. Do not register, save,
+            # import, or manufacture a trusted presentation for that result.
+            self._save_complete = True
+        elif complete and self.source_path is not None:
             from .progress import save_submission_from_environment
             try:
                 if save and not self._save_complete:

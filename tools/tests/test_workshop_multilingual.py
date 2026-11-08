@@ -33,7 +33,12 @@ class MultilingualTests(unittest.TestCase):
     def setUpClass(cls):
         cls.temp = tempfile.TemporaryDirectory(prefix='ml05-tests-')
         cls.base = Path(cls.temp.name)
-        cls.ref = os.environ.get('ML_CONTENT_SOURCE_REF', wc.git(wc.REPO, 'rev-parse', 'HEAD').strip())
+        # Historical v2 remains testable after native language files replace
+        # overlays on HEAD. An explicit caller override always takes priority.
+        legacy = 'dfa31100d936cf1262648df44542a8a2e0c35dee'
+        default_ref = (wc.git(wc.REPO, 'rev-parse', 'HEAD').strip()
+                       if (wc.REPO / 'locales/kk-Cyrl/overlay.json').is_file() else legacy)
+        cls.ref = os.environ.get('ML_CONTENT_SOURCE_REF', default_ref)
         cls.package = cls.base / 'package'
         producer.build(producer.GitSource(wc.REPO, cls.ref), cls.package, ['rta-module-1'], ['en', 'kk-Cyrl'])
         cls.binding = content.admit(cls.package)

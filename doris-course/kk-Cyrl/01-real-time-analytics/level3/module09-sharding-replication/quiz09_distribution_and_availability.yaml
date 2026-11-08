@@ -1,0 +1,145 @@
+title: '9-модуль тесті: Apache Doris жүйесінде шардтау, репликация және үлестірілген
+  орындау'
+description: Алты дербес сценарий көп контейнерлік дәлелді асыра мәлімдемей, репликалар,
+  Frontend кіріс жолдары, үлестірілген сканерлеу, ақаудан қалпына келу және Join дерек
+  тасымалы туралы пайымдай алатыныңызды тексереді; әр оқу мақсатына бір сұрақтан.
+questions:
+- id: tablets_and_replicas
+  type: single_choice
+  objective: Partition, Bucket, Tablet және репликалардың байланысын түсіндіру және
+    кесте үшін санау.
+  prompt: Кестеде екі Partition, әрқайсысына төрт Bucket, replication_num = 3 және
+    үш қолжетімді BE бар. Негізгі индексінде қанша логикалық Tablet және физикалық
+    реплика бар және SQL бизнес жолдарын қалай санайды?
+  options:
+  - id: tablets_8_replicas_24
+    text: 8 логикалық Tablet және 24 реплика, SQL әр бизнес жолын бір рет қайтарады
+  - id: tablets_24_replicas_8
+    text: 24 логикалық Tablet және 8 реплика, SQL әр жолды үш рет қайтарады
+  - id: tablets_8_replicas_8
+    text: Үш BE әр репликаны ортақ пайдаланатындықтан, 8 логикалық Tablet және 8 реплика
+  - id: tablets_6_replicas_18
+    text: Partition және BE қосылатындықтан, 6 логикалық Tablet және 18 реплика
+  answer: tablets_8_replicas_24
+  explanation: Негізгі индексте 2 × 4 = 8 логикалық Tablet бар, ал әрқайсысының үш
+    көшірмесі 24 реплика береді. Scan әр қажетті Tablet-тің бір көшірмесін оқиды,
+    сондықтан репликация бизнес жауабын емес, қолжетімділікті өзгертеді. Кестенің
+    басқа индекстерінде өз Tablet нысандары болар еді.
+- id: expansion_moves_replicas
+  type: single_choice
+  objective: BE қосу кестенің Partition немесе Bucket құрылымын өзгертпей бар репликаларды
+    неге жылжытатынын түсіндіру.
+  prompt: Әр Partition ішінде алты Bucket және екі реплика бар екі бөлімдік кесте
+    екі BE қолжетімді кезде жасалды. Үшінші BE қосылып, кейін Tablet жоспарлағышы
+    кей бар репликаларды соған орналастырады. Не өзгерді?
+  options:
+  - id: placement_changed_only
+    text: Тек реплика орналасуы; 12 Tablet және әрқайсысының екі көшірмесі сол күйінде
+      қалады
+  - id: partitions_split
+    text: Әр Partition қайта бөлінді, сондықтан кестеде енді 18 логикалық Tablet бар
+  - id: key_replaced
+    text: Тарату кілті BE түйіндерін ең жақсы теңгеретін бағанмен ауыстырылды
+  - id: rows_copied
+    text: Үшінші BE тағы бір оқылатын нұсқа қосты, сондықтан SQL көбірек жол қайтарады
+  answer: placement_changed_only
+  explanation: 'Жаңа BE — тағы бір орналастыру нысанасы: жоспарлағыш кей репликаларды
+    соған көшіріп, басқа жерден алып тастайды, 12 Tablet-тің әрқайсысына екі реплика
+    сақтайды. Partition шекараларын, Bucket санын немесе тарату кілтін өзгертпейді
+    және BE Alive = true көрсетуі теңгеру біткенін білдірмейді.'
+- id: fe_failure_and_reconnect
+  type: single_choice
+  objective: FE метадерек сайлауын клиенттің FE істемегеннен кейін қайта ашылуы тиіс
+    қосылымынан ажырату.
+  prompt: Үш Follower FE дауыс беру тобын құрайды. Клиент ағымдағы Master түйініне
+    тікелей TCP сеансымен қосылған, ол тоқтайды. Қалған екі FE көпшілікті сақтайды
+    және бір HAProxy данасы екеуіне де жетеді. Қолданба не күтуі тиіс?
+  options:
+  - id: session_migrates
+    text: Сеансы жаңа сайланған Master түйініне көшеді, сондықтан қайта қосылу қажет
+      емес
+  - id: session_fails_then_reconnect
+    text: Сеансы үзіледі; HAProxy арқылы жаңа сеанс дұрыс FE түйініне жетеді
+  - id: haproxy_elects_master
+    text: HAProxy жаңа Master сайлап, SQL қабылдамас бұрын FE метадеректерін жөндейді
+  - id: proxy_proves_availability
+    text: Қолжетімді прокси FE көпшілігі мен әр Doris сұрауы қолжетімді екенін көрсетеді
+  answer: session_fails_then_reconnect
+  explanation: Қалған көпшілік Master сайлап, метадерек қызметін қолжетімді ұстай
+    алады, бірақ орнатылған TCP сеансы басқа FE түйініне көшпейді. Прокси немесе бірнеше
+    мекенжайлы драйвер арқылы жаңа сеанс дұрыс FE түйініне жетеді. HAProxy TCP бағыттап,
+    күйін тексереді; Doris Master сайламайды және жалғыз прокси данасының өзі бір
+    ақау нүктесі.
+- id: replicas_and_scan_tasks
+  type: single_choice
+  objective: Сұрауды Tablet таңдаудан Query Profile тіркейтін BE Scan тапсырмаларына
+    дейін қадағалау.
+  prompt: Метадеректер логикалық Tablet T7 BE-A және BE-B ішінде сақталғанын көрсетеді.
+    Бір Query Profile T7 OLAP сканерлеуін тек BE-B Fragment Instance астында көрсетеді,
+    онда екі PipelineTask бар. Қай түсінік дұрыс?
+  options:
+  - id: one_replica_scanned
+    text: Бұл орындау BE-B көшірмесін оқыды; PipelineTask — көшірмелер емес, орындау
+      жұмысы
+  - id: tasks_are_replicas
+    text: Екі PipelineTask T7 үшін BE-B ішінде тағы екі реплика сақталғанын көрсетеді
+  - id: every_replica_scans
+    text: Әр сақталған реплика әр сұрауға қатысатындықтан, BE-A да T7 сканерледі
+  - id: partial_rows
+    text: Бір көшірмені оқу түйіршіктілікті өзгертеді, сондықтан нәтижеге T7 жолдарының
+      тек бөлігі жетті
+  answer: one_replica_scanned
+  explanation: Реплика метадеректері Doris Tablet-ті қайдан оқи алатынын, ал хост
+    ауқымындағы Profile осы орындауда қайдан оқығанын көрсетеді. FE T7 үшін бір дұрыс
+    көшірме таңдады, бұл қайталанатын жолдарды болдырмайды; Fragment Instance және
+    PipelineTask — Tablet не реплика емес, орындау бірліктері. Басқа орындау басқа
+    көшірме таңдай алады.
+- id: majority_and_recovery
+  type: single_choice
+  objective: Әдепкі көпшілікпен жазу ережесін қолдану және үзілістен кейін тірі BE
+    мен өзекті репликаны ажырату.
+  prompt: Әдепкі көпшілік ережесінде бір BE тоқтаған. A кестесінде екі, B кестесінде
+    үш реплика бар. Жүктеу шегі қайта анықталмаған. BE қайта басталғанда SHOW BACKENDS
+    бірден Alive = true көрсетеді. Қай тұжырым негізді?
+  options:
+  - id: table_a_blocked_table_b_commits
+    text: B үшеудің екеуімен бекітеді, A бекіте алмайды; кейін реплика нұсқаларын
+      тексеру
+  - id: both_commit
+    text: Бір қалған көшірме кез келген кестенің көпшілігі болғандықтан, екеуі де
+      бекітеді
+  - id: only_table_a_commits
+    text: Аз репликаға аз растау қажет болғандықтан, тек A бекітеді
+  - id: alive_proves_latest
+    text: Alive = true оралған көшірмелерде соңғы нұсқа барын көрсетеді
+  answer: table_a_blocked_table_b_commits
+  explanation: 'Әдепкі ережеге репликалардың жартысынан көбі қажет: A кестесіне екінің
+    екеуі, оған бір тоқтаған BE кедергі, ал B кестесіне үшеудің екеуі. Оралған BE
+    репликалары қуып жетпей heartbeat қайта бастайды, сондықтан әр репликаның ағымдағы
+    нұсқаға жеткенін тексеріңіз. Бапталған min_load_replica_num ережені өзгертер еді.'
+- id: bucket_shuffle_or_colocate
+  type: single_choice
+  objective: Bucket Shuffle және Colocate Join үлестірілген Join тасымалдайтын деректерді
+    қалай азайтатынын түсіндіру.
+  prompt: Оқиғалар user_id бойынша сегіз Bucket ішіне HASH таратылған. Бірінші пайдаланушы
+    кестесі RANDOM таратуын қолданады. Екіншісі user_id бойынша сегіз Bucket және
+    сол реплика санымен HASH таратылған, бірақ оқиғалармен ешбір Colocation Group
+    ішінде емес. user_id бойынша теңдік Join үшін қай қорытынды шығады?
+  options:
+  - id: bucket_shuffle_not_colocate
+    text: Bucket Shuffle пайдаланушыларды оқиға Bucket ұяшықтарына бағыттай алады;
+      ешқайсысы Colocate емес
+  - id: random_auto_colocated
+    text: user_id Join кілті болғандықтан, RANDOM кестесі автоматты бірге орналасады
+  - id: matching_ddl_colocates
+    text: Bucket бағаны мен саны оқиғаларға сай болғандықтан, HASH кестесі бірге орналасқан
+  - id: different_join_types
+    text: Bucket Shuffle және Colocate INNER JOIN амалын басқа логикалық Join түрлеріне
+      өзгертеді
+  answer: bucket_shuffle_not_colocate
+  explanation: Bucket Shuffle оқиғалардың Bucket орналасуын сақтап, әр пайдаланушы
+    жолын user_id Bucket ұяшығына бағыттайды. Colocate екі кестенің де үйлесімді тарату
+    және репликалармен сол тұрақты Colocation Group ішінде болуын қажет етеді; жалғыз
+    бірдей DDL Bucket ұяшықтарын бірге орналастырмайды. Бұл стратегиялар логикалық
+    Join түрін емес, жолдардың қайда кездесетінін өзгертеді.
+passing_score_percent: 80

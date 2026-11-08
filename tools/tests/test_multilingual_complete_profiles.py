@@ -203,7 +203,10 @@ class CompleteProfileTests(unittest.TestCase):
         self.assertEqual(counts, {'real-time-analytics': 21, 'data-warehousing': 34, 'observability': 17})
 
     def test_producer_complete_profiles_select_every_manifest_optional_at_its_own_module(self):
-        declared = {p['id']: p for p in json.loads((ROOT / 'locales/producer.json').read_text())['profiles']}
+        legacy = ROOT / 'locales/producer.json'
+        definitions = (json.loads(legacy.read_text()) if legacy.is_file() else
+                       wc.load_document(ROOT / 'locales/course-files.yaml'))
+        declared = {p['id']: p for p in definitions['profiles']}
         for course in self.courses:
             profile = declared[course['profiles'][0]]
             manifest = self.manifests[course['slug']]

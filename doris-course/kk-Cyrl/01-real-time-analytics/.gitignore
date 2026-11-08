@@ -1,0 +1,11 @@
+.venv/
+.venv*/
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
+assets/*.jar
+level1/module01-introduction/assets/
+level1/module03-loading-data/downloads/
+
+# Local implementation tracker; never include it in a course PR.
+IMPLEMENTATION_STATUS.md

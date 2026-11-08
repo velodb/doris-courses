@@ -1,0 +1,144 @@
+title: '6-модуль тесті: Apache Doris жүйесінде деректерді біріктіру'
+description: Алты дербес бизнес сценарийі 6-модульдің Join шешімдерін тексереді; әр
+  оқу мақсатына бір сұрақтан. Жалғастырмас бұрын түсіндірмені оқып, кез келген жауапты
+  түзетіңіз.
+questions:
+- id: predict_multiplication
+  type: single_choice
+  objective: Екі кірістің түйіршіктілігі мен кілт кардиналдығынан Join нәтиже түйіршіктілігі
+    мен еселігін болжау.
+  prompt: Екі сатылым — (sale_id, product_id, amount) = (1, 7, 30) және (2, 8, 50).
+    Өнім өлшемінде 7-өнім үшін екі жол және 8-өнім үшін бір жол бар. product_id бойынша
+    INNER JOIN кейін SUM(amount) орындалады. Қосынды қанша?
+  options:
+  - id: sum_80
+    text: 80, өйткені әр sale_id факт кестесінде тек бір рет кездеседі
+  - id: sum_110
+    text: 110, өйткені 30 бірліктік сатылым екі өлшем жолына сәйкес келеді
+  - id: sum_160
+    text: 160, өйткені кез келген қайталанатын кілт бүкіл факт кестесін екі еселейді
+  - id: sum_50
+    text: 50, өйткені Doris сәйкестігі екіұшты сатылымдарды алып тастайды
+  answer: sum_110
+  explanation: 'Join әр сәйкес жұпқа бір жол қайтарады: 1-сатылым 7-өнімнің екі жолымен
+    де жұптасады, сондықтан біріктірілген сомалар 30, 30 және 50. Бірегей sale_id
+    product_id бойынша екі сәйкестікке жол бермеуге жеткіліксіз, ал Doris екіұшты
+    сәйкестіктерді тастамайды. Байытылған фактілерді қоспас бұрын әр кілтке бір өлшем
+    жолын орнатыңыз немесе көзделген нұсқаны таңдаңыз.'
+- id: return_missing_relationships
+  type: single_choice
+  objective: Жауап сақтауы тиіс жолдарға қарай Inner, Outer, Semi, Anti, Cross немесе
+    ASOF Join таңдау.
+  prompt: Әр жөнелтілімде customer_id бар. Қолдау тобына customer_id мәні customers
+    ішінде сәйкес келмейтін жөнелтілімдер қажет, тек жөнелтілім бағандарымен. Тұтынушы
+    кестесі идентификаторды қайталай алады. Қай Join тікелей сай келеді?
+  options:
+  - id: left_semi
+    text: customer_id бойынша shipments LEFT SEMI JOIN customers
+  - id: inner
+    text: customer_id бойынша shipments INNER JOIN customers
+  - id: left_anti
+    text: customer_id кілті бойынша shipments LEFT ANTI JOIN customers
+  - id: left_outer_unfiltered
+    text: customer_id бойынша shipments LEFT OUTER JOIN customers
+  answer: left_anti
+  explanation: LEFT ANTI JOIN сәйкестігі жоқ сол жақ жолдарды қайтарады және оларды
+    қайталанатын оң жолдар үшін қайталамайды. SEMI сәйкестігі бар жолдарды, INNER
+    сәйкес жұптарды қайтарады, ал сүзілмеген LEFT OUTER JOIN сәйкес жөнелтілімдерді
+    де сақтайды.
+- id: on_or_where
+  type: single_choice
+  objective: '`NULL` кілттері қалай сәйкес келетінін және оң жақ шарты `ON` не `WHERE`
+    ішіне тиесілі екенін шешу.'
+  prompt: Есеп әр оқиғаны сақтап, тек белсенді өнімдерді тіркеуі тиіс. 1-сұрау LEFT
+    JOIN dim_products d ON e.product_id = d.product_id AND d.is_active = 1 пайдаланады.
+    2-сұрау сол LEFT JOIN амалын тек product_id бойынша қолданып, WHERE d.is_active
+    = 1 қосады. Нәтижелері қалай ерекшеленеді?
+  options:
+  - id: on_keeps_events
+    text: 1-сұрау әр оқиғаны сақтайды; 2-сұрау белсенді өнімі жоқ оқиғаларды алып
+      тастайды
+  - id: same_result
+    text: 'Айырмашылық жоқ: оңтайландырғыш шартты жылжытады, сондықтан екеуі бірдей
+      жол қайтарады'
+  - id: where_keeps_more
+    text: 2-сұрау әр оқиғаны сақтайды, ал 1-сұрау өнімі жоқ оқиғаларды алып тастайды
+  - id: both_inner
+    text: Әрқайсысында оң жақ шарты болғандықтан, екеуі де Inner Join сияқты әрекет
+      етеді
+  answer: on_keeps_events
+  explanation: ON ішінде шарт қай өнім жолдары сәйкес келе алатынын шешеді; белсенді
+    өнімі жоқ оқиғалар NULL өнім бағандарымен қалады. WHERE ішінде ол Join кейін орындалады
+    және d.is_active = 1 сол NULL толтырылған жолдар үшін true емес, сондықтан 2-сұрау
+    Inner Join сияқты әрекет етеді. Екі орналасу әртүрлі сұраққа жауап береді.
+- id: hash_or_nested_loop
+  type: single_choice
+  objective: Doris Hash Join немесе Nested Loop Join қашан қолданатынын және құру
+    мен тексеру жақтарының не істейтінін түсіндіру.
+  prompt: 1-Join a.account_id = b.account_id AND a.event_time > b.start_time пайдаланады.
+    2-Join тек a.event_time > b.start_time пайдаланады. Қай түсіндіру Doris орындауына
+    сай?
+  options:
+  - id: hash_plus_residual
+    text: 1-Join account_id бойынша хэштеп, уақытты кейін тексере алады; 2-Join үшін
+      Nested Loop қажет
+  - id: both_nested_loop
+    text: Екеуінде де уақыттардың > салыстыруы болғандықтан, екеуіне де Nested Loop
+      Join қажет
+  - id: both_hash
+    text: Уақыт белгісі де кез келген кілт сияқты хэштелетіндіктен, екеуі де Hash
+      Join қолдана алады
+  - id: time_ignored
+    text: 1-Join Hash Join қолданып, есептей алмайтын уақыт шартын елемейді
+  answer: hash_plus_residual
+  explanation: 'Теңдік 1-Join үшін кілт береді: Doris бір кірістен hash кестесін құрып,
+    оны екіншісімен тексереді және үміткер жұптарда уақыт шартын есептейді. 2-Join
+    ішінде үміткерлерді ұйымдастыратын теңдік жоқ, сондықтан Nested Loop Join қажет
+    болуы мүмкін. Ауқым салыстыруының болуы Hash Join мүмкіндігін өздігінен жоққа
+    шығармайды.'
+- id: choose_distribution
+  type: single_choice
+  objective: Broadcast, Partition Shuffle, Bucket Shuffle және Colocate Join тәсілдерін
+    әрқайсысы тасымалдайтын дерек пен қажетті орналасу бойынша салыстыру.
+  prompt: Үлкен orders кестесі HASH(customer_id) арқылы 16 Bucket ұяшығына таратылған.
+    Үлкен customers кестесі RANDOM таратуды қолданады. Екеуі customer_id бойынша біріктіріледі.
+    Қай стратегия ең аз дерек тасымалдайды және нені жылжытады?
+  options:
+  - id: bucket_shuffle
+    text: 'Bucket Shuffle: orders орнында қалады, тек customers жолдары бағытталады'
+  - id: broadcast_orders
+    text: 'Broadcast: әр дана үлкен orders кестесінің толық көшірмесін алады'
+  - id: partition_both
+    text: 'Partition Shuffle: orders Bucket ұяшықтарын қайта пайдаланып, екі кестені
+      де жылжытпайды'
+  - id: colocate_auto
+    text: 'Colocate: ортақ Join кілті бар екі кесте автоматты түрде бірге орналастырылады'
+  answer: bucket_shuffle
+  explanation: orders орналасуы Join кілтіне сәйкес, сондықтан Bucket Shuffle оны
+    сақтап, әр customers жолын өз кілтінің Bucket ұяшығына бағыттайды. Broadcast тұтас
+    үлкен кестені әр қатысушыға көшіреді, Partition Shuffle екі кірісті де жылжытады,
+    ал Colocate екі кестенің де сәйкес Bucket ұяшықтарымен сол тұрақты Colocation
+    Group ішінде жасалуын талап етеді.
+- id: runtime_filter_plan
+  type: single_choice
+  objective: '`EXPLAIN` ішіндегі Join стратегиясы мен Runtime Filter жазбаларын Query
+    Profile тіркейтін әрекеттен бөлек оқу.'
+  prompt: EXPLAIN Inner Hash Join ішінде RF000 жасалып, факт кестесінің сканерлеуінде
+    қолданылатынын көрсетеді. Query Profile әлі жоқ. Қандай қорытынды жасауға болады?
+  options:
+  - id: planned_only
+    text: Жоспар құру жағынан сканерлеуге сүзгі жібереді; әсерін Profile көрсетеді
+  - id: no_pages_read
+    text: Өнімге сәйкес келе алмайтын оқиға жолдары үшін сканерлеу ешбір сақтау бетін
+      оқымайды
+  - id: faster_than_shuffle
+    text: Бұл жоспар сол сұрау мен деректер үшін Shuffle жоспарынан жылдам
+  - id: replaces_join
+    text: Runtime Filter өзі өткізген әр жол үшін Join теңдігін тексеруді алмастырады
+  answer: planned_only
+  explanation: Жоспардағы өндіруші мен тұтынушы Doris құру жағы кілттерінен жасалған
+    сүзгіні қайда жіберуді көздейтінін көрсетеді. Оның уақытында келуі және қанша
+    жол алып тастауы — Query Profile ішіндегі орындалу дәлелі. Runtime Filter үміткерлерді
+    алып тастайды, Join теңдікті бәрібір тексереді және жалғыз жоспар жылдамдық туралы
+    ештеңе айтпайды.
+passing_score_percent: 80

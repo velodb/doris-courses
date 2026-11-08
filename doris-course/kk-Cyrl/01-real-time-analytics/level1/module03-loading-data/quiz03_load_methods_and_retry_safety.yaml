@@ -1,0 +1,146 @@
+title: '3-модуль тесті: Apache Doris жүйесіне деректерді жүктеу'
+description: Алты сұрақ 3-модульдегі жүктеу әдісін таңдау, сапа, тұрақты сақтау, үздіксіз
+  тұтыну және қайталау шешімдерін тексереді; әр оқу мақсатына бір сұрақтан.
+questions:
+- id: choose_load_method
+  type: single_choice
+  objective: Жұмыс жүктемесінің дереккөзі, көлемі, кідірісі, түрлендіру және қайталау
+    талаптары бойынша Doris жүктеу әдісін таңдау.
+  prompt: Әр сағат сайын тапсырма S3 ішінде бұрыннан бар бекітілген Parquet нысандар
+    жиынын ішкі кестеге көшіруі және жолай бағандарды сүзіп, қайта атауы тиіс. Қай
+    жүктеу әдісінен бастау керек?
+  options:
+  - id: s3_insert_select
+    text: Doris нысандарды SQL арқылы оқуы үшін S3 TVF көзінен INSERT INTO SELECT
+  - id: stream_load_each
+    text: Тапсырма әр нысанды жүктеп, HTTP арқылы жібергеннен кейін Stream Load
+  - id: routine_load_s3
+    text: Bucket нысандарын үздіксіз ағын ретінде тұтынатын Routine Load тапсырмасы
+  - id: group_commit_s3
+    text: Әр сағаттың нысандарын бір жүктеу транзакциясына жинайтын Group Commit
+  answer: s3_insert_select
+  explanation: Нысандар объектілік сақтау орнында бар және SQL түрлендірулерін қажет
+    етеді, сондықтан Doris оларды S3 TVF арқылы оқиды, ал бір INSERT INTO SELECT нәтижені
+    тұрақты сақтайды. Stream Load шектелген топтаманы жіберетін клиентке сай келеді,
+    Routine Load тапсырмасы S3 емес, Kafka тұтынады, ал Group Commit көптеген шағын
+    жазуды топтайды, бірақ S3 оқымайды.
+- id: choose_group_commit_mode
+  type: single_choice
+  objective: Stream Load, S3 TVF арқылы `INSERT INTO SELECT`, Routine Load және Group
+    Commit рөлдерін түсіндіру.
+  prompt: Қолданбада бір кестеге жиі ұсақ Stream Load сұрауларын жіберетін 30 жұмысшы
+    бар. Транзакция шығыны мен нұсқа қысымы артып жатыр, ал әр сұрау тек жолдары көрінгеннен
+    кейін қайтуы тиіс. Қай тәсілден бастау керек?
+  options:
+  - id: sync_group_commit
+    text: Stream Load сақтап, осы ұсақ жазулар үшін Group Commit құралын sync_mode
+      режимінде қосу
+  - id: async_group_commit
+    text: Group Commit құралын async_mode режимінде қосып, әр жауапты жолдар көрінді
+      деп қабылдау
+  - id: s3_tvf
+    text: Әр ұсақ топтаманы алдымен объектілік сақтау орнына жазып, S3 TVF арқылы
+      жүктеу
+  - id: routine_load
+    text: HTTP сұрауларын біріктіретін, Kafka қолданбайтын Routine Load тапсырмасын
+      жасау
+  answer: sync_group_commit
+  explanation: 'Group Commit — үйлесімді шағын Stream Load және INSERT жазуларына
+    арналған серверлік оңтайландыру: оларды саны аз жүктеу транзакцияларына топтап,
+    FE транзакция жұмысын және нұсқа қысымын азайтады. sync_mode топталған транзакция
+    бекітіліп, жолдар көрінгеннен кейін қайтады; async_mode жолдар алдын ала жазу
+    журналына түскенде, әлі көрінбей тұрып қайтады. S3 TVF және Routine Load басқа
+    дереккөздерге қызмет етеді.'
+- id: interpret_quality_rejection
+  type: single_choice
+  objective: Stream Load арқылы жергілікті CSV файлын жүктеу және оның синхронды JSON
+    жауабын оқу.
+  prompt: Он жолдық Stream Load сұрауы strict_mode:true және max_filter_ratio:0 орнатады,
+    where тақырыбы жоқ. Бір revenue мәні not-a-number. JSON жауабы нені хабарлайды?
+  options:
+  - id: reject_transaction
+    text: Бір сүзілген жолмен Status Fail және он жолдың ешқайсысы бекітілмейді
+  - id: partial_commit
+    text: Топтаманың көбі жарамды болғандықтан, тоғыз жүктелген жолмен Status Success
+  - id: cast_to_zero
+    text: Он жүктелген жолмен Status Success, ал қате мән 0.00 болып түрленеді
+  - id: where_rejection
+    text: max_filter_ratio where ретінде әрекет ететіндіктен, он таңдалмаған жолмен
+      Status Fail
+  answer: reject_transaction
+  explanation: Қатаң режимде мәтін DECIMAL бола алмайды, сондықтан жол сүзіледі; max_filter_ratio:0
+    кезінде бір сүзілген жол бүкіл транзакцияның қабылданбауына әкеледі және тоғыз
+    жарамды жол да бекітілмейді. Жауаптағы ErrorURL қолжетімді кезінде қабылданбаған
+    жолды көрсетеді. Таңдалмаған жолдар — where тақырыбы алып тастаған жарамды жолдар.
+- id: distinguish_s3_tvf_insert
+  type: single_choice
+  objective: S3 TVF арқылы Parquet нысандарына сұрау жасау және оларды `INSERT INTO
+    SELECT` арқылы тұрақты сақтау.
+  prompt: S3 TVF және INSERT INTO SELECT туралы қай тұжырым дұрыс?
+  options:
+  - id: correct_s3_boundary
+    text: S3(...) көзінен SELECT тек файлдарды оқиды; INSERT INTO SELECT нәтижені
+      сақтайды
+  - id: tvf_persists
+    text: S3(...) көзінен SELECT әр файлды BE сақтауына көшіреді, сондықтан INSERT
+      тек атын өзгертеді
+  - id: tvf_tracks_offsets
+    text: S3 TVF нысан ығысуларын Routine Load тапсырмасы Kafka ығысуларын қадағалағандай
+      қадағалайды
+  - id: insert_reuses_label
+    text: INSERT INTO SELECT Stream Load label мәнін қайта пайдаланады, сондықтан
+      қайта орындау қайталанудан қорғалған
+  answer: correct_s3_boundary
+  explanation: S3 TVF ағымдағы сұрау үшін қашықтағы нысандарды сақтамай оқып, талдайды;
+    INSERT INTO SELECT нәтижені ішкі кестеге жазатын жүктеу транзакциясын жасайды.
+    Label (WITH LABEL) болмаса, ойланбай қайта орындау жолдарды қайта жүктейді, сондықтан
+    өндірістік жұмыс барысы операторға label береді немесе нысандар жиынын тіркеп,
+    идемпотентті мақсатты құрылым пайдаланады.
+- id: reason_about_routine_load
+  type: single_choice
+  objective: Routine Load тапсырмасының Kafka хабарларын үздіксіз тұтынуға қашан сай
+    келетінін және ілгерілеуді қалай қадағалайтынын түсіндіру.
+  prompt: Kafka тақырыбына ішкі құрылымды JSON хабарлары келіп тұрады. Құрылым және
+    қалпына келтіру туралы қай тұжырым дұрыс?
+  options:
+  - id: routine_mapping_offsets
+    text: Routine Load тапсырмасы JSON құрылымын jsonpaths арқылы сәйкестендіріп,
+      жолдарды ығысуларымен бірге бекітеді
+  - id: s3_jsonpaths
+    text: Кідіртілгенде Kafka ішіндегі байт орнын сақтайтын, jsonpaths бар S3 TVF
+      сұрауы
+  - id: stream_label_offsets
+    text: Әр жаңа Kafka хабары қайта пайдаланып, оған қосылатын бір тұрақты Stream
+      Load label мәні
+  - id: group_commit_consumer
+    text: Әр бекітілген хабарды тақырыптан жоятын тұтынушы ретіндегі Group Commit
+  answer: routine_mapping_offsets
+  explanation: 'Routine Load — Doris басқаратын ұзақ жұмыс істейтін Kafka тұтынушысы:
+    jsonpaths ішкі мәндерді шығарады, COLUMNS оларды кестеге сәйкестендіреді және
+    әр микротоптама жолдарын жеткен Kafka ығысуларымен бірге бекітеді, сондықтан кідірту
+    мен жалғастыру бекітілген ығысулардан жалғасады. S3 TVF, Stream Load label мәні
+    және Group Commit Kafka тұтынбайды.'
+- id: retry_stream_load
+  type: single_choice
+  objective: Жүктелген және сүзілген жол сандарын тексеру, қабылданбаған жүктеуді
+    тану және топтаманы қауіпсіз қайталау.
+  prompt: Клиент Stream Load label мәнімен 1,024 жол жібереді, бірақ HTTP жауабын
+    жоғалтады, сондықтан Doris оларды бекітті ме, біле алмайды. Не істеуі керек?
+  options:
+  - id: same_label
+    text: Сол байттарды сол label мәнімен жіберіп, күй мен жол санын тексеру
+  - id: new_label
+    text: Doris оларды сол топтама ретінде қарастыруы үшін сол байттарды жаңа label
+      мәнімен жіберу
+  - id: insert_select
+    text: Stream Load транзакциясын қайта пайдаланатын INSERT INTO SELECT арқылы жолдарды
+      жүктеу
+  - id: publish_kafka
+    text: Routine Load бірдей бизнес жолдарын жоятындықтан, жолдарды Kafka-ға жариялау
+  answer: same_label
+  explanation: 'Сол топтама label мәнін сақтайды: алғашқы сұрау бекітілсе, Doris ExistingJobStatus
+    FINISHED мәнімен Label Already Exists деп жауап беріп, жолдарды қайта жүктемейді;
+    өзгермеген жол саны мұны растайды. Жаңа label Duplicate Key кестесіне жолдарды
+    қайта қосатын жаңа транзакция бастайды, ал INSERT INTO SELECT те, Kafka да алдыңғы
+    топтаманы танымайды.'
+passing_score_percent: 80

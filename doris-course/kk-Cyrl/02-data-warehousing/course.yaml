@@ -1,0 +1,297 @@
+slug: data-warehousing
+title: Apache Doris көмегімен деректер қоймасын құру
+status: published
+language: kk-Cyrl
+doris_version: 4.1.3
+estimated_minutes: 1311
+modules:
+- slug: introduction
+  id: module-1
+  summary: Сенімді талдамалық деректер қоймасында Apache Doris негіздерін қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 1
+  order: 1
+  title: Doris-пен танысу және алғашқы тапсырыстарды талдау
+  course: level1/module01-introduction/course.md
+  lab: level1/module01-introduction/lab01_connect_and_query.ipynb
+  quiz: level1/module01-introduction/quiz01_doris_fundamentals.yaml
+  estimated_minutes: 55
+- slug: architecture
+  id: module-2
+  summary: Сенімді талдамалық деректер қоймасында Doris архитектурасын қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 1
+  order: 2
+  title: Doris сақтау архитектурасы және жазу механизмдері
+  course: level1/module02-architecture/course.md
+  lab: level1/module02-architecture/lab02_observe_storage.ipynb
+  quiz: level1/module02-architecture/quiz02_storage_and_write_batches.yaml
+  estimated_minutes: 55
+- slug: table-design
+  id: module-3
+  summary: Сенімді талдамалық деректер қоймасында модельдер, бөлімдеу және бакеттерге бөлуді қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 1
+  order: 3
+  title: Doris кесте модельдері, бөлімдеу және бакеттерге бөлу
+  course: level1/module03-table-design/course.md
+  lab: level1/module03-table-design/lab03_models_and_pruning.ipynb
+  quiz: level1/module03-table-design/quiz03_models_and_data_distribution.yaml
+  estimated_minutes: 60
+  optional:
+  - title: '2–3-модульдердің кеңейтілген зертханалық жұмысы: Пакеттер, бөлімдер және Profile'
+    path: level1/extensions/extension23_physical_design.ipynb
+- slug: external-access
+  id: module-4
+  summary: Сенімді талдамалық деректер қоймасында сыртқы деректерді сұрауды қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 1
+  order: 4
+  title: Сыртқы деректерді сұрау және деректер көлі кестелерін біріктіру
+  course: level1/module04-external-access/course.md
+  lab: level1/module04-external-access/lab04_query_iceberg.ipynb
+  quiz: level1/module04-external-access/quiz04_internal_files_and_lake_tables.yaml
+  estimated_minutes: 65
+- slug: ingestion
+  id: module-5
+  summary: Сенімді талдамалық деректер қоймасында пакеттік және ағындық жүктеуді қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 1
+  order: 5
+  title: Деректерді пакеттік және үздіксіз жүктеу
+  course: level1/module05-ingestion/course.md
+  lab: level1/module05-ingestion/lab05_stream_load.ipynb
+  quiz: level1/module05-ingestion/quiz05_load_methods_and_retry_safety.yaml
+  estimated_minutes: 90
+  optional:
+  - title: 'Оқу материалы: Үздіксіз жүктеу'
+    path: level1/module05-ingestion/optional05_continuous_ingestion.md
+    quiz: level1/module05-ingestion/quiz05_continuous_ingestion.yaml
+  - title: 'Қосымша оқу: WWI шот-фактуралары және шотқа түскен төлемдер'
+    path: level1/module05-ingestion/optional05_invoice_and_receipts.md
+  - title: '5A зертханалық жұмысы: Kafka → Routine Load → Doris'
+    path: level1/module05-ingestion/optional05_kafka_routine_load.ipynb
+  - title: '5B зертханалық жұмысы: MySQL → Flink CDC → Doris'
+    path: level1/module05-ingestion/optional05_flink_mysql_cdc.ipynb
+  - title: '4–5-модульдердің кеңейтілген зертханалық жұмысы: Файлдарды тікелей сұрау, пакеттік жүктеу
+      және Group Commit растаулары'
+    path: level1/extensions/extension45_files_and_group_commit.ipynb
+- slug: data-quality
+  id: module-6
+  summary: Сенімді талдамалық деректер қоймасында деректер сапасы мен схеманы тексеруді қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 1
+  order: 6
+  title: Деректер сапасы және схеманы тексеру
+  course: level1/module06-data-quality/course.md
+  lab: level1/module06-data-quality/lab06_validate_orders.ipynb
+  quiz: level1/module06-data-quality/quiz06_data_quality_and_rejection.yaml
+  estimated_minutes: 70
+- slug: state-changes
+  id: module-7
+  summary: Сенімді талдамалық деректер қоймасында жаңарту, жою және қайта ойнатуды қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 1
+  order: 7
+  title: Деректерді жаңарту, жою және оқиғаларды қайта ойнату
+  course: level1/module07-state-changes/course.md
+  lab: level1/module07-state-changes/lab07_current_state_and_replay.ipynb
+  quiz: level1/module07-state-changes/quiz07_state_changes_and_replay.yaml
+  estimated_minutes: 90
+  optional:
+  - title: '6–7-модульдердің кеңейтілген зертханалық жұмысы: Схема өзгерістері, жүктеумен жою және қайшылықтарды
+      анықтау'
+    path: level1/extensions/extension67_schema_and_delete.ipynb
+- slug: views-materialized-views
+  id: module-8
+  summary: Сенімді талдамалық деректер қоймасында көріністер мен материалданған көріністерді қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 2
+  order: 8
+  title: Көріністер және материалданған көріністер
+  course: level2/module08-views-materialized-views/course.md
+  lab: level2/module08-views-materialized-views/lab08_views_and_materialized_views.ipynb
+  quiz: level2/module08-views-materialized-views/quiz08_views_and_materialized_views.yaml
+  estimated_minutes: 117
+- slug: modeling-and-joins
+  id: module-9
+  summary: Сенімді талдамалық деректер қоймасында модельдеу мен біріктірулерді қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 2
+  order: 9
+  title: Деректер қоймасын модельдеу және біріктірулер
+  course: level2/module09-modeling-and-joins/course.md
+  lab: level2/module09-modeling-and-joins/lab09_modeling_and_joins.ipynb
+  quiz: level2/module09-modeling-and-joins/quiz09_modeling_and_joins.yaml
+  estimated_minutes: 112
+- slug: metric-processing
+  id: module-10
+  summary: Сенімді талдамалық деректер қоймасында метрикаларды өңдеуді қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 2
+  order: 10
+  title: Метрикаларды өңдеу және ұсыну
+  course: level2/module10-metric-processing/course.md
+  lab: level2/module10-metric-processing/lab10_metric_processing.ipynb
+  quiz: level2/module10-metric-processing/quiz10_metric_processing.yaml
+  estimated_minutes: 146
+- slug: bi-and-ai
+  id: module-11
+  summary: Сенімді талдамалық деректер қоймасында BI және AI-ға ұсынуды қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 2
+  order: 11
+  title: BI және AI тұтынушыларына арналған интерфейстер мен шекаралар
+  course: level2/module11-bi-and-ai/course.md
+  lab: level2/module11-bi-and-ai/lab11_bi_and_ai_delivery.ipynb
+  quiz: level2/module11-bi-and-ai/quiz11_bi_and_ai.yaml
+  estimated_minutes: 120
+- slug: publishing-permissions-audit
+  id: module-12
+  summary: Сенімді талдамалық деректер қоймасында жариялау, рұқсаттар мен аудитті қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 3
+  order: 12
+  title: Жариялау, рұқсаттар және аудит
+  course: level3/module12-publishing-permissions-audit/course.md
+  lab: level3/module12-publishing-permissions-audit/lab12_publishing_permissions_audit.ipynb
+  quiz: level3/module12-publishing-permissions-audit/quiz12_publishing_permissions_audit.yaml
+  estimated_minutes: 123
+- slug: storage-lifecycle
+  id: module-13
+  summary: Сенімді талдамалық деректер қоймасында сақтау мен өмірлік циклді қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 3
+  order: 13
+  title: Сақтау мен өмірлік циклді басқару
+  course: level3/module13-storage-lifecycle/course.md
+  lab: level3/module13-storage-lifecycle/lab13_storage_and_lifecycle.ipynb
+  quiz: level3/module13-storage-lifecycle/quiz13_storage_lifecycle.yaml
+  estimated_minutes: 108
+- slug: resource-isolation
+  id: module-14
+  summary: Сенімді талдамалық деректер қоймасында ресурстарды оқшаулауды қолдану.
+  status: published
+  required: true
+  requirements:
+  - course_read
+  - lab_opened
+  - lab_declared_complete
+  - quiz_passed
+  level: 3
+  order: 14
+  title: Ресурстарды оқшаулау және сұрауларды қорғау
+  course: level3/module14-resource-isolation/course.md
+  lab: level3/module14-resource-isolation/lab14_resource_isolation.ipynb
+  quiz: level3/module14-resource-isolation/quiz14_resource_isolation.yaml
+  estimated_minutes: 100
+short_title: Деректер қоймасы
+description: Жүктеу мен модельдеуден өмірлік цикл мен оқшаулауға дейін сенімді талдамалық деректер қоймасын
+  жобалау.
+presentation:
+  theme: purple
+  badge_label: ҚОЙМА
+lab_setup:
+  python_version: '3.12'
+  requirements: requirements.txt
+  supported_platforms:
+  - macos
+  - linux
+  - wsl2
+  guide: README.md
+  dependencies:
+  - Git
+  - Docker Engine or Docker Desktop with Compose v2
+  - Python 3.11 or newer
+  - JupyterLab
+  - Any external service named by the selected notebook
+completion:
+  enabled: true
+  strategy: all_required_modules
+  quiz_credit_policy: preserve_passed
+certificate:
+  enabled: true
+  code: DW
+  template: course_completion
+levels:
+  '1': Деректер қоймасының негізін құру
+  '2': Аналитиканы модельдеу және ұсыну
+  '3': Платформаны басқару және пайдалану

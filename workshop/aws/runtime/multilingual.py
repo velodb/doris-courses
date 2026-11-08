@@ -1,4 +1,4 @@
-"""Content-v2 runtime admission, immutable templates and persistent working copies.
+"""Versioned course admission, immutable templates and persistent working copies.
 
 This module uses only the standard library before the host environments exist.
 Full content-contract admission runs in the operator builder and server startup.
@@ -18,6 +18,8 @@ import posixpath
 
 ABI = 'doris-workshop-content-2.1'
 CAPABILITIES = ['content-v2', 'notebook-copies-v1', 'quiz-presentations-v2']
+FILES_ABI = 'doris-workshop-content-3.0'
+FILES_CAPABILITIES = ['course-files-v1', 'notebook-copies-v1', 'quiz-presentations-v2']
 PROFILE = 'rta-module-1'
 COURSE = 'doris-course/01-real-time-analytics'
 
@@ -37,6 +39,66 @@ def canonical(value):
 
 def digest(value):
     return hashlib.sha256(value).hexdigest()
+
+
+def dependency_signature(root, common):
+    """Conservative install-input identity, including nested requirement files."""
+    import tomllib
+    root, common = Path(root).resolve(), Path(common).resolve()
+    def local(value, parent):
+        match = re.fullmatch(r'(.*?)(\[[^\]]+\])?', value)
+        path, extras = match[1], match[2] or ''
+        if '://' in path or path.startswith('git+'):
+            return value
+        resolved = (parent / path).resolve()
+        return ('@course' if resolved == root else '@common' if resolved == common else str(resolved)) + extras
+    def specification(value, parent):
+        if re.search(r'\s@\s*(?:file:)?\.', value):
+            prefix, path = re.split(r'\s@\s*(?:file:)?', value, maxsplit=1)
+            return prefix + ' @ ' + local(path, parent)
+        return value
+    active = set()
+    def requirements(path):
+        path = path.resolve()
+        if path in active or len(active) > 32:
+            raise ValueError('content: cyclic or excessive dependency includes')
+        active.add(path); rows = []
+        for line in path.read_text().replace('\\\n', '').splitlines():
+            line = re.sub(r'\s+#.*$', '', line).strip()
+            if not line or line.startswith('#'):
+                continue
+            include = re.fullmatch(r'(-r|-c)\s*(.+)|(--requirement|--constraint)(?:=|\s+)(.+)', line)
+            if include:
+                flag, name = (include[1], include[2]) if include[1] else (include[3], include[4])
+                rows.extend(('constraint:' if flag in {'-c', '--constraint'} else 'requirement:') + r
+                            for r in requirements(path.parent / name))
+                continue
+            editable = re.fullmatch(r'(?:-e\s*|--editable(?:=|\s+))(.+)', line)
+            if editable:
+                line = 'editable:' + local(editable[1], path.parent)
+            elif line.startswith(('.', '/')) or (path.parent / line).is_file():
+                line = local(line, path.parent)
+            else:
+                line = specification(line, path.parent)
+            rows.append(line)
+        active.remove(path)
+        return sorted(set(rows))
+    with (root / 'pyproject.toml').open('rb') as stream:
+        document = tomllib.load(stream)
+    project = document.get('project', {})
+    selected = {key: project.get(key) for key in ('name', 'version', 'requires-python', 'dynamic',
+                                                'scripts', 'gui-scripts', 'entry-points')}
+    selected['dependencies'] = sorted(specification(v, root) for v in project.get('dependencies', []))
+    selected['optional-dependencies'] = {k: sorted(specification(item, root) for item in v)
+                                          for k, v in project.get('optional-dependencies', {}).items()}
+    if not project or project.get('dynamic'):
+        selected['dynamic-source-root'] = str(root)  # Equal resolved inputs cannot be proved statically.
+    build = copy.deepcopy(document.get('build-system', {}))
+    build['requires'] = sorted(specification(v, root) for v in build.get('requires', []))
+    if 'backend-path' in build:
+        build['backend-path'] = [local(p, root) for p in build['backend-path']]
+    return digest(canonical({'requirements': requirements(root / 'requirements.txt'), 'project': selected,
+        'build-system': build, 'dependency-groups': document.get('dependency-groups', {}), 'tool': document.get('tool', {})}))
 
 
 def notebook_html_images(text, rewrite, parser):
@@ -77,6 +139,18 @@ def notebook_html_images(text, rewrite, parser):
     return text
 
 
+def notebook_markdown_links(text, rewrite, parser):
+    """Route authored links without changing Markdown code examples."""
+    offsets = [0]
+    for line in text.splitlines(keepends=True):
+        offsets.append(offsets[-1] + len(line))
+    protected = [(offsets[t.map[0]], offsets[t.map[1]]) for t in parser.parse(text)
+                 if t.type in {'fence', 'code_block'}]
+    protected.extend((m.start(), m.end()) for m in re.finditer(r'(`+)(.*?)\1', text, re.S))
+    return re.sub(r'(!?\[[^\]\n]*\]\()([^\s)]+)(\))',
+        lambda m: m.group() if any(a <= m.start() < b for a, b in protected) else m[1] + rewrite(m[2]) + m[3], text)
+
+
 def safe(root, name):
     if not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9_-]+(?:[./][A-Za-z0-9_-]+)*', name):
         raise ValueError('content: invalid relative path')
@@ -100,17 +174,24 @@ def read(root, name):
 
 
 def fingerprint(package):
-    """Bind every shared code/data input as well as dependency manifests."""
+    """Bind legacy shared inputs, or all independently authored v3 locales."""
     shared = {a['file']['path']: a['file']['sha256'] for a in package['assets']
-              if a['locale'] == 'shared' and a['kind'] in {'code', 'data'}}
+              if (package.get('schema_version') == 3 or a['locale'] == 'shared')
+              and a['kind'] in {'code', 'data'}}
     dependencies = {p: h for p, h in shared.items() if Path(p).name in
                     {'requirements.txt', 'pyproject.toml', 'uv.lock', 'setup.py', 'setup.cfg'}}
     return digest(canonical(shared)), digest(canonical(dependencies))
 
 
 def binding(package):
+    version = package.get('schema_version')
+    if (type(version) is not int or version not in (2, 3)
+            or package.get('kind') != {2: 'doris-content-package', 3: 'doris-course-files'}[version]):
+        raise ValueError('content: unsupported package format or kind')
     code, dependencies = fingerprint(package)
-    return {'schema_version': 1, 'abi': ABI, 'capabilities': CAPABILITIES,
+    files = version == 3
+    return {'schema_version': 1, 'abi': FILES_ABI if files else ABI,
+            'capabilities': FILES_CAPABILITIES if files else CAPABILITIES,
             'source_ref': package['snapshot']['source_ref'],
             'package_digest': package['snapshot']['package_digest'],
             'default_locale': package['default_locale'], 'available_locales': package['available_locales'],
@@ -130,7 +211,8 @@ def validate_binding(value):
             or any(tag not in registry for tag in profiles)
             or len({registry[tag]['kernel'] for tag in profiles}) != len(profiles)):
         raise ValueError('content: unknown, duplicate or overlapping profiles')
-    if (value['abi'] != ABI or value['capabilities'] != CAPABILITIES
+    capabilities = {ABI: CAPABILITIES, FILES_ABI: FILES_CAPABILITIES}.get(value['abi'])
+    if (capabilities is None or value['capabilities'] != capabilities
             or not isinstance(locales, list) or locales != ['en', 'kk-Cyrl']
             or value['default_locale'] not in locales or set(value['locale_digests']) != set(locales)):
         raise ValueError('content: unsupported ABI, profile, capability or language set')
@@ -152,7 +234,7 @@ def validate_plan(plan):
     validate_binding(plan['content'])
     registry = profile_registry()
     selected = {registry[p]['kernel']: p for p in plan['content']['profiles']}
-    if (plan.get('capabilities') != CAPABILITIES or plan['course_ref'] != plan['content']['source_ref']
+    if (plan.get('capabilities') != plan['content']['capabilities'] or plan['course_ref'] != plan['content']['source_ref']
             or [course['kernel'] for course in plan['courses']] != list(selected)):
         raise ValueError('runtime: incompatible content binding')
     seen = set()
@@ -169,11 +251,28 @@ def validate_plan(plan):
             raise ValueError('runtime: selection differs from its admitted profile')
 
 
+def package_name(expected):
+    if expected['abi'] == FILES_ABI:
+        return 'package.v3.json'
+    if expected['abi'] == ABI:
+        return 'package.v2.json'
+    raise ValueError('content: unsupported package ABI')
+
+
 def verify_tree(root, expected, *, full=False, source=None):
     validate_binding(expected)
-    package = read(root, 'package.v2.json')
+    entry = package_name(expected)
+    package = read(root, entry)
+    version = 3 if expected['abi'] == FILES_ABI else 2
+    if type(package.get('schema_version')) is not int or package['schema_version'] != version:
+        raise ValueError('content: package format differs from its ABI')
     if package['package_state'] != 'release' or binding(package) != expected:
         raise ValueError('content: package binding differs; use an explicit update on a fresh installation')
+    if version == 3:
+        payload = copy.deepcopy(package)
+        payload['snapshot'].pop('package_digest', None)
+        if digest(canonical(payload)) != expected['package_digest']:
+            raise ValueError('content: file package manifest digest differs')
     files = package['snapshot']['files']
     paths = set()
     for record in files:
@@ -187,15 +286,16 @@ def verify_tree(root, expected, *, full=False, source=None):
     actual = {p.relative_to(root).as_posix() for p in Path(root).rglob('*') if not p.is_dir()}
     if any(p.is_symlink() for p in Path(root).rglob('*')):
         raise ValueError('content: unexpected symlink')
-    if actual != paths | {'package.v2.json'}:
+    if actual != paths | {entry}:
         raise ValueError('content: unexpected installation files')
     if full:
         # Source tooling is frozen in source.tar and checked against the pinned
         # builder at bundle creation. It is never imported from the teaching tree.
         import sys
         sys.path.insert(0, str(Path(source) / 'tools'))
-        from content_contract_v2 import validate_package
-        validate_package(root)
+        import importlib
+        validator = importlib.import_module('content_files_contract' if version == 3 else 'content_contract_v2')
+        validator.validate_package(root)
     return package
 
 
@@ -237,15 +337,18 @@ def unpack(archive, destination, expected):
 
 
 class Content:
+    rewrite_html_images = staticmethod(notebook_html_images)
+
     def __init__(self, plan, root, workspace):
         validate_plan(plan)
         self.plan, self.root, self.workspace = plan, Path(root), Path(workspace)
         self.package = verify_tree(self.root, plan['content'])
+        self.course_files = self.package.get('schema_version') == 3
         self.assets = read(self.root, 'indexes/assets.json')
         self.inventory = {r['path']: r for r in self.package['snapshot']['files']}
         selected = [p for p in self.package['profiles'] if p['id'] in plan['content']['profiles']]
         selected_assets = {a for p in selected for a in p['asset_ids']}
-        source_asset_ids = {a['file']['path']: a['id'] for a in self.package['assets'] if a['locale'] in {'en', 'shared'}}
+        source_asset_ids = {a.get('source_path', a['file']['path']): a['id'] for a in self.package['assets'] if a['locale'] in {'en', 'shared'}}
         selected_keys = {(m['course_slug'], m['module_id']) for p in selected for m in p['modules']}
         if set(plan['content']['profiles']) != {p['id'] for p in selected}:
             raise ValueError('content: selected profile is absent')
@@ -254,6 +357,8 @@ class Content:
         selected_files = {a['file']['path'] for a in self.package['assets'] if a['id'] in selected_assets}
         selected_paths = selected_files | {r['source_path'] for r in self.assets['links']
                                           if r['locale'] == 'en' and r['path'] in selected_files}
+        if self.course_files:
+            selected_paths.update(a.get('source_path', a['file']['path']) for a in self.package['assets'] if a['id'] in selected_assets)
         selected_paths.update(q['source_path'] for q in self.package['quizzes'] if q['id'] in self.selected_quizzes)
         self.links = {locale: {} for locale in plan['content']['available_locales']}
         # A package can carry extra checked translations for other profiles.
@@ -281,6 +386,12 @@ class Content:
             if asset['locale'] == 'shared':
                 for locale in self.links:
                     self.links[locale].setdefault(asset['file']['path'], (asset['file']['path'], locale))
+        self.source_files = {(a['locale'], a.get('source_path', a['file']['path'])): a['source_file']
+                             for a in self.package['assets'] if 'source_file' in a}
+        self.physical_sources = {a['source_file']: (a.get('source_path', a['file']['path']), a['locale'])
+                                 for a in self.package['assets'] if 'source_file' in a}
+        self.source_files.update({(r['locale'], r['source_path']): r['source_file']
+                                  for r in self.assets['links'] if 'source_file' in r})
         self.notebooks = {c['course_dir'] + '/' + p: c for c in plan['courses'] for p in c['notebooks']}
         self.allowed_paths = {path for links in self.links.values() for path, _ in links.values()}
         expected_notebooks, actual_keys = set(), set()
@@ -312,8 +423,73 @@ class Content:
                 raise ValueError('content: optional selection differs from admitted assets')
         if actual_keys != selected_keys or set(self.notebooks) != expected_notebooks:
             raise ValueError('content: runtime Notebook selection differs from admitted assets')
-        self.units = {u['id']: u for u in self.package['source_units']}
-        self.anchor_rows = {r['unit_id']: r for r in read(self.root, 'indexes/anchors.json')}
+        self.units = {} if self.course_files else {u['id']: u for u in self.package['source_units']}
+        self.anchor_rows = {} if self.course_files else {r['unit_id']: r for r in read(self.root, 'indexes/anchors.json')}
+        if self.course_files:
+            sources = self.package.get('course_sources', {})
+            if set(sources) != set(self.links):
+                raise ValueError('content: missing language source roots')
+            for locale, mapping in sources.items():
+                for course in plan['courses']:
+                    expected_root = (course['course_dir'] if locale == 'en' else
+                                     'doris-course/' + locale + '/' + PurePosixPath(course['course_dir']).name)
+                    if mapping.get(course['slug']) != expected_root:
+                        raise ValueError('content: invalid language course source root')
+
+    def source_course(self, course, locale):
+        """The selected language owns its helpers, datasets and environments."""
+        if not self.course_files:
+            return course['course_dir']
+        return self.package['course_sources'][locale][course['slug']]
+
+    def environment(self, source, course, locale, *, require_installed=True):
+        english = Path(source) / course['course_dir']
+        root = Path(source) / self.source_course(course, locale)
+        if (not self.course_files or locale == 'en' or
+                dependency_signature(english, Path(source) / 'doris-course/common') ==
+                dependency_signature(root, Path(source) / 'doris-course/common')):
+            return english / '.venv'
+        key = course['kernel'] + '.' + locale
+        if key not in self.plan.get('python_locks', {}):
+            raise ValueError('content: independent language dependencies require a reviewed locale lock: ' + key)
+        environment = root / '.venv'
+        if environment.is_symlink():
+            raise ValueError('content: an independent language environment must be its own directory: ' + key)
+        if require_installed and not (environment / 'bin/python').is_file():
+            raise ValueError('content: install the locked language environment before starting its kernel: ' + key)
+        return environment
+
+    def canonical_source(self, relative, locale):
+        if not self.course_files:
+            return relative
+        for course in self.plan['courses']:
+            root = self.source_course(course, locale)
+            if relative.startswith(root + '/'):
+                return course['course_dir'] + relative[len(root):]
+        raise ValueError('content: source is outside the selected language course')
+
+    def link_target(self, current, relative, locale):
+        """Resolve against the authoring file's physical depth before routing."""
+        if not self.course_files:
+            return posixpath.normpath(posixpath.join(posixpath.dirname(current), relative)), locale
+        source = self.source_files.get((locale, current), current)
+        if source == current:
+            for course in self.plan['courses']:
+                if current.startswith(course['course_dir'] + '/'):
+                    source = self.source_course(course, locale) + current[len(course['course_dir']):]
+                    break
+        physical = posixpath.normpath(posixpath.join(posixpath.dirname(source), relative))
+        if physical in self.physical_sources:
+            logical, actual = self.physical_sources[physical]
+            return logical, locale if actual == 'shared' else actual
+        for actual, mapping in self.package['course_sources'].items():
+            for course in self.plan['courses']:
+                root = mapping[course['slug']]
+                if physical.startswith(root + '/'):
+                    return course['course_dir'] + physical[len(root):], actual
+        # Shared common files and English navigation outside this course set
+        # retain their physical/canonical names, with an explicit English route.
+        return physical, locale if physical.startswith('doris-course/common/') else 'en'
 
     def resolve(self, path, kind, locale):
         from i18n import LocaleUnavailable
@@ -337,7 +513,7 @@ class Content:
                 raise ValueError('content: missing UI language')
             dictionaries[locale] = read(self.root, path)['messages']
         return InstalledUI(dictionaries, default=self.plan['content']['default_locale'], content=self.resolve,
-                           labels=self.labels, anchors=self.anchors)
+                           labels=self.labels, anchors=None if self.course_files else self.anchors)
 
     def labels(self, kind, identity, values, locale):
         slug = identity if kind == 'course' else identity[0]
@@ -365,6 +541,8 @@ class Content:
         return [self.anchor_rows[u['id']]['anchor'] for u in self.headings(path)][1:]
 
     def aliases(self, path):
+        if self.course_files:
+            return None  # Explicit aliases belong to each independently edited file.
         used, result = {}, []
         for unit in self.headings(path):
             title = unit['source_text'].splitlines()[0].lstrip('# ').lower()
@@ -394,7 +572,7 @@ class Content:
             'name': self.notebooks[path]['kernel'], 'display_name': self.notebooks[path]['kernel'], 'language': 'python'}
         from markdown_it import MarkdownIt
         parser = MarkdownIt('commonmark')
-        english = {c['id']: c for c in read(self.root, path)['cells'] if c['cell_type'] == 'markdown'}
+        english = {} if self.course_files else {c['id']: c for c in read(self.root, path)['cells'] if c['cell_type'] == 'markdown'}
         cell_units = {u['locator']['value']: u for u in self.units.values()
                       if u['source_path'] == path and u['locator']['kind'] == 'notebook-cell'}
         used_slugs = {}
@@ -402,20 +580,24 @@ class Content:
             parts = urlsplit(value)
             if parts.scheme or parts.netloc or not parts.path or parts.path.startswith('/'):
                 return value
-            destination = posixpath.normpath(posixpath.join(posixpath.dirname(path), unquote(parts.path)))
+            destination, target_locale = self.link_target(path, unquote(parts.path), locale)
             route = 'notebook' if destination.endswith('.ipynb') else 'content'
             if not destination.endswith(('.ipynb', '.md', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp')):
-                selected, actual = self.resolve(destination, 'asset', locale)
+                selected, actual = self.resolve(destination, 'asset', target_locale)
                 record = next(r for r in self.assets['downloads'] if r['path'] == selected)
                 query = parts.query + ('&' if parts.query else '') + 'locale=' + actual
                 return urlunsplit(('', '', base.rstrip('/') + '/workshop/artifact/' + record['sha256'] + '/' + quote(selected, safe='/'), query, parts.fragment))
-            query = parts.query + ('&' if parts.query else '') + 'locale=' + locale
+            query = parts.query + ('&' if parts.query else '') + 'locale=' + target_locale
             return urlunsplit(('', '', base.rstrip('/') + '/workshop/' + route + '/' + quote(destination, safe='/'), query, parts.fragment))
         for cell in notebook['cells']:
             if cell['cell_type'] == 'markdown':
                 text = ''.join(cell['source'])
-                text = re.sub(r'(!?\[[^\]\n]*\]\()([^\s)]+)(\))', lambda m: m[1] + url(m[2]) + m[3], text)
+                text = (notebook_markdown_links(text, url, parser) if self.course_files else
+                        re.sub(r'(!?\[[^\]\n]*\]\()([^\s)]+)(\))', lambda m: m[1] + url(m[2]) + m[3], text))
                 text = notebook_html_images(text, url, parser)
+                if self.course_files:
+                    cell['source'] = text
+                    continue
                 source_tokens = parser.parse(''.join(english[cell['id']]['source']))
                 target_tokens = parser.parse(text)
                 source_titles = [source_tokens[i + 1].content for i, t in enumerate(source_tokens) if t.type == 'heading_open']
@@ -490,7 +672,7 @@ def configure_quiz(content, locale):
     def installed(cls, path, **kwargs):
         path = Path(path).resolve()
         course_root = Path(os.environ['DORIS_WORKSHOP_SHARED_SOURCE']).resolve()
-        relative = path.relative_to(course_root).as_posix()
+        relative = content.canonical_source(path.relative_to(course_root).as_posix(), locale)
         quiz = next((q for q in content.package['quizzes'] if q['source_path'] == relative and q['id'] in content.selected_quizzes), None)
         if quiz is None:
             raise ValueError('content: Quiz is outside the installed profile')

@@ -1,4 +1,11 @@
-# Website v2 consumer
+# Website multilingual consumer
+
+New source releases use the independent course-file v3 package and
+`--interface v3`. The website validates committed language files and generated
+projections without source maps, translated unit overlays or English paragraph
+alignment. The compiled website format and existing grade/route identities stay
+compatible. The following v2 details describe supported historical releases.
+
 
 The VeloDB website consumes this contract through a separate, pinned admission
 and compiler. Its operational entry is `docs/courses-multilingual.md` in the

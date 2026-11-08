@@ -9,6 +9,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 
 import workshop_config as config_tool
@@ -17,6 +18,22 @@ import workshop_ui
 RUNTIME = config_tool.SPEC / "runtime"
 PAYLOAD = ("install_host.sh", "host.py", "kernel.py", "check.py", "serve.py", "portal.py",
            "doris-workshop-jupyter.service", "packages.json", "operations.py", "ui.tar")
+
+
+def verify_course_sources(source_archive, teaching_archive):
+    """V3 executed helpers and rendered teaching files share one Git snapshot."""
+    with tarfile.open(source_archive) as source, tarfile.open(teaching_archive) as teaching:
+        inputs = json.load(teaching.extractfile('indexes/source-inputs.json'))['inputs']
+        for record in inputs:
+            try:
+                member = source.getmember(record['path'])
+                if not member.isfile():
+                    raise KeyError(record['path'])
+                raw = source.extractfile(member).read()
+            except KeyError as error:
+                raise config_tool.ConfigError('content: authored source is absent from frozen runtime archive: ' + record['path']) from error
+            if len(raw) != record['size'] or hashlib.sha256(raw).hexdigest() != record['sha256']:
+                raise config_tool.ConfigError('content: authored source differs from frozen runtime archive: ' + record['path'])
 
 
 def course_selection(config, *, repo=config_tool.REPO):
@@ -104,9 +121,11 @@ def create_bundle(config_path, output, *, repo=config_tool.REPO, content_package
         payload = list(PAYLOAD) + ['source.tar']
         if content is not None:
             shutil.copyfile(Path(content_package) / 'teaching.tar.gz', temporary / 'teaching.tar.gz')
+            if content['abi'] == workshop_content.consumer.FILES_ABI:
+                verify_course_sources(temporary / 'source.tar', temporary / 'teaching.tar.gz')
             shutil.copyfile(RUNTIME / 'multilingual.py', temporary / 'multilingual.py')
             shutil.copyfile(config_tool.SPEC / 'profiles.v2.json', temporary / 'profiles.v2.json')
-            plan.update(content=content, capabilities=workshop_content.consumer.CAPABILITIES)
+            plan.update(content=content, capabilities=content['capabilities'])
             payload.extend(['teaching.tar.gz', 'multilingual.py', 'profiles.v2.json'])
         for name in payload:
             with (temporary / name).open("rb") as stream:

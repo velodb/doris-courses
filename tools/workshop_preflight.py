@@ -156,7 +156,8 @@ def validate_inputs(config, pilot, now=None):
     else:
         require('content' not in runtime and 'capabilities' not in runtime, 'runtime: v1 cannot declare multilingual capability')
     require(runtime.get('course_ref') == config['course_ref'], 'runtime: course SHA must match config')
-    require(sorted(p for c in runtime['courses'] for p in c['profiles']) == config['course_profiles'],
+    selected_profiles = [p for c in runtime['courses'] for p in c['profiles']]
+    require((selected_profiles if config['schema_version'] == 2 else sorted(selected_profiles)) == config['course_profiles'],
             'runtime: profiles must match config')
     require(runtime.get('runtime') == json.loads((SPEC / 'profiles.json').read_text())['runtime'],
             'runtime: platform contract must match')
@@ -165,8 +166,12 @@ def validate_inputs(config, pilot, now=None):
         require(path.resolve().is_relative_to(bundle) and path.is_file() and file_hash(path) == checksum,
                 'runtime: bundle file missing, unsafe or changed')
     locks = runtime.get('python_locks', {})
+    required_locks = {'server', *(c['kernel'] for c in runtime['courses'])}
+    optional_locks = ({c['kernel'] + '.' + tag for c in runtime['courses']
+                       for tag in runtime['content']['available_locales'] if tag != 'en'}
+                      if runtime.get('content', {}).get('abi') == 'doris-workshop-content-3.0' else set())
     require(isinstance(locks, dict) and (not locks or
-            (set(locks) == {'server', *(c['kernel'] for c in runtime['courses'])} and
+            (required_locks <= set(locks) <= required_locks | optional_locks and
              all(path == name + '.requirements.lock' for name, path in locks.items()))),
             'runtime: invalid Python lock mapping')
     # Validated pre-overlay images retain their exact old runtime fingerprint.

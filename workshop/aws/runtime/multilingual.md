@@ -1,5 +1,21 @@
 # Multilingual Workshop runtime
 
+New releases read independently maintained course files from each language tree.
+Use `tools/build_course_files.py` and the private `package.v3.json` release
+(format 3.0.0, ABI `doris-workshop-content-3.0`). English files stay in their
+original roots; Kazakh files mirror them in `doris-course/kk-Cyrl/`.
+Edit those files directly; there are no source-unit overlays or stale-English
+translation gates. The existing v2 runtime/config envelope also supports the
+new ABI with its exact capability set. Historical overlay-v2 packages retain
+their original ABI and remain readable.
+
+`course_sources` selects the physical language course root for kernel cwd,
+imports, helper code, data and environments. The common library stays shared.
+Notebook copies remain separate by language, persistent and never overwritten
+on reopen. Unbound native-language Quiz attempts remain self-study; installed
+Quiz bindings use the existing trusted grading/progress boundary.
+
+
 Runtime v2 installs a complete English and Kazakh (`kk-Cyrl`) release before
 learners enter. The `real-time-analytics-complete`, `data-warehousing-complete`
 and `observability-complete` profiles cover all 32 primary modules, nine optional
@@ -16,7 +32,7 @@ Commit the teaching inputs and use the matching builder from that commit:
 
 ```bash
 SOURCE_REF=$(git rev-parse HEAD)
-python tools/build_content_package.py --source-ref "$SOURCE_REF" build \
+python tools/build_course_files.py --source-ref "$SOURCE_REF" \
   --profile rta-module-1 --locale en --locale kk-Cyrl --output /tmp/rta-content
 python tools/workshop_content.py --package /tmp/rta-content \
   --output /tmp/rta-content-binding.json

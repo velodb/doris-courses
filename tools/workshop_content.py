@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Admit a teaching package and print the exact Workshop v2 content binding."""
+"""Admit a versioned teaching package and print its exact Workshop binding."""
 import argparse
 import importlib.util
 import json
@@ -17,8 +17,16 @@ _spec.loader.exec_module(consumer)
 def admit(directory, config=None):
     directory = Path(directory).resolve()
     tree = directory / 'tree'
-    contract.validate_package(tree)
-    package = json.loads((tree / 'package.v2.json').read_text())
+    entries = [name for name in ('package.v2.json', 'package.v3.json') if (tree / name).is_file()]
+    if len(entries) != 1:
+        raise wc.ConfigError('content: exactly one supported package manifest is required')
+    entry = entries[0]
+    if entry == 'package.v3.json':
+        import content_files_contract
+        content_files_contract.validate_package(tree)
+    else:
+        contract.validate_package(tree)
+    package = json.loads((tree / entry).read_text())
     value = consumer.binding(package)
     consumer.validate_binding(value)
     if config is not None and (config.get('schema_version') != 2 or config['content'] != value
@@ -31,7 +39,7 @@ def admit(directory, config=None):
     # The archive must represent this exact admitted tree, without extra entries.
     import tarfile
     expected = {r['path']: r for r in package['snapshot']['files']}
-    expected['package.v2.json'] = {'sha256': consumer.digest((tree / 'package.v2.json').read_bytes())}
+    expected[entry] = {'sha256': consumer.digest((tree / entry).read_bytes())}
     with tarfile.open(directory / 'teaching.tar.gz') as stream:
         seen = set()
         for member in stream.getmembers():
@@ -59,7 +67,7 @@ def ui_from_bundle(bundle, expected):
         raise wc.ConfigError('content: entry archive changed')
     dictionaries = {}
     with tarfile.open(archive) as stream:
-        package = json.load(stream.extractfile('package.v2.json'))
+        package = json.load(stream.extractfile(consumer.package_name(expected)))
         if consumer.binding(package) != expected:
             raise wc.ConfigError('content: entry package differs')
         inventory = {r['path']: r for r in package['snapshot']['files']}

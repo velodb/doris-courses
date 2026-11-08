@@ -2,6 +2,7 @@
 
 import json
 from html import escape
+from html.parser import HTMLParser
 import mimetypes
 import os
 from pathlib import Path
@@ -32,30 +33,89 @@ def notebook_url(base, path):
     return url_path_join(base, "lab/tree", quote(path, safe="/"))
 
 
+def lesson_title(source, fallback, *, course_files=False):
+    if course_files:
+        # Independently authored files may put permanent alias anchors before
+        # their title. Keep those anchors while extracting only the real H1.
+        lines = source.splitlines(keepends=True)
+        tokens = MarkdownIt('commonmark').parse(source)
+        for index, token in enumerate(tokens):
+            if token.type == 'heading_open' and token.tag == 'h1':
+                start, end = token.map
+                return tokens[index + 1].content, ''.join(lines[:start] + lines[end:])
+        return fallback, source
+    heading = re.match(r'^#\s+([^\n]+)\n', source)
+    return (heading[1], source[heading.end():]) if heading else (fallback, source)
+
+
 def rewrite_link(value, current, base, context=None, adapter=None):
     """Resolve only a Markdown link's URL, preserving its query and fragment."""
     parts = urlsplit(value)
     if parts.scheme or parts.netloc or not parts.path or parts.path.startswith("/"):
         return value
     path = posixpath.normpath(posixpath.join(posixpath.dirname(current), unquote(parts.path)))
+    target_locale = None
+    if adapter and getattr(adapter, 'course_files', False):
+        path, target_locale = adapter.link_target(current, unquote(parts.path), context.locale)
     route = notebook_url if path.endswith(".ipynb") else content_url
     if adapter:
         if path.endswith('.ipynb'):
             route = lambda base, path: url_path_join(base, 'workshop/notebook', quote(path, safe='/'))
         elif not path.endswith(('.md', '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg')):
             try:
-                resolved, actual = adapter.resolve(path, 'asset', context.locale)
+                resolved, actual = adapter.resolve(path, 'asset', target_locale or context.locale)
                 record = next(r for r in adapter.assets['downloads'] if r['path'] == resolved)
                 artifact = url_path_join(base, 'workshop/artifact', record['sha256'], quote(resolved, safe='/'))
                 return with_locale(urlunsplit(('', '', artifact, parts.query, parts.fragment)), actual)
             except (ValueError, StopIteration):
                 pass
     result = urlunsplit(("", "", route(base, path), parts.query, parts.fragment))
-    return context.url(result) if context else result
+    return with_locale(result, target_locale) if target_locale else context.url(result) if context else result
+
+
+def authored_html(value, current, base, context, adapter):
+    """Keep admitted structural markup/aliases and escape literal pseudo tags."""
+    allowed = {'details', 'summary', 'br', 'p', 'a', 'img', 'em', 'strong', 'code', 'pre', 'ul', 'ol', 'li',
+               'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'hr', 'sub', 'sup', 'kbd',
+               'samp', 'del', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span'}
+    attributes = {'id', 'title', 'alt', 'href', 'src', 'open', 'width', 'height', 'align'}
+    result = []
+    class Clean(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            if tag not in allowed:
+                result.append(escape(self.get_starttag_text())); return
+            rendered = []
+            for key, value in attrs:
+                if key not in attributes:
+                    raise ValueError('content: unsafe authored HTML attribute')
+                if key in {'href', 'src'} and value is not None:
+                    parts = urlsplit(value.strip())
+                    if parts.scheme not in {'', 'http', 'https', 'mailto'} or parts.netloc and not parts.scheme:
+                        raise ValueError('content: unsafe authored HTML URL')
+                    value = rewrite_link(value, current, base, context, adapter)
+                rendered.append(key if value is None else key + '="' + escape(value, quote=True) + '"')
+            result.append('<' + tag + (' ' + ' '.join(rendered) if rendered else '') + '>')
+        def handle_startendtag(self, tag, attrs):
+            self.handle_starttag(tag, attrs)
+        def handle_endtag(self, tag):
+            result.append('</' + tag + '>' if tag in allowed else escape('</' + tag + '>'))
+        def handle_data(self, data):
+            result.append(escape(data, quote=False))
+        def handle_entityref(self, name):
+            result.append('&' + name + ';')
+        def handle_charref(self, name):
+            result.append('&#' + name + ';')
+    Clean(convert_charrefs=False).feed(value)
+    return ''.join(result)
 
 
 def render_markdown(text, current, base, context=None, aliases=None, adapter=None):
-    renderer = MarkdownIt("commonmark", {"html": False}).enable("table")
+    # File-v3 content has already passed the file contract's HTML checks. Its
+    # explicit anchors are source content, rather than English-derived aliases.
+    renderer = MarkdownIt("commonmark", {"html": bool(adapter and getattr(adapter, 'course_files', False))}).enable("table")
+    if adapter and getattr(adapter, 'course_files', False):
+        text = adapter.rewrite_html_images(text,
+            lambda value: rewrite_link(value, current, base, context, adapter), renderer)
     tokens = renderer.parse(text)
     used = {}
     heading_ids = context.heading_ids(current) if context else None
@@ -77,6 +137,8 @@ def render_markdown(text, current, base, context=None, aliases=None, adapter=Non
 
     def rewrite(items):
         for token in items:
+            if adapter and getattr(adapter, 'course_files', False) and token.type in {'html_inline', 'html_block'}:
+                token.content = authored_html(token.content, current, base, context, adapter)
             alignment = token.attrGet("style")
             if token.tag in {"td", "th"} and alignment in {"text-align:left", "text-align:right", "text-align:center"}:
                 token.attrs.pop("style", None)
@@ -237,9 +299,8 @@ class ContentHandler(PortalHandler):
             raise web.HTTPError(404)
         if target.suffix == ".md":
             source = target.read_text()
-            heading = re.match(r"^#\s+([^\n]+)\n", source)
-            title = heading[1] if heading else target.stem
-            source = source[heading.end():] if heading else source
+            title, source = lesson_title(source, target.stem,
+                course_files=bool(self.content_adapter and getattr(self.content_adapter, 'course_files', False)))
             selected = next(((course, module) for course in self.plan['courses'] for module in course.get('modules', [])
                              if path == course['course_dir'] + '/' + module['course']), None)
             lab, row = None, None

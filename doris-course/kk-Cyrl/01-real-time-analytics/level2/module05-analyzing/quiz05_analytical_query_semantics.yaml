@@ -1,0 +1,136 @@
+title: '5-модуль тесті: Apache Doris жүйесінде деректерді талдау'
+description: Алты дербес бизнес сценарийі 5-модульдің талдамалық шешімдерін тексереді;
+  әр оқу мақсатына бір сұрақтан. Жалғастырмас бұрын түсіндірмені оқып, кез келген
+  жауапты түзетіңіз.
+questions:
+- id: table_function_and_tvf
+  type: single_choice
+  objective: Скалярлық, агрегаттық, терезелік, Table Function немесе TVF сияқты функция
+    санатын кірісі, шығысы және жол саны әрекетіне қарай таңдау.
+  prompt: A сұрауы оқиғалар кестесінде LATERAL VIEW EXPLODE(tags) пайдаланады. B сұрауы
+    FROM NUMBERS("number" = "4") таңдайды. Қай тұжырым екі функцияны дұрыс сипаттайды?
+  options:
+  - id: table_function_and_tvf
+    text: EXPLODE — әр кіріс жолын жаятын Table Function; NUMBERS — TVF
+  - id: both_aggregate
+    text: Екеуі де бірнеше жол қайтаратындықтан, екеуі де агрегат функциялары
+  - id: explode_is_tvf
+    text: EXPLODE — қатынас оқитын TVF; NUMBERS әр жолдың тегтерін жаяды
+  - id: both_scalar
+    text: Екеуі де әр кіріс жолына бір мән беретіндіктен, екеуі де скалярлық функциялар
+  answer: table_function_and_tvf
+  explanation: EXPLODE әр ағымдағы кіріс жолының мәнін нөл немесе одан көп жолға жаяды,
+    ал LATERAL VIEW әр жаңа жолды бастапқы жолымен байланыстырады; бұл — Table Function.
+    NUMBERS өзі FROM ішіндегі қатынас болып, кіріс жолын қажет етпейді; бұл — S3 сияқты
+    кестелік мәнді функция. Агрегаттар жолдарды топтарға біріктіреді, ал скалярлық
+    функциялар әр жолға бір мән береді.
+- id: where_and_having
+  type: single_choice
+  objective: Шартты агрегаттармен әр метриканың жиынын анықтау және кіріс жолдарын
+    `WHERE`, топтарды `HAVING` арқылы сүзу.
+  prompt: (store, status, amount) жолдары — (A, paid, 60), (A, pending, 70) және (B,
+    paid, 110). Сұрау WHERE status = 'paid', GROUP BY store және HAVING SUM(amount)
+    > 100 пайдаланады. Қай нәтиже қалады?
+  options:
+  - id: both_with_pending
+    text: 130 мәнімен A дүкені және 110 мәнімен B дүкені
+  - id: both_paid_only
+    text: 60 мәнімен A дүкені және 110 мәнімен B дүкені
+  - id: store_a_only
+    text: Тек 130 мәнімен A дүкені
+  - id: store_b_only
+    text: Тек 110 мәнімен B дүкені
+  answer: store_b_only
+  explanation: WHERE топтаудан бұрын pending жолын алып тастайды, сондықтан A дүкенінің
+    жиынтығы 60 болып, HAVING шартынан өтпейді, ал B дүкені 110 болып, өтеді. HAVING
+    жеке төлемдерді емес, топ жиынтықтарын сүзеді және pending сомасы paid жиынына
+    кіре алмайды.
+- id: any_value_meaning
+  type: single_choice
+  objective: '`ANY_VALUE` тек кез келген өкілдік мән топ мағынасына сай келгенде пайдалану.'
+  prompt: Есеп бірнеше күннің сатылымын дүкен бойынша топтайды. ANY_VALUE(sale_date)
+    таңдап, сол бағанды latest_sale_date деп белгілейді. Әр дүкенде бірнеше әртүрлі
+    күн бар. Белгі негізді ме?
+  options:
+  - id: last_inserted
+    text: Иә, өйткені ANY_VALUE әр топқа соңынан енгізілген жолдың күнін қайтарады
+  - id: total_decides
+    text: Иә, өйткені топтың жалпы түсімі ANY_VALUE қайтаратын күнді анықтайды
+  - id: use_max
+    text: Жоқ; ANY_VALUE топтың кез келген күнін қайтара алады, сондықтан MAX(sale_date)
+      пайдалану керек
+  - id: group_by_every_date
+    text: Жоқ; есепке әр дүкенге бір жол қажет болса да, sale_date мәнін GROUP BY
+      ішіне қосу керек
+  answer: use_max
+  explanation: ANY_VALUE топтың қандай да бір NULL емес мәнін қайтарады және қайсысы
+    болатынын уәде етпейді, сондықтан «соңғы» дегенді білдіре алмайды. MAX(sale_date)
+    сұраққа жауап беріп, әр дүкенге бір жол сақтайды, ал күнді GROUP BY ішіне қосу
+    есеп түйіршіктілігін өзгертеді. ANY_VALUE бір күндік сүзгіден кейінгі күн сияқты
+    әр үміткер бір мағына бергенде сай келеді.
+- id: cte_and_missing_dates
+  type: single_choice
+  objective: Талдаудың әр кезеңіне CTE арқылы атау беру және нәтижесінің түйіршіктілігін
+    айту.
+  prompt: daily атты CTE сатылымды күн бойынша топтайды. Ол 1 шілде мен 3 шілдеге
+    жол қайтарады, ал сатылым болмаған 2 шілдеге жол жоқ. Сыртқы сұрау LAG(revenue)
+    OVER (ORDER BY day) қосады. 3 шілде жолы немен салыстырылады?
+  options:
+  - id: generated_zero_row
+    text: Жетіспейтін күн үшін CTE жасайтын 2 шілденің нөлдік түсім жолы
+  - id: previous_available_row
+    text: 2 шілденің мүлде жолы болмағандықтан, CTE нәтижесінің алдыңғы жолы — 1 шілде
+  - id: null_without_july_2
+    text: NULL, өйткені LAG тек дәл бір күнтізбелік күн бұрынғы жолды оқиды
+  - id: cte_fills_dates
+    text: 2 шілде, өйткені CTE атауы daily болуы оған әр күнтізбелік күнді қосады
+  answer: previous_available_row
+  explanation: CTE түйіршіктілігі сатылымы бар әр күнге бір жол болатын кезеңге атау
+    береді; ол жоқ күндерге жол жасамайды. LAG терезе ретімен жолдар бойынша жылжиды,
+    сондықтан алдыңғы жол — 1 шілде. Алдыңғы күнтізбелік күнмен салыстыруға күнтізбе
+    қатынасы және сатылымсыз күндер үшін айқын ереже қажет.
+- id: rank_and_row_number
+  type: single_choice
+  objective: Алдыңғы мән, жинақтау және орын сұрақтарына терезе бөліктерін, ретін,
+    фреймдерін және орын беру функцияларын таңдау.
+  prompt: Бір күнде East пен West түсімі 100, North түсімі 80. Сұрау ROW_NUMBER()
+    OVER (PARTITION BY event_date ORDER BY revenue DESC, region) және RANK() OVER
+    (PARTITION BY event_date ORDER BY revenue DESC) есептейді. North не алады?
+  options:
+  - id: three_and_three
+    text: ROW_NUMBER North үшін 3, ал RANK 1-дегі теңдіктен кейін North үшін 3 береді
+  - id: three_and_two
+    text: ROW_NUMBER North үшін 3, ал RANK теңдіктен кейінгі келесі орын ретінде North
+      үшін 2 береді
+  - id: two_and_two
+    text: Тең екі аймақ бірінші орынды бөлісетіндіктен, екеуі де North үшін 2 береді
+  - id: one_and_one
+    text: Әр аймақ өз терезе бөлігі болғандықтан, екеуі де North үшін 1 береді
+  answer: three_and_three
+  explanation: 'ROW_NUMBER әр жолды нөмірлейді: аймақ теңдік шешушісімен реттелген
+    East 1 және West 2, содан кейін North 3. RANK тең жолдарға бір орын беріп, олардың
+    иеленген орындарын аттап өтеді: East 1, West 1, North 3. DENSE_RANK North үшін
+    2 берер еді. Терезе күн бойынша бөлінген, сондықтан үш аймақ бір бөлікте жарысады.'
+- id: reusable_logic
+  type: single_choice
+  objective: Жетіспейтін қайта пайдаланылатын логика үшін кіріктірілген функциялар,
+    Lambda өрнектері, Alias Function және пайдаланушы функциялары арасынан таңдау.
+  prompt: 'Топқа үш нәрсе қажет: бір сұрауда массивтің әр элементін екі еселеу, тек
+    бар SQL функцияларынан құрылған атаулы өрнекті қайта пайдалану және сыртқы Java
+    алгоритмін шақыру. Үшеуіне де қай таңдау сай келеді?'
+  options:
+  - id: lambda_alias_udf
+    text: ARRAY_MAP ішіндегі Lambda, Alias Function және Java UDF
+  - id: all_java_udf
+    text: Үшеуінің әрқайсысына BE түйіндеріне JAR ретінде орналастырылған Java UDF
+  - id: lambda_registers
+    text: Өзін әр сұрауға қайта пайдаланылатын функция ретінде тіркейтін бір Lambda
+  - id: cte_permanent
+    text: Өрнекті тұрақты тіркейтін CTE және Java кодына арналған Lambda
+  answer: lambda_alias_udf
+  explanation: Lambda бір сұрау ішінде ARRAY_MAP сияқты жоғары ретті функцияға элемент
+    логикасын береді, Alias Function бар SQL өрнегіне қайта пайдаланылатын атау береді,
+    ал тек сыртқы алгоритм орналастыруымен бірге Java UDF қажет етеді. Lambda ештеңе
+    тіркемейді, CTE бір операторға ғана созылады, ал кіріктірілген жұмыс үшін UDF
+    орналастыру босқа шығын қосады.
+passing_score_percent: 80
