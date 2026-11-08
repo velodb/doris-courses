@@ -1,0 +1,584 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.c4a95ba8f6944073bc96c514f608c9e5",
+      "source_hash": "94b9dad5c62e0519e981e94b3b18186b4c39bffcc0978c5e522a6b3aead0ab2f",
+      "target_text": "**Күтілетін нәтиже:** өзгермеген курс деректерінде `unmatched_purchase_events` — **501**. Бұлар 501 әртүрлі өнім емес, **`1005115`** өнімінің 501 сатып алу оқиғасы. 6-зертханалық жұмыс сәйкес емес байланысты көрсету үшін `dim_products` жасағанда осы өнімді әдейі алып тастаған (`WHERE product_id <> 1005115`). `m08_products` сол өлшемнен көшірілгендіктен, өнім мұнда да жоқ; бұл көшіру қатесі емес.\n\nАймақ есебі оқиға кестесін тікелей оқитындықтан бұл оқиғаларды қамтиды. Кейін санат есебі өнім кестесімен Inner Join қолданып, оларды алып тастайды, сондықтан жиынтықтары аймақ есебімен сәйкес болуы міндетті емес.\n\n`ANALYZE ... WITH SYNC` осы өз кестелері үшін оңтайландырғыш статистикасын жинайды; материалданған нәтиже жасамайды.",
+      "target_hash": "ac8827c7852cb4b98a3d190e610c6e59df944eb0e945c36c35ceacc63dbcb303",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "94b9dad5c62e0519e981e94b3b18186b4c39bffcc0978c5e522a6b3aead0ab2f",
+          "target_hash": "ac8827c7852cb4b98a3d190e610c6e59df944eb0e945c36c35ceacc63dbcb303"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9ed864f077f7409fa355520554652f01",
+      "source_hash": "2143c92d929e268de97837defb4242a7ba9c89f078e133d8593c0900c4b5e554",
+      "target_text": "**Нәтижені қалай оқу керек:**\n\n- Қайта жазу өшірулі және қосулы нәтиже кестелері бірдей тоғыз бірегей сатып алушы жиынтығын қамтуы тиіс. Тексеру әр қайтарылған мәнді салыстырады.\n- Екі Query Profile де `m08_events(m08_events)` және `m08_products(m08_products)` анықтайды. Қайта жазу қосулы орындау `m08_async_category_metrics` атамайды.\n- Материалданған көрініс оқиға сандары мен түсім қосындыларын сақтайды, бірақ `user_id` немесе біріктірілетін бірегей сатып алушы күйін сақтамайды, сондықтан Doris бастапқы егжей-тегжейлі деректерді оқуы тиіс.\n\nБұл код қорабында `EXPLAIN` нәтижесі көрсетілмейді. Жоспар күтілімдері `assert_scan()` арқылы үнсіз тексеріледі. Бұл — барлық бірегей санау сұрауы материалданған көрініспен жеделдетуге жарамсыз деген дәлел емес, осы анықтаманың шектеуі.\n",
+      "target_hash": "a6d1e1c76767b77be14a5ecd1f9a926420d5b5dc6f4db31325d603f8954477b1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "2143c92d929e268de97837defb4242a7ba9c89f078e133d8593c0900c4b5e554",
+          "target_hash": "a6d1e1c76767b77be14a5ecd1f9a926420d5b5dc6f4db31325d603f8954477b1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1765d6515e9844f590a7bb0b507ac7aa",
+      "source_hash": "60ca4853cb5c3d28c8e96261ab3e20680dccbeae2ed350ee7c9e98d2bcb67315",
+      "target_text": "**Нәтижені қалай оқу керек:**\n\n1. **Аяқталған қолмен жаңарту тапсырмасы:** жаңа Task ID `SUCCESS` күйіне жетіп, `COMPLETE` жаңарту пайдаланады және 100% ілгерілеу көрсетеді. Көмекші құрал жаңадан жіберілген тапсырманы күтеді, сондықтан ескі сәтті тапсырма тексеруге сай келе алмайды. Жиналған панель қайталанатын `tasks(\"type\"=\"mv\")` сұрауын көрсетеді.\n2. **Асинхронды көрініс күйі:** айқын SQL проекциясы тек нысан атауын, нысан күйін, соңғы жаңарту күйін, жарияланған жаңарту саясатын және сақталған нәтиженің негізгі кестелермен синхрондалғанын көрсетеді.\n3. **Толық нәтиже салыстыруы:** екі SQL операторы да 64 санат/аймақ тобын және `differing_rows = 0` қайтарады. Көмекші құрал екі 64 жолдық кестені көрсетпей, әр баған мен қайталану еселігін салыстырады. Бастапқы сұрауда материалданған көрініс қайта жазуы өшірілген, сондықтан сақталған көріністі өзімен кездейсоқ салыстырмайды.\n\nНоутбук көрінетін `category_query` және `stored_category_query` SQL жолдарын салыстыру көмекшісіне әлі береді. Қысқартылған кесте тек көрсетілім қорытындысы; теңдік тексеруі толық сұрау нәтижелерін әлі пайдаланады.",
+      "target_hash": "89c09f1493408531529f54599ed96f8fcc2b4972f2df7c85ff5595d5dc55a902",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "60ca4853cb5c3d28c8e96261ab3e20680dccbeae2ed350ee7c9e98d2bcb67315",
+          "target_hash": "89c09f1493408531529f54599ed96f8fcc2b4972f2df7c85ff5595d5dc55a902"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.16899c811e7e45f6b6b4e0e8f366e396",
+      "source_hash": "80b236179a2a5e525b40e9cce779ff3af3334cf716d70d5882a8943b4def714b",
+      "target_text": "**Күтілетін нәтиже:** сыналған деректер жиынында екі сканерлеу де `ScanRows: sum 75.259K (75259)` және `RowsProduced: sum 18.298K (18298)` көрсетеді:\n\n```text\n75,259 event rows scanned\n    → 18,298 purchase events emitted by the scan\n    → 8 regional groups produced by the later aggregation\n```\n\nӘр жиналған өңделмеген Profile үстіндегі біріктірілген Profile ішінде екі санағыш Scan операторы астында тұр. Fragment және Pipeline нөмірлері мен `nereids_id` сіздің орындауда өзгеше болуы мүмкін. Сканерлеудің орындау даналары санына сай `instance_num` және `avg`, `max`, `min` мәндері де өзгереді; бір дана болса, төрт мәннің бәрі `sum` мәніне тең:\n\n```text\nFragment 2:\n  Pipeline 0(instance_num=4):\n    OLAP_SCAN_OPERATOR(nereids_id=189. table_name=m08_events(m08_events))(id=0):\n       - RowsProduced: sum 18.298K (18298), avg 4.574K (4574), max 4.748K (4748), min 4.445K (4445)\n       - ScanRows: sum 75.259K (75259), avg 18.814K (18814), max 19.145K (19145), min 18.482K (18482)\n```\n\nҚалыпты көрініс сүзгі анықтамасын қайта пайдаланды, бірақ осы орындаулардағы тіркелген сканерлеу жұмысын азайтпады. Тең сұрау нәтижелері, таңдалған негізгі кесте сканерлеулері және орындалу жол сандары үш бөлек бақылауды қолдайды. Тұрақты уақыт қатынасын анықтамайды.\n\nКелесі бөлім сол есеп SQL сақтап, синхронды материалданған көрініс оның орнына алдын ала есептелген агрегаттар бере ала ма, тексереді.",
+      "target_hash": "524a7248c699d83853c8c5cd294ce04fead61e20206f16541f5a8d419dba89fc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "80b236179a2a5e525b40e9cce779ff3af3334cf716d70d5882a8943b4def714b",
+          "target_hash": "524a7248c699d83853c8c5cd294ce04fead61e20206f16541f5a8d419dba89fc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fdbde36b20824f2fa14cafb4a4f4dbf3",
+      "source_hash": "844d39871cbfc86955ad12cb0fa9c2aab25eff951ffd8c87718c759f32d41a57",
+      "target_text": "### A. Жиынтықты жасап, алғашқы құрылуын күту\n\nАнықтама оқиғаларды `(region, event_type)` бойынша топтап, әр топқа оқиға саны мен түсім қосындысын сақтайды. `event_type` сақтау сатып алу есебіне басқа түрлерді алып тастауға мүмкіндік береді. `region` сақтау бұрынғы аймақ жиынтықтарын береді. Мысалы, `region_01` ішіндегі сатып алу мен себет оқиғалары бөлек топтарға тиесілі.\n\nСыналған құру талап еткендей, `mv_` бүркеншік атаулары сақталған бағандарға негізгі кесте бағандарынан бөлек атаулар береді. Көрініс өз Duplicate Key оқиға кестесінде жасалады; бұл мысал әр сұрау немесе кесте моделі сол анықтаманы қолдайды дегенді білдірмейді.\n\nАлғашқы құру фондық тапсырма ретінде жүреді. `sync_before` ескі Job ID мәндерін тіркейді, сондықтан күту бұрынғы сәттілікті емес, осы жаңа құруды тексереді. Ықшам нәтижеден **Build state** оқыңыз; толық тапсырма жазбасы және күту қайталайтын `SHOW ALTER TABLE MATERIALIZED VIEW` операторы жиналған панельдерде қолжетімді.\n\nСодан кейін `ANALYZE TABLE ... WITH SYNC` осы кестеге оңтайландырғыш статистикасын жинайды. Мұнда `WITH SYNC` статистика жинаудың аяқталуын күту дегенді білдіреді; материалданған көріністің жазумен қолдау әрекетінен бөлек.",
+      "target_hash": "3e6ba0d7412bbff8a20ef7e14450338428303fb4bdca311c08adcb9b23106708",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "844d39871cbfc86955ad12cb0fa9c2aab25eff951ffd8c87718c759f32d41a57",
+          "target_hash": "3e6ba0d7412bbff8a20ef7e14450338428303fb4bdca311c08adcb9b23106708"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ecdc5b3bf1ea43d58d517951fb0afb45",
+      "source_hash": "6b2b2953589aeccea0d88bad739e0e26c1be7547c7f6f462d5db4579102a49f9",
+      "target_text": "## 6. Өнімді зерттеу үшін инверттелген индексті оқшаулау\n\nҚолдау талдаушысына алдын ала есептелген агрегат емес, сирек бір өнімнің оқиғалары қажет. Бағандары, Duplicate Key реті, таратуы және кіріс жолдары бірдей екі оқиға кестесін жасаңыз. Тек біреуі `product_id` бойынша Inverted Index жариялайды.\n\n`product_id` сандық, сондықтан бұл мәтін токендеушісі жоқ теңдік индексі. Ол толық мәтін `MATCH` мысалы да, Join Runtime Filter де емес. Предикат сұрыптаудың бастапқы бағанын немесе `user_id` тарату бағанын шектемейді. Индексті дерек жүктеуден бұрын жариялау бөлек тарихи индекс құру қадамын болдырмайды.",
+      "target_hash": "60602d8a6c1c27d02b9ef1a1d9561c7a8b67e5eecbd0a005ca84eaf2a053bfb0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "6b2b2953589aeccea0d88bad739e0e26c1be7547c7f6f462d5db4579102a49f9",
+          "target_hash": "60602d8a6c1c27d02b9ef1a1d9561c7a8b67e5eecbd0a005ca84eaf2a053bfb0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1cab63f4253949cc9bed809f9bfc20f5",
+      "source_hash": "eefacb375c5059de6feba6eb7eb634d744df32c1de11bc1b244e21182a914085",
+      "target_text": "**Күтілетін нәтиже:** Docker `container=exited` деп хабарлайды. Бастапқы кестелер мен барлық `m08_*` нысандары атаулы томдарда қалады.\n\n### Doris сынақ ортасын қайта іске қосу\n\nСол 8-зертханалық жұмыс нысандарымен жалғастырғыңыз келгенде осы ұяшықты орындаңыз. Ол бар контейнерді іске қосып, Doris дұрыс жұмыс істейтін күйге жеткенше күтеді, FE түйініне қайта қосылады және сақталған оқиға кестесін тексереді.\n\nБұл қайта іске қосу ұяшығы идемпотентті: оны Docker Desktop пен контейнер тоқтаған, іске қосылып жатқан немесе жұмыс істеп тұрған кезде орындауға болады. macOS жүйесінде қажет болса Docker Desktop ашылады; Linux жүйесінде ұяшықты орындамас бұрын Docker Engine іске қосыңыз.\n",
+      "target_hash": "50b620d6c769ebabccae6390236209e427928d2413e7fb762c5c7c4646ff3619",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "eefacb375c5059de6feba6eb7eb634d744df32c1de11bc1b244e21182a914085",
+          "target_hash": "50b620d6c769ebabccae6390236209e427928d2413e7fb762c5c7c4646ff3619"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6b42934877c7403cabf052da4af5a979",
+      "source_hash": "3bd2203e47f0dc70fcfb82918efe2c1a571578a151a74ea7cb00b9fdc2262c0c",
+      "target_text": "**Күтілетін нәтиже:** есепте әлі сегіз аймақ тобы бар. Мысалы, `region_01` әлі 2,319 сатып алу оқиғасына және 732,977.08 түсімге ие. Тексеру жауаптың өзгермегенін растайды. Жалғыз нәтиже теңдігі оны қай сақтау құрылымы бергенін немесе қанша жұмыс істелгенін көрсетпейді.",
+      "target_hash": "8eb1c5ad7a515dda2bd89f1fef9986bdc301dd06cef32fc9133b7566d4c6e4f2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3bd2203e47f0dc70fcfb82918efe2c1a571578a151a74ea7cb00b9fdc2262c0c",
+          "target_hash": "8eb1c5ad7a515dda2bd89f1fef9986bdc301dd06cef32fc9133b7566d4c6e4f2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1852900af17241e88ec98d38fc443799",
+      "source_hash": "03fd2052e6c9e8827f2f99b9df93628c7dd74c1660d32d539ad47fe7ae8c9417",
+      "target_text": "### Зертханалық жұмысты бастапқы баптау\n\nКелесі ұяшықты 1-бөлімге дейін орындаңыз. Ол ортақ курс көмекшісін жүктеп, кейінгі әр ұяшық пайдаланатын `lab` нысанын жасайды. Jupyter ядросын қайта іске қосқаннан кейін оны қайта орындаңыз. Ол Docker іске қоспайды және Doris деректерін өзгертпейді.\n",
+      "target_hash": "b628307caaf6cfc7b9414f52a646cbbf2db4ab06f2d68d2fb5b512c996a8abc0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "03fd2052e6c9e8827f2f99b9df93628c7dd74c1660d32d539ad47fe7ae8c9417",
+          "target_hash": "b628307caaf6cfc7b9414f52a646cbbf2db4ab06f2d68d2fb5b512c996a8abc0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9d2c8d1454ed457ea8d008df04862a5e",
+      "source_hash": "68152d50bf9a17f88a4d295a0a8a1c48ceea07cb861dfc6bccb93c63bcf112e4",
+      "target_text": "**Күтілетін нәтиже:** бастапқы нұсқа 75,259 сканерленген оқиға жолын тіркеп, 18,298 сатып алу оқиғасын шығарады. Тексерілген орындауда материалданған индекс сканерлеуі сақталған 64 жиынтық жолын оқып, 32 сатып алу-жиынтық жолын шығарады. Екі есеп те сол сегіз аймақ тобын қайтарады.\n\n```text\nBase-table path:\n75,259 event rows scanned → 18,298 purchase events → 8 regional results\n\nObserved materialized-index path:\n64 summary rows scanned → 32 purchase-summary rows → 8 regional results\n```\n\nЕкі жол әртүрлі түйіршіктіліктегі жолдарды оқиды: бастапқы оқиғалар және алдын ала есептелген жиынтықтар. Ішінара топтар бірнеше Tablet ішінде сақталып, кейінгі агрегаттаумен біріктірілуі тиіс, сондықтан 64 жиынтық жолын сканерлеу есепте 64 жол болуы тиіс дегенді білдірмейді. Нақты жиынтық жол сандары сақтау күйімен өзгеруі мүмкін; бекітілген 64 немесе 32 талап етпей, өз орындауыңыздағы санағыштарды пайдаланыңыз.\n\nТексерулер бірге бұл орындаудың материалданған индексті таңдағанын, сол жауапты қайтарғанын және аз жол сканерлегенін көрсетеді. Тұрақты кідіріс жеделдеуін анықтамайды және қосымша сақтау мен жазумен қолдау шығынын өлшемейді. Келесі эксперимент бекітілген жазудан кейін жауаптың да дұрыс қалатынын тексереді.",
+      "target_hash": "62144386271d1e24bf9360ad9ed48cf96623c0ad4272b13f0cfb83536a311a99",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "68152d50bf9a17f88a4d295a0a8a1c48ceea07cb861dfc6bccb93c63bcf112e4",
+          "target_hash": "62144386271d1e24bf9360ad9ed48cf96623c0ad4272b13f0cfb83536a311a99"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ea136b1c7e0d4516911e99cfffd83da6",
+      "source_hash": "25f1b244b386b790ddf058f6ad00680e8ba66e2ced4d5399f0ab3987955f089c",
+      "target_text": "**Нәтижені қалай оқу керек:**\n\nЕкі `result` жолының арасындағы сол санатты салыстырыңыз:\n\n- **current source** ішінде 508 сатып алу және `122846.80` түсім `category_8` ішінен `lab8_reclassified` ішіне ауысты.\n- **stored view before refresh** ішінде `category_8` сол сатып алуларды әлі қамтиды, ал `lab8_reclassified` ішінде нөл топ, оқиға және түсім бар.\n- Үнсіз тексерулер жалпы оқиға саны мен түсімнің өзгермегенін де растайды. Бұл енгізу не жою емес, қайта жіктеу.\n- Қысқартылған `EXPLAIN` сақталған көрініс ескіргенде таңдалған бастапқы кесте сканерлеулерін тізеді. Жоспарды сипаттайды; көріністі жаңартпайды және орындалу жұмысын өлшемейді.\n\nКөмекші құрал толық `category_query` және `stored_category_query` SQL жолдарын алады. Екі толық нәтижені орындайды, бірақ ескірген көшірмені түсінуге қажетті тек бастапқы және жаңа санаттарды көрсетеді.\n",
+      "target_hash": "85c6fa1cac9411040a7a4776f12f206a9d1865aecc93abc34d90ae1546e9d53d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "25f1b244b386b790ddf058f6ad00680e8ba66e2ced4d5399f0ab3987955f089c",
+          "target_hash": "85c6fa1cac9411040a7a4776f12f206a9d1865aecc93abc34d90ae1546e9d53d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.82038699ab414e5394aafe755c05e057",
+      "source_hash": "d80673cd07810c8d93bb3cb801680c9463fe5ce4ccaf685a33ade76522b7eb8a",
+      "target_text": "**Күтілетін нәтиже:** екі кесте сол ағымдағы `m08_events` көшірмесінен бірдей `INSERT ... SELECT` арқылы жүктеледі. Көрінетін DDL тек `m08_events_indexed` `m08_product_idx` жариялағандықтан ерекшеленеді; екеуінде де материалданған көрініс жоқ.\n\nБір жолдық нәтиже екі іздеу сұрауы қолданатын өнімді және сәйкес оқиға санын анықтайды. Оң түсімі бар ең сирек өнімді таңдау дерекке тәуелді `product_id` мәнін қатаң жазбай, іріктемелі предикат береді. Көшірілген деректерге 3-бөлімде қосылған өзімізге тиесілі бір сатып алу кіреді. Дербес жүктелген екі кестенің физикалық беттері, Compaction күйі және кэште тұруы міндетті түрде бірдей емес.",
+      "target_hash": "8b21e9b424d57dc3b83b22259c28a0277b21ef167ce173f907fe1bcb1e8771af",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "d80673cd07810c8d93bb3cb801680c9463fe5ce4ccaf685a33ade76522b7eb8a",
+          "target_hash": "8b21e9b424d57dc3b83b22259c28a0277b21ef167ce173f907fe1bcb1e8771af"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.276f1459ba054a0387aff243c8268b88",
+      "source_hash": "7e49265abfae0d60aaedb9eaaff4900147673ebf88bc9b7fdd48388aea20ad55",
+      "target_text": "### Көрініс сақтамаған метриканы сұрау\n\nНегізгі кесте сұрауы сол Join, сүзгі және топтау өлшемдері бар екен деп бұл көріністі пайдалана алмайды. Сұралған метрикалар да көріністе сақталған күйден шығарылуы тиіс.\n\nЕнді санат бойынша бірегей сатып алушыларды сұраңыз. `m08_async_category_metrics` оқиға сандары мен түсім қосындыларын сақтайды, бірақ `user_id` мәндерін немесе біріктірілетін бірегей сатып алушы күйін сақтамайды. Сол метрикалар оқиғаларды қанша әртүрлі сатып алушы жасағанын қалпына келтіре алмайды. Әр аймаққа бөлек сақталған бірегей сан да жалпы жағдайда аймақтар арасында қосылмайды, өйткені бір сатып алушы бірнеше аймақта болуы мүмкін.\n\nБұл сұрау үшін Doris `m08_async_category_metrics` ішінен жауап шығара алмайды. Сондықтан қайта жазуды қосу бастапқы кесте жоспарын орнында қалдырады және Query Profile `m08_events(m08_events)` пен `m08_products(m08_products)` орындалу сканерлеулерін әлі анықтайды.",
+      "target_hash": "804886489fe209f85294c89365bbac691159cb5da82f46ce7512629ab7fe5129",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "7e49265abfae0d60aaedb9eaaff4900147673ebf88bc9b7fdd48388aea20ad55",
+          "target_hash": "804886489fe209f85294c89365bbac691159cb5da82f46ce7512629ab7fe5129"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1c4bd10b0fa04891997dd0682fc2d78e",
+      "source_hash": "aaadfd273b3ef76fb228bb864d9b227cd462147681a4d01762ad8dbeb3536eab",
+      "target_text": "### E. Бір бекітілген сатып алудан кейін синхронды қолдауды тексеру\n\n`region_01` ішіне `19.95` құнды бір сатып алу қосып, жаңарту бермей өзгермеген аймақ есебін орындаңыз. Бұрынғы тексерулер толық бастапқы нұсқаны анықтады; бұл нысаналы тексеру тек жаңа жол әсер еткен топты және таңдалған сканерлеуді көрсетіп, тексереді.\n",
+      "target_hash": "ba8492f61fbe2b05cb72426412db1c6edce6bce192bd89fbb147717b13a94f7f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "aaadfd273b3ef76fb228bb864d9b227cd462147681a4d01762ad8dbeb3536eab",
+          "target_hash": "ba8492f61fbe2b05cb72426412db1c6edce6bce192bd89fbb147717b13a94f7f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.29d3825207ff487090806cd23fa1b5b6",
+      "source_hash": "6ec68c3949605dbbf726c74a4d4e464b343ae549b4db5ffc4a0aba47a50d5a55",
+      "target_text": "**Күтілетін нәтиже:** нәтиже негізгі `m08_events` кестесін, `m08_sync_metrics` материалданған көрінісін және **`FINISHED`** құру күйін атайды. Алғашқы құрылым дайын. Бұл есеп сұрауы оны таңдайтынын әлі дәлелдемейді. Құру сәтсіз болса немесе шектелген күту ішінде аяқталмаса, көмекші құрал қате береді.",
+      "target_hash": "d8b769e9c66e327836de2a83f113759c5177d8781e9af79c9d849f83679e3188",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "6ec68c3949605dbbf726c74a4d4e464b343ae549b4db5ffc4a0aba47a50d5a55",
+          "target_hash": "d8b769e9c66e327836de2a83f113759c5177d8781e9af79c9d849f83679e3188"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.14b18ea65e8644eaa344a65d178e0a8b",
+      "source_hash": "b1bdeea017b11d274744fcf31e66068df7dc849fd9f881509c99a844a19bbd56",
+      "target_text": "**Күтілетін нәтиже:** екі сұрау сол оқиғаларды қайтарады. **Lookup comparison** бөлімінен бастаңыз: ол Profile ID, сұрау нәтиже саны және өңделмеген `ScanRows` пен `RowsInvertedIndexFiltered` қатар қояды. Әр жол — бір DetailProfile Scan тапсырмасы; бірнеше тапсырмасы бар сұрау нәтиже санын қайталайды, сондықтан ол бағанды қоспаңыз. Жоқ санағыш `not shown` деп, байқалған нөл `0` болып қалады. `EXPLAIN` Scan белгісі кестенің негізгі индексін әлі атайды; өзі қосымша индекс сүзуін дәлелдемейді. Әр сұрауға **DetailProfile scan counters** ашып, әр санағышпен Fragment, host, PipelineTask және Scan сәйкестігін бірге сақтаңыз: DetailProfile әр PipelineTask, бір BE-дегі сканерлеудің бір параллель тапсырмасын бөлек тізеді.\n\n| Дәлел | Түсіндіру |\n|---|---|\n| `RowsInvertedIndexFiltered` | Сол Scan тапсырмасында инверттелген индекс жолымен сүзілген жолдар; оң мәндер нақты индекс сүзуін қолдайды. |\n| `InvertedIndexQueryTime`, `InvertedIndexFilterTime` | Бастапқы уақыт бірліктерімен индекс жолындағы тіркелген жұмыс. Бұлар бүкіл сұраудың толық кідірісі емес. |\n| `InvertedIndexQueryCacheHit` / `Miss` | Индекс кэш оқиғалары; түсіру көмекшісі бұл кэшті өшірмеген. |\n| `RowsStatsFiltered`, `RowsKeyRangeFiltered` | Жұмысты азайта алатын басқа іріктеу жолдары. Өткізілген әр жолды жаңа индекске телімеңіз. |\n| `ScanRows` | Аталған Scan астында сақтау орнынан оқылған жолдар, бет кэшін қоса. |\n| `RowsRead`, `RowsProduced` | Өз ауқымдарындағы scanner/шығыс жол санағыштары; соңғы SQL нәтижесі дұрыстық тексеруі болып қалады. |\n| `ScanBytes` | Тіркелген сканерлеу байттары, болдырылған физикалық диск тасымалының өлшемі емес. |\n\nСыналған жиында индекстелген орындау оң `RowsInvertedIndexFiltered` мәндерін және аз `ScanRows` тіркейді. Нақты сан мен уақыт сақтау орналасуы және кэштермен өзгеруі мүмкін. Санағыш жоқ болса, ол нөл емес, **көрсетілмеген**; дәлелді тексеру үшін толық өңделмеген Profile пайдаланыңыз. Біріктірілген қорытынды мен әр тапсырманың егжей-тегжейі қабаттасқан жұмысты сипаттайды — оларды ешқашан қоспаңыз.\n\nІріктемелі индекс қосымша сақтау мен жазу/қолдау жұмысының орнына іздеу жұмысын азайтады. Бұл салыстыру өндірістік жүктемеде сол таңдауды сандық бағаламайды және тұрақты жеделдеуді дәлелдемейді. Осы бір түйінді жұмыстан көп BE өнімділігі туралы қорытынды шықпайды.",
+      "target_hash": "ccb0b1673ed851d78912286f47f25678b1eceb2577db91b0c4d7a25cf26cffbc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b1bdeea017b11d274744fcf31e66068df7dc849fd9f881509c99a844a19bbd56",
+          "target_hash": "ccb0b1673ed851d78912286f47f25678b1eceb2577db91b0c4d7a25cf26cffbc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fad00c105faa469cb842ef6fa5f8d74b",
+      "source_hash": "d33660075c63355ca53d06608f73ba9503be43ad7991fdc53a8b3f23ea4a124b",
+      "target_text": "**Күтілетін нәтиже**\n\n- Жоспар `event_type = 'purchase'` предикатымен `m08_events` және `m08_products` оқып, `join op: INNER JOIN(BROADCAST)` арқылы біріктіреді: шамамен 12,340 жолдық өнім жағы оқиға сканерлеуіне жіберіліп, hash кестесіне айналады.\n- Join болжамы шамамен `cardinality=37,400` (сыналған орындауда 37,408). `event_type` үшін `ndv = 2` болып, әр мән жиілігі туралы ақпарат болмағандықтан, оңтайландырғыш 75,260 жолдың жартысын сатып алу деп болжады.\n- `purchases_with_a_product` — **17,798**: жолдардың 18,299-ы, шамамен 24%, сатып алу; ал 1005115 өнімінің 501 сатып алуына өнім жолы жоқ.\n\nТолық жоспар `planned with unknown column statistics` деп аяқталады. Ескерту жоспар `m08_products` оқыған сайын пайда болады: Unique Key кестесінде жойылған жолдарды белгілейтін жасырын баған бар, Scan оны сүзеді (`__DORIS_DELETE_SIGN__ = 0`), ал `ANALYZE` ол бағанға статистика жинамайды.\n\nБолжам нақты саннан шамамен екі есе, бірақ мұнда нашар жоспарға әкелмеді: өнім жағы бәрібір шағын, сондықтан Broadcast арзанырақ Join болып қалады. Болжам оңтайландырғышты күткен құрылымнан немесе Join ретінен бұрса, сабақтың 8.7-бөліміндегідей алдымен сұрау пішінін, құрылым күйін және статистиканы тексеріңіз. 6-модульдегі `[shuffle]` сияқты hint бақыланатын салыстыруға басқа жоспарды мәжбүрлей алады; статистиканы түзетпейді.",
+      "target_hash": "a09bfddffb88c3d7cf676b9bede5e48825289c9448659dfcb8c10a412e917936",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "d33660075c63355ca53d06608f73ba9503be43ad7991fdc53a8b3f23ea4a124b",
+          "target_hash": "a09bfddffb88c3d7cf676b9bede5e48825289c9448659dfcb8c10a412e917936"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f42c40f01be54cac82956055a1aec829",
+      "source_hash": "e13f8f75276d82d044c4c4175161faefacb3fb15e8e4bde5b1d54343bb589a9a",
+      "target_text": "Енді асинхронды материалданған көріністің орнына екі кестені оқу үшін мөлдір қайта жазуды өшіріп, оңтайландырғыш 4-бөлімнің санат есебіне таңдаған жоспарды оқыңыз. Ұяшық оператор жолдарын, сканерленетін кестелерді, Join және әр `cardinality=` болжамын сақтайды; толық жоспар жиналған панельде. Содан кейін Join орындап, одан нақты шығатын жолдарды санайды.",
+      "target_hash": "146387a2434f84525d9f2109c6b998d991e156658c98f1d0a93ed9cad24f3d42",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "e13f8f75276d82d044c4c4175161faefacb3fb15e8e4bde5b1d54343bb589a9a",
+          "target_hash": "146387a2434f84525d9f2109c6b998d991e156658c98f1d0a93ed9cad24f3d42"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3ff68e8fc7bc45d29580e28d36e44b9e",
+      "source_hash": "2ae2bc9e51f1fc230626030b7c9240d29d351ab032f142a125a82f3a9b69aa77",
+      "target_text": "**Күтілетін нәтиже**\n\n| Кесте және баған | `count` | `ndv` | `num_null` | `min` / `max` |\n|---|---:|---:|---:|---|\n| `m08_events.event_type` | 75260 | 2 | 0 | `'cart'` / `'purchase'` |\n| `m08_events.product_id` | 75260 | шамамен 12,400 | 0 | 1001606 / 100145255 |\n| `m08_products.product_id` | 12339 | шамамен 12,400 | 0 | 1001606 / 100145255 |\n\n`method` — `FULL`: `ANALYZE TABLE` әр жолды оқыды. `count` — көшірілген 75,259 оқиға және 3-бөлімде қосылған сатып алу. Күнде тек себет пен сатып алу оқиғалары бар, сондықтан `event_type` екі бірегей мәнге ие. `ndv` өзі де болжам: сыналған орындауда екі `product_id` бағанында 12,412 болды, ал кестелерде 12,340 және 12,339 әртүрлі өнім бар.",
+      "target_hash": "dc78ce5d6de4fa1dcc6ee0811f9c946e77cc897d52e5201070ce36f93e4a8ace",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "2ae2bc9e51f1fc230626030b7c9240d29d351ab032f142a125a82f3a9b69aa77",
+          "target_hash": "dc78ce5d6de4fa1dcc6ee0811f9c946e77cc897d52e5201070ce36f93e4a8ace"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d1406c9db94140aa9e654c8a45307b1f",
+      "source_hash": "beffd2e699dc7521efe5cf9d926ec0883d0ae8d79728dbd704d19cf7c79e264b",
+      "target_text": "## 7. Таңдалған жоспардың артындағы статистиканы оқу\n\nБұл жұмыстағы әр жоспарды шығынға негізделген оңтайландырғыш таңдады; ол әр оператор қанша жол өңдейтінін **статистикадан** болжайды: кесте жол саны және әр баған үшін бірегей мән саны (`ndv`), `NULL` саны, минимум мен максимум. Статистика `ANALYZE` арқылы жиналады; бұл сұрау бақылауы емес, жоспарлау болжамдары.\n\nКелесі ұяшық санат есебі оқитын екі кестеге жаңа статистика жинайды, оператор жинау аяқталғанда қайтуы үшін `WITH SYNC` қолданып, Doris тіркегенін көрсетеді. Мұндағыдай тек ағымдағы шешім кестелеріне статистика жинаңыз, тұтас ортақ дерекқорға емес.",
+      "target_hash": "8f34ff8c965040b70a2d3fbcf4d98f6144d6dcc103756374877906457daf2ba6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "beffd2e699dc7521efe5cf9d926ec0883d0ae8d79728dbd704d19cf7c79e264b",
+          "target_hash": "8f34ff8c965040b70a2d3fbcf4d98f6144d6dcc103756374877906457daf2ba6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e096698bf18d404d97af85f2b7b7e2f2",
+      "source_hash": "caacbea653e0388c8d5ff8352b1ea4054a041043c927b096841dd29883bd6a0e",
+      "target_text": "## Келесі қадам\n\n[8-тест: Apache Doris жүйесінде сұрауларды жеделдету](quiz08_acceleration_choices.ipynb) ашыңыз, содан кейін [9-модуль: Apache Doris жүйесінде шардтау, репликация және үлестірілген орындау](../module09-sharding-replication/course.md) бөліміне өтіңіз.",
+      "target_hash": "231b6fccd330f485621e23d3ded7ba7d45ce1167628db36018a31aa48642e73d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "caacbea653e0388c8d5ff8352b1ea4054a041043c927b096841dd29883bd6a0e",
+          "target_hash": "231b6fccd330f485621e23d3ded7ba7d45ce1167628db36018a31aa48642e73d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3f5f0bd0c1db4645871ba9ea173bc27c",
+      "source_hash": "aeec0b1a9ac33a3e1f84d72c0e60746d4f30de1df4e5f08970449280aee25cc4",
+      "target_text": "**Күтілетін нәтиже**\n\n1. **Иә.** Таңдалған Scan — `m08_async_category_metrics(m08_async_category_metrics)` және тексерулер үнсіз өтеді. Есеп көріністің Join, сүзгі және метрикаларын сақтап, тек топтаудан `category` алып тастайды; сандар мен қосындылар қосылатындықтан, Doris 5-бөлімнің санат жиынтықтарындағыдай әр аймақтың көріністегі санат жолдарын қосады.\n2. **Жоқ.** Мұнда `region_01` **2,251** сатып алуға және 672,822.82 түсімге ие, тікелей есепте 2,320 (2-бөлімдегі 2,319 және 3-бөлімде қосылған сатып алу), ал сегіз санның қосындысы 18,299 емес, **17,798**. Inner Join өнім жолы жоқ 1005115 өнімінің 501 сатып алуын алып тастайды. Көрініс Join есебіне дұрыс жауап береді; 1-бөлім ескерткендей, бұл тікелей есептен басқа жиын.",
+      "target_hash": "f701bce673194ec860fb373ab81a13e786801c0c86d3773cb7ce492ac38c9f49",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "aeec0b1a9ac33a3e1f84d72c0e60746d4f30de1df4e5f08970449280aee25cc4",
+          "target_hash": "f701bce673194ec860fb373ab81a13e786801c0c86d3773cb7ce492ac38c9f49"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7092156614ae464eaa024bca1be8d249",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшық — үлгі шешім; ол жиналған. Салыстыру үшін оны ашыңыз немесе орындаңыз.",
+      "target_hash": "8ff01ffd0add6539a325148c45f23769418c2dd1c4e538452e07910e50c04bf1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "8ff01ffd0add6539a325148c45f23769418c2dd1c4e538452e07910e50c04bf1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.08a06904569d42bca0c16b64050348dd",
+      "source_hash": "fe9760dd31533094c6e429336e55340bae6c4d0f222ab9b04b46393dce226be2",
+      "target_text": "## 8. Жаттығу: материалданған көріністен жаңа түйіршіктілікті сұрау\n\n`m08_async_category_metrics` сатып алуларды `(category, region)` бойынша сақтайды. Ол сақтамайтын түйіршіктілікте есеп жазыңыз: сол `m08_events` және `m08_products` Join амалы бойынша **тек аймақпен** сатып алу саны мен түсім.\n\nОрындамас бұрын екі нәрсені болжаңыз:\n\n1. Мөлдір қайта жазу қосылғанда, Doris есепке `m08_async_category_metrics` арқылы жауап бере ала ма, әлде екі кестені оқуы тиіс пе?\n2. Оның жиынтықтары тек `m08_events` оқыған 2-бөлім аймақ есебіне тең бе? Онда `region_01` қазір 2,320: 2-бөлімнің 2,319 мәні және 3-бөлім қосқан сатып алу.\n\nСодан кейін есепті `lab.capture_query(..., settings={\"enable_materialized_view_rewrite\": \"true\"})` арқылы орындап, нәтижесі мен таңдалған Scan көрсетіңіз және оқиға сандарын қосыңыз.",
+      "target_hash": "7b52365c699ca1d67ca289bd7632f4520379277aea1665277214a0d937b1c236",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "fe9760dd31533094c6e429336e55340bae6c4d0f222ab9b04b46393dce226be2",
+          "target_hash": "7b52365c699ca1d67ca289bd7632f4520379277aea1665277214a0d937b1c236"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

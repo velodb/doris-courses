@@ -74,9 +74,18 @@
       "pattern": "^[0-9a-f]{40}$"
     },
     "course_profiles": {
-      "const": [
-        "rta-module-1"
-      ]
+      "type": "array",
+      "items": {
+        "enum": [
+          "rta-module-1",
+          "real-time-analytics-complete",
+          "data-warehousing-complete",
+          "observability-complete"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true
     },
     "allow_draft_courses": {
       "type": "boolean"
@@ -112,9 +121,18 @@
           "pattern": "^[0-9a-f]{40}$"
         },
         "course_profiles": {
-          "const": [
-            "rta-module-1"
-          ]
+          "type": "array",
+          "items": {
+            "enum": [
+              "rta-module-1",
+              "real-time-analytics-complete",
+              "data-warehousing-complete",
+              "observability-complete"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 3,
+          "uniqueItems": true
         },
         "release_ref": {
           "type": "string",
@@ -253,9 +271,18 @@
           "additionalProperties": false
         },
         "profiles": {
-          "const": [
-            "rta-module-1"
-          ]
+          "type": "array",
+          "items": {
+            "enum": [
+              "rta-module-1",
+              "real-time-analytics-complete",
+              "data-warehousing-complete",
+              "observability-complete"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 3,
+          "uniqueItems": true
         },
         "package_digest": {
           "type": "string",

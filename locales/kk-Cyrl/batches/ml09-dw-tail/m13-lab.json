@@ -1,0 +1,536 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.1953f0ed1e5142c889f949f5fc5341fc",
+      "source_hash": "4cf6207b6d1d13aa98e9fb7063b9f45237544ae8873d1bb93aa6f5f4909a2eb3",
+      "target_text": "## 1. Жеке айлық кесте құру\n\nБөлімдер өмірлік цикл шекарасын, HASH тарату ішкі tablet-терді анықтайды. Сынақ ортасының бір bucket/репликасы құрылымды көрсетеді, өндірістік өлшем ұсынысы емес.\n\nҚайталау үшін бастапқы ұяшық бұрынғы кестені жояды. Орындамас бұрын DDL (Data Definition Language, дерек анықтау тілі) мен шекараларын оқыңыз.",
+      "target_hash": "24f67fa463b5cfd3c7d8de3b7c1aa5b56369d737263007a72f93c3e59e81b3e9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4cf6207b6d1d13aa98e9fb7063b9f45237544ae8873d1bb93aa6f5f4909a2eb3",
+          "target_hash": "24f67fa463b5cfd3c7d8de3b7c1aa5b56369d737263007a72f93c3e59e81b3e9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.218a9e3bc1f74f45af69e573894febe7",
+      "source_hash": "69209cd74c562e202e68f8dea84550d9331065c6ea66e3901d76bd19cca71dbd",
+      "target_text": "<div>\n  <div>13-ЗЕРТХАНАЛЫҚ ЖҰМЫС · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Бөлімдерге қызмет көрсету және қалпына келтіру</div>\n</div>\n\nТапсырыстар келе береді, ескі айлар кетуі, қате кері қайтарылуы керек. Үш айлық бөлімді жеке кестеде қызмет көрсету дәлелін жазып, қаңтарды `TRUNCATE` тазалайсыз, өзгерген ID-лерін көресіз; кейін тазалау алып тастаған бөлім ID-імен себеттен қайтарасыз. Себет қайтара алатын `DROP PARTITION` салыстырып, жоймас бұрын сақтау жоспарын SQL-мен тексересіз. Қосымша 6–8-бөлімдер жергілікті объектілік сақтауға көшірме алып, кестені біржола жойып, басқа базада қалпына келтіреді. Шамамен 60 минут, қосымшаға тағы 15 жоспарлаңыз.\n\n**13-модуль: Сақтау мен өмірлік циклді басқару** · [Сабақ](course.md) · [Тест](quiz13_storage_lifecycle.ipynb) · [Курстың README файлы](../../README.md)",
+      "target_hash": "cee3496ff2f9403f0bbabdc0d489bca62dc555357f979c948f2eeff4840ec09c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "69209cd74c562e202e68f8dea84550d9331065c6ea66e3901d76bd19cca71dbd",
+          "target_hash": "cee3496ff2f9403f0bbabdc0d489bca62dc555357f979c948f2eeff4840ec09c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.78f1c068063445cfb4d11154305dcd49",
+      "source_hash": "37c866d8aca3a8c86542e95bf115dbb82f341fc74be545e8bdde294658adee89",
+      "target_text": "## 5. Бөлімді DROP арқылы жойып, RECOVER арқылы қайтару\n\n`TRUNCATE` қайта жүктеуге сол атпен бос бөлім қалдырды. `DROP PARTITION` бөлім мен анықтамасын жояды; мұрағаты тексерілген мерзімі өткен айға осы керек.\n\nСалыстыруға екінші жеке кестені қолданыңыз. Алдымен болжаңыз: қаңтар жойылса, SHOW PARTITIONS тек ақпан тізеді. FORCE болмаса, себет мерзімінде қайтару қаңтар мен бастапқы жолын қалпына келтіреді.\n\nБұл уақытша жол ұзақ мерзімді сақтық көшірмені алмастырмайды.",
+      "target_hash": "a03f9fc95d4ce63976ea056a2e1862a7a8b9cd72c8895e78e9d13149d4ff6467",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "37c866d8aca3a8c86542e95bf115dbb82f341fc74be545e8bdde294658adee89",
+          "target_hash": "a03f9fc95d4ce63976ea056a2e1862a7a8b9cd72c8895e78e9d13149d4ff6467"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9258522be865431bb74e5e9518886f0f",
+      "source_hash": "91834e8aef0168ceca98076336ccf5d0e2bc0c1c7641699709c68e44439c13cd",
+      "target_text": "## 2. Қызмет көрсету дәлелін жазу\n\nӨзгеріске дейін қамтуы мүмкінін жазып, кейін сол тексерулермен әсерін көріңіз:\n\n- `SHOW PARTITIONS`: атау, аралық, ID, көрінетін нұсқа.\n- `SHOW TABLETS`: tablet ID-і, backend, нұсқа. Әр жол — бір реплика; бөлім бағаны жоқ, бір бөлімді көруге `PARTITION (...)` қосыңыз.\n- `SHOW CREATE TABLE`: кілт моделі, бөлімдер, bucket-тер, репликалар.\n\n`RowCount` BE мерзімдік есебінен келіп, жүктеуден кейін бір минуттай -1 не 0 болуы мүмкін; `VisibleVersion` бірден өзгереді. Қазіргі дәл санаққа `SELECT COUNT(*) FROM ops_orders_l3 PARTITION (p202501)` орындаңыз. Бір bucket/реплика сынақ ортасына сай, өндірістік өлшем емес.",
+      "target_hash": "8e1193aa3b57db49ae0953c21836938ef3fac39a7a9f9d2fcc31009f5bf62bab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "91834e8aef0168ceca98076336ccf5d0e2bc0c1c7641699709c68e44439c13cd",
+          "target_hash": "8e1193aa3b57db49ae0953c21836938ef3fac39a7a9f9d2fcc31009f5bf62bab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.11041263ea2d467da89563eb3c7e2307",
+      "source_hash": "270371e74a5f9c7ab129785f8948d10aec6b240dccd91e323b67f918f1db1ab6",
+      "target_text": "## 9. Жаттығу: сақтау жоспарын жоймас бұрын тексеру\n\nКесте осы ай мен алдыңғы 12 күнтізбелік айды сақтайды. Қызмет көрсету 2026-02-15: 2025 ақпан–2026 ақпан қалады, бұрынғылары кетеді. 2024 қараша–2026 ақпан әр айына бір бөлім/тапсырысты `retention_plan_l3` құрыңыз; қызмет көрсету күнінен SQL-мен алғашқы сақталатын айды есептеңіз; соған дейін не сол кезде бітетіндерді тізіп, `FORCE` қоспай жойыңыз; 2025 ақпан–2026 ақпан 13 ай/13 тапсырыс қалғанын тексеріңіз.",
+      "target_hash": "777169ff44355e4071a3b65f6558926f5e389761536ecf18d25bb4940bceb73d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "270371e74a5f9c7ab129785f8948d10aec6b240dccd91e323b67f918f1db1ab6",
+          "target_hash": "777169ff44355e4071a3b65f6558926f5e389761536ecf18d25bb4940bceb73d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.af05ec733f5e469bbc888f815e5b606d",
+      "source_hash": "9910485a85e819da97022b8adbcf16e557169a74adbda2f22299747be51e5b9c",
+      "target_text": "**Күтілетін нәтиже**\n\n`RUN_BACKUP_DRILL = False` болса сұр карточка, қосымша орындалмады.\n\n`True` болса: сақтауды бастаудың үш жасыл қадамы; 7301–7303 үш бастапқы жолдың жасыл тексеруі; snapshot жүктелгенде барыс карточкасы; база көшірме тапсырмалары — осы орындалудың соңғысы `course_snapshot_<random>` snapshot атауымен `FINISHED`, бұрынғылары үстінде.",
+      "target_hash": "318c7d3dd48a73b131d3df7e4d3310007ac72187fb08ef21c3ad066bcc3afcda",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9910485a85e819da97022b8adbcf16e557169a74adbda2f22299747be51e5b9c",
+          "target_hash": "318c7d3dd48a73b131d3df7e4d3310007ac72187fb08ef21c3ad066bcc3afcda"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b70cc07ad8964af9a1dcaa831a8abf4f",
+      "source_hash": "97118d9eae44339c2d2fe2b7c7b097bf00dfaa3cb3b0b00802b8711aa3e93408",
+      "target_text": "## 3. Тек қаңтарды тазалау\n\n`TRUNCATE TABLE ... PARTITION (p202501)` бір бөлімді босатып, қайта жүктеуге анықтамасын сақтайды. Doris оны аты/аралығы бірдей жаңа босымен алмастырып, ескісін дерегімен себетке көшіреді. Жолдап жоймайды, compaction күтпейді: ескі жол сұраудан бірден кетеді.\n\nҚай бөлім жаңа `PartitionId` алып, қайсысы сақтайтынын болжаңыз.",
+      "target_hash": "47286ee579b5641667d39e98c7c4316232f2b20de67e6f22c9ae44bfef986978",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "97118d9eae44339c2d2fe2b7c7b097bf00dfaa3cb3b0b00802b8711aa3e93408",
+          "target_hash": "47286ee579b5641667d39e98c7c4316232f2b20de67e6f22c9ae44bfef986978"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ae6b7c588287453586a06d2fdd8476cf",
+      "source_hash": "d2b659f4c610ccb73e0b829eaf853b262ad2eb222ea02ab30080904f1a94ee73",
+      "target_text": "## Бастамас бұрын\n\nТек сынақ ортасы қажет, бұрынғы жұмыс кестелері керек емес. `ops_orders_l3`, `ops_orders_drop_l3`, жаттығуда `retention_plan_l3` қайта құрылады. Тазаланған/жойылған бөлімдер FE `catalog_trash_expire_second` баптауының 86400 секунды, бір күн, себетте қалады, кейін Doris жояды.\n\nҚосымша 6–8-бөлімдер тек қосқанда орындалады. `doris-warehousing-backup` Compose жобасын, `doris-warehousing-backup-silo-1` контейнері мен `backup-objects` томы бар сақтауды бастап, `<your database>_backup_l3` репозиторийін және `<your database>_restore_l3` базасын құрады. Snapshot қарауға жұмыстан кейін қалады; жоюын 8-бөлім айтады.",
+      "target_hash": "41c32d634b4ae17647dfd058d2ac0af9df34a99d284cf90ccfe0466d31507913",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d2b659f4c610ccb73e0b829eaf853b262ad2eb222ea02ab30080904f1a94ee73",
+          "target_hash": "41c32d634b4ae17647dfd058d2ac0af9df34a99d284cf90ccfe0466d31507913"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3534631d423b4749a027bc92ac5aa333",
+      "source_hash": "b5caa1752ebc0f15f2dee6910356ecff97d98606132d25780d6cd7319124dfe6",
+      "target_text": "## Аяқтау шарттары\n\n- `SHOW PARTITIONS`, `SHOW TABLETS`, `SHOW CREATE TABLE`, бөлім `COUNT(*)` әрқайсысы не көрсететінін, қай сан кешігетінін айта аласыз;\n- `TRUNCATE` тек қаңтарды босатып, жаңа `PartitionId` берді; файл жойылмай тұрып нәтиже неге өзгергенін білесіз;\n- қаңтарды ID-мен қайтарып, атаумен `RECOVER` алдымен неге өтпей, кейін қате бөлімді қайтаратынын білесіз;\n- қайта жүктеуге `TRUNCATE`, мерзімі өткенге `DROP PARTITION` таңдап, себет нені алмастыратынын/алмастырмайтынын айта аласыз;\n- жоспар 2024 қараша–2025 қаңтарды жойып, 13 ай сақтады.",
+      "target_hash": "63f725b77a0dead1feb52a2a2a8f51ffc7403ec2e39da6487bbef5f9c7ade21b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "b5caa1752ebc0f15f2dee6910356ecff97d98606132d25780d6cd7319124dfe6",
+          "target_hash": "63f725b77a0dead1feb52a2a2a8f51ffc7403ec2e39da6487bbef5f9c7ade21b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.84336f018e734c6994d52a2d09287600",
+      "source_hash": "633a6cd832b2c5f60387db6a98d350b1bc7da961837c9ba014ee9b598382d3f4",
+      "target_text": "**Күтілетін нәтиже**\n\nБес жасыл тексеру: екінші кестеде екі ай, 2 тапсырыс/300.00; `DROP` соң тек `p202502`, ақпанның 200.00 сомасы қалды; `RECOVER` соң `p202501` қайта тізіліп, 2 тапсырыс/300.00. Екі бөлім кестесі алдымен тек ақпанды, кейін екеуін көрсетеді.\n\nБұл `DROP` `FORCE` қоспады, бөлім себетке түсіп қайтты; мұнда атаумен `RECOVER` жеткілікті, өйткені кестенің басқа `p202501` бөлімі жоқ. `FORCE` болса не мерзім бітсе, тек сақтық көшірме/мұрағат қайтарады.",
+      "target_hash": "c6d70e393dbd3aef1c335991bb7e0a7bd9320fb7ec6214e9735ee7917c49bf7a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "633a6cd832b2c5f60387db6a98d350b1bc7da961837c9ba014ee9b598382d3f4",
+          "target_hash": "c6d70e393dbd3aef1c335991bb7e0a7bd9320fb7ec6214e9735ee7917c49bf7a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0f9c743fd17448ad8e4b4f9ea091783f",
+      "source_hash": "e508b9bd245e325f97901bd8d2d07e95b292e8bea833355e9ceab90b69dfd5be",
+      "target_text": "## 6. Қосымша: кестенің сақтық көшірмесін репозиторийге алу\n\n**Бұл және 7–8-бөлімдер қосымша, тек қосқанда орындалады**: келесі ұяшықта `RUN_BACKUP_DRILL = True` орнатып, сол және келесі ұяшықты орындаңыз. Өткізу 13-тестке не 14-модульге әсер етпейді.\n\nАлдында Doris себеті қолданылды. Енді **нақты толық репозиторий көшірмесін** алып, жеке бастапқы кестені мәжбүрлеп жойып, snapshot-ты бөлек оқу базасына қалпына келтіріңіз. FORCE жою себетке қайтаруды әдейі алып тастайды; қалпына келу көзі — репозиторий snapshot-ы.\n\nБұл бөлім 4-жұмыстағы S3-үйлесімді, курсқа тиесілі Silo-ны нақты бастайды: ең көбі 512 MiB RAM, жергілікті 51910 порт (`DW_BACKUP_S3_PORT`, өзгеге сол мәнмен Jupyter бастаңыз), тұрақты `backup-objects` томы. Көмекші бастамас бұрын портты тексереді. Тек жергілікті ашық оқу тіркелгі деректерін қолданады, өндірістік тіркелгі деректерін қолданбайды. FE мен BE екеуі контейнер соңғы нүктесіне жетуі керек. Көшірілетін — Storage Policy не асинхронды көрінісі жоқ біріктірілген ортадағы кәдімгі кесте.\n\n**Шекара:** Silo мен Doris бір хостта. Бұл хост жоғалуының апаттық қалпына келуін емес, репозиторий протоколы мен деректі салыстыруды тексереді. Өндірісте бөлек ақау домендері, тіркелгі деректерін басқару, сақтау мерзімі, сыналған қалпына келу мақсаттары қажет.",
+      "target_hash": "be27b268f8440f6e4b15333ae0d1a8c904be41b25ee75c2728ad8ca06883c3bc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e508b9bd245e325f97901bd8d2d07e95b292e8bea833355e9ceab90b69dfd5be",
+          "target_hash": "be27b268f8440f6e4b15333ae0d1a8c904be41b25ee75c2728ad8ca06883c3bc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b13d588acc86400a92f34d21d747ef38",
+      "source_hash": "e0ccd36655c6f5ddb86749a20999bd4ce3998e48b8deb5b2bdb71b70e8fae845",
+      "target_text": "## 7. Қосымша: басқа базаға қалпына келтіріп, әр жолды салыстыру\n\nСәтті жүктеу — сыналған қалпына келу емес. Уақытты ойдан шығармай, нақты snapshot timestamp алыңыз; курс префиксіне сай бөлек базаға қайтарыңыз. `ON (... AS ...)` жалғыз қайтарылатын кестені атайды; басқалары мен негізгі база тазаланбайды.\n\nБастапқы кесте тек көшірме `FINISHED` болғаннан кейін FORCE жойылады. Аяқталуын, реттелген жолдарды, сан/соманы тексеріңіз. Snapshot өз шекарасын қайтарады, кейінгі жазуларды емес; дерек жоғалтудың рұқсат етілген аралығын азайту үшін басқа қайта ойнату тәсілі керек.",
+      "target_hash": "b3f475636f55a29d707550442b84bfcf7fafd3db935250b76c5175952a4f104c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e0ccd36655c6f5ddb86749a20999bd4ce3998e48b8deb5b2bdb71b70e8fae845",
+          "target_hash": "b3f475636f55a29d707550442b84bfcf7fafd3db935250b76c5175952a4f104c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.903f3bdbe93a4da69d8d7275dedc101d",
+      "source_hash": "f37d69ab487d5dea7382891503a2868a730d6fd06c242e735bfbf55c929d8c34",
+      "target_text": "## 8. Қосымша: snapshot-ты сақтап, тазалауына жауап беру\n\nРепозиторий, Silo snapshot нысандары, бөлек қайтарылған кесте тексеруге қалады. Қайталау жаңа snapshot белгісін жасап, тек аталған бастапқы/нысаналы кестелерді қайта құрады. Сақтау томын ешқашан жоймайды. RAM босатып, нысандарды сақтау үшін курс түбірінен `docker compose --project-name doris-warehousing-backup --file environments/backup/compose.yml stop` орындаңыз.\n\nRepository жою — Doris тіркеуін жою, қашық snapshot дерегін емес. Көшірмені тек нақты сақтау шешімімен жойыңыз; сервисті тоқтату жою емес. Бүкіл кластер, рұқсаттар, сыртқы lake дерегі көшірілмейді. Бәрін жоюға Doris ішінде `DROP REPOSITORY <your database>_backup_l3`, `DROP DATABASE <your database>_restore_l3`, кейін курс каталогынан `docker compose --project-name doris-warehousing-backup --file environments/backup/compose.yml down --volumes` орындаңыз; реті README тазалау бөлімінде.",
+      "target_hash": "68a381ab6e2e88c06b40a16a67af2f7abab701a58054e32fd7d7f05c47ead615",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f37d69ab487d5dea7382891503a2868a730d6fd06c242e735bfbf55c929d8c34",
+          "target_hash": "68a381ab6e2e88c06b40a16a67af2f7abab701a58054e32fd7d7f05c47ead615"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.123c886d01194702be746abf21024902",
+      "source_hash": "4f5b8364120dc28c0b02343a8af8e9ccd1dd76803f6e2acdd6a8fc96e745afd5",
+      "target_text": "**Күтілетін нәтиже**\n\n`p202501`, `p202502`, `p202503` үш бөлімі, әрқайсысы `NORMAL`, `VisibleVersion` 2, 1 bucket/реплика; BE хабарламаса `RowCount` -1 не 0, әйтпесе 1. Бір backend-те үш tablet, әр бөлімге бір tablet, нұсқасы 2. Анықтамасы: `DUPLICATE KEY(order_date, order_id)`, үш `RANGE`, `DISTRIBUTED BY HASH(order_id) BUCKETS 1`. Екі жасыл тексеру: үш бөлім және дәл қазір әрқайсысында бір тапсырыс.\n\nАралықтардың төменгі/жоғарғы шегі анық: қаңтар `[2025-01-01, 2025-02-01)`, ақпан `2025-02-01`, наурыз `2025-03-01` басталады. Атау шекараны анықтамайды; мысалда қаңтарға дейінгі күндерге бөлім жоқ.\n\nҚаңтардың `PartitionId` мәнін белгілеңіз: келесі қадам өзгертеді, 4-қадамға ескісі қажет.",
+      "target_hash": "aaf54277ad9c2a7957d9a59628728c4fec6146e91527ae7952038f5f869b9346",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4f5b8364120dc28c0b02343a8af8e9ccd1dd76803f6e2acdd6a8fc96e745afd5",
+          "target_hash": "aaf54277ad9c2a7957d9a59628728c4fec6146e91527ae7952038f5f869b9346"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.900656a959a74dd59697215e5a79d4ec",
+      "source_hash": "d6063ae0a280ec6e13fc71869a11426ab1d0369c1a9ab8a148caf43404fa2966",
+      "target_text": "## Әрі қарай\n\n[13-тест: Сақтау мен өмірлік циклді басқару](quiz13_storage_lifecycle.ipynb) файлын ашып, [14-модуль: Ресурстарды оқшаулау және сұрауларды қорғау](../module14-resource-isolation/course.md) бөліміне өтіңіз.",
+      "target_hash": "6ac6b2a9095d4f4ee3adcfb17c1fce01233435942ba0d92b10f294fb4910774e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d6063ae0a280ec6e13fc71869a11426ab1d0369c1a9ab8a148caf43404fa2966",
+          "target_hash": "6ac6b2a9095d4f4ee3adcfb17c1fce01233435942ba0d92b10f294fb4910774e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.552b341686ff4b5fb2c51b9e2afec832",
+      "source_hash": "d78330877d2d373ff7aeef268f5896c1b9f5cd82789e3c31907a24ea724a0992",
+      "target_text": "**Күтілетін нәтиже**\n\nСебет жазбасы: түрі `Partition`, аты `p202501`, база/кесте ID-лері, жазылған `PartitionId`, тазалау уақыты. Жасыл тексеру: атаумен `RECOVER` `partition[p202501] already exist in table[ops_orders_l3]` қатесімен қабылданбады; тағы жасыл — алмастырушы әлі бос. Екі командадан кейін `p202501` бастапқы `PartitionId`, `VisibleVersion` 2 мәндерімен қайтады. Жасыл: қаңтар қайтты, кестеде 3 тапсырыс/600.00.\n\nDoris 4.1.3 өлшемі: алмастырушы жойылған соң атаумен `RECOVER` ең жаңа босын қайтарар еді, қаңтар бос қалар еді. Себет мұнда бір күндік қысқа жол; ұзақ мерзімдісі — қайта оқылған көшірме не мұрағат.",
+      "target_hash": "6c7c3e0d82f46cba1730b8823d0d2bc9c9956b1496ff0aeaff540c60566f6e85",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d78330877d2d373ff7aeef268f5896c1b9f5cd82789e3c31907a24ea724a0992",
+          "target_hash": "6c7c3e0d82f46cba1730b8823d0d2bc9c9956b1496ff0aeaff540c60566f6e85"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.35570b08d60d47358388223d41c7837f",
+      "source_hash": "6ee02587cd3f71754b3a3c035a309029466b35070cbcd53927c1e4409758cd95",
+      "target_text": "## 4. Тазаланған қаңтарды бөлім ID-імен қайтару\n\nТазалау қате болды, қаңтар қайтуы тиіс. Себетте 2-қадам жазған ID-мен ескі әлі бар. Үш кедергіні ретімен шешеді:\n\n1. `SHOW CATALOG RECYCLE BIN WHERE NAME = 'p202501'` әр кесте/орындаудың сол аттағы барлық жойылған бөлімін тізеді; ұяшық жазылған ID-ін қалдырады.\n2. Сол аттағы бос алмастырушы тұрғанда `RECOVER PARTITION p202501 FROM ops_orders_l3` өтпейді. Жоймас бұрын бос екенін тексеріңіз: кейінгі жолдар жоғалады.\n3. Алмастырушыны жою оны да себетке қояды. Атаумен `RECOVER` енді ең жаңа бос `p202501` қайтарады; ұяшық ID қолданады: `RECOVER PARTITION p202501 <id> FROM ops_orders_l3`.",
+      "target_hash": "aec3d29dbf6acd0fbbe4b0021596c1207c26fbc2746080260a7617a61e69ce6e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "6ee02587cd3f71754b3a3c035a309029466b35070cbcd53927c1e4409758cd95",
+          "target_hash": "aec3d29dbf6acd0fbbe4b0021596c1207c26fbc2746080260a7617a61e69ce6e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.da7963d35c09416e9efb22023d0ef7a0",
+      "source_hash": "4aec59fe11e4235578a64ea7a7af0439784dcd96b83793f7b2a3ccf7142df9bb",
+      "target_text": "**Күтілетін нәтиже**\n\nӨшірулі болса сұр карточка.\n\nҚосулы болса: репозиторий snapshot-ы `Status` OK және нақты уақыт белгісімен; қайтаруда барыс карточкасы; екі жасыл тексеру — 7301–7303 үш жолы, 3 тапсырыс/600.00; себет пен репозиторий жолдарын салыстыру; қалпына келтіру тапсырмалары, осы орындаудың соңғысы `FINISHED`.\n\nБастапқы `FORCE` жойылған, себет көмектеспеді, snapshot көмектесті. Ол көшірме алынған кездегіні, кейінгі жазуларды емес, сақтайды.",
+      "target_hash": "45806aed2967006b69959488cdf7c4c1f0b40092e2dc9c41554769a1febd97ba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4aec59fe11e4235578a64ea7a7af0439784dcd96b83793f7b2a3ccf7142df9bb",
+          "target_hash": "45806aed2967006b69959488cdf7c4c1f0b40092e2dc9c41554769a1febd97ba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ffed003466714b3a8e8eee022e943abf",
+      "source_hash": "cc6ce516d96135ff673316507312ba882934640d12a68af507a45d4a99eba5ba",
+      "target_text": "**Күтілетін нәтиже**\n\n`p202411`–`p202602` 16 бөлім анықтамасы, кейін жоспар: күн 2026-02-15, алғашқы сақталатын ай 2025-02-01, жойылатындар `p202411, p202412, p202501`. Екі жасыл тексеру: үшеуі жойылады, 2025-02-15–2026-02-15 аралығында 13 тапсырыс қалады.\n\nЕреже күнтізбелік аймен; 365 күндік жылжымалы терезе басқа күнде бітеді, тұтас ай жоюмен орындалмайды. Нақты іске қосуға 2-қадам тексеруі мен әр ай мұрағатын қайта оқуды қосыңыз; `FORCE` болмаса жойылған айлар бір күн себетте.",
+      "target_hash": "14ddac1439fe629aab6aeff0d51d28000a0a762ff467795e8b3a4d95e2dbc919",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "cc6ce516d96135ff673316507312ba882934640d12a68af507a45d4a99eba5ba",
+          "target_hash": "14ddac1439fe629aab6aeff0d51d28000a0a762ff467795e8b3a4d95e2dbc919"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.439a67162c17471b9176aa0fb05377ab",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған. Салыстыру үшін ашыңыз немесе орындаңыз.",
+      "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.39f1cb0eadd5499f92c401aa60c91d4f",
+      "source_hash": "29eaf44c2f324b209a52cb602bc963996d68372184f165a13294f3362a7a2beb",
+      "target_text": "**Күтілетін нәтиже**\n\nҮш тапсырыс: 2025-01-15 күнгі 130001 (PAID, 100.00), 2025-02-15 күнгі 130002 (PAID, 200.00), 2025-03-15 күнгі 130003 (SHIPPED, 300.00), жасыл тексеру. Әрқайсысы өз бөлімінде: `p202501`, `p202502`, `p202503`.",
+      "target_hash": "c834cf09f93088f423c7deec54e37f81c7d7f6251a57f054bf0df6dbd602d6bd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "29eaf44c2f324b209a52cb602bc963996d68372184f165a13294f3362a7a2beb",
+          "target_hash": "c834cf09f93088f423c7deec54e37f81c7d7f6251a57f054bf0df6dbd602d6bd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.32fcb2ae9cd64749893fe76baa6a4aa2",
+      "source_hash": "3979d05ea6b5b961a963952b5fe5e3d5568e90035326b6641fc180d09dc432ae",
+      "target_text": "**Күтілетін нәтиже**\n\nАқпан/наурыз жолдары, кейін бөлімдер: `p202501` жаңа `PartitionId`, `VisibleVersion` 1 алады, `p202502`, `p202503` бұрынғыдай. Үш жасыл тексеру: 2 тапсырыс/500.00 қалады, ID тек қаңтарда жаңа, қаңтар бос, өзгелер өз тапсырысын сақтайды.\n\nНәтиже бірден өзгерді, ескі файлдар әлі ешқайда кеткен жоқ: келесі қадам қолданатын себетте.",
+      "target_hash": "99b17fa0b6233c84eb52e1de1f24955854db2532e9f561779473a659ab354412",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m13-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 13 units on 2026-11-08. Re-read all saved lesson/Lab/Quiz targets against frozen English; read complete Lab code including optional backup/restore sections and all six Quiz answer mappings. Checked current-plus-12 calendar months versus 365 days and late order dates, partition/bucket/tablet/replica counts, half-open ranges, delayed BE RowCount versus visible versions/exact query counts, truncate replacement IDs and query visibility versus physical reclamation, delete predicates/compaction distinction, recorded-ID recovery versus newest same-name empty replacement, FORCE/retention limits, snapshot cutoff and real timestamps, full row reconciliation, same-host backup disaster boundary, opt-in resource/credential/cleanup scope and runbook archival read-back. Clarified whole-table 3-order recovery total, one-tablet-per-partition wording, unknown RowCount not meaning empty, maintenance-date distractor and public local teaching credentials. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3979d05ea6b5b961a963952b5fe5e3d5568e90035326b6641fc180d09dc432ae",
+          "target_hash": "99b17fa0b6233c84eb52e1de1f24955854db2532e9f561779473a659ab354412"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

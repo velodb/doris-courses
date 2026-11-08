@@ -1,0 +1,1160 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.f66398883f7d48faa2b1d12f5889e2f5",
+      "source_hash": "a1d9f55a73095bd82b119a9ae94227a9a43310a6bf7e1b48379b6aacb48b8eb3",
+      "target_text": "### Тестті бастапқы баптау\n\nБастапқы баптау ұяшығын бір рет орындаңыз. Ол курс пакетін тауып, осы модульдің тест анықтамасын оқиды және интерактивті тест нысанын жасайды. Jupyter ядросын қайта іске қосқан сайын оны қайта орындаңыз.",
+      "target_hash": "4dd2f3ec22846ab038e7da2cf7117868483b4e4c1fdfc812e3b7393a1f0289b3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "a1d9f55a73095bd82b119a9ae94227a9a43310a6bf7e1b48379b6aacb48b8eb3",
+          "target_hash": "4dd2f3ec22846ab038e7da2cf7117868483b4e4c1fdfc812e3b7393a1f0289b3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.042e67df7c334000bd330c4e738b2b91",
+      "source_hash": "450f4278f42990770c85243b39c307d7decd3f74f14814bfea8fe11b638c8a05",
+      "target_text": "## Бұл тест нені бағалайды\n\nСабақтың әр оқу мақсатына бір сұрақтан берілген. Осы модульден кейін сіз:\n\n1. Жұмыс жүктемесінің дереккөзі, көлемі, кідірісі, түрлендіру және қайталау талаптары бойынша Doris жүктеу әдісін таңдай аласыз.\n2. Stream Load, S3 TVF арқылы `INSERT INTO SELECT`, Routine Load және Group Commit рөлдерін түсіндіре аласыз.\n3. Stream Load арқылы жергілікті CSV файлын жүктеп, оның синхронды JSON жауабын оқи аласыз.\n4. S3 TVF арқылы Parquet нысандарына сұрау жасап, оларды `INSERT INTO SELECT` арқылы тұрақты сақтай аласыз.\n5. Routine Load тапсырмасының Kafka хабарларын үздіксіз тұтынуға қашан сай келетінін және ілгерілеуді қалай қадағалайтынын түсіндіре аласыз.\n6. Жүктелген және сүзілген жол сандарын тексеріп, қабылданбаған жүктеуді тани аласыз және топтаманы қауіпсіз қайталай аласыз.\n\nКей сұрақтар зертханалық жұмыстың бір қадамынан басталады, бірақ ешбірі оның сандарын есте сақтауды сұрамайды. Тест Docker, Doris, S3 немесе Kafka жүйелерінсіз және аяқталған зертханалық жұмыссыз орындалады; оған тек курстың Jupyter ортасы қажет.",
+      "target_hash": "74c239cbe8f501f6f1f3318c0c855f863835da5de8dcfa0973f8ff6a04921666",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "450f4278f42990770c85243b39c307d7decd3f74f14814bfea8fe11b638c8a05",
+          "target_hash": "74c239cbe8f501f6f1f3318c0c855f863835da5de8dcfa0973f8ff6a04921666"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e14ca910ac504c539b92fe7d1ccdea05",
+      "source_hash": "ba88481fadf1183a11b2fce54676c29e3a2a1862160bff93473f5a174d28c586",
+      "target_text": "## Білімді тексеруді бастау\n\nКелесі ұяшықты орындаңыз. Нұсқаны таңдап, түсіндірмесін оқу үшін **Submit answer** басыңыз. Қайту үшін **Previous question** пайдаланыңыз. Кез келген таңдауды өзгерте аласыз; жалғастырмас бұрын түзетілген жауапты жіберіңіз. Жіберілмеген таңдаулар нобай ретінде сақталады. **View results** ұпайыңызды және қате жауап берген сұрақтарыңызды көрсетеді. Сол жерден **Previous question** 6-сұраққа қайтарады, ал **Try again** тест тапсыру әрекетін тазартады.",
+      "target_hash": "c47023fa21f0b9922e28ba9d10e5c0a322db3235f8f85dc6cc9e918d0b9ce5d0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "ba88481fadf1183a11b2fce54676c29e3a2a1862160bff93473f5a174d28c586",
+          "target_hash": "c47023fa21f0b9922e28ba9d10e5c0a322db3235f8f85dc6cc9e918d0b9ce5d0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2b7e1a93426348b3a77291f393025f40",
+      "source_hash": "fb9d29ffd413da318c6dec4004971f42889e905b995e8973ded70b59d449f00a",
+      "target_text": "<div>\n  <div>03-ТЕСТ · APACHE DORIS КӨМЕГІМЕН НАҚТЫ УАҚЫТТАҒЫ АНАЛИТИКА</div>\n  <div>Apache Doris жүйесіне деректерді жүктеу</div>\n  <p>Әр сұрақтан кейін кері байланысы бар, бір жауап таңдалатын алты сұрақ; дерекқорға қосылу қажет емес.</p>\n  <span>6 сұрақ · Бір жауап таңдау · Шамамен 10 минут</span>\n</div>\n\n**3-модуль: Apache Doris жүйесіне деректерді жүктеу** · [Сабақ](course.md) · [Зертханалық жұмыс](lab03_load_data.ipynb)",
+      "target_hash": "422fefdbafcf9d9ca60be50669361ce7507628a5b37961f56861d02877b170f9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "fb9d29ffd413da318c6dec4004971f42889e905b995e8973ded70b59d449f00a",
+          "target_hash": "422fefdbafcf9d9ca60be50669361ce7507628a5b37961f56861d02877b170f9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.38783f685a274a7093c958b81c2863b7",
+      "source_hash": "a2c6dab85a8837db3fb20d5ec5d148d052f92207ed9a7bdfe71e829383b691db",
+      "target_text": "Алты сұрақ 3-модульдегі жүктеу әдісін таңдау, сапа, тұрақты сақтау, үздіксіз тұтыну және қайталау шешімдерін тексереді; әр оқу мақсатына бір сұрақтан.",
+      "target_hash": "5b2cc6a9298a05c79481fedb8828994586822bb70468b23e31a39aa5791b0f17",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "a2c6dab85a8837db3fb20d5ec5d148d052f92207ed9a7bdfe71e829383b691db",
+          "target_hash": "5b2cc6a9298a05c79481fedb8828994586822bb70468b23e31a39aa5791b0f17"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1917b94a441741b699fc16fca168ec3b",
+      "source_hash": "28ecf829438073f85e152040963a641868d81a4999b03c8e88f5daba59deb980",
+      "target_text": "Нысандар объектілік сақтау орнында бар және SQL түрлендірулерін қажет етеді, сондықтан Doris оларды S3 TVF арқылы оқиды, ал бір INSERT INTO SELECT нәтижені тұрақты сақтайды. Stream Load шектелген топтаманы жіберетін клиентке сай келеді, Routine Load тапсырмасы S3 емес, Kafka тұтынады, ал Group Commit көптеген шағын жазуды топтайды, бірақ S3 оқымайды.",
+      "target_hash": "88da08f7004ad314431a88192ad05c89600d012096ca37578cd614a58d816b41",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "28ecf829438073f85e152040963a641868d81a4999b03c8e88f5daba59deb980",
+          "target_hash": "88da08f7004ad314431a88192ad05c89600d012096ca37578cd614a58d816b41"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3fedcd96496d4f61865daf49a864e80c",
+      "source_hash": "31b4828bf8dc4b0282030caccf215d958ece8625812567095ff228ae0066513c",
+      "target_text": "Жұмыс жүктемесінің дереккөзі, көлемі, кідірісі, түрлендіру және қайталау талаптары бойынша Doris жүктеу әдісін таңдау.",
+      "target_hash": "36ba277069813619126436138bb60da7683a648ac8c6a2fcb41b562c290d3105",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "31b4828bf8dc4b0282030caccf215d958ece8625812567095ff228ae0066513c",
+          "target_hash": "36ba277069813619126436138bb60da7683a648ac8c6a2fcb41b562c290d3105"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1f2ae799a0c14b749d4a2a44d79a2d4d",
+      "source_hash": "a51c816f475a29a147b1a503a4fc36fe8ae076a14233ddb8613f6bebd01ed411",
+      "target_text": "Doris нысандарды SQL арқылы оқуы үшін S3 TVF көзінен INSERT INTO SELECT",
+      "target_hash": "6102c470cfc98197b389eb2d643b7d45d63710d8fb2152776884121d84337c6c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "a51c816f475a29a147b1a503a4fc36fe8ae076a14233ddb8613f6bebd01ed411",
+          "target_hash": "6102c470cfc98197b389eb2d643b7d45d63710d8fb2152776884121d84337c6c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.14a222ede90845ed8641d2d5e0187a5e",
+      "source_hash": "9d7be4758aacef6af58502213332ae0bf9d2e243b3ee17a930ad1b4f23af4edb",
+      "target_text": "Тапсырма әр нысанды жүктеп, HTTP арқылы жібергеннен кейін Stream Load",
+      "target_hash": "9c8dab72c8226d0747ff62e02e7c8d1bfc8ea206a6bb4efeb8eb74f835dbf608",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "9d7be4758aacef6af58502213332ae0bf9d2e243b3ee17a930ad1b4f23af4edb",
+          "target_hash": "9c8dab72c8226d0747ff62e02e7c8d1bfc8ea206a6bb4efeb8eb74f835dbf608"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ab78453dec98492e9440a8e34697e1d4",
+      "source_hash": "6eb5a1fc319bbced8686f79870c137f755908df0a8b37db4fde7a2979527cf77",
+      "target_text": "Bucket нысандарын үздіксіз ағын ретінде тұтынатын Routine Load тапсырмасы",
+      "target_hash": "238705214b6679841e5e9a8ab28d587f23618ec4a4809d12bb0b476f5be77ba1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "6eb5a1fc319bbced8686f79870c137f755908df0a8b37db4fde7a2979527cf77",
+          "target_hash": "238705214b6679841e5e9a8ab28d587f23618ec4a4809d12bb0b476f5be77ba1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.09e06ae320bc4257be9ed93a0a66d96d",
+      "source_hash": "8850ae79f81e395938e8cdd2097cc9cc5b196cb330385f945521efb9a2e19f20",
+      "target_text": "Әр сағаттың нысандарын бір жүктеу транзакциясына жинайтын Group Commit",
+      "target_hash": "24a619b7b2bab747dba5472150e6134370e0369ffd4fc37d18c3c06b1e7a250f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "8850ae79f81e395938e8cdd2097cc9cc5b196cb330385f945521efb9a2e19f20",
+          "target_hash": "24a619b7b2bab747dba5472150e6134370e0369ffd4fc37d18c3c06b1e7a250f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.89370dd789a847de8775d4f14a453ce2",
+      "source_hash": "08a38a6906e864ff219f13bd30511ce34e6d0d03d43cac43023d35b0fa1e0f34",
+      "target_text": "Әр сағат сайын тапсырма S3 ішінде бұрыннан бар бекітілген Parquet нысандар жиынын ішкі кестеге көшіруі және жолай бағандарды сүзіп, қайта атауы тиіс. Қай жүктеу әдісінен бастау керек?",
+      "target_hash": "8d0d7a0e91f93d1d0c141c7c695e4af8b1b28a4eff6566c474ec99cdec4a4f37",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "08a38a6906e864ff219f13bd30511ce34e6d0d03d43cac43023d35b0fa1e0f34",
+          "target_hash": "8d0d7a0e91f93d1d0c141c7c695e4af8b1b28a4eff6566c474ec99cdec4a4f37"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b110a6ec83ca4f719fc44358c903099e",
+      "source_hash": "548aea56a8247bf4056653bdc7fe9dd7d9706b4be2dbf6fa92c44be26d87b604",
+      "target_text": "Group Commit — үйлесімді шағын Stream Load және INSERT жазуларына арналған серверлік оңтайландыру: оларды саны аз жүктеу транзакцияларына топтап, FE транзакция жұмысын және нұсқа қысымын азайтады. sync_mode топталған транзакция бекітіліп, жолдар көрінгеннен кейін қайтады; async_mode жолдар алдын ала жазу журналына түскенде, әлі көрінбей тұрып қайтады. S3 TVF және Routine Load басқа дереккөздерге қызмет етеді.",
+      "target_hash": "5701df003484ded17182880ea678f6aecd3820790a28e01bfd87139ed21136ac",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "548aea56a8247bf4056653bdc7fe9dd7d9706b4be2dbf6fa92c44be26d87b604",
+          "target_hash": "5701df003484ded17182880ea678f6aecd3820790a28e01bfd87139ed21136ac"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.310cc1a1094942e9998573bf5a8ae753",
+      "source_hash": "f635c7eb69ff2dfd4d25a2014b889384c0c4f71fdbb6a5934e89c56512bef049",
+      "target_text": "Stream Load, S3 TVF арқылы `INSERT INTO SELECT`, Routine Load және Group Commit рөлдерін түсіндіру.",
+      "target_hash": "047cf10d0f59e59bb423ba41ddb08919370b06f36182a84d4c0ec9d3609db0d6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "f635c7eb69ff2dfd4d25a2014b889384c0c4f71fdbb6a5934e89c56512bef049",
+          "target_hash": "047cf10d0f59e59bb423ba41ddb08919370b06f36182a84d4c0ec9d3609db0d6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ea41c4625a6444dda0da8313c3b8e41e",
+      "source_hash": "0e18b6cd5af0cc481f032157e9ac85a0efe6b4d3e10446c40999949942d026b9",
+      "target_text": "Stream Load сақтап, осы ұсақ жазулар үшін Group Commit құралын sync_mode режимінде қосу",
+      "target_hash": "dd4317e27c844014764d5905c076b20912c7502f4badcefc80f7014d3397b167",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "0e18b6cd5af0cc481f032157e9ac85a0efe6b4d3e10446c40999949942d026b9",
+          "target_hash": "dd4317e27c844014764d5905c076b20912c7502f4badcefc80f7014d3397b167"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b5d4f6ffd81246fea6d4eb2a035552cc",
+      "source_hash": "c08da0da8324b3df3948dbe3c8cef9e420d3f98267f266ff57bca7629b123009",
+      "target_text": "Group Commit құралын async_mode режимінде қосып, әр жауапты жолдар көрінді деп қабылдау",
+      "target_hash": "c1c54708915ff27c1b10b47b8eea703788cf2167f7b5ac034964431da4e4ee39",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "c08da0da8324b3df3948dbe3c8cef9e420d3f98267f266ff57bca7629b123009",
+          "target_hash": "c1c54708915ff27c1b10b47b8eea703788cf2167f7b5ac034964431da4e4ee39"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.69fdfc24fbe344729dca6cc199cb0024",
+      "source_hash": "1627346adcd23f6c15f648bfba00b7d6b20fd6b618c6922c71b4e8a2307ee8cf",
+      "target_text": "Әр ұсақ топтаманы алдымен объектілік сақтау орнына жазып, S3 TVF арқылы жүктеу",
+      "target_hash": "983dddf6274e1062052c78d74669ef0cf995a3e06dd72a2765956b890d72561e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "1627346adcd23f6c15f648bfba00b7d6b20fd6b618c6922c71b4e8a2307ee8cf",
+          "target_hash": "983dddf6274e1062052c78d74669ef0cf995a3e06dd72a2765956b890d72561e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1e0dbff15fb441df947831deb97f25ec",
+      "source_hash": "15367ec1e57ffb7a8143ad1890ea1935bfb41fb8f086af058f81117bbf1a51dd",
+      "target_text": "HTTP сұрауларын біріктіретін, Kafka қолданбайтын Routine Load тапсырмасын жасау",
+      "target_hash": "4ede52259f27ab4b5aad0fc6016c55770ee5e9fc828cf7f4f57e89a2117fd9d7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "15367ec1e57ffb7a8143ad1890ea1935bfb41fb8f086af058f81117bbf1a51dd",
+          "target_hash": "4ede52259f27ab4b5aad0fc6016c55770ee5e9fc828cf7f4f57e89a2117fd9d7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6d759445c96f4b3a815746cb0013214a",
+      "source_hash": "924a5053bd866561d580bb1c55a623bc027b91bfd6807249e46f3904c3c339b3",
+      "target_text": "Қолданбада бір кестеге жиі ұсақ Stream Load сұрауларын жіберетін 30 жұмысшы бар. Транзакция шығыны мен нұсқа қысымы артып жатыр, ал әр сұрау тек жолдары көрінгеннен кейін қайтуы тиіс. Қай тәсілден бастау керек?",
+      "target_hash": "13709f7c0ea57d2b5c34b08873e14af88b36f540a084977d81d8153d985ab0a5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "924a5053bd866561d580bb1c55a623bc027b91bfd6807249e46f3904c3c339b3",
+          "target_hash": "13709f7c0ea57d2b5c34b08873e14af88b36f540a084977d81d8153d985ab0a5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.31435a559b4c4cd2927377f5882f9472",
+      "source_hash": "d645d7ea5b4420bc8060903409fda559a6a8aa530abf833d40134ce68ee78d46",
+      "target_text": "Қатаң режимде мәтін DECIMAL бола алмайды, сондықтан жол сүзіледі; max_filter_ratio:0 кезінде бір сүзілген жол бүкіл транзакцияның қабылданбауына әкеледі және тоғыз жарамды жол да бекітілмейді. Жауаптағы ErrorURL қолжетімді кезінде қабылданбаған жолды көрсетеді. Таңдалмаған жолдар — where тақырыбы алып тастаған жарамды жолдар.",
+      "target_hash": "6c0824989fbe9d79f04324c90183608a93cd3a9ff5fd7338719f211fc1bc1a0f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "d645d7ea5b4420bc8060903409fda559a6a8aa530abf833d40134ce68ee78d46",
+          "target_hash": "6c0824989fbe9d79f04324c90183608a93cd3a9ff5fd7338719f211fc1bc1a0f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7399f0ff177446f2a3f0a497ae775624",
+      "source_hash": "066bb2b59b7b83a3e8c7816d051022fee216fa8ad9146c1697d6e791be7a4c85",
+      "target_text": "Stream Load арқылы жергілікті CSV файлын жүктеу және оның синхронды JSON жауабын оқу.",
+      "target_hash": "1ff95f82cfe055f76aa36aac88f00f078d0b88600979ea9b9f727a75b9bd5ba4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "066bb2b59b7b83a3e8c7816d051022fee216fa8ad9146c1697d6e791be7a4c85",
+          "target_hash": "1ff95f82cfe055f76aa36aac88f00f078d0b88600979ea9b9f727a75b9bd5ba4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7f26a80545f141d08a8c9f58e28fdf9b",
+      "source_hash": "10a14a65b8fdbe925ebe8f989f3e3489c3f33583fea94fb2c47864ecfd52864b",
+      "target_text": "Бір сүзілген жолмен Status Fail және он жолдың ешқайсысы бекітілмейді",
+      "target_hash": "80d1df6c6ed591045191494f60bba7df30a90bda9d25e88f1ae9e32b6fefc5b3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "10a14a65b8fdbe925ebe8f989f3e3489c3f33583fea94fb2c47864ecfd52864b",
+          "target_hash": "80d1df6c6ed591045191494f60bba7df30a90bda9d25e88f1ae9e32b6fefc5b3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.901b0261509541d9af11e1bd693a3279",
+      "source_hash": "fc1c52ba3de22697868e319f0441ba4e2c9d02760670df76cd737e7962b9afe4",
+      "target_text": "Топтаманың көбі жарамды болғандықтан, тоғыз жүктелген жолмен Status Success",
+      "target_hash": "300028c32038a05e4526e3899b3a4e05a7ac63618bce9f50930e5fbd00daa4bc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "fc1c52ba3de22697868e319f0441ba4e2c9d02760670df76cd737e7962b9afe4",
+          "target_hash": "300028c32038a05e4526e3899b3a4e05a7ac63618bce9f50930e5fbd00daa4bc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ead3c7f486b747629724e5aa2d19b02c",
+      "source_hash": "77acc99fe8978e02fe12cf05f5977f455f636a4f41afa799884f33f46e0da074",
+      "target_text": "Он жүктелген жолмен Status Success, ал қате мән 0.00 болып түрленеді",
+      "target_hash": "1a6464cbff8f961fbfca2acd1bbf35a5ce14029c490030d37148426c9212e8ab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "77acc99fe8978e02fe12cf05f5977f455f636a4f41afa799884f33f46e0da074",
+          "target_hash": "1a6464cbff8f961fbfca2acd1bbf35a5ce14029c490030d37148426c9212e8ab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c3a16ea0892349dd937bec92bb564713",
+      "source_hash": "f981c2333990ddfc41d18b9e0c111f199f2ae23dda960a63618045a9b73ae7bd",
+      "target_text": "max_filter_ratio where ретінде әрекет ететіндіктен, он таңдалмаған жолмен Status Fail",
+      "target_hash": "98a1a56a8b3eb2ba8c8e293068eec1d2bc8ef180aa89200a0546d1e218fd5ed0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "f981c2333990ddfc41d18b9e0c111f199f2ae23dda960a63618045a9b73ae7bd",
+          "target_hash": "98a1a56a8b3eb2ba8c8e293068eec1d2bc8ef180aa89200a0546d1e218fd5ed0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.65c2d20d77334219a66a336ec66e5b0b",
+      "source_hash": "7116bea6024fd5f9163be6eac5d7aec21a20196b7c6b6b9454d355f2174b5cc1",
+      "target_text": "Он жолдық Stream Load сұрауы strict_mode:true және max_filter_ratio:0 орнатады, where тақырыбы жоқ. Бір revenue мәні not-a-number. JSON жауабы нені хабарлайды?",
+      "target_hash": "1740a172594a344bddedae7c1b8bf7491a677fa961a0d35ee440d65f6bdc6ac5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "7116bea6024fd5f9163be6eac5d7aec21a20196b7c6b6b9454d355f2174b5cc1",
+          "target_hash": "1740a172594a344bddedae7c1b8bf7491a677fa961a0d35ee440d65f6bdc6ac5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b1599eee7ca54c7ea264331c7baedaef",
+      "source_hash": "e23275fca08c40c4cbe31d95b80aa9fe960f8d7135f1f1789990751721ca45c1",
+      "target_text": "S3 TVF ағымдағы сұрау үшін қашықтағы нысандарды сақтамай оқып, талдайды; INSERT INTO SELECT нәтижені ішкі кестеге жазатын жүктеу транзакциясын жасайды. Label (WITH LABEL) болмаса, ойланбай қайта орындау жолдарды қайта жүктейді, сондықтан өндірістік жұмыс барысы операторға label береді немесе нысандар жиынын тіркеп, идемпотентті мақсатты құрылым пайдаланады.",
+      "target_hash": "1199c231b00591477caba27594174ec1025b16db3c90dd5f757ade662a10d140",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "e23275fca08c40c4cbe31d95b80aa9fe960f8d7135f1f1789990751721ca45c1",
+          "target_hash": "1199c231b00591477caba27594174ec1025b16db3c90dd5f757ade662a10d140"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.369fb32d4bc84589b661b5795bd33875",
+      "source_hash": "d46b65e37e59bee8361028121169bada0680d823322c79b6307ba686a080d633",
+      "target_text": "S3 TVF арқылы Parquet нысандарына сұрау жасау және оларды `INSERT INTO SELECT` арқылы тұрақты сақтау.",
+      "target_hash": "1463307b7c2a5b4903a8291c543aded096249da11e3180655f9be950c8f17a66",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "d46b65e37e59bee8361028121169bada0680d823322c79b6307ba686a080d633",
+          "target_hash": "1463307b7c2a5b4903a8291c543aded096249da11e3180655f9be950c8f17a66"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3aec61a74956497693a5bd0fc891c987",
+      "source_hash": "599a9ca14f8e83e273239ffd3958520789fa423ed5cd95068050a741466c86d3",
+      "target_text": "S3(...) көзінен SELECT тек файлдарды оқиды; INSERT INTO SELECT нәтижені сақтайды",
+      "target_hash": "d899c2e7d92eb7a5a56c924736d81922bde8afd32246892f05f8573f711031e6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "599a9ca14f8e83e273239ffd3958520789fa423ed5cd95068050a741466c86d3",
+          "target_hash": "d899c2e7d92eb7a5a56c924736d81922bde8afd32246892f05f8573f711031e6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.950d8aa350634571b767e119c1801d39",
+      "source_hash": "8b6afe9967052721ca7a2e8e8a6605bec3860a5eb772cefacaee32985e40f7d6",
+      "target_text": "S3(...) көзінен SELECT әр файлды BE сақтауына көшіреді, сондықтан INSERT тек атын өзгертеді",
+      "target_hash": "4f3cc6192edbb9ce79d64445100d0de9dead2a1d1eaeb44c0f3bfd00152a51d8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "8b6afe9967052721ca7a2e8e8a6605bec3860a5eb772cefacaee32985e40f7d6",
+          "target_hash": "4f3cc6192edbb9ce79d64445100d0de9dead2a1d1eaeb44c0f3bfd00152a51d8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1966f8f5a87d48779d0949c5fc17dec1",
+      "source_hash": "da259fb0168136f277fb05492979872eb90e1f4cb939a8970637fe5751b2722e",
+      "target_text": "S3 TVF нысан ығысуларын Routine Load тапсырмасы Kafka ығысуларын қадағалағандай қадағалайды",
+      "target_hash": "ec47f987a70132217464c9ab4dfc901bfe528a1c96d3937d63440d8ee3b5b99d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "da259fb0168136f277fb05492979872eb90e1f4cb939a8970637fe5751b2722e",
+          "target_hash": "ec47f987a70132217464c9ab4dfc901bfe528a1c96d3937d63440d8ee3b5b99d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7fb145eea9a8489d8ec695bd899a4084",
+      "source_hash": "55f91c188275e2649a3614a4b8f53e737a9f5ab7d6ef670f2b9683ddcc2157c6",
+      "target_text": "INSERT INTO SELECT Stream Load label мәнін қайта пайдаланады, сондықтан қайта орындау қайталанудан қорғалған",
+      "target_hash": "875b3d0b357f1c67d141ea85145af57790a0d4c99663c7ded221fbd1c2f41025",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "55f91c188275e2649a3614a4b8f53e737a9f5ab7d6ef670f2b9683ddcc2157c6",
+          "target_hash": "875b3d0b357f1c67d141ea85145af57790a0d4c99663c7ded221fbd1c2f41025"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.70b14eafe09946abae6dd374be2cffa4",
+      "source_hash": "34f5d69747e915586de766b16fb42ea4d16227b0bf114bb6fe875d3dd200efd2",
+      "target_text": "S3 TVF және INSERT INTO SELECT туралы қай тұжырым дұрыс?",
+      "target_hash": "a6e13bd825b1e4691a9edebab3810ee4ae696e1344f9b41c8a2828a352f4cc42",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "34f5d69747e915586de766b16fb42ea4d16227b0bf114bb6fe875d3dd200efd2",
+          "target_hash": "a6e13bd825b1e4691a9edebab3810ee4ae696e1344f9b41c8a2828a352f4cc42"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.79a634b6a6ac4866bd709178a2e8cb71",
+      "source_hash": "45457671c1621c399ebbf70983c1be789e96ac31389224f431cbba7f630b3c61",
+      "target_text": "Routine Load — Doris басқаратын ұзақ жұмыс істейтін Kafka тұтынушысы: jsonpaths ішкі мәндерді шығарады, COLUMNS оларды кестеге сәйкестендіреді және әр микротоптама жолдарын жеткен Kafka ығысуларымен бірге бекітеді, сондықтан кідірту мен жалғастыру бекітілген ығысулардан жалғасады. S3 TVF, Stream Load label мәні және Group Commit Kafka тұтынбайды.",
+      "target_hash": "ebe6e59a4ab6f3be4b744d14c48e072c8ad9e54e66d4a08c54d76b57e1b468fb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "45457671c1621c399ebbf70983c1be789e96ac31389224f431cbba7f630b3c61",
+          "target_hash": "ebe6e59a4ab6f3be4b744d14c48e072c8ad9e54e66d4a08c54d76b57e1b468fb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.edd75ebd6441456d9c55050337b079c8",
+      "source_hash": "2dd8b54f1d2c94a3b9b051eef12389aff1eb0a8fffd23935367dcf116a440e1e",
+      "target_text": "Routine Load тапсырмасының Kafka хабарларын үздіксіз тұтынуға қашан сай келетінін және ілгерілеуді қалай қадағалайтынын түсіндіру.",
+      "target_hash": "1eb4607820136cc262f60d4c88d20cb20fc574256495904206f0dfdc069a5ca8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "2dd8b54f1d2c94a3b9b051eef12389aff1eb0a8fffd23935367dcf116a440e1e",
+          "target_hash": "1eb4607820136cc262f60d4c88d20cb20fc574256495904206f0dfdc069a5ca8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.be516c99c1b24481a30bd09854584617",
+      "source_hash": "1dadf03ff2e07adfc77948f239590826ae726f59c5577a1c7f907bfda2a979c8",
+      "target_text": "Routine Load тапсырмасы JSON құрылымын jsonpaths арқылы сәйкестендіріп, жолдарды ығысуларымен бірге бекітеді",
+      "target_hash": "f9be7e1d6b11064f848555f914eae61f1ddbe98944be2b901444fb70a37a26d6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "1dadf03ff2e07adfc77948f239590826ae726f59c5577a1c7f907bfda2a979c8",
+          "target_hash": "f9be7e1d6b11064f848555f914eae61f1ddbe98944be2b901444fb70a37a26d6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c39a7aeb045547c48e500d22860fb348",
+      "source_hash": "286c14b472c610aafcb8ccef2e3b905b2e9212214bebb0f22c5bda35191e6eb5",
+      "target_text": "Кідіртілгенде Kafka ішіндегі байт орнын сақтайтын, jsonpaths бар S3 TVF сұрауы",
+      "target_hash": "7b420ca9f5585d621af560c0a0b0c718279a396c69989b1db1e66acf1ddbd1c8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "286c14b472c610aafcb8ccef2e3b905b2e9212214bebb0f22c5bda35191e6eb5",
+          "target_hash": "7b420ca9f5585d621af560c0a0b0c718279a396c69989b1db1e66acf1ddbd1c8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.aaabd5863acb408bb0ca641dc7561664",
+      "source_hash": "006443ae4636e6a45ce141212479e5651b3236abf4f65eb8561502385b93dae1",
+      "target_text": "Әр жаңа Kafka хабары қайта пайдаланып, оған қосылатын бір тұрақты Stream Load label мәні",
+      "target_hash": "30c724c4b7be2130d4db2565a14e52fae701fefec7de7aa082a4b75d8ec2038b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "006443ae4636e6a45ce141212479e5651b3236abf4f65eb8561502385b93dae1",
+          "target_hash": "30c724c4b7be2130d4db2565a14e52fae701fefec7de7aa082a4b75d8ec2038b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ed5a84c93d344d36b4d7504ea70ae1dd",
+      "source_hash": "e67435a1b4fe67934e55009ca34ddc0ca12686df6a49f345f3ca054718e29b9b",
+      "target_text": "Әр бекітілген хабарды тақырыптан жоятын тұтынушы ретіндегі Group Commit",
+      "target_hash": "0fd17cbec1bf5d231faf0c62ee96953aa40cf2bb56c93158e73ca28ed75ed268",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "e67435a1b4fe67934e55009ca34ddc0ca12686df6a49f345f3ca054718e29b9b",
+          "target_hash": "0fd17cbec1bf5d231faf0c62ee96953aa40cf2bb56c93158e73ca28ed75ed268"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a1661efd1246424fb3d228ae9536407f",
+      "source_hash": "bf4c3c88571738ac8d4bdbd68cbd403f744703e44a9b84884ec96d685f1c8778",
+      "target_text": "Kafka тақырыбына ішкі құрылымды JSON хабарлары келіп тұрады. Құрылым және қалпына келтіру туралы қай тұжырым дұрыс?",
+      "target_hash": "b787dbd40b78447d66988dc3a70fc8b50b052e3ed8774f8fe323a15e9c98a6e2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "bf4c3c88571738ac8d4bdbd68cbd403f744703e44a9b84884ec96d685f1c8778",
+          "target_hash": "b787dbd40b78447d66988dc3a70fc8b50b052e3ed8774f8fe323a15e9c98a6e2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e67581b39b7c4b488112a9a5a2b147a1",
+      "source_hash": "c86b2ce43308f3feb4c10575ee473f2388115ca85fe43887bcc7d5a4dfdab5a8",
+      "target_text": "Сол топтама label мәнін сақтайды: алғашқы сұрау бекітілсе, Doris ExistingJobStatus FINISHED мәнімен Label Already Exists деп жауап беріп, жолдарды қайта жүктемейді; өзгермеген жол саны мұны растайды. Жаңа label Duplicate Key кестесіне жолдарды қайта қосатын жаңа транзакция бастайды, ал INSERT INTO SELECT те, Kafka да алдыңғы топтаманы танымайды.",
+      "target_hash": "400085114a3a0278cf433bae2e6d4eb46ea4af978f427fa7b5085b0f9e9cab50",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "c86b2ce43308f3feb4c10575ee473f2388115ca85fe43887bcc7d5a4dfdab5a8",
+          "target_hash": "400085114a3a0278cf433bae2e6d4eb46ea4af978f427fa7b5085b0f9e9cab50"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.76d1f0b35ae142d1b339eb68a3fac75b",
+      "source_hash": "c6213aa430571b215ca9fa39c1a65bb71b5aa20a0b153ace3526b70413c471a2",
+      "target_text": "Жүктелген және сүзілген жол сандарын тексеру, қабылданбаған жүктеуді тану және топтаманы қауіпсіз қайталау.",
+      "target_hash": "83e12269a4b8e9599523f890c826598f170c8483290be17e1f8d9e631e20810a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "c6213aa430571b215ca9fa39c1a65bb71b5aa20a0b153ace3526b70413c471a2",
+          "target_hash": "83e12269a4b8e9599523f890c826598f170c8483290be17e1f8d9e631e20810a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.89056854445245f9b87fb983a545d6a9",
+      "source_hash": "d4c1fb8ccbb778b1a080bd64d495aa9c3c8a3b1e480b982f24dfebbab779848d",
+      "target_text": "Сол байттарды сол label мәнімен жіберіп, күй мен жол санын тексеру",
+      "target_hash": "851c5cd1904057a3ae46570116296e81e906b759f62cbed41f86047d83889613",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "d4c1fb8ccbb778b1a080bd64d495aa9c3c8a3b1e480b982f24dfebbab779848d",
+          "target_hash": "851c5cd1904057a3ae46570116296e81e906b759f62cbed41f86047d83889613"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.45b0cee602ae4e708cd22b94acd45d68",
+      "source_hash": "4851842138c0b789ade7eeb4440a46425f27666e5010f997e3cb0f1755800a48",
+      "target_text": "Doris оларды сол топтама ретінде қарастыруы үшін сол байттарды жаңа label мәнімен жіберу",
+      "target_hash": "c577adcaf098cc5d04a7b0097a68eee11e2822536a2c390a8cdd337fd3581cf2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "4851842138c0b789ade7eeb4440a46425f27666e5010f997e3cb0f1755800a48",
+          "target_hash": "c577adcaf098cc5d04a7b0097a68eee11e2822536a2c390a8cdd337fd3581cf2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ae706274f54b4615ad225b2d95fcc57f",
+      "source_hash": "2615f3a403f84cad845a79b8b5d1e63448b0b580b1808e3684a33c331157e0fc",
+      "target_text": "Stream Load транзакциясын қайта пайдаланатын INSERT INTO SELECT арқылы жолдарды жүктеу",
+      "target_hash": "60ab550770acf2e154051dccb02be4b8f353934d9a5a1470e9cd14e99acc653e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "2615f3a403f84cad845a79b8b5d1e63448b0b580b1808e3684a33c331157e0fc",
+          "target_hash": "60ab550770acf2e154051dccb02be4b8f353934d9a5a1470e9cd14e99acc653e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2f7637a52258429c9bada1107a6a700c",
+      "source_hash": "368a5288fb238f21bad91492936ada13df5c0e14bfaddcb2f2c08c336fd34993",
+      "target_text": "Routine Load бірдей бизнес жолдарын жоятындықтан, жолдарды Kafka-ға жариялау",
+      "target_hash": "1aa4e858f852ad5096c5762e36177d9f237efbc6400d3173264e8877aef245cb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "368a5288fb238f21bad91492936ada13df5c0e14bfaddcb2f2c08c336fd34993",
+          "target_hash": "1aa4e858f852ad5096c5762e36177d9f237efbc6400d3173264e8877aef245cb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.26c87271cad046f580cb4a6e1ecf0fa0",
+      "source_hash": "f637b4f7a3da23e5aabbdc0147716ea211f517a1feb9a8c8d679b72396ce71ce",
+      "target_text": "Клиент Stream Load label мәнімен 1,024 жол жібереді, бірақ HTTP жауабын жоғалтады, сондықтан Doris оларды бекітті ме, біле алмайды. Не істеуі керек?",
+      "target_hash": "87c1680b2b1b4299bf162983a37610156267c9f65a0dc0a9268f9602d87bb9ac",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "f637b4f7a3da23e5aabbdc0147716ea211f517a1feb9a8c8d679b72396ce71ce",
+          "target_hash": "87c1680b2b1b4299bf162983a37610156267c9f65a0dc0a9268f9602d87bb9ac"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ec17af93fd6444108847416690ff2f9a",
+      "source_hash": "aaa81652fb8cba011f60c3a011c84e3fee1c255642ed48afa38ef6642ae19b43",
+      "target_text": "3-модуль тесті: Apache Doris жүйесіне деректерді жүктеу",
+      "target_hash": "be295030973f239796d9ddeb7e24913bf986e326de4ccd7808f46cb33313ced4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "aaa81652fb8cba011f60c3a011c84e3fee1c255642ed48afa38ef6642ae19b43",
+          "target_hash": "be295030973f239796d9ddeb7e24913bf986e326de4ccd7808f46cb33313ced4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

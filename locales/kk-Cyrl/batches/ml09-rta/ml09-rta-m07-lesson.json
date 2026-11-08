@@ -1,0 +1,464 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.71805878763d4feb948a05394ab67fd9",
+      "source_hash": "5b19aa0a167c6a527e47a6d274a3e48da0e89c16d32b98fd99f3ac615b9a2d2a",
+      "target_text": "## Модуль құрылымы\n\n| Бөлім | Уақыт | Нәтиже |\n| --- | ---: | --- |\n| 7.1 Амалды таңдамас бұрын күй шартын анықтау | 4 мин | Тарихты ағымдағы күйден және әр кесте моделінің рөлін ажырату |\n| 7.2 Unique Key upsert арқылы толық күйлерді синхрондау | 4 мин | Толық күйлерге upsert жасап, оларды Sequence бағанымен реттеу |\n| 7.3 Ішінара баған жаңартуымен иелік етпейтін өрістерді сақтау | 5 мин | Кей бағандарды өзгертіп, басқаларын сақтау |\n| 7.4 SQL UPDATE арқылы шағын таңдалған жиынды түзету | 3 мин | Предикат таңдаған жолдарды түзету |\n| 7.5 MERGE INTO арқылы шартты әрекеттерді қолдану | 5 мин | Бір дайындалған өзгерістер жиынынан жаңарту, жою және енгізу |\n| 7.6 Жойылатын жолдардың қалай анықталатынын таңдау | 3 мин | Предикатпен немесе кіріс кілттермен жою |\n| 7.7 Амалды толық өмірлік цикл ауқымына сәйкестендіру | 3 мин | Тұтас Partition тазарту немесе үстінен жазу |\n| 7.8 Логикалық көрінуді физикалық тазалаудан ажырату | 3 мин | Сұраулар, жасырын белгілер және метадеректер нені көрсететінін оқу |\n| 7-зертханалық жұмыс | 25 мин | Шағын тапсырыс кестелерінде upsert, ішінара жаңарту, түзету, біріктіру, жою және ауыстыру |\n| 7-тест | 10 мин | Осы мақсаттар бойынша алты сұрақ |\n\n",
+      "target_hash": "838dfe42d412da59e010d751288c445ba6f57f28527aedeb81e8c9c80b38f7e9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "5b19aa0a167c6a527e47a6d274a3e48da0e89c16d32b98fd99f3ac615b9a2d2a",
+          "target_hash": "838dfe42d412da59e010d751288c445ba6f57f28527aedeb81e8c9c80b38f7e9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.44fd238255e741429ab78b85b87c24ce",
+      "source_hash": "3576151a9f55fd79b6e68997637c529f37b6c7555f6bbe78a73fee1d1ef94617",
+      "target_text": "## Анықтамалар\n\n- [Деректерді жаңарту және жою](https://doris.apache.org/docs/4.x/key-features/data-update-delete/) және [Unique Key](https://doris.apache.org/docs/4.x/key-features/unique-key/)\n- [Unique моделі үшін жүктеу арқылы жаңартулар](https://doris.apache.org/docs/4.x/data-operate/update/update-of-unique-model/) және [Бағанды жаңарту](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/)\n- [`UPDATE`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-modification/DML/UPDATE/) және [`MERGE INTO`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-modification/DML/MERGE-INTO/)\n- [Жою амалы](https://doris.apache.org/docs/4.x/data-operate/delete/delete-manual/) және [Жүктеу арқылы топтамалық жою](https://doris.apache.org/docs/4.x/data-operate/delete/batch-delete-manual/)\n- [Truncate амалы](https://doris.apache.org/docs/4.x/data-operate/delete/truncate-manual/) және [`INSERT OVERWRITE`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-modification/DML/INSERT-OVERWRITE/)\n- Doris 4.1.3 терминдері: [`OlapTable.java`](https://github.com/apache/doris/blob/4.1.3/fe/fe-core/src/main/java/org/apache/doris/catalog/OlapTable.java) және [`InternalCatalog.java`](https://github.com/apache/doris/blob/4.1.3/fe/fe-core/src/main/java/org/apache/doris/datasource/InternalCatalog.java)\n",
+      "target_hash": "ef1f294ff6419594a96309fa4f845d20ec8aeb8f1374b10bd86366e3f11f8720",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3576151a9f55fd79b6e68997637c529f37b6c7555f6bbe78a73fee1d1ef94617",
+          "target_hash": "ef1f294ff6419594a96309fa4f845d20ec8aeb8f1374b10bd86366e3f11f8720"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1b30b63d90804eeaad96442be108ba34",
+      "source_hash": "ba88922c4eec70957bab49c0f424a760be8b18f32ffa0b7e9019f982988deb0a",
+      "target_text": "## 7.2 Unique Key upsert арқылы толық күйлерді синхрондау\n\nДереккөз толық ағымдағы көріністі берсе, Unique Key кестесіне жүктеу upsert әрекетін береді:\n\n![Жаңа Unique Key ағымдағы жол енгізеді, бар кілт оның күйін ауыстырады және ең үлкен бастапқы sequence кешіккен paid хабарына қарамастан shipped күйін сақтайды.](images/01-sequence-source-order.png)\n\n*Upsert ағымдағы күйді өзгертеді, ал беделді дереккөз реті қай күй жеңетінін анықтайды.*\n\nСурет жазулары: Upsert with source order — дереккөз ретімен upsert; Current state — ағымдағы күй; New key — жаңа кілт; Existing key — бар кілт; Insert row — жол енгізу; Replace visible state — көрінетін күйді ауыстыру; Arrival order — келу реті; Arrives last — соңынан келеді; Sequence: updated_at — Sequence: updated_at; Winning state — жеңетін күй; Largest source sequence wins — ең үлкен бастапқы Sequence жеңеді. order_id, updated_at, created, shipped, paid атаулары, 1001 және 09:00, 10:10, 10:05 мәндері өзгермейді. Сурет ағылшын түпнұсқасында сақталған.\n\nБұл CDC толық көріністерінің топтамаларына немесе әр мақсатты Value бағанына иелік ететін өндірушіге сай келеді. Қалыпты сұрау нәтижелерінде әр тарихи нұсқаны сақтамайды.\n\n",
+      "target_hash": "a6f98f43e97f2f3716b2995a5679a3a63e8ac37a4a29f209d51677a7cbb34f17",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ba88922c4eec70957bab49c0f424a760be8b18f32ffa0b7e9019f982988deb0a",
+          "target_hash": "a6f98f43e97f2f3716b2995a5679a3a63e8ac37a4a29f209d51677a7cbb34f17"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7277bdb59b014188882f2cd0e3c021b1",
+      "source_hash": "be038260374f2bff42b38c394deaaa912177d26e15e8370041bc417f60b7851e",
+      "target_text": "### SQL немесе жүктеу үшін ішінара жаңартуды қосу\n\nІшінара баған жаңарту Merge-on-Write бар Unique Key кестелерінде жұмыс істейді; бұл — 4.x әдепкісі. Жазу оны сұрамаса, өшірулі және екі жиі жол оны әртүрлі сұрайды:\n\n- **Баған тізімі бар `INSERT INTO`.** Баптаусыз бағандардың тек бір бөлігін атайтын `INSERT` әлі толық жолдық upsert болады. Алдымен `enable_unique_key_partial_update` сеанс айнымалысын `true` орнатыңыз; 7-зертханалық жұмыс осылай жасап, кейін кері орнатады:\n\n  ```sql\n  SET enable_unique_key_partial_update = true;\n  INSERT INTO order_state (order_id, status, updated_at)\n  VALUES (1003, 'shipped', '2026-09-12 10:30:00');\n  ```\n\n- **Stream Load.** `partial_columns:true` тақырыбын жіберіп, `columns` тақырыбында файл бағандарын тізіңіз; Broker Load және Routine Load сол қасиетті қабылдайды:\n\n  ```bash\n  curl --location-trusted -u root: \\\n    -H \"Expect:100-continue\" \\\n    -H \"partial_columns:true\" \\\n    -H \"column_separator:,\" \\\n    -H \"columns:order_id,status\" \\\n    -T status_patch.csv \\\n    -X PUT http://127.0.0.1:18030/api/doris_course/order_state/_stream_load\n  ```\n\nDoris өзгертілетін жолды табуы үшін әр жол барлық Key бағанын қамтуы тиіс және бір жазудың барлық жолы бірдей бағандар жиынын жаңартады. Кілті әлі жоқ жолда сақтайтын ескі мәндер жоқ: әдепкіде (`partial_update_new_key_behavior = APPEND`) Doris оны енгізіп, басқа бағандарды әдепкілерімен немесе `NULL` толтырады, ал `NOT\nNULL` бағанының әдепкісі болмаса, жазуды сәтсіз аяқтайды. Ішінара жаңарту ешқашан тапсырыс жасамауы тиіс болса, айнымалыны немесе аттас жүктеу қасиетін `ERROR` орнатыңыз; сонда жазу \"Can't append new rows in partial update\" қатесімен аяқталады. [Бағанды жаңарту](https://doris.apache.org/docs/4.x/data-operate/update/partial-column-update/) беті жүктеудің әр JSON жолы әртүрлі бағанды өзгерте алатын икемді баған жаңартуларын да қамтиды.\n\n",
+      "target_hash": "52baa964824d8ae0f040985edfa1576ccfd65709fd574d46f1c0002898ae8666",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "be038260374f2bff42b38c394deaaa912177d26e15e8370041bc417f60b7851e",
+          "target_hash": "52baa964824d8ae0f040985edfa1576ccfd65709fd574d46f1c0002898ae8666"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bc1c0e914ed743f2acdf686089a979a8",
+      "source_hash": "c45798423a85b2802bf69d2add1dcca82a16374554faf0951103237fc4561db5",
+      "target_text": "## Модуль мақсаты\n\nDoris ішінде өзгеретін бизнес нысандарының ағымдағы күйін дұрыс ұстаңыз: амалды өзгерістердің келу тәсіліне қарай таңдап, әрқайсысынан кейін сұрау не көретінін тексеріңіз.\n\n4–6-модульдер тек өсетін оқиға тарихымен жұмыс істеді: болған оқиға ешқашан жаңартылмайды және `events_modelled` ішіндегі 10,158,080 жол сол күйінде қалады. Жаңарту мен жою күйлері өзгеретін тапсырыстар сияқты ағымдағы күй кестелеріне тиесілі. Сондықтан бұл модуль оқиғаларды қозғамай, әр амалды әр жолда көру үшін аз ғана жолы бар шағын тапсырыс кестелерін пайдаланады: тапсырыс платформасы толық тапсырыс көріністерін, логистика түзетулерін, жөндеулер мен жою жазбаларын жібереді, ал күндік Partition мерзімі өтуі немесе толық кері толықтыруды қажет етуі мүмкін.\n\n",
+      "target_hash": "ff56455c46fb762814fe8fe8acf9d6113809e1d984988806726d40c552102ca3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "c45798423a85b2802bf69d2add1dcca82a16374554faf0951103237fc4561db5",
+          "target_hash": "ff56455c46fb762814fe8fe8acf9d6113809e1d984988806726d40c552102ca3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.142afbbe94874d8f9fdea3acdbac80ed",
+      "source_hash": "f45b4a24a80643123ea4e78de36b78b4c53044030de5167dccdeefb32031f146",
+      "target_text": "## Қорытынды\n\n- Өзгерту жолын дереккөзге қарай таңдаңыз: толық күйлер үшін толық жолдық upsert, кей бағандарға иелік ететін түзетулер үшін ішінара баған жаңарту, предикат таңдаған сирек түзету үшін SQL `UPDATE`, ал жаңарту, жою және енгізу бірге қажет дайындалған жиын үшін `MERGE INTO`.\n- Sequence бағаны кілттің қай күйі жеңетінін дереккөз нұсқасына шешкізеді, сондықтан кешіккен ескі күй жаңасын ауыстырмайды.\n- Толық жолдық upsert түсірілген мән бағандарын әдепкісімен немесе `NULL` толтырады; ішінара баған жаңарту олардың бар мәндерін сақтайды; айқын `NULL` — түсіріп қалдыру емес, мән.\n- Предикаттық `DELETE` SQL шарты таңдаған жолдарды жояды; Delete Sign дерек ретінде, мысалы CDC-ден келген кілттерді жояды.\n- `TRUNCATE` толық кестені немесе Partition бөлімін тазартады, ал `INSERT OVERWRITE` толық ауқымды түзетілген деректермен бір атомарлы ауысуда алмастырады.\n- Өзгеріс жарияланғаннан кейін жаңа сұраулар жаңа күйді бірден көреді, ал ескі физикалық нұсқалар фондық Compaction оларды босатқанша қалуы мүмкін.\n\n",
+      "target_hash": "68acdf2270ad6296257e418478e6cf9ac47c41bcf29f324a561a9117bc0cdd19",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "f45b4a24a80643123ea4e78de36b78b4c53044030de5167dccdeefb32031f146",
+          "target_hash": "68acdf2270ad6296257e418478e6cf9ac47c41bcf29f324a561a9117bc0cdd19"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2f6e4eb2476548709620474c0e6ab7b2",
+      "source_hash": "4cbe5098c15f8a850a37d5d77a9f57110dad70b532be9193d42c50db03a5cf34",
+      "target_text": "## 7-тест: Apache Doris жүйесінде деректерді жаңарту және жою\n\n[7-тест: Apache Doris жүйесінде деректерді жаңарту және жою](quiz07_state_changes_and_deletion.ipynb) ашыңыз.\nОнда бір жауап таңдалатын алты сұрақ бар және жұмыс істеп тұрған орта қажет емес.\n\nКелесі қадам: бұл — 2-деңгейдің соңғы модулі. 3-деңгей [8-модуль: Apache Doris жүйесінде сұрауларды жеделдету](../../level3/module08-query-acceleration/course.md) бөлімінен басталады.\n\n",
+      "target_hash": "77f1b5fc1aa84bd1bf7234edee4ba1a8bcffdb33772c66c9876ed2809daf398b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "4cbe5098c15f8a850a37d5d77a9f57110dad70b532be9193d42c50db03a5cf34",
+          "target_hash": "77f1b5fc1aa84bd1bf7234edee4ba1a8bcffdb33772c66c9876ed2809daf398b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9133feebe5d046429e6f72c4da72cc41",
+      "source_hash": "48d61b1b0faa81e967ddbc57bb10fed9941c06bcf12cfd29299b9690a1627922",
+      "target_text": "## 7.3 Ішінара баған жаңартуымен иелік етпейтін өрістерді сақтау\n\nЛогистика ағыны `status` және `updated_at` өрістеріне иелік етіп, `amount` немесе `shipping_region` өрістеріне иелік етпеуі мүмкін. Толық жолды қайта құру басқа жүйелердің мәндерін үстінен жазуы мүмкін.\n\n| Режим | Бар кілт тек күй мен уақыт алады | Түсірілген Value бағандары |\n| --- | --- | --- |\n| Толық жолдық upsert | Толық алмастыру құру | Схема әдепкілерін немесе рұқсат етілген `NULL` пайдалану |\n| Ішінара баған жаңарту | Бар күйді ішінара өзгерту | Көрінетін мәндерді сақтау |\n\n![Толық жолдық upsert түсірілген өрістерге әдепкілер қолданады, ал ішінара жаңарту оларды сақтайды](images/02-full-row-vs-partial-update.png)\n\n*Түсірілген бағандар толық жолдық upsert кезінде ауысады, ал ішінара жаңартуда сақталады.*\n\nСурет жазулары: Full-row upsert and partial update — толық жолдық upsert және ішінара жаңарту; Existing key: 1003 — бар кілт: 1003; Full-row upsert — толық жолдық upsert; Partial column update — ішінара баған жаңарту; Omitted fields use defaults — түсірілген өрістер әдепкілерді қолданады; Omitted fields keep values — түсірілген өрістер мәндерін сақтайды; Omitted is not explicit NULL — түсіріп қалдыру айқын NULL емес. ORDER_ID, STATUS, AMOUNT, SHIPPING_REGION, UPDATED_AT атаулары, paid, shipped, CN-WEST, UNASSIGNED, 1003, 88.00, 0.00, 2026-09-12 10:30:00 мәндері өзгермейді. Суреттің ағылшын түпнұсқасы сақталған.\n\n7-зертханалық жұмыс толық жолдық жазудың түсірілген сома мен аймақты `0.00` және `UNASSIGNED` етіп өзгертетінін, ал ішінара жаңартудың `88.00` және `CN-WEST` сақтайтынын көрсетеді.\n\nТүсіріп қалдыру `NULL` айқын беруден өзгеше. Айқын `NULL` — NULL рұқсат етілетін баған үшін сұралған мән; жазудан бұрын түрленбесе, `NOT NULL` бағанында жарамсыз. Әдепкі мән берілген жарамсыз мәнді әмбебап түзетуші емес.\n\n",
+      "target_hash": "e9567d0edc9f3e47f766c36f1bf8a6d76058aaa1c52d7f4ef851adcdbb013e8a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "48d61b1b0faa81e967ddbc57bb10fed9941c06bcf12cfd29299b9690a1627922",
+          "target_hash": "e9567d0edc9f3e47f766c36f1bf8a6d76058aaa1c52d7f4ef851adcdbb013e8a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1ff71c2f893447619c7acb6a2bc71a0f",
+      "source_hash": "f94ee9d9385ee3bc14c817fde661a6feff8f38848f617d812964f6f17ba78604",
+      "target_text": "## 7-зертханалық жұмыс: ағымдағы күйді қолдау және деректерді қауіпсіз жою\n\n[7-зертханалық жұмыс — ағымдағы күйді қолдау және деректерді қауіпсіз жою](lab07_update_delete_data.ipynb) ашып, шамамен 25 минут жоспарлаңыз. Оған тек курс сынақ ортасы қажет және тек 7-модуль кестелерін жасайды:\n\n- upsert, Sequence, ішінара жаңарту және SQL түзетуі үшін `order_state`;\n- жергілікті `MERGE INTO` үшін `order_merge_target` және `order_merge_changes`;\n- предикаттық DELETE және Delete Sign үшін `order_deletions`;\n- Partition тазарту және үстінен жазу үшін `order_lifecycle`.\n\n| Қадам | Бақылау |\n| --- | --- |\n| 1 | Жаңа және бар кілттер upsert бойынша әрекет етеді; үлкен Sequence жеңеді |\n| 2 | Толық жолда түсіріп қалдыру әдепкілерді қолданады; ішінара жаңарту мәндерді сақтайды |\n| 3 | SQL `UPDATE` тек таңдалған Value бағанын өзгертеді |\n| 4 | Бір merge сәйкес жаңарту, сәйкес жою және сәйкес емес енгізуді орындайды |\n| 5 | Предикаттық және кіріс кілтпен жоюлар көзделген көрінетін күйді береді |\n| 6 | Truncate мерзімі өткен ауқымды жояды, overwrite кері толықтыру ауқымын ауыстырады |\n\nСыртқы CDC жүйесі, объектілік сақтау немесе жүктелетін деректер жиыны қолданылмайды.\n\nЗертханалық жұмыс жаттығумен аяқталады: тапсырыстарды ішінара жаңарту Stream Load арқылы өзгертіңіз. Алдымен нәтижені болжаңыз, содан кейін бос ұяшыққа код жазыңыз; одан кейінгі жиналған үлгі шешім де Run All арқылы орындалып, зертханалық жұмыс кестелерін бастапқы күйінде қалдырады.\n\n",
+      "target_hash": "47639a05b9389c3255a1586180d25de3202001941d0101a62d70fa5e55463aa8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "f94ee9d9385ee3bc14c817fde661a6feff8f38848f617d812964f6f17ba78604",
+          "target_hash": "47639a05b9389c3255a1586180d25de3202001941d0101a62d70fa5e55463aa8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d3e18f7aa2a342458abe043638ae310f",
+      "source_hash": "1ecb313718d9429433654b85b4a024011fe51c81111bffe7f1e2e621009badd6",
+      "target_text": "## 7.5 MERGE INTO арқылы шартты әрекеттерді қолдану\n\nДайындалған қатынас аралас өзгеріс түрлерін қамтуы мүмкін:\n\n| `order_id` | `change_type` | Қажетті әрекет |\n| ---: | --- | --- |\n| 4001 | UPSERT | Бар тапсырысты жаңарту |\n| 4002 | DELETE | Бар тапсырысты жою |\n| 4004 | UPSERT | Жаңа тапсырыс енгізу |\n\n![MERGE INTO сәйкес жою, сәйкес жаңарту және сәйкес емес енгізу әрекеттерін қолданады](images/03-merge-conditional-actions.png)\n\n*`MERGE INTO` алғашқы жарамды әрекетті қолданып, тек мақсатта бар жолдарды өзгертпейді.*\n\nСурет жазулары: MERGE INTO: first qualifying action — MERGE INTO: алғашқы жарамды әрекет; Staged changes — дайындалған өзгерістер; Evaluate WHEN clauses in order — WHEN тармақтарын ретімен бағалау; Matched + delete — сәйкес және жою; Matched + upsert — сәйкес және upsert; Not matched + upsert — сәйкес емес және upsert; Target after merge — merge кейінгі мақсат; Deleted / absent — жойылған / жоқ; Updated — жаңартылған; Unchanged — өзгермеген; Inserted — енгізілген; Deduplicate source keys before merge — merge алдында бастапқы кілттердің қайталануын жою. order_id, change_type, UPSERT, DELETE, 4001–4004 және 1/2/3 әрекет белгілері сақталған. Сурет ағылшын түпнұсқасында қалады.\n\n`MERGE INTO` сол қатынасты Merge-on-Write бар Unique Key болуы тиіс мақсатты кестемен біріктіреді; басқа кестеде Doris операторды қабылдамайды (\"merge into command only support MOW unique key olapTable\"):\n\n```sql\nMERGE INTO order_merge_target AS t\nUSING order_merge_changes AS s\nON t.order_id = s.order_id\nWHEN MATCHED AND s.change_type = 'DELETE' THEN DELETE\nWHEN MATCHED AND s.change_type = 'UPSERT' THEN UPDATE SET\n    status = s.status,\n    amount = s.amount,\n    shipping_region = s.shipping_region,\n    updated_at = s.updated_at\nWHEN NOT MATCHED AND s.change_type = 'UPSERT' THEN INSERT\n    (order_id, status, amount, shipping_region, updated_at)\nVALUES\n    (s.order_id, s.status, s.amount, s.shipping_region, s.updated_at);\n```\n\nDoris `WHEN` тармақтарын ретімен бағалап, шарты орындалатын алғашқысына сай әрекет етеді:\n\n- `WHEN MATCHED` тармақтары кілті мақсатта бар бастапқы жолдарды өңдейді; әрқайсысы аталған бағандарды дереккөз не мақсат мәндерімен жаңартады немесе жолды жояды.\n- `WHEN NOT MATCHED` тармақтары мақсатты жолы жоқ бастапқы жолдарды өңдейді; әрқайсысы дереккөз мәндерінен жаңа жол енгізеді.\n- `AND` шарты жоқ тармақ өз түрінің соңғысы болуы тиіс, өйткені одан кейінгі тармақ ешқашан орындала алмас еді.\n\nБастапқы жолы жоқ мақсатты жол өзгермейді: зертханалық жұмыста 4003 тапсырысы мақсатта бар, өзгерістер жиынында жоқ, сондықтан күйін сақтайды. Операторды орындауға мақсат пен дереккөзде `SELECT_PRIV` және мақсатта `LOAD_PRIV` қажет.\n\nБұл кесте немесе ішкі сұрау түрінде берілген жиынға негізделген топтамаға сай. Қарапайым upsert бере алмайтын шартты сәйкес және сәйкес емес әрекеттерді қосады. Бұл — үздіксіз жоғары өткізу қабілетті ағындық жүктеудің алмастырушысы емес, Data Manipulation Language операторы.\n\n",
+      "target_hash": "016566f7fa4eb5f27a8eb48088c38550056f4326d2f3084f9b129278782b5eaf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "1ecb313718d9429433654b85b4a024011fe51c81111bffe7f1e2e621009badd6",
+          "target_hash": "016566f7fa4eb5f27a8eb48088c38550056f4326d2f3084f9b129278782b5eaf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.988ada40901e428e898f0ef0b24f2261",
+      "source_hash": "0d823e0ced7f7444940db74a89fda1e9f44b427f1eaa800ecf2f2380826051c4",
+      "target_text": "## 7.4 SQL UPDATE арқылы шағын таңдалған жиынды түзету\n\nАлмастыру жазбалары жоқ болып, мәселені SQL предикаты анықтаса, тікелей түзету пайдаланыңыз:\n\n```sql\nUPDATE order_state\nSET shipping_region = 'CN-NORTH'\nWHERE order_id = 1001;\n```\n\n`WHERE` мақсатты жолдарды таңдайды; `SET` өзгертілетін Value бағандарын атайды. SQL `UPDATE` Unique Key кестесіне бағытталады және Key бағандарын өзгерте алмайды. Бизнес кілт өзгерісі ескі кілтті жойып, жаңасын енгізуі тиіс.\n\nБұл жол сирек түзетулерге сай. Жоғары жиілікті қолданба цикліне қолайсыз, өйткені әр оператор жолдар тауып, транзакция жариялайды. Кіріс жазбалары кілттерді анықтап тұрса, топтамалық толық жолдық немесе ішінара жүктеулерді пайдаланыңыз.\n\n",
+      "target_hash": "b562b581c3177116199f5583dee8ecec8d97120806b531d292cd26c7b019c9cb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "0d823e0ced7f7444940db74a89fda1e9f44b427f1eaa800ecf2f2380826051c4",
+          "target_hash": "b562b581c3177116199f5583dee8ecec8d97120806b531d292cd26c7b019c9cb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ee91c86f25c54ba5b0b8dc8d84dd7fd4",
+      "source_hash": "be71ab0441de33fbf02ac6a653c98679f47d2cd5296862719da4a6e2bc2e7d78",
+      "target_text": "## 7.7 Амалды толық өмірлік цикл ауқымына сәйкестендіру\n\n![Ішінара жаңарту, SQL жаңарту, жою, truncate және overwrite өзгеріс ауқымдарына сәйкес келеді](images/04-operation-change-scope.png)\n\n*Бір кілттен толық Partition бөліміне дейін кіріс өзгерісіне сай ауқымы бар амалды таңдаңыз.*\n\nСурет жазулары: Match change to scope — өзгерісті ауқымға сәйкестендіру; Partial update — ішінара жаңарту; Incoming key + fields — кіріс кілт пен өрістер; One key — бір кілт; SQL update — SQL жаңарту; Predicate correction — предикатпен түзету; Selected set — таңдалған жиын; DELETE / Delete Sign — DELETE / жою белгісі; Predicate or deleted keys — предикат немесе жойылған кілттер; Rows removed — жолдар жойылған; TRUNCATE — TRUNCATE; Complete obsolete range — толық ескірген ауқым; Whole table or Partition — тұтас кесте не Partition; INSERT OVERWRITE — INSERT OVERWRITE; Complete corrected dataset — толық түзетілген деректер жиыны; Replacement scope — ауыстыру ауқымы. Сурет ағылшын түпнұсқасында сақталған.\n\n| Талап | Бастапқы амал |\n| --- | --- |\n| Толық кесте немесе Partition ескірген | `TRUNCATE TABLE/PARTITION` |\n| Толық түзетілген деректер жиыны ауқымды ауыстырады | `INSERT OVERWRITE` |\n| Тек шектелген предикат таңдаған жиын жоғалады | Предикаттық `DELETE` |\n\n`TRUNCATE PARTITION` толық күнтізбелік ауқымдардың сақтау мерзіміне сай. `INSERT OVERWRITE` қажетті толық мазмұнды қамтитын кері толықтыруға сай; алмастыруда жоқ жолдар қалмайды. Duplicate Key кестесінде қалыпты `INSERT INTO` қосар еді және ескі ауқымды қайталауы мүмкін.\n\nDoris overwrite амалын атомарлы ауыстыру деп құжаттайды. 7-зертханалық жұмыс соңғы мазмұнды байқайды, бірақ қатар орындалатын оқу сұрауларын іске қоспайды, сондықтан ауысудың өзін байқадық деп мәлімдемейді. Мақсатты ауқымды әрдайым тексеріңіз: қате Partition ішіне жазылған толық жиын бәрібір қате деректердің толық алмастырылуы болады.\n\n",
+      "target_hash": "a4421b0228f68d6a6faf65a829fa29ab3e5c95dce701585e4892ed6a6a9892a8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "be71ab0441de33fbf02ac6a653c98679f47d2cd5296862719da4a6e2bc2e7d78",
+          "target_hash": "a4421b0228f68d6a6faf65a829fa29ab3e5c95dce701585e4892ed6a6a9892a8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b871a74c7a134289a85f86529885d97c",
+      "source_hash": "0baad18ddf744058c161f43aa77228ef34dd27e1a909640eb0739ba26d1b3d14",
+      "target_text": "## Оқу мақсаттары\n\nОсы модульді аяқтағаннан кейін сіз:\n\n1. Кіріс өзгерістердің пішіні мен иелігіне қарай толық жолдық upsert, ішінара баған жаңарту, SQL `UPDATE` немесе `MERGE INTO` таңдай аласыз.\n2. Қай күй жеңетінін келу реті емес, дереккөз реті шешуі үшін Sequence бағанын пайдалана аласыз.\n3. Толық жолдық және ішінара жазулар түсірілген бағандарға не істейтінін және түсіріп қалдырудың `NULL` мәнінен айырмасын болжай аласыз.\n4. Жойылатын жолдардың анықталуына қарай предикаттық `DELETE` немесе Delete Sign таңдай аласыз.\n5. Толық Partition жою немесе ауыстыру үшін `TRUNCATE` немесе `INSERT OVERWRITE` таңдай аласыз.\n6. Жарияланған өзгерістің көрінуін кейінгі Compaction физикалық тазалауынан ажырата аласыз.\n\n",
+      "target_hash": "360125ff02824d890da6e07b839a5292dda3f66fe503848a7aa57e9e6a50ea85",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "0baad18ddf744058c161f43aa77228ef34dd27e1a909640eb0739ba26d1b3d14",
+          "target_hash": "360125ff02824d890da6e07b839a5292dda3f66fe503848a7aa57e9e6a50ea85"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fd3f7558f7fa45479ffab9071ae3aed6",
+      "source_hash": "0912f5bd4dd562da5607a0c13143714afd623f01bf87c1d8a18deb7e45636d74",
+      "target_text": "### Детерминді дереккөз сәйкестігін талап ету\n\nDoris 4.x бірнеше бастапқы жолдың сол мақсатты жолға сәйкес келгенін анықтамайды. Ондайда нәтиже анықталмаған: `INSERT` сияқты, Sequence бағаны қай жазу жеңетінін шешеді, ал онсыз кез келгені жеңуі мүмкін. Merge алдында топтаманы беделді реттілік бойынша қайталанудан тазартыңыз немесе қабылдамаңыз. 7-зертханалық жұмыс операторды орындамас бұрын бастапқы жол санын бірегей бастапқы кілт санымен салыстырады.\n\n",
+      "target_hash": "aed8239a2478f1793865245b745ed74e0209074da9e799eb5baefed162dd4c47",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "0912f5bd4dd562da5607a0c13143714afd623f01bf87c1d8a18deb7e45636d74",
+          "target_hash": "aed8239a2478f1793865245b745ed74e0209074da9e799eb5baefed162dd4c47"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9e1f145cdc484bdc9ccd48f5841ba99e",
+      "source_hash": "5d1696168472c5efc2dc044cb486950ec56dd1fbcafc4921c4b9183473532c37",
+      "target_text": "## 7.1 Амалды таңдамас бұрын күй шартын анықтау\n\nОқиға тарихы кестесі **не болды** дегенге жауап береді. Ағымдағы күй кестесі **қазір қандай күйде** дегенге жауап береді. Тапсырыстың `created` күйінен `paid`, содан кейін `shipped` күйіне өтуі үш тарих оқиғасын, бірақ бір ағымдағы тапсырыс жолын бере алады.\n\n| Кесте моделі | Сол кілтпен тағы бір жолдың мағынасы | Өзгерістерді өңдеу рөлі |\n| --- | --- | --- |\n| Duplicate Key | Тағы бір қабылданған жолды сақтау | Тарих және аудит деректері; тағы бір енгізу ескі жолды жасырмайды |\n| Unique Key | Сол бизнес кілттің көрінетін күйін ауыстыру | Ағымдағы күй және бастапқы кілт синхрондауы |\n| Aggregate Key | Value бағандарын жарияланған агрегат функцияларымен біріктіру | Метрика үлестері немесе арнайы ауыстыру агрегаттары |\n\nUnique Key негізгі орында, өйткені толық жолдық upsert, Sequence реттеуі, SQL `UPDATE`, Delete Sign және `MERGE INTO` бастапқы кілт күйін қолдауға арналған. Бұл әр жоюды тек Unique моделіне тән етпейді. Предикаттық `DELETE` модельге тән шектеулермен әртүрлі модельге қолданылады, ал тұтас Partition амалдарының ауқымы бөлек. Aggregate Key `REPLACE_IF_NOT_NULL` сияқты арнайы үлгілерді пайдалана алады; бұл — мұндағы тапсырыс күйінің шарты емес, агрегат моделі әрекеті.\n\nЖазбас бұрын сұраңыз:\n\n1. Мақсатты күйді қай бизнес кілт анықтайды?\n2. Дереккөз толық жол, таңдалған өрістер, предикат немесе толық алмастыру жиынын бере ме?\n3. Ретті қай бастапқы мән орнатады?\n4. Бір топтамада бірнеше бастапқы жол сол кілтке бағыттала ала ма?\n5. Ауқым бір кілт пе, таңдалған жиын ба, бір Partition бе, әлде кесте ме?\n\n",
+      "target_hash": "90dc7bd51e5b30b389ee82fd8a69ba79568d6454ae2325acdf969c281bf5ae94",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "5d1696168472c5efc2dc044cb486950ec56dd1fbcafc4921c4b9183473532c37",
+          "target_hash": "90dc7bd51e5b30b389ee82fd8a69ba79568d6454ae2325acdf969c281bf5ae94"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a9cb969fc44549409893064dd0ef6ff0",
+      "source_hash": "891b8cea837f0f5f63e82df2536ef40708ab86ef78ec055c7c5888a39c8df4a6",
+      "target_text": "## 7.8 Логикалық көрінуді физикалық тазалаудан ажырату\n\nЖариялаудан кейін жаңа қалыпты сұраулар жеңген Unique Key күйін көріп, логикалық жойылған жолдарды алып тастайды. Оларға Compaction күту қажет емес. Ауыстырылған физикалық нұсқалар фондық Compaction оларды босатқанша қалуы мүмкін.\n\n![Логикалық күй бірден көрінеді, ал ескі физикалық нұсқалар Compaction күтеді](images/05-logical-visibility-physical-cleanup.png)\n\n*Логикалық көріну жариялаудан кейін бірден болады; физикалық босату — кейінгі фондық жұмыс.*\n\nСурет жазулары: Visibility and physical cleanup — көріну және физикалық тазалау; After publication — жариялаудан кейін; Published change — жарияланған өзгеріс; Winning state — жеңген күй; New queries — жаңа сұраулар; Deleted rows excluded — жойылған жолдар алынған; Later background work — кейінгі фондық жұмыс; Old physical versions — ескі физикалық нұсқалар; Compaction — Compaction; Space reclaimed — орын босатылған; Query visibility does not prove reclaimed bytes — сұрауда көріну байттардың босатылғанын дәлелдемейді. Суреттің ағылшын түпнұсқасы сақталған.\n\n| Дәлел | Қолдайтын қорытынды | Қолдамайтын қорытынды |\n| --- | --- | --- |\n| Қалыпты `SELECT` | Ағымдағы көрінетін жолдар мен мәндер | Ескі байттардың босатылғаны |\n| Жасырын Delete Sign | Ағымдағы жасырын жою белгілері | Ішкі delete bitmap мазмұны |\n| `SHOW TABLETS` нұсқалары | Кейінгі Tablet нұсқасы жарияланған | Нақты көрінетін жол саны немесе болашақ нұсқа саны |\n| Ресми құжаттар | Жобаланған MoW және Compaction әрекеті | Ішкі құрылымдарды ноутбукта тікелей байқау |\n\nФондық жұмыс дербес болғандықтан, зертханалық жұмыс кезінде `VersionCount` өзгеруі мүмкін. Tablet `RowCount` — `COUNT(*)` емес. Жиі ұсақ жазулар транзакция, нұсқа және Rowset қысымын да тудырады, сондықтан үздіксіз өзгерістерді топтап, тұтас ауқымдарға Partition деңгейіндегі амалдарды пайдаланыңыз.\n\n",
+      "target_hash": "54cc1a625449b9b992ee71cad20fa82b188ae4fbd541ec650b91d92b423cc02c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "891b8cea837f0f5f63e82df2536ef40708ab86ef78ec055c7c5888a39c8df4a6",
+          "target_hash": "54cc1a625449b9b992ee71cad20fa82b188ae4fbd541ec650b91d92b423cc02c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.16a27f12e77048e092bf640ce9d3e788",
+      "source_hash": "255da76ba23c7e4910003e1a9d4ac245aeba5d1a760a0d7a39224fac73cd0f6f",
+      "target_text": "# 7-модуль: Apache Doris жүйесінде деректерді жаңарту және жою\n\n| Курс туралы ақпарат | Мән |\n| --- | --- |\n| Курс | Apache Doris көмегімен нақты уақыттағы аналитика · 2-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Орта | 1-зертханалық жұмыстың курс сынақ ортасы |\n| Болжамды уақыт | Шамамен 65 минут: оқу 30, зертханалық жұмыс 25, тест 10 |\n\n[Курстың README файлы](../../README.md) · [7-зертханалық жұмысты ашу](lab07_update_delete_data.ipynb) · [7-тестті ашу](quiz07_state_changes_and_deletion.ipynb)\n\n",
+      "target_hash": "42cc9cbab9691da37067e423226d0778059f1bf1976f96f38a314c5b4df17ded",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "255da76ba23c7e4910003e1a9d4ac245aeba5d1a760a0d7a39224fac73cd0f6f",
+          "target_hash": "42cc9cbab9691da37067e423226d0778059f1bf1976f96f38a314c5b4df17ded"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.208e645abad74ddabcaa145ed13a5698",
+      "source_hash": "62948695714c18f8bf147779a8d57b0fea06bf0661f4fcf2ef97f8874680b3ec",
+      "target_text": "### Дереккөз ретін айқын ету\n\nКелу реті сенімсіз. Кешіккен `paid` хабары жаңарақ `shipped` хабарынан кейін келуі мүмкін. Sequence бағаны бастапқы нұсқаны, уақыт белгісін немесе ығысуды кесте шартының бөлігі етеді:\n\n7-зертханалық жұмыс `\"function_column.sequence_col\" = \"updated_at\"` жариялайды. Бағанды жай `updated_at` деп атау реттеу мағынасын жасамас еді. Әр бизнес кілт үшін монотонды және беделді дереккөз беретін мән таңдаңыз. Тең Sequence мәндеріне қосымша дереккөз саясаты қажет; келу ретін қауіпсіз теңдік шешуші деп ойламаңыз.\n\nҮздіксіз өзгерістер әдетте топталуы тиіс. Жеке жазулардың тығыз циклі көп транзакция мен сақтау нұсқасын жасайды. Өзектілік, топтама өлшемі, сәтсіздіктен қалпына келтіру және қайталау қауіпсіздігі қабылдау шартының бөлігі болып қалады.\n\n",
+      "target_hash": "4e326c111621baf011b2d7e304d82f1780c926d37da9db7a4803fea612df2795",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "62948695714c18f8bf147779a8d57b0fea06bf0661f4fcf2ef97f8874680b3ec",
+          "target_hash": "4e326c111621baf011b2d7e304d82f1780c926d37da9db7a4803fea612df2795"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.039721904ed74ab5b9867de627fd26a4",
+      "source_hash": "abec1583adb483d5f92d60cb4f81bd63571dce34a57dc9aeca0633cafd4cc2f7",
+      "target_text": "## 7.6 Жойылатын жолдардың қалай анықталатынын таңдау\n\nSQL `status = 'test'` сияқты мақсатты жиынды анықтағанда предикаттық `DELETE` пайдаланыңыз. Ол Duplicate, Unique және Aggregate Key кестелеріне қолданыла алады, бірақ Aggregate Key жою шарттары Key бағандарымен шектелген.\n\nТоптама немесе CDC жазбасы жойылған Unique Key мәнін алып келсе, Delete Sign пайдаланыңыз. Жасырын `__DORIS_DELETE_SIGN__ = 1` орнату жойылған кілттерге жүктеу жолын қолдануға мүмкіндік береді. `NULL` жазу, Value бағандарын түсіріп қалдыру немесе қалыпты upsert жіберу жоюды білдірмейді.\n\nDelete Sign — Merge-on-Write сипаттайтын әр Rowset ішкі delete bitmap құрылымы емес, кіріске арналған жасырын баған. 7-зертханалық жұмыс `2003` мәнін предикатпен, `2002` мәнін Delete Sign арқылы жояды, содан кейін қалыпты сұрау тек `2001` қайтарады.\n\n",
+      "target_hash": "c301b0429fd4bec3bc628475e3852cabb3f9e112210d62b7466d77888299b840",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "abec1583adb483d5f92d60cb4f81bd63571dce34a57dc9aeca0633cafd4cc2f7",
+          "target_hash": "c301b0429fd4bec3bc628475e3852cabb3f9e112210d62b7466d77888299b840"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

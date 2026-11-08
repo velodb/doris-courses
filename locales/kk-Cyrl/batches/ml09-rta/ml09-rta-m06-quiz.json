@@ -1,0 +1,1160 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.9509399625b84051ad00bf1fc8e8d716",
+      "source_hash": "a1d9f55a73095bd82b119a9ae94227a9a43310a6bf7e1b48379b6aacb48b8eb3",
+      "target_text": "### Тестті бастапқы баптау\n\nБастапқы баптау ұяшығын бір рет орындаңыз. Ол курс пакетін тауып, осы модульдің тест анықтамасын оқиды және интерактивті тест нысанын жасайды. Jupyter ядросын қайта іске қосқан сайын оны қайта орындаңыз.",
+      "target_hash": "4dd2f3ec22846ab038e7da2cf7117868483b4e4c1fdfc812e3b7393a1f0289b3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a1d9f55a73095bd82b119a9ae94227a9a43310a6bf7e1b48379b6aacb48b8eb3",
+          "target_hash": "4dd2f3ec22846ab038e7da2cf7117868483b4e4c1fdfc812e3b7393a1f0289b3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4768e5dc351747738fdb7e2de9d1d9cc",
+      "source_hash": "8940e735a3040ade4962fccb9453756654c4a28e5ad44743d0ffa9fb8224a239",
+      "target_text": "## Бұл тест нені бағалайды\n\nСабақтың әр оқу мақсатына бір сұрақтан берілген. Осы модульден кейін сіз:\n\n1. Екі кірістің түйіршіктілігі мен кілт кардиналдығынан Join нәтиже түйіршіктілігі мен еселігін болжай аласыз.\n2. Жауап сақтауы тиіс жолдарға қарай Inner, Outer, Semi, Anti, Cross немесе ASOF Join таңдай аласыз.\n3. `NULL` кілттері қалай сәйкес келетінін және оң жақ шарты `ON` не `WHERE` ішіне тиесілі екенін шеше аласыз.\n4. Doris Hash Join немесе Nested Loop Join қашан қолданатынын және құру мен тексеру жақтарының не істейтінін түсіндіре аласыз.\n5. Broadcast, Partition Shuffle, Bucket Shuffle және Colocate Join тәсілдерін әрқайсысы тасымалдайтын дерек пен қажетті орналасу бойынша салыстыра аласыз.\n6. `EXPLAIN` ішіндегі Join стратегиясы мен Runtime Filter жазбаларын Query Profile тіркейтін әрекеттен бөлек оқи аласыз.\n\nКей сұрақтар зертханалық жұмыстың бір қадамынан басталады, бірақ ешбірі оның сандарын есте сақтауды сұрамайды. Тест Docker, Doris, S3 немесе Kafka жүйелерінсіз және аяқталған зертханалық жұмыссыз орындалады; оған тек курстың Jupyter ортасы қажет.",
+      "target_hash": "22cf9c8f805a2a15827584e251e874f5f7cfe17979c46347e88bcfe364c8b139",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "8940e735a3040ade4962fccb9453756654c4a28e5ad44743d0ffa9fb8224a239",
+          "target_hash": "22cf9c8f805a2a15827584e251e874f5f7cfe17979c46347e88bcfe364c8b139"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.060d8b5e97b64f129e1870309359f5cb",
+      "source_hash": "ba88481fadf1183a11b2fce54676c29e3a2a1862160bff93473f5a174d28c586",
+      "target_text": "## Білімді тексеруді бастау\n\nКелесі ұяшықты орындаңыз. Нұсқаны таңдап, түсіндірмесін оқу үшін **Submit answer** басыңыз. Қайту үшін **Previous question** пайдаланыңыз. Кез келген таңдауды өзгерте аласыз; жалғастырмас бұрын түзетілген жауапты жіберіңіз. Жіберілмеген таңдаулар нобай ретінде сақталады. **View results** ұпайыңызды және қате жауап берген сұрақтарыңызды көрсетеді. Сол жерден **Previous question** 6-сұраққа қайтарады, ал **Try again** тест тапсыру әрекетін тазартады.",
+      "target_hash": "c47023fa21f0b9922e28ba9d10e5c0a322db3235f8f85dc6cc9e918d0b9ce5d0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ba88481fadf1183a11b2fce54676c29e3a2a1862160bff93473f5a174d28c586",
+          "target_hash": "c47023fa21f0b9922e28ba9d10e5c0a322db3235f8f85dc6cc9e918d0b9ce5d0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fe94a9a065544d5d8e933a4303b0f78c",
+      "source_hash": "837d315a115df0f38d3fb0cd2c1beead4940f6b095112acc793d216d24880b2b",
+      "target_text": "<div>\n  <div>06-ТЕСТ · APACHE DORIS КӨМЕГІМЕН НАҚТЫ УАҚЫТТАҒЫ АНАЛИТИКА</div>\n  <div>Apache Doris жүйесінде деректерді біріктіру</div>\n  <p>Әр сұрақтан кейін кері байланысы бар, бір жауап таңдалатын алты сұрақ; дерекқорға қосылу қажет емес.</p>\n  <span>6 сұрақ · Бір жауап таңдау · Шамамен 10 минут</span>\n</div>\n\n**6-модуль: Apache Doris жүйесінде деректерді біріктіру** · [Сабақ](course.md) · [Зертханалық жұмыс](lab06_join_data.ipynb)",
+      "target_hash": "93f2c2723d49d8b558003cb5bb5ef7b0f26d0532005807954b985716265dc6b7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "837d315a115df0f38d3fb0cd2c1beead4940f6b095112acc793d216d24880b2b",
+          "target_hash": "93f2c2723d49d8b558003cb5bb5ef7b0f26d0532005807954b985716265dc6b7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.49db45b2f94d4e8688ad91d97d048b50",
+      "source_hash": "2c0ae8586ab84a7200fb3a30ff12daf259d1926d1c937c203387354d9e6c2c06",
+      "target_text": "Алты дербес бизнес сценарийі 6-модульдің Join шешімдерін тексереді; әр оқу мақсатына бір сұрақтан. Жалғастырмас бұрын түсіндірмені оқып, кез келген жауапты түзетіңіз.",
+      "target_hash": "c112138f9f37a2376fc80db9c2bf979fe68802787b20d62d06f43db5dc70918a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "2c0ae8586ab84a7200fb3a30ff12daf259d1926d1c937c203387354d9e6c2c06",
+          "target_hash": "c112138f9f37a2376fc80db9c2bf979fe68802787b20d62d06f43db5dc70918a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a06d139b83f44fb5b791e810a0e64a37",
+      "source_hash": "70ec2b1bd92fb923bc93a7cd8456662ec852f0ad8233fc83b22dfe53a26bcfb4",
+      "target_text": "Join әр сәйкес жұпқа бір жол қайтарады: 1-сатылым 7-өнімнің екі жолымен де жұптасады, сондықтан біріктірілген сомалар 30, 30 және 50. Бірегей sale_id product_id бойынша екі сәйкестікке жол бермеуге жеткіліксіз, ал Doris екіұшты сәйкестіктерді тастамайды. Байытылған фактілерді қоспас бұрын әр кілтке бір өлшем жолын орнатыңыз немесе көзделген нұсқаны таңдаңыз.",
+      "target_hash": "cdd2c942b2ac5a40c24c79393ce7e2d0e82be42447034dfa908a9d9b6c213c64",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "70ec2b1bd92fb923bc93a7cd8456662ec852f0ad8233fc83b22dfe53a26bcfb4",
+          "target_hash": "cdd2c942b2ac5a40c24c79393ce7e2d0e82be42447034dfa908a9d9b6c213c64"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3c246467b0274af79673c27411da104d",
+      "source_hash": "90911ef9615883a55c03dede59616922a9ec5efe4f9082e74d80119262888ee2",
+      "target_text": "Екі кірістің түйіршіктілігі мен кілт кардиналдығынан Join нәтиже түйіршіктілігі мен еселігін болжау.",
+      "target_hash": "da4ad125d2ba51ac53b8cba2d63442b6abd22db5f5f9cef330ef0546b14097f6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "90911ef9615883a55c03dede59616922a9ec5efe4f9082e74d80119262888ee2",
+          "target_hash": "da4ad125d2ba51ac53b8cba2d63442b6abd22db5f5f9cef330ef0546b14097f6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.16238666cf154dbaa0170e649b5c6185",
+      "source_hash": "5d26c7bb0772a264406ff776e21405249f0a7989e792ca6301eb146612fc1cbd",
+      "target_text": "80, өйткені әр sale_id факт кестесінде тек бір рет кездеседі",
+      "target_hash": "f0b1165247400238d3bd8fee5ab1b131d20f62eaed386aee71ffa22a050fdd9f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "5d26c7bb0772a264406ff776e21405249f0a7989e792ca6301eb146612fc1cbd",
+          "target_hash": "f0b1165247400238d3bd8fee5ab1b131d20f62eaed386aee71ffa22a050fdd9f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.31f539741c8a40ea8881cb0d170cdddd",
+      "source_hash": "070a1973bd399d6c62ff538e7d07f8058022fe15d855b97562642b24074b7804",
+      "target_text": "110, өйткені 30 бірліктік сатылым екі өлшем жолына сәйкес келеді",
+      "target_hash": "90bc23da2fe17687bbc943ab9d6da53bed80e783a90fbfe9a3380746f1b81f03",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "070a1973bd399d6c62ff538e7d07f8058022fe15d855b97562642b24074b7804",
+          "target_hash": "90bc23da2fe17687bbc943ab9d6da53bed80e783a90fbfe9a3380746f1b81f03"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6006dace319249ebb571011664a852e2",
+      "source_hash": "c8f5c907d20953b4e66ddce7352e1d51fe60b5998957d2be753e94792e5cb032",
+      "target_text": "160, өйткені кез келген қайталанатын кілт бүкіл факт кестесін екі еселейді",
+      "target_hash": "46a5be08fe4c9d4163b8fd785239501f81ce248870788f9588f0ed9064288473",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "c8f5c907d20953b4e66ddce7352e1d51fe60b5998957d2be753e94792e5cb032",
+          "target_hash": "46a5be08fe4c9d4163b8fd785239501f81ce248870788f9588f0ed9064288473"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c0e10fe112ed4a1cafcb24f5a048470b",
+      "source_hash": "33c93c729fa650d6448bea074f2150e0aea5bef5021f2dc8e0f410218a49cefc",
+      "target_text": "50, өйткені Doris сәйкестігі екіұшты сатылымдарды алып тастайды",
+      "target_hash": "6e6224f88166d133a77cf362be9d20cb18c1b1809b1067e4310b6472d0e958d7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "33c93c729fa650d6448bea074f2150e0aea5bef5021f2dc8e0f410218a49cefc",
+          "target_hash": "6e6224f88166d133a77cf362be9d20cb18c1b1809b1067e4310b6472d0e958d7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.977a9445f19641b2b95adb9b2bc3bfcc",
+      "source_hash": "94e945e76e50b04a402404aeca760f214ad32356c90e5476e93c475007d91a3a",
+      "target_text": "Екі сатылым — (sale_id, product_id, amount) = (1, 7, 30) және (2, 8, 50). Өнім өлшемінде 7-өнім үшін екі жол және 8-өнім үшін бір жол бар. product_id бойынша INNER JOIN кейін SUM(amount) орындалады. Қосынды қанша?",
+      "target_hash": "78d1271c9b9e99ad31ea686b8992f93b60ce727c80573cd824fccb90aba23404",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "94e945e76e50b04a402404aeca760f214ad32356c90e5476e93c475007d91a3a",
+          "target_hash": "78d1271c9b9e99ad31ea686b8992f93b60ce727c80573cd824fccb90aba23404"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.50ba0a214e2e43bf93731130fe657c33",
+      "source_hash": "0e14f6413d16ca7d8a01912da91f8e94c80770465f232d4fb5d062ccf3af850f",
+      "target_text": "LEFT ANTI JOIN сәйкестігі жоқ сол жақ жолдарды қайтарады және оларды қайталанатын оң жолдар үшін қайталамайды. SEMI сәйкестігі бар жолдарды, INNER сәйкес жұптарды қайтарады, ал сүзілмеген LEFT OUTER JOIN сәйкес жөнелтілімдерді де сақтайды.",
+      "target_hash": "2b17923fe2069fc7dda4ee6005c919929543c6e696c1b0db61a6fbf2a4b99e3f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "0e14f6413d16ca7d8a01912da91f8e94c80770465f232d4fb5d062ccf3af850f",
+          "target_hash": "2b17923fe2069fc7dda4ee6005c919929543c6e696c1b0db61a6fbf2a4b99e3f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.793d84b1eb7e47fda606fcf893844789",
+      "source_hash": "baab5baa5f9786e8e58fe797714a8c044b1cc32f360f1adb297045bb16ad242c",
+      "target_text": "Жауап сақтауы тиіс жолдарға қарай Inner, Outer, Semi, Anti, Cross немесе ASOF Join таңдау.",
+      "target_hash": "4b7591d869792f5896f4024a49cae6efa83e9ab4b80c6cdf8dffb874285d2188",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "baab5baa5f9786e8e58fe797714a8c044b1cc32f360f1adb297045bb16ad242c",
+          "target_hash": "4b7591d869792f5896f4024a49cae6efa83e9ab4b80c6cdf8dffb874285d2188"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4c73a7002c4642baa1f1cb184ea983ad",
+      "source_hash": "a8af2af132cd3042cd121cc71e0f6d00bc2c0db694ae052658ff73ba7f8bf964",
+      "target_text": "customer_id бойынша shipments LEFT SEMI JOIN customers",
+      "target_hash": "1beb9be7a566e9829476fb213558c0158aaa495ece16822a146a0db19de35aef",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a8af2af132cd3042cd121cc71e0f6d00bc2c0db694ae052658ff73ba7f8bf964",
+          "target_hash": "1beb9be7a566e9829476fb213558c0158aaa495ece16822a146a0db19de35aef"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7d49a6267ba64e2886b9c973518d62fc",
+      "source_hash": "543c0acb3579dcfd43ed9a0ac8036cf04febaf1e92119cd12f1bce8d399cc3d8",
+      "target_text": "customer_id бойынша shipments INNER JOIN customers",
+      "target_hash": "e504350d54e6ea3756cbcd2c22321af9d6ebd7520cbaf028153328312e508369",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "543c0acb3579dcfd43ed9a0ac8036cf04febaf1e92119cd12f1bce8d399cc3d8",
+          "target_hash": "e504350d54e6ea3756cbcd2c22321af9d6ebd7520cbaf028153328312e508369"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d25ce4b776164ed4811936a22a8ba124",
+      "source_hash": "afa44c005af3c6b2467a2a67c4aab80a819c8fead239d68ed176333e0cb3133f",
+      "target_text": "customer_id кілті бойынша shipments LEFT ANTI JOIN customers",
+      "target_hash": "6a8ff74c64ff90ef8ebb32dbb6af6750561f991e37a5dba43ff5a0bd24196616",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "afa44c005af3c6b2467a2a67c4aab80a819c8fead239d68ed176333e0cb3133f",
+          "target_hash": "6a8ff74c64ff90ef8ebb32dbb6af6750561f991e37a5dba43ff5a0bd24196616"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.933ab83842f54edcabbbe835fe98ba7a",
+      "source_hash": "12a49c4d8d59c4ef0a74e1a5f80f8706816f8bfedaea0baaad2c7e680a6fb251",
+      "target_text": "customer_id бойынша shipments LEFT OUTER JOIN customers",
+      "target_hash": "f3f2b9dc8b0df5ceffdca5bdc8a040494bb30d4276c654fb55fd3395457387e8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "12a49c4d8d59c4ef0a74e1a5f80f8706816f8bfedaea0baaad2c7e680a6fb251",
+          "target_hash": "f3f2b9dc8b0df5ceffdca5bdc8a040494bb30d4276c654fb55fd3395457387e8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4e08f6ffa4784e9397c5f8a1ce5b2963",
+      "source_hash": "e45354a781725034f823b9485e04f0ca29931deb5198bf24506018c5de292710",
+      "target_text": "Әр жөнелтілімде customer_id бар. Қолдау тобына customer_id мәні customers ішінде сәйкес келмейтін жөнелтілімдер қажет, тек жөнелтілім бағандарымен. Тұтынушы кестесі идентификаторды қайталай алады. Қай Join тікелей сай келеді?",
+      "target_hash": "0ba6909e2377facc3094b11920fef23e1dfb829ef214bac81989a469988b7f9c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "e45354a781725034f823b9485e04f0ca29931deb5198bf24506018c5de292710",
+          "target_hash": "0ba6909e2377facc3094b11920fef23e1dfb829ef214bac81989a469988b7f9c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bd7805b6d74149d6853f95e705a07a18",
+      "source_hash": "6e3755db9ebb77ea9fa89d3d511d5201c805c39a8b563362d6cd53217ff42b11",
+      "target_text": "ON ішінде шарт қай өнім жолдары сәйкес келе алатынын шешеді; белсенді өнімі жоқ оқиғалар NULL өнім бағандарымен қалады. WHERE ішінде ол Join кейін орындалады және d.is_active = 1 сол NULL толтырылған жолдар үшін true емес, сондықтан 2-сұрау Inner Join сияқты әрекет етеді. Екі орналасу әртүрлі сұраққа жауап береді.",
+      "target_hash": "92354849105d3b6c6fdfda7fbbc5071cefb809cd71816257cea7902d47a1e33c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "6e3755db9ebb77ea9fa89d3d511d5201c805c39a8b563362d6cd53217ff42b11",
+          "target_hash": "92354849105d3b6c6fdfda7fbbc5071cefb809cd71816257cea7902d47a1e33c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1fad95dbe44d4258972323bded0b25d1",
+      "source_hash": "9165dcc609f41753514948e0aaff39263cde4ea6b3744cba10d8992188151cac",
+      "target_text": "`NULL` кілттері қалай сәйкес келетінін және оң жақ шарты `ON` не `WHERE` ішіне тиесілі екенін шешу.",
+      "target_hash": "289ff772cc5b9f1f66ffa662fe3bd7b7c3c9ab4b85fd856113de58ede065f7cc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "9165dcc609f41753514948e0aaff39263cde4ea6b3744cba10d8992188151cac",
+          "target_hash": "289ff772cc5b9f1f66ffa662fe3bd7b7c3c9ab4b85fd856113de58ede065f7cc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.02f37f991d6846cea537b15516a6525c",
+      "source_hash": "ebce27d3f62316d2e5f5b4918f89ae319e02d2cd4b849de328fc4ded08b5b159",
+      "target_text": "1-сұрау әр оқиғаны сақтайды; 2-сұрау белсенді өнімі жоқ оқиғаларды алып тастайды",
+      "target_hash": "c303ee9ee9caca6b626bc3c4256a66a8c440164719d2e9380a1b9ca1e453b6ab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ebce27d3f62316d2e5f5b4918f89ae319e02d2cd4b849de328fc4ded08b5b159",
+          "target_hash": "c303ee9ee9caca6b626bc3c4256a66a8c440164719d2e9380a1b9ca1e453b6ab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.be74d14a230c4f16965c97218840a276",
+      "source_hash": "c910147d1620355b90d2e8a7980dcfb4580c7597c82c6be3429f988674910aee",
+      "target_text": "Айырмашылық жоқ: оңтайландырғыш шартты жылжытады, сондықтан екеуі бірдей жол қайтарады",
+      "target_hash": "4febf3f4e5b2c84afe98743aaf7a7c5d764877d380ef0619ca6f498f721e8616",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "c910147d1620355b90d2e8a7980dcfb4580c7597c82c6be3429f988674910aee",
+          "target_hash": "4febf3f4e5b2c84afe98743aaf7a7c5d764877d380ef0619ca6f498f721e8616"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.df7ed8b235d24f30973a9c908806c4e3",
+      "source_hash": "092451030eec25fee48a2985c55393cf60ae00e882b6088e6b24c6a8ea3e6360",
+      "target_text": "2-сұрау әр оқиғаны сақтайды, ал 1-сұрау өнімі жоқ оқиғаларды алып тастайды",
+      "target_hash": "2897933b46bc6bb8584a0c4b9d7e9563d3573c47c653a11a6645f2ca14c042ea",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "092451030eec25fee48a2985c55393cf60ae00e882b6088e6b24c6a8ea3e6360",
+          "target_hash": "2897933b46bc6bb8584a0c4b9d7e9563d3573c47c653a11a6645f2ca14c042ea"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a614eb48696444f6bcab54557ab7ba8b",
+      "source_hash": "00d46a3a802c5641fad3582d7c00504214c5d87cd3864e35d2c33c1c40e3fb39",
+      "target_text": "Әрқайсысында оң жақ шарты болғандықтан, екеуі де Inner Join сияқты әрекет етеді",
+      "target_hash": "dc38d7d4dd43446516afe1a6378cad30e21c4939394c33506bb55c252043fcd2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "00d46a3a802c5641fad3582d7c00504214c5d87cd3864e35d2c33c1c40e3fb39",
+          "target_hash": "dc38d7d4dd43446516afe1a6378cad30e21c4939394c33506bb55c252043fcd2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9a00727f13d54dd6a16c20497e71aa10",
+      "source_hash": "39b6a92ebd2cb61e28fb74918e986fc2fe118d7e5723982f34428823c1dccee6",
+      "target_text": "Есеп әр оқиғаны сақтап, тек белсенді өнімдерді тіркеуі тиіс. 1-сұрау LEFT JOIN dim_products d ON e.product_id = d.product_id AND d.is_active = 1 пайдаланады. 2-сұрау сол LEFT JOIN амалын тек product_id бойынша қолданып, WHERE d.is_active = 1 қосады. Нәтижелері қалай ерекшеленеді?",
+      "target_hash": "e17885a31b4800fb7893bc63068bf8764b8bd571eca9f2907e4f3c7229db3af4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "39b6a92ebd2cb61e28fb74918e986fc2fe118d7e5723982f34428823c1dccee6",
+          "target_hash": "e17885a31b4800fb7893bc63068bf8764b8bd571eca9f2907e4f3c7229db3af4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.277d5bf16a244a42b1ad26f7b5b5671b",
+      "source_hash": "ffa4d3876a51dce230c2a94403ee7b1f501a3dbee5f167f72c2ea6ef93029c83",
+      "target_text": "Теңдік 1-Join үшін кілт береді: Doris бір кірістен hash кестесін құрып, оны екіншісімен тексереді және үміткер жұптарда уақыт шартын есептейді. 2-Join ішінде үміткерлерді ұйымдастыратын теңдік жоқ, сондықтан Nested Loop Join қажет болуы мүмкін. Ауқым салыстыруының болуы Hash Join мүмкіндігін өздігінен жоққа шығармайды.",
+      "target_hash": "130ef080791d8916afab751900a0acbe2e0efff79cfa14894e989bac932fa7bb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ffa4d3876a51dce230c2a94403ee7b1f501a3dbee5f167f72c2ea6ef93029c83",
+          "target_hash": "130ef080791d8916afab751900a0acbe2e0efff79cfa14894e989bac932fa7bb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.29c1ab6d69d34aaca102612a21079302",
+      "source_hash": "47551bc33e9c312a7b5100864ccc8b963686686a40b23df911ceb4ccb2227b4c",
+      "target_text": "Doris Hash Join немесе Nested Loop Join қашан қолданатынын және құру мен тексеру жақтарының не істейтінін түсіндіру.",
+      "target_hash": "4d568ce2d5447f8db6928e04dab423b3d870985ea7f7791890346becd8634d0b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "47551bc33e9c312a7b5100864ccc8b963686686a40b23df911ceb4ccb2227b4c",
+          "target_hash": "4d568ce2d5447f8db6928e04dab423b3d870985ea7f7791890346becd8634d0b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f9160d275c434013b8b4f427adb9bfe4",
+      "source_hash": "5975ae925cc311d3c0b6590d2b273d1db93947ac128ea05f715eeee5e2b1f683",
+      "target_text": "1-Join account_id бойынша хэштеп, уақытты кейін тексере алады; 2-Join үшін Nested Loop қажет",
+      "target_hash": "248b04ef9af78b5e63999efb5e78d35071739e1ddd9b2d3216880d2355073fca",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "5975ae925cc311d3c0b6590d2b273d1db93947ac128ea05f715eeee5e2b1f683",
+          "target_hash": "248b04ef9af78b5e63999efb5e78d35071739e1ddd9b2d3216880d2355073fca"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0427ce625dc741e3972f1ed67850fc74",
+      "source_hash": "703a16bac917c2fe4a92aca779f931654429b54e2b071f6558cf142d0d806c54",
+      "target_text": "Екеуінде де уақыттардың > салыстыруы болғандықтан, екеуіне де Nested Loop Join қажет",
+      "target_hash": "c8db54153c1344e15b47ca7b4a9acc917d7a6d7b0c427953e6dc9a45db590426",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "703a16bac917c2fe4a92aca779f931654429b54e2b071f6558cf142d0d806c54",
+          "target_hash": "c8db54153c1344e15b47ca7b4a9acc917d7a6d7b0c427953e6dc9a45db590426"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.aee95a5ded4c43b28d7c4f346d6232f3",
+      "source_hash": "3c0f9db4d60655b320f388ce93285667d36db43f71ab2b333009ce0349623518",
+      "target_text": "Уақыт белгісі де кез келген кілт сияқты хэштелетіндіктен, екеуі де Hash Join қолдана алады",
+      "target_hash": "a82c81e4a554ec276309049b044604a81700dfc25695d8803348bba49e3e742b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3c0f9db4d60655b320f388ce93285667d36db43f71ab2b333009ce0349623518",
+          "target_hash": "a82c81e4a554ec276309049b044604a81700dfc25695d8803348bba49e3e742b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b6d82d6217bc464ca3487ee11f4ddcf0",
+      "source_hash": "c196c2a87e03277be599844f00a3ee272a862dc825185c63a752d9fe9c122b56",
+      "target_text": "1-Join Hash Join қолданып, есептей алмайтын уақыт шартын елемейді",
+      "target_hash": "3093f8d4da472311a0f78a0375a5d5cdf248f54ba350f601ad106145c9f2f04d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "c196c2a87e03277be599844f00a3ee272a862dc825185c63a752d9fe9c122b56",
+          "target_hash": "3093f8d4da472311a0f78a0375a5d5cdf248f54ba350f601ad106145c9f2f04d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.811f32b77f3a49c19178a63f277e7c95",
+      "source_hash": "20abf38d3bc86cbaab95f5eab3926d3b80b065cea4a0e9a48cb6f229fbbaec67",
+      "target_text": "1-Join a.account_id = b.account_id AND a.event_time > b.start_time пайдаланады. 2-Join тек a.event_time > b.start_time пайдаланады. Қай түсіндіру Doris орындауына сай?",
+      "target_hash": "eaf2eae468ade71441f8d6afc8f1301cc7dc94e116f7114dc99a873f56b1420c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "20abf38d3bc86cbaab95f5eab3926d3b80b065cea4a0e9a48cb6f229fbbaec67",
+          "target_hash": "eaf2eae468ade71441f8d6afc8f1301cc7dc94e116f7114dc99a873f56b1420c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4b51f6200c4c4590a6148f2cc2c8cf3a",
+      "source_hash": "501f25f9f9632170035f86c1531b14cabcc35d24eaee9b35b303742cec637cb9",
+      "target_text": "orders орналасуы Join кілтіне сәйкес, сондықтан Bucket Shuffle оны сақтап, әр customers жолын өз кілтінің Bucket ұяшығына бағыттайды. Broadcast тұтас үлкен кестені әр қатысушыға көшіреді, Partition Shuffle екі кірісті де жылжытады, ал Colocate екі кестенің де сәйкес Bucket ұяшықтарымен сол тұрақты Colocation Group ішінде жасалуын талап етеді.",
+      "target_hash": "8b1e76fab9406d144e90699fb89b3e2a77e32c14d6549f26a4ba1ce2a0731995",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "501f25f9f9632170035f86c1531b14cabcc35d24eaee9b35b303742cec637cb9",
+          "target_hash": "8b1e76fab9406d144e90699fb89b3e2a77e32c14d6549f26a4ba1ce2a0731995"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.95f77cbf8acd4723ab4d728d20654788",
+      "source_hash": "d9c92fdc19535ece783e754e47bf1878b3a30bdd814315e2710b1b9209591fee",
+      "target_text": "Broadcast, Partition Shuffle, Bucket Shuffle және Colocate Join тәсілдерін әрқайсысы тасымалдайтын дерек пен қажетті орналасу бойынша салыстыру.",
+      "target_hash": "7c217559200efc5fac04ceb5eb8854bdfbb7bb1171ab7bb515440e90230768fd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "d9c92fdc19535ece783e754e47bf1878b3a30bdd814315e2710b1b9209591fee",
+          "target_hash": "7c217559200efc5fac04ceb5eb8854bdfbb7bb1171ab7bb515440e90230768fd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ea9533470b5c40c7b5f202541fc56f9c",
+      "source_hash": "069bd9f9efc225083bfcf4ff5e43b1e4d0d0a691a4aec5e8e593bdd79026afd5",
+      "target_text": "Bucket Shuffle: orders орнында қалады, тек customers жолдары бағытталады",
+      "target_hash": "d3702d881f9d4cfcafa5c0526dc0f1e76ab26870d67b3ba3a50738e477805480",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "069bd9f9efc225083bfcf4ff5e43b1e4d0d0a691a4aec5e8e593bdd79026afd5",
+          "target_hash": "d3702d881f9d4cfcafa5c0526dc0f1e76ab26870d67b3ba3a50738e477805480"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7c100e3ba8f04a03a8e8d97d7db06249",
+      "source_hash": "b48206f8d6a34b3364345ddb6c277a0d84734cb898993c59f0e353773bd1ba83",
+      "target_text": "Broadcast: әр дана үлкен orders кестесінің толық көшірмесін алады",
+      "target_hash": "0f59faf2f6367fb703ca1b46188266b887150cb1b69847ff7e65675080953d44",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b48206f8d6a34b3364345ddb6c277a0d84734cb898993c59f0e353773bd1ba83",
+          "target_hash": "0f59faf2f6367fb703ca1b46188266b887150cb1b69847ff7e65675080953d44"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.be13e18a4b5b45ea84b2385dc3a23d81",
+      "source_hash": "016e1ae841aca33f04aaac6b8a575e8abb9a3f118b81532041c6ce1edc1a69a4",
+      "target_text": "Partition Shuffle: orders Bucket ұяшықтарын қайта пайдаланып, екі кестені де жылжытпайды",
+      "target_hash": "d3e6db3f2d8e2dfb846432e6177cb310ddc3a6514055e7b35afd0a0238b4da7c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "016e1ae841aca33f04aaac6b8a575e8abb9a3f118b81532041c6ce1edc1a69a4",
+          "target_hash": "d3e6db3f2d8e2dfb846432e6177cb310ddc3a6514055e7b35afd0a0238b4da7c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d0c6defcbceb4a6ba39ecb14a583cd7c",
+      "source_hash": "87ad69cef5b9fd126f789eecf4139aae6160ce149608ab912d3a63d9f7ecd395",
+      "target_text": "Colocate: ортақ Join кілті бар екі кесте автоматты түрде бірге орналастырылады",
+      "target_hash": "45e1c68d86d082953daab8bfc38f48f2562cfb3ba40ae1e40f37e556e94ccd7d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "87ad69cef5b9fd126f789eecf4139aae6160ce149608ab912d3a63d9f7ecd395",
+          "target_hash": "45e1c68d86d082953daab8bfc38f48f2562cfb3ba40ae1e40f37e556e94ccd7d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9359efc9d9bb4e90b94916bf9269224d",
+      "source_hash": "046222958e020493f5f60a7d553c51104cfe0617e4c6166b5326146287f67c11",
+      "target_text": "Үлкен orders кестесі HASH(customer_id) арқылы 16 Bucket ұяшығына таратылған. Үлкен customers кестесі RANDOM таратуды қолданады. Екеуі customer_id бойынша біріктіріледі. Қай стратегия ең аз дерек тасымалдайды және нені жылжытады?",
+      "target_hash": "6019db304e3a39f4e67bfdf13a9c28f769c6483279a4c2b5f1f5916eea9dfbe3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "046222958e020493f5f60a7d553c51104cfe0617e4c6166b5326146287f67c11",
+          "target_hash": "6019db304e3a39f4e67bfdf13a9c28f769c6483279a4c2b5f1f5916eea9dfbe3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7190aa63ae3843de9eb1186c8c9702b6",
+      "source_hash": "1d3def799a0a5311bce0364e7fa843c7491fba7ae0036a99849d9a74b976598d",
+      "target_text": "Жоспардағы өндіруші мен тұтынушы Doris құру жағы кілттерінен жасалған сүзгіні қайда жіберуді көздейтінін көрсетеді. Оның уақытында келуі және қанша жол алып тастауы — Query Profile ішіндегі орындалу дәлелі. Runtime Filter үміткерлерді алып тастайды, Join теңдікті бәрібір тексереді және жалғыз жоспар жылдамдық туралы ештеңе айтпайды.",
+      "target_hash": "fc0aee53cb551304adef3e45a1a926037c4bf1b02aa278dd096e3c7b2b91a837",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "1d3def799a0a5311bce0364e7fa843c7491fba7ae0036a99849d9a74b976598d",
+          "target_hash": "fc0aee53cb551304adef3e45a1a926037c4bf1b02aa278dd096e3c7b2b91a837"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bbfd2aa1260c48e799778ab36ca91ca9",
+      "source_hash": "b41e22bd13eb0d35879604bb1bc5a31eee9280a62cc48d3e70fd5e02dae95c23",
+      "target_text": "`EXPLAIN` ішіндегі Join стратегиясы мен Runtime Filter жазбаларын Query Profile тіркейтін әрекеттен бөлек оқу.",
+      "target_hash": "6dfc0bafce7a8e8802d9132492367e9d1e14e1d24ec6a1205522b77ec68215bc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b41e22bd13eb0d35879604bb1bc5a31eee9280a62cc48d3e70fd5e02dae95c23",
+          "target_hash": "6dfc0bafce7a8e8802d9132492367e9d1e14e1d24ec6a1205522b77ec68215bc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.25305b85bdba47dfa30afccd83f6b584",
+      "source_hash": "28aadb3ca51e760736a00f29eacd249e25b1b6368172b3939c04ffa731f16e9d",
+      "target_text": "Жоспар құру жағынан сканерлеуге сүзгі жібереді; әсерін Profile көрсетеді",
+      "target_hash": "ff377cf5439215ddc3469225f96f89d269e39f40172a6db7552c32cd8042b0ee",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "28aadb3ca51e760736a00f29eacd249e25b1b6368172b3939c04ffa731f16e9d",
+          "target_hash": "ff377cf5439215ddc3469225f96f89d269e39f40172a6db7552c32cd8042b0ee"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e96bc56834724467a7776bcf236f299d",
+      "source_hash": "f88e6eecbf21330c673b63e5f390731f947dd00e1416cff4777d70e8f82a67cc",
+      "target_text": "Өнімге сәйкес келе алмайтын оқиға жолдары үшін сканерлеу ешбір сақтау бетін оқымайды",
+      "target_hash": "1ef6cf8dba98e5947e39341d0d9baa42bd2450e7ddc7c9cdf9b4f553f754fee4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "f88e6eecbf21330c673b63e5f390731f947dd00e1416cff4777d70e8f82a67cc",
+          "target_hash": "1ef6cf8dba98e5947e39341d0d9baa42bd2450e7ddc7c9cdf9b4f553f754fee4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.27ea25d7116f4276a2fbd34566b165cb",
+      "source_hash": "dd182be8ab31de99fb30b98c5d0c0e2b1c8202b652aad01412e468c749d43250",
+      "target_text": "Бұл жоспар сол сұрау мен деректер үшін Shuffle жоспарынан жылдам",
+      "target_hash": "8f4f88e2ccdb662992d152bc9be2bef89bf8070c2bb1937b7e95239a0f4f3fe3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "dd182be8ab31de99fb30b98c5d0c0e2b1c8202b652aad01412e468c749d43250",
+          "target_hash": "8f4f88e2ccdb662992d152bc9be2bef89bf8070c2bb1937b7e95239a0f4f3fe3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2206700602a4463485cf99f50c165a03",
+      "source_hash": "fa712096055b86ce64ea6b0a731bbcd43992bcf1b8fd24f89357432366d51473",
+      "target_text": "Runtime Filter өзі өткізген әр жол үшін Join теңдігін тексеруді алмастырады",
+      "target_hash": "5fe677ca694b509b31ff3844a820f60e4ce188679b20f2f8e3c38a6ce95f04cd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "fa712096055b86ce64ea6b0a731bbcd43992bcf1b8fd24f89357432366d51473",
+          "target_hash": "5fe677ca694b509b31ff3844a820f60e4ce188679b20f2f8e3c38a6ce95f04cd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5a537b273ff14cfcb5f4080bfdc979fb",
+      "source_hash": "dfea2e446118bd2d7443db54a7e9da4fc0f8a9f52c36afb21425cb9bd2283e13",
+      "target_text": "EXPLAIN Inner Hash Join ішінде RF000 жасалып, факт кестесінің сканерлеуінде қолданылатынын көрсетеді. Query Profile әлі жоқ. Қандай қорытынды жасауға болады?",
+      "target_hash": "aa575fb6a6e29c0c6712fbdc476f6dae4e1ba25c5b11b56c1b2d7a5e11e79885",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "dfea2e446118bd2d7443db54a7e9da4fc0f8a9f52c36afb21425cb9bd2283e13",
+          "target_hash": "aa575fb6a6e29c0c6712fbdc476f6dae4e1ba25c5b11b56c1b2d7a5e11e79885"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0262c2006e39441d85623baf0f02adb1",
+      "source_hash": "08580f2d137816e61245103bb2fc65253af2fcf43f0e992bbe0ba2ae7f2c5779",
+      "target_text": "6-модуль тесті: Apache Doris жүйесінде деректерді біріктіру",
+      "target_hash": "84ca449a95236cf30d87f0927d015db9bc0eeef16b9d3a6e06bdc82914e101d1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "08580f2d137816e61245103bb2fc65253af2fcf43f0e992bbe0ba2ae7f2c5779",
+          "target_hash": "84ca449a95236cf30d87f0927d015db9bc0eeef16b9d3a6e06bdc82914e101d1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

@@ -91,6 +91,8 @@ def verify_bundle(bundle):
                   any(path != name + ".requirements.lock" for name, path in locks.items()))):
         raise RuntimeErrorDetail("bundle: invalid Python lock mapping")
     extra = {'multilingual.py', 'teaching.tar.gz'} if plan['schema_version'] == 2 else set()
+    if plan['schema_version'] == 2 and 'profiles.v2.json' in plan.get('sha256', {}):
+        extra.add('profiles.v2.json')
     if not isinstance(plan.get("sha256"), dict) or set(plan["sha256"]) != PAYLOAD | set(locks.values()) | extra:
         raise RuntimeErrorDetail("bundle: incomplete payload hashes")
     for name, checksum in plan["sha256"].items():
@@ -348,7 +350,7 @@ def install(bundle):
         atomic_json(receipt_path, receipt)
     layout.helpers.mkdir(parents=True, exist_ok=True)
     layout.helpers.chmod(0o755)
-    for name in ("host.py", "kernel.py", "check.py", "serve.py", "portal.py", "operations.py", *(['multilingual.py'] if plan['schema_version'] == 2 else [])):
+    for name in ("host.py", "kernel.py", "check.py", "serve.py", "portal.py", "operations.py", *(['multilingual.py'] if plan['schema_version'] == 2 else []), *(['profiles.v2.json'] if 'profiles.v2.json' in plan['sha256'] else [])):
         shutil.copyfile(Path(bundle) / name, layout.helpers / name)
         (layout.helpers / name).chmod(0o644)
     install_ui(bundle, layout)

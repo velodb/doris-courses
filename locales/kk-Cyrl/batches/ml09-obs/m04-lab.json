@@ -1,0 +1,848 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.07f0a424f37a4ffc8f8c6f28cbaed16c",
+      "source_hash": "8a667822353f4e72aa683b467d619168c527ea04ed8c2dbd73cb25fdd604256a",
+      "target_text": "# Жүйені бақылау деректерінің кесте модельдері\n\n**4-модуль: Жүйені бақылау деректерінің кесте модельдері** · [Сабақ](course.md) · [Тест](quiz04_observability_table_models.ipynb)\n\n1-модульден бері дүкен тапсырыстарының шамамен жартысы сәтсіз болады. Инцидент кезінде де, кейін де бір сұрақтар қайталанады: әр сервис әр минутта қанша сұрау өңдеді, қаншасы сәтсіз болды, қандай қателер кездесті. Бұл зертханалық жұмыста жауаптарды ықшам кестелерде сақтап, кесте моделі Doris кілті бірдей жолдарға не істейтінін қалай шешетінін көресіз:\n\n| Модель | Кілті бірдей жолдар | Жүйені бақылауда қолданылуы |\n| --- | --- | --- |\n| `DUPLICATE KEY` | Барлығы сақталады. Кілт бағандары тек сұрыптау ретін анықтайды. | Бастапқы журналдар, span-дар, метрика нүктелері |\n| `AGGREGATE KEY` | Бір жолға бірігеді. Әр мән бағаны `SUM` сияқты агрегаттау функциясын атайды. | Алдын ала сақталған, мысалы сервис пен минут бойынша сұраулар мен ақаулар санақтары |\n| `UNIQUE KEY` | Тек соңғы жүктелген жол сақталады. | Әр қате түрі мен күнге бір ескерту сияқты ағымдағы күй |\n\nЭкспорттаушы телеметрия кестелеріне қандай модельдер таңдағанын тексеріп, әр сервис пен минуттың сұраулары және сәтсіз сұраулары үшін AGGREGATE кестесін, әр қате түрі мен күнге бір ескерту сақтайтын UNIQUE кестесін құрасыз. Мысалдар `otel_traces` span-дарын оқиды. Жаңа кестелер `otel` дерекқорында құрылады; әр ұяшықты қайта орындауға болады.\n\nШамамен 35 минут жоспарлаңыз. Төлем ақауы қосылған 1-модульдің DOG стегі мен демосы қажет (1-зертханалық жұмыстың 5-бөлімі).",
+      "target_hash": "47815b6a4b1d6f892a2b0b1ef51bb26c7f86893de2d18c6c5728275a79723a34",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "8a667822353f4e72aa683b467d619168c527ea04ed8c2dbd73cb25fdd604256a",
+          "target_hash": "47815b6a4b1d6f892a2b0b1ef51bb26c7f86893de2d18c6c5728275a79723a34"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.60feadb0c6d14f8fa04d71e80ae4cbdd",
+      "source_hash": "49db53658158a8257d45496ed27f11cda64c142248e94abb4744cc8f751f329b",
+      "target_text": "### Зертханалық жұмысты инициализациялау\n\n`lab.shell(...)` не `lab.sql(...)` қолданбас бұрын осы ұяшықты бір рет орындаңыз.",
+      "target_hash": "236768296b5b35c0d34cbd1f79bd2d63f7ded8474c5510a8ad0a771e1dbf1f7e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "49db53658158a8257d45496ed27f11cda64c142248e94abb4744cc8f751f329b",
+          "target_hash": "236768296b5b35c0d34cbd1f79bd2d63f7ded8474c5510a8ad0a771e1dbf1f7e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e3b113e69aaf4b64bce109035f53019d",
+      "source_hash": "26aa88ce8308fcfb9e95b32676b3ea9f42c59b373ec062cc9cf6db631a43c650",
+      "target_text": "## Әрі қарай\n\n[4-тест: Жүйені бақылау деректерінің кесте модельдері](quiz04_observability_table_models.ipynb) файлын ашып, [5-модуль: Жүйені бақылау деректерін бөлімдеу және bucket-терге бөлу](../module05-partition-bucket/course.md) бөліміне өтіңіз.",
+      "target_hash": "342d8eaf7ca53df51b60bd47487f807a18cbdd81efcdde662b9c51d9d3c39fbc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "26aa88ce8308fcfb9e95b32676b3ea9f42c59b373ec062cc9cf6db631a43c650",
+          "target_hash": "342d8eaf7ca53df51b60bd47487f807a18cbdd81efcdde662b9c51d9d3c39fbc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1a4a33c47a7144498a648d2e826e6c92",
+      "source_hash": "3fd75758357c54f21c3f90de3d8ea58440fc6ac778091fb3d015443045d80ee2",
+      "target_text": "## 3. AGGREGATE: сервис пен минут бойынша сұраулар мен ақауларды санау\n\nИнцидент тақтасы әр сервис пен минутқа қанша сұрау өңделіп, қаншасы сәтсіз болғанын көрсетеді. Оны әр жаңаруда `otel_traces` кестесінен есептеу кезеңнің әр span-ын оқиды. AGGREGATE оның орнына санақтарды сервис пен минутқа бір жолмен сақтайды.\n\nСервис өңдеген сұрау — `span_kind` мәні `SPAN_KIND_SERVER` болатын сервер span-ы. `checkout` үшін бұлар тапсырыстар, `payment` үшін төлемдер. Келесі кестенің кілт бағандары есептің түйіршіктілігі: `request_minute` және `service_name`. `requests` пен `failed_requests` мән бағандары `SUM` жариялайды: кілті бұрыннан бар жол келгенде Doris мәндерін бұрынғы жолға қосады. Ол мұндай жолдарды жүктеу кезінде біріктіреді, қалғанын фонда біріктіреді (compaction), сұрау кезінде тағы қалғанын біріктіреді; сондықтан сұрау әр кілтке бір жол көреді.\n\nКілт span уақытын емес, минутты сақтайды. Span уақыты кілтте болса, тек бір микросекунд span-дары бірігіп, кесте `otel_traces` сияқты үлкен болар еді. Әр сұрау аяқталған минутта, `DATE_TRUNC(end_time, 'minute')`, саналады: span аяқталғаннан кейін ғана Doris-ке жетеді; `flagd` жалауша ағындары сияқты 10 минутқа дейін ашық ұзақ сұрау басталған минут саналғаннан көп кейін келер еді. `DISTRIBUTED BY HASH(service_name)` бір сервистің барлық жолын бір tablet-ке жібереді; осындай кішкентай кестеге бір bucket жеткілікті. 5-модуль бөлімдер мен bucket-терді таңдауды түсіндіреді.",
+      "target_hash": "4998c0965d4fdec0d8fdb827185affb65f6741c8155d0726df42e9c7526f34d6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "3fd75758357c54f21c3f90de3d8ea58440fc6ac778091fb3d015443045d80ee2",
+          "target_hash": "4998c0965d4fdec0d8fdb827185affb65f6741c8155d0726df42e9c7526f34d6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.03935c0afdc84cf58e6925ac67d963e0",
+      "source_hash": "bc925a7f9486c8ef0f6fee053764e7aaf04344d63c5d391159735c5f9adde8fe",
+      "target_text": "Санақтарды бастапқы span-дармен салыстырыңыз. Келесі сұрау екінші пакеттің соңына дейін `otel_traces` сервер span-дарын сервис пен минут бойынша санап, әр санақты `requests_per_minute` жолымен салыстырады:",
+      "target_hash": "07e5119fe14d3089abbb8f250ccc9737f6622808fe2ab7d7c2508ea49d986841",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "bc925a7f9486c8ef0f6fee053764e7aaf04344d63c5d391159735c5f9adde8fe",
+          "target_hash": "07e5119fe14d3089abbb8f250ccc9737f6622808fe2ab7d7c2508ea49d986841"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f6c91a18bfd1480b9c8765e095090ea4",
+      "source_hash": "407cc88ab599ae673c0e4c1322b989391a298de6fa1e2e44ae7f20fde0845dea",
+      "target_text": "**Күтілетін нәтиже**\n\nАлғашқы үш бағанында бірдей сан бар бір жол: әр сервис пен минутқа бір топ, әр топ `requests_per_minute` жолына сәйкес, кестеде артық жол жоқ. `server_spans_read` — санақтарды есептеуге оқылған ондаған мың span саны; `requests_per_minute` сол жауапты сервис пен минутқа бір жолдан береді. Құны — кесте тек өз түйіршіктілігіндегі сұрақтарға жауап береді: қай сұраулар сәтсіз болғанын не қанша уақыт алғанын айта алмайды.\n\n`groups_that_match` кіші болса, кезеңнің кей span-дары Doris-ке жоғарыдағы ұяшық жүктегеннен кейін келген: екі ұяшықты да қайталаңыз.",
+      "target_hash": "552654862f2412dd8dbc57c77b4e7052f6921e683d2fa53c04e7921ed392d850",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "407cc88ab599ae673c0e4c1322b989391a298de6fa1e2e44ae7f20fde0845dea",
+          "target_hash": "552654862f2412dd8dbc57c77b4e7052f6921e683d2fa53c04e7921ed392d850"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.31e806ca126d4d72983fbca5d640fa50",
+      "source_hash": "05e55cb14adbc099ad857fdb6d1cbe03a650055a72d64c81eb5dd088635512fa",
+      "target_text": "**Күтілетін нәтиже**\n\nКарточка команданың сәтті орындалғанын айтады. `IF NOT EXISTS` бұрынғы кестені өзгертпейді, сондықтан ұяшықты қайталауға болады.",
+      "target_hash": "d4b015f84381cddf2f7c0bf83b89b27c34006d036476df3dd0ce7b3367f9c03a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "05e55cb14adbc099ad857fdb6d1cbe03a650055a72d64c81eb5dd088635512fa",
+          "target_hash": "d4b015f84381cddf2f7c0bf83b89b27c34006d036476df3dd0ce7b3367f9c03a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.89f8ed2715ba4fa0aa5a6b184409a1b8",
+      "source_hash": "58f6f178d1e9c52f3fa50341139f7fd30130d5d95d8b6ebb3d10888ea7168acd",
+      "target_text": "### Span-дарды екі пакетпен жүктеу\n\nЖүктеу тапсырмасы әдетте жоспар бойынша орындалып, жаңа аяқталған кезең жолдарын қосады. Келесі ұяшық `otel_traces` сервер span-дарын `requests_per_minute` кестесіне осындай екі пакетпен жүктейді: екіншісі 30 секундтық кезеңде аяқталған span-дар, біріншісі — одан бұрын аяқталғанның бәрі. Span-дар аяқталғаннан бірнеше секунд кейін Doris-ке жететіндіктен, ұяшық ең жаңа span алдындағы соңғы 30 секундты қоспайды.\n\nӘр span `requests = 1` және күйі `STATUS_CODE_ERROR` болса `failed_requests = 1`, әйтпесе `0` мәнді бір жолға айналады. Әр пакеттен кейін ұяшық екінші пакет басталған минуттың кесте жолдарын көрсетеді. Орындамас бұрын болжаңыз: екінші пакет сол минутқа жол қоса ма, әлде бар жолдарды өзгерте ме?",
+      "target_hash": "be426a6f7c7716b8f9aef2542d270590dc2a72b2b5a0fdc00c118c1399974662",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "58f6f178d1e9c52f3fa50341139f7fd30130d5d95d8b6ebb3d10888ea7168acd",
+          "target_hash": "be426a6f7c7716b8f9aef2542d270590dc2a72b2b5a0fdc00c118c1399974662"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ae9874fc02284a328d6b851c1e27c3b1",
+      "source_hash": "b9af84350226bc8bd58b2dc0e30c60727a7842b8816665315b6304a87cbf8f39",
+      "target_text": "**Күтілетін нәтиже**\n\nАлдымен екінші пакет кезеңі: ең жаңа span-нан 30 секунд бұрын аяқталатын 30 секунд және ол басталған минут. Бірінші пакет жүктеген әр span-ына бір әсер еткен жол, яғни ондаған мың жол хабарлайды; бірақ `requests_per_minute` ішінде сервис пен минутқа бір жол ғана бар. Біріншіден кейін шекаралық минут жолдары оның `second_batch_start` алдындағы алғашқы секундтарының сұрауларын сақтайды.\n\nЕкінші пакет бірнеше жүзден бірнеше мыңға дейін span жүктейді. Кейін шекаралық минутта әлі әр сервиске бір жол бар: `frontend-proxy` не `frontend` сияқты екі пакетте де сұрау өңдеген сервис өз жолын сақтап, `requests` мәні екінші пакет span-дарының санына өседі. Бұл — `SUM` біріктіруі: бір кілтке 4, кейін 7 жүктеу 11 мәнді бір жол береді. Минуттағы алғашқы сұрауы екінші пакетте келген сервис жаңа жол алады; пакет келесі минутқа өтсе, сол минуттың әр сервисі де жаңа жол алады.\n\nAGGREGATE жаңа жолды қайталанған жүктеуден ажырата алмайды. Екінші пакет екі рет жүктелсе, span-дары екі рет қосылып, санақтар артық болар еді. Тапсырма әр бастапқы жолды дәл бір рет жүктеуі керек; бұл ұяшық `TRUNCATE TABLE` арқылы басталады, сондықтан оны қайталауға болады.",
+      "target_hash": "c668c61d5d451651faf6ab6b4f70eb68a6ffe70d2dfa9b71b6fda13d125c83c2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "b9af84350226bc8bd58b2dc0e30c60727a7842b8816665315b6304a87cbf8f39",
+          "target_hash": "c668c61d5d451651faf6ab6b4f70eb68a6ffe70d2dfa9b71b6fda13d125c83c2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cc9d7fba65f4470692e7e94e8b98794c",
+      "source_hash": "51fb3f47fce8c3e11596c686f12209faa573f36e8f98253751f3b38d1f1f08ba",
+      "target_text": "## Аяқтау шарттары\n\n- экспорттаушы бастапқы телеметрияға қай модель қолданатынын және `otel_traces` ішінде кілті ортақ span-дардың бәрі неге сақталуы керегін айта аласыз;\n- `requests_per_minute` ішінде сервис пен минутқа бір жол бар, екінші пакет бар жолдарға қосылды, санақтар `otel_traces` сервер span-дарымен сәйкес;\n- `error_alerts` ішінде қате не жүктеу жиілігіне қарамастан ескерту мен күнге бір жол бар, шешкен ескертуіңіз `resolved` көрсетеді;\n- `otel_traces_graph` неге UNIQUE екенін түсіндіре аласыз.\n\nЖұмыс кестелері кішкентай; кейінгі модульдер оларды қолданбайды. Жою үшін `lab.execute(...)` не MySQL клиентімен `DROP TABLE IF EXISTS requests_per_minute`, `DROP TABLE IF EXISTS error_alerts` және `DROP TABLE IF EXISTS daily_log_counts` орындаңыз.",
+      "target_hash": "6eb1a886cc34ea9654bd6d4d807db31482dfe6ca7d7ba78c3fd66b56d692c397",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "51fb3f47fce8c3e11596c686f12209faa573f36e8f98253751f3b38d1f1f08ba",
+          "target_hash": "6eb1a886cc34ea9654bd6d4d807db31482dfe6ca7d7ba78c3fd66b56d692c397"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e4e6df45cef34fbd9b096f1b0f290edb",
+      "source_hash": "738c4c54d8e3510d4c2ca2c561500ce06817af3f60337209720ec8e4f22a4a82",
+      "target_text": "## 2. DUPLICATE: әр оқиғаны сақтау\n\nDoris экспорттаушысы телеметрия кестелерін 1-модульде іске қосылғанда құрған. `information_schema.columns` әр кілт бағанын кесте моделімен белгілейді: DUPLICATE — `DUP`, AGGREGATE — `AGG`, UNIQUE — `UNI`. Осы кестелердің модельдері мен кілт бағандарын тізіңіз:",
+      "target_hash": "1c3d6190751c16898d428c1979be104ef02e48bc034c4e7622fdd1b8deda5c71",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "738c4c54d8e3510d4c2ca2c561500ce06817af3f60337209720ec8e4f22a4a82",
+          "target_hash": "1c3d6190751c16898d428c1979be104ef02e48bc034c4e7622fdd1b8deda5c71"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f9a43cdfe9404d9baaa1e79a98570906",
+      "source_hash": "26f314531c6781d5da22cad5485d37dbdc3b21385c518c8565bc6d063c6b392a",
+      "target_text": "`otel_traces` кілті — `service_name` және span басталған уақыт `timestamp`. Бірнеше span-ға ортақ кілттерді іздеңіз:",
+      "target_hash": "6d08dbe3f18440438fb41cd34187af6bb51e3956da56764024f968b90ab5f755",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "26f314531c6781d5da22cad5485d37dbdc3b21385c518c8565bc6d063c6b392a",
+          "target_hash": "6d08dbe3f18440438fb41cd34187af6bb51e3956da56764024f968b90ab5f755"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2ba366d47e0043c485c7e0661b691711",
+      "source_hash": "73e96291430cef6f512b73e30c4bc3041cd2726a4331fceea3ee83103d6a3b9b",
+      "target_text": "**Күтілетін нәтиже**\n\nӘрқайсысы шамамен он span-ға ортақ бес кілт, әдетте дүкеннің серверлік және браузерлік коды `frontend` не `frontend-web`. SDK-лары уақытты миллисекундқа дейін тіркейді, бір сұрау бірнеше span-ды бір миллисекундта бастайды. `different_spans` мәні `spans_with_this_key` мәніне тең: әр span-ның өз ID-і бар, демек жолдар — бөлек оқиғалар; әр кілтке бір жол сақтайтын кесте біреуінен басқасын жоғалтар еді. DUPLICATE дәл көшірмелерді де сақтайды: бір деректі екі рет жүктеуден қорғамайды.",
+      "target_hash": "3295ea7b36647073d87f6e641db78b8864b954e9a87b0faeee512f21be636e34",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "73e96291430cef6f512b73e30c4bc3041cd2726a4331fceea3ee83103d6a3b9b",
+          "target_hash": "3295ea7b36647073d87f6e641db78b8864b954e9a87b0faeee512f21be636e34"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6ed1e1f2b49b4a0fb16a58b3a22f62d0",
+      "source_hash": "0140b7de3a1af6e97b6204b0801224f9d2ff8460eb770af442e66cee436c87ca",
+      "target_text": "**Күтілетін нәтиже**\n\nСегіз кесте. Жетеуі — `DUP`: `otel_logs`, `otel_traces` және бес `otel_metrics_*` кестесі; кілті — `timestamp` пен `service_name` (кез келген ретпен). `otel_traces_graph` — `UNI`; себебін 4-бөлім түсіндіреді.\n\nЖурнал жолы, span және метрика нүктесі — жеке оқиғалар, сондықтан бастапқы кестелер DUPLICATE қолданады: Doris жүктеген әр жолды сақтайды. Кілт бағандары тек сұрыптау ретін анықтап, уақыт пен сервис бойынша сүзетін сұрауларға көмектеседі. `CREATE TABLE` кілт сөйлемі жоқ болса да DUPLICATE қолданады.",
+      "target_hash": "b76fc1f1a465a050272dc396ddddaba940da3a2ba5e90f852635b8c7398fcc44",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "0140b7de3a1af6e97b6204b0801224f9d2ff8460eb770af442e66cee436c87ca",
+          "target_hash": "b76fc1f1a465a050272dc396ddddaba940da3a2ba5e90f852635b8c7398fcc44"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6e4348c5f14647f5b4f5429d8888a0a2",
+      "source_hash": "102150fb8bb3429ecf920d113ed8074f753d19fc988f406b0c036e6eef105979",
+      "target_text": "## 5. Жаттығу: журналдардың күндік қорытындысы\n\nЖурналдар үшін ұқсас қорытынды құрыңыз: кілті `log_date` пен `service_name`, `SUM` бағандары `log_count` пен `error_count` болатын `daily_log_counts`. Журнал жолының `severity_number` мәні 17 не одан жоғары, OpenTelemetry ERROR/FATAL аралығында болса, ол қате. Оны `otel_logs` кестесінен бекітілген уақытқа, ең жаңа журнал жолынан 30 секунд бұрынғы сәтке дейін жүктеп, сол шекті қолданатын `otel_logs` бойынша `GROUP BY` сұрауымен салыстырыңыз. Сервис пен күнге бір жол, екі нәтижеде бірдей сандар күтіңіз. Қай сервистерде қате жолдары бар, төлем ақауы неге ештеңе қоспайды?",
+      "target_hash": "7e26ad69fb22a8668c034f78d8da0fdc226f67f1a12d4fe45740204d70d96774",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "102150fb8bb3429ecf920d113ed8074f753d19fc988f406b0c036e6eef105979",
+          "target_hash": "7e26ad69fb22a8668c034f78d8da0fdc226f67f1a12d4fe45740204d70d96774"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fd3d9bd07be24226814fc7204458f010",
+      "source_hash": "e055f3c62b21e335e7a946ae5f5cc3e54c5879db0d2e1ef23305da4575873471",
+      "target_text": "**Күтілетін нәтиже**\n\nЕкі кестеде жолдар мен сандар бірдей, шамамен 11 сервис: `frontend-proxy` және 2-модульдің FE журналы `doris-fe` жолдары ең көп. Қате жолдары аз сервисте бар: FE іске қосылғанда жазған қателерден `doris-fe`, кейде `accounting` сияқты демо сервисі. Төлем ақауы ештеңе қоспайды: payment пен checkout журнал жібермейді, ал 2-модуль көрсеткендей, сәтсіз checkout прокси қатынас журналында маңыздылық жоқ. Қате журналдарының қорытындысы бұл инцидентті өткізіп алар еді; span-дардан құрылған 3-бөлім қорытындысы оны көрсетеді.",
+      "target_hash": "18914f503887160453181a6453a881e44a00ef7c027b760c11c5bf2c972c68fb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "e055f3c62b21e335e7a946ae5f5cc3e54c5879db0d2e1ef23305da4575873471",
+          "target_hash": "18914f503887160453181a6453a881e44a00ef7c027b760c11c5bf2c972c68fb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bfc2b50d2f3940939f7f24daafec6ad6",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған. Салыстыру үшін ашыңыз немесе орындаңыз.",
+      "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d76c39f7d9284668987b0ed0df90765b",
+      "source_hash": "8aecfadf602189d64c0c278680273173f3b7314e338903a46f80e26e3adc76c8",
+      "target_text": "`LastTaskSuccessTime` минутын есте сақтау үшін осы ұяшықты **тапсырма сәтті орындалғаннан кейін бір рет** орындаңыз. Нысана мен ағымдағы санын шығарады. Демоны қосулы қалдырыңыз. Келесі жоспарлы орындалудан кейін есте сақталған минут өзгермес үшін төмендегі салыстыру ұяшығын ғана қайталаңыз. Ядроны қайта іске қосқаннан кейін алдымен жаңа бастапқы мән алыңыз.",
+      "target_hash": "1d1b263ce5f7f90acf56b184ce8d21bae9a901bd2b5b109d72b5630011ab260a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "8aecfadf602189d64c0c278680273173f3b7314e338903a46f80e26e3adc76c8",
+          "target_hash": "1d1b263ce5f7f90acf56b184ce8d21bae9a901bd2b5b109d72b5630011ab260a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f059870ec23f43e28cb0da204672a243",
+      "source_hash": "b0f45502651ce547d4cecc03398ac014022fb2cf0f28977c24866eae29ed51d7",
+      "target_text": "Келесі тапсырма орындалған соң осы салыстыру ұяшығын қайта орындаңыз. Тапсырма тексеруі соңғы орындалудың қашан аяқталғанын көрсетеді; екінші сұрау алынған минут соңғы бес жолдан шығып кетсе де, әрдайым сол минутты таңдайды. Сол сервис жұбын саны толтырылған бір жолда күтіңіз; сол кіріс span-дары сақталғанша сан кемімеуі керек.",
+      "target_hash": "707b0df21c6ad0ceef6cf3baa4e484d432664c7fc5b8c7beb97692a13be8a3d9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "b0f45502651ce547d4cecc03398ac014022fb2cf0f28977c24866eae29ed51d7",
+          "target_hash": "707b0df21c6ad0ceef6cf3baa4e484d432664c7fc5b8c7beb97692a13be8a3d9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.756ad8afbedd452da779deffbdba9c6b",
+      "source_hash": "dd1c78aecebdb041925f0cb448bbf7b65a13b90ce77481b58723220427e12bea",
+      "target_text": "## 4. UNIQUE: әр қате түрі мен күнге бір ескерту\n\nТапсырма әр минутта қате span-дарын оқып, әрқайсысына ескерту жасайды делік. Әр сәтсіз тапсырыс бірнеше сервисте қате span-ын қалдырады, сондықтан әр span-ға бір ескерту — бір мәселе туралы минутына бірнеше ескертуден тұратын тасқын. UNIQUE әр кілтке бір жол сақтайды; кілт күн мен ескерту сәйкестендіргіші болса, жиілігіне қарамастан әр қате түрі күніне бір ескерту береді.\n\nСәйкестендіргіш бір қате түрінің әр қайталануында бірдей, түрлер арасында әртүрлі болуы керек. Мұнда ол — сервис, операция (`span_name`) және span күй хабары. Хабарларда адрес, порт, ID сияқты әр оқиғада өзгеретін бөліктер болуы мүмкін. Сондықтан төмендегі сұрау хабардың әр санын `0` етіп, нәтижесін сервис пен операциямен бірге хештейді: `alert_hash`. Қате span-дарын қалай топтайтынын қараңыз:",
+      "target_hash": "7b4329da4b2f7f6a2860525eb1bc9217595fdea8ae345cc5fbfccd1a2f801c16",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "dd1c78aecebdb041925f0cb448bbf7b65a13b90ce77481b58723220427e12bea",
+          "target_hash": "7b4329da4b2f7f6a2860525eb1bc9217595fdea8ae345cc5fbfccd1a2f801c16"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b946e03da7154789933fbe43fd515545",
+      "source_hash": "c63c8898602fc1f4f30a8746a6f7419a6b6e3203a135a0cf98499c37cb616522",
+      "target_text": "Ескерту кестесін құрыңыз. Кілті — күн мен ескерту сәйкестендіргіші:",
+      "target_hash": "2bb33306c7698e24f83a0102da6cd9569e5cb762030b80f301d37037efacbd4f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "c63c8898602fc1f4f30a8746a6f7419a6b6e3203a135a0cf98499c37cb616522",
+          "target_hash": "2bb33306c7698e24f83a0102da6cd9569e5cb762030b80f301d37037efacbd4f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.863676d2f5604641b8ebab93627f2232",
+      "source_hash": "8c3d56b6d9b18f7d2558ea8baa724dc7120662ca3dbad3abcb76b8f69c054dd1",
+      "target_text": "**Күтілетін нәтиже**\n\nКарточка команданың сәттілігін айтады. Кілті бірдей жолдардың бәрі бір tablet-ке жетуі үшін UNIQUE кілт бағандарының хешімен бөлінуі керек. Doris 4.x UNIQUE кестелерін әдепкі Merge-on-Write (MoW) ретінде құрады: кілті бұрыннан бар жол келгенде жаңа жолды жүктеп жатып ескісін жойылған деп белгілейді, сондықтан сұраулар тек ең жаңа жолды оқиды.",
+      "target_hash": "96671dae2e7cea079d09da3b9a2310eff51b8b7cf0ef1af374968ea7ddde0688",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "8c3d56b6d9b18f7d2558ea8baa724dc7120662ca3dbad3abcb76b8f69c054dd1",
+          "target_hash": "96671dae2e7cea079d09da3b9a2310eff51b8b7cf0ef1af374968ea7ddde0688"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b7d6f5c1defd435aa5220c527270b95c",
+      "source_hash": "5b24ca48e08ff2588bd423f71cbc3cf2013f0a29b2a7947b2951f90b454371d1",
+      "target_text": "### Экспорттаушының UNIQUE кестесі\n\n2-бөлімдегі UNIQUE кесте `otel_traces_graph` сервистер арасындағы минуттық шақыруларды санайды. Экспорттаушы құрған `otel_traces_graph_job` оны әр 10 минут сайын толтырады: әр орындалу `otel_traces` span-дарын 10 минут бұрынғы минуттың басынан қазіргі уақытқа дейін санайды. Сондықтан әр орындалу алдыңғы орындалу басталған, сол кезде тек ішінара көрінген минутты қайта санап, кілті бірдей жолдарды жазады. UNIQUE бұрынғы ішінара санақтарды жаңаларымен алмастырады. AGGREGATE `SUM` болса екі санақ қосылар еді, DUPLICATE болса минут екі рет көрінер еді.\n\nЖоспарлы кірістіру тапсырмаларын тізетін `jobs('type'='insert')` арқылы тапсырманы және соңғы минуттардағы `frontend-proxy` → `frontend` шақыруларын қараңыз:",
+      "target_hash": "940441a4cfeeaeaaed8518fd3e6bbe313c34a296c0574bc5a5fe5bf99b383d39",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "5b24ca48e08ff2588bd423f71cbc3cf2013f0a29b2a7947b2951f90b454371d1",
+          "target_hash": "940441a4cfeeaeaaed8518fd3e6bbe313c34a296c0574bc5a5fe5bf99b383d39"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1a3e12cc4cb44d1a92b7255511d01488",
+      "source_hash": "39fc679d8b74becc298138a75bfe3b5314c13ecc2db20eacf06a1337a024c760",
+      "target_text": "**Күтілетін нәтиже**\n\nТапсырма `EVERY 10 MINUTE` бойынша орындалады, `SucceedTaskCount` қанша рет орындалғанын көрсетеді. Көп минутта шақыру саны ұқсас, демо қосулы кезде шамамен 1,450. Ең жаңа минуттарда аз не әлі жол жоқ болуы мүмкін: соңғы орындалу span-дарының бәрі Doris-ке жетпей санап қойған. Келесі екі ұяшық бір минутты бекітеді, сонда ол ең жаңа бес жолдан шыққаннан кейін де табылады.\n\n`error_count` сәтсіз шақыруларды санайды. Инцидент `checkout` → `payment` шақыруларында көрінеді: екінші сұраудағы екі сервис атауын өзгертіп қайталаңыз; жалаушаны қосқалы әр минуттағы шақырулардың шамамен жартысы сәтсіз.\n\n`SucceedTaskCount` — 0, екінші кесте бос болса, тапсырма әлі орындалмаған. DOG Collector схеманы `create_schema: true` арқылы құрады: оны қайта қосу тапсырманы жойып қайта құрады, алғашқы орындалуы 10 минуттан кейін. 2-модуль трасса collector-ында `create_schema: false`; оны қайта қосу тапсырманы қайта құрмайды. Алғашқы орындалу бітпесе, біткен соң жоғарыдағы тапсырма тексеруі мен төмендегі бастапқы мән алу ұяшығын қайталаңыз.",
+      "target_hash": "75139844d6dcd6fb31dd6c0b5f28b6d039dd5df2293b26ee8af56827654d1734",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "39fc679d8b74becc298138a75bfe3b5314c13ecc2db20eacf06a1337a024c760",
+          "target_hash": "75139844d6dcd6fb31dd6c0b5f28b6d039dd5df2293b26ee8af56827654d1734"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.646e075d0fd546bcb8f79df106b40b20",
+      "source_hash": "d4044444283cb1d9884ebf7ad1e6420121ea0f811d31afa4aca11e8a95389bdc",
+      "target_text": "**Күтілетін нәтиже**\n\nЕскерту мен күнге бір жол, әдетте 15–20. Инциденттің қате түрлері алдымен, әрқайсысында бір сәтсіз тапсырысқа бір қате span-ы бар: payment `grpc.oteldemo.PaymentService/Charge`, checkout `oteldemo.CheckoutService/PlaceOrder` және оның payment шақыруы `oteldemo.PaymentService/Charge`, сондай-ақ сәтсіз сұрауды тасымалдаған `frontend`, `frontend-proxy`, `load-generator` span-дары. Одан төмен демо басталған минуттағы бір қате span-ы бар түрлер: бұлттық метадерек сервисі `metadata.google.internal` адресіне жете алмаған `payment` пен `frontend`, әлі жоқ Kafka тақырыбын оқыған `accounting`. `normalized_message` сандар неге алмастырылатынын көрсетеді: `recommendation` жалауша жаңартуларының `/flagd.evaluation.v1.Service/EventStream` ағыны әр 10 минут сайын уақыты бар хабармен `DEADLINE_EXCEEDED` болып аяқталады; сандар алмастырылса, әр қайталану бір сәйкестендіргіш алады. Демо 10 минут жұмыс істегенде бұл жол пайда болады. `last_error` — ескертудің соңғы span-ы аяқталған уақыт.",
+      "target_hash": "a2d586481874284ae2f47e6f22c602f45aaaeefd357e17101ee17d4ab1405cb8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "d4044444283cb1d9884ebf7ad1e6420121ea0f811d31afa4aca11e8a95389bdc",
+          "target_hash": "a2d586481874284ae2f47e6f22c602f45aaaeefd357e17101ee17d4ab1405cb8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b5f88c71f6e14c5ca5a85d2a20a73c19",
+      "source_hash": "e27126cd49a975c93a7cf94c1a7666ff61a5b1da9642210a1c49a0660193b966",
+      "target_text": "Тапсырма сияқты әр қате span-ына ашық ескерту жасаңыз:",
+      "target_hash": "bb8a2b730885a833e3e1ac6e3e61129d15929ebb939a78978f79a0593358bb91",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "e27126cd49a975c93a7cf94c1a7666ff61a5b1da9642210a1c49a0660193b966",
+          "target_hash": "bb8a2b730885a833e3e1ac6e3e61129d15929ebb939a78978f79a0593358bb91"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.042805cbba0a43ed9cc07aa8d1493e9e",
+      "source_hash": "587456cdf8d4c98c327216cec6a81f47e74de92db82b7ae4fde1c2e49b9a5cc0",
+      "target_text": "**Күтілетін нәтиже**\n\nКірістіру әр қате span-ына бір әсер еткен жол, әр сәтсіз тапсырысқа тоғыз және бірнеше басқа жол хабарлайды; бірақ `error_alerts` ішінде алдыңғы сұрау қайтарғандай ескерту мен күнге бір жол бар: кілті бірдей жолдар бірін-бірі алмастырды. Әр жол бір оқиғаның, Doris соңғы жүктегенінің, хабарын сақтайды.\n\nБір жол бір қатені білдірмейді. Payment төлемінің ескертуі `error_alerts` ішінде бір жол, `otel_traces` ішінде әр сәтсіз тапсырысқа бір қате span-ын береді. Кесте санақты емес, ағымдағы күйді сақтайды: жиілікті білу үшін алдыңғы сұраудай `otel_traces` span-дарын санаңыз не 3-бөлімдегідей AGGREGATE ішінде санақ сақтаңыз.",
+      "target_hash": "93d3b6f522af82dc6b54f840e8107bf8adf077afb3a40092e17a157ad1b52d7f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "587456cdf8d4c98c327216cec6a81f47e74de92db82b7ae4fde1c2e49b9a5cc0",
+          "target_hash": "93d3b6f522af82dc6b54f840e8107bf8adf077afb3a40092e17a157ad1b52d7f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8de21022308b4edb93a02bfbd89f6f6c",
+      "source_hash": "39750186d7a2845b8ba173ed9c09ac339bd46b4b1cea73e9fbfbbf6e1493b0a2",
+      "target_text": "Бір минуттан кейін тапсырма қайта орындалып, сол қате span-дарын оқиды. Оларды тағы жүктеңіз:",
+      "target_hash": "04467502e5a5490053476ddefd6e0789ae8bc0d73e11abe9e40cbb4e23eb78f6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "39750186d7a2845b8ba173ed9c09ac339bd46b4b1cea73e9fbfbbf6e1493b0a2",
+          "target_hash": "04467502e5a5490053476ddefd6e0789ae8bc0d73e11abe9e40cbb4e23eb78f6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9890dc064a314ff1b273fc620bd3d924",
+      "source_hash": "ce87c4a75c61fadbfd6c376ca271219bd15b488b5b32990f51f07ba3ddf6e92a",
+      "target_text": "**Күтілетін нәтиже**\n\nКірістіру сол жол санын және арада сәтсіз болған тапсырыстардың қате span-дарын қайта жүктейді; `alerts` өзгерген жоқ. Қайталанған жүктеу жолдарды қоспай, алмастырады, сондықтан UNIQUE кестесін қауіпсіз қайта жүктеуге болады. 3-бөлімдегі `requests_per_minute` қайта жүктелсе, әр span екі рет саналар еді.",
+      "target_hash": "0bb0279df519a109d6194279e1172f7091f07b182ed8a5229fe96034bfaef222",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "ce87c4a75c61fadbfd6c376ca271219bd15b488b5b32990f51f07ba3ddf6e92a",
+          "target_hash": "0bb0279df519a109d6194279e1172f7091f07b182ed8a5229fe96034bfaef222"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.379d75a417554fd28cbf5dd3f77bd32f",
+      "source_hash": "1b36aa0841cf8a80ac9b4cf9b91a79becd036008eefd9d0598943a78bc88668b",
+      "target_text": "Мәселе шешілгенде тапсырма ескертуін `resolved` күйімен қайта жазады. Төлем ақауы жалғасады, бірақ демоның іске қосылу қателері бір рет қана болды. Соңғы қатесі ең ескі ескертуді шешіңіз:",
+      "target_hash": "b8ea1b64b35fa2c0d483856f4edf3c1f46f0d3fb2556a8daba1022a7364cb9c7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "1b36aa0841cf8a80ac9b4cf9b91a79becd036008eefd9d0598943a78bc88668b",
+          "target_hash": "b8ea1b64b35fa2c0d483856f4edf3c1f46f0d3fb2556a8daba1022a7364cb9c7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.753534cfc5b942ac96b686cadb7a14a6",
+      "source_hash": "1ba523a688816b2fbf2ea0b24663e5db059457fef5f92b753f3e2bace75430f9",
+      "target_text": "**Күтілетін нәтиже**\n\nАлдымен ұяшық шешетін ескерту, әдетте демо іске қосылған кезден. Кірістіру бір жол жазады; ескертуде әлі бір жол бар, енді `status = resolved`. `Alerts by status` бұрынғыдай ескерту санын береді, біреуі шешілген: сол кілттің кейінгі жүктеуі ашық жолды алмастырды.\n\nЕскерту жасау ұяшығын енді қайта орындасаңыз, бұл ескерту қайтадан `open`, өйткені ол жүктеу одан да кейін: UNIQUE соңғы жүктелген жолды сақтайды. Жүктеулер ретсіз келуі мүмкін болса, кестеге sequence бағанын (`function_column.sequence_col` қасиеті) беріңіз: Doris жүктеу ретіне қарамастан сол бағандағы ең үлкен мәнді, мысалы ескертудің соңғы қатесінің уақытын сақтайды. Шешілген уақытпен жазылған жол сол уақыттан жаңа қате жүктелгенше қалады.",
+      "target_hash": "364b1df5005e2891d4994ec333a4e9a28c2ca5d32fe18ec34936ca5b7c530c36",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "1ba523a688816b2fbf2ea0b24663e5db059457fef5f92b753f3e2bace75430f9",
+          "target_hash": "364b1df5005e2891d4994ec333a4e9a28c2ca5d32fe18ec34936ca5b7c530c36"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.09eb8d70d6574a6abb3ffd0421b6c70f",
+      "source_hash": "0a93d6da6c6528d66e94f237e0d917e4fc707fb0028e64c9fd5003b9f45651e1",
+      "target_text": "Енді инцидентті қорытындыдан оқыңыз: әр минуттың тапсырыстары `checkout` және төлемдері `payment`, сәтсіздерімен бірге.",
+      "target_hash": "32012852258dea53b46a76cd7d066a9b14017e310082db79596e14c393aa2533",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "0a93d6da6c6528d66e94f237e0d917e4fc707fb0028e64c9fd5003b9f45651e1",
+          "target_hash": "32012852258dea53b46a76cd7d066a9b14017e310082db79596e14c393aa2533"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.38770f2fbe2c4682af7f2828122cab87",
+      "source_hash": "57963ba2ea9a5e68c1152917ea50173e1a48cb956c5de44a4f774ba3598334a2",
+      "target_text": "**Күтілетін нәтиже**\n\n20 жолға дейін, көп минутқа екеуден: `checkout` минутына бір-төрт тапсырысты, `payment` төлемдерді санайды. Әр тапсырыс бір төлем жасайды, сондықтан сандар әдетте тең; тапсырыс төлемінен сәл кейін келесі минутта аяқталса, айырмасы бір болады. Жалаушаны қосқалы төлемдердің шамамен жартысы, олармен бірге тапсырыстары сәтсіз: екі сервистен көрінген бір ақаулар. Тапсырыс аз болғандықтан, бір минутта ешқайсысы не барлығы сәтсіз болуы мүмкін.",
+      "target_hash": "fd326be011b97e8efcc8bd6a505a74c9e980d51c064c7716138c333e1b63ef8c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "57963ba2ea9a5e68c1152917ea50173e1a48cb956c5de44a4f774ba3598334a2",
+          "target_hash": "fd326be011b97e8efcc8bd6a505a74c9e980d51c064c7716138c333e1b63ef8c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5b05216f2a9f4d33845c255ea1542f94",
+      "source_hash": "7c442a15325c7dde98a275decb8cca5e7a32b8f58f9737863c8f469253fc51b6",
+      "target_text": "## 1. Сәтсіз тапсырыстарды тексеру\n\nМысалдар `otel_traces` span-дарын, оның ішінде сәтсіз тапсырыс span-дарын қорытындылайды. Демо басталғалы тапсырыстарды және қаншасы сәтсіз болғанын санаңыз:",
+      "target_hash": "fa70dc882bf2e366416184f8f0324ddc59831ce5ebbc0fb47142cdd369f430d4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "7c442a15325c7dde98a275decb8cca5e7a32b8f58f9737863c8f469253fc51b6",
+          "target_hash": "fa70dc882bf2e366416184f8f0324ddc59831ce5ebbc0fb47142cdd369f430d4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d204e5fec76f4368ab2d12e377c1ed63",
+      "source_hash": "554620bd72076e3b79f94de74ed4637c75e303cc97a06ba5201d9a496fdf16ac",
+      "target_text": "**Күтілетін нәтиже**\n\nБір жол: демо басталғалы тапсырыстар, әдетте бірнеше ондықтан бірнеше жүзге дейін, олардың ішіндегі сәтсіздер — жалаушаны қосқаннан кейінгілердің шамамен жартысы, және алғашқы/соңғы тапсырыстың UTC уақыттары. Жалаушадан бері аз тапсырыс берілсе, кездейсоқтық сәтсіз үлесті жартыдан алыс етуі мүмкін.",
+      "target_hash": "04bbc3bfb651ac67e8658a20045e8d2899900aa1c0b637de3ed8fde13891be79",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 4 on 2026-11-08. Re-read all saved targets against frozen lesson and complete Lab code/expected outputs; checked all six Quiz questions, options, explanations and answer IDs. Checked duplicate events versus exact repeated loads, key/grain and end_time boundaries, two disjoint batches, SUM 4+7+7=18, stable normalized alert hashes, MoW semantics, load order versus sequence order and current state versus occurrence count. Corrected schedule wording, retained-input wording and the one-count boundary difference. Viewed all three PNGs and checked full adjacent label legends. Preserved frozen graph-job behavior claims faithfully; their contradiction with Module 2 is separately recorded as a source issue, not a translation error. Technical admission and native human review remain unperformed.",
+          "source_hash": "554620bd72076e3b79f94de74ed4637c75e303cc97a06ba5201d9a496fdf16ac",
+          "target_hash": "04bbc3bfb651ac67e8658a20045e8d2899900aa1c0b637de3ed8fde13891be79"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

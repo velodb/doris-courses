@@ -1,0 +1,368 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.2017f0a0ee50430f8fd100c864af09d3",
+      "source_hash": "ab21be368efeff8ba1655ac80f87add0e4a88b2d85892daee784e6c397fb7045",
+      "target_text": "## Модуль құрылымы\n\n| Бөлім | Уақыт | Нәтиже |\n| --- | ---: | --- |\n| 6.1 Кесте анықтамасы не айтады | 4 мин | `SHOW CREATE TABLE` және оның көрсетпейтінін оқу |\n| 6.2 Жүктеулер, rowset-тер және compaction | 5 мин | Уақыт қатары саясаты және Group Commit |\n| 6.3 Сығу | 5 мин | ZSTD не LZ4 және әділ салыстыру |\n| 6.4 Журнал іздеуіне арналған кері индекстер | 6 мин | `MATCH_PHRASE` сәтсіз checkout-ты қалай табады |\n| 6.5 Іздеуді Query Profile арқылы өлшеу | 5 мин | Санауыштар нені көрсетеді және көрсетпейді |\n| 6.6 Синхронды материалданған көріністер | 5 мин | Doris өзекті ұстайтын қорытынды |\n| 6.7 Doris көріністі қашан қолданады | 5 мин | Көрініс қай сұрауларға жауап береді |\n| 6-зертханалық жұмыс | 40 мин | Индекс, инцидент санақтарының көрінісі және екі сығу тәсілін өлшеу |\n| 6-тест | 10 мин | Осы мақсаттар бойынша алты сұрақ |\n\n",
+      "target_hash": "004483c64d4f602afaf7e96941e8e0834465f15b73fb8c38dedb126fbc702180",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ab21be368efeff8ba1655ac80f87add0e4a88b2d85892daee784e6c397fb7045",
+          "target_hash": "004483c64d4f602afaf7e96941e8e0834465f15b73fb8c38dedb126fbc702180"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.aa857288160d416491e95355055b5194",
+      "source_hash": "325cfa130f672666f597e9da372b2e5a2f33fdd6fed9a681d2f31b81de9cec24",
+      "target_text": "## Оқу мақсаттары\n\nМодульді аяқтаған соң сіз:\n\n1. `SHOW CREATE TABLE` арқылы кесте сақтау қасиеттерін, соның ішінде онда көрсетілмейтіндерін түсіне аласыз.\n2. Тек алгоритмді өзгертетін сығу алгоритмдерінің салыстыруын жобалай аласыз.\n3. Мәтін бағанының кері индексі `MATCH_ANY`, `MATCH_ALL`, `MATCH_PHRASE` сұрауларына қалай жауап беретінін түсіндіре аласыз.\n4. Query Profile жол санауыштарын олар көрсеткеннен артық қорытынды жасамай түсіндіре аласыз.\n5. Синхронды материалданған көріністің құрылуын, өзекті ұсталуын және сақталуын түсіндіре аласыз.\n6. Doris сұрауға материалданған көріністен жауап бере алатынын болжай аласыз.\n\n",
+      "target_hash": "f8b9a59f7de9ce97e9125426396f35402ea63bcc65f37756ddfe617a8ff7fb1b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "325cfa130f672666f597e9da372b2e5a2f33fdd6fed9a681d2f31b81de9cec24",
+          "target_hash": "f8b9a59f7de9ce97e9125426396f35402ea63bcc65f37756ddfe617a8ff7fb1b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.32c64d2e463b4ebd82e2c9436783c3cd",
+      "source_hash": "19fd9559953d9c2a8afe6704e36dcfdadf379a15c628017226820e9ebbfdb1ea",
+      "target_text": "## 6.6 Синхронды материалданған көріністер\n\n4-модуль әр сервис пен минуттың сұраулары және ақауларын жүктеу тапсырмасы дәл бір рет толтыруы керек `requests_per_minute` ішінде сақтады. **Синхронды материалданған көрініс** осындай қорытындыны жүктеу тапсырмасынсыз сақтайды:\n\n```sql\nCREATE MATERIALIZED VIEW server_minutes_mv AS\nSELECT date_trunc(end_time, 'minute') AS mv_request_minute,\n       service_name AS mv_service_name,\n       COUNT(*) AS mv_requests,\n       SUM(IF(status_code = 'STATUS_CODE_ERROR', 1, 0)) AS mv_failed_requests\nFROM otel_traces\nWHERE span_kind = 'SPAN_KIND_SERVER'\nGROUP BY date_trunc(end_time, 'minute'), service_name\n```\n\n- **Тапсырма арқылы құрылады.** Doris қабылдаған бойда `CREATE MATERIALIZED VIEW` қайтады; кейін тапсырма кестеде бар жолдардан көріністі құрады. `SHOW ALTER TABLE MATERIALIZED VIEW` тапсырма күйін `FINISHED` көрсеткеннен кейін ғана сұрауларға жауап береді.\n- **Өзекті ұсталады.** Бұдан кейін кестенің әр жүктеуі сол транзакцияда көріністі де жаңартады, сондықтан көрініс кестеден артта қалмайды. Құны — әр жүктеудегі қосымша жұмыс және диск.\n- **Кестемен бірге сақталады.** Көрініс — кестенің индексі: `DESC otel_traces ALL` оны `AGG_KEYS` индексі ретінде тізеді; оның `COUNT` және `SUM` бағандары `requests_per_minute` сияқты жолдарды `SUM` арқылы біріктіреді. Мұнда 175,000 сервер span-ына шамамен 1,800 жол болды.\n- **Бағандардың жеке атаулары.** Doris 4.1.3 баған атаулары кесте не басқа көрініс бағандарымен бірдей көріністі `Duplicate column name` қатесімен қабылдамайды: `mv_` префиксі сияқты әр бағанға жеке атау беріңіз. Сондықтан экспорттаушының `<table>_services` көрінісі де 4.1.3 ішінде сәтсіз (2-модуль). `IF NOT EXISTS` 4.1.3 ішінде бұрынғы көріністі өткізіп жібермейді: қайта құруға алдымен жойыңыз.\n\nСинхронды көрініс бір кестеге тиесілі. Бірнеше кестені қорытындылау не жоспар бойынша жаңарту үшін Doris-те өзі жаңартатын бөлек кестелер — **асинхронды материалданған көріністер** бар.\n\n",
+      "target_hash": "d8215c1e34354ef349034835f9c145d12487515e432711ecc7f2f0225908c148",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "19fd9559953d9c2a8afe6704e36dcfdadf379a15c628017226820e9ebbfdb1ea",
+          "target_hash": "d8215c1e34354ef349034835f9c145d12487515e432711ecc7f2f0225908c148"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d9fd786930ba4715b610c2961469fa5b",
+      "source_hash": "c6c43316ecdc765fb0bd8274e617dd008c3a22829c6309ab25e90d1fa169af08",
+      "target_text": "# 6-модуль: Кесте қасиеттері, материалданған көріністер және индекстер\n\n| Курс ақпараты | Мәні |\n| --- | --- |\n| Курс | Apache Doris көмегімен жүйені бақылау · 2-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Орта | Төлем ақауы қосылған 1-модульдің DOG стегі мен OpenTelemetry демосы |\n| Болжалды уақыт | Шамамен 85 минут: оқу 35, зертханалық жұмыс 40, тест 10 |\n\n[Курс README файлы](../../README.md) · [6-зертханалық жұмысты ашу](lab06_properties_mv_index.ipynb) · [6-тестті ашу](quiz06_properties_mv_and_indexes.ipynb)\n\n",
+      "target_hash": "c88fd7040bdf41b11ad3f77fba1a7f2783fa7e95ef02fdbf6ea4e18852bb4812",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "c6c43316ecdc765fb0bd8274e617dd008c3a22829c6309ab25e90d1fa169af08",
+          "target_hash": "c88fd7040bdf41b11ad3f77fba1a7f2783fa7e95ef02fdbf6ea4e18852bb4812"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a3bb8d1e9da64ca388ca0388be65026c",
+      "source_hash": "b958ee7dae24a88b940f98f6f3fabf631ac52fa93512a3e138ce1f8d92012208",
+      "target_text": "## 6.3 Сығу\n\nDoris дискіге жазар алдында әр беттің әр бағанын кестенің `compression` қасиетіндегі алгоритммен сығады. Doris 4.x әдепкісі — **ZSTD**: CPU құны жоғарырақ, сығуы жақсы. **LZ4** (және LZ4F нұсқасы) жылдам, сығу дәрежесі орташа. Телеметрия бір рет жазылып, күндер бойы сақталып, шағын бөліктермен оқылады; сондықтан ZSTD үнемдеген орын әдетте CPU құнынан маңыздырақ, Doris құжаттамасы журналдарға соны ұсынады. Алгоритм кесте құрылғанда орнатылады; өзгерту үшін жаңа кесте құрып, деректі көшіру керек.\n\nЕкі алгоритмді салыстырғанда басқа ештеңені өзгертпеңіз. 6-зертханалық жұмыс тек `compression` бойынша ерекшеленетін, индекссіз, бір bucket-ті екі кесте құрып, бірдей журнал жолдарын әрқайсысына бір `INSERT` арқылы жүктейді; екеуі де бірдей орналасқан бір rowset алады. Екі жаңсақ салыстырудан сақтанады:\n\n- **Орналасуы бөлек.** `otel_logs` сияқты мыңдаған шағын жүктеу алған кестеде жолдар бір рет жүктелгеннен өзгеше орналасады, индекстер де бар: жаңа көшірмемен салыстыру тек алгоритмді салыстырмайды.\n- **Өлшем әлі хабарланбаған.** `SHOW DATA` және `information_schema.tables` BE-лер шамамен әр минут хабарлайтын өлшемді көрсетеді. Жүктегеннен кейін бірден әлі 0 болады. Екі кесте де барлық жолын хабарлағанша күтіңіз.\n\n6-зертханалық жұмыстың бір орындалуында бірдей 79,000 журнал жолы ZSTD-мен 6.7 MB, LZ4-пен 10.5 MB алды: LZ4-ке шамамен 1.6 есе орын қажет; жаңа ортада 27,000 жол 2.2 MB және 3.3 MB, 1.5 есе болды. Бұл сол жолдар мен орналасуға ғана қатысты. Басқа дерек басқаша сығылады, нәтиже жылдамдық туралы ештеңе айтпайды.\n\n",
+      "target_hash": "d97f9c27c2acb5034138893f0c082a8fd35ba359d1dd0b571371182b0aa41e9b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "b958ee7dae24a88b940f98f6f3fabf631ac52fa93512a3e138ce1f8d92012208",
+          "target_hash": "d97f9c27c2acb5034138893f0c082a8fd35ba359d1dd0b571371182b0aa41e9b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.80793a32048148e994dae6794260966c",
+      "source_hash": "d79347114dc58fafab31d0ac2a5139d9df3b6a2c5e9aa58677f2c365bb06aea3",
+      "target_text": "## 6-зертханалық жұмыс: Сығу, материалданған көріністер және кері индекстер\n\n[6-зертханалық жұмыс: Сығу, материалданған көріністер және кері индекстер](lab06_properties_mv_index.ipynb) файлын ашыңыз. Сіз:\n\n1. Қатынас журналындағы сәтсіз checkout-ты санайсыз.\n2. `otel_logs` анықтамасын оқисыз.\n3. `body` индексімен және онсыз сәтсіз checkout іздеуін өлшейсіз.\n4. `server_minutes_mv` құрып, құрылуын күтіп, Doris қай сұрауларға содан жауап беретінін тексересіз.\n5. Бірдей журнал жолдарында ZSTD мен LZ4 салыстырасыз.\n6. Жаттығу: көрініс жауап беретін payment минуттық сұрауларының сұрауын жазасыз.\n\nТөлем ақауы қосылған 1-модульдің DOG стегі мен демосы қажет.\n\n",
+      "target_hash": "6faef7856a5ab5dcc1903ac8ee19accd53b5ab3c08e43c022a520a4d9e31ad55",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d79347114dc58fafab31d0ac2a5139d9df3b6a2c5e9aa58677f2c365bb06aea3",
+          "target_hash": "6faef7856a5ab5dcc1903ac8ee19accd53b5ab3c08e43c022a520a4d9e31ad55"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0809476bb92b45b0b013ee1f6c8b6845",
+      "source_hash": "cd4c230dab9e463541b98cdd6b39129be0bd9461306f1483df8a544e5010f024",
+      "target_text": "## 6.2 Жүктеулер, rowset-тер және compaction\n\nӘр жүктеу tablet-ке әкелген жолдарын өз нұсқасы бар файлдар жиыны — жаңа **rowset** — ретінде жазады. Экспорттаушы әр кестені бірнеше секунд сайын жүктейді, сондықтан әр tablet күніне мыңдаған шағын rowset жинайды. Сұрау бәрін оқуы керек; сондықтан Doris оларды фонда **compaction арқылы біріктіреді**: ірі rowset-терге біріктіріп, жойылған жолдарды алып тастайды және AGGREGATE, UNIQUE жолдарын біріктіреді.\n\nБіріктіру тәсілі — кестенің `compaction_policy` қасиеті:\n\n- Әдепкі `size_based` шағын rowset-терді деңгейлеп ірілендіреді. Үлкен rowset-ке жеткенше дерек бірнеше рет қайта жазылуы мүмкін: жазу күшеюі.\n- Экспорттаушы DUPLICATE кестелеріне орнататын `time_series` уақыт ретімен тек қосылатын дерекке сай. Tablet-тің жаңа rowset-тері шамамен `time_series_compaction_goal_size_mbytes` (1024 MB), не `time_series_compaction_file_count_threshold` файл (1000), не `time_series_compaction_time_threshold_seconds` (бір сағат) өткенше күтіп, бір рет соңғы rowset-ке біріктіреді. Әр жол шамамен бір рет қайта жазылып, көп жүктеу алатын кестелерде диск I/O-сы мен CPU үнемделеді. Экспорттаушы UNIQUE кестесі `otel_traces_graph` жолдары бірін-бірі алмастыратындықтан `size_based` сақтайды.\n\n**Group Commit** сол мәселені басқа жағынан шешеді: көп клиент шағын жүктеу жіберсе, Doris оларды BE-де бір транзакцияға және бір rowset-ке жинай алады. Жүктеу оны, мысалы Stream Load `group_commit: async_mode` тақырыбымен сұрайды; Doris 4.1-ден бастап кесте `group_commit_mode` қасиетімен оны әдепкі ете алады. `off_mode` болмаса, ол `SHOW CREATE TABLE` ішінде көрінеді. Кестенің `group_commit_interval_ms` (10 секунд) және `group_commit_data_bytes` (128 MB) жиналған деректің қашан бекітілетінін шешеді. Бұл екеуі әр кесте анықтамасында бар, бірақ тек Group Commit қолданатын жүктеуге әсер етеді. Экспорттаушы кестелері оны қолданбайды: `group_commit_mode` жоқ, экспорттаушы да тақырып жібермейді, өйткені оның `batch` өңдегіші бір Stream Load-қа 10,000 жазбаға дейін жинайды.\n\n![Бөлек жүктеулер кейін compaction біріктіретін бөлек rowset-тер жасайды; Group Commit қатысатын шағын жүктеулерді жазар алдында бір транзакция мен rowset-ке біріктіреді.](images/01-rowsets-compaction-and-group-commit.png)\n\n*Compaction бар rowset-терді біріктіреді, Group Commit кей шағын rowset-тің құрылуын болдырмайды.*\n\nСурет белгілері: TWO STAGES — екі кезең; COMPACTION — rowset-терді біріктіру; SMALL LOADS — шағын жүктеулер; ROWSETS — rowset-тер; BACKGROUND MERGE — фондық біріктіру; LARGER ROWSET — ірірек rowset; GROUP COMMIT — Group Commit; ENABLED LOADS ONLY — тек қосылған жүктеулер; COLLECTED TRANSACTION — жинақталған транзакция; ONE ROWSET — бір rowset.\n\n",
+      "target_hash": "46369c2ade7e8903aaf97ee7c64660b34fc69f0e59769868d949adbe6cbc470e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "cd4c230dab9e463541b98cdd6b39129be0bd9461306f1483df8a544e5010f024",
+          "target_hash": "46369c2ade7e8903aaf97ee7c64660b34fc69f0e59769868d949adbe6cbc470e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.009cdb0b900547568d706074a0ebdf44",
+      "source_hash": "46448d82296a51dd44cfcb5dfd66e1cd1dcbc6ea4639776e7ea2d845049d154f",
+      "target_text": "## 6.7 Doris көріністі қашан қолданады\n\nСұраулар кесте атауын қолдана береді; Doris нәтижені көрініс жолдарынан есептей алса, сұрауды көріністі оқуға қайта жазады. `EXPLAIN` шешімді көрсетеді: сканерлеу `otel_traces(otel_traces)` орнына `otel_traces(server_minutes_mv)` оқиды, жоспар бөлімі қаралған әр көріністі таңдалған не жарамсыз деп себебімен тізеді. 6-зертханалық жұмыста:\n\n| Сұрау | Көріністі қолдана ма? | Себебі |\n| --- | --- | --- |\n| Сервис пен минуттың сұраулары және сәтсіздері | Иә | Өрнек, сүзгі, агрегаттар бірдей |\n| Сол есеп тек сервис бойынша не бір сервиске | Иә | Doris көрініс жолдарын ірірек түйіршіктілікке қосады |\n| `date_trunc(end_time, 'minute') >= ...` арқылы | Иә | Сүзгі көрініс өрнегін қолданады |\n| `end_time >= ...` арқылы | Жоқ: `Rewrite compensate predicate by view fail` | Көрініс `end_time` емес, минутты сақтайды |\n| Тек сервер емес, әр span | Жоқ: `Predicate compensate fail` | Көріністе тек сервер span-дары бар |\n| `MAX(duration)` | Жоқ: `Query function roll up fail` | Көрініс ұзақтықты сақтамайды |\n| `DATE_FORMAT(end_time, ...)` бойынша топтау | Жоқ: `View dimensions doesn't not cover the query dimensions` | Мағынасы бір болса да, өрнек басқа |\n\nСәйкестендіру құрылымға негізделеді: Doris сұрау өрнектері, сүзгілері мен агрегаттарын көрініспен салыстырады, әртүрлі жазылған екі өрнектің мағынасы бір екенін дәлелдемейді. Бір пішімде тақталар мен ескертулер қайта-қайта орындайтын сұрауларға көрініс тиімді; оларды көрініс өрнектерімен жазып, жоспарларын тексеріңіз.\n\n| Қажеттілік | Құрал |\n| --- | --- |\n| Сөз не мән бойынша жол табу | Кері индекс |\n| Жиі сұралатын, әрдайым өзекті бір қорытынды | Синхронды материалданған көрініс |\n| Өз сақтау мерзімі бар не бірнеше көзден жүктелетін қорытынды | AGGREGATE кестесі және жүктеу тапсырмасы |\n| Сол жолдарға аз диск | Кесте құрылғанда таңдалған сығу |\n\n![Жүктеулер бастапқы кесте мен оның синхронды минуттық көрінісін бір транзакцияда жаңартады; сәйкес санақ сұраулары көріністі, ұзақтық сұрауы бастапқы деректі қолданады.](images/03-synchronous-mv-lifecycle-and-rewrite.png)\n\n*Синхронды көрініс кестесімен бірге өзекті болып, өзі сақтайтын ақпараты жеткілікті сұрауларға қызмет етеді.*\n\nСурет белгілері: A SYNCHRONOUS VIEW ALWAYS CURRENT — синхронды көрініс әрдайым өзекті; LOAD — жүктеу; BASE INDEX — негізгі индекс; RAW SPANS — бастапқы span-дар; BUILD JOB — құру тапсырмасы; FINISHED — аяқталды; SERVER SPANS ONLY — тек сервер span-дары; MINUTE + SERVICE — минут пен сервис; SAME TRANSACTION — бір транзакция; COUNTS BY SERVICE + MINUTE — сервис пен минут санақтары; COVERED — көрініс қамтиды; BASE INDEX REQUIRED — негізгі индекс қажет. Apache Doris, otel_traces, server_minutes_mv, COUNT, SUM және MAX(duration) — өнім, кесте, көрініс және SQL өрнектері.\n\n",
+      "target_hash": "34b66972ea1080689c3f0cdd865656fe385cd5610903557f4b392fc37565749a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "46448d82296a51dd44cfcb5dfd66e1cd1dcbc6ea4639776e7ea2d845049d154f",
+          "target_hash": "34b66972ea1080689c3f0cdd865656fe385cd5610903557f4b392fc37565749a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a88db215bc1a45bda134ec399d99fff1",
+      "source_hash": "9e800e3eb19fe3f71c6947604f21a4313bb2a77a6e3185cb1da72bbd7a853232",
+      "target_text": "## Дереккөздер\n\n- [Apache Doris: деректі сығу](https://doris.apache.org/docs/4.x/table-design/column-compression/)\n- [Apache Doris: compaction](https://doris.apache.org/docs/4.x/admin-manual/trouble-shooting/compaction/) және [CREATE TABLE қасиеттері](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/table-and-view/table/CREATE-TABLE/)\n- [Apache Doris: Group Commit](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)\n- [Apache Doris: журнал сақтау және талдау](https://doris.apache.org/docs/4.x/observability/log/)\n- [Apache Doris: кері индекс](https://doris.apache.org/docs/4.x/table-design/index/inverted-index/overview/) және [іздеу операторлары](https://doris.apache.org/docs/4.x/table-design/index/inverted-index/search-operators/)\n- [Apache Doris: Query Profile](https://doris.apache.org/docs/4.x/query-acceleration/query-profile/)\n- [Apache Doris: синхронды материалданған көріністер](https://doris.apache.org/docs/4.x/query-acceleration/materialized-view/sync-materialized-view/)\n",
+      "target_hash": "8708c0b9ab7bfc758a32cb05d00e0e8f691b8937e5a53104031c9a901437ea49",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9e800e3eb19fe3f71c6947604f21a4313bb2a77a6e3185cb1da72bbd7a853232",
+          "target_hash": "8708c0b9ab7bfc758a32cb05d00e0e8f691b8937e5a53104031c9a901437ea49"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0d1aece4202542ec8784d51824eef161",
+      "source_hash": "58a83104e74fd8bd6b8b21ecc7666bf7a5b77d200795f61f48c97cf310b43c0a",
+      "target_text": "## Модуль мақсаты\n\nИнцидент іздеулері мен қорытындыларын жылдам, телеметрия сақтауын үнемді ететінді өлшеу: журнал мәтіндерінің кері индексі, инцидент санақтарының материалданған көрінісі және compaction мен сығуға арналған кесте қасиеттері.\n\n",
+      "target_hash": "2ce3426d107ec3e74ed2790e2e1f2ac926ee6caa11972faa3ab6044dff7bae56",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "58a83104e74fd8bd6b8b21ecc7666bf7a5b77d200795f61f48c97cf310b43c0a",
+          "target_hash": "2ce3426d107ec3e74ed2790e2e1f2ac926ee6caa11972faa3ab6044dff7bae56"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d754ce615671416bb750832612e7c422",
+      "source_hash": "aeb7fb382a69a89cc525dceee5a8729640af3806edf85405169b7e99dacdfca9",
+      "target_text": "## 6.4 Журнал іздеуіне арналған кері индекстер\n\n**Кері индекс** бағанның әр мәнін сол мән бар жолдарға сәйкестендіреді. Парсері бар мәтін бағанында мәндер — сөздер:\n\n- **Парсер** мәтінді токендерге бөледі. `unicode` көп тілде сөздерге бөліп, тыныс белгілерін алып тастайды; `english` пен `chinese` — сол тілдерге арналған баламалар.\n- `lower_case` токендерді кіші әріппен индекстеп, регистрді елемеуге мүмкіндік береді.\n- `support_phrase` әр токеннің жолдағы орнын да сақтайды; фразалық іздеуге сол керек.\n\n`TOKENIZE(text, '\"parser\" = \"unicode\", \"lower_case\" = \"true\"')` `idx_body` мәтіннен жасайтын токендерді көрсетеді: `\"POST /api/checkout HTTP/1.1\" 500` қатынас журналы жолы `post`, `api`, `checkout`, `http`, `1.1`, `500` болады. Іздеулер токендерді салыстырады:\n\n| Іздеу | Мәтінінде не бар жолдар сәйкеседі |\n| --- | --- |\n| `body MATCH_ANY 'checkout payment'` | Токендердің кез келгені |\n| `body MATCH_ALL 'checkout payment'` | Токендердің бәрі, кез келген жерде |\n| `body MATCH_PHRASE 'POST /api/checkout'` | Токендер қатар, осы ретпен |\n\nИндекспен Doris токендер мен орнын іздеп, тек сәйкес жолдарды оқиды. Онсыз әр жолдың мәтінін оқып, токендерге бөліп, салыстыруы керек. `LIKE '%...%'` әрдайым солай істейді: ол таңбаларды салыстырады, еш кері индекс жауап бере алмайды. Басқа баған индекстерінде парсер жоқ: әр мәнді тұтас сақтап, `service_name = 'cart'` сияқты `=`, `IN` және аралықтарға жауап береді.\n\n![Парсер журнал мәтінін кіші әріпті токендер мен орындарға айналдырады; фразалық іздеу кері индекспен қатар, ретімен тұрған токендерді таңдап, тек сәйкес жолдарды оқиды.](images/02-inverted-index-token-lookup.png)\n\n*Фразалық іздеу индекстегі токендерді ретімен салыстырады, LIKE журнал мәтінін тексеруі керек.*\n\nСурет белгілері: INVERTED INDEX PHRASE SEARCH — кері индекстегі фразалық іздеу; LOG EVENT — журнал оқиғасы; TOKENIZE — токендерге бөлу; unicode + lowercase — unicode және кіші әріп; TOKENS + POSITIONS — токендер мен орындары; INVERTED INDEX — кері индекс; POSTING LISTS — токен бар жолдар тізімдері; MATCHING ROWS — сәйкес жолдар; READ ONLY MATCHES — тек сәйкестіктерді оқу; ADJACENT + IN ORDER — қатар әрі ретімен; READ LOG TEXT — журнал мәтінін оқу. POST /api/checkout HTTP/1.1 500, post/api/checkout/http/1.1/500 токендері, 1–6 орындары, MATCH_PHRASE және LIKE — нақты мәтін мен SQL белгілері.\n\n",
+      "target_hash": "4a543abcfa5985b53b281663685ea3a59db4a8b432b10a2d5cd66f6aa613545a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "aeb7fb382a69a89cc525dceee5a8729640af3806edf85405169b7e99dacdfca9",
+          "target_hash": "4a543abcfa5985b53b281663685ea3a59db4a8b432b10a2d5cd66f6aa613545a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1830a6511528466eaee9f5c474aabe0a",
+      "source_hash": "505c2c242c9d64c188c1e1d62aae66c0d11272b20ccad499582a129637198baa",
+      "target_text": "## 6.5 Іздеуді Query Profile арқылы өлшеу\n\n**Query Profile** сұраудың әр операторы не істегенін тіркейді. Оны `enable_profile = true` сеанс айнымалысымен, сканерлеу жол санауыштарын қосатын `profile_level = 2` деңгейінде жинаңыз; қайталанған сұрау шынымен кестені сканерлеуі үшін SQL кэші мен шарт кэшін өшіріңіз. Сұраудан кейін бірден `SELECT last_query_id()` оның әрі профильдің ID-ін береді; `SHOW QUERY PROFILE` профильдерді тізеді, FE HTTP API мәтінді қайтарады.\n\nМәтінде әр сканерлеу данасы `DetailProfile` ішіндегі `SegmentIterator` астында қарастырған сегменттерінің әр жолына не болғанын хабарлайды:\n\n| Санауыш | Жолдарға не болды |\n| --- | --- |\n| `RowsStatsFiltered` | Оқылмай өткізілді: zone map (бағанның сегмент пен беттегі ең кіші/үлкен мәні) сәйкестікті жоққа шығарды |\n| `RowsInvertedIndexFiltered` | Оқылмай өткізілді: кері индекс сәйкес емес екенін көрсетті |\n| `RowsVectorPredFiltered` | Оқылды, кейін баған мәнінің сүзгісі алып тастады |\n| `RowsExprPredFiltered` | Оқылды, кейін `LIKE` не индекссіз `MATCH` сияқты сүзгі өрнегі алып тастады |\n| `RowsRead` | Оқылып, қалдырылды |\n\nСәтсіз checkout іздеуінде 6-зертханалық жұмыс индекспен `RowsInvertedIndexFiltered` астында шамамен 80,000, `RowsRead` астында 27 жол; индекссіз сол 80,000 жолды `RowsExprPredFiltered` астында өлшеді. Индекссіз Doris 27 табу үшін кестенің әр хабарын оқыды. Екі жайт:\n\n- Индекстелген сүзгілі `COUNT(*)` тек индекстен жауап ала алады (жоспарда `COUNT_ON_INDEX`), сонда `RowsRead` шынымен оқылған жол санын бермейді. Мұны болдырмауға 6-зертханалық жұмыс сервис бойынша топтайды.\n- Санауыштар тек осы сұраудың осы сканерлеуі не істегенін дәлелдейді. Сұрау қаншалықты жылдамдағанын, басқа қайда уақыт жұмсағанын не басқа сұрау не істейтінін көрсетпейді. Ондай тұжырым жасайтын әр сұрауды өлшеңіз.\n\n",
+      "target_hash": "c9300b59627f331a86e942a70952785827ca1969793f3a4fcbab4843c5d7b289",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "505c2c242c9d64c188c1e1d62aae66c0d11272b20ccad499582a129637198baa",
+          "target_hash": "c9300b59627f331a86e942a70952785827ca1969793f3a4fcbab4843c5d7b289"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9fc7c96d540d4f7495e62edb01b2bf65",
+      "source_hash": "390146519c2a81b1620b16732f31aa88fd431e04935e5d6df9624ae4c1d990fc",
+      "target_text": "## 6-тест\n\n[6-тест: Кесте қасиеттері, материалданған көріністер және индекстер](quiz06_properties_mv_and_indexes.ipynb) файлын ашыңыз. Бір жауап таңдалатын алты сұрақ бар; іске қосылған орта қажет емес.\n\nКелесі модуль: [7-модуль: Трассаларды талдау және Litefuse](../module07-data-analysis-litefuse/course.md).\n\n",
+      "target_hash": "25982e3a9d55c98b78456fd63c07d048a640ea90dc94955cbef77b7d8e7d056e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "390146519c2a81b1620b16732f31aa88fd431e04935e5d6df9624ae4c1d990fc",
+          "target_hash": "25982e3a9d55c98b78456fd63c07d048a640ea90dc94955cbef77b7d8e7d056e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3dd2734bb72e44c599d751040e15405c",
+      "source_hash": "1cf822de95c67fefb835134789bba0d23fff22aac3e1725324ba4c2de64710e1",
+      "target_text": "## Қорытынды\n\n- `SHOW CREATE TABLE` анықтаманы көрсетіп, әдепкі мәндерді көрсетпейді: экспорттаушының `compression = zstd` мәні жоқ, өйткені ZSTD — 4.x әдепкісі.\n- Әр жүктеу rowset қосады, compaction оларды біріктіреді; уақыт қатары саясаты қосылған деректі шамамен бір рет біріктіреді. Group Commit шағын жүктеулерді жинайды, бірақ тек тақырып не кестенің `group_commit_mode` мәнімен оны қолданатындарына әсер етеді.\n- Әділ сығу салыстыруы тек алгоритмді өзгертеді, бірдей жолды бірдей жүктеп, BE өлшемін күтеді. Курс журналдарында LZ4 ZSTD-ден шамамен 1.5–1.6 есе орын алды.\n- Парсері бар кері индекс әр токенге сол токен бар жолдарды тізеді; `MATCH_ANY`, `MATCH_ALL`, `MATCH_PHRASE` токендерді салыстырады, фразаларға `support_phrase` қажет. Индекссіз не `LIKE` арқылы Doris әр жол мәтінін оқиды.\n- Query Profile жол санауыштары осы сұраудың әр сканерлеу жолы қайда кеткенін көрсетеді: zone map не индекс өткізді, оқылып тасталды не оқылып қалды. Бұл жылдамдық өлшемі емес.\n- Синхронды материалданған көріністі тапсырма құрып, кейін әр жүктеу жаңартады; ол кестенің AGGREGATE индексі ретінде сақталады. Сұрау өрнектері, сүзгілері мен агрегаттары одан есептелсе, Doris оны қолданады; мұны `EXPLAIN` көрсетеді.\n\n",
+      "target_hash": "ee169f6fe549982e83280a55258e66f12f1c82cfaae191a98ec06ef5d87888ab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "1cf822de95c67fefb835134789bba0d23fff22aac3e1725324ba4c2de64710e1",
+          "target_hash": "ee169f6fe549982e83280a55258e66f12f1c82cfaae191a98ec06ef5d87888ab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.24d94dd8164d4c4e96c6c24eb6a8c6d6",
+      "source_hash": "9769e0733fa493adee0800826f31651c43364839ed1afa63adcf0dbe8100b0b0",
+      "target_text": "## 6.1 Кесте анықтамасы не айтады\n\n3-модульде қатынас журналынан сәтсіз checkout таптыңыз, 4-модульде инцидент санақтарын өз кестеңізде сақтадыңыз. Мұның жылдамдығы мен құны кесте анықтамасына байланысты. `SHOW CREATE TABLE otel_logs` кестені қазіргі күйінде құратын, шамамен 60 жолдық команданы қайтарады. Жоғарыдан оқыңыз:\n\n- **Бағандар.** `body` — мәтін. `resource_attributes` пен `log_attributes` — `VARIANT`: Doris атрибуттың әр кілтін жеке баған ретінде, `variant_max_subcolumns_count` шегіне, 2048 кілтке дейін сақтайды. Сондықтан `log_attributes['log.file.name']` сияқты бір кілт сұрауы тек сол кілтті оқиды.\n- **Индекстер.** Әр бағанға бір кері индекс. Тек `idx_body` қасиеттері бар: `\"parser\" = \"unicode\"`, `\"lower_case\" = \"true\"`, `\"support_phrase\" = \"true\"` (6.4-бөлім).\n- **Кілт, бөлімдер, bucket-тер.** `DUPLICATE KEY(timestamp, service_name)`, динамикалық күндік бөлімдер және `RANDOM BUCKETS AUTO` (4 және 5-модульдер).\n- **Қасиеттер.** Динамикалық бөлімдеу, compaction саясаты мен баптаулары (6.2-бөлім), `group_commit_interval_ms`, `group_commit_data_bytes` және экспорттаушы нақты орнататын `inverted_index_storage_format` = `V2`.\n\nАнықтама әр баптауды тізбейді. `SHOW CREATE TABLE` әдепкі мәні бар қасиеттерді көрсетпейді. Экспорттаушы кестені `\"compression\" = \"zstd\"` арқылы құрған; ZSTD Doris 4.x әдепкі сығуы болғандықтан, жол жоқ. Кесте не істейтінін білу үшін анықтамасын оқып, нұсқаңыздың әдепкілерін біліңіз.\n\n",
+      "target_hash": "daa922cd826e236a98a1435a2ecf5d316304a80e73b755e3dec7984fa189c1d6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m06-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 6 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code and expected outputs, and all six Quiz questions/options/explanations with answer mapping. Checked omitted defaults, compaction versus Group Commit opt-in, fair compression layout/report delay and space-not-speed claim, token positions and LIKE case behavior, scan-counter dispositions/cache exclusions/COUNT_ON_INDEX caveat, MV build FINISHED and same-load transaction, duplicate-name limitations, structural rewrite exclusions and aggregate-index physical counts versus final global groups. Clarified schedule wording, omitted-default wording, skipped nonmatching rows and same-load transaction. Two code-only SQL options intentionally retain their original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9769e0733fa493adee0800826f31651c43364839ed1afa63adcf0dbe8100b0b0",
+          "target_hash": "daa922cd826e236a98a1435a2ecf5d316304a80e73b755e3dec7984fa189c1d6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

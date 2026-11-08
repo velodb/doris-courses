@@ -1,0 +1,416 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.08bcc5b5f71447b4955bee5ab3956e19",
+      "source_hash": "605d404212128cebbe3b26e9e440df8f8d617bd9f93b33be625bc23b06b7788f",
+      "target_text": "<div>\n  <div>2-ЗЕРТХАНАЛЫҚ ЖҰМЫС · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Сақтауды және жазу пакеттерін бақылау</div>\n</div>\n\n1-модульдегі он тапсырысты анықтамасы бірдей екі кестеге жазыңыз: біреуіне он жолдан тұратын бір пакет ретінде, екіншісіне бір жолдан он жазу ретінде. Екі кесте бірдей бизнес нәтижесін беруі керек; содан кейін екі әдістің сақтауда не қалдырғанын, tablet нұсқалары мен rowset-ін қарайсыз және сұраудың не жоспарлағанын, ал сканерлеудің іс жүзінде не оқығанын көру үшін `EXPLAIN` мен Query Profile қолданасыз. Шамамен 20 минут жоспарлаңыз.\n\n**2-модуль: Doris сақтау архитектурасы және жазу механизмдері** · [Сабақ](course.md) · [Тест](quiz02_storage_and_write_batches.ipynb) · [Курстың README файлы](../../README.md)\n",
+      "target_hash": "779c9e8471a5766a0dfae73fefd059f280ab2241faf925a65e013fa175b8b837",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "605d404212128cebbe3b26e9e440df8f8d617bd9f93b33be625bc23b06b7788f",
+          "target_hash": "779c9e8471a5766a0dfae73fefd059f280ab2241faf925a65e013fa175b8b837"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f253021b42a64e82a8a6f6810b68401a",
+      "source_hash": "b49d7c021b5d390a6ce3d89de12032bc3298cc3d2e5a50afca46ba189b9937d6",
+      "target_text": "## Зертханалық жұмыстың қамту аясы\n\nБұл жұмыс зертханалық дерекқорыңыздағы тек `orders_batch` және `orders_rowwise` кестелерін қайта жасайды. 1-зертханалық жұмыстың курс сынақ ортасы қажет, басқа кесте керек емес. Фондық compaction rowset-терді қайта ұйымдастыруды жалғастырады, сондықтан сақтаудың кей мәліметтері қараған уақытқа байланысты; әр «Күтілетін нәтиже» қайсысы екенін көрсетеді.\n",
+      "target_hash": "a600b3cac4bf18c1a1eaf9b13753da9f40ab78e09dbabe362c03912271f67766",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "b49d7c021b5d390a6ce3d89de12032bc3298cc3d2e5a50afca46ba189b9937d6",
+          "target_hash": "a600b3cac4bf18c1a1eaf9b13753da9f40ab78e09dbabe362c03912271f67766"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f387f936c4274b59b10ef2038e2d4572",
+      "source_hash": "e73d47f1e008d08fe5a5557dce0128545e9325cc01486a3c8dd6617c107dc7c2",
+      "target_text": "## 1. Бірдей он тапсырысты екі тәсілмен жазу\n\nЕкі кестеде бірдей бағандар, бір бакет және бір реплика бар; тек жазу тәсілі өзгеше. `orders_batch` он жолдық бір `INSERT`, ал `orders_rowwise` әрқайсысы бір жолдық он `INSERT` операторын алады. Әр `INSERT` — бір жүктеу транзакциясы: ол бекітілгенде, жолдары көрінеді және олар орналасқан tablet-ке бір **нұсқа** қосады.\n\nҚосылым осы сеанс үшін `group_commit = 'off_mode'` орнатқан, сондықтан әр оператор жеке бекітіледі. 5-модуль осындай көптеген шағын жазуды бір транзакцияға біріктіре алатын Group Commit механизмін көрсетеді.\n",
+      "target_hash": "421848705b0142826deaa34339fcfdc1198317ad5e2dd496564834c431fac604",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "e73d47f1e008d08fe5a5557dce0128545e9325cc01486a3c8dd6617c107dc7c2",
+          "target_hash": "421848705b0142826deaa34339fcfdc1198317ad5e2dd496564834c431fac604"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.56179b9795414225845223aa69fc851f",
+      "source_hash": "a54fce43460890a283bd1391f64b4abfa9c6309935b6c259aa76cdd7b5e66522",
+      "target_text": "## 3. Бөлім мен tablet нұсқалары\n\n`SHOW PARTITIONS` және `SHOW TABLETS` FE метадеректерін оқиды. `PARTITION BY` жоқ кестенің де кестемен аттас бір бөлімі бар, ал `BUCKETS 1` сол бөлімге бір tablet береді. Бөлімнің `VisibleVersion` және tablet-тің `Version` өрістері бекітілген жүктеулерді санайды: бос tablet 1-нұсқадан басталып, әр жүктеу бір нұсқа қосады.\n",
+      "target_hash": "c17da7909566f069490a9b89f25ed4dde2e212176c2da0041c8af46d5bf173d5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "a54fce43460890a283bd1391f64b4abfa9c6309935b6c259aa76cdd7b5e66522",
+          "target_hash": "c17da7909566f069490a9b89f25ed4dde2e212176c2da0041c8af46d5bf173d5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1ad27c64a80d45158d0ba5cfadccebf0",
+      "source_hash": "20ba2401b6648a98f999206d1420b6efd0327572b659ded516b133e9d1987901",
+      "target_text": "## 2. Алдымен бизнес нәтижесін тексеру\n\nСақтауды салыстырмас бұрын екі жазу тәсілі де бірдей тапсырыстарды сақтағанын тексеріңіз: 1-модульдегідей бірдей жол саны және салыққа дейінгі сома — 10 жол және 12220.60. Сақтаудың өзгеше болуы ешқашан жауаптың өзгеше болуын білдірмеуі керек.\n",
+      "target_hash": "918b4edf8fd96743fb88163cb1d1e6f701269f7ab6c521f7eceb2d3c81cb94e2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "20ba2401b6648a98f999206d1420b6efd0327572b659ded516b133e9d1987901",
+          "target_hash": "918b4edf8fd96743fb88163cb1d1e6f701269f7ab6c521f7eceb2d3c81cb94e2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b3a7ea0b2dce492da7eb1095d3bf7e58",
+      "source_hash": "287be9ba579da3f5db56c26ac88e1bac765105dae41df87d8cc1dd8fafb56dc1",
+      "target_text": "## Жұмысты аяқтау шарттары\n\n- екі кестеде де 10 тапсырыс және 12220.60 бар, әрі нұсқалары неге өзгеше екенін айта аласыз: бір пакет үшін 2, он жазу үшін 11;\n- екі кестенің rowset-ін қарап, `[2-11]` нені білдіретінін және compaction нені өзгерткенін түсіндіре аласыз;\n- жоспардан сұрау не оқуды көздейтінін, ал Profile-дан сканерлеу не оқып, нені өткізіп жібергенін анықтай аласыз.\n\nОн жол — оқу үлгісі: ол өндірістік жылдамдықты емес, механизмдерді көрсетеді. Жазудың өткізу қабілетін өлшеу үшін үлкен деректер, тұрақты параллельдік және уақыт бойы бақылау қажет.\n",
+      "target_hash": "d58c40dbfab97440cecdabbe6764e583d5634fe57ebe5c058a59c900cdcbdb02",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "287be9ba579da3f5db56c26ac88e1bac765105dae41df87d8cc1dd8fafb56dc1",
+          "target_hash": "d58c40dbfab97440cecdabbe6764e583d5634fe57ebe5c058a59c900cdcbdb02"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d3c95e8681d84585bfbcb30a08740b30",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған күйде. Салыстыру үшін ашыңыз немесе орындаңыз.\n",
+      "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0deba8bc56cb4ed0b8f100317e7b32c0",
+      "source_hash": "f259ccb765909a6f33d0da634b0f633d883e6b93eb9f2ea9440dee153006e998",
+      "target_text": "## 6. Жаттығу: екі кестедегі бір күн\n\nЕкі кестедегі 2013-01-01 тапсырыстарын сұрап, бір нәтижеде көрсетіңіз; әр кесте үшін 5 тапсырыс және 3944.20 күтіледі. Содан кейін 5-қадамдағыдай Profile-дарды қосып, `SELECT COUNT(*), SUM(order_amount) FROM orders_batch WHERE order_date = '2013-01-01'` сканерлеу есептегіштерін оқыңыз және сандарды түсіндіріңіз: сұрыптау кілті бұл сүзгіге көмектесе ме?\n",
+      "target_hash": "2eedf6524bb30652e9da22495b0cd0ddad63ce15af29d3643fdc1726e90805a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "f259ccb765909a6f33d0da634b0f633d883e6b93eb9f2ea9440dee153006e998",
+          "target_hash": "2eedf6524bb30652e9da22495b0cd0ddad63ce15af29d3643fdc1726e90805a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4f11551d73e5443e9d47af7e71ed4c3a",
+      "source_hash": "dccbd54b8d3475ceeebc9e658c20f433d814c655f6a2bacb243e35c92ccb191e",
+      "target_text": "## Келесі қадам\n\n[2-тест: Doris сақтау архитектурасы және жазу механизмдері](quiz02_storage_and_write_batches.ipynb) файлын ашыңыз, содан кейін [3-модуль: Doris кесте модельдері, бөлімдеу және бакеттерге бөлу](../module03-table-design/course.md) бөліміне өтіңіз.\n",
+      "target_hash": "4bcbb700dbb3fac63b6db06b0034edd6bc3cb52fc9db12f00f093f7f55849ce0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "dccbd54b8d3475ceeebc9e658c20f433d814c655f6a2bacb243e35c92ccb191e",
+          "target_hash": "4bcbb700dbb3fac63b6db06b0034edd6bc3cb52fc9db12f00f093f7f55849ce0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a8c6952eb69549a9b92a630fe99f6d73",
+      "source_hash": "8eb82ce9bb1325e3d5d019c1652ea1dbb3f62e6a66ee2dfdaec34a2ddc53ef70",
+      "target_text": "**Күтілетін нәтиже**\n\n`batch` және `rowwise`, әрқайсысында 5 тапсырыс және 3944.20. Күн сүзгісінің сканерлеуі: `ScanRows` 10, `RowsRead` 5, `RowsVectorPredFiltered` 5; кілт ауқымы да, zone map та ештеңені өткізіп жібермейді. `order_date` сұрыптау кілті `order_id` құрамына кірмейді, сондықтан индекс сканерлеуді тарылта алмайды, ал екі күн бір сегментте болғандықтан, оның ең кіші және ең үлкен күндері де сегментті алып тастауға мүмкіндік бермейді. 3-модуль тапсырыстарды күн бойынша бөлімдейді, сондықтан бір күннің сұрауы екінші күннің деректерін өткізіп жібереді.\n",
+      "target_hash": "81ee696f7277a4c2a044260b02c53395a4fd47bbe7807ea516969e668e4b90dc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "8eb82ce9bb1325e3d5d019c1652ea1dbb3f62e6a66ee2dfdaec34a2ddc53ef70",
+          "target_hash": "81ee696f7277a4c2a044260b02c53395a4fd47bbe7807ea516969e668e4b90dc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.401f01921baf4f9fbd35ed27d5afe829",
+      "source_hash": "18f4ef75ba871de71419ae94c0a04841504670f4d6dd5c5258244f84a32975e6",
+      "target_text": "**Күтілетін нәтиже**\n\nЖоспардың сканерлеу түйінінде `orders_batch`, `order_id = 1` предикаты және `partitions=1/1`, `tablets=1/1` бар: бұл оқылғанның саны емес, жоспар. Содан кейін сұрау идентификаторлары бар үш оператор, олардың Profile-дарына арналған curl сұраулары және әр сұрауға бір жолы бар кесте көрсетіледі:\n\n| Сұрау | rows_returned | ScanRows | RowsKeyRangeFiltered | RowsVectorPredFiltered |\n| --- | ---: | ---: | ---: | ---: |\n| `WHERE order_id = 1`, екі баған | 1 | 1 | 9 | 0 |\n| `WHERE customer_id = 832`, екі баған | 1 | 10 | 0 | 9 |\n| `WHERE customer_id = 832`, барлық баған | 1 | 10 | 0 | 9 |\n\nҚорытындыда әр `query_id` және оның `profile_url` мәні бар; дәл сол FE Profile-ды ашу үшін астындағы сәйкес ID-ді басыңыз (`root` пайдаланушысы, бос құпиясөз). Сілтеме сіз баптаған FE HTTP портын қолданады. Кіру FE басты бетін ашса, Profile-ға оралу үшін сол ID-ді тағы басыңыз. Қайта орындағаннан кейін Profile тізімінен ұқсас SQL арқылы таңдаудың орнына жаңа жолдың ID-ін пайдаланыңыз. Есептегіштер өзгеше болса, ID мен Profile бастапқы мәтінін сақтап, BE есеп беруді аяқтағаннан кейін сол Profile-ды қайта оқыңыз.\n\nҮшеуі де 1-тапсырысты қайтарады, бірақ әртүрлі жұмыс істейді. Сұрыптау кілтінің бағанына қойылған сүзгі индекске сканерлеуді бір жолға тарылтуға мүмкіндік береді. Кілтке кірмейтін `customer_id` сүзгісі он жолдың бәрін оқытып, тоғызын алып тастайды. Бірдей сүзгімен үшінші сұрау екі бағанның орнына алты бағанның бәрін оқиды, сондықтан оның `ScanBytes` мәні айқын жоғары, бірнеше жүз байтқа артық: бағандық сақтау тек сұрау қолданатын бағандарды оқиды. Он жолда бұл көлемдер өте аз және уақыттар жылдамдық туралы ештеңе айтпайды; есептегіштер сұраудың қандай жұмыс істейтінін көрсетеді, сол есептегіштер деректермен бірге өседі.\n",
+      "target_hash": "271b0ccc69009b43e95b6cb560c83f64a037febffac6f1aea799c0b047212bff",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "18f4ef75ba871de71419ae94c0a04841504670f4d6dd5c5258244f84a32975e6",
+          "target_hash": "271b0ccc69009b43e95b6cb560c83f64a037febffac6f1aea799c0b047212bff"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e90fee07017842568e0e106a3b6e17a7",
+      "source_hash": "d29fd09bf9da1b2bc525c7dbf3fc9eb559f0bc725df0e125c8fadd06d114026e",
+      "target_text": "## 5. Жоспар және орындалған жұмыс: EXPLAIN және Query Profile\n\n`EXPLAIN` FE сұрауға құрған жоспарды орындамай көрсетеді: сканерленетін кестені, бағандарды және сүзгіні. **Query Profile** сұрау орындалғанда әр оператор іс жүзінде не істегенін тіркейді: сканерлеу қанша жол оқыды, қаншасын және қалай өткізіп жіберді, қанша байт оқыды.\n\nКелесі ұяшық осы сеанс үшін Profile-дарды қосып, қайталанған сұрау шынымен сканерлеуі үшін SQL кэшін өшіреді және кейін екі параметрді де қалпына келтіреді. `lab.scan_profile(query)` сұрауды орындайды, `SELECT last_query_id()` арқылы сұрау идентификаторын алады (сұраудың Profile ID-і — оның сұрау ID-і), FE-ден Profile мәтінін жүктеп, сканерлеу жолдарының есептегіштерін қосады. Ол сұрыптау кілті `order_id` болатын `orders_batch` кестесінде үш сұрауды салыстырады:\n\n| Есептегіш | Мағынасы |\n| --- | --- |\n| `ScanRows` | Сканерлеу сегменттерінен оқыған жолдар |\n| `RowsKeyRangeFiltered` | Сұрыптау кілтінің индексі сканерлеуге оқымай өткізіп жіберуге мүмкіндік берген жолдар |\n| `RowsStatsFiltered` | Zone map арқылы, яғни әр бет пен сегменттің ең кіші және ең үлкен мәндері арқылы өткізіп жіберілген жолдар |\n| `RowsVectorPredFiltered` | Оқылып, кейін сүзгі алып тастаған жолдар |\n| `RowsRead` | Сүзгіден өткен жолдар: `ScanRows` минус `RowsVectorPredFiltered` |\n\nFE Web UI сол Profile-дарды көрсетеді: `http://127.0.0.1:51030` мекенжайын (немесе `DW_FE_HTTP_PORT` ішіндегі портты) ашып, бос құпиясөзбен `root` ретінде кіріңіз және **QueryProfile** таңдаңыз.\n",
+      "target_hash": "89cbf848ef38222ffe3672bca6003d9b2034dbea2eca8c3890a7ab3b33b644b1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "d29fd09bf9da1b2bc525c7dbf3fc9eb559f0bc725df0e125c8fadd06d114026e",
+          "target_hash": "89cbf848ef38222ffe3672bca6003d9b2034dbea2eca8c3890a7ab3b33b644b1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c05350014bf1481489321fb466439aa7",
+      "source_hash": "4f2e6bab1200a5b535236918a4bc94ce5f6ce423f346b1c5b9d9c7cd9dd7bce0",
+      "target_text": "**Күтілетін нәтиже**\n\nЕкі жасыл белгі және екі жол — `batch` және `rowwise`, әрқайсысында 10 тапсырыс және 12220.60.\n",
+      "target_hash": "bef0df8702633c302c10437ca9cbb760c75361f758d62a16ac7ff8469517421f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "4f2e6bab1200a5b535236918a4bc94ce5f6ce423f346b1c5b9d9c7cd9dd7bce0",
+          "target_hash": "bef0df8702633c302c10437ca9cbb760c75361f758d62a16ac7ff8469517421f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.56499d2791774c61b3361c839b5959fb",
+      "source_hash": "166e159a31c3783e1fd5317618ef987e640b0a2b177697645c5f7baf6d5cfad3",
+      "target_text": "**Күтілетін нәтиже**\n\nTablet `orders_rowwise` кестесіне жатады, ал оның жалғыз BE-дегі репликасының нұсқасы 11, күйі `NORMAL`, `CompactionStatus` URL-і бар.\n\n`orders_batch` кестесінде екі ағымдағы rowset бар: 0 сегменті бар `[0-1]` — әр tablet-тің бос бастапқы күйі және 1 сегменті, шамамен 1.5 KB көлемі бар `[2-2]` — пакеттің он жолы.\n\n`orders_rowwise` үш сәттің бірін көрсетеді. Жазулардан кейін бірден әрқайсысы шамамен 1.5 KB болатын `[2-2]` мен `[11-11]` арасындағы он ағымдағы rowset көрінеді. Әдетте бір-екі секундтан кейін жинақтаушы compaction оларды біріктіреді: бір ағымдағы `[2-11]` rowset-і және ескірген ретінде тізілген он ескі rowset, оларды BE бірнеше минуттан кейін жояды. Одан кейін тек `[0-1]` және `[2-11]` қалады. `[2-11]` — он тапсырыс емес, нұсқалар ауқымы. Үш сәттің бәрінде 2-қадамдағы сұрау бірдей он тапсырысты қайтарады.\n",
+      "target_hash": "783a6264dc1e1b390c574ce6b4163255cd147d07d02949e9a7e24d9bfa884277",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "166e159a31c3783e1fd5317618ef987e640b0a2b177697645c5f7baf6d5cfad3",
+          "target_hash": "783a6264dc1e1b390c574ce6b4163255cd147d07d02949e9a7e24d9bfa884277"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.02c051107b3e46bdaa5095d56ff7373e",
+      "source_hash": "8c88e661bcf5dfa528d132595e118a143b918b13691f068ad985c808fd63d77b",
+      "target_text": "## 4. Rowset және compaction оларды қалай өзгертеді?\n\nӘр жүктеу tablet ішіне **rowset** жазады: бір не бірнеше **сегмент** файлындағы нұсқаланған жолдар жиынын. `SHOW TABLET <id>` tablet қайда жататынын анықтап, репликаларын `CompactionStatus` URL-імен тізетін `SHOW PROC` операторы — `DetailCmd` береді. BE-дегі сол URL tablet-тің rowset-терін қайтарады. `lab.rowsets(table)` кестенің әр tablet-і үшін оны оқып, сұрауды көрсетеді; URL контейнер ішіндегі BE мекенжайын, `127.0.0.1:8040`, атайды, сондықтан сол жол хосттың BE порты — 51040 арқылы оқылады.\n\n**Compaction** шағын rowset-терді фондық режимде үлкендеріне біріктіреді; содан кейін сұраулар азырақ файл оқиды. Ол жолдардың сақталу тәсілін өзгертеді, бірақ сұрау қайтаратын жолдарды ешқашан өзгертпейді.\n",
+      "target_hash": "804aeee8ccfd15b19bf954f13a0309dd9af2c27c57ae2e8e96f9935605ab2036",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "8c88e661bcf5dfa528d132595e118a143b918b13691f068ad985c808fd63d77b",
+          "target_hash": "804aeee8ccfd15b19bf954f13a0309dd9af2c27c57ae2e8e96f9935605ab2036"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.57878c6714ee4b60a024215e42799048",
+      "source_hash": "628fe19b7862f557cff00cb976294236e5c1ae4169f1331776d7642b5e1cae5b",
+      "target_text": "**Күтілетін нәтиже**\n\nӘр кестеде бір бакеті және бір репликасы бар бір бөлім және бір tablet бар. `orders_batch` нұсқасы 2: 1-нұсқаға бір жүктеу қосылады. `orders_rowwise` нұсқасы 11: 1-нұсқаға он жүктеу қосылады. Бір жолдан он жазу он транзакция жасаса, бір пакет бір транзакция жасады.\n\n`VisibleVersionCount`, `VersionCount` және `RowCount` шамамен минутына бір рет келетін BE tablet есебінен алынады: жазулардан кейін бірден олар `-1`, `-1` және `0`, ал бір минуттан кейін нақты сандарды көрсетеді. `Version` — FE-нің өз есебі және бірден дұрыс болады.\n",
+      "target_hash": "d482083df8f3e48060666e452405aad3e838ba325a65e5cbc366ee75339b08c3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "628fe19b7862f557cff00cb976294236e5c1ae4169f1331776d7642b5e1cae5b",
+          "target_hash": "d482083df8f3e48060666e452405aad3e838ba325a65e5cbc366ee75339b08c3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.425866387a0f48e38f173540826b6fff",
+      "source_hash": "41e4db9b3865a913e6717d4d4462405935bbcd5405af23df42c5364fe0de8a19",
+      "target_text": "**Күтілетін нәтиже**\n\nКесте анықтамасы, он жолы бар пакеттік `INSERT` және он біржолдық оператордың алғашқы екеуі. Басқа ештеңе шықпайды: оператор сәтті орындалса, `lab.execute` ештеңе хабарламайды.\n",
+      "target_hash": "114ec7b82991ff508da1f4051d9c02de6e2049c3a55417783a99e62b26d8e7ff",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m02-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab Markdown cells after reading every original code cell: reset scope, one INSERT vs ten, fixed table parameters and Group Commit off_mode, 10/12220.60 and daily 5/3944.20 results, rowset current/stale timing, version/report fields, Profile retrieval by exact query ID, FE login/port, scan counters and SQL cache setting restoration. No meaning corrections needed in this second pass. Technical admission and native human review remain unperformed.",
+          "source_hash": "41e4db9b3865a913e6717d4d4462405935bbcd5405af23df42c5364fe0de8a19",
+          "target_hash": "114ec7b82991ff508da1f4051d9c02de6e2049c3a55417783a99e62b26d8e7ff"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

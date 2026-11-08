@@ -1,0 +1,584 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.0d6efbf7b2564faa8a233c8c7c1a8770",
+      "source_hash": "e34275bf3ea888b71ab64ecd9ea3f8bbe09143bc9b22117579ace3857363f221",
+      "target_text": "## 9. Жаттығу: ресурс жоспарын қолданбай тұрып тексеру\n\nТақта үш FE кластерінде басталады. Бес BI тіркелгісі жаңарғанда шамамен 20 сұрауды қатар, үш аналитик тұрақсыз сканерлеулер жібереді. Жоспарды сөздікпен жазыңыз: топтың қатар орындалуы, кезегі, миллисекунд күтуі. Алдымен Python-да тексеріңіз: біркелкі қолданылған үш FE тақтасының орындары 20 сұрауды ұстасын, ad hoc кезегі шағын қалсын. Кейін `course_plan_dashboard_l3`, `course_plan_adhoc_l3` сынақ атауларымен топ құрып, `information_schema.workload_groups` арқылы баптауын қайта оқып салыстырып, жойыңыз.",
+      "target_hash": "bd0a32f797f8640fb58356375f2d4b5c08e0718d9294c6644315a312f1309a57",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e34275bf3ea888b71ab64ecd9ea3f8bbe09143bc9b22117579ace3857363f221",
+          "target_hash": "bd0a32f797f8640fb58356375f2d4b5c08e0718d9294c6644315a312f1309a57"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8b03db4bf64a49a49e55ce1d03cf9784",
+      "source_hash": "905c0ff23546e4ff05541dbfc4de954991899ba659c74f8c2b3309fb6f6c8f5d",
+      "target_text": "## 8. Рұқсатты қайтарып, рөл/топтарды жою\n\nАлдымен тәуелділік: еш Workload Policy сілтемейді, 6-бөлім пайдаланушы әдепкісін `normal` етіп, пайдаланушыны жойды.\n\nКейін `USAGE_PRIV` қайтарып, рөлді, екі топты жойыңыз: рұқсат топтан ұзақ сақталып, сол атпен қайта құрылғанына қайтады. orders_monthly_l3 тексеруге қалады; келесіде 2-қадам қайта құрады.",
+      "target_hash": "37556668ba7d0397a58aacb2d8fd7e340ca061e16288082f8a223cd5577ce628",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "905c0ff23546e4ff05541dbfc4de954991899ba659c74f8c2b3309fb6f6c8f5d",
+          "target_hash": "37556668ba7d0397a58aacb2d8fd7e340ca061e16288082f8a223cd5577ce628"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b0c465a1f37a42aaa6b504b08c50822e",
+      "source_hash": "3541fea07696a2120cfe9869d7522a2464a04b3b939bea747586d17a9a725229",
+      "target_text": "## Бастамас бұрын\n\nТек сынақ ортасы керек, бұрынғы кестелер қажет емес. Оқу базаңызда `orders_monthly_l3` қайта құрылады.\n\nWorkload Group, рөл, пайдаланушы, SQL Block Rule бүкіл кластерге тиесілі. Жұмыс тұрақты `course_dashboard_l3`, `course_adhoc_l3` топтарын, `course_dashboard_reader_l3` рөлін, `course_scan_guard_l3` ережесін; 6-бөлімде кездейсоқ атаулы уақытша пайдаланушыны әдепкі тобымен; жаттығу `course_plan_dashboard_l3`, `course_plan_adhoc_l3` құрады. Әр бөлім өзінікін, 8-бөлім рөл/топтарды, 2-қадам үзілген орындау қалдығын жояды. `normal` мен root өзгермейді.\n\n7-бөлімнің SQL Block Rule-ы барда root-ты қоса барлық сеансқа әсер етеді: ұяшық құрып, тексеріп, `finally` жояды. Үзілсе не ядро қайта басталса, бәрінен бұрын қосылым ұяшығы мен 2-қадамды орындаңыз. Баяу сұраулар `sleep()` қолданады, шын орындалуы үшін SQL кэші өшіріледі. Ортада бір FE, бір BE, CPU cgroup жоқ: CPU шегі орындалмайды.",
+      "target_hash": "ef275a5c4054e786aac0a0e6fbe8552fe35055d9c5891ea36d1dcd801eb1ddeb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3541fea07696a2120cfe9869d7522a2464a04b3b939bea747586d17a9a725229",
+          "target_hash": "ef275a5c4054e786aac0a0e6fbe8552fe35055d9c5891ea36d1dcd801eb1ddeb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6da8f253a1724fe3a1d2b1a0b55acc76",
+      "source_hash": "04b29fea95e298c83ddd1637e87ef298f40dced664c58d2037f2ddc45c1aaaa2",
+      "target_text": "## 5. Кезек күтуін және орындалуды бөлек шектеу\n\nqueue_timeout күтуді, query_timeout орындалуды шектейді.\n\nАлдымен ad hoc күтуін бір секундқа қысқартып, бос емес орын сынағын қайталаңыз. Кейін төрт секундтық F сұрауын екі секундтық орындалу шегімен жіберіңіз. F топ таңдамайды, normal қолданады.\n\nҚадам күту шегін өзгертеді. 3-қадамды бастапқы баптаумен қайталауға 1-қадамнан бастаңыз.",
+      "target_hash": "bffe54e5a4c260656a853cc006180a20f6dc6aa7202d71a2db42c63382a5d24f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "04b29fea95e298c83ddd1637e87ef298f40dced664c58d2037f2ddc45c1aaaa2",
+          "target_hash": "bffe54e5a4c260656a853cc006180a20f6dc6aa7202d71a2db42c63382a5d24f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7e7ff141b3664c70baddd3134f722b46",
+      "source_hash": "c6d4ee744eb6d76de16a1332f198618289f18dfee3ca1afb1a3cf28b1b599fc9",
+      "target_text": "## 3. Тақта және ad hoc топтарын құру\n\nБаптаулар 14.6 нұсқаулығынан. Ad hoc қатар орындалуы/кезегі 1: аз сұраумен күту/тыйым көрінеді.\n\nBE-де CPU cgroup бапталмаған, max_cpu_percent орындалмайды. Курс рөліне тек тақта тобының USAGE_PRIV рұқсатын беріңіз.",
+      "target_hash": "deeff2e099a0f5494919ecc2bd236466f118b5f5f00c063a116bd47f0de88371",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "c6d4ee744eb6d76de16a1332f198618289f18dfee3ca1afb1a3cf28b1b599fc9",
+          "target_hash": "deeff2e099a0f5494919ecc2bd236466f118b5f5f00c063a116bd47f0de88371"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.855d5c52a8d64a499b51f1b00be4777d",
+      "source_hash": "b1e436958526e49fcf0e3c45f05c323e75ca2f454a0a4be90c38f8cf9b7a00f7",
+      "target_text": "## 4. Бес сұрау: орындала ма, күте ме, қабылданбай ма?\n\nsleep() наурыздың жалғыз жолын баяу сканерлеуді имитациялайды, sleep(6) шамамен алты секунд. Әр сұрау жеке сеанс ашып, SQL Cache өшіреді, айнымалыларын орнатып, орындалады.\n\nКэш бұрынғы нәтижені кезексіз қайтарар еді, сондықтан осы тәжірибеде өшіру қажет.\n\n- A ad hoc жалғыз орнын алады.\n- B артынан кезекке тұрады.\n- C кезек толғанда сол топқа келіп, қабылданбауы керек.\n- D тақтаның өз орнын қолданады.\n- E ad hoc ішінде bypass_workload_group қосады.\n\nУақыт жарысын болдырмауға тәуелді әр сұраудан бұрын күтілетін орындалған/күткен сандарды күтіңіз.",
+      "target_hash": "bb6b1e8bebe33cd6a3943126e76062f3b86fe5c911436dd4c5297d201eed0dc9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "b1e436958526e49fcf0e3c45f05c323e75ca2f454a0a4be90c38f8cf9b7a00f7",
+          "target_hash": "bb6b1e8bebe33cd6a3943126e76062f3b86fe5c911436dd4c5297d201eed0dc9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6fa4e8165cd14e559b6871d3741f6c36",
+      "source_hash": "f8be3a12f94b9514e665d93485d9cc6a6ccc5bc17455438b7f6687445733f8be",
+      "target_text": "## 1. Қазір сұрау қай топты қолданады?\n\nТаңдау реті: сұрауда `SET_VAR(workload_group=...)` hint-і, сеанс `workload_group`, тіркелгі `default_workload_group`, әйтпесе `normal`. Жұмыс hint қолданбайды. Ұяшық root сеанс/әдепкі мәндерін, бар топтарды көрсетіп, `normal` баптауын соңында салыстыруға сақтайды.",
+      "target_hash": "e156e932fe1e247e8dc72f156a81e523da74192c745688c4e1c32ebf9e02ff63",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f8be3a12f94b9514e665d93485d9cc6a6ccc5bc17455438b7f6687445733f8be",
+          "target_hash": "e156e932fe1e247e8dc72f156a81e523da74192c745688c4e1c32ebf9e02ff63"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f2b9f9d44fa644a79da6bcec3b3bb266",
+      "source_hash": "8c78e5da2b5b090dc0492d13774b871265e63a100fe4c3ac6304ac52d4af4e54",
+      "target_text": "**Күтілетін нәтиже**\n\nЖасыл тексеру: саясат сілтемейді; қалған топ — тек `normal`; кейін үш жасыл: курс топтары/рұқсаттары, рөл жойылды, `normal` 1-қадам баптауында. `orders_monthly_l3` сұрауға қалады; келесі орындауда 2-қадам қайта құрады.",
+      "target_hash": "a7a3129b0d0ace10e70d003a856f15007f32263d2d5aa85f7c3c9d4f015af50b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8c78e5da2b5b090dc0492d13774b871265e63a100fe4c3ac6304ac52d4af4e54",
+          "target_hash": "a7a3129b0d0ace10e70d003a856f15007f32263d2d5aa85f7c3c9d4f015af50b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.947c85c547184daea8a952e67a7edaf1",
+      "source_hash": "aba400efb880443173ae35aa9ca5e998b4cd909ad5da015a7583c460ac05225b",
+      "target_text": "## 7. SQL Block Rule арқылы толық сканерлеуді қабылдамау\n\nGlobal ереже ең көбі екі бөлімге рұқсат етеді. Шектеусіз сұрау үшті оқып, өтпеуі тиіс; тек наурыз біреуге қысқарып өтеді.\n\nЕреже root қоса барлық сеансқа қатысты. Бір ұяшықта try/finally арқылы құрып, тексеріп жойыңыз. Үзілу/ядроны қайта қосу қалдыруы мүмкін; 2-қадам жояды.\n\nSUM(amount) қолданыңыз: сүзгісіз COUNT(*) 14.5-бөлімдегідей бөлім оқымай жауап ала алады.",
+      "target_hash": "7c5a38908f4eb01628b77d2a053e9b9ff35f8138279259f9314b0506d76d5323",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "aba400efb880443173ae35aa9ca5e998b4cd909ad5da015a7583c460ac05225b",
+          "target_hash": "7c5a38908f4eb01628b77d2a053e9b9ff35f8138279259f9314b0506d76d5323"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e63b5ac4e63e4734a88c00344d659fbc",
+      "source_hash": "71a9c959134217f7da8a754e9e9db9d9aeb121c30f25c781ff8133a38b5e2892",
+      "target_text": "## Аяқтау шарттары\n\n- таңдау ретін, root/тақта пайдаланушысы қай топта болғанын білесіз;\n- қатар орындалу/кезек/күту бойынша нәтижені болжап, `bypass_workload_group` неге оқшаулау шекарасы еместігін айта аласыз;\n- `query queue timeout`, `query timeout` ажыратып, қайсысы BE ресурсын қолданғанын білесіз;\n- пайдаланушы әдепкісінде орындалып, ad hoc-қа тыйым алды, `USAGE_PRIV`, `default_workload_group` әрқайсысын түсіндіресіз;\n- SQL Block Rule толық сканерлеуді басталмай қабылдамады, ауқымын білесіз;\n- тәуелділікпен бәрін жойдыңыз, `normal` өзгермеді.",
+      "target_hash": "4f5c0ef0500089df4397447efc18f835fabc9369d5dc696ced526d9d3588a4e0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "71a9c959134217f7da8a754e9e9db9d9aeb121c30f25c781ff8133a38b5e2892",
+          "target_hash": "4f5c0ef0500089df4397447efc18f835fabc9369d5dc696ced526d9d3588a4e0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ae66a49980f54531bf9f751e0069967e",
+      "source_hash": "3d2b757f488a0f1c0478347472ce50374000c0ce014d324cabe84666a559fb01",
+      "target_text": "<div>\n  <div>14-ЗЕРТХАНАЛЫҚ ЖҰМЫС · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Тақта мен ad hoc ресурстарын бөлу</div>\n</div>\n\n11-модуль тақтасы мен ad hoc бір Workload Group бөліседі, ұзақ сканерлеу тақтаны баяулатады. Әрқайсысына топ беріп, орындалу/күту/тыйым/кезекті айналып өтуді көресіз; кезек пен орындалу шегін ажыратасыз. Уақытша қарапайым пайдаланушыны тіркелгі әдепкісімен тақтаға бағыттап, рұқсатсыз топты Doris қабылдамайтынын көресіз. Сүзгісіз сканерлеуді SQL Block Rule арқылы бұғаттап, тәуелділікпен бәрін жойып, қолданбай тұрып ресурс жоспарын тексересіз. Шамамен 45 минут.\n\n**14-модуль: Ресурстарды оқшаулау және сұрауларды қорғау** · [Сабақ](course.md) · [Тест](quiz14_resource_isolation.ipynb) · [Курстың README файлы](../../README.md)",
+      "target_hash": "d4ccccf161b57b59099310a3345f0e5765108bf750f28fe4a6713a5911832a8a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3d2b757f488a0f1c0478347472ce50374000c0ce014d324cabe84666a559fb01",
+          "target_hash": "d4ccccf161b57b59099310a3345f0e5765108bf750f28fe4a6713a5911832a8a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7180be970b5c4fbfbc2cff83703c7780",
+      "source_hash": "a69e55b536ac08413cac3a808b35b1ca85b7487cdab56e8a0cfdccc570acb77e",
+      "target_text": "## 2. Кестені дайындап, қалдықтарды жою\n\nАлдыңғы кластерлік нысандарды жою реті керек: әдепкісі курс тобы болған пайдаланушы топты ұстайды; жаһандық ереже төмендегі толық сканерлеуді бұғаттар еді. Ұяшық 6-бөлім қалдық пайдаланушыларын, кейін ереже/рөл/топтарды жойып, `orders_monthly_l3` кестесін 13-модуль айлық бөлімдерімен, айына бір тапсырыспен қайта құрады.",
+      "target_hash": "62f97566af5af1cf7f8576a02744d8d6a28e74cb4898b2d59a7a9d6bd32913df",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "a69e55b536ac08413cac3a808b35b1ca85b7487cdab56e8a0cfdccc570acb77e",
+          "target_hash": "62f97566af5af1cf7f8576a02744d8d6a28e74cb4898b2d59a7a9d6bd32913df"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cd0f9d9f15464bfe9e9b22d0b1a4b584",
+      "source_hash": "67ed86eb480ef877652e28f68bcef11ee43a1427928772b5ae11c1cf5a0dd228",
+      "target_text": "**Күтілетін нәтиже**\n\nЕкі топ: `course_adhoc_l3` — 1 қатар орындалу, 1 кезек, 30000 ms, 30% жады, 30% CPU; `course_dashboard_l3` — 8, 20, 10000 ms, 50% жады, 100% CPU. Екі жасыл: шектер, рөлдің тек тақта тобындағы `Usage_priv` рұқсаты.\n\n`USAGE_PRIV` қолдануға мүмкіндік береді, бағыттамайды. 6-бөлім тіркелгі әдепкісімен бағыттайды. CPU cgroup жоқ, 30% — мұнда орындатылмайтын баптау.",
+      "target_hash": "1c7dd407a1e3cd71341f80444c6e141f2ac52d8f7711d27a12d72e599d6fd483",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "67ed86eb480ef877652e28f68bcef11ee43a1427928772b5ae11c1cf5a0dd228",
+          "target_hash": "1c7dd407a1e3cd71341f80444c6e141f2ac52d8f7711d27a12d72e599d6fd483"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.34b4b8ad38e44d64822b00ad29216e42",
+      "source_hash": "3eacfebf5a48bc9f83b82f1b0014806a9765bb3bb39d9298e4910e21a0090282",
+      "target_text": "## Әрі қарай\n\n[14-тест: Ресурстарды оқшаулау және сұрауларды қорғау](quiz14_resource_isolation.ipynb) файлын ашыңыз. Бұл — соңғы жұмыс; [курстың README файлы](../../README.md) құрғаныңызды жинақтайды. [Тазалау](../../README.md#clean-up) арқылы деректермен кідіртіп/жалғастырыңыз не қосымшалардан кейін барлық ресурсты берілген тәуелділік ретімен жойыңыз.",
+      "target_hash": "777164a333e24dc963ecb4f7273989cbc3f8cc57efea8042cdc34f4bdcc7704c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3eacfebf5a48bc9f83b82f1b0014806a9765bb3bb39d9298e4910e21a0090282",
+          "target_hash": "777164a333e24dc963ecb4f7273989cbc3f8cc57efea8042cdc34f4bdcc7704c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6a59c97a5f924defbf04bb19b1108c2f",
+      "source_hash": "3fd7568259d91fdb9c82bcaf3957186a5e11f3adc1398f8c5fd7f0a2d143d682",
+      "target_text": "**Күтілетін нәтиже**\n\nЖасыл: үш FE × 8 = 24 орын 20 шың сұрауға жетеді, ad hoc кезегі 2. Қолданылғаны: `course_plan_adhoc_l3` — 1, 2, 30000; `course_plan_dashboard_l3` — 8, 20, 10000; жасыл тексеру, кейін екеуі жойылады.\n\nКезек FE-ге жеке: 24 тек қосылымдар таралса бар; бәрі бір FE-ге барса, тақтада 8 орын/20 кезек. Жиынтыққа сенбес бұрын таралуды тексеріп, 6-бөлімдегідей `USAGE_PRIV`, `default_workload_group` арқылы бағыттаңыз.",
+      "target_hash": "d73fc9b47f57fb116ac5c35fd8f5626a0835fa97d9bf03c97c75fa932f538ca5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3fd7568259d91fdb9c82bcaf3957186a5e11f3adc1398f8c5fd7f0a2d143d682",
+          "target_hash": "d73fc9b47f57fb116ac5c35fd8f5626a0835fa97d9bf03c97c75fa932f538ca5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.42dfbb11241c48d8a6aedbe94a237c6a",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған. Салыстыру үшін ашыңыз немесе орындаңыз.",
+      "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5f3c0db2858f4c15a7bb9658f84c7edd",
+      "source_hash": "bd4efe73da0bf7dd7b595096179ea88cd758d5e01902c8100247f98b65ddc840",
+      "target_text": "**Күтілетін нәтиже**\n\nҮш тапсырыс: 2025-01-15 күнгі 140001 (100.00), 2025-02-15 күнгі 140002 (200.00), 2025-03-15 күнгі 140003 (300.00); әр бөлімге бір, жасыл тексеру. 4-бөлім баяуы тек наурызды, 7-бөлім сүзгісізі үшеуін оқиды.",
+      "target_hash": "91bcf00587ebfca032ee9d7a43d21ba2f9765eed7bf39507cdfdc915a6d1debc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "bd4efe73da0bf7dd7b595096179ea88cd758d5e01902c8100247f98b65ddc840",
+          "target_hash": "91bcf00587ebfca032ee9d7a43d21ba2f9765eed7bf39507cdfdc915a6d1debc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.92ffd2bcc3a7438b938c626ba1ef57ab",
+      "source_hash": "800fa4c82c4b7cb1f53cf77c5d25b53c01424dc4fff9081073dfda7497edc365",
+      "target_text": "**Күтілетін нәтиже**\n\nБес нәтиже: A шамамен 6 секундта OK; B A-ны күтіп 7-де OK; C бірден `query waiting queue is full, queue capacity=1, waiting num=1`; тақтадағы D шамамен 1-де OK; кезексіз E шамамен 1-де OK. Үш жасыл: бес нәтиже, C/D/E кезінде бір орындалған/бір күткен ad hoc саны, B уақыты күтуді қамтиды.\n\nB кезектің жалғыз орнын алғандықтан C қабылданбады. D күтпеді, өз орны бар. E C-мен бір топта әр пайдаланушы қоя алатын `bypass_workload_group` арқылы өтті: кезек оқшаулау шекарасы емес, пайдалану рұқсаты мен BE жады шегі әлі қолданылады.",
+      "target_hash": "39993d4ebe159e340f6df05c4e50bcec74a158f2b0988d1b266d22c0a4520526",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "800fa4c82c4b7cb1f53cf77c5d25b53c01424dc4fff9081073dfda7497edc365",
+          "target_hash": "39993d4ebe159e340f6df05c4e50bcec74a158f2b0988d1b266d22c0a4520526"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0f76d2bfeee8484e93f13142e1313624",
+      "source_hash": "ce46e0722dc38905d6dd91ef3dff31ef1aa8d951cece6a39dde3f32250287dde",
+      "target_text": "**Күтілетін нәтиже**\n\nAd hoc үшін `active_queries` екі жолы: A `RUNNING`, екі кезек уақыты орнатылған; B `WAIT_IN_QUEUE`, `QUEUE_START_TIME` бар, `QUEUE_END_TIME` жоқ — әлі орын алмады.",
+      "target_hash": "4883381bd3311da128de35424bf208c5c7b59a938fe59f0006932eeade10ab1a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ce46e0722dc38905d6dd91ef3dff31ef1aa8d951cece6a39dde3f32250287dde",
+          "target_hash": "4883381bd3311da128de35424bf208c5c7b59a938fe59f0006932eeade10ab1a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8d897618d9ac4c489c804fc99c783041",
+      "source_hash": "bcce361e116d727cb744d90f81f3969b7db9f8cc33b8f14579872c97cd5b03ba",
+      "target_text": "**Күтілетін нәтиже**\n\nСеанс `workload_group` бос, әдепкі `normal`, `normal` тобы — `max_concurrency` 2147483647, `max_queue_size` 0, `queue_timeout` 0, `max_memory_percent` 100%: іс жүзінде шексіз, кезексіз. Жасыл: root `normal` ішінде. Курс тобы да көрінсе, бұрынғы орындау үзілген; 2-қадам жояды.",
+      "target_hash": "139e8a5917b7bf80c0b770f4e9f76f8e0e388b748ef7895369f3a51a88a98af4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "bcce361e116d727cb744d90f81f3969b7db9f8cc33b8f14579872c97cd5b03ba",
+          "target_hash": "139e8a5917b7bf80c0b770f4e9f76f8e0e388b748ef7895369f3a51a88a98af4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0653ec19d65d47be9733257e2c235570",
+      "source_hash": "1d9dd4c56516dd578a93275fd2f282dca9c1ab36028dcd4559b3c95dfcec7556",
+      "target_text": "**Күтілетін нәтиже**\n\nПайдаланушыны құрып, әдепкісін орнату; кейін G шамамен 3 секундта OK, H бірден `Access denied; you need (at least one of) the USAGE/ADMIN privilege(s) to use workload group 'course_adhoc_l3'. User: 'course_routing_l3_<random>'@'%'` алады. Сұрауы `course_dashboard_l3` ішінде `RUNNING`. Екі жасыл тексеру.\n\nПайдаланушы топ атамады: әдепкісі бағыттады. Рұқсат айнымалыны орнатқанда емес, орындалуда тексеріледі: `SET workload_group` өтті, сұрау өтпеді. `USAGE_PRIV` жоқ әдепкіде әр сұрау солай сәтсіз болар еді, екеуін бірге орнатыңыз.",
+      "target_hash": "f7a62a7a504f123337f9d0db377275556fcbebd6911003300f8529cb519a9fe7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "1d9dd4c56516dd578a93275fd2f282dca9c1ab36028dcd4559b3c95dfcec7556",
+          "target_hash": "f7a62a7a504f123337f9d0db377275556fcbebd6911003300f8529cb519a9fe7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.516dc4590ebf4a4c8a7a312109e12a87",
+      "source_hash": "2ff4b0886a7ca43224edf8a07f176140f1423e885a250fb370494bde1f2d9a9c",
+      "target_text": "## 6. Қарапайым пайдаланушыны тіркелгі әдепкісімен бағыттау\n\nӘзірге бәрін root орындады. Тақта тіркелгісі сеанстарында баптамай өз тобына түсуі керек: рөліне `USAGE_PRIV`, тіркелгісіне `default_workload_group` беріңіз. Ұяшық рөлге кестені оқу, уақытша пайдаланушыға рөл беріп, әкімшінің `SET PROPERTY FOR` командасымен әдепкісін орнатады.\n\nСол пайдаланушымен баяу сұрау орындап, `active_queries` ішінен тобын оқиды. Кейін рөлге рұқсатсыз ad hoc тобын сеансқа қояды; жауабын болжаңыз. `finally` ішінде әдепкісін `normal` етіп, пайдаланушыны жояды: біреудің әдепкі тобы жойылмайды.",
+      "target_hash": "952cdcdda275260f9234417bb9c9034fb959b62be038a36400a7aa8326946d8b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "2ff4b0886a7ca43224edf8a07f176140f1423e885a250fb370494bde1f2d9a9c",
+          "target_hash": "952cdcdda275260f9234417bb9c9034fb959b62be038a36400a7aa8326946d8b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5fd4449ed6174db6931db2c89913d60a",
+      "source_hash": "d078797dd3e9d905ebe1299fd55294fc622476879e2a4b4cebe396697e8b7bc3",
+      "target_text": "**Күтілетін нәтиже**\n\nЕреже: `PartitionNum` 2, `Global` true, `Enable` true; толық кесте `SUM` — `sql hits sql block rule: course_scan_guard_l3, reach partition_num : 2`, наурыз — OK. Екі жасыл: толық сканерлеу қабылданбады, ереже жойылды.\n\nСұрау мүлде орындалмады. 2 — шек, қажет болған 3 бөлім емес; наурыз біреуін оқыды. Ереже секундтан аз тұрса да, сол кезде барлық сеансқа қатысты. Тек аналитиктерге керек болса, әкімшінің `sql_block_rules` қасиетімен тіркелгілеріне байлаңыз.",
+      "target_hash": "b03a7d98aa276d8231a122cfacc2a46e70c430ae2a74038d2f94b2f6c99cad18",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d078797dd3e9d905ebe1299fd55294fc622476879e2a4b4cebe396697e8b7bc3",
+          "target_hash": "b03a7d98aa276d8231a122cfacc2a46e70c430ae2a74038d2f94b2f6c99cad18"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.63d8f2a576c9433d9c8d01bd761ca7ab",
+      "source_hash": "0a1a193c0b6d97f47ede86c83adcca264b65af499f37738acb7dd2b4ec759d2d",
+      "target_text": "**Күтілетін нәтиже**\n\nA шамамен 3 секундта OK; B 1 секундта `query queue timeout, timeout: 1000 ms`; `normal` ішіндегі F 2 секундта `query timeout`. Үш жасыл: екі қате, B күтуі 2 секундтан аз, F — 1.5–4 секунд.\n\nB орын алмаған, BE-де орындалмаған. F тоқтатылғанша ресурс қолданды. Пайдаланушы сеанс `query_timeout` көтере алады, әкімші орнатқан сол тіркелгі қасиеті басым, пайдаланушы өзгерте алмайды.",
+      "target_hash": "151bb1d0ef7c55fb3f2003cb55342b687e46473cd89ae986b3cd2b249c7a1ee4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "0a1a193c0b6d97f47ede86c83adcca264b65af499f37738acb7dd2b4ec759d2d",
+          "target_hash": "151bb1d0ef7c55fb3f2003cb55342b687e46473cd89ae986b3cd2b249c7a1ee4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

@@ -125,7 +125,7 @@ def resolve_profiles(config, repo=REPO):
     registry = json.loads((SPEC / ("profiles.v2.json" if config.get('schema_version') == 2 else "profiles.json")).read_text(encoding="utf-8"))
     profiles = registry["profiles"]
     chosen = set(config["course_profiles"])
-    if "rta-module-1" in chosen and (config.get("schema_version") != 2 or chosen != {"rta-module-1"}):
+    if "rta-module-1" in chosen and config.get("schema_version") != 2:
         raise ConfigError("course_profiles: rta-module-1 requires the explicit v2 content binding")
     ref = config["course_ref"]
     if git(repo, "rev-parse", "--verify", ref + "^{commit}").strip() != ref:
@@ -133,7 +133,9 @@ def resolve_profiles(config, repo=REPO):
     files = set(git(repo, "ls-tree", "-r", "--name-only", ref).splitlines())
     courses = {}
     resolved = {}
-    for profile_id in sorted(chosen):
+    ordered_profiles = (config['course_profiles'] if config.get('schema_version') == 2
+                        else sorted(chosen))
+    for profile_id in ordered_profiles:
         profile = profiles[profile_id]
         missing = set(profile["requires"]) - chosen
         if missing:
@@ -239,7 +241,10 @@ def validate_config(value, *, now=None, repo=REPO):
     # Copy before normalizing, so callers retain their original input.
     normalized = json.loads(json.dumps(value))
     normalized["learner_ids"] = sorted(value["learner_ids"])
-    normalized["course_profiles"] = sorted(value["course_profiles"])
+    # V2 preserves the immutable producer binding's ordered profile set.
+    # Reordering only this field would make a valid multi-course binding stale.
+    normalized["course_profiles"] = (list(value["course_profiles"]) if value['schema_version'] == 2
+                                      else sorted(value["course_profiles"]))
     normalized["expires_at"] = utc_text(expiry)
     if image["mode"] == "prebuilt":
         normalized["image"]["course_profiles"] = normalized["course_profiles"]

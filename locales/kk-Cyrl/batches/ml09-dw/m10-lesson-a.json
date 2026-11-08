@@ -1,0 +1,176 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.fb5056a7ce144798b03afd3108ec1a3d",
+      "source_hash": "d2b84608a18b39c8dee47e908eef4643bc26cc1c9e7c1f0c387222e6091734be",
+      "target_text": "## 10.5 Тапсырыс сомасы төленген GMV емес\n\nТапсырыс сомасы неге тапсырыс берілгенін айтады. Мұнда **тауарлардың жалпы құны (GMV)** тапсырыс күйінен емес, төлемдердің өзінен алынатын төленген тапсырыстар құнын білдіреді: ақшасы қайтарылған тапсырыс та бір рет төленген. 9-модуль қойма мысалында төлемдер бар, 10-зертханалық жұмыс олардың келісімшартын жазады:\n\n| Метрика | Келісімшарт |\n| --- | --- |\n| Төленген GMV | Asia/Shanghai бойынша уақыты `[2026-01-01, 2026-01-04)` ішіндегі қайталанулары жойылған сәтті төлемдер; қайтарымдар бөлек |\n| Төленген тапсырыстар мен тұтынушылар | Сол төлемдердің бөлек тапсырыстары мен тұтынушылары |\n| Жасалған тапсырыстар когортының конверсиясы | Терезеде жасалып, шекке дейін төленген тапсырыстарды терезеде жасалған барлық тапсырысқа бөлу |\n| Қайта сатып алушы үлесі | Терезеде кемінде екі төленген тапсырысы бар тұтынушыларды төлем жасаған тұтынушыларға бөлу |\n| Таза түсім | Төленген GMV минус терезедегі қайтарымдар; пайда емес |\n\n| Көрсеткіш | Мәні |\n| --- | ---: |\n| Мысал тапсырыстарының бас тартылғансыз сомасы | 800.00 |\n| Терезедегі төленген GMV | 5 төленген тапсырыс пен 3 тұтынушыдан 660.00 |\n| Терезедегі қайтарымдар | 50.00 |\n| Таза түсім | 610.00 |\n| Когорт конверсиясы | 8 жасалған тапсырыстың 5-еуі: 0.62500 |\n| Қайта сатып алушы үлесі | 3 тұтынушының 2-еуі: 0.66666 |\n\nЕкі рет келген төлем ID-і бір рет саналады, 5 қаңтар төлемі терезеден тыс. Когорт бас тартылған тапсырысты жасалған, бірақ конверсияланбаған деп санайды, келісімшарт оны сол себептен айтады: тапсырыс метрикалары бас тартылғандарды тыс қалдырады, когорт қалдырмайды. Бөлек мәндер сандары да қосылмайды: күндердің төлем жасаған тұтынушыларын қоссақ 4, терезеде 3, себебі бір тұтынушы екі күнде төледі. Әр қатынас жарияланған жолда алымы мен бөлімін сақтайды, оқырман тексере алады.\n\n![Есеп терезесіндегі қайталанулары жойылған төлемдер 660.00, 50.00 қайтарымды шегеру 610.00 таза түсім береді.](images/03-payments-window-contract.png)\n\n*Төлем уақыты мен қайталануларды жою төленген GMV-ді, қайтарымдар таза түсімді анықтайды.*\n\nСуреттегі жазулар: PAYMENT WINDOW – DISTINCT MEASURES — төлем терезесі, бөлек көрсеткіштер; [2026-01-01, 2026-01-04) Asia/Shanghai — басталуы кіреді, аяқталуы кірмейтін есеп терезесі; DEDUPLICATED SUCCESSFUL PAYMENTS — қайталанулары жойылған сәтті төлемдер; PAYMENT ID — төлем ID-і; PAID GMV 660.00 — төленген GMV 660.00; REFUNDS 50.00 — қайтарымдар 50.00; NET COLLECTIONS 610.00 — таза түсім 610.00; JANUARY 5 PAYMENT — 5 қаңтар төлемі; OUTSIDE WINDOW — терезеден тыс; ORDER AMOUNT 800.00 — тапсырыс сомасы 800.00; DIFFERENT MEASURE — басқа көрсеткіш.\n",
+      "target_hash": "fefc90bc1d215c8c3361e90197e9a75059f96ed7a1c4c1bcf60d0e399f8be8a3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections, with protected code fences observed equal. Checked paidGMV payment evidence versus status/order amount, half-open Asia/Shanghai window, deduplication, cohort denominator includes cancelled orders, repeat-buyer2/3 andconversion5/8, distinct counts non-additivity, 660/50/610 totals, full outer lost-day reconciliation, window grain/LAG gaps and average-of-averages132 vs133.33. Simplified LAG gap wording and removed extra backtick styling from an added image legend to retain original protected-inline multiplicity. Viewed all three actual PNGs and added complete label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d2b84608a18b39c8dee47e908eef4643bc26cc1c9e7c1f0c387222e6091734be",
+          "target_hash": "fefc90bc1d215c8c3361e90197e9a75059f96ed7a1c4c1bcf60d0e399f8be8a3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f39e502d189d47dbb6d1515df93ee1dd",
+      "source_hash": "acca80b9f9899883d1d0e396be2ba2fb9f8c69b92ba6efc0dfd75f819b9114e6",
+      "target_text": "## 10-зертханалық жұмыс: ұсыну кестесін жасау және салыстырып тексеру, төлемдерді өлшеу\n\n[10-зертханалық жұмыс: ұсыну кестесін жасау және салыстырып тексеру, төлемдерді өлшеу](lab10_metric_processing.ipynb) файлын ашыңыз. Сіз:\n\n1. Күндік тапсырыс келісімшартын жазып, 9-зертханалық жұмыстың тапсырыс фактісінен `daily_order_metrics_l2` жасайсыз.\n2. Орташаларды қосындылардан есептеп, бақылау тақтасы үшін ірілендіресіз.\n3. Оны егжей-тегжейлі деректермен салыстырып, ішкі біріктіру өткізіп жіберген жоғалған күнді толық сыртқы біріктіру көрсететінін көресіз.\n4. Нақты күндер мен аймақтарда жинақтаушы терезе мен 1 қаңтардың екі орташасын есептейсіз.\n5. Мысал төлемдерін өлшейсіз: төленген GMV, когорт конверсиясы, қайта сатып алушылар, таза түсім.\n6. Нақты және жуық бөлек мәндер санын салыстырып, 32 жолдық кестені 100,000 егжей-тегжейлі жолмен өлшейсіз.\n7. Жаттығу: тұтынушы мен күн бойынша тапсырыстарды егжей-тегжейлі деректерден есептейсіз.\n\nКурс сынақ ортасы, 9-зертханалық жұмыстың `orders_fact_l2` және мысалдың DWD кестелері қажет. 11-модуль `daily_order_metrics_l2` жариялайды.\n",
+      "target_hash": "5a39d962068d0deb24540a2704cbc61268eb2738f6ea040dab2c19f3e980b32f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections, with protected code fences observed equal. Checked paidGMV payment evidence versus status/order amount, half-open Asia/Shanghai window, deduplication, cohort denominator includes cancelled orders, repeat-buyer2/3 andconversion5/8, distinct counts non-additivity, 660/50/610 totals, full outer lost-day reconciliation, window grain/LAG gaps and average-of-averages132 vs133.33. Simplified LAG gap wording and removed extra backtick styling from an added image legend to retain original protected-inline multiplicity. Viewed all three actual PNGs and added complete label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "acca80b9f9899883d1d0e396be2ba2fb9f8c69b92ba6efc0dfd75f819b9114e6",
+          "target_hash": "5a39d962068d0deb24540a2704cbc61268eb2738f6ea040dab2c19f3e980b32f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.056dced5bfa74e8089a16dac2ed83f8a",
+      "source_hash": "d2d7c845572a5f5d7deccf6a66efd6bd1905217c2f8453107edd2de4fecfd0bd",
+      "target_text": "# 10-модуль: метрикаларды өңдеу және ұсыну\n\n| Курс туралы ақпарат | Мәні |\n| --- | --- |\n| Курс | Apache Doris көмегімен деректер қоймасын құру · 2-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Орта | 1-модульдегі курс сынақ ортасы; 9-зертханалық жұмыстың тапсырыс фактісі және мысалдың DWD кестелері |\n| Болжалды уақыт | Шамамен 146 минут: оқу 46, зертханалық жұмыс 90, тест 10 |\n\n[Курстың README файлы](../../README.md) · [10-зертханалық жұмысты ашу](lab10_metric_processing.ipynb) · [10-тестті ашу](quiz10_metric_processing.ipynb)\n",
+      "target_hash": "a6c3e90acedf8514609cf03809c653c339d3fcc59f93477d5f0cf1686682e90d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections, with protected code fences observed equal. Checked paidGMV payment evidence versus status/order amount, half-open Asia/Shanghai window, deduplication, cohort denominator includes cancelled orders, repeat-buyer2/3 andconversion5/8, distinct counts non-additivity, 660/50/610 totals, full outer lost-day reconciliation, window grain/LAG gaps and average-of-averages132 vs133.33. Simplified LAG gap wording and removed extra backtick styling from an added image legend to retain original protected-inline multiplicity. Viewed all three actual PNGs and added complete label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d2d7c845572a5f5d7deccf6a66efd6bd1905217c2f8453107edd2de4fecfd0bd",
+          "target_hash": "a6c3e90acedf8514609cf03809c653c339d3fcc59f93477d5f0cf1686682e90d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a701a5012cbe4f48987ff83368a68b7e",
+      "source_hash": "519519f776dd40dbf951f91873c385595290bae0c95aa24a029eba0905dc7db4",
+      "target_text": "## 10.3 Егжей-тегжейлі деректермен салыстыру\n\nҰсыну кестесі тәуелсіз сұраумен қайта есептелген егжей-тегжейлі деректер сол сандарды бергенде дұрыс. Ұсыну кестесін тек бір жақта оқыңыз:\n\n```sql\nWITH detail AS (\n    SELECT order_date, region, COUNT(*) AS order_count, SUM(order_amount) AS gross_amount\n    FROM orders_fact_l2\n    WHERE status <> 'CANCELLED'\n    GROUP BY order_date, region\n), serving AS (\n    SELECT order_date, region, SUM(order_count) AS order_count, SUM(gross_amount) AS gross_amount\n    FROM daily_order_metrics_l2\n    GROUP BY order_date, region\n)\nSELECT COALESCE(d.order_date, s.order_date) AS order_date,\n       COALESCE(d.region, s.region) AS region,\n       d.order_count AS detail_orders, s.order_count AS serving_orders,\n       d.gross_amount AS detail_amount, s.gross_amount AS serving_amount\nFROM detail d\nFULL OUTER JOIN serving s ON s.order_date = d.order_date AND s.region = d.region\nORDER BY order_date, region;\n```\n\nҰсыну кестесінің түйіршіктілігі — күн мен аймақ — бойынша біріктіріңіз. `FULL OUTER JOIN` тек бір жақта бар жолды сақтайды. 10-зертханалық жұмыс 2 қаңтарды жоғалтқан, сол күннің жүктеуі сәтсіз болғандай ұсыну кестесін салыстырады: ішкі біріктіру 1 қаңтардың екі EAST, WEST жолын, екеуі де тең, көрсетіп, салыстыру өтеді; толық сыртқы біріктіру егжей-тегжейлі деректерде 1 тапсырыс және 110.00 бар, ұсыну кестесінде `NULL` болатын 2026-01-02 EAST көрсетеді. Себебін білмейінше `NULL` сақтаңыз: жоқ жол — тапсырыссыз күн емес. Баптамас бұрын жолдарды, сомаларды, күндер мен маңызды өлшемдерді тексеріңіз: қате жауап беретін жылдамырақ сұрау оны тек ертерек қайтарады.\n\n![Толық сыртқы біріктіру күн-аймақ топтарын салыстырып, тек егжей-тегжейлі деректерде бар ұсыну кестесінің жоғалған күнін көрсетеді.](images/01-detail-service-reconciliation.png)\n\n*Толық сыртқы салыстыру екі жақтың бірінде жоқ топтарды анықтайды.*\n\nСуреттегі жазулар: FULL OUTER RECONCILIATION FINDS THE MISSING DAY — толық сыртқы салыстыру жоғалған күнді табады; DETAIL RECOMPUTED — егжей-тегжейлі деректер қайта есептелген; SERVICE TABLE — ұсыну кестесі; DATE / REGION — күн / аймақ; DETAIL ORDERS, DETAIL AMOUNT — егжей-тегжейлі тапсырыстар саны мен сомасы; SERVICE ORDERS, SERVICE AMOUNT — ұсыну кестесіндегі тапсырыстар саны мен сомасы; JAN 1 / EAST, JAN 1 / WEST, JAN 2 / EAST — 1 қаңтар / EAST, 1 қаңтар / WEST, 2 қаңтар / EAST; FULL OUTER JOIN date + region — күн + аймақ бойынша толық сыртқы біріктіру; MISSING GROUP — жетіспейтін топ; NULL — сәйкестік жоқ. 5/720.00 және 4/480.00 екі жақта да бар; 1/110.00 тобы ұсыну кестесінде жоқ.\n",
+      "target_hash": "2cffd1107f5c4a3474a5011ba01c17fe96eb071bdcd5653a64795567a7d6c45d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections, with protected code fences observed equal. Checked paidGMV payment evidence versus status/order amount, half-open Asia/Shanghai window, deduplication, cohort denominator includes cancelled orders, repeat-buyer2/3 andconversion5/8, distinct counts non-additivity, 660/50/610 totals, full outer lost-day reconciliation, window grain/LAG gaps and average-of-averages132 vs133.33. Simplified LAG gap wording and removed extra backtick styling from an added image legend to retain original protected-inline multiplicity. Viewed all three actual PNGs and added complete label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "519519f776dd40dbf951f91873c385595290bae0c95aa24a029eba0905dc7db4",
+          "target_hash": "2cffd1107f5c4a3474a5011ba01c17fe96eb071bdcd5653a64795567a7d6c45d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7d1122ffcb70463686d4f35b7880aeed",
+      "source_hash": "0a37f33a5cd8cfde0a7e9b177ce3526d53073cad7a6be5204db7fff54d1d6217",
+      "target_text": "## 10.4 Терезелер, шарттар және қатынастар\n\n`GROUP BY` жолдарды топтарға жинайды. **Терезе функциясы** байланысты жолдармен есептеп, әр жолды сақтайды: `SUM(...) OVER (ORDER BY order_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)` бірінші жолдан ағымдағысына дейін қосады, `LAG(...) OVER (ORDER BY order_date)` алдыңғы жол мәнін алады. Алдымен терезеге қажет түйіршіктілікті беріңіз:\n\n```sql\nWITH daily AS (\n    SELECT order_date, SUM(order_count) AS order_count, SUM(gross_amount) AS gross_amount\n    FROM daily_order_metrics_l2\n    GROUP BY order_date\n)\nSELECT order_date, order_count, gross_amount,\n       SUM(gross_amount) OVER (ORDER BY order_date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_amount,\n       LAG(gross_amount) OVER (ORDER BY order_date) AS previous_day_amount\nFROM daily\nORDER BY order_date;\n```\n\nCTE әр күнге бір жол жасайды, сондықтан нәтиже әр күнге бір жол: сол күнге дейін 1200.00, содан кейін 1310.00, 2 қаңтардың алдыңғы күнінде 1200.00. Оның орнына ұсыну жолдарындағы терезе аймақ бойынша орындалар еді; әр тапсырыста қайталанған күндік терезені қосу күнді әр тапсырысқа бір рет санар еді. `LAG` алдыңғы жолды алады: мұнда барлық күн бар болғандықтан алдыңғы күн; бос күн болса, ескірек күн болар еді, кешегімен салыстыруға барлық күндердің күнтізбесі қажет. Рейтингке тең мәндер ережесі, жылжымалы терезеге айқын шектер керек.\n\n**Шартты агрегаттау** топ бөліктерін қатар қояды: `SUM(CASE WHEN region = 'EAST' THEN order_count ELSE 0 END)` әр күннің EAST тапсырыстарын барлық тапсырыспен қатар санайды, 1 қаңтарда 9-дың 5-еуі. `WHERE` топтаудан бұрын жолдарды, `HAVING` кейін топтарды сүзеді.\n\nҚатынас ережесі нақты деректерде маңызды. 1 қаңтарда EAST — 5 тапсырыс, 720.00, орташа 144.00, WEST — 4 тапсырыс, 480.00, орташа 120.00. Екі орташаның орташасы — 132.00; күннің орташа тапсырыс сомасы — 1200.00 / 9 = 133.33. Біріншісі WEST-тің 4 тапсырысына EAST-тің 5 тапсырысындай салмақ береді. 100 сомалы бір тапсырыс пен жалпы 1000 болатын 100 тапсырыс сияқты үлкен айырмада қате өседі: 55.00 және 10.89.\n\n![Тоғыз тапсырыстың 720.00 және 480.00 сомаларын біріктіру салмақталмаған 132.00 орнына 133.33 береді.](images/02-ratio-from-sums.png)\n\n*Бөлмес бұрын қатынас қосындыларын есеп түйіршіктілігінде біріктіріңіз.*\n\nСуреттегі жазулар: COMBINE SUMS BEFORE DIVIDING — бөлмес бұрын қосындыларды біріктіру; EAST, WEST — аймақ мәндері; ORDERS — тапсырыстар; AMOUNT — сома; 5 ORDERS — 5 тапсырыс; 4 ORDERS — 4 тапсырыс; ORDER-WEIGHTED — тапсырыс саны бойынша салмақталған; EQUAL REGION WEIGHTS — аймақтарға бірдей салмақ. EAST: 720.00 / 5 = 144.00; WEST: 480.00 / 4 = 120.00; (720.00 + 480.00) / 9 = 133.33; (144.00 + 120.00) / 2 = 132.00.\n",
+      "target_hash": "8ec127406e6905d9dc91bfd9b54175116d303e19b053069d2270bf0b38c41613",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections, with protected code fences observed equal. Checked paidGMV payment evidence versus status/order amount, half-open Asia/Shanghai window, deduplication, cohort denominator includes cancelled orders, repeat-buyer2/3 andconversion5/8, distinct counts non-additivity, 660/50/610 totals, full outer lost-day reconciliation, window grain/LAG gaps and average-of-averages132 vs133.33. Simplified LAG gap wording and removed extra backtick styling from an added image legend to retain original protected-inline multiplicity. Viewed all three actual PNGs and added complete label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "0a37f33a5cd8cfde0a7e9b177ce3526d53073cad7a6be5204db7fff54d1d6217",
+          "target_hash": "8ec127406e6905d9dc91bfd9b54175116d303e19b053069d2270bf0b38c41613"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ac35e3f988ac4d0baa8619063180fe90",
+      "source_hash": "27eda1e5118f2cbde7d355fbef6f85550b179868e208699d857f668a89c673c3",
+      "target_text": "## 10-тест\n\n[10-тест: метрикаларды өңдеу және ұсыну](quiz10_metric_processing.ipynb) файлын ашыңыз. Онда бір дұрыс жауабы бар алты сұрақ бар және іске қосылған орта қажет емес.\n\nКелесі модуль: [11-модуль: BI және AI тұтынушыларына арналған интерфейстер мен шекаралар](../module11-bi-and-ai/course.md).\n",
+      "target_hash": "bf1a8da12a9b461bde0712380e941220a0b9019d70fe5daca48845b15a2818ab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections, with protected code fences observed equal. Checked paidGMV payment evidence versus status/order amount, half-open Asia/Shanghai window, deduplication, cohort denominator includes cancelled orders, repeat-buyer2/3 andconversion5/8, distinct counts non-additivity, 660/50/610 totals, full outer lost-day reconciliation, window grain/LAG gaps and average-of-averages132 vs133.33. Simplified LAG gap wording and removed extra backtick styling from an added image legend to retain original protected-inline multiplicity. Viewed all three actual PNGs and added complete label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "27eda1e5118f2cbde7d355fbef6f85550b179868e208699d857f668a89c673c3",
+          "target_hash": "bf1a8da12a9b461bde0712380e941220a0b9019d70fe5daca48845b15a2818ab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.07bf71ca93c241cd94043dc553b7abd4",
+      "source_hash": "a0db42050c1cae0ecbb9470ac216437da87a8f448add2399845456497f522caa",
+      "target_text": "## Модуль мақсаты\n\n«Күндік тапсырыс» пен «төленген GMV»-ді жазылған келісімшарттарға айналдырыңыз, көрсеткіштерін жарияланған түйіршіктілікте сақтаңыз және жылдамдатпас бұрын сақталған сандардың дұрыстығын егжей-тегжейлі деректермен дәлелдеңіз.\n",
+      "target_hash": "01ce640bf1787c7d092a9a433edd0e4026affd0c2abb31e3ab0ef04624af10bc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections, with protected code fences observed equal. Checked paidGMV payment evidence versus status/order amount, half-open Asia/Shanghai window, deduplication, cohort denominator includes cancelled orders, repeat-buyer2/3 andconversion5/8, distinct counts non-additivity, 660/50/610 totals, full outer lost-day reconciliation, window grain/LAG gaps and average-of-averages132 vs133.33. Simplified LAG gap wording and removed extra backtick styling from an added image legend to retain original protected-inline multiplicity. Viewed all three actual PNGs and added complete label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "a0db42050c1cae0ecbb9470ac216437da87a8f448add2399845456497f522caa",
+          "target_hash": "01ce640bf1787c7d092a9a433edd0e4026affd0c2abb31e3ab0ef04624af10bc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

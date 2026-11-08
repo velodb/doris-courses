@@ -1,0 +1,440 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.6f451e6d1f9a4e3eab0183e3ee280a79",
+      "source_hash": "de73f6c5811fb6dcebaf8de2b61c45d36a4ac5644fc768f852fd12bd93135754",
+      "target_text": "## 5.3 Түсіндіруге болатын өлшемдерді скалярлық функциялармен шығару\n\nОқиға кестесі `event_time`, `region` және `event_type` мәндерін типтелген бағандарда сақтап тұр. Есепке әлі оқиға күні, сағат шекарасы, сағат нөмірі немесе көрсету белгісі қажет болуы мүмкін. Скалярлық функциялар сол мәндерді әр таңдалған кіріс жолы үшін дербес шығарады.\n\n",
+      "target_hash": "32e681b742e362258a1e44bdd66b0b8654002545dee08367c17d855dc69af45b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "de73f6c5811fb6dcebaf8de2b61c45d36a4ac5644fc768f852fd12bd93135754",
+          "target_hash": "32e681b742e362258a1e44bdd66b0b8654002545dee08367c17d855dc69af45b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.46548748f3fa4221a30e87ff4140ca77",
+      "source_hash": "4ba2f8b2c7c7a386fae37680f7e01f5748ecfcad50ea2a1515f03e9c05839977",
+      "target_text": "### Сұрау бойымен есеп түйіршіктілігін қадағалау\n\nСұрауды жол пішіндерінің тізбегі ретінде түсінуге болады:\n\n![Егжей-тегжейлі оқиғалар сүзіліп, байытылады, күн-аймақ жолдарына топталады, терезелермен толықтырылады және соңында көрсету үшін реттеледі.](images/01-trace-report-grain.png)\n\n*Топтау түйіршіктілікті өзгертеді; терезелер оны сақтайды, ал реттеу көрсетілімді өзгертеді.*\n\nСурет жазулары: Trace the report grain — есеп түйіршіктілігін қадағалау; Event detail — егжей-тегжейлі оқиғалар; Filter + scalar — сүзгі және скалярлық есептеу; GROUP BY — GROUP BY; Daily-region rows — күн-аймақ жолдары; Window functions — терезелік функциялар; Previous — алдыңғы; Cumulative — жинақталған; Rank — орын; Same rows — сол жолдар; Final ORDER BY — соңғы ORDER BY; Presentation only — тек көрсетілім. event_date, region, filtered, daily_region және scored атаулары өзгермейді. Сурет ағылшын түпнұсқасында сақталған.\n\nСүзу жолдарды алып тастай алады. Топтау әдетте көптеген егжей-тегжейлі жолды саны азырақ топталған жолдарға азайтады. Терезелік есептеу алған жолдарын сақтап, әрқайсысына мән қосады. Соңғы реттеу түйіршіктілікті емес, олардың көрсетілім тізбегін өзгертеді.\n\n",
+      "target_hash": "6f6de1d9e6f2ea6220676173f02e73144dfa2fadb7e1e180710d3bc7099a5f6c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "4ba2f8b2c7c7a386fae37680f7e01f5748ecfcad50ea2a1515f03e9c05839977",
+          "target_hash": "6f6de1d9e6f2ea6220676173f02e73144dfa2fadb7e1e180710d3bc7099a5f6c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a4f29fef6bac4c34b59dc668f627c77a",
+      "source_hash": "678cc358d9f40238d1314afe98331dc6aa178fa1f4a9254b34f578280fc5ab78",
+      "target_text": "## 5.1 Функцияларды таңдамас бұрын талдамалық жауапты анықтау\n\n«Аймақтардың нәтижесін көрсету» әлі сұрау шарты емес. Ол бірнеше сұрақты шешпей қалдырады:\n\n- Есепке қай оқиғалар кіреді?\n- Бір шығыс жолы нені білдіреді?\n- Әр метрикаға қай оқиғалар үлес қосады?\n- Талапқа сай оқиғалары жоқ күндер немесе аймақтар көрсетілуі тиіс пе?\n- «Алдыңғы», «жинақталған» және «орын» ұғымдарын қай тізбек анықтайды?\n- Нәтиже интерактивті қарауға ма, әлде кейінгі файлдық жұмыс барысына ма арналған?\n\nФункция атауларын таңдамас бұрын осы таңдауларды шешіңіз. Осы модуль сценарийінің бір ықтимал шарты:\n\n| Шешім | Талап |\n| --- | --- |\n| Кіріс жиыны | 1 наурызды қоса, 4 наурызды қоспайтын оқиғалар |\n| Нәтиже түйіршіктілігі | Әр `event_date` және `region` үшін бір жол |\n| Белсенділік метрикалары | Әр күн-аймақ тобындағы барлық оқиғалар және бірегей пайдаланушылар |\n| Сатып алу метрикалары | Сол топтағы бірегей сатып алушы пайдаланушылар және сатып алу түсімі |\n| Уақыт салыстыруы | Әр аймақ ішіндегі алдыңғы байқалған күндік түсім және жинақталған түсім |\n| Аймақаралық салыстыру | Сол күндегі аймақтар арасындағы түсім орны |\n| Соңғы реттеу | Тұрақты көрсетілім үшін күн, орын, содан кейін аймақ |\n\nБұл шарт сырттай қисынды қателерге жол бермейді. Тек күн бойынша топтау аймақ түйіршіктілігін алып тастар еді. `event_count` есептемес бұрын тек сатып алуды сүзу сол бағанды сатып алу оқиғаларының санына айналдырар еді. Барлық 24 жолды бірге реттеп орын беру әр күнде сегіз аймаққа дербес орын беруден басқа сұраққа жауап береді.\n\n",
+      "target_hash": "8b84eb6dae145aba53f6a424a07f22a1a2e9ed42815c37c4662befa19528fc43",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "678cc358d9f40238d1314afe98331dc6aa178fa1f4a9254b34f578280fc5ab78",
+          "target_hash": "8b84eb6dae145aba53f6a424a07f22a1a2e9ed42815c37c4662befa19528fc43"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.df56cd7488b840d09980dc463d741e4d",
+      "source_hash": "3207b431096cdb26896bf98742d2fb1f3ce8d9ffe8ee319916d157fed858aedd",
+      "target_text": "### AI шақыруларын сыртқы тәуелділік ретінде қарастыру\n\nAI функциясы қолданба модель жеткізушісін, AI Resource, тіркелгі деректерін, желі қолжетімділігін, күтілетін кідірісті, сәтсіздік саясатын, деректерді басқару ережелерін және рұқсат етілетін шығынды анықтағаннан кейін ғана қолайлы. Сыртқы модель қайтарған эмоциялық реңк белгісі детерминді жергілікті жол түрлендіруіне баламалы емес.\n\nЗертханалық жұмыс `AI_SENTIMENT` жіктейді, бірақ орындамайды. Бұл жұмысты дербес ұстап, курс деректерін сыртқы жеткізушіге жібермеуге мүмкіндік береді. Қолданбас бұрын [AI функцияларына шолуды](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/ai-functions/overview/) және таңдалған функцияның ағымдағы шартын қараңыз.\n\n",
+      "target_hash": "b0f84b574dc21150629402b263322cdc5a740d4e99365990312a1e431c0d851b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3207b431096cdb26896bf98742d2fb1f3ce8d9ffe8ee319916d157fed858aedd",
+          "target_hash": "b0f84b574dc21150629402b263322cdc5a740d4e99365990312a1e431c0d851b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3541274eba4943f7a761d40c4b915927",
+      "source_hash": "9f3cae636bbdf8e6692240e73554a9328a1c39d9436a55a67c00e2b188192b9e",
+      "target_text": "## Модуль мақсаты\n\nЕгжей-тегжейлі оқиғаларды мағынасын негіздей алатын талдамалық нәтижеге айналдырыңыз: алдымен нәтижені анықтап, содан кейін функцияларды жолдарға жасайтын жұмысына қарай таңдаңыз және сұрауды түйіршіктілігі көрініп тұратын кезеңдермен құрыңыз.\n\nОперациялық топ әр күн мен аймаққа оқиға көлемі, белсенді пайдаланушылар, сатып алушылар, сатып алу түсімі, алдыңғы күн түсімі, жинақталған түсім және сол күнгі аймақ орны бар бір жол алғысы келеді. 5-зертханалық жұмыс сол есепті 4-модульдің оқиға кестесі `events_modelled` негізінде құрады.\n\n",
+      "target_hash": "d5c91ec2de98f7e2c15566249ba279d5230edaa31fd377c6c8bec1525ca7fbc2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "9f3cae636bbdf8e6692240e73554a9328a1c39d9436a55a67c00e2b188192b9e",
+          "target_hash": "d5c91ec2de98f7e2c15566249ba279d5230edaa31fd377c6c8bec1525ca7fbc2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a15490de763a4c328cf245e40ff2e989",
+      "source_hash": "b165f8a8fd61fceb2d311691325d357ce27a4f38b4cda7743f58be903db2f0d3",
+      "target_text": "## 5.6 Күрделі талдау кезеңдерін CTE арқылы көрсету\n\nCommon Table Expression бір SQL операторы ішінде уақытша нәтиже жиынына атау береді. Ол әр кезеңнің түйіршіктілігі мен міндетін көрінетін ете алады. Тұрақты кесте жасамайды.\n\nКүн-аймақ сценарийі үшін жұмысты былай бөліңіз:\n\n| Кезең | Міндеті | Нәтиже түйіршіктілігі |\n| --- | --- | --- |\n| `filtered` | Үш күндік кіріс жиынын таңдап, `event_date` шығару | Әр таңдалған оқиғаға бір жол |\n| `daily_region` | Күн және аймақ бойынша топтап, белсенділік пен сатып алу метрикаларын есептеу | Әр күн мен аймаққа бір жол |\n| `scored` | Алдыңғы түсімді, жинақталған түсімді және күндік орынды қосу | Әр күн мен аймаққа бір жол |\n| Соңғы `SELECT` | Көрінетін бағандарды және көрсетілім ретін таңдау | Әр күн мен аймаққа бір жол |\n\nБарлық амалды бірден жасауға тырысатын бір сұрау қабатына қарағанда құрылым сұлбасын тексеру жеңілірек:\n\n```sql\nWITH filtered AS (\n    -- select the input population and derive event_date\n),\ndaily_region AS (\n    -- establish the daily-region grain and calculate measures\n),\nscored AS (\n    -- retain those rows and add window calculations\n)\nSELECT ...\nFROM scored\nORDER BY ...;\n```\n\nБұл ұйымдастыру қателердің орнын табуды жеңілдетеді. Сатып алу түсімі қате болса, кіріс предикаты мен шартты агрегатты тексеріңіз. Жол саны үш күн көбейтілген сегіз аймаққа тең болмаса, `daily_region` топтауын тексеріңіз. «Алдыңғы» бір аймақтан басқасына өтсе, терезе бөлігін тексеріңіз.\n\nCTE — мағына мен оқуға ыңғайлылық шекарасы. Оның болуы Doris нәтижені материалдандыратынын, әр атаулы блокты бөлек орындайтынын немесе сұрауды жылдамдататынын кепілдемейді. Физикалық орындау маңызды болса, `EXPLAIN` және Query Profile пайдаланыңыз; тек синтаксистен өнімділік қасиетін шығармаңыз. [Common Table Expressions](https://doris.apache.org/docs/4.x/query-data/cte/) құжатын қараңыз.\n\n",
+      "target_hash": "2bbb45e8f179fd7437be9218d099e7b2ae65981e4e42d4358fd7797f4a399b7d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b165f8a8fd61fceb2d311691325d357ce27a4f38b4cda7743f58be903db2f0d3",
+          "target_hash": "2bbb45e8f179fd7437be9218d099e7b2ae65981e4e42d4358fd7797f4a399b7d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c14161775230459e838cb3679610d7f4",
+      "source_hash": "a6c68021b9ad655f01f4d9928950548d38b2488a38dcf765d199e25c8d54fbba",
+      "target_text": "# 5-модуль: Apache Doris жүйесінде деректерді талдау\n\n| Курс туралы ақпарат | Мән |\n| --- | --- |\n| Курс | Apache Doris көмегімен нақты уақыттағы аналитика · 2-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Орта | Курс сынақ ортасы және 4-зертханалық жұмыстың `events_modelled` кестесі |\n| Болжамды уақыт | Шамамен 90 минут: оқу 50, зертханалық жұмыс 30, тест 10 |\n\n[Курстың README файлы](../../README.md) · [5-зертханалық жұмысты ашу](lab05_analyze_data.ipynb) · [5-тестті ашу](quiz05_analytical_query_semantics.ipynb)\n\n",
+      "target_hash": "0ef79311f740bfc20f8b8c4ea769499e04ab324c59d49eca213d4ccb3b361be2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a6c68021b9ad655f01f4d9928950548d38b2488a38dcf765d199e25c8d54fbba",
+          "target_hash": "0ef79311f740bfc20f8b8c4ea769499e04ab324c59d49eca213d4ccb3b361be2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ee0a6a0b880249e5a2bf7b3929bc4acd",
+      "source_hash": "0ccf161ed8051ccb157d1f54aafc6992cfa48935cfc6885a749a69e256b81c02",
+      "target_text": "### Әр кіріс жолына тиесілі мәнді жаю\n\nОқиғаның тегтер массиві бар делік:\n\n| `event_id` | `tags` |\n| ---: | --- |\n| 41 | `['mobile', 'promotion']` |\n| 42 | `['desktop']` |\n\n`EXPLODE(tags)` және `LATERAL VIEW` әр жасалған тегті өзінің бастапқы оқиғасымен байланыстырады:\n\n| `event_id` | `tag` |\n| ---: | --- |\n| 41 | `mobile` |\n| 41 | `promotion` |\n| 42 | `desktop` |\n\nНәтиже түйіршіктілігі енді әр оқиғаға бір жол емес, әр оқиға-тег кездесуіне бір жол. Осы жаюдан кейін оқиға түсімін қосу, метрика әдейі тегке жатқызуды өлшемесе немесе сұрау алдымен тиісті түйіршіктілікке оралмаса, 41-оқиғаны екі рет санар еді. Бос және `NULL` жинақтары үшін де сақтау шешімі айқын болуы тиіс; таңдалған Table Function шартын қараңыз.\n\nTable Function жолға тәуелді талдауға немесе жаюға сай келеді. Мысалдар — массивті жаю және бөлгіші бар мәнді бөлу. Doris оларды көбіне `LATERAL VIEW` арқылы қолданады. [EXPLODE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-functions/explode/) құжатын қараңыз; оның жанында басқа Table Function функциялары да тізілген.\n\n> **Table Function және TVF — әртүрлі санат.** `EXPLODE(tags)` сияқты Table Function әр ағымдағы кіріс жолында орындалып, сол жолға байланысты нөлден көпке дейін жол жасайды. `NUMBERS(...)` немесе `S3(...)` сияқты Table-Valued Function (TVF) `FROM` ішіндегі қатынас көзінің өзі болады; өз қатынасын жасау үшін оған `events_modelled` жолы қажет емес. 3-модуль сыртқы файлдарды уақытша қатынас ретінде көрсету үшін S3 TVF пайдаланды. 5-зертханалық жұмыс `NUMBERS(\"number\" = \"4\")` өрнегін тек шағын дербес салыстыру ретінде пайдаланады және S3 қатынауын немесе тұрақты сақтауды қайта қарастырмайды. [NUMBERS](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/numbers/) және [S3](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/) құжаттарын қараңыз.\n\n",
+      "target_hash": "758be9f1f8c7b7b1ec9b9a7f05d0d24347eb28b6f4208f20acbc45440ace4f82",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "0ccf161ed8051ccb157d1f54aafc6992cfa48935cfc6885a749a69e256b81c02",
+          "target_hash": "758be9f1f8c7b7b1ec9b9a7f05d0d24347eb28b6f4208f20acbc45440ace4f82"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ba71a5e8d5e04fa79665cc5811cfeabc",
+      "source_hash": "73c7886f103b7b37d79d3c8d414ad365d4011d305ea2743a30267e8af94c2e34",
+      "target_text": "### Әр метрикаға үлес қосатын жиынды анықтау\n\nБір күн-аймақ жолындағы төрт метриканы қарастырайық:\n\n| Метрика | Үлес қосатын жиын | Сай өрнек үлгісі |\n| --- | --- | --- |\n| Оқиға саны | Топтағы барлық таңдалған оқиғалар | `COUNT(*)` |\n| Белсенді пайдаланушылар | Барлық таңдалған оқиғалардағы `NULL` емес бірегей пайдаланушылар | `COUNT(DISTINCT user_id)` |\n| Сатып алушылар | Тек сатып алу оқиғаларындағы бірегей пайдаланушылар | `COUNT(DISTINCT CASE WHEN event_type = 'purchase' THEN user_id END)` |\n| Сатып алу түсімі | Тек сатып алу оқиғаларының түсімі | `SUM(CASE WHEN event_type = 'purchase' THEN revenue ELSE 0 END)` |\n\nШартты өрнектер үлес қосатын жиындары әртүрлі метрикаларға бір күн-аймақ нәтижесінің түйіршіктілігін ортақ пайдалануға мүмкіндік береді. Бүкіл сұрауды тек сатып алуларға сүзу `event_count` және `active_users` ішінен сатып алу емес оқиғаларды да алып тастап, олардың мағынасын өзгертер еді.\n\nБірегей сандар жалпы жағдайда қосылмайды. Екі аймақта немесе екі күнде белсенді пайдаланушы әр тиісті топқа үлес қосады, бірақ жалпы бірегей пайдаланушы санында бір рет көрінуі тиіс. Күн-аймақ бірегей сандарын қосу жаһандық бірегей жиынды бермейді.\n\n",
+      "target_hash": "4d84f9ce061ec1d888a2f1d0e304a6508f79a9b75ed5f28109dc150482546235",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "73c7886f103b7b37d79d3c8d414ad365d4011d305ea2743a30267e8af94c2e34",
+          "target_hash": "4d84f9ce061ec1d888a2f1d0e304a6508f79a9b75ed5f28109dc150482546235"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.14aa479fd6fa49ceb2b62e536ad11cfe",
+      "source_hash": "3e5651d5414dd2e657c11274511a4352899f1681c893b6ef88333823d2a22fa6",
+      "target_text": "### Талдау бойымен жол пішінін қадағалау\n\nПайдалы бастапқы жуықтау негізгі функция пішіндерін байланыстырады:\n\n![Скалярлық, агрегаттық, Table және терезелік функциялар жолдарды қалай өзгертеді немесе сақтайды](images/02-function-row-shapes.png)\n\n*Функция санаттары нені қабылдайтыны, қайтаратыны және жол пішініне не істейтіні бойынша ерекшеленеді.*\n\nСурет жазулары: Functions change row shape differently — функциялар жол пішінін әртүрлі өзгертеді; Scalar — скалярлық; One-to-one — бірден бірге; Input (1 row) — кіріс (1 жол); Output (1 row) — шығыс (1 жол); Aggregate — агрегаттық; Many-to-one — көптен бірге; Input (2 rows) — кіріс (2 жол); Table Function — жолды жаятын функция; One-to-many — бірден көпке; Output (2 rows) — шығыс (2 жол); Window — терезелік; Rows retained — жолдар сақталады; Running total — жинақталған қосынды. TO_DATE, SUM, EXPLODE функциялары, event_timestamp, event_date, event_id, tags, tag атаулары, east, mobile, promotion мәндері және 41, 100, 200, 300 сандары өзгермейді. Сурет ағылшын түпнұсқасында сақталған.\n\nҚысқаша, бұлар **бірден бірге**, **көптен бірге** және **бірден көпке**. Олар толық SQL операторы дәл сол жол санын сақтайтынын кепілдемейді, функцияның сұрауға қосатын үлесін сипаттайды. `WHERE` тармағы жолдарды алып тастай алады, Join оларды көбейте алады, ал `GROUP BY` қанша агрегат тобы қалатынын анықтайды.\n\nКейінгі бөлімдер осы жол пішінінің өзгерісін қадағалайды. 5.3-бөлім оқиға жолдарын сақтай отырып мәндер шығарады. 5.4-бөлім көптеген оқиғаны әр күн-аймақ жолына әдейі біріктіреді. 5.5-бөлім бір жолды бірнеше элемент жолына жаяды. Одан кейін 5.6-бөлім сол түрлендірулерге айқын кезеңдер береді, ал 5.7-бөлім сақталған әр нәтиже жолына бір мән есептеу үшін байланысты жолдар терезесін пайдаланады:\n\nЖоғарыдағы жол пішіні көрнекілігі де осы ретпен жүреді: оқиға жолдарында мәндер шығару, күн-аймақ топтарына агрегаттау, содан кейін түйіршіктілікті өзгертпей терезелік мәндер қосу.\n\n",
+      "target_hash": "90482bf5c9236a022e088f2be8de5e1b49deb009b0268fd292e4010db367ab0d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3e5651d5414dd2e657c11274511a4352899f1681c893b6ef88333823d2a22fa6",
+          "target_hash": "90482bf5c9236a022e088f2be8de5e1b49deb009b0268fd292e4010db367ab0d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a59f75a28a59442c985ecca525eaa05e",
+      "source_hash": "f85725baffc7b738b7f9fc02aed44463219538d73ea57bdb065d16eae62df063",
+      "target_text": "### Сүзгілерді әсер етуі тиіс кезеңге орналастыру\n\n`WHERE` және `HAVING` әртүрлі жол пішіндерінде жұмыс істейді:\n\n![WHERE топтаудан бұрын оқиға жолдарын сүзеді, ал HAVING одан кейін агрегат топтарын сүзеді](images/03-where-vs-having.png)\n\n*`WHERE` кіріс жолдарын тексереді; `HAVING` агрегаттар пайда болғаннан кейін топтарды тексереді.*\n\nСурет жазулары: Filter at the right stage — дұрыс кезеңде сүзу; Event rows — оқиға жолдары; Qualifying groups — талапқа сай топтар; Each event — әр оқиға; Product total — өнім жиынтығы. events_modelled, WHERE, GROUP BY product_id, HAVING SUM(revenue), WHERE revenue >= threshold және HAVING SUM(revenue) >= threshold жазулары SQL мағынасын сақтау үшін түпнұсқада қалады; threshold — шек. Сурет ағылшын түпнұсқасында сақталған.\n\nБір күнде сатып алу түсімі шекке жететін өнімдерді табу үшін `WHERE` сол күннің сатып алу оқиғаларын, ал `HAVING SUM(revenue)` талапқа сай өнім топтарын таңдауы тиіс. `WHERE revenue >= 120000` сияқты предикат әр жеке оқиғаның шекке жететінін сұрайды. Ол өнім жиынтығын тексермейді.\n\n",
+      "target_hash": "da4f07cd2e32e159ce3eaf76e61368ef71961632eed9ceffcb32a47b0238f3e4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "f85725baffc7b738b7f9fc02aed44463219538d73ea57bdb065d16eae62df063",
+          "target_hash": "da4f07cd2e32e159ce3eaf76e61368ef71961632eed9ceffcb32a47b0238f3e4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.32028e65fabb405998b2c2750540f0a8",
+      "source_hash": "b2e5bbc63bc6064c03f14899cbc9477b83a79bf8a9f8d3d77f3f012d2d90c5cd",
+      "target_text": "### Нәтиже мағынасын нәтижені жеткізуден ажырату\n\nMySQL үйлесімді клиент және Jupyter ноутбугы сол SQL нәтижесін әртүрлі пішінде көрсете алады. MySQL пәрмен жолы клиентінде `\\G` тік көрсетілімді сұрайды; ол ноутбук көмекшісі арқылы жіберілетін сұраудың бөлігі емес, клиент пәрменінің аяқтауышы. Баған бүркеншік атаулары оқуға ыңғайлылықты жақсарта алады, бірақ сұрау есептейтін жолдар мен мәндерді өзгертпейді.\n\nБасқа жүйеге файлдар қажет болғанда, Doris үтірмен бөлінген мәндер (CSV), Parquet және Optimized Row Columnar (ORC) сияқты пішімдері бар `SELECT INTO OUTFILE` қолдайды. Экспорт мақсаты, пішімі, рұқсаттары және тіркелгі деректері жеткізу шартын құрайды. Олар қате анықталған метриканы немесе түйіршіктілікті түзетпейді. 5-зертханалық жұмыс нәтижелерді көрсетеді және экспорт жасамайды. [SELECT INTO OUTFILE](https://doris.apache.org/docs/4.x/data-operate/export/outfile/) құжатын қараңыз.\n\n",
+      "target_hash": "f94186baba5f7c55255ff0acfd339de3932dccac3aed67eae877dccedb7765c5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b2e5bbc63bc6064c03f14899cbc9477b83a79bf8a9f8d3d77f3f012d2d90c5cd",
+          "target_hash": "f94186baba5f7c55255ff0acfd339de3932dccac3aed67eae877dccedb7765c5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.73ae5b66c9b440e0975ae309c162f976",
+      "source_hash": "c6cc91b51a183bf8c06b16dc24f9e9dd7a1eb265011ab4da087bd3a737215d44",
+      "target_text": "### Жетіспейтін кезең мағынасын сақтау\n\nЕгжей-тегжейлі оқиғаларды топтау тек талапқа сай кірісте бар топтар үшін жол жасайды. Аймақта бір күнде таңдалған оқиға болмаса, тек оқиғаларға негізделген агрегаттау сол тіркеске нөлдік жолды автоматты ойдан қоспайды.\n\nБұл кейінгі терезелер үшін маңызды. `LAG` реттелген терезесіндегі алдыңғы нәтиже жолын оқиды, ол алдыңғы күнтізбелік күн болмауы мүмкін. Әр күнтізбелік күнді көрсетуі тиіс есепке күнтізбе қатынасы және сыртқы Join немесе басқа айқын бос аралық толтыру құрылымы қажет. Нөлдік белсенділік пен нәтиже жолының жоқтығы — әртүрлі күй.\n\n",
+      "target_hash": "e3b467f87488687ed81cb243f9cc8e04215051f7e991ba534d7440fa74fa3e3a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "c6cc91b51a183bf8c06b16dc24f9e9dd7a1eb265011ab4da087bd3a737215d44",
+          "target_hash": "e3b467f87488687ed81cb243f9cc8e04215051f7e991ba534d7440fa74fa3e3a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7ea8386bf8464b0a9a03c51ee6204b0f",
+      "source_hash": "be16ca69e7646f1b747095a273dae5a8082eea356423b550b46c8b4a780f52e9",
+      "target_text": "## 5.7 Жолдардың түйіршіктілігін жоғалтпай терезелік функциялармен салыстыру\n\nАгрегаттаудан кейін әр жол күн мен аймақты білдіреді. Терезелік функциялар сол жолдарды сақтай отырып салыстырады. Үш тармақ салыстыру шартын орнатады:\n\n![Бір есептегі уақыт бойымен аймақ және аймақтар арасындағы күн бойынша терезе жиындары](images/04-window-populations.png)\n\n*Сол күн-аймақ жолдары түйіршіктілігін өзгертпей әртүрлі терезе жиындарына қатыса алады.*\n\nСурет жазулары: One report, two window populations — бір есеп, екі терезе жиыны; Illustrative input — түсіндірмелік кіріс; By region over time — уақыт бойымен аймақ бойынша; By date across regions — күн бойынша аймақтар арасында; Cumulative SUM — жинақталған SUM; Revenue DESC — түсімнің кему реті; Daily-region grain — күн-аймақ түйіршіктілігі; Date 03-01 / Date 03-02 — 03-01 / 03-02 күндері; date — күн; previous — алдыңғы; cumulative — жинақталған; rank — орын. event_date, region, revenue, LAG(...,1,0), RANK, east, west, 2020-03-01, 2020-03-02 және 0, 1, 2, 90, 120, 150, 200, 270, 290 мәндері түпнұсқада сақталған. Сурет ағылшын тілінде қалады.\n\n| Терезе құрамдасы | Жауап беретін сұрағы |\n| --- | --- |\n| `PARTITION BY` | Қай жолдар дербес салыстыру жиынын құрайды? |\n| Терезенің `ORDER BY` тармағы | Алдыңғы, келесі және жинақталған орындар қандай тізбекте анықталады? |\n| Терезе фреймі | Ағымдағы жол айналасындағы қай орындар фреймге тәуелді есептеуге үлес қосады? |\n\n",
+      "target_hash": "881b36cb4ccb91a73536a797a7b5cafa39319573566ec4ff9385282fc9ff705d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "be16ca69e7646f1b747095a273dae5a8082eea356423b550b46c8b4a780f52e9",
+          "target_hash": "881b36cb4ccb91a73536a797a7b5cafa39319573566ec4ff9385282fc9ff705d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b8dc31eea42144e2846424ddac6203e2",
+      "source_hash": "b0b06fefb12259994a453cdf0feb80f0465e378df01e4278a2f326189345ec82",
+      "target_text": "## 5.2 Қажетті жұмысқа қарай функция санатын таңдау\n\nАлдымен амал нені қабылдайтынын, не қайтаратынын және жол санына не болатынын сұрасаңыз, Doris SQL функциялар каталогын бағдарлау жеңілдейді. Санаттар жай атаулар тізімі емес.\n\n| Функция санаты | Негізгі кіріс пен шығыс байланысы | Сай сценарий | Өкілдік пішін |\n| --- | --- | --- | --- |\n| Скалярлық функция | Бір кіріс жолының аргументтері бір мән береді | Күн шығару немесе белгіні қалыпқа келтіру | `TO_DATE(event_time)` |\n| Агрегат функциясы | Бірнеше жолдың мәндері топқа бір мән береді | Аймақ түсімін есептеу | `SUM(revenue)` |\n| Комбинатор | Агрегат күй, біріктіру немесе массив орны әрекетімен бейімделеді | Агрегат күйлерін біріктіру немесе сәйкес массив элементтерін агрегаттау | `SUM_FOREACH(metric_array)` |\n| Талдамалық (терезелік) функция | Байланысты нәтиже жолдары әр сақталған жолға бір мәнге үлес қосады | Күндік жолды алдындағы жолмен салыстыру | `LAG(revenue) OVER (...)` |\n| Table Function | Әр ағымдағы кіріс жолының мәні нөлден көпке дейін жол береді | Оқиғаға тіркелген тегтерді жаю | `LATERAL VIEW` арқылы `EXPLODE(tags)` |\n| Table-Valued Function (TVF) | Функцияның өзі `FROM` тармағына қатынас береді | Сандар жасау немесе файлдарды жолдар мен бағандар ретінде сұрау | `NUMBERS(...)` немесе `S3(...)` |\n| AI функциясы | Doris AI Resource арқылы модель шақырады | Мәтінді жіктеу, алу, аудару, жинақтау немесе талдау | `AI_SENTIMENT(resource, text)` |\n\n",
+      "target_hash": "c3e16387a8c5bd5176d334dc64e4e35541460f4b98c08dd1d8ea279bda03aeba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b0b06fefb12259994a453cdf0feb80f0465e378df01e4278a2f326189345ec82",
+          "target_hash": "c3e16387a8c5bd5176d334dc64e4e35541460f4b98c08dd1d8ea279bda03aeba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.af83e3a8fbf5442c94a8091c3f7adcfa",
+      "source_hash": "24f739cd484f659cc568e5ee29a146c36df4720557de7f0fb25a730f809a04b8",
+      "target_text": "## Анықтамалар\n\n- Функция топтары: [STATE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/state/), [MERGE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/merge/) және [FOREACH](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/combinators/foreach/) комбинаторлары, сондай-ақ [AI функцияларына шолу](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/ai-functions/overview/). [SHOW FUNCTIONS](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/function/SHOW-FUNCTIONS/) дерекқордың өз функцияларын, ал `SHOW BUILTIN FUNCTIONS` кіріктірілгендерін тізеді.\n- Жол жасайтын функциялар: [EXPLODE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-functions/explode/) Table Function және [NUMBERS](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/numbers/) пен [S3](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/) TVF функциялары.\n- Талдамалық сұрау құрылымы: [SELECT](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-query/SELECT/), [Common Table Expressions](https://doris.apache.org/docs/4.x/query-data/cte/) және [Талдамалық (терезелік) функциялар](https://doris.apache.org/docs/4.x/query-data/window-function/).\n- Топтау және жоғары ретті әрекет: [ANY_VALUE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/aggregate-functions/any-value/), [ARRAY_MAP](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/scalar-functions/array-functions/array-map/) және [ARRAY_FILTER](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/scalar-functions/array-functions/array-filter/).\n- Қайта қолданылатын кеңейтулер: [Alias Function](https://doris.apache.org/docs/4.x/query-data/udf/alias-function/), [Java UDF, UDAF, UDWF және UDTF](https://doris.apache.org/docs/4.x/query-data/udf/java-user-defined-function/), [Python UDF тобы](https://doris.apache.org/docs/4.x/query-data/udf/python-user-defined-function/) және [CREATE FUNCTION](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/function/CREATE-FUNCTION/).\n- Нәтижені жеткізу: [SELECT INTO OUTFILE](https://doris.apache.org/docs/4.x/data-operate/export/outfile/).\n",
+      "target_hash": "974b3ee9ad88a0f5cce7ebbef588c8937609499f496e2e17a14f0c004d063afb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "24f739cd484f659cc568e5ee29a146c36df4720557de7f0fb25a730f809a04b8",
+          "target_hash": "974b3ee9ad88a0f5cce7ebbef588c8937609499f496e2e17a14f0c004d063afb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.dac24d5876c6494ca0ac903707b7d145",
+      "source_hash": "daa6ec9cabcf8ddb006265e41fd4bce86efb2433b9da36226a2b8dd288e7de7b",
+      "target_text": "### Уақыт мағынасын уақыт көрсетілімінен ажырату\n\nӘртүрлі уақыт өрнектері әртүрлі сұраққа жауап береді:\n\n| Қажеттілік | Өрнек рөлі | Мысал |\n| --- | --- | --- |\n| Топтауға арналған күнтізбелік күн | Уақыт белгісін `DATE` мәніне түрлендіру | `TO_DATE(event_time)` |\n| Оқиға сағатының басы | Сағаттық уақыт шекарасына қалыпқа келтіру | `DATE_TRUNC(event_time, 'hour')` |\n| Таралуға арналған сағат құрамдасы | Бір құрамдасты шығару | `EXTRACT(HOUR FROM event_time)` |\n| Адам оқитын белгі | Көрсету үшін пішімдеу | `DATE_FORMAT(event_time, ...)` |\n\nПішімделген жол күнге ұқсауы мүмкін, бірақ оның шарты әлі жолдық тип. Кейінгі амалдар күндерді салыстыруы, аралықтар есептеуі немесе күнтізбелік мағынаны сақтауы тиіс болса, уақыт мәнін таңдаңыз. Тұтынушыға нақты белгі қажет болғанда мәнді пішімдеңіз.\n\nСұраудың уақыт белдеуі және шекара келісімі метрика шартының бөлігі. Бастапқы уақыт белгісі мен бизнес есеп белдеуі әртүрлі болса, «күндік» сөзі екіұшты. Функция бұл бизнес шешімді өздігінен шеше алмайды.\n\n",
+      "target_hash": "9e91de6948613961f3ca394812905a8e2bfbf4eb7ba3ac82a4ccecb23c4d4cb1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "daa6ec9cabcf8ddb006265e41fd4bce86efb2433b9da36226a2b8dd288e7de7b",
+          "target_hash": "9e91de6948613961f3ca394812905a8e2bfbf4eb7ba3ac82a4ccecb23c4d4cb1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ec3c69cf76b34c90b7e3bece9817aded",
+      "source_hash": "a4d7a6752822da5e9495323b8f0c9ac837b2a192bc2b59dd392277d34579ba3a",
+      "target_text": "## 5-тест: Apache Doris жүйесінде деректерді талдау\n\n[5-тест: Apache Doris жүйесінде деректерді талдау](quiz05_analytical_query_semantics.ipynb) ашыңыз.\nОнда бір жауап таңдалатын алты сұрақ бар және жұмыс істеп тұрған орта қажет емес.\n\nКелесі модуль: [6-модуль: Apache Doris жүйесінде деректерді біріктіру](../module06-joining/course.md).\n\n",
+      "target_hash": "eac4ffff44fc34ef12b0527cc54f6bd9411fe8a404a2ce863a9e77307f135cad",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a4d7a6752822da5e9495323b8f0c9ac837b2a192bc2b59dd392277d34579ba3a",
+          "target_hash": "eac4ffff44fc34ef12b0527cc54f6bd9411fe8a404a2ce863a9e77307f135cad"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

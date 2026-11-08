@@ -1,0 +1,1160 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.54a1d78381e34f539f43dd999046ce90",
+      "source_hash": "edf3b0ea8c99af49434f17e8b66ef1e870f7fa55fad1f59ebf364978c9441b8c",
+      "target_text": "<div>\n  <div>03-ТЕСТ · APACHE DORIS КӨМЕГІМЕН ЖҮЙЕНІ БАҚЫЛАУ</div>\n  <div>Жүйені бақылау деректерін визуализациялау</div>\n  <p>Discover ішінде журнал іздеп, оларды табатын уақыт аралығын орната, трасса арқылы ақаулы span-ға өте, хост CPU-ын өлшей және SQL панельдерін құра алатыныңызды тексеріңіз.</p>\n  <span>6 сұрақ · Бір жауап таңдау · Шамамен 10 минут</span>\n</div>",
+      "target_hash": "cbcba5a1bf2f74dbebd35e260f6391be02e26636a82bb4f8ea76edf16fe8f615",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "edf3b0ea8c99af49434f17e8b66ef1e870f7fa55fad1f59ebf364978c9441b8c",
+          "target_hash": "cbcba5a1bf2f74dbebd35e260f6391be02e26636a82bb4f8ea76edf16fe8f615"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.09dc04f09d8144adb1e10d98b40d4973",
+      "source_hash": "6e92b2b95aa90578da403eaa0f831aa19304f2a1e2d86ce8df3ff7ffce203923",
+      "target_text": "## Бұл тест нені бағалайды\n\nАлты сұрақ [3-модуль сабағының](course.md) алты мақсатына сәйкес: Lucene және SQL іздеуі, маңыздылық бойынша іздеу инцидентті неге өткізіп алады, уақыт аралықтары мен UTC, қате басталған span, әр ядро үлгілерінен хост CPU-ын есептеу және Grafana уақыт макростары.\n\nБұл — өзін-өзі тексеру, бағаланатын зертханалық жұмыс емес. Grafana іске қосылып тұруы қажет емес.",
+      "target_hash": "d6e32ab326a5f0462534bc172cbb087bed9a6badd70f9d5bdca1b07c1b77c790",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "6e92b2b95aa90578da403eaa0f831aa19304f2a1e2d86ce8df3ff7ffce203923",
+          "target_hash": "d6e32ab326a5f0462534bc172cbb087bed9a6badd70f9d5bdca1b07c1b77c790"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fbccd8dc93a74db19003c75882bb5f00",
+      "source_hash": "88855008e9a27b01cda9c29da0ce4471101cf92b9275cdd649db701ff94a2d1b",
+      "target_text": "### Тестті инициализациялау\n\nҰяшықты бір рет орындаңыз. Ол курс пакетін тауып, осы модульдің тест анықтамасын оқиды және интерактивті тест объектісін жасайды.",
+      "target_hash": "942b9d92b4f357c6cae67b6c4f3c117574fa1b14fc6b936eecc1082f54db4ad3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "88855008e9a27b01cda9c29da0ce4471101cf92b9275cdd649db701ff94a2d1b",
+          "target_hash": "942b9d92b4f357c6cae67b6c4f3c117574fa1b14fc6b936eecc1082f54db4ad3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d32aa1fbfe4540c78a98e31f6b0f621b",
+      "source_hash": "ee67e0ac672237014946d22f52275d624b9c164e0050d4be2d7716bdbebee5da",
+      "target_text": "## Білімді тексеруді бастау\n\n1-сұрақты көрсету үшін келесі ұяшықты орындаңыз. Бір нұсқа таңдап, **Submit answer** басыңыз.",
+      "target_hash": "749c18a34bd61e4358f7dc22a2f0d0ba26439cc8fae29a93eff905b1d649216c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "ee67e0ac672237014946d22f52275d624b9c164e0050d4be2d7716bdbebee5da",
+          "target_hash": "749c18a34bd61e4358f7dc22a2f0d0ba26439cc8fae29a93eff905b1d649216c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e471e476718e4039a469627574ddbe56",
+      "source_hash": "32dddf5946ca3eef59a12b6acae0fea289ac3ae37975ec9995201910075e7687",
+      "target_text": "Алты сұрақ Discover ішінде журнал іздеп, тыныш қате іздеуін түсіндіре, Doris-ке сәйкес уақыт аралығын орната, трасса қатесінің бастауын таба, хост CPU-ын өлшей және Grafana уақыт макростарын қолдана алатыныңызды тексереді.",
+      "target_hash": "0a847ce32bbf9220611ec0546f1854c3148e4aa3117e418e002e090421832fcd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "32dddf5946ca3eef59a12b6acae0fea289ac3ae37975ec9995201910075e7687",
+          "target_hash": "0a847ce32bbf9220611ec0546f1854c3148e4aa3117e418e002e090421832fcd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5eeac34654394ff1b39a83a6a743e084",
+      "source_hash": "c5e4116a98d1952788f27c4070d84ab8cb664d1dba1246a9a9bfd918c74e1c9a",
+      "target_text": "Тырнақшалы фраза сөздері қатар әрі ретімен тұрса сәйкеседі. AND арқылы қосылған екі фраза жолдың екі түріне де сәйкес: беттің сұрау параметрлері checkout пен HTTP арасында тұрса да, әр фраза сәйкеседі. Бір ұзын фраза беттің сұрауларын өткізіп алады, өйткені currencycode пен usd сөздері оны бұзады. OR барлық checkout сұраулары мен барлық 500 жауаптарын табады. Қатынас журналында маңыздылық деңгейі жоқ, сондықтан маңыздылық шарты бұл жолдардың ешқайсысын таппайды.",
+      "target_hash": "192a1b5116a6c2f45f4a975213a26cee29af4cefc071fa9d27eae18466c159b5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "c5e4116a98d1952788f27c4070d84ab8cb664d1dba1246a9a9bfd918c74e1c9a",
+          "target_hash": "192a1b5116a6c2f45f4a975213a26cee29af4cefc071fa9d27eae18466c159b5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6d9172f6b6924a0fb60d6be4bec367cf",
+      "source_hash": "f259b15a0c489453ea92b2470a7b6e09e90c3bd52877ae39da651366fccea051",
+      "target_text": "Doris App-тың Discover бетінде Lucene және SQL шарттарымен журнал іздеу.",
+      "target_hash": "e2765433d2e7382a861e1f2f0266e2b20f37479644ef3157a61c7f204b865c70",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "f259b15a0c489453ea92b2470a7b6e09e90c3bd52877ae39da651366fccea051",
+          "target_hash": "e2765433d2e7382a861e1f2f0266e2b20f37479644ef3157a61c7f204b865c70"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.440b875fa1bc463ca9cd65f8fc7a699a",
+      "source_hash": "ea4a632695abaa404b555be519296c5a6bdc266b50f5d4040824fe5917e25b7e",
+      "target_text": "body:\"POST /api/checkout\" AND body:\"HTTP/1.1 500\"",
+      "target_hash": "ea4a632695abaa404b555be519296c5a6bdc266b50f5d4040824fe5917e25b7e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "ea4a632695abaa404b555be519296c5a6bdc266b50f5d4040824fe5917e25b7e",
+          "target_hash": "ea4a632695abaa404b555be519296c5a6bdc266b50f5d4040824fe5917e25b7e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b922520c81f8487baf2aff42fa925f2d",
+      "source_hash": "af394f25a0d0c40c5759041290db1f19a4afe7e880b0ac7534203128290902e2",
+      "target_text": "body:\"POST /api/checkout HTTP/1.1 500\"",
+      "target_hash": "af394f25a0d0c40c5759041290db1f19a4afe7e880b0ac7534203128290902e2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "af394f25a0d0c40c5759041290db1f19a4afe7e880b0ac7534203128290902e2",
+          "target_hash": "af394f25a0d0c40c5759041290db1f19a4afe7e880b0ac7534203128290902e2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.40135bf5e93d4aed82533eab771c5707",
+      "source_hash": "ed4b75f95ca2408231d4fe305728a4981eba3f7945346ff7459a0611d67f4344",
+      "target_text": "body:\"POST /api/checkout\" OR body:\"HTTP/1.1 500\"",
+      "target_hash": "ed4b75f95ca2408231d4fe305728a4981eba3f7945346ff7459a0611d67f4344",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "ed4b75f95ca2408231d4fe305728a4981eba3f7945346ff7459a0611d67f4344",
+          "target_hash": "ed4b75f95ca2408231d4fe305728a4981eba3f7945346ff7459a0611d67f4344"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c44b0f82363d4c0eb627a0cc53f23864",
+      "source_hash": "f6362d814d83d21b13bb9443f53daeb674b354b9a18baf366c7e3d9afda77d7a",
+      "target_text": "severity_number:>=17 AND body:checkout",
+      "target_hash": "f6362d814d83d21b13bb9443f53daeb674b354b9a18baf366c7e3d9afda77d7a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "f6362d814d83d21b13bb9443f53daeb674b354b9a18baf366c7e3d9afda77d7a",
+          "target_hash": "f6362d814d83d21b13bb9443f53daeb674b354b9a18baf366c7e3d9afda77d7a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6312f85fd0a340429ce4cf205ba79791",
+      "source_hash": "d97d65c7efb07a66ea6bc7330d1b83e1947f9e8ed1997b041b5885851ebb0088",
+      "target_text": "Жүктеме генераторы POST /api/checkout, ал дүкен беті POST /api/checkout?currencyCode=USD жібереді. Қай Discover іздеуі екеуінің де HTTP 500 күйімен аяқталған checkout сұрауларын және тек соларды табады?",
+      "target_hash": "35d290de28522a076f88a0659c8d548f7c668b2773a1b343226e607860c853a4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "d97d65c7efb07a66ea6bc7330d1b83e1947f9e8ed1997b041b5885851ebb0088",
+          "target_hash": "35d290de28522a076f88a0659c8d548f7c668b2773a1b343226e607860c853a4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c8eba8fd09ad48d8b9134c2af3c5b49e",
+      "source_hash": "bebe225e22ae6d6d860ac58ab715bbcedcdf861ba0dccc5a65387be60a58d771",
+      "target_text": "Маңыздылық бойынша іздеу дереккөз қате ретінде жазғанын ғана табады. Payment пен checkout Collector-ға журнал жібермейді, ал әр сәтсіз checkout-ты 500 күйімен тіркейтін прокси қатынас журналының severity_number мәні 0. Сондықтан тыныш қате іздеуі ештеңе сәтсіз болмағанын дәлелдемейді. Discover барлық келушіге бір жолдарды көрсетеді, ал severity_number барлық дереккөзді ортақ OpenTelemetry шкаласына келтіреді; онда 17–20 — ERROR.",
+      "target_hash": "c552eb9f6106401909b9951994ae95b060e96c96d66d25354ce3e63b59a9e5cf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "bebe225e22ae6d6d860ac58ab715bbcedcdf861ba0dccc5a65387be60a58d771",
+          "target_hash": "c552eb9f6106401909b9951994ae95b060e96c96d66d25354ce3e63b59a9e5cf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f5885abcdfe04755868a494edfbc8630",
+      "source_hash": "1194db2d1f7a30a5d4912b248de1232b81a0b441de778933ce295e4508e0b316",
+      "target_text": "Маңыздылық бойынша іздеу сервис қате ретінде жазбайтын ақауларды неге өткізіп алатынын түсіндіру.",
+      "target_hash": "5acac9a732199b026e86e4111339c8809a0eff50c7121a29cba6da50c5b31a1c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "1194db2d1f7a30a5d4912b248de1232b81a0b441de778933ce295e4508e0b316",
+          "target_hash": "5acac9a732199b026e86e4111339c8809a0eff50c7121a29cba6da50c5b31a1c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.55ae077ebbda4d5f8eb61df1c1461c77",
+      "source_hash": "9398ad7f85687326fcb4b6627c8fce955d3abb3da53dbfa8bebd65eb3933d7c3",
+      "target_text": "Ақаулы сервистер журнал жібермейді, ал ақаулардың қатынас журналы жолдарында маңыздылық деңгейі жоқ",
+      "target_hash": "a20acbf94a138df6c095f6461a5195aa4dac5a9c04beab90b6f3f50c3f9fa74a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "9398ad7f85687326fcb4b6627c8fce955d3abb3da53dbfa8bebd65eb3933d7c3",
+          "target_hash": "a20acbf94a138df6c095f6461a5195aa4dac5a9c04beab90b6f3f50c3f9fa74a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f74081aebd274acb823483f26f3c3a8e",
+      "source_hash": "707607a92beebf02c26209d94c0667e4a2e3e350ecd0a4c69f7b5cb161852f70",
+      "target_text": "Осы сағатта ешбір тапсырыс сәтсіз болған жоқ, өйткені әр ақау ERROR деңгейіндегі журнал жазбасын қалдырады",
+      "target_hash": "d16356c65161f1f72bf28fa6b4412c03205ac742e3f9e1156a17f9dce724a159",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "707607a92beebf02c26209d94c0667e4a2e3e350ecd0a4c69f7b5cb161852f70",
+          "target_hash": "d16356c65161f1f72bf28fa6b4412c03205ac742e3f9e1156a17f9dce724a159"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4b707d7e33a54996a5752091217bceaf",
+      "source_hash": "d51dd4f1d3a0b11dd17498d4681c86f2895956325236916ce6e6d0766de0139f",
+      "target_text": "Grafana-ға кірмесеңіз, Discover демо сервистерінің қате журналдарын жасырады",
+      "target_hash": "d4110d37b6d00fe4ef5fbd6748005db0ec39db21b2dd862ee4c70bc5fe750e68",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "d51dd4f1d3a0b11dd17498d4681c86f2895956325236916ce6e6d0766de0139f",
+          "target_hash": "d4110d37b6d00fe4ef5fbd6748005db0ec39db21b2dd862ee4c70bc5fe750e68"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2331b3c2d9cb4ddbb85bb43be9190791",
+      "source_hash": "6f7491b3a29162595abd009472acd55de118761b603727c962ed30544bf5e781",
+      "target_text": "Демо сервистері өз шкаласын қолданады, онда severity_number 17 — INFO",
+      "target_hash": "44b6057ca32644f16a28562c08cbd7178f00804a0a81dab85abeb41db8da78f3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "6f7491b3a29162595abd009472acd55de118761b603727c962ed30544bf5e781",
+          "target_hash": "44b6057ca32644f16a28562c08cbd7178f00804a0a81dab85abeb41db8da78f3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ca4f2c3543574c29bd2fdf88d1c801ae",
+      "source_hash": "2ba3e0ec5a41f27dc9918bd7a9f26e9014ea2c22b70e5321e23051c73d7eced5",
+      "target_text": "Инцидент кезінде соңғы сағатқа severity_number:>=17 іздеуі Doris FE-нің бірнеше қатесін ғана тауып, төлем туралы ештеңе таппайды. Қай түсіндіру ең негізді?",
+      "target_hash": "c9bd19884a5b05e5eea6d009854a012e486ce319b9fba91834a98c545ca86a5c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "2ba3e0ec5a41f27dc9918bd7a9f26e9014ea2c22b70e5321e23051c73d7eced5",
+          "target_hash": "c9bd19884a5b05e5eea6d009854a012e486ce319b9fba91834a98c545ca86a5c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.196d12e8349d4eb7a807a5431e9ec82e",
+      "source_hash": "2dc8d2930f17e719e541bc7650e86b78bae322b1275a2527f8a5b48eaf3af407",
+      "target_text": "Doris UTC сақтайды, ал Doris App аралықты компьютердің жергілікті уақытына айналдырып, Doris-тегі UTC уақытымен салыстырады; UTC+8 ішінде Last 15 minutes болашақтағы 8 сағат кейінгі жолдарды сұрайды. UTC бойынша енгізілген абсолют аралық жолдарды табады. Жолдар жүктелгеннен бірнеше секунд кейін ізделеді, Grafana бұл нәтижені кэштемейді, SQL оларды жаңа ғана тапты, демек жойылмаған.",
+      "target_hash": "0544d9f823471b726f742158d5d51dd9a62b736283f5de1925d115591acb8793",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "2dc8d2930f17e719e541bc7650e86b78bae322b1275a2527f8a5b48eaf3af407",
+          "target_hash": "0544d9f823471b726f742158d5d51dd9a62b736283f5de1925d115591acb8793"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1a2af11473d1445eb10a1b3bc1a16b13",
+      "source_hash": "6497113b66484ae6f2d576f87f18294ba639d3fb39c20dedc17c0672e3ce974a",
+      "target_text": "Doris уақытты сақтауына сәйкес уақыт аралығын орнату.",
+      "target_hash": "cd38675822c8431848a90d29e1a17843fbadc6681ff74c65b145f522cfbaa950",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "6497113b66484ae6f2d576f87f18294ba639d3fb39c20dedc17c0672e3ce974a",
+          "target_hash": "cd38675822c8431848a90d29e1a17843fbadc6681ff74c65b145f522cfbaa950"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6f261e2b0951436cbee34dbcc73def0b",
+      "source_hash": "8b745c5e38929ea7faf43a7da9ddad3385bd86360af2f9ba50f96a5c21df054d",
+      "target_text": "Қолданба жергілікті уақытты Doris-тегі UTC-мен салыстырады; абсолют UTC аралығын орнату керек",
+      "target_hash": "d4d3752a5d87b94185fbee4b189fc4c29fce4c330a6ca516b85116dac5343443",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "8b745c5e38929ea7faf43a7da9ddad3385bd86360af2f9ba50f96a5c21df054d",
+          "target_hash": "d4d3752a5d87b94185fbee4b189fc4c29fce4c330a6ca516b85116dac5343443"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3fdbe37d86094192808b3efb141be2b2",
+      "source_hash": "d36d08f3dafe72d2173f1b688e3e367a4b696e512dd54cee1f4e31968bf5bc90",
+      "target_text": "Doris жаңа жолдарды мәтіндік іздеуге тек 15 минуттан кейін көрсетеді; күтіп, қайта іздеу керек",
+      "target_hash": "3ac93c4d414e4a2fbc1c106535199380f941eaa6c1ffe026855d152287b61cb2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "d36d08f3dafe72d2173f1b688e3e367a4b696e512dd54cee1f4e31968bf5bc90",
+          "target_hash": "3ac93c4d414e4a2fbc1c106535199380f941eaa6c1ffe026855d152287b61cb2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.26bfb3d495b742068994dee2ef7f11e8",
+      "source_hash": "44d6ca87a544f39328204c0be8f4fd2edf849b859b64aa788af65a77b0b986c4",
+      "target_text": "Grafana аралықтың бос нәтижесін кэштейді; Grafana контейнерін қайта іске қосу керек",
+      "target_hash": "f20b340d09ea752898788a892f3002f66e61e9c4f49f827c465513ca2a98cbe9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "44d6ca87a544f39328204c0be8f4fd2edf849b859b64aa788af65a77b0b986c4",
+          "target_hash": "f20b340d09ea752898788a892f3002f66e61e9c4f49f827c465513ca2a98cbe9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.984b0b49756b4797a64e50340dc37b21",
+      "source_hash": "e48d3b8e88d05179a655ee6d507466298e005b881d557480edf3ba097d0aebb1",
+      "target_text": "SQL сұрауынан кейін жолдар жойылған; телеметрияны қайта жүктеу керек",
+      "target_hash": "f8158c94ca5d3707ce30cb786dcf512f61ce392cf4d297d780a9dcf70d39a934",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "e48d3b8e88d05179a655ee6d507466298e005b881d557480edf3ba097d0aebb1",
+          "target_hash": "f8158c94ca5d3707ce30cb786dcf512f61ce392cf4d297d780a9dcf70d39a934"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.dd31fd8b8f144bf78a4c31974de8cb51",
+      "source_hash": "801a5f7fc17d23c7525fb0c4706fcd712c2a1276de4ffb5afe88511be3945fd7",
+      "target_text": "UTC+8 компьютерінде Discover Last 15 minutes үшін нәтиже көрсетпейді, ал SQL бір минут бұрынғы уақыт белгісі бар жолдарды табады. Себебі қандай және қалай түзетіледі?",
+      "target_hash": "b69188d1bba124d701e64b9c44658e02beea0a27591918b25c42f27d3f135ba9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "801a5f7fc17d23c7525fb0c4706fcd712c2a1276de4ffb5afe88511be3945fd7",
+          "target_hash": "b69188d1bba124d701e64b9c44658e02beea0a27591918b25c42f27d3f135ba9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.42fe00fc9b474bb0b5e84531fd2ef5fb",
+      "source_hash": "b2782ea2cfd9eefb6afefcd2e95c9e696e96faffa01df98cae969f82b802b451",
+      "target_text": "Қате шақырылғаннан шақырушыға жоғары таралады, сондықтан қызыл жолдардың көбі төменнен келген қатені ғана хабарлайды. Ақау балалары қатесіз болатын ең терең қате span-ынан басталады: бұл — атрибуттарында қате хабары бар payment Charge сервер span-ы. Түбір span сұрау басталған орынды көрсетеді, ақау орнын емес; бала саны қатені білдірмейді; charge span-ының қате күйі жоқ.",
+      "target_hash": "ac5deca1e10416a3f682621db787b3cac066aa662917a202aeed4d586cf7f121",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "b2782ea2cfd9eefb6afefcd2e95c9e696e96faffa01df98cae969f82b802b451",
+          "target_hash": "ac5deca1e10416a3f682621db787b3cac066aa662917a202aeed4d586cf7f121"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.443117135460401e931cc30b3adbaf0a",
+      "source_hash": "daf3d1de8c815c7da1723ef47ea50c3fa16d7c9e71c5550c6525618177c3f65f",
+      "target_text": "Журнал жолынан трасса арқылы қате басталған span-ға өту.",
+      "target_hash": "74bf80f4906e1beec7fd1b63f0cd4daf4606bb6614cee023e4d944900465d130",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "daf3d1de8c815c7da1723ef47ea50c3fa16d7c9e71c5550c6525618177c3f65f",
+          "target_hash": "74bf80f4906e1beec7fd1b63f0cd4daf4606bb6614cee023e4d944900465d130"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4883d933d6fb4de0a4c6768e14e9efcf",
+      "source_hash": "22419080711326701276ff5e883f7cbcd9b5088db11a69595e66a251c3216e02",
+      "target_text": "Payment-тің Charge сервер span-ында, ең терең қате span-ында",
+      "target_hash": "a196c9cdff18794f78a8e3990e6b69df8212006e35c15037e78b11530564f0b5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "22419080711326701276ff5e883f7cbcd9b5088db11a69595e66a251c3216e02",
+          "target_hash": "a196c9cdff18794f78a8e3990e6b69df8212006e35c15037e78b11530564f0b5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e93e797549e2450085f0019170cf902e",
+      "source_hash": "715da98b8a0ccb131734eb4234b7e43f252af85b16ef92c3db88523a32725004",
+      "target_text": "Load-generator POST ішінде, өйткені әр қате түбір span-ынан басталады",
+      "target_hash": "6c3bc8c863e94dd21e0c867d87e4507d8204b54b5642d1330fb0eb5ff2cd4aa7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "715da98b8a0ccb131734eb4234b7e43f252af85b16ef92c3db88523a32725004",
+          "target_hash": "6c3bc8c863e94dd21e0c867d87e4507d8204b54b5642d1330fb0eb5ff2cd4aa7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f10a2304020f4583baa2a57e0ae45c49",
+      "source_hash": "dd3cce4941efe79a16328a7dfe624cc292d7ae95519bb2a3b3c2aee13d47a1ed",
+      "target_text": "Checkout PlaceOrder span-ында, өйткені оның бала span-дары ең көп",
+      "target_hash": "b723f94668d2bde49f9fdff09d505392c666b4a7784bf24fa28936f4ee0cd24a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "dd3cce4941efe79a16328a7dfe624cc292d7ae95519bb2a3b3c2aee13d47a1ed",
+          "target_hash": "b723f94668d2bde49f9fdff09d505392c666b4a7784bf24fa28936f4ee0cd24a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3c8c41da86714006a52a0773e9ab8835",
+      "source_hash": "ee145e278efb03a83327f825c24d37239e379799d63cd92a7d2bc70fc5997684",
+      "target_text": "Charge span-ында, өйткені ол payment тіркеген соңғы span",
+      "target_hash": "6eedda91a757bd30e6b8c1a5d0f02e54ed86acb0adc69015d345ae5c10b2bd48",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "ee145e278efb03a83327f825c24d37239e379799d63cd92a7d2bc70fc5997684",
+          "target_hash": "6eedda91a757bd30e6b8c1a5d0f02e54ed86acb0adc69015d345ae5c10b2bd48"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.00ea25b990cd4c559b46039e4c0627d8",
+      "source_hash": "b50142a400664c1c7e1ec89e37b0cc6f53a2d09fad84e64793f39a6861348d5d",
+      "target_text": "Сәтсіз checkout сарқырамасында қате белгілері load-generator POST, frontend-proxy ingress, frontend POST, checkout PlaceOrder, checkout-тың payment шақыруы және payment Charge сервер span-ында тұр. Payment-тің charge бала span-ында қате жоқ. Ақау қайдан басталады?",
+      "target_hash": "167b689ff72f6b35a64c1843e77eb3669ef6763143f71dbbd69fdcda750a812d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "b50142a400664c1c7e1ec89e37b0cc6f53a2d09fad84e64793f39a6861348d5d",
+          "target_hash": "167b689ff72f6b35a64c1843e77eb3669ef6763143f71dbbd69fdcda750a812d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3b9d779e4629497a96fa56afcd6e5386",
+      "source_hash": "cf0440e7508c9fe70da7461cac5770a792078114844e760ef32132140f08c806",
+      "target_text": "Ядро күйлерінің қосындысы 1 болады, сондықтан жұмысбасты үлесі — 1-ден бос үлесті шегеру; барлық ядро мен үлгі бойынша орташалау хостты өлшейді. Барлық жолды орташалау әр күйді араластырып, әрдайым бір үлес береді. Ең үлкен мән әдетте бос ядроның бос тұру үлесі. 0.9-дан жоғары жолдар көбіне бос ядролардың idle жолдары, сондықтан value > 0.9 сүзгісі жұмысбасты емес, бос ядроларды табады.",
+      "target_hash": "3ae7356cf490fe42c20c5019507df077c9c76ed005e8702dcd6ebb9dbeacf8ba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "cf0440e7508c9fe70da7461cac5770a792078114844e760ef32132140f08c806",
+          "target_hash": "3ae7356cf490fe42c20c5019507df077c9c76ed005e8702dcd6ebb9dbeacf8ba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5b88350a97634d8dba4ddc6c6dc1259b",
+      "source_hash": "063b2eff108331b2cd2bf1398592011c90acd614a2c6d90d43c53cd072a41645",
+      "target_text": "Әр ядро мен әр күйдің үлгілерінен хост CPU-ын өлшеу.",
+      "target_hash": "917ad165b3b70606816cb8ca2e4230902be1c203a073aa95cd6b727173c34fcf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "063b2eff108331b2cd2bf1398592011c90acd614a2c6d90d43c53cd072a41645",
+          "target_hash": "917ad165b3b70606816cb8ca2e4230902be1c203a073aa95cd6b727173c34fcf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2f84aec0e9cf43349b8c415aa9a90285",
+      "source_hash": "f5ecdcc6b6dd6731b4bd44ba959d08bbcb6bfc0f01fd311ede2151f17b7a7cdb",
+      "target_text": "1-ден барлық ядроның idle жолдарының орташа мәнін шегеріп, 100-ге көбейту",
+      "target_hash": "223f2c1f170de6e234f7c17075c7f309715224a3f59541a0e9e9ade2b804cd26",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "f5ecdcc6b6dd6731b4bd44ba959d08bbcb6bfc0f01fd311ede2151f17b7a7cdb",
+          "target_hash": "223f2c1f170de6e234f7c17075c7f309715224a3f59541a0e9e9ade2b804cd26"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.69cfff5d66d048c4a9f6aaf4d3238bb7",
+      "source_hash": "acc2c53abd7c9c6021e8e1e84283238ace797b7298c316c9f9946658f5533544",
+      "target_text": "Күйіне қарамастан барлық жолдың орташа мәнін 100-ге көбейту",
+      "target_hash": "8c7d28b5635a4bcb3ea9348385369a74bff5acc25f533930c3fc4a1d376fad81",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "acc2c53abd7c9c6021e8e1e84283238ace797b7298c316c9f9946658f5533544",
+          "target_hash": "8c7d28b5635a4bcb3ea9348385369a74bff5acc25f533930c3fc4a1d376fad81"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.74b5103f1cc243498b9cb57583e103de",
+      "source_hash": "ea5c7ead01f0b6f87f853d1659ca5c904c0cf59d815544d651250b0fd3b4afa3",
+      "target_text": "Соңғы минуттағы кез келген жолдың ең үлкен мәнін 100-ге көбейту",
+      "target_hash": "599ef7b56d65a78cc277f85c4f8a7c00c4523acfa13ac693b8581ece7e30b4e3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "ea5c7ead01f0b6f87f853d1659ca5c904c0cf59d815544d651250b0fd3b4afa3",
+          "target_hash": "599ef7b56d65a78cc277f85c4f8a7c00c4523acfa13ac693b8581ece7e30b4e3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7f8e4ba2280141a38234013182ff0e83",
+      "source_hash": "3be0ab1f15ae3f217fbd0628e83fbcb843c4c76d150d2c77cab52ca4a6c38e0b",
+      "target_text": "0.9-дан жоғары жолдар санын барлық жолдардың пайызы ретінде алу",
+      "target_hash": "86597426055dfa98f5c5e4d901697b19d5a0389fe546cf1d90bc7e45139f9eb5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "3be0ab1f15ae3f217fbd0628e83fbcb843c4c76d150d2c77cab52ca4a6c38e0b",
+          "target_hash": "86597426055dfa98f5c5e4d901697b19d5a0389fe546cf1d90bc7e45139f9eb5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7c66d53ac90c43d295f8ef9a53d72851",
+      "source_hash": "7220a7f7c0f9d804a71badfb388189b17bb60d66809d172a98636053aeb56305",
+      "target_text": "system.cpu.utilization әр жолы бір CPU ядросының бір күйде болған уақыт үлесін 0–1 арасында сақтайды. Қай есеп соңғы минуттағы хосттың жұмысбасты уақыт үлесін береді?",
+      "target_hash": "0340934d4ec1142f30c65603904ed4bbfb006cf94f5b8e5fb0415c149198cb82",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "7220a7f7c0f9d804a71badfb388189b17bb60d66809d172a98636053aeb56305",
+          "target_hash": "0340934d4ec1142f30c65603904ed4bbfb006cf94f5b8e5fb0415c149198cb82"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e97355ddfd9f459a88d015fecdf611ca",
+      "source_hash": "4e537b862a1e14e18b11521984050d22d4f185ca3f3cb6551e7a94b1309a8f1d",
+      "target_text": "Grafana $__timeFilter(timestamp) мәнін нақты уақыт сәттерімен берілген тақта аралығының шартымен, ал $__timeGroupAlias(timestamp, 1m) мәнін әр жол минуты басталатын time атты уақытпен алмастырады. Сақталған уақыт белгілері UTC болып қалады; Grafana тек көрсететін уақытты түрлендіреді. Сұрау аралықтың әр минутын қайтарады, макростар Lucene-ге емес, SQL-ге жатады.",
+      "target_hash": "04fe72808b109186839da9e691e5880892b2499b7baf7c156698ca996777ce5a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "4e537b862a1e14e18b11521984050d22d4f185ca3f3cb6551e7a94b1309a8f1d",
+          "target_hash": "04fe72808b109186839da9e691e5880892b2499b7baf7c156698ca996777ce5a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.08afffaa62a047c2a897292a9f42ddd5",
+      "source_hash": "3090c58e2553faa29043c4cd11f123e06be838f8e54700877a60c43ed9530fbd",
+      "target_text": "Grafana уақыт макростары бар SQL-ден бақылау тақтасының панельдерін құру.",
+      "target_hash": "9ed0620e6195aac7d552ca2629fe0e8f7a3364c7f6222a6c537c9c6d04d69954",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "3090c58e2553faa29043c4cd11f123e06be838f8e54700877a60c43ed9530fbd",
+          "target_hash": "9ed0620e6195aac7d552ca2629fe0e8f7a3364c7f6222a6c537c9c6d04d69954"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.edbb5974c0564aada44f4b6eac4b58a6",
+      "source_hash": "aed48fb4b5895a0d41da03cd338b71b5406b2a271324645234390b962a21cebd",
+      "target_text": "Олар тақтаның уақыт аралығындағы жолдарды қалдырып, минут бойынша топтайды",
+      "target_hash": "daa8c140611f098fb87903cfb597bf42feb8d29fc80863a48dfb61a1737fb794",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "aed48fb4b5895a0d41da03cd338b71b5406b2a271324645234390b962a21cebd",
+          "target_hash": "daa8c140611f098fb87903cfb597bf42feb8d29fc80863a48dfb61a1737fb794"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5b6f9e0040524d41be864f9ff8697414",
+      "source_hash": "4ae09e575aa85a847b24e11dcece9a212fc59b17d7c2388280a559dc83f09546",
+      "target_text": "Олар сұрауға дейін сақталған уақыт белгілерін компьютердің жергілікті уақытына айналдырады",
+      "target_hash": "0854cf825512e6cb86f7fccd70efd0b0a9061d97c4b97a9bd8b54c11e1aea81e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "4ae09e575aa85a847b24e11dcece9a212fc59b17d7c2388280a559dc83f09546",
+          "target_hash": "0854cf825512e6cb86f7fccd70efd0b0a9061d97c4b97a9bd8b54c11e1aea81e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7153190dae094e02bd25cb3b59c52661",
+      "source_hash": "7879d886c956f79d412548ea4c886303b888aaeaf7d6ee354a38664a6c39db42",
+      "target_text": "Олар нәтижені соңғы минутпен шектеп, аралықтың ескі жолдарын алып тастайды",
+      "target_hash": "1efb83bc43d652d4d3f6d93f491b0ec3dd5c30ce72a63744110d11a59b011de6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "7879d886c956f79d412548ea4c886303b888aaeaf7d6ee354a38664a6c39db42",
+          "target_hash": "1efb83bc43d652d4d3f6d93f491b0ec3dd5c30ce72a63744110d11a59b011de6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.01509ff705f14dcf978380a251785e87",
+      "source_hash": "3d0206219820304ae8537d6262d9b68a7656bb67022f48240955de219ea8da8c",
+      "target_text": "Олар панельге Discover сияқты timestamp бағанында Lucene іздеуін орындауға мүмкіндік береді",
+      "target_hash": "21d3ff7a3c47afd7d5479a4b54577e0441d953caa8d1b2a2777b228943178021",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "3d0206219820304ae8537d6262d9b68a7656bb67022f48240955de219ea8da8c",
+          "target_hash": "21d3ff7a3c47afd7d5479a4b54577e0441d953caa8d1b2a2777b228943178021"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bdcff45cca444a32a43e1d8923ddd0b6",
+      "source_hash": "a4c99dc1a3e32552a016ccd884f1129be002dcea4c3774f9a4af4a5361c6bf94",
+      "target_text": "Панель SQL-і $__timeFilter(timestamp) және $__timeGroupAlias(timestamp, 1m) қолданады, Format мәні — Time series. Екі макрос не істейді?",
+      "target_hash": "e8c59d229ce3927a8e23d09a69df1b208c2d2b6c12adac0bbb86b2874baace98",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "a4c99dc1a3e32552a016ccd884f1129be002dcea4c3774f9a4af4a5361c6bf94",
+          "target_hash": "e8c59d229ce3927a8e23d09a69df1b208c2d2b6c12adac0bbb86b2874baace98"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.46256a4f12c8430a8a96f98290aabd45",
+      "source_hash": "d1a60042288305aeee07c45cae4a64bcd2bc8e8f9368d8f1401427d1ae200bf0",
+      "target_text": "3-модуль тесті: Жүйені бақылау деректерін визуализациялау",
+      "target_hash": "2f726500a777b0d9074237d00150c1d547e68c29f2ca07e6626a174b23dfd92f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "d1a60042288305aeee07c45cae4a64bcd2bc8e8f9368d8f1401427d1ae200bf0",
+          "target_hash": "2f726500a777b0d9074237d00150c1d547e68c29f2ca07e6626a174b23dfd92f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

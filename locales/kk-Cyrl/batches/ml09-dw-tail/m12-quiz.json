@@ -1,0 +1,1136 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.c56a2f5ea9944898b6f0eefa88bf3422",
+      "source_hash": "8e41f3b3e118b550e5649a685c7b4c34af47a6b250a63a2f9b8441acf9326961",
+      "target_text": "<div>\n  <div>12-ТЕСТ · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Жариялау, рұқсаттар және аудит</div>\n  <p>Әрқайсысына түсіндірме берілетін, бір жауап таңдалатын алты сұрақ; дерекқор қосылымы қажет емес.</p>\n  <span>6 сұрақ · Бір жауап таңдау · Шамамен 10 минут</span>\n</div>\n\n[Сабақ](course.md) · [Зертханалық жұмыс](lab12_publishing_permissions_audit.ipynb)",
+      "target_hash": "f8a04c86bf1ff9e0880fda7462b234e23af77a9341ce801473022f718c217e07",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8e41f3b3e118b550e5649a685c7b4c34af47a6b250a63a2f9b8441acf9326961",
+          "target_hash": "f8a04c86bf1ff9e0880fda7462b234e23af77a9341ce801473022f718c217e07"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d33ef8fe3c0e4d4f8a49cc465431d37b",
+      "source_hash": "fd18768d6b59533664626f6888b713e3258ce7717fe6aa2cde4ce029e46610ed",
+      "target_text": "### Тестті жүктеу\n\nЖүктеу үшін келесі ұяшықты орындаңыз. Ядро қайта іске қосылса, осы жерден қайталаңыз.",
+      "target_hash": "35da7936111b482c3c375614a64a6fec17ad9020b97af706eb1ea88f38fb5dff",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "fd18768d6b59533664626f6888b713e3258ce7717fe6aa2cde4ce029e46610ed",
+          "target_hash": "35da7936111b482c3c375614a64a6fec17ad9020b97af706eb1ea88f38fb5dff"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.13810b7c62d94c6d979aebbc0932a1be",
+      "source_hash": "119f4b6acba2d5344285e6a968bc0ad6d4c35a8204663aa2a81e9ffc3cb89568",
+      "target_text": "## Тестті бастау\n\nЖауапты таңдап жіберіңіз, келесі сұраққа өтпес бұрын түсіндірмені оқыңыз.",
+      "target_hash": "fec62724598f11606d980dfeaba9a8112cc607b6bc4c5599445b925b67f9f9ba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "119f4b6acba2d5344285e6a968bc0ad6d4c35a8204663aa2a81e9ffc3cb89568",
+          "target_hash": "fec62724598f11606d980dfeaba9a8112cc607b6bc4c5599445b925b67f9f9ba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.37db5828d1d749eea2cd5db339440150",
+      "source_hash": "061e0735afce68afc7cb6870c083a5c50861ca935ac425840a758e5461aea26f",
+      "target_text": "Бір жауап таңдалатын алты сұрақ; дерекқор қосылымы қажет емес. Түсіндірмені жауап бергеннен кейін көресіз.",
+      "target_hash": "6906411031ae0ed6ac0e47c05a0a6fe92ccb38dccf3e90dda42e24799e768a53",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "061e0735afce68afc7cb6870c083a5c50861ca935ac425840a758e5461aea26f",
+          "target_hash": "6906411031ae0ed6ac0e47c05a0a6fe92ccb38dccf3e90dda42e24799e768a53"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.abcdb527d0a74b1e8959dd04c45af7c8",
+      "source_hash": "32e999e3c1bc25d04d12b0fe232b97f1d81ee754af94572b3d03994f73dcdf95",
+      "target_text": "Рұқсат нысаны мен ауқымы келісімшарттан шығады: бір семантикалық көрініс, тек оқу, өзгерісті мақұлдайтын иелер. Root пайдаланушыларға бәрін өзгерту/жоюға мүмкіндік береді, аудит оларды ажыратпайды. Жаһандық SELECT әр кестені, кейінгілерін де оқиды. Егжей-тегжей әр диаграммаға келісімшартты қайталатып, тұтынушыға айналып өтуге мүмкіндік береді.",
+      "target_hash": "21e6a1190c663dc30079fa9aee9b9593cc27b29f18ccd8584d20a22692ed1a92",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "32e999e3c1bc25d04d12b0fe232b97f1d81ee754af94572b3d03994f73dcdf95",
+          "target_hash": "21e6a1190c663dc30079fa9aee9b9593cc27b29f18ccd8584d20a22692ed1a92"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.165e93b8e9ed47189ebceaf9ad773c3d",
+      "source_hash": "bc78af380d9114bb0d813a5fef0799361e5febd070af9fdc850a0a65b2d2c322",
+      "target_text": "Рұқсат бермес бұрын тұтынушы келісімшартын жазып, жарияланатын нысанды таңдау.",
+      "target_hash": "200682bc1278f93d1d99c5d1de1fbe50ef58fc7472b28151e4e1408d4e57388d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "bc78af380d9114bb0d813a5fef0799361e5febd070af9fdc850a0a65b2d2c322",
+          "target_hash": "200682bc1278f93d1d99c5d1de1fbe50ef58fc7472b28151e4e1408d4e57388d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.07f5effdaede437583fdb7b8228fffd4",
+      "source_hash": "c42ced7921f6a1bb9e93de0b00307d08254fabf44f09ce2dad9e9502c71245c9",
+      "target_text": "bi_order_metrics_l2 нысанын, түйіршіктілігін, мағыналарын, ауқымын және иелерін атайтын келісімшарт",
+      "target_hash": "acae50664685f5e41a56d4660cf8de5750fd06ff97e44f429594d3589c7616ef",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "c42ced7921f6a1bb9e93de0b00307d08254fabf44f09ce2dad9e9502c71245c9",
+          "target_hash": "acae50664685f5e41a56d4660cf8de5750fd06ff97e44f429594d3589c7616ef"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0a7d3f1150434715b0adc68f0d1cc834",
+      "source_hash": "4c4a611ef646afb8958c42d564ee600b851520f73f96575c30ad512a479245b5",
+      "target_text": "Іске қосу аптасына root құпиясөзі; тақта қатесіз істегенде тар тіркелгі",
+      "target_hash": "e0e50d6b63d390c3ed2a512d6ee211a3110fd9b1defc9abe4aa20192a22c9812",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4c4a611ef646afb8958c42d564ee600b851520f73f96575c30ad512a479245b5",
+          "target_hash": "e0e50d6b63d390c3ed2a512d6ee211a3110fd9b1defc9abe4aa20192a22c9812"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6795e63210124227a6dc1a053451eeaa",
+      "source_hash": "c4db91c0866b5035a4686591ed55b5000b8d0386a8a431241da2e9cda1a78e33",
+      "target_text": "Әр диаграмма керегін оқу үшін *.*.* үстіндегі SELECT_PRIV тіркелгісі",
+      "target_hash": "d731d02e866d0086d3375da0c3d3a04693343b949347304e6113c00c58591fd7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "c4db91c0866b5035a4686591ed55b5000b8d0386a8a431241da2e9cda1a78e33",
+          "target_hash": "d731d02e866d0086d3375da0c3d3a04693343b949347304e6113c00c58591fd7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.972f7cd1385b408a80452335895ceb0a",
+      "source_hash": "7e3786e37617e196267c31bad34471f2b958e34a453a49af6ac6e93a6b20096c",
+      "target_text": "Әр диаграмма күндік сомасын өзі есептеуі үшін orders_fact_l2 қатынауы",
+      "target_hash": "838b8ef03a6a12e3e3e24ef44fa799a7b955642a1fb68c8f469b8f3ad1df8826",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7e3786e37617e196267c31bad34471f2b958e34a453a49af6ac6e93a6b20096c",
+          "target_hash": "838b8ef03a6a12e3e3e24ef44fa799a7b955642a1fb68c8f469b8f3ad1df8826"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.635f0c512f0f45b5ab5231147ca1110a",
+      "source_hash": "3e2178d9762457a6b69a0c80625dcc9b66e162fd92306b62552b6809cce6d846",
+      "target_text": "BI тобы дүйсенбіде тақта басталар алдында тіркелгі сұрайды. GRANT-тан бұрын не болуы керек?",
+      "target_hash": "a5260a819f1f9e692f6414d8d26530022a08f63575c84244fce73862f74b0f26",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3e2178d9762457a6b69a0c80625dcc9b66e162fd92306b62552b6809cce6d846",
+          "target_hash": "a5260a819f1f9e692f6414d8d26530022a08f63575c84244fce73862f74b0f26"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2d54b79d5cb74c509a46da28191362c8",
+      "source_hash": "fd84a93de64cf43133c38184f8f3e140f2d3ab4fd56197d1d44be56b57075ab4",
+      "target_text": "SELECT_PRIV — оқу рұқсаты, жалғыз көрініс — ауқымы. Рөл тексеруге бір рұқсат, адамға өзгертуге бір мүшелік береді; мүшелер дереккөз рұқсатынсыз көріністі оқиды. ADMIN_PRIV оқудан әлдеқайда кең. GRANT_PRIV рұқсат бергізеді, дерек оқытпайды. База ауқымы әр кестені, дереккөздер мен кейінгілерді қамтиды.",
+      "target_hash": "43fd77adca3b816284d19cfef5f1cf249f823a622ee180d2356eb3a367747a15",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "fd84a93de64cf43133c38184f8f3e140f2d3ab4fd56197d1d44be56b57075ab4",
+          "target_hash": "43fd77adca3b816284d19cfef5f1cf249f823a622ee180d2356eb3a367747a15"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.995ec578957a43dbb520d69a6f7584e3",
+      "source_hash": "5586093bc026aeb30feca56cf7421afa067c96f6c4804d08f6345a2e1ffde5ca",
+      "target_text": "Қажет нысан рұқсатын ғана рөлмен беріп, оқу мен әкімшілікті ажырату.",
+      "target_hash": "fde3878790660c42cf04b96c4f89ad2ec154279333f745e18463427c4eedd7b2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "5586093bc026aeb30feca56cf7421afa067c96f6c4804d08f6345a2e1ffde5ca",
+          "target_hash": "fde3878790660c42cf04b96c4f89ad2ec154279333f745e18463427c4eedd7b2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.70d32e7e4660472c81046c472da57770",
+      "source_hash": "440a46545bd29b41ea48fa8a8165836aca0c0769103af23de0a21f7bdaafff62",
+      "target_text": "Рөлге internal.<db>.bi_order_metrics_l2 үстінде SELECT_PRIV, рөлді бес адамға беру",
+      "target_hash": "8cfb4218ac4ff6a169c2c9f1e614cdb2a4744a6d93610de0792c7808e1f7d363",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "440a46545bd29b41ea48fa8a8165836aca0c0769103af23de0a21f7bdaafff62",
+          "target_hash": "8cfb4218ac4ff6a169c2c9f1e614cdb2a4744a6d93610de0792c7808e1f7d363"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e52d06a102cb4be1951b35fbbd33dbc5",
+      "source_hash": "00f0cd8de5c0e19b322150cf90e6828123eed306ccea95098bd8c82afd37de2a",
+      "target_text": "Әкімші әр көріністі оқитындықтан бесеуіне жеке ADMIN_PRIV беру",
+      "target_hash": "612f2d0d906d8614e2cada6b02a8d75bcf8d081d7bebd2d3efff9fb4e6c6b272",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "00f0cd8de5c0e19b322150cf90e6828123eed306ccea95098bd8c82afd37de2a",
+          "target_hash": "612f2d0d906d8614e2cada6b02a8d75bcf8d081d7bebd2d3efff9fb4e6c6b272"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ecea5e05fc5f4879acbd0865c7ccb5df",
+      "source_hash": "72cf2d9c4858c810f65d8a7cd07700520ffba4ab29e8ca7b5314bb728d72c4b9",
+      "target_text": "Мүшелер тек сол көріністі оқуы үшін рөлге көріністегі GRANT_PRIV беру",
+      "target_hash": "3eec2c3d50d559f7a5fa548290b7b30fb26d1e3516fc5bc9719eed420505b523",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "72cf2d9c4858c810f65d8a7cd07700520ffba4ab29e8ca7b5314bb728d72c4b9",
+          "target_hash": "3eec2c3d50d559f7a5fa548290b7b30fb26d1e3516fc5bc9719eed420505b523"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1453874687644ffaa4c872264be4980f",
+      "source_hash": "f1d75d1f440fdd44122bb6603415aff1db560c7b85daa1834b7ab724fc877e93",
+      "target_text": "Көрініс пен дереккөздерін қамтитын internal.<db>.* SELECT_PRIV рөлін беру",
+      "target_hash": "a5663ec84ba379001f1ee0cece9fd40a2b5ed532c8f5d281dcd45770169cd6d0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f1d75d1f440fdd44122bb6603415aff1db560c7b85daa1834b7ab724fc877e93",
+          "target_hash": "a5663ec84ba379001f1ee0cece9fd40a2b5ed532c8f5d281dcd45770169cd6d0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.179084c8184343f5ab631331c185bf01",
+      "source_hash": "f2299185d33faafffbb4fdf95266daa52208e13853b331e67627368edc5f0027",
+      "target_text": "BI бесеуі bi_order_metrics_l2 оқуы керек. Қай рұқсат сай?",
+      "target_hash": "a5d4b4e5367ff601e988efb109523a545cde7587a07c93f265e94f68ea626017",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f2299185d33faafffbb4fdf95266daa52208e13853b331e67627368edc5f0027",
+          "target_hash": "a5d4b4e5367ff601e988efb109523a545cde7587a07c93f265e94f68ea626017"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e410aba4e85540caa13de846251d6634",
+      "source_hash": "7b487c0e57efa1852c02c4805deb2c57c0cd2a0c39742cfac4366fc2989dc5e5",
+      "target_text": "Аудит не орындалды, кім орындады, нәтижесі қандай екенін тіркейді, сондықтан тіркелгі не істегеніне жауап береді. SHOW GRANTS өз/рөл рұқсаттарын біріктіріп, не істей алатынын тізеді, не істегенін емес. Өзгеріс жазбасы өзгеріс пен себебін құжаттайды, сұрауларды тіркемейді. SHOW ROLES конфигурацияны көрсетеді, орындалуды емес.",
+      "target_hash": "6d5c1220d884030c5c6df0296adc53545559e26da1ff51679623e88215cecdef",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7b487c0e57efa1852c02c4805deb2c57c0cd2a0c39742cfac4366fc2989dc5e5",
+          "target_hash": "6d5c1220d884030c5c6df0296adc53545559e26da1ff51679623e88215cecdef"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.573046cda2a04225b36700b82ee4fa7d",
+      "source_hash": "718027d3fa72be9b4c0c518d46aa2cb9eba1cfe471432212bc07c0228c99c9d2",
+      "target_text": "SHOW GRANTS, SHOW ROLES, тұтынушы сұраулары, өзгеріс жазбасы, аудит әрқайсысы нені дәлелдейтінін айту.",
+      "target_hash": "ff3350d7036c78efa8f3e52b31016e0b17a0c82ea420eb0e42cedd0b777c7cdf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "718027d3fa72be9b4c0c518d46aa2cb9eba1cfe471432212bc07c0228c99c9d2",
+          "target_hash": "ff3350d7036c78efa8f3e52b31016e0b17a0c82ea420eb0e42cedd0b777c7cdf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.72c64c50cb174481ab48aa2477a08db1",
+      "source_hash": "59353b040909fd87fe7d4e9cb921a31dfb42be4f2e99be65b0912987972326c2",
+      "target_text": "Командасы, күйі, қателері бар __internal_schema.audit_log ішіндегі тіркелгі сұраулары",
+      "target_hash": "d05cf60c4418c7d3c8c0e18e659ebffe67141d0b4da6cf4011f5a7e40ec9622c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "59353b040909fd87fe7d4e9cb921a31dfb42be4f2e99be65b0912987972326c2",
+          "target_hash": "d05cf60c4418c7d3c8c0e18e659ebffe67141d0b4da6cf4011f5a7e40ec9622c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b9480e6119cf423a83e5aaa607a223d2",
+      "source_hash": "ae6e53b6f250f3fe366a21cad3ad62241fe1266fb8ae95f16c6906a6b0a584c4",
+      "target_text": "Тіркелгі осы кезге дейін оқыған кестелерді тізетін SHOW GRANTS FOR",
+      "target_hash": "ccf47165d73cce854df1a09e510aed2268f57584e2a49a888f4c26ca069ddbd7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ae6e53b6f250f3fe366a21cad3ad62241fe1266fb8ae95f16c6906a6b0a584c4",
+          "target_hash": "ccf47165d73cce854df1a09e510aed2268f57584e2a49a888f4c26ca069ddbd7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.85e6d807f3284fbca07a6da2ac225bc1",
+      "source_hash": "d82a04a9e878c4aa0099121e72d7b59c38e0ef2fd387828c68657cc290e212df",
+      "target_text": "Тіркелгіге қай нысан берілгенін айтатын рұқсат өзгерісінің жазбасы",
+      "target_hash": "3c9c2fd9fe4f223188d3d7461f32b8345f16bda1c0bc8ab0def58bb659553c73",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d82a04a9e878c4aa0099121e72d7b59c38e0ef2fd387828c68657cc290e212df",
+          "target_hash": "3c9c2fd9fe4f223188d3d7461f32b8345f16bda1c0bc8ab0def58bb659553c73"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e23eb5bbff9941a19ba0a9b60adb52ef",
+      "source_hash": "506321af2559ddfb4997f648be9c2713414d2771bf31faae68f3d6a3d5bd32a8",
+      "target_text": "Әр рөл мүшелерін және оқыған кестелерін көрсететін SHOW ROLES",
+      "target_hash": "6267c900248bff03a51f903379e2ec3df74cbf5fd207aa93f0e41d8a23838df2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "506321af2559ddfb4997f648be9c2713414d2771bf31faae68f3d6a3d5bd32a8",
+          "target_hash": "6267c900248bff03a51f903379e2ec3df74cbf5fd207aa93f0e41d8a23838df2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b54a61d248d04e6293f66721376eda10",
+      "source_hash": "7e30b5e527452fcce697a39a69837a3ae3f707dffbe9a8dc1051e37fed010394",
+      "target_text": "Тексеруші тақта тіркелгісі өткен аптада тапсырыс егжей-тегжейін шынымен оқыды ма деп сұрайды. Қай дәлел жауап береді?",
+      "target_hash": "d02becb696e3a43116138695bb844a1a68d62d954501af1cadeb8413f1ac27e4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7e30b5e527452fcce697a39a69837a3ae3f707dffbe9a8dc1051e37fed010394",
+          "target_hash": "d02becb696e3a43116138695bb844a1a68d62d954501af1cadeb8413f1ac27e4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c46f6b1f9d9f4c40b56a480fbc0a785b",
+      "source_hash": "cd3018ed9b312265941ea68b12ca18079ddfc833830c5a45e11ddd827d598486",
+      "target_text": "A мүшелігін алу тек A-ға әсер етеді, A/B ретінде сұрау әрқайсысының нәтижесін көрсетеді. Рөл рұқсатын қайтару не рөлді жою B-ні де ажыратады. Root бәрін оқиды, оның сұрауы екеуі туралы ештеңе дәлелдемейді.",
+      "target_hash": "0158b4c4a41730e6129c4df34fd6b49fd0c9fd97838a203f0c1a25a21fb7148f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "cd3018ed9b312265941ea68b12ca18079ddfc833830c5a45e11ddd827d598486",
+          "target_hash": "0158b4c4a41730e6129c4df34fd6b49fd0c9fd97838a203f0c1a25a21fb7148f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9fbe25d4fd2643e8ae057ce912886f95",
+      "source_hash": "f3577049ed82cda497a6c59017aa33ccbe0be60e97780d57b9b5e1c93bb9a2ac",
+      "target_text": "Мүшелік не рөл рұқсатын қайтарып қолжетімділікті тоқтату, әсерін тұтынушы ретінде тексеру.",
+      "target_hash": "47ebebe57f2ab7b77dc1ee3cdf25478de8b169af879caa7963829220616032f7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f3577049ed82cda497a6c59017aa33ccbe0be60e97780d57b9b5e1c93bb9a2ac",
+          "target_hash": "47ebebe57f2ab7b77dc1ee3cdf25478de8b169af879caa7963829220616032f7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c211828777564f04b2e46e0e1d7774d6",
+      "source_hash": "96e25a28de9d76f20b9e9439838f0c04057fed022abf532ea392d725b9125ef4",
+      "target_text": "A мүшелігін; кейін A сұрауына тыйым, B әлі оқиды",
+      "target_hash": "2fd750d6b0c4da84b831bed5b1a840afa12a3fbb0a4394947721debbd09e08ac",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "96e25a28de9d76f20b9e9439838f0c04057fed022abf532ea392d725b9125ef4",
+          "target_hash": "2fd750d6b0c4da84b831bed5b1a840afa12a3fbb0a4394947721debbd09e08ac"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.749541430f1542a0be05d0cf52c379f7",
+      "source_hash": "1d6a2cff80dcda2ec089d1c28be0bf6a42399cc02f366fd7dbcceaf3714d2b80",
+      "target_text": "Көріністегі рөл SELECT_PRIV рұқсатын: A қатынауын дереу жояды",
+      "target_hash": "0f4257652801a6654adabb33279f42619a0affde1b3d2550b8aa2725621959ad",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "1d6a2cff80dcda2ec089d1c28be0bf6a42399cc02f366fd7dbcceaf3714d2b80",
+          "target_hash": "0f4257652801a6654adabb33279f42619a0affde1b3d2550b8aa2725621959ad"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a703f513321d49be9cb243a337451ebd",
+      "source_hash": "9016d4031ce73739883d2f2074299f9cc77ae17ad4d951a6d564845810a183dd",
+      "target_text": "Рөлдің өзін: A-ға қажет емес, B керек кезде жаңасын сұрай алады",
+      "target_hash": "66572ffa2e8434620c83fc40d8ff86063b052660796b4e59861e1d24cb465a66",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9016d4031ce73739883d2f2074299f9cc77ae17ad4d951a6d564845810a183dd",
+          "target_hash": "66572ffa2e8434620c83fc40d8ff86063b052660796b4e59861e1d24cb465a66"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.863799b6280f428a9b01fe00e63d39d5",
+      "source_hash": "7efabdc57118aec71f14647bae97c87adfb16042ed0ad132dcf654ac8a38586d",
+      "target_text": "A мүшелігін; кейін root сұрауы көрініс әлі оқылатынын растайды",
+      "target_hash": "55f93989e277b631055765b8fd4a8385dc2b596be4a2aade18a0d53ab020a21b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7efabdc57118aec71f14647bae97c87adfb16042ed0ad132dcf654ac8a38586d",
+          "target_hash": "55f93989e277b631055765b8fd4a8385dc2b596be4a2aade18a0d53ab020a21b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.64644868b77047e0bf226bd94117a937",
+      "source_hash": "48e7434c8c31aedb48e827487962f0be2fa732ced2d341d26c90228853eceb0a",
+      "target_text": "A және B бір рөлмен оқиды, A тоқтатылады. Нені қайтарып, қалай тексеру керек?",
+      "target_hash": "d1d1667cb83a794a98817d45067bc91bbe640841213b946cdcbaa11496aef9de",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "48e7434c8c31aedb48e827487962f0be2fa732ced2d341d26c90228853eceb0a",
+          "target_hash": "d1d1667cb83a794a98817d45067bc91bbe640841213b946cdcbaa11496aef9de"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7c4cfc33816c4fb0a6616a87d780bdea",
+      "source_hash": "a4b21c61511a610f9bacf6b41f6871d7419c5016c6e86eb65a63c7dba39acf6e",
+      "target_text": "Жазушы тоқтағанда кері қайтару қауіпсіз; алғашқы жазудан кейін ескіде сол жазу жоқ, қайта алмастыру оны жоғалтады. Атомарлы — оқырман екі кестенің бірін көреді деген сөз, ескіде жаңа жазулар бар деген емес. Сақталған кесте жарияланғанға ілеспейді. Алмастыруды қайталауға болады, қауіпті ететіні дерек.",
+      "target_hash": "2fae66827334f926331ae31c69387bec3ed4de67269ba10e87d74c0e5f6fdfcf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "a4b21c61511a610f9bacf6b41f6871d7419c5016c6e86eb65a63c7dba39acf6e",
+          "target_hash": "2fae66827334f926331ae31c69387bec3ed4de67269ba10e87d74c0e5f6fdfcf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d79cc688daf04b2f97bca9ab649a0812",
+      "source_hash": "287ea03a59a8b8222c3356c80f33772996eeb110d9303847808ebb15b580dab3",
+      "target_text": "Кестені тексерілген ауысумен жариялап, кері қайтару қашан қауіпсіз болмайтынын айту.",
+      "target_hash": "516e6cfa8fd934ea06cd7ce25c1f03378816a687d1d9142a732b9900bf75526f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "287ea03a59a8b8222c3356c80f33772996eeb110d9303847808ebb15b580dab3",
+          "target_hash": "516e6cfa8fd934ea06cd7ce25c1f03378816a687d1d9142a732b9900bf75526f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.88c70aec102249d79160f989e51ebcaa",
+      "source_hash": "336fc26cc43d9f15005b6b69193e4922054fd31b03298df84511cdca7de82cce",
+      "target_text": "Қуып жетпейінше болмайды: ескіде жариялағаннан кейінгі тапсырыс жоқ",
+      "target_hash": "07d3e8cbcf0451f579fbaa9fdcf31e738f7d19984302ab121cbf526fc9e1aa5d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "336fc26cc43d9f15005b6b69193e4922054fd31b03298df84511cdca7de82cce",
+          "target_hash": "07d3e8cbcf0451f579fbaa9fdcf31e738f7d19984302ab121cbf526fc9e1aa5d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cd83354bfd7e405c9d3c7163891535b8",
+      "source_hash": "6a9a7490b7e8aee07faef113e76c159cd2c6a1570356f77810dd9aa78497c95c",
+      "target_text": "Иә: алмастыру атомарлы, қайта алмастыру дәл жарияланған күйді қайтарады",
+      "target_hash": "ecb25d0eee2b910af999b1264a17ac411b96a027781e79d68d8b3a6d2e1d08b0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "6a9a7490b7e8aee07faef113e76c159cd2c6a1570356f77810dd9aa78497c95c",
+          "target_hash": "ecb25d0eee2b910af999b1264a17ac411b96a027781e79d68d8b3a6d2e1d08b0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.899cf779d9ed4bbb961adb86a71a9c96",
+      "source_hash": "45505ab6e9e1b32a67e9944dbfddcdd17a9493b48a4bbb5d82cbefaca74ea84e",
+      "target_text": "Иә: swap = true ескіні сақтады, Doris оны жарияланғанмен бірге жаңартады",
+      "target_hash": "3e325e5b8c34029e89d0c94285d78cb1aa60ba63fa220ea9aa07dcdaeae0e1d3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "45505ab6e9e1b32a67e9944dbfddcdd17a9493b48a4bbb5d82cbefaca74ea84e",
+          "target_hash": "3e325e5b8c34029e89d0c94285d78cb1aa60ba63fa220ea9aa07dcdaeae0e1d3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c782728786914cd8aaee53676de35467",
+      "source_hash": "7f89608a3eee39d455ceaeac530fbafa749ec5498c89ed4cff0e7d7cf5fc0979",
+      "target_text": "Жоқ: кесте жарияланған соң оны кері алмастыру мүмкін емес",
+      "target_hash": "5709901438539cc862345c5a1d873e17f0432ef0126404172b90ccd9d869c0a3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7f89608a3eee39d455ceaeac530fbafa749ec5498c89ed4cff0e7d7cf5fc0979",
+          "target_hash": "5709901438539cc862345c5a1d873e17f0432ef0126404172b90ccd9d869c0a3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4191cb9d017e47779ca7ff7287db7027",
+      "source_hash": "fcce51ae00e79c2a27a385bcaa611f8666823bf0030bce7a7d933b88e807c721",
+      "target_text": "Жазушы тоқтағанда үміткер салыстырылып, swap = true арқылы жарияланды. Кейін жазушы жалғасып, бір тапсырыс жазды. Енді ескі кестеге қайта ауыса ала ма?",
+      "target_hash": "e5e470ab512832cbf2d1900f3334d4d4d9b129cd53c5216b4d323a0e60f49fdb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "fcce51ae00e79c2a27a385bcaa611f8666823bf0030bce7a7d933b88e807c721",
+          "target_hash": "e5e470ab512832cbf2d1900f3334d4d4d9b129cd53c5216b4d323a0e60f49fdb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1c6e4887ef0444578849ebe861a9a176",
+      "source_hash": "855f0288ae3a8e859609506fdd6562fb64c05835efee54530411ef8f61be2f9d",
+      "target_text": "Рөлдің RESTRICTIVE Row Policy-і әр мүше сұрауында EAST жолдарын ғана қалдырады; баған рұқсаты екі төлем бағанын қоспайды, SELECT * пен COUNT(*) да өтпейді. Тақта сүзгісі міндетті емес: сұрау WEST сұрай алады. Кесте рұқсаты барлық жол/бағанды қамтиды. Бүркемелеу мән бөлігін жасырады, жол сүзбейді.",
+      "target_hash": "a50ccd5fb2d812b342498a0bfb33ced67de895d4fcaf3dcc02a081e4fa5de51e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "855f0288ae3a8e859609506fdd6562fb64c05835efee54530411ef8f61be2f9d",
+          "target_hash": "a50ccd5fb2d812b342498a0bfb33ced67de895d4fcaf3dcc02a081e4fa5de51e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b5ce897ab3874fdaaa8c11c1f439de9a",
+      "source_hash": "97e94ae9cd644cbc1fb067d7cf2fb6231ec776a09541fda241b8231df7bd1f77",
+      "target_text": "Шектеуге кесте/баған рұқсатын, Row Policy не бүркемелеуді таңдау.",
+      "target_hash": "ab33cdfcb91a3a576e6846bd9fbee4ecb733598da4f38ff08115464cf9227cd7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "97e94ae9cd644cbc1fb067d7cf2fb6231ec776a09541fda241b8231df7bd1f77",
+          "target_hash": "ab33cdfcb91a3a576e6846bd9fbee4ecb733598da4f38ff08115464cf9227cd7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4aee829da5d0437a8d0ad6cc93599dd2",
+      "source_hash": "e2c505236d69215d9a7d11aa22cc28bf442d000157f611a6cba4eaf0918724ec",
+      "target_text": "Топ рөліне region Row Policy-і және тек қалған бағандарға SELECT_PRIV",
+      "target_hash": "7f40d6ff7609cd77d251b103bd930becca4b9b50726c1499a1586ff10d0f49d6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e2c505236d69215d9a7d11aa22cc28bf442d000157f611a6cba4eaf0918724ec",
+          "target_hash": "7f40d6ff7609cd77d251b103bd930becca4b9b50726c1499a1586ff10d0f49d6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ea514d9728a24755b90763aaad62c459",
+      "source_hash": "d42fbd7dff3ceea9fa11a2df818ce2167b4e8c19ef97f6cf74c1c093deaa129d",
+      "target_text": "Тақтада region сүзгісі, екі бағанды қоспайтын диаграммалар",
+      "target_hash": "d40a8b64cb1fe285fa3d5d98e7a71c83707c68d4b1b89f62da29afa991c09ef4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d42fbd7dff3ceea9fa11a2df818ce2167b4e8c19ef97f6cf74c1c093deaa129d",
+          "target_hash": "d40a8b64cb1fe285fa3d5d98e7a71c83707c68d4b1b89f62da29afa991c09ef4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.811fe200dd8443b6a0765c46ffd581fc",
+      "source_hash": "4d4ff4d87f1c5c50f1f4ddbedadbd9f5dc6bdf27785950a1b122a72474519f11",
+      "target_text": "Сұраулар тек EAST сұрайтындықтан бүкіл кестеге SELECT_PRIV",
+      "target_hash": "8ff4a0d9199b81f85be5847009b7378af3fac73bd6f7877f3c05151139817734",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4d4ff4d87f1c5c50f1f4ddbedadbd9f5dc6bdf27785950a1b122a72474519f11",
+          "target_hash": "8ff4a0d9199b81f85be5847009b7378af3fac73bd6f7877f3c05151139817734"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.aecfc20c11694c52a7603ce8e388b5c1",
+      "source_hash": "fdadc8b34ae969e45955d5762ef0f595acf7b9683d0539e28a03e098a38bc3aa",
+      "target_text": "Екі төлем бағанын бүркемелеу: ол WEST тапсырыстарын да жасырады",
+      "target_hash": "0743f4ea49667f25f377c810a8b5e37a305e4a78f71feaf4bd18a69fa6d17d2a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "fdadc8b34ae969e45955d5762ef0f595acf7b9683d0539e28a03e098a38bc3aa",
+          "target_hash": "0743f4ea49667f25f377c810a8b5e37a305e4a78f71feaf4bd18a69fa6d17d2a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.322b19506fa24988b7ffb2e880637ae9",
+      "source_hash": "5be18ff6b90adf3bec84d56f420ae7fecfc962fa5d8334fd3c5dbfb994bce2be",
+      "target_text": "EAST тек orders_fact_l2 EAST тапсырыстарын оқып, paid_amount пен refund_amount көрмеуі керек. Қайсысы сай?",
+      "target_hash": "0fa380b284ec53aed3e29a4a2d064dec537d3e0d0e80c340c958fe1a400f63f5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "5be18ff6b90adf3bec84d56f420ae7fecfc962fa5d8334fd3c5dbfb994bce2be",
+          "target_hash": "0fa380b284ec53aed3e29a4a2d064dec537d3e0d0e80c340c958fe1a400f63f5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7ba5ed9c42bb49c990266be7a777bdb0",
+      "source_hash": "9bbc8c61af6684d83b127e11bc25987c70f94b2af295393be4ee0c7d9607d369",
+      "target_text": "12-модуль тесті: Жариялау, рұқсаттар және аудит",
+      "target_hash": "61329b342c9fc5161fa1f010449b89a05fdef610a52ff035fe8a9f659b250f81",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m12-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 12 units on 2026-11-08. Re-read all saved lesson, Lab and complete Quiz targets against frozen English after translation; read full Lab code and all six answer mappings. Checked object/grain/amount contract, least-scope role grants versus administrative/grant privileges, view access without source grants, merged grants versus hidden direct-grant role, membership-only retirement and dependent-policy cleanup, consumer identity versus root, audit delay/state/error counts and evidence limitations, paused-writer final-delta cutover and rollback boundary, row policies versus column grants/masking, COUNT(*) versus COUNT(order_id), optional dashboard idempotent migration and temporary cleanup on failure. Clarified view-versus-table wording, removal-versus-obtaining access, one-user-per-dashboard and one-audit-row-per-query wording. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9bbc8c61af6684d83b127e11bc25987c70f94b2af295393be4ee0c7d9607d369",
+          "target_hash": "61329b342c9fc5161fa1f010449b89a05fdef610a52ff035fe8a9f659b250f81"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

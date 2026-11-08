@@ -1,0 +1,392 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.3afca692d4a54ee79ed2335b93900ab8",
+      "source_hash": "94c99be7dbb40d98ddcfc5ab21d689eb79c40efd598113ed40f4122357ce0c4c",
+      "target_text": "## 1.5 Телеметрияның жеткенін дәлелдеу\n\nЖолдың әр қадамында жеке ақау болуы мүмкін: сервис демо Collector-ымен байланысын жоғалтуы, демо Collector-ы DOG Collector-ына жете алмауы немесе экспорттаушы пакетті Doris-ке жүктей алмауы мүмкін. Әр сигналдың өз конвейері бар, сондықтан трассалар келіп, журналдар келмеуі мүмкін. Жұмыс істеп тұрған контейнерлер тек процестердің іске қосылғанын дәлелдейді, олардан телеметрия өткенін дәлелдемейді.\n\nТелеметрияның жеткенінің дәлелі — **Doris-тегі жолдар**: әр сигнал кестесінде уақыт белгісі қазіргі уақытқа жақын жаңа жолдардың болуы. 1-зертханалық жұмыс дәл осыны тексереді: әр сигнал үшін соңғы бес минуттағы жолдарды және оларды жіберген сервистерді санайды. Жолдарды көрсететін Grafana беті — қосымша бір қадам арқылы көрінетін сол дәлел.\n\nТелеметрия уақыт белгілері UTC бойынша беріледі. Экспорттаушы UTC жазады, ал кестелер деректерді әр UTC күніне бір бөлімге бөледі. Сондықтан зертханалық жұмыс уақыт белгілерін компьютеріңіздің жергілікті уақытымен емес, `UTC_TIMESTAMP()` мәнімен салыстырады.\n\n",
+      "target_hash": "3d8cf1ca31fd6bcb308c5361964b2e532a8092e564ba57fda2a78f77dce3d811",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "94c99be7dbb40d98ddcfc5ab21d689eb79c40efd598113ed40f4122357ce0c4c",
+          "target_hash": "3d8cf1ca31fd6bcb308c5361964b2e532a8092e564ba57fda2a78f77dce3d811"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cd09ce9e7bd34f2b86a39c4c3accddf1",
+      "source_hash": "00a0539580e5c9f3edafe44dfa499b2b2df7c6437bb83089bf45de9a3a3aeb05",
+      "target_text": "## 1.2 Телеметрияның үш түрі\n\nСервистер **сигналдар** деп аталатын телеметрияның үш түрін тіркейді. Әрқайсысы әртүрлі сұраққа жауап береді.\n\n| Сигнал | Бір жазба нені білдіреді | Қандай сұраққа жауап береді | Дүкеннен мысал |\n| --- | --- | --- | --- |\n| **Журналдар** | Маңыздылық деңгейі мен атрибуттары бар, уақыт белгісі қойылған мәтіндік оқиға | Дәл осы жерде, осы сәтте не болды? | Дүкен проксиінің `\"POST /api/checkout HTTP/1.1\" 500` жолы |\n| **Метрикалар** | Атауы бар өлшем мен атрибуттар жиыны үшін белгілі бір уақытта өлшенген сан | Қанша, қаншалықты жиі және уақыт өте қалай өзгереді? | Хосттың бір CPU ядросының бос тұрған уақыт үлесі |\n| **Трассалар** | Span ағашы түріндегі бір сұраудың сервистер арқылы өткен жолы | Сұрау қайда барды, әр қадам қанша уақыт алды және қай қадамда ақау болды? | Проксиден frontend, checkout және payment сервистеріне өткен тапсырыс |\n\nСигналдар бірін-бірі толықтырады:\n\n- **Метрикаларды** ұзақ уақыт сақтау және сұрау ең арзан: сұраулар саны қанша болса да, бір өлшем әр аралықта бірнеше сан береді. Олар үрдістер мен процентильдерді көрсетіп, ескертулерге негіз болады. Қай сұраудың сәтсіз болғанын көрсетпейді.\n- **Журналдар** жеке оқиғалардың егжей-тегжейін әзірлеуші таңдаған сөздермен сақтайды. Сервис жазса ғана оларда қате хабарлары мен стек трассалары болады; пішімі сервиске қарай өзгереді.\n- **Трассалар** бір сұрауды сервистер арасында қадағалайды. Уақыт қайда жұмсалғанын және қате қайдан басталғанын көрсетеді; бір журнал жолы да, метрика да мұны жеке өзі көрсете алмайды.\n\nТексеру әдетте олардың арасында ауысады: метрика өзгерісті көрсетеді, журнал не трасса сол өзгеріс болған сұрауды көрсетеді, ал трасса оны қай сервис тудырғанын анықтайды. 3-модульде бұл ауысу Grafana-да орындалады.\n\n![Метрикалар өзгерісті, журналдар оқиға егжей-тегжейін, ал трассалар сұрау жолындағы ақаулы сервисті көрсетеді.](images/01-three-telemetry-signals.png)\n\n*Әр сигнал өз сұрағына жауап береді, сондықтан тексеру олардың арасында ауысады.*\n\nСуреттегі ағылшынша белгілер: THREE SIGNALS; ONE INVESTIGATION — үш сигнал, бір тексеру; METRICS — метрикалар; LOGS — журналдар; TRACES — трассалар; WHAT CHANGED? — не өзгерді?; TRENDS + COUNTS — үрдістер мен санақтар; WHAT HAPPENED? — не болды?; EVENT DETAILS — оқиға егжей-тегжейі; WHERE DID IT FAIL? — ақау қай жерде болды?; ONE REQUEST — бір сұрау. POST /api/checkout және HTTP 500 — өзгеріссіз техникалық мәндер.\n\n",
+      "target_hash": "274a18e4bd8309fdec23996afb25b9bc461f1eb26afc6b2465081f5938a1446e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "00a0539580e5c9f3edafe44dfa499b2b2df7c6437bb83089bf45de9a3a3aeb05",
+          "target_hash": "274a18e4bd8309fdec23996afb25b9bc461f1eb26afc6b2465081f5938a1446e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0fc0b7dd7421469eb2fa591727edbf79",
+      "source_hash": "5cf52d049ed2b8b9faf5a181b0df7579bc9672a5519237114c60e603d4589a5f",
+      "target_text": "### Метрика түрлері\n\nМетриканың сандарын қалай түсіндіру керегін оның түрі анықтайды. **Gauge** — CPU үлесі не кезек ұзындығы сияқты бір сәттегі мән. **Sum**, яғни санауыш, өңделген сұраулар сияқты оқиғаларды қосады; әдетте бастапқы уақыттан бері тек өседі. **Histogram** сұрау ұзақтығы сияқты өлшемдердің бірнеше интервалдың әрқайсысына қаншасы түскенін санайды. Бағандары әртүрлі болғандықтан, Doris әр түрді жеке кестеде сақтайды.\n\n",
+      "target_hash": "8caa44a82bf5d6533ce4c5c3b8bbeb0a79f075b5341b24897df277224d1d3537",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "5cf52d049ed2b8b9faf5a181b0df7579bc9672a5519237114c60e603d4589a5f",
+          "target_hash": "8caa44a82bf5d6533ce4c5c3b8bbeb0a79f075b5341b24897df277224d1d3537"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fbf9fad9fa764391b3458832afe6c74b",
+      "source_hash": "933b42f7568a46a6d31f29644dcc7cc9f54d0c4c2238c8ec83602ba54b0b653d",
+      "target_text": "## Оқу мақсаттары\n\nМодульді аяқтаған соң сіз:\n\n1. Пайдалану кезіндегі сұраққа журналдарды, метрикаларды не трассаларды таңдай аласыз.\n2. Трасса ID-і мен ата-аналық span ID-і бір сұраудың span-дарын қалай біріктіретінін түсіндіре аласыз.\n3. Жинау, сақтау және визуализацияны DOG стегінің бөліктеріне сәйкестендіре аласыз.\n4. Демо телеметриясының сервистен Doris кестесіне дейінгі жолын қадағалай аласыз.\n5. Телеметрияның Doris-ке жеткенін қандай дәлел көрсететінін бағалай аласыз.\n6. Мүмкіндік жалаушасымен ақау тудырып, оны телеметриядан растай аласыз.\n\n",
+      "target_hash": "2a5128a43946c257ad54ba1916f5091e8edb911be7047053396555760234e950",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "933b42f7568a46a6d31f29644dcc7cc9f54d0c4c2238c8ec83602ba54b0b653d",
+          "target_hash": "2a5128a43946c257ad54ba1916f5091e8edb911be7047053396555760234e950"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f63f52182ebe4d81a464ffb9e3371389",
+      "source_hash": "e76c79b3065c4fe735281d850cf0d35ff869654c06bf9ce403a06b3d30aec061",
+      "target_text": "## 1.6 Осы курстағы инцидент\n\nДемо ақау сценарийлерін **мүмкіндік жалаушаларымен** қосып-өшіре алады. Мүмкіндік жалаушасы — сервис жұмыс кезінде оқитын баптау; мұнда ол демоның **flagd** жалауша сервисінен алынады. Жалауша өзгергенде сервис қайта іске қосылмай-ақ әрекетін өзгертеді. Дүкен портындағы `/feature` беті әр жалаушаны және оның ықтимал мәндерін көрсетеді.\n\nБұл курс бір сценарийді қарастырады: `paymentFailure` жалаушасы. `50%` мәнінде payment сервисі алған төлем сұрауларының шамамен жартысын қабылдамайды, сондықтан дүкен тапсырыстарының шамамен жартысы сәтсіз болады. Төлемі өтпеген тұтынушы хабарсыз себет бетінде қалады. 1-зертханалық жұмыстың соңында жалаушаны қосып, Doris-тен алғашқы сәтсіз тапсырыстарды көресіз: checkout сервисінің әр тапсырысқа арналған `oteldemo.CheckoutService/PlaceOrder` span-ының күйі `STATUS_CODE_ERROR` болады.\n\nОсыдан кейін курс ақаудың себебі белгісіздей тексереді:\n\n| Модуль | Тексерудегі рөлі |\n| --- | --- |\n| 1 | Ақау басталып, трассаларда сәтсіз тапсырыстар пайда болады. |\n| 2 | Сәтсіз тапсырыстың дәлелі қай кестелерде екенін және әр бөлікті қай конвейер жеткізгенін табу. |\n| 3 | Grafana арқылы ақаудың қайдан және неге басталғанын табу, хост CPU-ын ықтимал себептен алып тастау. |\n| 4–8 | Ықшам қорытындылар сақтау, Doris кесте құрылымы мен индекстері арқылы іздеуді жеделдету, ақауды SQL-мен өлшеу және ол туралы ескерту. |\n\nЖалаушаны оның бетінде өшіргенше немесе `lab.teardown()` курс ортасын жойғанша, ол қосулы қалады.\n\n",
+      "target_hash": "f412188c553f07f8543f9179c8be9e49bfd85b6cbd3fab6c56fa6623e39f792e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e76c79b3065c4fe735281d850cf0d35ff869654c06bf9ce403a06b3d30aec061",
+          "target_hash": "f412188c553f07f8543f9179c8be9e49bfd85b6cbd3fab6c56fa6623e39f792e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.91e69e1685da40968a3ec1c039d4edee",
+      "source_hash": "17a614013e74537cd663b155c705a490ff829c8ad11d35d1c7a8e5fbeef1b782",
+      "target_text": "## 1-тест\n\n[1-тест: DOG стегіндегі жүйені бақылау негіздері](quiz01_observability_foundations.ipynb) файлын ашыңыз. Онда бір жауап таңдалатын алты сұрақ бар; іске қосылған орта қажет емес.\n\nКелесі модуль: [2-модуль: Жүйені бақылау деректерін жүктеу](../module02-data-ingest/course.md).\n\n",
+      "target_hash": "c0cb07ff0db0cc44c28ddc62947c9863d1dcdd56a062d4e42437e553702dd369",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "17a614013e74537cd663b155c705a490ff829c8ad11d35d1c7a8e5fbeef1b782",
+          "target_hash": "c0cb07ff0db0cc44c28ddc62947c9863d1dcdd56a062d4e42437e553702dd369"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.45c386c2692d48eba95be6d320e22281",
+      "source_hash": "a680a5cfb3444b45fe802c0b3324295ea77f62d6bb4e49dafbb7f2d1ce91468f",
+      "target_text": "### Маңыздылық деңгейі және OpenTelemetry шкаласы\n\nӘр журнал жазбасында маңыздылықтың екі өрісі бар. `severity_text` — дереккөз жазған `ERROR`, `Error` не `WARN` сияқты белгі; ол бағдарламалау тілдері мен кітапханаларда әртүрлі. `severity_number` барлық дереккөзді ортақ OpenTelemetry шкаласына келтіреді: 1–4 — TRACE, 5–8 — DEBUG, 9–12 — INFO, 13–16 — WARN, 17–20 — ERROR, 21–24 — FATAL. Қатынас журналының жолы сияқты маңыздылық деңгейі жоқ жазбаның `severity_number` мәні 0 болады.\n\n",
+      "target_hash": "71a570d6a37a76a690ea5b5358a3f296caa25f65e99cece554ceb5020a75b046",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "a680a5cfb3444b45fe802c0b3324295ea77f62d6bb4e49dafbb7f2d1ce91468f",
+          "target_hash": "71a570d6a37a76a690ea5b5358a3f296caa25f65e99cece554ceb5020a75b046"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.76faf91c62f646ecbbbd3f83bc686ae2",
+      "source_hash": "58e01b95b52b4462cc616b8a3b7aa9bc723ca5146c371d352b224e17b4bbab95",
+      "target_text": "## 1-зертханалық жұмыс: DOG стегін іске қосу\n\n[1-зертханалық жұмыс: DOG стегін іске қосу](lab01_observability_introduction.ipynb) файлын ашып, ұяшықтарын ретімен орындаңыз. Сіз:\n\n1. DOG стегін: Doris, DOG Collector, Grafana және Mailpit-ті іске қосасыз.\n2. OpenTelemetry демосын іске қосып, соңғы бес минуттағы трассалар, журналдар мен метрикалардың Doris-те барын тексересіз.\n3. Дүкенді және Grafana-ны ашасыз.\n4. Жалауша бетінде `paymentFailure` мәнін 50% етіп қосып, жалаушаны растайсыз және Doris-тегі алғашқы сәтсіз тапсырысты күтесіз.\n5. Жаттығу: соңғы он минуттағы қате span-дарын сервис бойынша санайсыз.\n\nКемінде 10 GB жады бөлінген Docker және курстың Python ортасы қажет; екеуі де [курс README файлында](../../README.md) сипатталған. Алғашқы іске қосуда шамамен 4.8 GB бейне жүктеледі, оған тағы бірнеше минут кетеді.\n\n",
+      "target_hash": "f7d1a006294d90662d7115552ba980a1c054a3e11640d4e099f253da692c3e7d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "58e01b95b52b4462cc616b8a3b7aa9bc723ca5146c371d352b224e17b4bbab95",
+          "target_hash": "f7d1a006294d90662d7115552ba980a1c054a3e11640d4e099f253da692c3e7d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e229a5b00fdb4e4faef6d06c4729fc83",
+      "source_hash": "f624dba00bff635a52a92221284374d277afde7e0404dd897f969203f854ea0b",
+      "target_text": "## 1.4 DOG стегі және демо\n\nБұл курс ашық [ai-observe-stack](https://github.com/ai-observe/ai-observe-stack) жобасының **DOG стегін** пайдаланады: **D**oris, OpenTelemetry Collector және **G**rafana. Әр бөліктің бір міндеті бар:\n\n| Бөлік | Міндеті | Не істемейді |\n| --- | --- | --- |\n| **OpenTelemetry Collector** | Телеметрияны қабылдайды, өңдейді (атрибуттар қосады, пакеттерге біріктіреді) және мұнда Doris-ке экспорттайды | Телеметрияны сақтамайды, диаграмма салмайды |\n| **Apache Doris** | Телеметрияны кестелерде сақтап, оның ішінде сигналдарды біріктіріп SQL сұрауларына жауап береді | Сервистерден телеметрия жинамайды |\n| **Grafana** | Телеметрияны іздеу, трассалар, бақылау тақталары және ескертулер арқылы көрсетеді. Doris-ті SQL-мен оқиды | Телеметрияны сақтамайды |\n\nDoris — талдамалық дерекқор: деректерді баған бойынша сақтайды, сығады және сұрауларды көптеген ядроларда параллель орындайды. DOG стегі оны үш сигналдың ортақ сақтау орны ретінде пайдаланады: бір SQL сұрауы журналдар мен трассаларды трасса ID-і арқылы біріктіре алады, ал толық мәтіндік индекстер журнал іздеуін жылдамдатады. Курстың 2-деңгейі Doris мұны қалай орындайтынын қарастырады.\n\n**OpenTelemetry** — телеметрияның негізіндегі ашық стандарт: сервистер журнал, метрика және span тіркеуге пайдаланатын API мен SDK; оларды жіберетін **OTLP** протоколы; және **Collector**. Collector **конвейерлерден** тұрады: әр сигналға бір конвейер, онда деректі қабылдайтын қабылдағыштар, өзгертетін өңдегіштер және әрі қарай жіберетін экспорттаушылар болады. 2-модульде өз Collector-ларыңызды құрасыз.\n\nБақыланатын жүйе — [OpenTelemetry демосы](https://opentelemetry.io/docs/demo/), Astronomy Shop: Go, Java, .NET, Node.js, Python, PHP, Ruby, Rust және C++ тілдерінде жазылған оннан астам сервистен тұратын телескоптардың онлайн дүкені. Әр сервис өз тілінің OpenTelemetry SDK-сын пайдаланады. **Жүктеме генераторы** дүкенді үздіксіз қарап, тапсырыс береді, сондықтан сіз жұмыс істегенде сервистер телеметрия өндіре береді.\n\n![Сервистер телеметрияны демо Collector-ы мен DOG Collector-ы арқылы жібереді; Doris экспорттаушысы оны Doris кестелеріне жүктейді, ал Grafana оларды SQL-мен сұрайды.](images/03-dog-telemetry-data-path.png)\n\n*Collector-лар телеметрияны тасымалдайды, Doris сақтайды, ал Grafana оқиды.*\n\nСурет белгілері: DOG STACK TELEMETRY PATH — DOG стегіндегі телеметрия жолы; SERVICES — сервистер; DEMO COLLECTOR — демо Collector-ы; DOG COLLECTOR — DOG Collector-ы; DORIS EXPORTER — Doris экспорттаушысы; RESULTS — нәтижелер; SPAN METRICS — span метрикалары; HOST METRICS — хост метрикалары; CONTAINER METRICS — контейнер метрикалары; DOCKER HOST — Docker хосты. Apache Doris, Grafana, OpenTelemetry SDK, OTLP, Stream Load, SQL және кесте атаулары өзгермейді.\n\nДүкен телеметриясының жолы:\n\n1. Сервис SDK-сы span, журнал және метрикаларды OTLP арқылы **демо Collector-ына** жібереді.\n2. Демо Collector-ы өз метрикаларын қосады: әр сервис пен операция span-дарын санайтын **span метрикалары**, сондай-ақ хост пен контейнер метрикалары. Барлығын OTLP арқылы **DOG Collector-ына** бағыттайды.\n3. DOG Collector өзі жұмыс істейтін Docker хостының метрикаларын қосады. Оның **Doris экспорттаушысы** келгеннен бірнеше секунд кейін жолдарды HTTP арқылы **Stream Load** көмегімен Doris-ке жүктейді.\n4. Doris оларды `otel` дерекқорында сақтайды: span-дар — `otel_traces`, журналдар — `otel_logs`, метрикалар — `otel_metrics_gauge` және `otel_metrics_sum` сияқты әр түрге жеке кестеде. Экспорттаушы бұл кестелерді іске қосылғанда құрған.\n5. Grafana кестелерді SQL-мен оқиды. Оның **Doris App** плагинінде жолдарды іздеуге арналған **Discover** беті және трассаларға арналған **Traces** беті бар; Grafana-ның бақылау тақталары мен ескертулері де сол дереккөз арқылы Doris-ті оқиды.\n\nСтекте 8-модульдегі Grafana ескерту хаттарын қабылдайтын жергілікті Mailpit пошта сервері де жұмыс істейді. Барлық бөлік компьютеріңіздегі Docker-де, 127.0.0.1 адресіне байланған 23000–29030 порттарында орындалады; тізімі [курс README файлында](../../README.md) берілген.\n\n",
+      "target_hash": "75b7a63ce2041958d8ebd71ce1d603b68465871d8d66ee6c00f2f6056c318257",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f624dba00bff635a52a92221284374d277afde7e0404dd897f969203f854ea0b",
+          "target_hash": "75b7a63ce2041958d8ebd71ce1d603b68465871d8d66ee6c00f2f6056c318257"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b123f0e152964fdd926f22eab61cc316",
+      "source_hash": "35aa8fede3894ad07a9adef1a119415a9dc9581c006537fa0689d8fdc1539d20",
+      "target_text": "# 1-модуль: DOG стегіндегі жүйені бақылау негіздері\n\n| Курс ақпараты | Мәні |\n| --- | --- |\n| Курс | Apache Doris көмегімен жүйені бақылау · 1-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Орта | DOG стегі (Doris, OpenTelemetry Collector 0.144.0 және Grafana 11.4.0) және OpenTelemetry демосы 2.0.2 |\n| Болжалды уақыт | Шамамен 70 минут: оқу 25, зертханалық жұмыс 35 (алғашқы шамамен 4.8 GB бейнелерді жүктеу қосылады), тест 10 |\n\n[Курс README файлы](../../README.md) · [1-зертханалық жұмысты ашу](lab01_observability_introduction.ipynb) · [1-тестті ашу](quiz01_observability_foundations.ipynb)\n\n",
+      "target_hash": "1b8d8efebd7204457bac906e7e737f3f8be6a469595bf2e125f0c7516beab63d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "35aa8fede3894ad07a9adef1a119415a9dc9581c006537fa0689d8fdc1539d20",
+          "target_hash": "1b8d8efebd7204457bac906e7e737f3f8be6a469595bf2e125f0c7516beab63d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0ccf1ace125c494780cd79043c0a1507",
+      "source_hash": "902f7b2ea11718e5eed4cfadbb40e6d73e4736573287160d00984934fb3f4e0d",
+      "target_text": "## Модуль құрылымы\n\n| Бөлім | Уақыт | Нәтиже |\n| --- | ---: | --- |\n| 1.1 Жүйені бақылау не үшін қажет | 3 мин | Телеметрия жауап беретін сұрақтар |\n| 1.2 Телеметрияның үш түрі | 6 мин | Журналдар, метрикалар, трассалар және әрқайсысын қашан қолдану |\n| 1.3 Трассаның ішінде | 5 мин | Span өрістері және span-дардың сұрауды құрауы |\n| 1.4 DOG стегі және демо | 5 мин | Телеметрияны кім жинайды, сақтайды, көрсетеді және ол қандай жолдан өтеді |\n| 1.5 Телеметрияның жеткенін дәлелдеу | 3 мин | Іске қосылған контейнер нені және Doris жолы нені дәлелдейді |\n| 1.6 Осы курстағы инцидент | 3 мин | Төлемдерді сәтсіз ететін мүмкіндік жалаушасы |\n| 1-зертханалық жұмыс | 35 мин | Жұмыс істейтін стек пен дүкен, Doris-тегі алғашқы сәтсіз тапсырыстар |\n| 1-тест | 10 мин | Осы мақсаттар бойынша алты сұрақ |\n\n",
+      "target_hash": "d9798db56ccbd4359c1170665c4012374bf6ca4d1f76484acc2fad60289a39c8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "902f7b2ea11718e5eed4cfadbb40e6d73e4736573287160d00984934fb3f4e0d",
+          "target_hash": "d9798db56ccbd4359c1170665c4012374bf6ca4d1f76484acc2fad60289a39c8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.808df503c07842b3bea4858c75efe826",
+      "source_hash": "ee2442fc1c8a2ae1d95ca61079ef217ad8b56ef9b9d663aa302700f94f65c458",
+      "target_text": "## Дереккөздер\n\n- [OpenTelemetry: жүйені бақылауға кіріспе](https://opentelemetry.io/docs/concepts/observability-primer/)\n- [OpenTelemetry: сигналдар](https://opentelemetry.io/docs/concepts/signals/), соның ішінде [трассалар](https://opentelemetry.io/docs/concepts/signals/traces/), [метрикалар](https://opentelemetry.io/docs/concepts/signals/metrics/) және [журналдар](https://opentelemetry.io/docs/concepts/signals/logs/)\n- [OpenTelemetry: контексті тарату](https://opentelemetry.io/docs/concepts/context-propagation/)\n- [OpenTelemetry журнал деректерінің моделі: маңыздылық өрістері](https://opentelemetry.io/docs/specs/otel/logs/data-model/#field-severitynumber)\n- [OpenTelemetry демосының құжаттамасы](https://opentelemetry.io/docs/demo/) және оның [мүмкіндік жалаушалары](https://opentelemetry.io/docs/demo/feature-flags/)\n- [Apache Doris: жүйені бақылауға шолу](https://doris.apache.org/docs/4.x/observability/overview/)\n- [ai-observe-stack (DOG стегі)](https://github.com/ai-observe/ai-observe-stack)\n",
+      "target_hash": "d2db3e6f3248a33cd22156c009ea014581eb0931c95205becdc49ef6e653d412",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ee2442fc1c8a2ae1d95ca61079ef217ad8b56ef9b9d663aa302700f94f65c458",
+          "target_hash": "d2db3e6f3248a33cd22156c009ea014581eb0931c95205becdc49ef6e653d412"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.144f59a6061b47eea64672949628711b",
+      "source_hash": "30ad168359a01267de8725a86181aff97810ea4021f77dde9db74768854fc8fb",
+      "target_text": "## 1.1 Жүйені бақылау не үшін қажет\n\nОнлайн дүкенде көптеген сервис бар: бірі тауар көрсетеді, бірі себетті сақтайды, бірі төлем қабылдайды. Тұтынушылар «тапсырысты рәсімдеу бұзылды» десе, кезекші инженер мынадай сұрақтарға жауап беруі керек: барлығында ма, әлде кей тұтынушыларда ғана ма? Қашаннан бері? Қай сервис істен шықты және неге? Не өзгерді?\n\nИнженер өндірістік ортаға жөндегіш қоса алмайды және әр сервистен өзін түсіндіруді сұрай алмайды. Ол тек сервистер жұмыс кезінде жазған **телеметрияны** оқи алады. Жүйе телеметриясы осындай сұрақтарға, оның ішінде сервистер жазылғанда ешкім ойламаған жаңа сұрақтарға жауап берсе, жүйені *бақылауға болады*. Бұл курс осы қабілетті үш ашық құралмен — OpenTelemetry Collector, Apache Doris және Grafana-мен — құрады және оларды компьютеріңізде іске қосылатын нақты дүкенге қолданады.\n\n",
+      "target_hash": "4cd5cfdbd08bbff8c8d008f5e9b28393a3fc714d5b718bfdaa370f5b93290803",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "30ad168359a01267de8725a86181aff97810ea4021f77dde9db74768854fc8fb",
+          "target_hash": "4cd5cfdbd08bbff8c8d008f5e9b28393a3fc714d5b718bfdaa370f5b93290803"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.90fbef5dda484a5396a38a00bd1ff2c0",
+      "source_hash": "fd37b05e9d7580c4bf453d0c212e0dbc4937dabf992947be06257d2ff91c211a",
+      "target_text": "## 1.3 Трассаның ішінде\n\nТрасса **span-дардан** тұрады. Span — жұмыстың бірлігі: сервис қабылдаған сұрау, оның басқа сервиске жасаған шақыруы немесе ішкі қадамы. Әр span мынаны тіркейді:\n\n| Өріс | Мағынасы |\n| --- | --- |\n| `trace_id` | Сұрау ID-і. Сұраудың барлық span-ында трасса ID-і бірдей. |\n| `span_id` | Осы span ID-і. |\n| `parent_span_id` | Осы span-ды бастаған span ID-і. Сұраудың алғашқы **түбір span-ында** ол жоқ. |\n| `span_name` | `oteldemo.CheckoutService/PlaceOrder` сияқты операция |\n| `span_kind` | Сервис қабылдаған сұрау үшін `SERVER`, жасаған шақыруы үшін `CLIENT`, ішкі қадам үшін `INTERNAL`, хабарлар үшін `PRODUCER` және `CONSUMER` |\n| `timestamp`, `end_time`, `duration` | Қашан басталып аяқталды және қанша уақыт алды |\n| `status_code` | Операция сәтсіз болса `STATUS_CODE_ERROR`; әйтпесе `STATUS_CODE_OK` не көбіне `STATUS_CODE_UNSET` |\n| `span_attributes`, `events` | HTTP күй коды сияқты егжей-тегжей және span ішіндегі exception сияқты уақыт белгісі бар оқиғалар |\n| `resource_attributes` | Span-ды не өндірді: сервис атауы (`service.name`, сондай-ақ `service_name` ретінде сақталады), нұсқасы, хосты |\n\nТрасса ID-і мен ата-аналық span ID-і span-дарды ағашқа біріктіреді. Checkout payment-ті шақырғанда, checkout SDK-сы шақыруға `CLIENT` span-ын тіркеп, трасса ID-і мен span ID-ін сұраумен бірге HTTP не gRPC тақырыбында (W3C `traceparent` тақырыбы) береді. Payment SDK-сы сол трасса ID-імен өз `SERVER` span-ын тіркейді, ал оның ата-анасы checkout клиенттік span-ы болады. ID-лердің сервистен сервиске берілуі **контексті тарату** деп аталады. Соның арқасында он сервис бөлек жазған span-дарды қайтадан бір сұрауға жинауға болады.\n\nЖурналдар да қосыла алады. OpenTelemetry SDK әр журнал жазбасына сервис өңдеп жатқан сұраудың трасса ID-і мен span ID-ін қояды. Сонда журнал жолы мен оның сұрауының span-дары ортақ трасса ID-іне ие болып, бірінен екіншісіне өтуге мүмкіндік береді.\n\n![Checkout сервер span-ы клиент span-ын бастайды; оның ID-і payment сервер span-ының ата-анасы болады; барлық span мен тиісті журналда трасса ID-і ортақ.](images/02-trace-context-propagation.png)\n\n*Контексті тарату сервис шекарасынан өткенде трасса ID-ін және ата-ана байланысын сақтайды.*\n\nСурет белгілері: CONTEXT PROPAGATION — контексті тарату; ONE TRACE — бір трасса; CHECKOUT — тапсырысты рәсімдеу сервисі; PAYMENT — төлем сервисі; SERVER — сервер; CLIENT — клиент; LOG — журнал. trace_id: T барлық жерде ортақ; checkout серверінің span_id: A мәні клиенттің parent_span_id: A мәніне, ал клиенттің span_id: B мәні payment серверінің parent_span_id: B мәніне сәйкес. Payment журналы trace_id: T және span_id: C мәндерін сақтайды. traceparent — осы контексті беретін тақырып.\n\n",
+      "target_hash": "53e886139f3ed04a1bb08786b6d5eaac83dd291454f9728254d11d8f74f627ae",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "fd37b05e9d7580c4bf453d0c212e0dbc4937dabf992947be06257d2ff91c211a",
+          "target_hash": "53e886139f3ed04a1bb08786b6d5eaac83dd291454f9728254d11d8f74f627ae"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4298a3239a424d2f90dd6baf17d9b0ca",
+      "source_hash": "dc92ba74f2250ec0dd152f3733de28b92bc13cac8db790d3d4b6d51930589938",
+      "target_text": "## Қорытынды\n\n- Журналдар жеке оқиғаларды тіркейді, метрикалар шамалардың уақыт бойынша өзгерісін өлшейді, ал трассалар сұрауды сервистер арқылы қадағалайды; тексеру олардың арасында ауысады.\n- Span жұмыстың бірлігін тіркейді. Сұраудың барлық span-ына ортақ трасса ID-і мен ата-аналық span ID-і контексті тарату арқылы сервис шекараларынан өтіп, span-дарды ағашқа біріктіреді.\n- DOG стегінде OpenTelemetry Collector жинайды, Doris сақтап сұрайды, ал Grafana телеметрияны көрсетеді.\n- Демо сервистері телеметрияны демо Collector-ына жібереді; ол DOG Collector-ына бағыттайды, ал оның Doris экспорттаушысы оны `otel` дерекқорындағы әр сигналдың жеке кестесіне жүктейді.\n- Іске қосылған контейнерлер телеметрияның жеткенін дәлелдемейді; Doris-тегі жаңа жолдар дәлелдейді.\n- `paymentFailure` мүмкіндік жалаушасы төлемдердің жартысын сәтсіз етеді; сәтсіз тапсырыстар қате күйі бар checkout span-дары ретінде көрінеді.\n\n",
+      "target_hash": "6e517e26070fab5c6283df4969ad6e5fe5cd05b06c51f0d3789ad2e390ebd1a0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "dc92ba74f2250ec0dd152f3733de28b92bc13cac8db790d3d4b6d51930589938",
+          "target_hash": "6e517e26070fab5c6283df4969ad6e5fe5cd05b06c51f0d3789ad2e390ebd1a0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f212843b7d6244faaed0edb81f33dfea",
+      "source_hash": "4a8e3717c5cd0659ddcde0cd3c0a7dcb0e543105ed9aedd2e8aab807f41799d3",
+      "target_text": "## Модуль мақсаты\n\nЖүйені бақылау стегін және ол бақылайтын онлайн дүкенді іске қосу, дүкен журналдары, метрикалары мен трассаларының Doris-ке жеткенін тексеру және курстың қалған бөлігі тексеретін инцидентті бастау.\n\n",
+      "target_hash": "8361989969fe4765e08d30ef1e7175aed03a2c0917232f910712355b0672660a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4a8e3717c5cd0659ddcde0cd3c0a7dcb0e543105ed9aedd2e8aab807f41799d3",
+          "target_hash": "8361989969fe4765e08d30ef1e7175aed03a2c0917232f910712355b0672660a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

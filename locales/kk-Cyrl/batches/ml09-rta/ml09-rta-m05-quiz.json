@@ -1,0 +1,1160 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.68afbc8703414650b171d6006da42812",
+      "source_hash": "a1d9f55a73095bd82b119a9ae94227a9a43310a6bf7e1b48379b6aacb48b8eb3",
+      "target_text": "### Тестті бастапқы баптау\n\nБастапқы баптау ұяшығын бір рет орындаңыз. Ол курс пакетін тауып, осы модульдің тест анықтамасын оқиды және интерактивті тест нысанын жасайды. Jupyter ядросын қайта іске қосқан сайын оны қайта орындаңыз.",
+      "target_hash": "4dd2f3ec22846ab038e7da2cf7117868483b4e4c1fdfc812e3b7393a1f0289b3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a1d9f55a73095bd82b119a9ae94227a9a43310a6bf7e1b48379b6aacb48b8eb3",
+          "target_hash": "4dd2f3ec22846ab038e7da2cf7117868483b4e4c1fdfc812e3b7393a1f0289b3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.beae1dec89294c95b541163f16cf900c",
+      "source_hash": "61f29587d485406123d23e97b79ac126c394bfaec350b1787e444b09db29567e",
+      "target_text": "## Бұл тест нені бағалайды\n\nСабақтың әр оқу мақсатына бір сұрақтан берілген. Осы модульден кейін сіз:\n\n1. Скалярлық, агрегаттық, терезелік, Table Function немесе TVF сияқты функция санатын кірісі, шығысы және жол саны әрекетіне қарай таңдай аласыз.\n2. Шартты агрегаттармен әр метриканың жиынын анықтап, кіріс жолдарын `WHERE`, ал топтарды `HAVING` арқылы сүзе аласыз.\n3. `ANY_VALUE` тек кез келген өкілдік мән топ мағынасына сай келгенде пайдалана аласыз.\n4. Талдаудың әр кезеңіне CTE арқылы атау беріп, нәтижесінің түйіршіктілігін айта аласыз.\n5. Алдыңғы мән, жинақтау және орын сұрақтарына терезе бөліктерін, ретін, фреймдерін және орын беру функцияларын таңдай аласыз.\n6. Жетіспейтін қайта пайдаланылатын логика үшін кіріктірілген функциялар, Lambda өрнектері, Alias Function және пайдаланушы функциялары арасынан таңдай аласыз.\n\nКей сұрақтар зертханалық жұмыстың бір қадамынан басталады, бірақ ешбірі оның сандарын есте сақтауды сұрамайды. Тест Docker, Doris, S3 немесе Kafka жүйелерінсіз және аяқталған зертханалық жұмыссыз орындалады; оған тек курстың Jupyter ортасы қажет.",
+      "target_hash": "f254c56bdd701b1890f461a5c4a2939c4abfa1504bd6c6649c29b0b2a23c560d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "61f29587d485406123d23e97b79ac126c394bfaec350b1787e444b09db29567e",
+          "target_hash": "f254c56bdd701b1890f461a5c4a2939c4abfa1504bd6c6649c29b0b2a23c560d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2a35b63ca6de48859598c5cf11cada1c",
+      "source_hash": "ba88481fadf1183a11b2fce54676c29e3a2a1862160bff93473f5a174d28c586",
+      "target_text": "## Білімді тексеруді бастау\n\nКелесі ұяшықты орындаңыз. Нұсқаны таңдап, түсіндірмесін оқу үшін **Submit answer** басыңыз. Қайту үшін **Previous question** пайдаланыңыз. Кез келген таңдауды өзгерте аласыз; жалғастырмас бұрын түзетілген жауапты жіберіңіз. Жіберілмеген таңдаулар нобай ретінде сақталады. **View results** ұпайыңызды және қате жауап берген сұрақтарыңызды көрсетеді. Сол жерден **Previous question** 6-сұраққа қайтарады, ал **Try again** тест тапсыру әрекетін тазартады.",
+      "target_hash": "c47023fa21f0b9922e28ba9d10e5c0a322db3235f8f85dc6cc9e918d0b9ce5d0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ba88481fadf1183a11b2fce54676c29e3a2a1862160bff93473f5a174d28c586",
+          "target_hash": "c47023fa21f0b9922e28ba9d10e5c0a322db3235f8f85dc6cc9e918d0b9ce5d0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.451ed5f7ad554730ba89c96ec785f705",
+      "source_hash": "43594990c31c7518b98d0decddd440093fcc1ee29e03dc68ce78473cf19301fc",
+      "target_text": "<div>\n  <div>05-ТЕСТ · APACHE DORIS КӨМЕГІМЕН НАҚТЫ УАҚЫТТАҒЫ АНАЛИТИКА</div>\n  <div>Apache Doris жүйесінде деректерді талдау</div>\n  <p>Әр сұрақтан кейін кері байланысы бар, бір жауап таңдалатын алты сұрақ; дерекқорға қосылу қажет емес.</p>\n  <span>6 сұрақ · Бір жауап таңдау · Шамамен 10 минут</span>\n</div>\n\n**5-модуль: Apache Doris жүйесінде деректерді талдау** · [Сабақ](course.md) · [Зертханалық жұмыс](lab05_analyze_data.ipynb)",
+      "target_hash": "9c086a127ebe8161ca53be73d6a0c6a4584f7b62efccd4b9d322ff0248fdf927",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "43594990c31c7518b98d0decddd440093fcc1ee29e03dc68ce78473cf19301fc",
+          "target_hash": "9c086a127ebe8161ca53be73d6a0c6a4584f7b62efccd4b9d322ff0248fdf927"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.85e5ccef2f034f719f3d4c398a27a32e",
+      "source_hash": "3f9a1c0b084d87077ce9925d91b8d2e737c7cb6809457ecd106df0b56c2b1882",
+      "target_text": "Алты дербес бизнес сценарийі 5-модульдің талдамалық шешімдерін тексереді; әр оқу мақсатына бір сұрақтан. Жалғастырмас бұрын түсіндірмені оқып, кез келген жауапты түзетіңіз.",
+      "target_hash": "7a99298f64460275d2c34cbc7e684c982e191c3006ad4de435e8a84747a15aa6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3f9a1c0b084d87077ce9925d91b8d2e737c7cb6809457ecd106df0b56c2b1882",
+          "target_hash": "7a99298f64460275d2c34cbc7e684c982e191c3006ad4de435e8a84747a15aa6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c47a27cb5c84406a9bb0548393fff604",
+      "source_hash": "3ae94daff89830acca4ba40c27ffe0e2629fa00b1e4eb89eb8914888fb55e075",
+      "target_text": "EXPLODE әр ағымдағы кіріс жолының мәнін нөл немесе одан көп жолға жаяды, ал LATERAL VIEW әр жаңа жолды бастапқы жолымен байланыстырады; бұл — Table Function. NUMBERS өзі FROM ішіндегі қатынас болып, кіріс жолын қажет етпейді; бұл — S3 сияқты кестелік мәнді функция. Агрегаттар жолдарды топтарға біріктіреді, ал скалярлық функциялар әр жолға бір мән береді.",
+      "target_hash": "11dc7c66c7d74c9d3c3108681cfa71b3170b5a1e920f779ce0de421ed0001f71",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3ae94daff89830acca4ba40c27ffe0e2629fa00b1e4eb89eb8914888fb55e075",
+          "target_hash": "11dc7c66c7d74c9d3c3108681cfa71b3170b5a1e920f779ce0de421ed0001f71"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b8d05687c4124a5d85cd197cb8a2f199",
+      "source_hash": "28378054f395a6415f9a9cf283d845c17efef75db774d862d9b7be4f63383f16",
+      "target_text": "Скалярлық, агрегаттық, терезелік, Table Function немесе TVF сияқты функция санатын кірісі, шығысы және жол саны әрекетіне қарай таңдау.",
+      "target_hash": "5d3b04646d4e5129ab8b118ed499a1236e56c26da20d1ae758fccb092526176e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "28378054f395a6415f9a9cf283d845c17efef75db774d862d9b7be4f63383f16",
+          "target_hash": "5d3b04646d4e5129ab8b118ed499a1236e56c26da20d1ae758fccb092526176e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.da8d65a3cdf3424c9f3923b508324303",
+      "source_hash": "9264de149233c68ec9d97fd1780e15a49da2c2749b27113897577300a215ddc9",
+      "target_text": "EXPLODE — әр кіріс жолын жаятын Table Function; NUMBERS — TVF",
+      "target_hash": "3d4154ca15d55303b033474b75874ff7ece95e27e5f4cb82303927913e413b96",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "9264de149233c68ec9d97fd1780e15a49da2c2749b27113897577300a215ddc9",
+          "target_hash": "3d4154ca15d55303b033474b75874ff7ece95e27e5f4cb82303927913e413b96"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.acb1df453fd44f92a6b9f8b79b6d258d",
+      "source_hash": "be621fd0f8ac2a2f7f344b4a61c241587609c7cc79ba0604d27ce746abe5ca78",
+      "target_text": "Екеуі де бірнеше жол қайтаратындықтан, екеуі де агрегат функциялары",
+      "target_hash": "ed733c43c21b62920d9a365bc5139663934d3af47e43bc8e50daef491efea0b6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "be621fd0f8ac2a2f7f344b4a61c241587609c7cc79ba0604d27ce746abe5ca78",
+          "target_hash": "ed733c43c21b62920d9a365bc5139663934d3af47e43bc8e50daef491efea0b6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fd1ae3fff4cb4372b6f80b41e74dc2ef",
+      "source_hash": "e2636c6c7a8abc444f4c73971e799697ed86edbefd8df852781b7d1ea28c7e43",
+      "target_text": "EXPLODE — қатынас оқитын TVF; NUMBERS әр жолдың тегтерін жаяды",
+      "target_hash": "685e7576e1c07501d360d7f8ef10f7de3a8e107094da5897899cfe044fb65a76",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "e2636c6c7a8abc444f4c73971e799697ed86edbefd8df852781b7d1ea28c7e43",
+          "target_hash": "685e7576e1c07501d360d7f8ef10f7de3a8e107094da5897899cfe044fb65a76"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.51d6928058d54097bd048f294b7fcd57",
+      "source_hash": "d851c8e594ec64389a247ef2b8da9b819b0e0089296afb4be2a07ef3b5f2d888",
+      "target_text": "Екеуі де әр кіріс жолына бір мән беретіндіктен, екеуі де скалярлық функциялар",
+      "target_hash": "51a9f3197446579dda6aed8119133b1c764fc314157f900068f92e284cd10e29",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "d851c8e594ec64389a247ef2b8da9b819b0e0089296afb4be2a07ef3b5f2d888",
+          "target_hash": "51a9f3197446579dda6aed8119133b1c764fc314157f900068f92e284cd10e29"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4bf533bfd91b4079827cab4111da6b05",
+      "source_hash": "1d0e39856a05afe98386785eb0c20ee6d71b8f74cbc48ea7a18402261652cfe2",
+      "target_text": "A сұрауы оқиғалар кестесінде LATERAL VIEW EXPLODE(tags) пайдаланады. B сұрауы FROM NUMBERS(\"number\" = \"4\") таңдайды. Қай тұжырым екі функцияны дұрыс сипаттайды?",
+      "target_hash": "4ce7cfa57587764137853399043ef5b5f7adfc3ddac4d7f9d65a284642310488",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "1d0e39856a05afe98386785eb0c20ee6d71b8f74cbc48ea7a18402261652cfe2",
+          "target_hash": "4ce7cfa57587764137853399043ef5b5f7adfc3ddac4d7f9d65a284642310488"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.072c5aefc0444e2a9b35cf7519ed611a",
+      "source_hash": "88a3ec9b10b377fab7f56ac1842ad29af8e75806d315d7ffb6aaa0592513da83",
+      "target_text": "WHERE топтаудан бұрын pending жолын алып тастайды, сондықтан A дүкенінің жиынтығы 60 болып, HAVING шартынан өтпейді, ал B дүкені 110 болып, өтеді. HAVING жеке төлемдерді емес, топ жиынтықтарын сүзеді және pending сомасы paid жиынына кіре алмайды.",
+      "target_hash": "9a8e735862e5689304571510f793fcd769e56739c84e202237496fb0a5a10828",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "88a3ec9b10b377fab7f56ac1842ad29af8e75806d315d7ffb6aaa0592513da83",
+          "target_hash": "9a8e735862e5689304571510f793fcd769e56739c84e202237496fb0a5a10828"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.517deef9756c433cb55273586958c934",
+      "source_hash": "11d260a516d7c50568af3e9c3745953647517c8c9f683662da1926b6ab82bc22",
+      "target_text": "Шартты агрегаттармен әр метриканың жиынын анықтау және кіріс жолдарын `WHERE`, топтарды `HAVING` арқылы сүзу.",
+      "target_hash": "766e3867be1053560c8a54b5063e5882c84569a325737b7eee1b89ea257344cb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "11d260a516d7c50568af3e9c3745953647517c8c9f683662da1926b6ab82bc22",
+          "target_hash": "766e3867be1053560c8a54b5063e5882c84569a325737b7eee1b89ea257344cb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.72a4b84bab404729a85a9a0793522149",
+      "source_hash": "b1916b15e666cc5b5ee67351b6899df9a15cbbe8db7ffedbc67860b627627149",
+      "target_text": "130 мәнімен A дүкені және 110 мәнімен B дүкені",
+      "target_hash": "faba4607bd897d85eca8e90231de1e58ce5e378e5e7718a1b47da2ec4d847db0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b1916b15e666cc5b5ee67351b6899df9a15cbbe8db7ffedbc67860b627627149",
+          "target_hash": "faba4607bd897d85eca8e90231de1e58ce5e378e5e7718a1b47da2ec4d847db0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.04f674d3c8e241fba75e52d142ec7d37",
+      "source_hash": "7fd19b45101749553a4a77db2841f3c4f316121b0b515a4b038623f8490e0ffd",
+      "target_text": "60 мәнімен A дүкені және 110 мәнімен B дүкені",
+      "target_hash": "04a5a00beeed60f02e47478e55d18d2663a9d8a910ff583152a163baaf4b6ac9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "7fd19b45101749553a4a77db2841f3c4f316121b0b515a4b038623f8490e0ffd",
+          "target_hash": "04a5a00beeed60f02e47478e55d18d2663a9d8a910ff583152a163baaf4b6ac9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e1d7131903e7487d81acf86770eb5614",
+      "source_hash": "6c27b48a0cdbca6bb6c0e192716f6a0fccd63cc7005fce303bc96534c53bd43e",
+      "target_text": "Тек 130 мәнімен A дүкені",
+      "target_hash": "8e40d5a4ea05af83206e35b23d3626b63963713be2fd90edc3921faefad91649",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "6c27b48a0cdbca6bb6c0e192716f6a0fccd63cc7005fce303bc96534c53bd43e",
+          "target_hash": "8e40d5a4ea05af83206e35b23d3626b63963713be2fd90edc3921faefad91649"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e1f2039f046f487b9439c141263cb8c2",
+      "source_hash": "ae9527969c7459dd79bc1244ef811a7a93d8a0b1730361c2004aa49f453cbf73",
+      "target_text": "Тек 110 мәнімен B дүкені",
+      "target_hash": "2af6797967462d205bffa197d48d1e060dbb0f25ce081c69c2c701adbf5b09b3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ae9527969c7459dd79bc1244ef811a7a93d8a0b1730361c2004aa49f453cbf73",
+          "target_hash": "2af6797967462d205bffa197d48d1e060dbb0f25ce081c69c2c701adbf5b09b3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.88f5b99bf88d4dd787d242904198719a",
+      "source_hash": "ae6d1a466a397df7deacef147d517130034f3fad35a7ee35678a1d4f9f185838",
+      "target_text": "(store, status, amount) жолдары — (A, paid, 60), (A, pending, 70) және (B, paid, 110). Сұрау WHERE status = 'paid', GROUP BY store және HAVING SUM(amount) > 100 пайдаланады. Қай нәтиже қалады?",
+      "target_hash": "43620fcc6c7725b172630610712555b8c7a38c77ee4bebd30c10f0cdaa53bceb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ae6d1a466a397df7deacef147d517130034f3fad35a7ee35678a1d4f9f185838",
+          "target_hash": "43620fcc6c7725b172630610712555b8c7a38c77ee4bebd30c10f0cdaa53bceb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d31b8c436e9b487abc5200ccb422352a",
+      "source_hash": "ea4a6137d24aba40273e66b5cdc27898ee87c585d2b1100737599a55e06af77c",
+      "target_text": "ANY_VALUE топтың қандай да бір NULL емес мәнін қайтарады және қайсысы болатынын уәде етпейді, сондықтан «соңғы» дегенді білдіре алмайды. MAX(sale_date) сұраққа жауап беріп, әр дүкенге бір жол сақтайды, ал күнді GROUP BY ішіне қосу есеп түйіршіктілігін өзгертеді. ANY_VALUE бір күндік сүзгіден кейінгі күн сияқты әр үміткер бір мағына бергенде сай келеді.",
+      "target_hash": "89f2f2b939465613da8c4160cb1a5cda66c73438ae18e75c14a9d80754789a96",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ea4a6137d24aba40273e66b5cdc27898ee87c585d2b1100737599a55e06af77c",
+          "target_hash": "89f2f2b939465613da8c4160cb1a5cda66c73438ae18e75c14a9d80754789a96"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8b6b0410c77e4885af554ebdc9705569",
+      "source_hash": "a3ee0aa21245b75cc1c8a35beccd8ac683a1775a81d9374af5000ab41d541a3c",
+      "target_text": "`ANY_VALUE` тек кез келген өкілдік мән топ мағынасына сай келгенде пайдалану.",
+      "target_hash": "5dbf8dd7e2549231b1a7c99a1773b9b85cd06109fa893d54b2031ac0f70f27d0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a3ee0aa21245b75cc1c8a35beccd8ac683a1775a81d9374af5000ab41d541a3c",
+          "target_hash": "5dbf8dd7e2549231b1a7c99a1773b9b85cd06109fa893d54b2031ac0f70f27d0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1024b0582d674ceabf9ec0cbb57e58dd",
+      "source_hash": "35694e18a083384fce722cb0ef7064cbe4678a5e2e1482768e16295eeced9577",
+      "target_text": "Иә, өйткені ANY_VALUE әр топқа соңынан енгізілген жолдың күнін қайтарады",
+      "target_hash": "8c6a2920b8de539538b2e924f1201e4257eab1f55c61c66a55ea0cfc02f80567",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "35694e18a083384fce722cb0ef7064cbe4678a5e2e1482768e16295eeced9577",
+          "target_hash": "8c6a2920b8de539538b2e924f1201e4257eab1f55c61c66a55ea0cfc02f80567"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1d3b9e0e977e4825a4bc43909ed1ab1c",
+      "source_hash": "4f2a14d7eb06870a130dd07de78ae4bda9b03f9df629a9ad31f67632135a5f48",
+      "target_text": "Иә, өйткені топтың жалпы түсімі ANY_VALUE қайтаратын күнді анықтайды",
+      "target_hash": "8d1dfd69b1cbdb5233f6de4e9f1ad8f57797f392e3c7351f75a7f4e464ea853e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "4f2a14d7eb06870a130dd07de78ae4bda9b03f9df629a9ad31f67632135a5f48",
+          "target_hash": "8d1dfd69b1cbdb5233f6de4e9f1ad8f57797f392e3c7351f75a7f4e464ea853e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.503ac424214c4a79817cfb63c097747d",
+      "source_hash": "83b883f584da197a10eb1b60ab3f7dc64f99a529eb97919a8db45ea10079ab88",
+      "target_text": "Жоқ; ANY_VALUE топтың кез келген күнін қайтара алады, сондықтан MAX(sale_date) пайдалану керек",
+      "target_hash": "85c6e878dbd1f4971df20f59a60503db063d772ab83b184abd3e75468428bae9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "83b883f584da197a10eb1b60ab3f7dc64f99a529eb97919a8db45ea10079ab88",
+          "target_hash": "85c6e878dbd1f4971df20f59a60503db063d772ab83b184abd3e75468428bae9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f7e3ce6aaa8b47448610b22972d2ddda",
+      "source_hash": "7fe45ee4ae728d0903566a7e1a4c66704af9125f1d7f59fe2c820d2ca8573281",
+      "target_text": "Жоқ; есепке әр дүкенге бір жол қажет болса да, sale_date мәнін GROUP BY ішіне қосу керек",
+      "target_hash": "c9340c3a83a3a7cb9ea5030323cdbd0f301cef6ad618129253dced7153f1ff8e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "7fe45ee4ae728d0903566a7e1a4c66704af9125f1d7f59fe2c820d2ca8573281",
+          "target_hash": "c9340c3a83a3a7cb9ea5030323cdbd0f301cef6ad618129253dced7153f1ff8e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c5ae582fe3164d718401ef6b6da78555",
+      "source_hash": "3427bae7fec77eb0f3a592f4fa5d90a517d607f96fdc08b24ac71d7cacd06451",
+      "target_text": "Есеп бірнеше күннің сатылымын дүкен бойынша топтайды. ANY_VALUE(sale_date) таңдап, сол бағанды latest_sale_date деп белгілейді. Әр дүкенде бірнеше әртүрлі күн бар. Белгі негізді ме?",
+      "target_hash": "d8d6b0659bc61616a1ee0843480ea24a7d962f3b3aedc5c672519370c1456735",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3427bae7fec77eb0f3a592f4fa5d90a517d607f96fdc08b24ac71d7cacd06451",
+          "target_hash": "d8d6b0659bc61616a1ee0843480ea24a7d962f3b3aedc5c672519370c1456735"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0194d10854644192bdb12b2d18f014a9",
+      "source_hash": "7e09ad8e5b146aea553390afda6cc273e5116cd30adad5de7dde67552f8ed9a1",
+      "target_text": "CTE түйіршіктілігі сатылымы бар әр күнге бір жол болатын кезеңге атау береді; ол жоқ күндерге жол жасамайды. LAG терезе ретімен жолдар бойынша жылжиды, сондықтан алдыңғы жол — 1 шілде. Алдыңғы күнтізбелік күнмен салыстыруға күнтізбе қатынасы және сатылымсыз күндер үшін айқын ереже қажет.",
+      "target_hash": "0f8fd3e2f664cb55f7458c2508af9beea8f3d20a2e43203e5285fd2a44b96267",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "7e09ad8e5b146aea553390afda6cc273e5116cd30adad5de7dde67552f8ed9a1",
+          "target_hash": "0f8fd3e2f664cb55f7458c2508af9beea8f3d20a2e43203e5285fd2a44b96267"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e84d45ff7e44441d98177b837fbfde9c",
+      "source_hash": "e35990a2c73068a87e879011f960f85b6c35373c2264e43290547dacf61a1f7a",
+      "target_text": "Талдаудың әр кезеңіне CTE арқылы атау беру және нәтижесінің түйіршіктілігін айту.",
+      "target_hash": "bf1f7df94f1c4b599f053d962a5a4124f518721f371f792239f0d79d14e804c8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "e35990a2c73068a87e879011f960f85b6c35373c2264e43290547dacf61a1f7a",
+          "target_hash": "bf1f7df94f1c4b599f053d962a5a4124f518721f371f792239f0d79d14e804c8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d9c85380751442fb8208a50c7d5d0ca3",
+      "source_hash": "22fdd907e5410fc52a761df830e9a2c136a0318c35b71a80400fa97c91989b0d",
+      "target_text": "Жетіспейтін күн үшін CTE жасайтын 2 шілденің нөлдік түсім жолы",
+      "target_hash": "6998701e98ede0fc10b061c61c15fe3976f87c630750136abe50116cfad32ace",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "22fdd907e5410fc52a761df830e9a2c136a0318c35b71a80400fa97c91989b0d",
+          "target_hash": "6998701e98ede0fc10b061c61c15fe3976f87c630750136abe50116cfad32ace"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.19461c58a8cb41109b6f9534af0508f8",
+      "source_hash": "71ac23bbd2eddc1f518c0e63fdf1a05ada0963536c75ba83dd862c3ce804a99d",
+      "target_text": "2 шілденің мүлде жолы болмағандықтан, CTE нәтижесінің алдыңғы жолы — 1 шілде",
+      "target_hash": "b9949b7709053d9936fbcb9698c646bd383d885e040b88501da559edaad264a9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "71ac23bbd2eddc1f518c0e63fdf1a05ada0963536c75ba83dd862c3ce804a99d",
+          "target_hash": "b9949b7709053d9936fbcb9698c646bd383d885e040b88501da559edaad264a9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a269d6245e3f4926bbe7e095ad1c7b37",
+      "source_hash": "e01042dba87d21fb42c8ac6c8be524c4d322d44e68212d93c793c84f0d9e67ce",
+      "target_text": "NULL, өйткені LAG тек дәл бір күнтізбелік күн бұрынғы жолды оқиды",
+      "target_hash": "5e7c37ff2aedfceb9c63c79101aa2dc8baa2b340bf6ace7ab6276ec51534f4f2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "e01042dba87d21fb42c8ac6c8be524c4d322d44e68212d93c793c84f0d9e67ce",
+          "target_hash": "5e7c37ff2aedfceb9c63c79101aa2dc8baa2b340bf6ace7ab6276ec51534f4f2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.31c80783af9446999fd323458b35fc98",
+      "source_hash": "c7e5c6f59ca3e090839792e69e7198a60620df04abf11afec94abed68412c1ee",
+      "target_text": "2 шілде, өйткені CTE атауы daily болуы оған әр күнтізбелік күнді қосады",
+      "target_hash": "8c21f3ad5c486ac2035a46fe40d26e73f63c7d9987cdaa0501c66ff52d26fa60",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "c7e5c6f59ca3e090839792e69e7198a60620df04abf11afec94abed68412c1ee",
+          "target_hash": "8c21f3ad5c486ac2035a46fe40d26e73f63c7d9987cdaa0501c66ff52d26fa60"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3eb072ce664a4d6b9d239ba3b98f2f2e",
+      "source_hash": "ea0e224ef30924a8a895a8f28f3c32bf97449ea519fe1fe8e24334341d4dd631",
+      "target_text": "daily атты CTE сатылымды күн бойынша топтайды. Ол 1 шілде мен 3 шілдеге жол қайтарады, ал сатылым болмаған 2 шілдеге жол жоқ. Сыртқы сұрау LAG(revenue) OVER (ORDER BY day) қосады. 3 шілде жолы немен салыстырылады?",
+      "target_hash": "94ea45d531dbd83fe63c6a88879c0eba28b70e5dd8b36175783ae36eeb233ca2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ea0e224ef30924a8a895a8f28f3c32bf97449ea519fe1fe8e24334341d4dd631",
+          "target_hash": "94ea45d531dbd83fe63c6a88879c0eba28b70e5dd8b36175783ae36eeb233ca2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8c1a48c2583e4c75b63ac27b7633d070",
+      "source_hash": "71101ac0dd21532204f82c6034adf6e034cf464ee15434b2062f06014cd4b6b2",
+      "target_text": "ROW_NUMBER әр жолды нөмірлейді: аймақ теңдік шешушісімен реттелген East 1 және West 2, содан кейін North 3. RANK тең жолдарға бір орын беріп, олардың иеленген орындарын аттап өтеді: East 1, West 1, North 3. DENSE_RANK North үшін 2 берер еді. Терезе күн бойынша бөлінген, сондықтан үш аймақ бір бөлікте жарысады.",
+      "target_hash": "644a56cac9abea379ae824e0e65d23d4b6d5e673e24c67be395f53b84ad3cb28",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "71101ac0dd21532204f82c6034adf6e034cf464ee15434b2062f06014cd4b6b2",
+          "target_hash": "644a56cac9abea379ae824e0e65d23d4b6d5e673e24c67be395f53b84ad3cb28"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bffce0015ce94994a4e5ec63367a0951",
+      "source_hash": "c5bee781c58dce838e2eda101969caa8d8183e44b4b0d7ee3f6afceaaf7007f9",
+      "target_text": "Алдыңғы мән, жинақтау және орын сұрақтарына терезе бөліктерін, ретін, фреймдерін және орын беру функцияларын таңдау.",
+      "target_hash": "9092f545840db2d3a161f5e8f8a7311b71d1a28bc49f216aa1d6fefc5aef2016",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "c5bee781c58dce838e2eda101969caa8d8183e44b4b0d7ee3f6afceaaf7007f9",
+          "target_hash": "9092f545840db2d3a161f5e8f8a7311b71d1a28bc49f216aa1d6fefc5aef2016"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.dd2a669ab6eb42a3b0bb94af8b43414f",
+      "source_hash": "c3dc33ba25db5bdfa7304b340175ff8adc5472428c217d0b26f9e47b1c65afbc",
+      "target_text": "ROW_NUMBER North үшін 3, ал RANK 1-дегі теңдіктен кейін North үшін 3 береді",
+      "target_hash": "4e1a8974b0b39ea8f143e4ef36bc4fb106650baf505f4fa4cb4bef62efa0bdbe",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "c3dc33ba25db5bdfa7304b340175ff8adc5472428c217d0b26f9e47b1c65afbc",
+          "target_hash": "4e1a8974b0b39ea8f143e4ef36bc4fb106650baf505f4fa4cb4bef62efa0bdbe"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.10ba3ca0bff54bdf9e58294ffba7b2e1",
+      "source_hash": "d325d2e91fb39b97e4317c6fb26f0e3946b46740211b3ed8d06b28cb8de8f301",
+      "target_text": "ROW_NUMBER North үшін 3, ал RANK теңдіктен кейінгі келесі орын ретінде North үшін 2 береді",
+      "target_hash": "2a1314dc08417bec807a903e79c26efeef8996773b628fb662b8dc3164450a2b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "d325d2e91fb39b97e4317c6fb26f0e3946b46740211b3ed8d06b28cb8de8f301",
+          "target_hash": "2a1314dc08417bec807a903e79c26efeef8996773b628fb662b8dc3164450a2b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c28383b853444e288570ed9535667836",
+      "source_hash": "0a2d668746f815a2f17fc7b66397984243206aa4fe00d727cf122bae3a17c7e0",
+      "target_text": "Тең екі аймақ бірінші орынды бөлісетіндіктен, екеуі де North үшін 2 береді",
+      "target_hash": "b1a3a2b2130e8c7b4d66025bbbae1846af2a6c513afca54ef1d749b2b65cb54c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "0a2d668746f815a2f17fc7b66397984243206aa4fe00d727cf122bae3a17c7e0",
+          "target_hash": "b1a3a2b2130e8c7b4d66025bbbae1846af2a6c513afca54ef1d749b2b65cb54c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.179d53939acd4c7397445e563e35755c",
+      "source_hash": "eb997dbed404c5c42cb6735a1ecc6f0dab5fed19a770d1de993267df692a9954",
+      "target_text": "Әр аймақ өз терезе бөлігі болғандықтан, екеуі де North үшін 1 береді",
+      "target_hash": "f1e7850ddc3cee7bb8704a9b1ac70bf5ba50861e820a5c365049a4889cd21fea",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "eb997dbed404c5c42cb6735a1ecc6f0dab5fed19a770d1de993267df692a9954",
+          "target_hash": "f1e7850ddc3cee7bb8704a9b1ac70bf5ba50861e820a5c365049a4889cd21fea"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cb773109f6744b3890f4a599676a7eba",
+      "source_hash": "ca76bad552e42329c4d386ca8140bdea69368ba766548206861240e7a22eabe1",
+      "target_text": "Бір күнде East пен West түсімі 100, North түсімі 80. Сұрау ROW_NUMBER() OVER (PARTITION BY event_date ORDER BY revenue DESC, region) және RANK() OVER (PARTITION BY event_date ORDER BY revenue DESC) есептейді. North не алады?",
+      "target_hash": "d557e8da8a02ca836f10fb2ecc420ded86ad5da2517d170720d73f28c42bd8af",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ca76bad552e42329c4d386ca8140bdea69368ba766548206861240e7a22eabe1",
+          "target_hash": "d557e8da8a02ca836f10fb2ecc420ded86ad5da2517d170720d73f28c42bd8af"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d3f151537888456d981bae020ce46497",
+      "source_hash": "ae02426f7a43598fedf38e2a4866654086d8e77421c1608c4269021925279b22",
+      "target_text": "Lambda бір сұрау ішінде ARRAY_MAP сияқты жоғары ретті функцияға элемент логикасын береді, Alias Function бар SQL өрнегіне қайта пайдаланылатын атау береді, ал тек сыртқы алгоритм орналастыруымен бірге Java UDF қажет етеді. Lambda ештеңе тіркемейді, CTE бір операторға ғана созылады, ал кіріктірілген жұмыс үшін UDF орналастыру босқа шығын қосады.",
+      "target_hash": "9a78c6b6f3f08724d2ade68a9f0901d574fcf8cfb46d37bec474647bc14e920e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ae02426f7a43598fedf38e2a4866654086d8e77421c1608c4269021925279b22",
+          "target_hash": "9a78c6b6f3f08724d2ade68a9f0901d574fcf8cfb46d37bec474647bc14e920e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c5b0e410d39b409d92e91d49a83e52b6",
+      "source_hash": "8e4a64205f4ed1c51e5554daf684ed6936409fcf50a49011e58d03e19c7b109f",
+      "target_text": "Жетіспейтін қайта пайдаланылатын логика үшін кіріктірілген функциялар, Lambda өрнектері, Alias Function және пайдаланушы функциялары арасынан таңдау.",
+      "target_hash": "455c9e2eea3bb85a0bc726b205eab6601c79af47b2c2213fcc76f77e98138d72",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "8e4a64205f4ed1c51e5554daf684ed6936409fcf50a49011e58d03e19c7b109f",
+          "target_hash": "455c9e2eea3bb85a0bc726b205eab6601c79af47b2c2213fcc76f77e98138d72"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d756a84504564638812117bf1f04873b",
+      "source_hash": "64919d4fa48e61a831a206f51a228cf413d1dee697445478486219fa6cb7d9f2",
+      "target_text": "ARRAY_MAP ішіндегі Lambda, Alias Function және Java UDF",
+      "target_hash": "9ef175081c56a7ae1bb11473a888bd13a10f91a38c997093299d8ad190fa6679",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "64919d4fa48e61a831a206f51a228cf413d1dee697445478486219fa6cb7d9f2",
+          "target_hash": "9ef175081c56a7ae1bb11473a888bd13a10f91a38c997093299d8ad190fa6679"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d3316153d1784ba2965019aaa40199aa",
+      "source_hash": "054d4e7d4cd820bd75c39c71141b96a5f4fa764274cb3b121613361a58ed7a29",
+      "target_text": "Үшеуінің әрқайсысына BE түйіндеріне JAR ретінде орналастырылған Java UDF",
+      "target_hash": "30923986f0654446f7fae124450c5a9056f13b2952e957694aa646c1b17be13a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "054d4e7d4cd820bd75c39c71141b96a5f4fa764274cb3b121613361a58ed7a29",
+          "target_hash": "30923986f0654446f7fae124450c5a9056f13b2952e957694aa646c1b17be13a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7c32b40499fc494f97da352f9708b5cc",
+      "source_hash": "5a3284449dcb562ecf2f897f2326be2ed2f5d912eecc84c78645e1e8180620ae",
+      "target_text": "Өзін әр сұрауға қайта пайдаланылатын функция ретінде тіркейтін бір Lambda",
+      "target_hash": "5e6ff4242389d53970098c7cbc25c64d17b178c84a0c72405e4e9f83d6900640",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "5a3284449dcb562ecf2f897f2326be2ed2f5d912eecc84c78645e1e8180620ae",
+          "target_hash": "5e6ff4242389d53970098c7cbc25c64d17b178c84a0c72405e4e9f83d6900640"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.34259187233a4f4992ea6880a97d843f",
+      "source_hash": "650edee22c0fdd635dff357a7f6d3781a8f72fc6c1500dd434d179a05a16857d",
+      "target_text": "Өрнекті тұрақты тіркейтін CTE және Java кодына арналған Lambda",
+      "target_hash": "ccf2d25a51eb103fde007066c52b98c158bd044846272839f9c546b8d1768960",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "650edee22c0fdd635dff357a7f6d3781a8f72fc6c1500dd434d179a05a16857d",
+          "target_hash": "ccf2d25a51eb103fde007066c52b98c158bd044846272839f9c546b8d1768960"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2682a3fa6c0a480f9d7f076166084494",
+      "source_hash": "1d1871913840436d68c8040d68334715b821c57f8b8a38203d6d141c60f82114",
+      "target_text": "Топқа үш нәрсе қажет: бір сұрауда массивтің әр элементін екі еселеу, тек бар SQL функцияларынан құрылған атаулы өрнекті қайта пайдалану және сыртқы Java алгоритмін шақыру. Үшеуіне де қай таңдау сай келеді?",
+      "target_hash": "dfdb6cb567e1177904cd00c1e2a9e2c2ba1040e6ba4be1635b804da03184790f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "1d1871913840436d68c8040d68334715b821c57f8b8a38203d6d141c60f82114",
+          "target_hash": "dfdb6cb567e1177904cd00c1e2a9e2c2ba1040e6ba4be1635b804da03184790f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e5956832452f4eb7866641256bd3bfd7",
+      "source_hash": "b681047f8401f780452f866effbaec4df8ff3bda773335bfcbd086eb3a7e26ac",
+      "target_text": "5-модуль тесті: Apache Doris жүйесінде деректерді талдау",
+      "target_hash": "ca01d0a1870ae02916330b07f49bf2263adbb42fa2cd504b7b187bb138c4a6b5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m05-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 5 English, full original Lab code and all six complete question sets. Checked scalar/aggregate/window/Table Function/TVF row behavior, conditional measure populations, WHERE before grouping and HAVING after, ANY_VALUE arbitrary non-null/all-null semantics versus MAX latest, CTE naming without materialization/speed promises, missing-day versus zero rows, LAG preceding observed row, window partition/order/frame and ties, cumulative start scope, non-additive distinct users, all Lab dates/counts/revenue/growth ranks, Lambda versus Alias Function and UDF deployment, immutable/external-state condition, experimental Python support, AI classified but not executed. Preserved all original unique answers. Viewed all five PNGs and supplied full adjacent Kazakh label correspondence while keeping English pixels. Protected inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b681047f8401f780452f866effbaec4df8ff3bda773335bfcbd086eb3a7e26ac",
+          "target_hash": "ca01d0a1870ae02916330b07f49bf2263adbb42fa2cd504b7b187bb138c4a6b5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

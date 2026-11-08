@@ -1,0 +1,824 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.893be45c0c5849539da6191dd7c1340c",
+      "source_hash": "ebdcac7fb5964ebca76da15b4b59eada9924e77f35c2cfc6daaa2556ccb8c448",
+      "target_text": "## 1. Doris-тегі span-дарды тексеру\n\nТөмендегі сұраулар сервер span-дарын реттеп қорытындылайды. Сервер span-ы бір кіріс сұрауға сервистің істеген жұмысын қамтиды; оның `span_kind` мәні — `SPAN_KIND_SERVER`. Сервис бойынша санаңыз:",
+      "target_hash": "bf08461da3eec9886b6fd19452decc248b8a8502ac62d1a3285b9bddab06b74b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ebdcac7fb5964ebca76da15b4b59eada9924e77f35c2cfc6daaa2556ccb8c448",
+          "target_hash": "bf08461da3eec9886b6fd19452decc248b8a8502ac62d1a3285b9bddab06b74b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.07078eed6b9b4bb7a92e6ed12b38ec54",
+      "source_hash": "0c406e4f3afffc6a7d302cd9fafefd1f97d4519d02c879e39e8200c24028ab8d",
+      "target_text": "**Күтілетін нәтиже**\n\nСұрау өңдейтін әр сервиске бір жол, демо бірнеше минут істегенде шамамен 14. `frontend-proxy` мен `frontend` сервер span-дары ең көп; `checkout`, `payment`, `email` аз: жүктеме генераторы тапсырыс бергеннен әлдеқайда жиі дүкенді қарайды. 2-модульде жіберген span жоқ: ол сервер емес, ішкі span.",
+      "target_hash": "9dabe11908544f2bbeed466c4456582cc8d002f811a0eb000dd4dfe4d2324a46",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "0c406e4f3afffc6a7d302cd9fafefd1f97d4519d02c879e39e8200c24028ab8d",
+          "target_hash": "9dabe11908544f2bbeed466c4456582cc8d002f811a0eb000dd4dfe4d2324a46"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.af358f5a6eef43fe8292980b5082426e",
+      "source_hash": "8ab52ddae9e86d9d303dbfd2965663080446c16e35ace3cd100541a87ebc0d5c",
+      "target_text": "# Трассаларды SQL және Litefuse арқылы талдау\n\n**7-модуль: Трассаларды талдау және Litefuse** · [Сабақ](course.md) · [Тест](quiz07_analysis_and_litefuse.ipynb)\n\nБұл жұмыста трассаларды екі жолмен талдайсыз. Алдымен демо сервистері `otel_traces` ішіне жазатын span-дарда SQL-мен төлем инцидентін өлшейсіз: әр операцияның сәтсіздік үлесі мен кідірісі, сәтсіз тапсырыстардың басқаларынан айырмасы, әр ақау басталатын сервис және сәтсіз үлестің уақыт бойынша өзгерісі. Кейін үлкен тілдік модель (LLM) негізіндегі шағын қолданбаны дерегін Doris-те сақтайтын LLM бақылау платформасы Litefuse арқылы трассалайсыз. Трассаларды Langfuse Python SDK-мен жіберіп, Doris-тен SQL-мен тауып, сол трассаларды Litefuse веб-интерфейсінде ашасыз.\n\nҚолданба ноутбуктегі имитациялық модельді шақырады: API кілті не тіркелгі қажет емес, ештеңе компьютеріңізден шықпайды.\n\nШамамен 50 минут: 1–2-бөлімдерге 20, 3–9-бөлімдерге 30 минут жоспарлаңыз. Төлем ақауы қосылған 1-модульдің DOG стегі мен демосы қажет (1-зертханалық жұмыстың 5-бөлімі). 4-бөлім Litefuse іске қосады; алғашында шамамен 1.2 GB бейне жүктеліп, тағы бірнеше минут алады.",
+      "target_hash": "8ad0c14b543d6cc36520ed4c7eb93123e84d7092598b212ad9dfe9d79f1f2eb7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8ab52ddae9e86d9d303dbfd2965663080446c16e35ace3cd100541a87ebc0d5c",
+          "target_hash": "8ad0c14b543d6cc36520ed4c7eb93123e84d7092598b212ad9dfe9d79f1f2eb7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.43be7881141b405bb92d16e62f321f16",
+      "source_hash": "50e51913307a4f88b00ed09897187bca7be7ec4955d562fdfbca4813417e8191",
+      "target_text": "## 2. Инцидентті SQL-мен өлшеу\n\n3-модульде инцидентті бір-бір сұраудан қадағаладыңыз. `otel_traces` бойынша SQL бәрін бірден өлшейді. Бұл бөлім сұраулары алғашқы сәтсіз тапсырыстан қазіргі сәтке дейінгі инцидент терезесін қарайды. Бастауын, кейін сол терезеде сәтсіз сұраулары бар сервер операцияларын табыңыз: әрқайсысы қанша сұрау өңдеді, қаншасы және қандай үлесі сәтсіз, қанша уақыт алды.",
+      "target_hash": "e42d03d74c89b91d6dc7a92d551f51fdec7347eb021951de4cf14c7c85c48dad",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "50e51913307a4f88b00ed09897187bca7be7ec4955d562fdfbca4813417e8191",
+          "target_hash": "e42d03d74c89b91d6dc7a92d551f51fdec7347eb021951de4cf14c7c85c48dad"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c8581b16304b49ee8b0b4e1c6907c628",
+      "source_hash": "fdb9c43958871b45c8cbe30a625fc5f06b724a56af458a0b3d0dcebfb69c816f",
+      "target_text": "### Зертханалық жұмысты инициализациялау\n\n`lab.shell(...)` не `lab.sql(...)` қолданбас бұрын осы ұяшықты бір рет орындаңыз.\n",
+      "target_hash": "84a0fe3a11dd934ac49ce8fdb99ffcb0d6308e106314441ed0ce37769b57f1f1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "fdb9c43958871b45c8cbe30a625fc5f06b724a56af458a0b3d0dcebfb69c816f",
+          "target_hash": "84a0fe3a11dd934ac49ce8fdb99ffcb0d6308e106314441ed0ce37769b57f1f1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.98507a2ac88448d3a984e3c25123372c",
+      "source_hash": "502056feb5c184332240c65f4a1accd07597f616c38e8b683cc8c86ee21bb805",
+      "target_text": "## Әрі қарай\n\n[7-тест: Трассаларды талдау және Litefuse](quiz07_analysis_and_litefuse.ipynb) файлын ашып, [8-модуль: Grafana көмегімен ескерту](../module08-alerting/course.md) бөліміне өтіңіз. [Қосымша 7A: Нақты модельді Litefuse арқылы трассалау](optional07_trace_a_real_model.ipynb) 5-бөлімді нақты модельмен қайталайды.",
+      "target_hash": "8fd621bc5ffbcc96e9141d130d61ef98766441e77c6722dd0279aaa8f7f08f80",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "502056feb5c184332240c65f4a1accd07597f616c38e8b683cc8c86ee21bb805",
+          "target_hash": "8fd621bc5ffbcc96e9141d130d61ef98766441e77c6722dd0279aaa8f7f08f80"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.aefa3e4bb45e4c2893bdecfaeec87c93",
+      "source_hash": "f09bd80f938a8d79aa083787ab5270248fa8395c2a78121c7de4f66da55fda15",
+      "target_text": "**Күтілетін нәтиже**\n\n`curl` командасы, кейін трассаның үш бақылау жазбасы: `SPAN` `answer-question`, `RETRIEVER` `search-docs`, моделі `simulated-llm`, пайдалануы `{'input': 28, 'output': 17, 'total': 45}`, құны `0.00079` болатын `GENERATION` `llm-answer`. Атауы трасса атын `course-assistant`, кідірісін шамамен 0.23 секунд және жалпы құнын `0.00079` USD көрсетеді: 6-бөлім Doris-тен тапқан сандар.",
+      "target_hash": "6e3a976db6e6f2b3bf07c455c4df77b27f6cff40111550e117116e87ff03df47",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f09bd80f938a8d79aa083787ab5270248fa8395c2a78121c7de4f66da55fda15",
+          "target_hash": "6e3a976db6e6f2b3bf07c455c4df77b27f6cff40111550e117116e87ff03df47"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4312e012ca0844e89b616431c3ea1929",
+      "source_hash": "d677e52dbc7864680c45a03a04a789313582c221c507e36bc7cb376e09f3e8dc",
+      "target_text": "**Күтілетін нәтиже**\n\nЖауаптарымен үш сұрақ: екеуі `user-1` / `session-1`, біреуі `user-2` / `session-2`; кейін `Trace IDs:` және 32 он алтылық таңбалы үш ID — `otel_traces` ішіндегідей OpenTelemetry трасса ID-лері. Келесі бөлімдер осы үшеуін іздейді. Ұяшықты қайталау үш жаңа трасса жібереді, келесі бөлімдер енді жаңаларын көрсетеді.",
+      "target_hash": "ae419d223ccd9f1d799ae014d3c6928c4c9b8836b29bc6fae5eb129bdcb5e363",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d677e52dbc7864680c45a03a04a789313582c221c507e36bc7cb376e09f3e8dc",
+          "target_hash": "ae419d223ccd9f1d799ae014d3c6928c4c9b8836b29bc6fae5eb129bdcb5e363"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.629c2edd67484bc4ad73997e8d2f8cb2",
+      "source_hash": "215a504572a99b173184f83d7477dbb05db7776917b73d36d74146a67f44b262",
+      "target_text": "## 5. Шағын LLM қолданбасын трассалау\n\nКелесі ұяшық курс туралы сұрақтарға жауап беретін шағын көмекші құрып, Langfuse Python SDK-мен (`langfuse`, курс талаптарымен орнатылады) трассалайды. Әр қадам — әр шақыруды бақылау жазбасы ретінде, функция аргументтерін кіріс, қайтарған мәнін шығыс етіп тіркейтін `@observe` декораторы бар функция:\n\n- `answer_question` бір сұрауды өңдейді, трасса түбірі болады. `propagate_attributes` трассаны `course-assistant` деп атап, сұраған пайдаланушы мен сеансты тіркейді; төмендегі жазбалар соларды мұралайды.\n- `search_docs` сұрақ тақырыбының құжаттарын іздейді: түрі `retriever` бақылау жазбасы.\n- `call_model` модель шақыруын білдіреді: түрі `generation`. Имитациялық модель дайын жауап қайтарады, сөзге бір токен санап, секундына 100 токен жазады. `update_current_generation` промптты (чат хабарларын), модельді, токен санын және мысалдағы 1,000 кіріс токенге 0.01 USD, 1,000 шығыс токенге 0.03 USD бағасынан шақыру құнын тіркейді. Нақты модельде OpenAI SDK интеграциясы сияқты Langfuse интеграциялары бұларды өздері тіркейді: [Қосымша 7A](optional07_trace_a_real_model.ipynb) көмекшіге компьютеріңіздегі не OpenAI-дағы нақты модель береді.\n\nSDK API кілттері мен Litefuse адресін `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_BASE_URL` айнымалыларынан оқиды. Бақылау жазбаларын OpenTelemetry span-дары ретінде пакетпен Litefuse-тің `/api/public/otel/v1/traces` соңғы нүктесіне жібереді; `flush()` ұяшық бітпес бұрын қалғанын жібереді. `OTEL_SERVICE_NAME` демо сервистері `otel_traces` ішінде аталғандай, span ресурстарында қолданбаны атайды.",
+      "target_hash": "36b131f29f72477416c698167e488fc1dbaf7e96692b1661dabcdd1ceacd2b0c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "215a504572a99b173184f83d7477dbb05db7776917b73d36d74146a67f44b262",
+          "target_hash": "36b131f29f72477416c698167e488fc1dbaf7e96692b1661dabcdd1ceacd2b0c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.659316ab59b643bfa68199a57270f72a",
+      "source_hash": "9181ce6d54dd660df7f60e55eacc5ddb0a7f9dd77ff446c13dfbc438c68533d9",
+      "target_text": "## Аяқтау шарттары\n\n- LLM трассасы `otel_traces` span-ы тіркемейтін сұрау туралы нені тіркейтінін айта аласыз.\n- `spans_llm_app` ішінде үш трассаңыздың бақылау жазбалары, әр модель шақыруының моделі, токені мен құны бар; сол трассаны Litefuse веб-интерфейсінен таптыңыз.\n- Litefuse дерек жүктеуі үшін BE-ге неге жеке соңғы нүкте қажет болғанын түсіндіре аласыз.\n- Сұрауыңыз токендер мен құнды пайдаланушы бойынша қосады.\n\n## Тазалау\n\nLitefuse қосулы қалады, шамамен 1 GB жады қолданады. `lab.stop_litefuse()` контейнерлерін тоқтатып жояды; пайдаланушысы, кілттері, трассалары томдары мен Doris-те қалады, `lab.start_litefuse()` солармен қайта қосады. `lab.teardown()` Litefuse-ті қалған ортамен, томдарымен және `litefuse` дерекқорымен бірге жояды.",
+      "target_hash": "344729a9e8b98db4865bc333d0bb2427265aa254f93d9ce387c2825cf720b5f8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9181ce6d54dd660df7f60e55eacc5ddb0a7f9dd77ff446c13dfbc438c68533d9",
+          "target_hash": "344729a9e8b98db4865bc333d0bb2427265aa254f93d9ce387c2825cf720b5f8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d1e204ea45144facb29565df75c6ca7d",
+      "source_hash": "38deb4f94be025dde065c10221ca1fbf2dec2f026d95393fa855436a285c6941",
+      "target_text": "## 9. Өзіндік жаттығу\n\nӘр пайдаланушы үшін `spans_llm_app` ішінде трассаларды санап, модель шақыруларының токендері мен құнын қосыңыз. Шақыру токендері — `usage_details['total']` ішінде. Екі жол күтіңіз, алдымен `user-1`.",
+      "target_hash": "323cacb489a596ee5a8d975aa35aa4c5c442f33c9d8beac41da8ed8e782ed101",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "38deb4f94be025dde065c10221ca1fbf2dec2f026d95393fa855436a285c6941",
+          "target_hash": "323cacb489a596ee5a8d975aa35aa4c5c442f33c9d8beac41da8ed8e782ed101"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1a8e29fb080a42439423008aa0fae04c",
+      "source_hash": "01ac3ee2f10fd0a7d308c4e7edd5910f422d41e0a7f55fe2eb5e040808e68ab1",
+      "target_text": "**Күтілетін нәтиже**\n\nБес жол. `spans_llm_app` — `trace_id`, `start_time`, `span_id` кілтті Duplicate Key (`DUP`) кестесі: бақылау жазбалары тек қосылады, кілт трасса жолдарын уақыт ретімен бірге ұстайды. `traces_scalar_llm_app` — `id`, `start_time` кілтті Unique Key (`UNI`): Litefuse трасса жолын қайта жазса, 4-модульдегі `error_alerts` сияқты жаңа жол ескісін алмастырады.\n\nЕкеуі де күндік `AUTO PARTITION BY RANGE (date_trunc(start_time, 'day'))` арқылы бөлімделіп, трасса ID-імен `BUCKETS AUTO` ішіне таратылады (5-модуль); `SHOW CREATE TABLE litefuse.spans_llm_app` осы сөйлемдерді көрсетеді. Litefuse `spans_llm_app` үстінде әр трассаның токендері мен құнын күн бойынша қосатын `trace_metrics_agg_llm_app` синхронды көрінісін де құрады (6-модуль); `SHOW CREATE MATERIALIZED VIEW trace_metrics_agg_llm_app ON litefuse.spans_llm_app` соны көрсетеді.",
+      "target_hash": "ee0b846f44028de17d78245e79efc614cf48389934e6fb62a06fa854484a1b9e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "01ac3ee2f10fd0a7d308c4e7edd5910f422d41e0a7f55fe2eb5e040808e68ab1",
+          "target_hash": "ee0b846f44028de17d78245e79efc614cf48389934e6fb62a06fa854484a1b9e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a8c035932b25422387d1e3de359f83f4",
+      "source_hash": "2b32efb353da6a37f51f5c16d604b3b9f4410b5d7c6ab6da4909a7b7a5beae02",
+      "target_text": "## 8. Litefuse Doris-ті қалай қолданады\n\nLitefuse кестелері 4–6-модуль мүмкіндіктерін қолданады. Келесі ұяшық жоба кестелерінің кілт бағандарын тізеді.",
+      "target_hash": "13de6600dae9e627ad74c0695c90235eb5049d6c71bfc184243d30185b77d98a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "2b32efb353da6a37f51f5c16d604b3b9f4410b5d7c6ab6da4909a7b7a5beae02",
+          "target_hash": "13de6600dae9e627ad74c0695c90235eb5049d6c71bfc184243d30185b77d98a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d93aa3b23a414ffab9fdb2a6439a9a5c",
+      "source_hash": "1ad132070a17ccbc60403dc3afefd22299cc1f44d234292df1bd7be7b4d925e8",
+      "target_text": "## 3. Litefuse: LLM қолданбасының трассалары\n\n`otel_traces` span-дары сервистер арасындағы сұрауларды сипаттайды: қайсысы қайсысын шақырды, әр шақыру қанша уақыт алды. LLM қолданбасына көбірек мәлімет керек: модельге жіберген промпт, жауабы, модель санаған токендер мен құны, промптқа құжат іздеу сияқты айналасындағы қадамдар. LLM бақылау платформалары да әр сұрауға трасса, әр қадамға бақылау жазбасын тіркейді.\n\nLitefuse — осындай платформа, Langfuse-тің ашық форкі ([github.com/litefuse/litefuse](https://github.com/litefuse/litefuse), MIT лицензиясы): Langfuse трассаларын ClickHouse-та, Litefuse Apache Doris-те сақтайды. API-ы Langfuse-пен үйлесімді, сондықтан қолданбалар Litefuse адресіне бағытталған Langfuse SDK-ларымен трасса жібереді. Бұл курста Litefuse кестелері DOG стегінің Doris-інде, `otel` жанындағы `litefuse` дерекқорында.\n\nLitefuse 26.3.0 бес контейнермен жұмыс істейді:\n\n| Контейнер | Міндеті |\n| --- | --- |\n| `doris-obs-litefuse-web` | Веб-интерфейс және трасса қабылдайтын API |\n| `doris-obs-litefuse-worker` | Трассаларды фонда Doris-ке жүктейді |\n| `doris-obs-litefuse-postgres` | PostgreSQL: пайдаланушылар, ұйымдар, жобалар, API кілттері, промпттар |\n| `doris-obs-litefuse-redis` | Redis: web контейнері мен worker арасындағы кезектер |\n| `doris-obs-litefuse-silo` | MinIO-дан тармақталған S3-үйлесімді объектілік сақтау сервері Silo: API алған әр трасса пакеті |\n\nAPI әр пакетті объектілік сақтауға сақтап, кезекке қояды. Worker кезектегілерді Stream Load арқылы Doris-ке жүктейді, интерфейс пен API SQL-мен қайта оқиды.",
+      "target_hash": "e8ca82eaa9960ed47f3141db73789e3dd93ffa097a4ecba0adac8630a31679d6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "1ad132070a17ccbc60403dc3afefd22299cc1f44d234292df1bd7be7b4d925e8",
+          "target_hash": "e8ca82eaa9960ed47f3141db73789e3dd93ffa097a4ecba0adac8630a31679d6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.73e785710a4040b3bdd3e98d941a0965",
+      "source_hash": "ec1d0658f1b2580e7076f967860af6a3e212a1db50f87c87a4c11dea41499b7c",
+      "target_text": "**Күтілетін нәтиже**\n\n5-бөлімді әр орындауға үш жол — Litefuse туралы трассаның бақылау жазбалары: сұрақ үшеуінің де кірісінде; `answer-question` пен `search-docs` оны аргумент ретінде, `llm-answer` промптында алған. `MATCH_ANY` толық сөздерге регистрсіз сәйкесіп, берілгендердің кез келгені болса жолды табады; `MATCH_ALL` бәрін талап етеді.",
+      "target_hash": "e9ea7bb775efedca2f5d162fa02c9647c87bdd8da7f5595cf002991f19a6dd0c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ec1d0658f1b2580e7076f967860af6a3e212a1db50f87c87a4c11dea41499b7c",
+          "target_hash": "e9ea7bb775efedca2f5d162fa02c9647c87bdd8da7f5595cf002991f19a6dd0c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.94d349ba0b8941778a08e8487cdf86dd",
+      "source_hash": "b219ebe49b9630d46eda6e45239a2c162199714df6e440595639550e4e25a03d",
+      "target_text": "`spans_llm_app` ішінде 14 бағанға кері индекс бар (`SHOW INDEX FROM litefuse.spans_llm_app` тізеді). `input` пен `output` индекстері мәтінді сөздерге бөледі (`\"parser\" = \"unicode\"`, кіші әріппен), сондықтан әр жолды оқымай, сөзі бар промпт пен жауапты табуға болады. Келесі ұяшық кірістерден Litefuse сөзін іздейді.",
+      "target_hash": "d7585d4977ae172122517ae83ec69dde10b98655c2e37d7eb6f45486e747f53b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "b219ebe49b9630d46eda6e45239a2c162199714df6e440595639550e4e25a03d",
+          "target_hash": "d7585d4977ae172122517ae83ec69dde10b98655c2e37d7eb6f45486e747f53b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6caafff486a644a2a677f55ef94ae20f",
+      "source_hash": "08031e76210a60c7e767400de432b14cb317b85a0d94ded60629f9c2bf0b5f1c",
+      "target_text": "**Күтілетін нәтиже**\n\nБір жол. `input` — промпт: JSON түріндегі екі чат хабары, `search_docs` тапқан Litefuse құжаты бар жүйелік хабар және пайдаланушы сұрағы. `output` — жауап. Қалған бақылау жазбалары сол бағандарда функция аргументтері мен қайтарған мәнін сақтайды.",
+      "target_hash": "2d476b4851997e1158ab0a9e0157ab7a755087863dec0b7622bc01e238ac9cee",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "08031e76210a60c7e767400de432b14cb317b85a0d94ded60629f9c2bf0b5f1c",
+          "target_hash": "2d476b4851997e1158ab0a9e0157ab7a755087863dec0b7622bc01e238ac9cee"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.95b044343b2d4b9bb46398f1e866f824",
+      "source_hash": "50e72348c864c5539b6fd25c495341fbea0ec31526e2b8a5bdc2de9171dcc91a",
+      "target_text": "**Күтілетін нәтиже**\n\nСегіз кесте. Жобаның екеуінен бөлек Litefuse алғашында алтауын құрған: `scores` — пайдаланушы пікірі не бағалау нәтижесі сияқты трасса бағалары; `dataset_run_items_rmt` — деректер жиынындағы тәжірибе нәтижелері; `event_log` пен `blob_storage_file_log` — API алған оқиғалардың объектілік сақтаудағы орны; `project_environments` — әр жоба орталары; `schema_migrations` — Litefuse дерекқорға қолданған миграциялар. Әр жоба span-дары мен трассаларына жеке жұп кесте алады.",
+      "target_hash": "f4236267abd8a513e6b4f08242aec689ddc74e157f77431e923388129d258e49",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "50e72348c864c5539b6fd25c495341fbea0ec31526e2b8a5bdc2de9171dcc91a",
+          "target_hash": "f4236267abd8a513e6b4f08242aec689ddc74e157f77431e923388129d258e49"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f0ccd021dc7f40d88afe3cc20efcb28f",
+      "source_hash": "46b358a0adcaf8e49a5b7970a7a6e188842310ec7d15f40ba2d109938a8816c1",
+      "target_text": "**Күтілетін нәтиже**\n\n`user-1`: 2 трасса, 87 токен, 0.00153 USD; `user-2`: 1 трасса, 42 токен, 0.00074 USD. 5-бөлімнің әр орындалуы тағы сонша қосады. Litefuse **Sessions** беті сол жиынтықтарды көрсетеді. Тек generation жазбалары саналады: басқаларында токен не құн жоқ, әр трассада дәл бір generation бар; сондықтан олардың арасында трасса санау бәрін қамтиды.",
+      "target_hash": "de036d8da6c25b9bf848519b90151f95a1731c0f270e6522267866d4ae7cf6f5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "46b358a0adcaf8e49a5b7970a7a6e188842310ec7d15f40ba2d109938a8816c1",
+          "target_hash": "de036d8da6c25b9bf848519b90151f95a1731c0f270e6522267866d4ae7cf6f5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.017829d2346f4bb4b19d6272fd3e48a3",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған. Салыстыру үшін ашыңыз немесе орындаңыз.",
+      "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.866aff099d404b59817d8ad6158f1f49",
+      "source_hash": "2c39fe1828a1abf92fe5232faebaaba1cfa1314016dbd45c9ce9bb7d027fdd88",
+      "target_text": "**Күтілетін нәтиже**\n\nСұрау ретімен тоғыз жол, трассаға үшеуден. Алғашқыда жібергеннен шамамен 10 секунд кейін келеді: Litefuse worker-і жаңа жоба кестелеріне жүктемес бұрын сонша күтеді. Кейін бірнеше секунд алады. Doris туралы сұрақ үшін:\n\n| `name` | `type` | `model` | `usage_details` | `total_cost` | `duration_ms` |\n| --- | --- | --- | --- | --- | --- |\n| `answer-question` | `SPAN` | NULL | `{}` | NULL | шамамен 220 |\n| `search-docs` | `RETRIEVER` | NULL | `{}` | NULL | шамамен 55 |\n| `llm-answer` | `GENERATION` | `simulated-llm` | `{\"input\":26, \"output\":16, \"total\":42}` | `0.000740000000` | шамамен 160 |\n\nLitefuse туралы сұрақта `{\"input\":28, \"output\":17, \"total\":45}` және `0.000790000000` бар. Litefuse жиынтықтарды: `usage_details` ішіндегі `total` және `total_cost` мәндерін қосты. Әр трассаның түбір span-ы шамамен екі қадамының қосындысынша уақыт алады; әр жолда `propagate_attributes` орнатқан `user_id` бар.",
+      "target_hash": "96f60af822b15bb913600f3c793c17de9c28a84388191de60b66fe48203b1eb9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "2c39fe1828a1abf92fe5232faebaaba1cfa1314016dbd45c9ce9bb7d027fdd88",
+          "target_hash": "96f60af822b15bb913600f3c793c17de9c28a84388191de60b66fe48203b1eb9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.832f7ce19ae9467da6455f60f6aa46d8",
+      "source_hash": "38e66770b62bd1634c5a16be5669ea69e247a84d441f3a5a45ef3917d5b43701",
+      "target_text": "Келесі ұяшық үш трассаның бақылау жазбаларын күтеді. `usage_details` — түрі бойынша токен санын сақтайтын `MAP`; `TIMESTAMPDIFF` басталу/аяқталу уақытынан әр жазба ұзақтығын береді.",
+      "target_hash": "722e82649969da0092588005b242ab7995c5bc393ec437a086ae089d20b03a35",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "38e66770b62bd1634c5a16be5669ea69e247a84d441f3a5a45ef3917d5b43701",
+          "target_hash": "722e82649969da0092588005b242ab7995c5bc393ec437a086ae089d20b03a35"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7e7a19ecb60d45c0bc402741dfc0e7c6",
+      "source_hash": "8db75b12354dbde1f1bb77dcab87fa5b21aafba249cac8a9f302bee8acb364f6",
+      "target_text": "**Күтілетін нәтиже**\n\nРетімен:\n\n- Порт тексеруі: 23100 (`DORIS_OBS_LITEFUSE_PORT`) — `available`, Litefuse қосулы болса `used by this course`.\n- `location` және `private_endpoint` тегтері бар `ALTER SYSTEM MODIFY BACKEND \"127.0.0.1:9050\"` командасы, «Statement succeeded». `SHOW BACKENDS` енді `Tag` бағанында екеуін көрсетеді.\n- `docker compose` журналы: алғашында жүктеулер, кейін `ps` жұмыс істейді деп тізетін бес `doris-obs-litefuse-*` контейнері; Postgres, Redis, Silo healthy деп те белгіленген.\n- API кілттері тиесілі жоба: `Doris course` ұйымы, `LLM app` жобасы және `llm_app` ID-і.\n- Контейнерлерден шамамен 10 секунд кейін «Litefuse is running» карточкасы: алғашында Litefuse жауап бермес бұрын Postgres дерекқорын және Doris кестелерін құрады.\n\nҚайталау жұмыс істейтін контейнерлер мен деректерін сақтайды.",
+      "target_hash": "c03051ad9e76afe3055e2e2df4a4d2da43bd6573c44538fc9b19703015aa4aa2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8db75b12354dbde1f1bb77dcab87fa5b21aafba249cac8a9f302bee8acb364f6",
+          "target_hash": "c03051ad9e76afe3055e2e2df4a4d2da43bd6573c44538fc9b19703015aa4aa2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.583124c1b65e4bf9aa0f6bed15b63258",
+      "source_hash": "cbc13a7f17ba4de3c679594f1fddb389f3f505ef84e28dbd527e7969ae47d114",
+      "target_text": "## 4. Litefuse іске қосу\n\n`lab.start_litefuse()` Litefuse-ті әр бейне нұсқасы бекітілген `environments/litefuse/compose.litefuse.yml` файлымен іске қосады. Ол пайдаланушымен, `Doris course` ұйымымен, API кілт жұбы бар `LLM app` жобасымен басталады, тіркелу қажет емес.\n\nКонтейнер бастамас бұрын, Litefuse жүктей алуы үшін ұяшық Doris-те бір команда орындайды:\n\n- Litefuse Stream Load арқылы FE `doris-obs:8030` адресімен жүктейді. FE деректі өзі қабылдамайды: BE тіркелген адреске бағыттау жауабын береді.\n- Бір контейнерлі Doris BE-сі `127.0.0.1` деп тіркелген. Басқа контейнер үшін бұл — өзінің адресі, жүктеу «connection refused» болып сәтсіз болады.\n- `ALTER SYSTEM MODIFY BACKEND` BE-ге `private_endpoint` тегімен жеке соңғы нүкте береді. Ол бар болса, FE Stream Load-ты клиент FE-ге жетуге қолданған хостқа, мұнда `doris-obs`, сол нүктенің 8040 портымен бағыттайды. `doris-obs` желісінің контейнерлері BE-ге сол жерден жетеді. [Күрделі желілік ортадағы Stream Load тәжірибелері](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/stream-load-in-complex-network/) соңғы нүктелерді сипаттайды.",
+      "target_hash": "8adae7acde684d7b29a45fdf6bf55d6fd2feb8953cfe5bafc4b57fb2b23f512c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "cbc13a7f17ba4de3c679594f1fddb389f3f505ef84e28dbd527e7969ae47d114",
+          "target_hash": "8adae7acde684d7b29a45fdf6bf55d6fd2feb8953cfe5bafc4b57fb2b23f512c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c55a171eed004b40b38a3d8b7f983c90",
+      "source_hash": "9e80b503689bdfa2e19de79f2fcf3ce5d2ac74e4e4a71875646b9b2238ea11fa",
+      "target_text": "**Күтілетін нәтиже**\n\nАлғашқы трассалардан бірнеше секунд кейін `spans_llm_app` және `traces_scalar_llm_app` деген екі жол, екеуі де `BASE TABLE`.",
+      "target_hash": "14ccfe6991bfb373e8b33ad5dd54d60771c475ca7c834fa8c7779baf7b210188",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9e80b503689bdfa2e19de79f2fcf3ce5d2ac74e4e4a71875646b9b2238ea11fa",
+          "target_hash": "14ccfe6991bfb373e8b33ad5dd54d60771c475ca7c834fa8c7779baf7b210188"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1f223c6169734a368a8e5ab323f36406",
+      "source_hash": "899842225812c06cb1a3e032c3415df59ea2bfda80f46382a44e38dbf69ba613",
+      "target_text": "## 6. Трассаларды Doris-тен табу\n\nЖобаның алғашқы трассасы келгенде Litefuse `llm_app` жоба ID-імен аталған екі кесте құрады: `spans_llm_app` — бақылау жазбасына бір жол, `traces_scalar_llm_app` — трассаға бір жол. Келесі ұяшық оларды күтеді.",
+      "target_hash": "7da3d8b4463138f32fa9b97c91eb0fdb9564ab36d2f2fd08fe1ca4d6ffe90096",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "899842225812c06cb1a3e032c3415df59ea2bfda80f46382a44e38dbf69ba613",
+          "target_hash": "7da3d8b4463138f32fa9b97c91eb0fdb9564ab36d2f2fd08fe1ca4d6ffe90096"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.468fd46bbb28408a8254fa7ec9db1cca",
+      "source_hash": "b91b5f76c0f0b367ab2d06b7b63f5935f84d9731c06ff94c25b224e6359c5798",
+      "target_text": "## 7. Сол трассалар Litefuse ішінде\n\nLitefuse веб-интерфейсін ашыңыз:\n\n1. [http://127.0.0.1:23100](http://127.0.0.1:23100) адресіне (не `DORIS_OBS_LITEFUSE_PORT` портына) өтіңіз. Төмендегі мәзір атауларына сәйкес болу үшін кіру бетінің тіл тізімінен **English** таңдап, `learner@example.com` поштасымен, `doris-course-1` құпиясөзімен кіріңіз.\n2. Бет **LLM app** жобасы бар **Doris course** ұйымын көрсетеді. **Go to project** таңдаңыз.\n3. Сол мәзірден **Tracing** таңдаңыз. **Traces** қойындысы соңғы күн трассаларын жаңасынан тізеді: кіріс, шығыс, кідіріс, токендері бар үш `course-assistant` трассасы.\n4. Кірісі «Where does Litefuse keep its traces?» (Litefuse трассаларын қайда сақтайды?) деп сұрайтын трассаны таңдаңыз. Панель ағаш түрінде ашылады: `course-assistant`, астында `answer-question`, оның астында ұзақтығымен `search-docs` пен `llm-answer`. `llm-answer` таңдаңыз: панель промптты **System** және **User** хабарлары, жауапты **Assistant** хабары ретінде, `temperature: 0` мәнді `simulated-llm` моделін, `28 prompt → 17 completion (∑ 45)` токендерін және `$0.00079` құнын көрсетеді.\n5. **Sessions** таңдаңыз: `session-1` — екі, `session-2` — бір трасса; құны мен токенін көру үшін кестені оңға жылжытыңыз. **Users** екі пайдаланушыны тізеді. Оқиға саны бақылау жазбаларын қамтиды, бөлек трасса саны емес; трасса санын **Sessions** не төмендегі SQL жаттығуымен салыстырыңыз. Кесте ұсақ құнды екі ондыққа дөңгелектейді, сондықтан `$0.00` тіркелген `$0.00153` сияқты құнды да білдіруі мүмкін. Толық дәлдікке сеанс егжей-тегжейін не SQL қолданыңыз. **Home** трассалар, модель/пайдаланушы бойынша құн және кідіріс процентильдерін сызады.\n\nЖеңілдетілген қытай интерфейсін қалдырсаңыз, тиісті белгілер: **前往项目** (Go to project, жобаға өту), **追踪** (Tracing, трассалау), **会话** (Sessions, сеанстар), **用户** (Users, пайдаланушылар), **首页** (Home, басты бет).\n\nLitefuse мұның бәрін 6-бөлімде сұраған кестелерден оқиды. Жария API-ы да солай: келесі ұяшық SDK-дағы сол API кілттерімен екінші трассаны оқиды.",
+      "target_hash": "4e44ac3485b6496de8b50268156877b22d0e21c2b52e89aefea491d6757f220e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "b91b5f76c0f0b367ab2d06b7b63f5935f84d9731c06ff94c25b224e6359c5798",
+          "target_hash": "4e44ac3485b6496de8b50268156877b22d0e21c2b52e89aefea491d6757f220e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1d043f1b144b4d57a335bd18ac797f38",
+      "source_hash": "d091bdc8f27ed6bc9bfaf52ad450681d08fea51ac1dc240992cb117694410d72",
+      "target_text": "**Күтілетін нәтиже**\n\nБір жол: `payment`, `grpc.oteldemo.PaymentService/Charge`; саны бір минуттан ескі барлық сәтсіз тапсырысқа тең. Жолдағы `checkout`, `frontend`, `frontend-proxy` сервистерінің әрқайсысында сол трассада өз сәтсіз шақыруы бар. Сондықтан ішкі сұрау жол тауып, `NOT EXISTS` алып тастайды: олар payment кесірінен сәтсіз болған.\n\nСұрау әдейі жеке span-дарды емес, сервистерді салыстырады. Frontend ішінде `POST /api/checkout` екі қате span-ының арасында өзі қате тіркемейді; балалары қатесіз қате span-ын іздейтін ереже frontend `POST` span-ында да тоқтайды. Трасса span-дары сағаттары мен SDK-лары миллисекунд бөліктеріне келіспейтін әртүрлі сервистен келеді, сондықтан ерте аяқталған span әрдайым бірінші сәтсіз болғаны емес.",
+      "target_hash": "a21f5429faac8840a387689eaf4313d7f798ad72b01a4b6820a87d6efd8aa1ad",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d091bdc8f27ed6bc9bfaf52ad450681d08fea51ac1dc240992cb117694410d72",
+          "target_hash": "a21f5429faac8840a387689eaf4313d7f798ad72b01a4b6820a87d6efd8aa1ad"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.11000248a8e84aa88cc19f28679ec693",
+      "source_hash": "eb2a4759d22bfe99a6cee298f3f58ff05ce3830d97047486cf96856264f61903",
+      "target_text": "### Әр ақау қайдан басталады\n\n3-модульде бір ақау бастауын трассадан, ең терең қате span-ынан таптыңыз. Әр сәтсіз тапсырыс үшін SQL-мен табу үшін трасса сервистерін салыстырыңыз. Сервер span-ы сәтсіз, ал басқа сервистерге өз шақыруларының ешқайсысы сәтсіз емес сервис — бастау: ол басқаның кесірінен істен шықпады. Келесі сұрау сәтсіз тапсырыс трассаларынан сондай сервер span-дарын `NOT EXISTS` арқылы табады; ол ішкі сұрау сәйкес жол таппаса ғана қалдырады. Барлық span-ы Doris-ке әлі жетпеуі мүмкін соңғы минут тапсырыстарын қоспайды.",
+      "target_hash": "b8ece2f285976bfe9aaf0d694270fb5d3df4a15e28751c25e30caa0e158185c8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "eb2a4759d22bfe99a6cee298f3f58ff05ce3830d97047486cf96856264f61903",
+          "target_hash": "b8ece2f285976bfe9aaf0d694270fb5d3df4a15e28751c25e30caa0e158185c8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.597a3cb2bd2d4b24b938dc13ab5fa24a",
+      "source_hash": "f02c0ebd55726d12ac00ee43821075d583be2f139d82350fbe39091876886395",
+      "target_text": "**Күтілетін нәтиже**\n\nЕкі жол. Сәтсіз тапсырыстар жылдамырақ: медианасы сәттілерден әлдеқайда төмен, мысалы 11 ms орнына 6 ms. Тапсырыс төлемде сәтсіз аяқталады; сәттісін checkout жалғастырып жөнелтеді, себетті босатады, растау хатын жібереді, Kafka-ға жариялайды. Ақау әрдайым сұрауды баяулатпайды; тек кідіріс ескертуі бұл инцидентті көрмес еді.",
+      "target_hash": "2923e18f40818f479a196dff02d476f93382c38e649aa67fe2d2b00a9dd65a83",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f02c0ebd55726d12ac00ee43821075d583be2f139d82350fbe39091876886395",
+          "target_hash": "2923e18f40818f479a196dff02d476f93382c38e649aa67fe2d2b00a9dd65a83"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.71b6e59c238e42c28f7857c3a912418d",
+      "source_hash": "9562698b4befcac98f25af17636e5862d40800f0bd89b0c5f0e4e8c432a843ef",
+      "target_text": "### Сәтсіз және сәтті тапсырыстар\n\nСәтсіз тапсырыстар ұзақтығын сәттілерімен салыстырыңыз:",
+      "target_hash": "338a50dbe53e52b8fd9de9006010f7ef21ab0008fd95794a739c2dff44d8c2ff",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9562698b4befcac98f25af17636e5862d40800f0bd89b0c5f0e4e8c432a843ef",
+          "target_hash": "338a50dbe53e52b8fd9de9006010f7ef21ab0008fd95794a739c2dff44d8c2ff"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6be9f4ff94a84d45b74e146ed00277dd",
+      "source_hash": "ffc467a128dd8cece2b987379243eee8f44b5e1002e852b37e8b91787aeb500c",
+      "target_text": "**Күтілетін нәтиже**\n\nАлдымен инцидент терезесінің басы мен сәтсіз тапсырыс саны. Кейін әдетте төрт жол:\n\n- `checkout` `oteldemo.CheckoutService/PlaceOrder` және `payment` `grpc.oteldemo.PaymentService/Charge`: сұрау және ақау саны бірдей, шамамен жартысы сәтсіз. Аз тапсырыста кездейсоқтық үлесті жартыдан алыс етуі мүмкін. Әр тапсырыс бір төлем жасайды, сәтсіз төлем тапсырысын сәтсіз етеді.\n- `frontend` `POST`: көбірек сұраудың ішіндегі сол ақаулар; себетке тауар қосу сияқты басқа POST сұрауларында сол span атауы бар.\n- `frontend-proxy` `ingress`: ондаған мың сұраудың ішіндегі сол ақаулар, сәтсіздік үлесі 0-ге жуық. Шлюз үлесі бір операция ақауын басқалардың арасында жасырады; үлесті операциямен бөліңіз.\n\n`p50_ms` — медиана, `p99_ms` — 99-процентиль: сұраулардың 99%-ы ең көбі сонша уақыт алды. `PERCENTILE_APPROX` бәрін сұрыптамай, ұзақтықтардың ықшам қорытындысынан есептейді, кідіріске жеткілікті дәл. `duration` микросекунд сақтайды, сондықтан сұрау 1,000-ға бөледі. Бірнеше ондаған тапсырыста жалғыз баяу тапсырыс `PlaceOrder` P99-ын анықтайды; сұрау көбейгенде процентиль мағыналырақ.",
+      "target_hash": "0183460955d31abbd587d71bde4943e530430207d5d26df6a12204be0dfa8e01",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ffc467a128dd8cece2b987379243eee8f44b5e1002e852b37e8b91787aeb500c",
+          "target_hash": "0183460955d31abbd587d71bde4943e530430207d5d26df6a12204be0dfa8e01"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b16d41d9d996499a9c1f4376d19ac608",
+      "source_hash": "352dab957c0ad5dabd33a87a37ac10de49bebc0eb7ef47504d61d69458677004",
+      "target_text": "**Күтілетін нәтиже**\n\n15 жолға дейін, алдымен соңғы тапсырыс. `ROW_NUMBER()` демо басталғалы барлық тапсырысты уақыт ретімен нөмірлейді, сондықтан соңғысының нөмірі ең үлкен. `failed_share_of_last_10` шамамен 0.5, 0.3–0.7 арасында болып тұрады, жеке тапсырыстар кездейсоқ `failed` не `succeeded` болады. Жалаушаны қосқаннан кейінгі алғашқы жақтауларда бұрынғы тапсырыстар да бар, үлес төменірек; демо аз тапсырыс берсе, жақтау тек соларды қамтып, кездейсоқтық үлесті 0.5-тен алыс етуі мүмкін. `PARTITION BY` нөмірлеу мен жақтауларды, мысалы әр сервиске, қайта бастар еді; 8-модуль осындай үлеске ескертеді.",
+      "target_hash": "4c81327cd1fd029aa76c49e938da718953bad8f1f8d1938b0439facb05e26cee",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "352dab957c0ad5dabd33a87a37ac10de49bebc0eb7ef47504d61d69458677004",
+          "target_hash": "4c81327cd1fd029aa76c49e938da718953bad8f1f8d1938b0439facb05e26cee"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9733af5465bb4d759a9af02278604462",
+      "source_hash": "7ddf81e96696693c6a6476932cf46ce21ade9ab9682dbdf29d961780d80f781c",
+      "target_text": "### Сәтсіз тапсырыстар үлесінің уақыт бойынша өзгерісі\n\n1-зертханалық жұмыс тапсырыстарды минутпен санап, минутына бір-үш тапсырыста бір минут аз мәлімет беретінін байқады. Терезелік функция әр тапсырысқа соңғы он тапсырыстың сәтсіздік үлесін есептей алады. `GROUP BY` орнына ол әр жолды сақтап, өзімен байланысты терезеден мән есептейді: мұнда уақыт ретімен тапсырыстар, `AVG` үшін ағымдағы және алдыңғы тоғыздан тұратын жақтау.",
+      "target_hash": "b1a6cc094fb0a282dc24049c062fb65c9b90109be79c4bab8fb15bf374f5f03f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 7, including complete optional Lab 7A, on 2026-11-08. Re-read all four saved target files against frozen English after translation; read full primary and optional Lab code and all six Quiz questions/options/explanations with answer mapping. Checked RED denominator/operation differences, microseconds-to-ms conversion, percentile sample-size limits, faster failed orders, same-service NOT EXISTS origin rule versus direct-child/clock rules, ten-order frame, Litefuse queue/storage/table boundaries and private BE endpoint, observation versus trace counts, rounding, simulated manual usage/example costs versus automatic real-model wrapper recording, cached-token accounting, local NULL cost, timeout/retry/output limits and cleanup persistence. Clarified aggregate origin count, corrected model spelling and added Kazakh meanings beside literal English questions used by the actual code. One code-only Quiz expression retains its original bytes. Viewed all three PNGs and checked complete adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7ddf81e96696693c6a6476932cf46ce21ade9ab9682dbdf29d961780d80f781c",
+          "target_hash": "b1a6cc094fb0a282dc24049c062fb65c9b90109be79c4bab8fb15bf374f5f03f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

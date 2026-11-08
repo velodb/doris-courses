@@ -1,0 +1,392 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.c03d24ffb15145fdb4aa192e07e49032",
+      "source_hash": "62e3d358f5cc7befadfd11afda1bab2effa76eef9254502f8c2866f38728d231",
+      "target_text": "## Қорытынды\n\n- Collector конвейерлері қабылдағыштарды, өңдегіштерді және экспорттаушыларды біріктіреді; әр сигналға бір конвейер беріледі. Оқу орнын сақтауға арналған кеңейтімдер олармен қатар жұмыс істейді.\n- OTLP қабылдағышы жіберілген деректі күтеді және оған жету мүмкін болуы керек; Prometheus қабылдағышы метрикаларды аралықпен тартады; filelog қабылдағышы файлдарды оқып, каталог көрінсе ротацияны қадағалайды және орнын есте сақтау үшін сақтау орнын қажет етеді.\n- Пакет өңдегіші пакет толғанда не күту мерзімі біткенде жібереді. Жіберу кезегі мен қайталаулар қысқа үзілістерді еңсереді, бірақ деректер жадыда болғандықтан, тұрақты сақтауға кепілдік бермейді.\n- Doris экспорттаушысы әр пакетті Stream Load арқылы жүктейді. Оның `history_days` сияқты кесте баптаулары кестені құрғанда ғана қолданылады; бұрынғы кестелер өз баптауларын сақтайды.\n- Басып шығару не flush span-ның Doris-ке жеткенін дәлелдемейді; оны тапқан сұрау дәлелдейді.\n- Сәтсіз тапсырыс өз жолындағы әр сервисте span-дар, қатынас журналында маңыздылық деңгейі жоқ жол және span метрикасында санақ қалдырады. Журнал жібермейтін сервистер қате журналын қалдырмайды.\n\n",
+      "target_hash": "70fee62d2e93b6337829789464c9b0676bca8368be26e7b14801013d32f5bf8d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "62e3d358f5cc7befadfd11afda1bab2effa76eef9254502f8c2866f38728d231",
+          "target_hash": "70fee62d2e93b6337829789464c9b0676bca8368be26e7b14801013d32f5bf8d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f044ba2295c74e7fa80c6ee0b35b51b1",
+      "source_hash": "31a962924fd94d86d591db6d13745c51d3c943518f2cbec1154887ba9af0d4cf",
+      "target_text": "## Оқу мақсаттары\n\nМодульді аяқтаған соң сіз:\n\n1. Collector конвейерінің қабылдағыштары, өңдегіштері, экспорттаушылары мен кеңейтімдері не істейтінін сипаттай аласыз.\n2. Телеметриясын өзі жіберетін және дерегі тартылуы қажет дереккөздерге қабылдағыш таңдай аласыз.\n3. Пакет өңдегіші деректі қашан жіберетінін және жіберу кезегі мен қайталаулар неге кепілдік беретінін болжай аласыз.\n4. Doris экспорттаушысының қай баптаулары кестені құрғанда ғана қолданылатынын түсіндіре аласыз.\n5. Сәтті экспорт шақыруы нені, ал тек Doris сұрауы нені көрсететінін бағалай аласыз.\n6. Әр сигналдан бір сұраудың дәлелін тауып, қай сервис қай сигналды жіберетінін ажырата аласыз.\n\n",
+      "target_hash": "e2d2c7a3b2e06f9e7f27081ef91b35c8f70d05eacca8e90ceefca2c0e3959a51",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "31a962924fd94d86d591db6d13745c51d3c943518f2cbec1154887ba9af0d4cf",
+          "target_hash": "e2d2c7a3b2e06f9e7f27081ef91b35c8f70d05eacca8e90ceefca2c0e3959a51"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9c2ecab57fd64329885f59626e3d23ba",
+      "source_hash": "7faca580aa76f4d4eaa8050dd6e84a76393c368cae851934d3cfb5b43e1b3a4c",
+      "target_text": "## 2.2 Телеметрияны қабылдау\n\nҚабылдағыш деректі күтеді немесе өзі алады.\n\n**Жіберу: `otlp` қабылдағышы.** OpenTelemetry SDK қолданатын сервистер телеметриясын Collector-ға OTLP арқылы 4317 (gRPC) не 4318 (HTTP) портына жібереді. Қабылдағыш тыңдап, келгеннің бәрін қабылдайды, сондықтан жіберу уақытын SDK шешеді. Қабылдағыш жіберушілер оған жете алса ғана пайдалы: 2-зертханалық жұмыстың трасса collector-ы ноутбуктағы Python коды оған жібере алуы үшін өзінің 4318 портын компьютерде 127.0.0.1:24328 ретінде ашады. Ешкім жете алмайтын порттағы қабылдағыш ештеңе алмайды; сондықтан 2-зертханалық жұмыстың метрика collector-ында OTLP қабылдағышы жоқ.\n\n**Тарту: `prometheus` қабылдағышы.** Көп бағдарлама метрикасын HTTP жолында, әдетте `/metrics`, Prometheus мәтіні ретінде жариялап, сұрауды күтеді. Doris FE (8030 порты) мен BE (8040 порты) де солай істейді. Қабылдағыш әр нысанадан тұрақты аралықпен, 2-зертханалық жұмыста 15 секунд сайын, **метрикаларды жинап**, әр үлгіні OpenTelemetry дерек нүктесіне айналдырады. Қатарды жинау тапсырмасының `doris_cluster` атауымен белгілейді; ол `service_name` болады, ал нысана `service_instance_id` болады. Нысана істемесе, жинау сәтсіз болып, одан нүктелер келмейді; өлшенетін бағдарлама мұны байқамайды.\n\n**Файлдар: `filelog` қабылдағышы.** Doris FE-нің `fe.log` файлы сияқты тек журнал файлын жазатын бағдарламаларға файл оқитын қабылдағыш керек. Filelog қабылдағышы `include` үлгісіне сәйкес файлдарды қадағалап, көпжолды жазбаның (мысалы Java стек трассасының) жолдарын жазбаның бірінші жолының үлгісімен біріктіреді және уақыт пен маңыздылықты шығаратын тұрақты өрнек сияқты операторлармен талдайды. Іс жүзінде екі жайт маңызды:\n\n- **Ротация.** FE үлкейген `fe.log` файлының атын өзгертіп, жаңа `fe.log` бастайды. 2-зертханалық жұмыс collector контейнеріне журнал *каталогын* байланыстырады, сондықтан қабылдағыш жаңа файлды көреді. Бір файл ғана байланыстырылса, ол аты өзгерген ескі файлға сілтей берер еді.\n- **Оқу орны.** `start_at: beginning` жаңа файлды бірінші жолдан оқиды. Сақтау орны болмаса, қайта іске қосылған қабылдағыш бұрын не оқығанын білмей, бүкіл файлды қайта жүктейді; Doris-тегі әр жол қайталанады. `file_storage` кеңейтімі әр файлдың орнын сақтайды, сондықтан қайта іске қосу соңғы тоқтаған жерден жалғасады.\n\n![OTLP жіберілген телеметрияны қабылдайды, Prometheus метрика үлгілерін сұрайды, ал filelog оқу орны file_storage ішінде сақталатын файлдарды оқиды.](images/01-collector-receiver-paths.png)\n\n*Қабылдағышты дереккөздің телеметрияны қалай ұсынатынына қарай таңдаңыз.*\n\nСурет белгілері: SOURCE TO PIPELINE RECEIVERS — дереккөзден конвейер қабылдағыштарына; SERVICE SDK — сервис SDK-сы; PUSH — жіберу; METRICS ENDPOINTS — метрика соңғы нүктелері; SCRAPE — метрикаларды сұрап жинау; SAMPLES — үлгілер; LOG DIRECTORY — журнал каталогы; READ POSITION — оқу орны; PROCESS — өңдеу; EXPORT — экспорттау; RESOURCE — ресурс; BATCH — пакет. OTLP, Prometheus, filelog, file_storage, FE, BE және fe.log — техникалық атаулар.\n\n",
+      "target_hash": "1bd4d42745123229ba771f4cb58eba5b8c8acc83a0bfa762525bfbf7be55b447",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7faca580aa76f4d4eaa8050dd6e84a76393c368cae851934d3cfb5b43e1b3a4c",
+          "target_hash": "1bd4d42745123229ba771f4cb58eba5b8c8acc83a0bfa762525bfbf7be55b447"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.075a6eba01a64e8abe9dd99cbba1568c",
+      "source_hash": "a92e465f71a85c1e33e51d0cd865f01c95fcf49ce129de9c0c1ef6c155e04154",
+      "target_text": "## 2.4 Doris-ке жүктеу\n\nDoris экспорттаушысы әр пакетті JSON жолдарына айналдырып, **Stream Load** арқылы бір кестеге жүктейді: `<endpoint>/api/<database>/<table>/_stream_load` адресіне HTTP `PUT`. Doris жолдарды талдап, бір транзакцияда жазады; жауабы қанша жол жүктегенін және жарамсыз деп қаншасын сүзіп тастағанын көрсетеді. `endpoint` — BE HTTP порты, 8040: курс контейнерлері FE қайта бағыттаған, осы бір контейнерлі Doris өз BE-сін тіркеген адреске өте алмайды. Экспорттаушы уақыт белгілерін `timezone` уақыт белдеуімен жазады; бұл курстың барлық Collector-ында ол UTC.\n\nDoris не желі істен шыққанда, дерекке не болатынын екі баптау анықтайды:\n\n- **`sending_queue`** экспорт күткен пакеттерді Collector жадында `queue_size` пакетке дейін сақтайды; `num_consumers` экспорт параллель орындалады. Кезек толса, экспорттаушы жаңа деректі қабылдамайды; жіберушісі қайталамаса, дерек жоғалады.\n- **`retry_on_failure`** сәтсіз экспортты `initial_interval` өткен соң, кейін аралығы `max_interval` мәніне дейін ұлғая отырып қайталайды; `max_elapsed_time` өткенде тоқтайды.\n\nЕкеуі бірге қысқа үзілісті еңсереді. Конвейерге тұрақты сақтау кепілдігін бермейді: кезек жадыда тұрады, сондықтан Collector құласа не қайта іске қосылса, ішіндегісі жоғалады; ұзақ үзілісте қайталаулар тоқтағанда не кезек толғанда дерек тасталады.\n\n![Өлшем не күту мерзімі шегіне жеткен жазбалар пакет өңдегішінен шығып, жадыдағы кезекте күтіп, шектеулі қайталаулармен Stream Load арқылы Doris-ке жіберіледі.](images/02-batch-queue-stream-load.png)\n\n*Пакеттеу мен қайталау қысқа үзілістерге төзеді, бірақ кезектегі пакеттер Collector қайта іске қосылғанда жоғалуы мүмкін.*\n\nСурет белгілері: BATCHING; DELIVERY BOUNDARIES — пакеттеу және жеткізу шектері; RECORDS — жазбалар; BATCH — пакет; OR — немесе; SIZE — өлшем; TIMEOUT — күту мерзімі; SENDING QUEUE — жіберу кезегі; IN MEMORY — жадыда; RESTART LOSES QUEUED BATCHES — қайта іске қосу кезектегі пакеттерді жоғалтады; DORIS EXPORTER — Doris экспорттаушысы; RETRY — қайталау; TIME LIMIT — уақыт шегі. Stream Load, HTTP PUT және Apache Doris өзгермейді.\n\n",
+      "target_hash": "bc610dd38f93391800879083ab58dce7031cf9e42f4d25fa3e212de3bd5a1da2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "a92e465f71a85c1e33e51d0cd865f01c95fcf49ce129de9c0c1ef6c155e04154",
+          "target_hash": "bc610dd38f93391800879083ab58dce7031cf9e42f4d25fa3e212de3bd5a1da2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.41de9aad45f24c6799c761b4af7ec9ff",
+      "source_hash": "600e6aa62d960785414c7680a960b004c95460a23d9943a9e4ebeb87c8c44def",
+      "target_text": "## Модуль құрылымы\n\n| Бөлім | Уақыт | Нәтиже |\n| --- | ---: | --- |\n| 2.1 Collector — конвейерлер жиыны | 5 мин | Collector конфигурациясын оқу |\n| 2.2 Телеметрияны қабылдау | 6 мин | Жіберу, тарту және файл қабылдағыштары |\n| 2.3 Жолдағы өңдеу | 4 мин | Дереккөзді атау, жазбаларды пакеттеу |\n| 2.4 Doris-ке жүктеу | 7 мин | Экспорттаушы пакетпен және кестелермен не істейді |\n| 2.5 OTLP өрістерінен бағандарға | 4 мин | Жазбаның әр бөлігі қайда түседі |\n| 2.6 Жазбаның жеткенін не дәлелдейді | 2 мин | Экспорт шақырулары мен Doris-тегі жолдар |\n| 2.7 Бір сәтсіз тапсырыс, үш сигнал | 2 мин | Қай сервис қай сигналды жібереді |\n| 2-зертханалық жұмыс | 30 мин | Өзіңіздің үш конвейеріңіз және Doris-ке дейін қадағаланған бір сәтсіз тапсырыс |\n| 2-тест | 10 мин | Осы мақсаттар бойынша алты сұрақ |\n\n",
+      "target_hash": "d965b8b8843332eb7f30c5919b083ef439fa7f9432d1981230e2eaf725995662",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "600e6aa62d960785414c7680a960b004c95460a23d9943a9e4ebeb87c8c44def",
+          "target_hash": "d965b8b8843332eb7f30c5919b083ef439fa7f9432d1981230e2eaf725995662"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c5a090cc0e7d43b2ae5521f7309bf7dd",
+      "source_hash": "6504d8db3cda37b8196bbcd32ffccda34a215ce48e874b3cf4a253efcd14a5dd",
+      "target_text": "## 2.1 Collector — конвейерлер жиыны\n\n1-модульде демо телеметриясы Doris-ке жетпес бұрын екі Collector-дан өтті. Бұл модульде Collector-ларды өзіңіз баптайсыз. Collector конфигурациясы — бес бөліктен тұратын YAML файлы:\n\n| Бөлік | Нені жариялайды |\n| --- | --- |\n| `receivers` | Дерек қалай келеді: OTLP тыңдау, URL-ден метрика жинау не файл оқу |\n| `processors` | Жолда дерекпен не болады: атрибут қосу, сүзу, пакеттеу |\n| `exporters` | Дерек қайда барады: мұнда Doris экспорттаушысы |\n| `extensions` | Дерек жолында тұрмайтын көмекшілер: денсаулық тексеруі не күйді сақтау |\n| `service` | Жарияланған бөліктердің қайсысы жұмыс істейді және **конвейерлерге** қалай бірігеді |\n\nЖарияланғанымен, конвейерде қолданылмайтын компонент ештеңе істемейді. Конвейер бір сигналға — `logs`, `metrics` не `traces` — жатады; дерек қабылдағыштардан тізімдегі ретпен өңдегіштер арқылы экспорттаушыларға өтеді. 2-зертханалық жұмыстың қысқартылған журнал collector-ы:\n\n```yaml\nextensions:\n  file_storage:\n    directory: /var/lib/otelcol/file_storage\n\nreceivers:\n  filelog:\n    include: [ /var/log/doris-fe/fe.log ]\n    start_at: beginning\n    storage: file_storage\n\nprocessors:\n  resource:\n    attributes:\n      - key: service.name\n        value: doris-fe\n        action: upsert\n  batch:\n    send_batch_size: 10000\n    timeout: 2s\n\nexporters:\n  doris:\n    endpoint: http://doris-obs:8040\n    database: otel\n    table:\n      logs: otel_logs\n    create_schema: false\n\nservice:\n  extensions: [file_storage]\n  pipelines:\n    logs:\n      receivers: [filelog]\n      processors: [resource, batch]\n      exporters: [doris]\n```\n\nDOG стегінің Collector-ы да солай жұмыс істейді: OTLP қабылдап, Doris-ке экспорттайтын үш конвейері бар. Әр конвейер бөлек: журнал конвейерінің ақауы трассаларды тоқтатпайды, ал жұмыс істейтін трасса конвейері журналдар туралы ештеңе айтпайды.\n\n",
+      "target_hash": "33ad7b5fc9853037c65855fa57c3705ddb63fafd4ceed53af45d36dc0b9faf71",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "6504d8db3cda37b8196bbcd32ffccda34a215ce48e874b3cf4a253efcd14a5dd",
+          "target_hash": "33ad7b5fc9853037c65855fa57c3705ddb63fafd4ceed53af45d36dc0b9faf71"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ba67e760403a405a815c6a6201f9801a",
+      "source_hash": "8e5e1d5a8e086358d381d4c63f84b5ec5abe42680e3b5cd77dce7cee67cc9ea7",
+      "target_text": "### Кестелерді құру\n\n`create_schema: true` болса, экспорттаушы іске қосылғанда FE MySQL портына (`mysql_endpoint`) қосылып, дерекқорды құрады және өз конвейерлерінің кестелері үшін `CREATE TABLE IF NOT EXISTS` орындайды. Мына баптаулар құрылатын кестелерді анықтайды:\n\n| Экспорттаушы баптауы | Орнататын кесте қасиеті |\n| --- | --- |\n| `history_days: 7` | `dynamic_partition.start = -7`: 7 күннен ескі күндік бөлімдер жойылады |\n| `create_history_days: 3` | `dynamic_partition.history_partition_num = 3`: кестемен бірге өткен 3 күннің бөлімдері құрылады |\n| `replication_num: 1` | Әр tablet-тің бір репликасы, жалғыз BE үшін қажет |\n\nОлар **экспорттаушы кестені құрғанда ғана** қолданылады. `IF NOT EXISTS` бұрынғы кестені қазіргі баптауға қарамастан өзгеріссіз қалдырады. Бұл курста DOG Collector-ы 1-модульде іске қосылғанда барлық кестені жоғарыдағы баптаулармен құрады. Сондықтан 2-зертханалық жұмыс collector-лары `create_schema: false` қояды: кестелері бар, тек жол жүктейді. 2-зертханалық жұмыс `SHOW DYNAMIC PARTITION TABLES FROM otel` арқылы кестелердің бөлімделуін көрсетеді.\n\nЭкспорттаушы сигнал кестелерімен шектелмейді. Трассалар үшін сервистер арасындағы минуттық шақыруларды сақтайтын `otel_traces_graph` және оны алдыңғы 10 минут span-дарынан әр 10 минут сайын толтыратын `otel_traces_graph_job` Doris тапсырмасын құрады. Span-дар аяқталғаннан кейін бірнеше секундта Doris-ке жетеді, сондықтан орындалу алдыңғы минуттың соңғы span-дарын өткізіп алуы мүмкін; келесі орындалу сол минутты қайта санамайды және саны кем қалады. `create_schema: true` және трасса конвейерімен іске қосылған әр Collector тапсырманы жойып қайта құрады, соның салдарынан келесі орындалу 10 минутқа шегеріледі. Экспорттаушы әр кестеде `<table>_services` материалданған көрінісін де құруға тырысады. Doris 4.1.3 оның командасын `Duplicate column name 'service_name'` қатесімен қабылдамайды; экспорттаушы `failed to create materialized view` ескертуін жазып, жалғастырады. Жүктеулерге әсер етпейді.\n\n",
+      "target_hash": "93eee3a5d45a4d7e9e379afe59804307e0d33fd92e948c495426fc015d6227f9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8e5e1d5a8e086358d381d4c63f84b5ec5abe42680e3b5cd77dce7cee67cc9ea7",
+          "target_hash": "93eee3a5d45a4d7e9e379afe59804307e0d33fd92e948c495426fc015d6227f9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9ef0b18b53834a04a001ac828bd99d65",
+      "source_hash": "305f16271d4edde64be886a75fd899479b06fc0f3e722c53c4a745d190793e9b",
+      "target_text": "## 2.7 Бір сәтсіз тапсырыс, үш сигнал\n\nИнциденттегі сәтсіз тапсырыс үш сигналда да дәлел қалдырады, бірақ әр сервисте емес:\n\n| Сигнал | Бір сәтсіз тапсырыстың дәлелі | Қайдан келеді |\n| --- | --- | --- |\n| Трассалар, `otel_traces` | Шамамен он сервисте 25–40 span; `payment` пен оны шақырған сервистерде қате span-дары бар | Әр сервис SDK-сы |\n| Журналдар, `otel_logs` | Дүкен проксиінің маңыздылық деңгейі жоқ `\"POST /api/checkout HTTP/1.1\" 500` қатынас журналы жолы; `cart` пен `currency` сияқты сервистердің `INFO` жолдары | Журнал жіберетін сервистер |\n| Метрикалар, `otel_metrics_sum` | Жеке тапсырысты емес, сәтсіз және сәтті төлемдерді санайтын `traces.span.metrics.calls` span метрикасы | Демо Collector-ының span метрикалары |\n\nӘр сервис барлық сигналды жібермейді. Демода `checkout`, `payment`, `frontend`, `product-catalog`, `shipping` және `email` трасса жібереді, бірақ журнал жібермейді: журналдарын тек контейнер шығысына жазады; онда `docker logs doris-obs-demo-payment` төлем қатесін көрсетеді. Сондықтан ақау Doris-те қате журналын қалдырмайды, маңыздылық бойынша қате іздеу оны өткізіп алады, ал трассада ол бар. Қай дереккөз қай сигналды жіберетінін білу — телеметрияны түсінудің бір бөлігі: жоқ жол ештеңе болмағанын да, ештеңе жіберілмегенін де білдіруі мүмкін.\n\n",
+      "target_hash": "337e07ab857342543a40f71c09afb04656223573ebc11942878b96677342a262",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "305f16271d4edde64be886a75fd899479b06fc0f3e722c53c4a745d190793e9b",
+          "target_hash": "337e07ab857342543a40f71c09afb04656223573ebc11942878b96677342a262"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ce88fc7fc15f42a6b4cf6e845a29698d",
+      "source_hash": "6d4e3f6dcfee0ecd4496758441ca9d7001c6b98c0b3f89ce8c029f3500f9d111",
+      "target_text": "## 2.5 OTLP өрістерінен бағандарға\n\nЭкспорттаушы әр OTLP жазбасының бөліктерін бағандарға сәйкестендіреді. Журнал жазбасы үшін:\n\n| OTLP | `otel_logs` бағаны |\n| --- | --- |\n| Жазба уақыты | `timestamp`, UTC бойынша `DATETIME(6)` |\n| `service.name` ресурс атрибуты | `service_name` |\n| `service.instance.id` ресурс атрибуты | `service_instance_id` |\n| Трасса ID-і мен span ID-і | Он алтылық мәтін ретінде `trace_id`, `span_id` |\n| Маңыздылық саны мен мәтіні | `severity_number`, `severity_text` |\n| Негізгі мәтін | `body` |\n| Барлық ресурс атрибуттары, жазбаның барлық атрибуттары | `resource_attributes`, `log_attributes` |\n| Құралдандыру ауқымының атауы мен нұсқасы | `scope_name`, `scope_version` |\n\nSpan-дар да солай `otel_traces` кестесіне `span_name`, `span_kind`, `parent_span_id`, `end_time`, `duration` (микросекундпен), `status_code`, `status_message`, `span_attributes` және `events` өрістерімен түседі. Метрикалар түріне қарай жеке кестеге барады: `otel_metrics_gauge`, `otel_metrics_sum`, `otel_metrics_histogram`, `otel_metrics_exponential_histogram` және `otel_metrics_summary`; әрқайсысында `metric_name`, `attributes` және өз түрінің мән бағандары бар.\n\nАтрибут бағандарының түрі — `VARIANT`: Doris ондағы әр кілтті мәніне сәйкес түрленген жеке баған ретінде сақтайды, сондықтан бір кілт сұрауы тек сол кілтті оқиды. `log.file.name` сияқты нүктелі кілт ішкі жол ретінде сақталады, оны `log_attributes['log.file.name']` оқиды; 2-зертханалық жұмыс FE журнал жолдарын осылай табады.\n\n![OTLP журнал жазбасының уақыты, дереккөз сәйкестігі, трасса контексті мен атрибуттары otel_logs бағандарына сәйкеседі; атрибуттар VARIANT жолдары ретінде сақталады.](images/03-otlp-record-to-columns.png)\n\n*Схема ортақ өрістерді SQL жеке оқи алатын ішкі атрибуттардан бөледі.*\n\nСурет белгілері: OTLP LOG RECORD TO DORIS COLUMNS — OTLP журнал жазбасын Doris бағандарына сәйкестендіру; OTLP RECORD — OTLP жазбасы; OTLP LOG RECORD — OTLP журнал жазбасы; DORIS COLUMNS — Doris бағандары; Time — уақыт; Trace ID — трасса ID-і; span ID — span ID-і; Attributes — атрибуттар; READ ONE PATH — бір жолды оқу. service.name → service_name, уақыт → timestamp (UTC), Trace ID → trace_id, span ID → span_id; атрибуттар resource_attributes пен log_attributes (VARIANT) ішінде. otel_logs және log_attributes[\"log.file.name\"] — өзгермейтін техникалық белгілер.\n\n",
+      "target_hash": "1e3f9a245b115d6d2032f00c64b7d372c4253fc433978c63c9b134ff88163bcf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "6d4e3f6dcfee0ecd4496758441ca9d7001c6b98c0b3f89ce8c029f3500f9d111",
+          "target_hash": "1e3f9a245b115d6d2032f00c64b7d372c4253fc433978c63c9b134ff88163bcf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.93cf602abf75496e8f7511f012dbb6a9",
+      "source_hash": "5f1697fb885ce240a3fa90ba2f208649c270ebc4cd55687367511369df9ee4d6",
+      "target_text": "## 2.3 Жолдағы өңдеу\n\nӨңдегіштер конвейер тізіміндегі ретпен орындалады.\n\n- **`resource`** өңдегіші дереккөзді сипаттайтын ресурс атрибуттарын орнатады. Журнал файлы оны қай сервис жазғанын айтпайды, сондықтан журнал collector-ы `service.name` мәнін `doris-fe` етеді; трасса collector-ы `deployment.environment.name` қосады, оны 2-зертханалық жұмыс Doris-тегі span-ынан табады.\n- **`batch`** өңдегіші экспорт алдында жазбаларды топтайды: 10,000 жолды бір рет жүктеу бір жолды 10,000 рет жүктеуден әлдеқайда арзан. Пакетті `send_batch_size` жазбаға жеткенде немесе пакет басталғаннан `timeout` өткенде, қайсысы бұрын болса, жібереді. `timeout: 10s` болса, жалғыз span collector оны экспорттағанша 10 секундқа дейін күтеді; жоғары жүктемеде пакеттер толып, дереу шығады.\n- DOG Collector сондай-ақ жады азайғанда деректі қабылдамайтын **`memory_limiter`** және уақыт белгісі жоқ журнал жазбаларына Collector байқаған уақытты беретін **`transform`** өңдегішін қолданады.\n\n",
+      "target_hash": "5711afddff8ab9e32e3a239a042f7b7c78d1777272438d297d727189e0530ff4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "5f1697fb885ce240a3fa90ba2f208649c270ebc4cd55687367511369df9ee4d6",
+          "target_hash": "5711afddff8ab9e32e3a239a042f7b7c78d1777272438d297d727189e0530ff4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.595f6247e4bd4469936329f33e2431d9",
+      "source_hash": "b667b8b8c97476e9ae8f17fe63ed72b7a1f1651d7be2309030337f8b32f4d7a4",
+      "target_text": "## 2.6 Жазбаның жеткенін не дәлелдейді\n\nSDK span-дарды фонда экспорттайды. 2-зертханалық жұмыстың Python коды span-ын аяқтағанда, ол SDK-ның `BatchSpanProcessor` ішінде күтеді; `provider.force_flush()` SDK-ны оны қазір жіберуге мәжбүрлеп, әрекетті күтеді. Бірақ басылған хабар да, `force_flush()` та экспорт сәтті болғанын хабарламайды: collector қолжетімсіз болса, SDK тек ескерту жазады. Span-ды қабылдаған collector да оны Doris-ке әлі жүктеген жоқ; пакеттеу мен экспорттау содан кейін жүреді.\n\nSpan-ның жеткенін тек Doris сұрауы көрсетеді. 2-зертханалық жұмыс оны трасса ID-і бойынша іздеп, жол пайда болғанша сұрауды қайталайды, әдетте 20 секунд ішінде: collector пакетінің күту мерзімі — 10 секунд, ал Doris жүктеуді бекіткеннен бірнеше секунд кейін көрінетін етеді.\n\n",
+      "target_hash": "e7c30559fc9b403325277668348a86d7fee5ebbbeeed54fc3a69544bd3fcca6d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "b667b8b8c97476e9ae8f17fe63ed72b7a1f1651d7be2309030337f8b32f4d7a4",
+          "target_hash": "e7c30559fc9b403325277668348a86d7fee5ebbbeeed54fc3a69544bd3fcca6d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.95e69c8e34654b2e8ce226cb3d09e2ee",
+      "source_hash": "e6e48fa531ff1f0d3b1ce61d23e8b04b34039e2508acaeff8cd959d412983339",
+      "target_text": "## 2-тест\n\n[2-тест: Жүйені бақылау деректерін жүктеу](quiz02_ingesting_observability_data.ipynb) файлын ашыңыз. Бір жауап таңдалатын алты сұрақ бар; іске қосылған орта қажет емес.\n\nКелесі модуль: [3-модуль: Жүйені бақылау деректерін визуализациялау](../module03-data-visualization/course.md).\n\n",
+      "target_hash": "7a8faa1b89712f015a5904e50ac01b4e024d8ae6f20e3be25cdf6ac78e40beb3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e6e48fa531ff1f0d3b1ce61d23e8b04b34039e2508acaeff8cd959d412983339",
+          "target_hash": "7a8faa1b89712f015a5904e50ac01b4e024d8ae6f20e3be25cdf6ac78e40beb3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bc4afc855c964e7398984d8c4b69369f",
+      "source_hash": "f9471c17d214849be1731d5ff60998f2f6846e10db5f65a3a9044438c9c0f980",
+      "target_text": "# 2-модуль: Жүйені бақылау деректерін жүктеу\n\n| Курс ақпараты | Мәні |\n| --- | --- |\n| Курс | Apache Doris көмегімен жүйені бақылау · 1-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Collector | Doris экспорттаушысы бар OpenTelemetry Collector Contrib 0.144.0 |\n| Болжалды уақыт | Шамамен 70 минут: оқу 30, зертханалық жұмыс 30, тест 10 |\n\n[Курс README файлы](../../README.md) · [2-зертханалық жұмысты ашу](lab02_ingest_observability_data.ipynb) · [2-тестті ашу](quiz02_ingesting_observability_data.ipynb)\n\n",
+      "target_hash": "1472968ede5023842a2c0d51aafe06b622d89b1af3c39652000c6ccf55c21441",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f9471c17d214849be1731d5ff60998f2f6846e10db5f65a3a9044438c9c0f980",
+          "target_hash": "1472968ede5023842a2c0d51aafe06b622d89b1af3c39652000c6ccf55c21441"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.153f8f63b31847f0bb1c0dd26d7efe15",
+      "source_hash": "7d8aea59cb9b8c6946875196b333b22653e0fdc514e1859ce68f01b961f157c0",
+      "target_text": "## Модуль мақсаты\n\nЖурналдар, метрикалар мен трассаларды Doris-ке жүктейтін OpenTelemetry Collector конвейерлерін құру, әр бөліктің неге кепілдік беретінін және бермейтінін білу, әр сигналдан бір сәтсіз тапсырыстың дәлелін табу.\n\n",
+      "target_hash": "7d541f34b2c48fdee4ef039efcdd3880bbf5bca41e931006e72ae7bde18087e7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7d8aea59cb9b8c6946875196b333b22653e0fdc514e1859ce68f01b961f157c0",
+          "target_hash": "7d541f34b2c48fdee4ef039efcdd3880bbf5bca41e931006e72ae7bde18087e7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8be479a3635f4aa9b54135ca83cb7ace",
+      "source_hash": "df2f5f97929b8ae83d8d1ebe43fb0c2d5751a1f81d3efa01c24929b72d520f1d",
+      "target_text": "## Дереккөздер\n\n- [OpenTelemetry Collector: конфигурация](https://opentelemetry.io/docs/collector/configuration/)\n- [OpenTelemetry протоколы (OTLP)](https://opentelemetry.io/docs/specs/otlp/)\n- [Filelog қабылдағышы](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.144.0/receiver/filelogreceiver), [Prometheus қабылдағышы](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.144.0/receiver/prometheusreceiver), [файлдық сақтау кеңейтімі](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.144.0/extension/storage/filestorage)\n- [Пакет өңдегіші](https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor) және [экспорттаушы кезегі мен қайталау баптаулары](https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/exporterhelper/README.md)\n- [Doris экспорттаушысы](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.144.0/exporter/dorisexporter)\n- [Apache Doris: Stream Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/), [VARIANT](https://doris.apache.org/docs/4.x/sql-manual/basic-element/sql-data-types/semi-structured/VARIANT/) және [динамикалық бөлімдеу](https://doris.apache.org/docs/4.x/table-design/data-partitioning/dynamic-partitioning/)\n",
+      "target_hash": "f7430437d6a28300e721041b0281f2047e2378565dadd5cbf8fbc3cfcc8ddaa4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "df2f5f97929b8ae83d8d1ebe43fb0c2d5751a1f81d3efa01c24929b72d520f1d",
+          "target_hash": "f7430437d6a28300e721041b0281f2047e2378565dadd5cbf8fbc3cfcc8ddaa4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e3b823b7a9a8449fbfd943ad3748d1de",
+      "source_hash": "d9889733461d412012f635fd08767b3059d223586ad4d2c1003e5f3314f8c5d9",
+      "target_text": "## 2-зертханалық жұмыс: Жүйені бақылау деректерін DOG-қа жүктеу\n\n[2-зертханалық жұмыс: Жүйені бақылау деректерін OpenTelemetry арқылы DOG-қа жүктеу](lab02_ingest_observability_data.ipynb) файлын ашыңыз. Сіз:\n\n1. FE журналын оқитын collector-ды іске қосып, Doris-тегі жолдарын тексересіз және кесте баптауларының қайдан келетінін көресіз.\n2. FE мен BE-ден метрика жинайтын collector-ды іске қосып, дерек нүктелерін тексересіз.\n3. Трасса collector-ын іске қосып, Python-нан span жіберіп, Doris-тен табасыз; кейін collector конфигурациясын өзгертіп, жаңа span-дағы өзгерісті көресіз.\n4. Бір сәтсіз тапсырысты `otel_traces`, `otel_logs` және `otel_metrics_sum` кестелеріне дейін қадағалайсыз.\n5. Жаттығу: қатынас журналындағы checkout сұрауларын HTTP күйі бойынша санайсыз.\n\nТөлем ақауы қосылған 1-модульдің DOG стегі мен демосы қажет.\n\n",
+      "target_hash": "31940616b7f0d0a086666d89ac0d03695954f869c30b568ccfdd45ba645df3a6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d9889733461d412012f635fd08767b3059d223586ad4d2c1003e5f3314f8c5d9",
+          "target_hash": "31940616b7f0d0a086666d89ac0d03695954f869c30b568ccfdd45ba645df3a6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

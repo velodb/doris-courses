@@ -1,0 +1,320 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.5b6b8068dbd740b888b379cc20574fe6",
+      "source_hash": "28155f153ef93464cf33f0d38bcccff8a57d55f503de845c3478a4bf05363ab7",
+      "target_text": "### Бекіту және қалпына келу күйлерін қадағалау\n\n![Бір BE қолжетімсізде үш репликаның екеуі V+1 нұсқасын жариялайды, ал оралған реплика heartbeat қалпына келгеннен кейін қуып жетеді.](images/05-majority-commit-recovery.png)\n\n*Тірі BE және өзекті Tablet репликасы — қалпына келудің бөлек кезеңдері.*\n\nСурет жазулары: Heartbeat recovery is not version recovery — heartbeat қалпына келуі нұсқа қалпына келуі емес; 1. Outage — 1. Үзіліс; 2. Heartbeat returns — 2. Heartbeat оралады; 3. Catch-up — 3. Қуып жету; BE A/B/C — A/B/C BE; Unavailable; V — қолжетімсіз, V; Alive; still V — тірі, әлі V; 2 of 3 commit V+1 — үшеудің екеуі V+1 бекітеді; Alive is not current — тірі болу өзекті болу емес; All replicas current — барлық реплика өзекті; One logical Tablet, three configured replicas — бір логикалық Tablet, бапталған үш реплика. V және V+1 белгілері өзгермейді. Сурет ағылшын түпнұсқасында сақталған.\n\nНақты сандар маңызды емес. Нұсқаларды бір-біріне қатысты салыстырыңыз. Үзіліс кезінде FE метадеректері тоқтаған репликаның соңғы белгілі нұсқасын сақтауы мүмкін. Бұл ноутбук тоқтаған үдерістен файл оқыды дегенді білдірмейді.\n\n",
+      "target_hash": "c4fdfb810b6c9e3477bfcfc1082180917a8ab34979e73641840927f3e37ee445",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "28155f153ef93464cf33f0d38bcccff8a57d55f503de845c3478a4bf05363ab7",
+          "target_hash": "c4fdfb810b6c9e3477bfcfc1082180917a8ab34979e73641840927f3e37ee445"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e066f874cb2d42b1a81d0219cc1c8f41",
+      "source_hash": "f8898d7a1622af5acbb98f7770d0e4dc42df891d76cb757da5d2dc0cacaf79c4",
+      "target_text": "### HAProxy нені санайтынын түсіну\n\nПрокси арқылы MySQL сеансының екі TCP бөлігі бар:\n\n![Бір үлестірілген Doris сұрауындағы клиент, прокси, FE және BE міндеттері](images/03-distributed-request-roles.png)\n\n*Клиент бір FE сеансына жетеді; FE таңдалған BE орындайтын жұмысты жоспарлап, үйлестіреді.*\n\nСурет жазулары: One FE session, distributed BE work — бір FE сеансы, үлестірілген BE жұмысы; SQL client — SQL клиенті; TCP leg 1/2 — TCP 1/2 бөлігі; TCP proxy — TCP прокси; Select a healthy FE for a new session — жаңа сеансқа дұрыс FE таңдау; Connected FE — қосылған FE; Plan + coordinate — жоспарлау және үйлестіру; Select Tablet replicas — Tablet репликаларын таңдау; Plan fragments — жоспар фрагменттері; Partial results — ішінара нәтижелер; Backend (BE) A/B — A/B BE; Local Tablet replicas — жергілікті Tablet репликалары; Execute fragments + tasks — фрагменттер мен тапсырмаларды орындау; HAProxy counts sessions, not running SQL statements — HAProxy орындалып жатқан SQL операторларын емес, сеанстарды санайды. Сурет ағылшын түпнұсқасында сақталған.\n\nЖұмыс статистикасы мына өрістерді пайдаланады:\n\n| Өріс | Мағынасы | Бұлай түсінбеңіз |\n| --- | --- | --- |\n| `active connections` | Қазір HAProxy сол FE түйініне бағыттап отырған сеанстар | Орындалып жатқан SQL сұрауларының саны |\n| `total connections` | Осы HAProxy үдерісі басталғалы сол FE түйініне тағайындалған сеанстар | Doris бүкіл уақыттағы сұрау саны |\n| `L4OK` | TCP күй тексеруі FE портына сәтті қосылды | Сәтті аутентификация, SQL орындау немесе Master сәйкестігі |\n\nRound-robin бір тұрақты сеанстың ішіндегі жеке операторларды емес, жаңадан жасалған сеанстарды таратады. Сондықтан жаңа сеанстар баптауға сай таралса да, қосылым пулы оператор сандарын біркелкі емес етіп көрсетуі мүмкін.\n\n",
+      "target_hash": "e45c261266739e04e878bf483f3e6bdb27e2fc8021c843a65f8ca6752711cafa",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "f8898d7a1622af5acbb98f7770d0e4dc42df891d76cb757da5d2dc0cacaf79c4",
+          "target_hash": "e45c261266739e04e878bf483f3e6bdb27e2fc8021c843a65f8ca6752711cafa"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.061e7ff5dab445b488b5b24aa14432c7",
+      "source_hash": "d8d19ddc896b42425a28fbb0e650066b40df004dc2ab398f64d0eb334654c4be",
+      "target_text": "### Frontend міндеттері\n\nFE кластер метадеректерін қолдап, пайдаланады, SQL талдайды, үлестірілген сұрау жоспарын құрады, орындау орындарын таңдайды, жоспар фрагменттерін жібереді және нәтижені үйлестіреді. Жоғары қолжетімді FE орналастыруында:\n\n- Follower FE метадерек репликациясы мен сайлауға қатысады;\n- бір Follower ағымдағы Master болады;\n- басқа дұрыс Follower FE дауыс беру тобының бөлігі болып қалады;\n- Observer оқу масштабтауы үшін метадерек көшіре алады, бірақ сайлауға қатыспайды.\n\nАқаудан кейін Master рөлі ауыса алады. Қолданба пайдаланған хост атауы онымен бірге ауыспайды.\n\n",
+      "target_hash": "c6fad1b0dc51395aa948551c866a70025b32b428d0b8ec33db3e66f5c4aabec8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "d8d19ddc896b42425a28fbb0e650066b40df004dc2ab398f64d0eb334654c4be",
+          "target_hash": "c6fad1b0dc51395aa948551c866a70025b32b428d0b8ec33db3e66f5c4aabec8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9ae35fb244dc46ccb515376abc90c3d2",
+      "source_hash": "5eab0f1b45f5a8aebb5347dfff7590b70d7a264a05babe3f5be9adea0a776130",
+      "target_text": "## 9.7 Қолжетімділік пен өнімділік шекарасын айту\n\n9-модуль бірнеше сәтті бақылауды біріктіреді, бірақ әрқайсысы шектеулі қорытындыны қолдайды.\n\n| Дәлел | Қолдайтын қорытынды | Қолдамайтын қорытынды |\n| --- | --- | --- |\n| Бір FE тоқтағаннан кейін FE сайлауы | Қалған дауыс беру көпшілігі Master таңдады | Үзілген клиент сеансы көшті немесе әр сұрау үзіліссіз болды |\n| HAProxy жаңа сеанстарды тек `UP` нысаналарына жібереді | Осы күй тексеруінде жаңа қосылымдар істемеген FE айналып өте алады | Проксидің өзі артық даналы немесе әр SQL операторы бірдей таралған |\n| Жаңадан қосылған BE ішінде репликалар пайда болады | Бар физикалық көшірмелер басқа нысанаға қайта теңгерілді | Бар Bucket бөлінді немесе логикалық жолдар өзгерді |\n| Scan Profile ішінде бірнеше BE хосты бар | Осы орындауда сол BE сканерлеуді орындады | Әр реплика немесе әр қолжетімді BE қатысты |\n| Бір BE тоқтағанда көпшілік жазуы сәтті | Сыналған транзакция қалған репликалар арқылы көрінетін болды | Кез келген реплика саны бар әр кесте сол үзілісті қабылдай алады |\n| Оралған реплика нұсқалары сәйкеседі | Сыналған Tablet көшірмелері қайта өзекті болды | Қате бизнес жазуы кері қайтты немесе сақтық көшірме бар |\n| Colocate жоспары Join кіріс Exchange алып тастайды | Таңдалған Join жергілікті үйлесімді орналасуды қолдана алады | Өндірістік кідіріс жақсаруы өлшенді |\n\n",
+      "target_hash": "59eae59f1a7377398c992e3d78df21c924fdb915c15d6d5464607ded87c8a150",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "5eab0f1b45f5a8aebb5347dfff7590b70d7a264a05babe3f5be9adea0a776130",
+          "target_hash": "59eae59f1a7377398c992e3d78df21c924fdb915c15d6d5464607ded87c8a150"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.977b6837bfa549c1b8b2e2748ec68148",
+      "source_hash": "05295ac9ac2ca61f814fe7c815c2eaf887c1e3afdd5ee35f07b41e033c2f5c35",
+      "target_text": "#### Тек пайдаланушы жағын бағыттау\n\nBucket Shuffle үйлесімді оқиға жағы орналасуын сақтайды. Join жағындағы Exchange әр пайдаланушы жолын оқиға Bucket сәйкестендіруіне қарай бағыттайды:\n\n![RANDOM таратылған пайдаланушы жолы Exchange арқылы сақталған оқиға Bucket Fragment Instance ішіне өтіп, жергілікті әр пайдаланушы оқиға күйімен бірігеді.](images/06-bucket-shuffle-user-routing.png)\n\n*Bucket Shuffle үйлесімді оқиға жағы аралық орналасуын сақтап, пайдаланушы кірісін жылжытады.*\n\nСурет жазулары: Bucket Shuffle moves one input — Bucket Shuffle бір кірісті жылжытады; Random user row — RANDOM пайдаланушы жолы; Exchange — алмасу; hash(user_id) — hash(user_id); Retained event Bucket mapping — сақталған оқиға Bucket сәйкестендіруі; Fragment Instance for retained event Bucket — сақталған оқиға Bucket үшін Fragment Instance; Selected BE — таңдалған BE; Local event state — жергілікті оқиға күйі; Routed user row — бағытталған пайдаланушы жолы; Local Hash Join — жергілікті Hash Join; User input moves; compatible event state stays — пайдаланушы кірісі жылжиды, үйлесімді оқиға күйі қалады. USER_ID, USER_SEGMENT, EVENT_COUNT, TOTAL_REVENUE, 1001 және returning мәндері өзгермейді. Сурет ағылшын түпнұсқасында сақталған.\n\nПайдаланушы жағы жылжиды; сақталған оқиға жағының аралық жолдары жалпы қайта бөлуді қажет етпейді. Bucket нөмірі — тұрақты BE мекенжайы емес, сақталған орналасудағы логикалық орын. FE осы сұрау үшін нақты Tablet репликалары мен орындау хосттарын әлі таңдайды.\n\nЖұмыс бір физикалық оқиға Partition бөлімін сүзеді, өйткені құжатталған тікелей физикалық кесте Bucket Shuffle шарттарына сол жақта пайдалануға болатын бір Partition орналасуы қажет. Кеңірек Doris анықтамасы тарату қасиеті сақталса, аралық оператор нәтижесіне де сақталатын bucket-ке бөлінген қатынас болуға рұқсат етеді.\n\n",
+      "target_hash": "f505048bf10bd49e20f7f8af8a018f2d8386f81f7339dbe4f6b733e5a6ef89eb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "05295ac9ac2ca61f814fe7c815c2eaf887c1e3afdd5ee35f07b41e033c2f5c35",
+          "target_hash": "f505048bf10bd49e20f7f8af8a018f2d8386f81f7339dbe4f6b733e5a6ef89eb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1a2c61276cc741aca789124e70891e8c",
+      "source_hash": "6a38f272a8f2b90563878541f811ba497cc631b4285e860732813e28a4770a46",
+      "target_text": "# 9-модуль: Apache Doris жүйесінде шардтау, репликация және үлестірілген орындау\n\n| Курс туралы ақпарат | Мән |\n| --- | --- |\n| Курс | Apache Doris көмегімен нақты уақыттағы аналитика · 3-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Орта | 9-зертханалық жұмыс бастайтын үш FE, үш BE және HAProxy кластері; бір түйінді сынақ ортасы тоқтатылған, 4 CPU және 8 GB жады бар Docker |\n| Болжамды уақыт | Шамамен 145 минут: оқу 65, зертханалық жұмыс 70, тест 10 |\n\n[Курстың README файлы](../../README.md) · [9-зертханалық жұмысты ашу](lab09_observe_sharding_and_replication.ipynb) · [9-тестті ашу](quiz09_distribution_and_availability.ipynb)\n\n",
+      "target_hash": "56129dfaa35586b4dce47d2a6d88217b11a08d48dd9107e279752ea357a7b923",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "6a38f272a8f2b90563878541f811ba497cc631b4285e860732813e28a4770a46",
+          "target_hash": "56129dfaa35586b4dce47d2a6d88217b11a08d48dd9107e279752ea357a7b923"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9320d69c96f54960828a88954a9cea15",
+      "source_hash": "76f7ded889b64d7b60ef6c3eac183ed3e96f3cd153bcc1e4064f41934d27653b",
+      "target_text": "## Модуль мақсаты\n\nDoris бір кестені бірнеше BE бойынша қалай таратып, қолжетімді ұстайтынын көріңіз: Tablet және репликалары қалай орналасады, BE қосылғанда, FE істемегенде немесе жазу кезінде BE тоқтағанда не болады және үлестірілген Join қай жолдарды жылжытады.\n\nЭлектрондық сауда оқиға қызметі бұрынғы модульдердің бір FE, бір BE сынақ ортасынан өсті. Операторларға кесте шардтарын өзгертпей BE қуатын қосу, жаңа клиент сеанстарына істемеген FE айналып өту, қолдау көрсетілетін реплика ақауында жазуды жалғастыру және қайталанатын оқиға–пайдаланушы есебінде қажетсіз желі тасымалын болдырмау қажет. Үш мәселе бүкіл модуль бойы бөлек қалады: клиенттерге дұрыс FE кірісін беру, Tablet репликаларын BE арасында орналастырып, қалпына келтіру және аралық жолдарды тек сұрау қажет еткен жерге жылжыту.\n\n",
+      "target_hash": "c90dd3f3a95c8cef538f4f80adce046fc2f4c41db618b0fd75d71919c36858fd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "76f7ded889b64d7b60ef6c3eac183ed3e96f3cd153bcc1e4064f41934d27653b",
+          "target_hash": "c90dd3f3a95c8cef538f4f80adce046fc2f4c41db618b0fd75d71919c36858fd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.464a2218d6d54701b89ac336608c3a50",
+      "source_hash": "e84f48a89632f16d10019ec0abb7eeab4454ee06815fe84222ba1d91dd8c2500",
+      "target_text": "## Қорытынды\n\n- Кестеде әр Partition ішіндегі әр Bucket-ке бір логикалық Tablet бар, ал репликация әр Tablet көшірмелерін сақтайды: алты Bucket бар екі Partition және екі реплика — 12 Tablet пен 24 реплика, ал SQL әр жолды әлі бір рет қайтарады.\n- BE қосу орналастыру нысанасын қосады: Tablet жоспарлағышы кей бар репликаларды соған жылжытып, реплика санын сақтайды, ал Partition, Bucket және логикалық Tablet сол күйінде қалады.\n- FE істемегенде қалған FE көпшілігі Master сайлай алады, бірақ клиенттің сол FE сеансы аяқталады; прокси немесе бірнеше мекенжайлы драйвер арқылы жаңа сеанс дұрыс FE түйініне жетеді, ал HAProxy санағыштары Doris сұрауларын емес, TCP сеанстарын сипаттайды.\n- FE сұрауға қажетті әр Tablet-тің бір дұрыс репликасын таңдап, BE түйіндеріне Fragment Instance жібереді; жоспар жоспарланған Tablet ауқымын, ал тек Profile қай BE қай Tablet сканерлегенін көрсетеді.\n- Әдепкіде жүктеу репликалардың жартысынан көбі сәтті болғанда бекітіледі, сондықтан үш реплика бір тоқтаған BE көтереді, ал екеуі көтермейді; оралған BE репликалары ағымдағы нұсқаға жетпей тірі болады және репликация сақтық көшірме емес.\n- Bucket Shuffle бір үйлесімді bucket-ке бөлінген кірісті орнында ұстап, басқасын соған бағыттайды; Colocate екі кірістің сәйкес Bucket ұяшықтарын алдын ала бірге орналастырады, сондықтан Join кірістеріне Exchange қажет емес.\n\n",
+      "target_hash": "adb26a84c74afa2048b2b7222de216b2b80f6c1e65f3dfd741b5fe28d6b228c9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "e84f48a89632f16d10019ec0abb7eeab4454ee06815fe84222ba1d91dd8c2500",
+          "target_hash": "adb26a84c74afa2048b2b7222de216b2b80f6c1e65f3dfd741b5fe28d6b228c9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b6ee8f624bb8407e9c1a4b86b67ee512",
+      "source_hash": "c5aa2c57c02f7cff8064605d485835c0703edaaa35ea97336ed97596c51e478e",
+      "target_text": "### Colocate Join үшін екі кірісті де алдын ала орналастыру\n\nBucket Shuffle бір сұрауға бір орналасуды қайта пайдаланады. Екі үлкен кесте тұрақты кілтпен жиі біріктірілсе, кесте құрылымы байланысты тұрақты ете алады.\n\nColocation Group қатысатын кестелерге үйлесімді Bucket тізбегін және реплика орналасуын береді. Оқиға–пайдаланушы байланысы үшін:\n\n![Сәйкес оқиға және пайдаланушы Bucket репликалары тұрақты Colocation Group ішінде BE түйіндерін ортақ пайдаланып, жергілікті Hash Join амалдарына беріледі.](images/07-colocate-event-user-layout.png)\n\n*Colocate үйлесімді сақталған орналастыру шарты арқылы Join кіріс алмасуын алып тастайды.*\n\nСурет жазулары: Colocate reuses compatible placement — Colocate үйлесімді орналасуды қайта пайдаланады; Stable Colocation Group — тұрақты Colocation Group; Compatible Bucket counts and replica placement — үйлесімді Bucket саны мен реплика орналасуы; BE A/B/C — A/B/C BE; Event Bucket 0/1/2 — оқиға 0/1/2 Bucket; User Bucket 0/1/2 — пайдаланушы 0/1/2 Bucket; Local Hash Join — жергілікті Hash Join; Representative placement: no Join-input exchange — үлгі орналасу: Join кіріс алмасуы жоқ; Final aggregation may still exchange — соңғы агрегаттау әлі алмаса алады. HASH(user_id) және IsStable=true өзгермейді. Сурет ағылшын түпнұсқасында сақталған.\n\nБірдей `user_id` жолдары сәйкес Bucket ұяшықтарына түседі, ал олардың репликалары үйлесімді BE ішінде орналасады. Hash Join сол орындарда жергілікті орындала алады.\n\n",
+      "target_hash": "95ddd6c5fd05dcfa2105da76c1c509e4a8b611951e8fd5730e374f4536ba28e6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "c5aa2c57c02f7cff8064605d485835c0703edaaa35ea97336ed97596c51e478e",
+          "target_hash": "95ddd6c5fd05dcfa2105da76c1c509e4a8b611951e8fd5730e374f4536ba28e6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b81ea586546c40c8b5a7fb693edb6f6d",
+      "source_hash": "be544967eae497dc66902934a7dc2f5b4999c68fb1f241ae0da6d6e6761ac1c2",
+      "target_text": "### Орналасу метадеректерін дұрыс ауқымда оқу\n\n| Дәлел | Тиісті қолдану |\n| --- | --- |\n| `SHOW BACKENDS` | Түйін мүшелігі, heartbeat күйі, сыйымдылық өрістері, нұсқа |\n| `SHOW REPLICA DISTRIBUTION` | Кесте репликалары қайда орналасқанының қорытындысы |\n| `SHOW TABLETS` | Tablet деңгейіндегі реплика ID, BE ID, нұсқалар және күй метадеректері |\n| `SELECT COUNT(*)` | SQL арқылы көрінетін логикалық жол саны |\n\nОртақ Docker файлдық жүйесінде әр BE контейнері көрсететін сыйымдылық мәнін әрқайсысы тәуелсіз диск сияқты қоспаңыз. Сол сияқты Tablet метадеректерінің `RowCount` мәні дәл SQL санауын алмастырмайды.\n\nТеңгеруді бақылағанда шектелген күту пайдаланыңыз. Бекітілген ұйқы жоспарлағыш әрекет етпей аяқталуы немесе теңгеру біткен соң уақыт ысырап етуі мүмкін. Шағын кесте бақылау терезесінде көзге көрінетіндей жылжымаса, қолмен жылжытып, оны автоматты теңгеру деудің орнына шектеуді айтыңыз.\n\n[Икемді кеңейту](https://doris.apache.org/docs/4.x/admin-manual/cluster-management/elastic-expansion/) және [Дерек репликаларын басқару](https://doris.apache.org/docs/4.x/admin-manual/maint-monitor/tablet-repair-and-balance/) құжаттарын қараңыз.\n\nКеңейту репликалардың қайда тұра алатынын өзгертеді. Бірақ қолданба әлі бір FE түйініне тікелей қосылған. Оны тоқтату келесі шекараны сынайды: Doris метадерек сайлауы клиенттің бар желілік сеансын да сақтай ма?\n\n",
+      "target_hash": "09b4254ac4e670787ee062b449725bff231a124fae3f1cb766d19284d6906b35",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "be544967eae497dc66902934a7dc2f5b4999c68fb1f241ae0da6d6e6761ac1c2",
+          "target_hash": "09b4254ac4e670787ee062b449725bff231a124fae3f1cb766d19284d6906b35"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.35cb389540dd4c909c6bd178f844b1ae",
+      "source_hash": "61aeb4538a4b334f5e49547e725d026429c67a5fd384f50451cfe28877fae8f4",
+      "target_text": "## Оқу мақсаттары\n\nОсы модульді аяқтағаннан кейін сіз:\n\n1. Partition, Bucket, Tablet және репликалардың байланысын түсіндіріп, кесте үшін санай аласыз.\n2. BE қосу кестенің Partition немесе Bucket құрылымын өзгертпей бар репликаларды неге жылжытатынын түсіндіре аласыз.\n3. FE метадерек сайлауын клиенттің FE істемегеннен кейін қайта ашылуы тиіс қосылымынан ажырата аласыз.\n4. Сұрауды Tablet таңдаудан Query Profile тіркейтін BE Scan тапсырмаларына дейін қадағалай аласыз.\n5. Әдепкі көпшілікпен жазу ережесін қолданып, үзілістен кейін тірі BE мен өзекті репликаны ажырата аласыз.\n6. Bucket Shuffle және Colocate Join үлестірілген Join тасымалдайтын деректерді қалай азайтатынын түсіндіре аласыз.\n\n",
+      "target_hash": "531a4a085cd9a7652898fdb7f8644bcf8246cf3196568a09c56c50a32fc67a21",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "61aeb4538a4b334f5e49547e725d026429c67a5fd384f50451cfe28877fae8f4",
+          "target_hash": "531a4a085cd9a7652898fdb7f8644bcf8246cf3196568a09c56c50a32fc67a21"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.48a0fd559cd8434689e7b244d72b0274",
+      "source_hash": "7c7e957ac4fbc2f0be8b120736ec1a405a12af481d2b7d320fba0777766a96e5",
+      "target_text": "#### Сол бизнес жауабын салыстыру\n\nBucket Shuffle және Colocate сұраулары мынаны бірдей ұстауы тиіс:\n\n- уақыт ауқымы және таңдалған оқиға Partition;\n- оқиға жағындағы әр пайдаланушы агрегаттауы;\n- Join кілті және логикалық Join түрі;\n- пайдаланушы сегменті деректері;\n- шығыс топтауы мен метрикалары;\n- толық күтілетін нәтиже.\n\nТек пайдаланушы кестесі өзгереді: орналасуы Colocation Group ішіндегі `HASH(user_id)` болады және кілті `user_id` бойынша Unique Key болады. Әр пайдаланушыда бір жол бар, сондықтан кілт Join кірісін өзгертпейді. Colocate жоспары мынаны көрсетуі тиіс:\n\n```text\nINNER JOIN(COLOCATE)\n```\n\nСол Hash Join мен екі кіріс сканерлеуінің арасында `VEXCHANGE` болмауы тиіс. Join үстіндегі Exchange соңғы агрегаттау немесе нәтиже біріктіруге әлі қызмет ете алады.\n\nColocate әр жүктемеге автоматты жылдамырақ емес. Шағын Bucket саны параллельдікті шектей алады, Colocation Group орналастыру мен теңгеруді шектейді және байланысты қолдаудың пайдалану шығыны бар. Оны қайталанатын Join тасымалы дәлелденген тар орын болғанда және қатысатын кесте құрылымдары үйлесімді қала алғанда қолданыңыз.\n\n[Colocation Join](https://doris.apache.org/docs/4.x/query-acceleration/colocation-join/) құжатын қараңыз.\n\nЕкі жоспар сол бизнес сұраққа әртүрлі орналастыру шартымен жауап береді және әр Join жанындағы `VEXCHANGE` қай кіріс жылжитынын көрсетеді. Топ енді әр топология, жоспар және орындалу бақылауы нені қолдайтынын дәл айтуы тиіс.\n\n",
+      "target_hash": "4ae70a4ae61e1a64318fc1b10bf8362519bf8b757d5045fe0f5403103b516345",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "7c7e957ac4fbc2f0be8b120736ec1a405a12af481d2b7d320fba0777766a96e5",
+          "target_hash": "4ae70a4ae61e1a64318fc1b10bf8362519bf8b757d5045fe0f5403103b516345"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8bf1e0425979492d8775904a01fed222",
+      "source_hash": "59a1cfe2725021edfcf58780328d7458d039c517ad17caff33fa15e3382131ad",
+      "target_text": "## 9.8 Реплика күйінен деректер өмірлік цикліне өту\n\nОқиға қызметінде енді дұрыс FE дауыс беру тобы, қайта пайдаланылатын клиент кірісі, қолжетімді BE арасында орналасқан дұрыс онлайн репликалар және түсінікті Join тарату таңдаулары бар. Бұл қасиеттер ағымдағы деректерді қолжетімді ұстап, ағымдағы сұрау жұмысын орналастырады. Олар тарихи оқиғалардың қанша уақыт онлайн қалуын немесе әр репликаға жеткен жарамды, бірақ қате амалды қалай кері қайтаруды шешпейді.\n\nКелесі міндеттер жиынын бөлек ұстаңыз:\n\n| Ағымдағы 9-модуль механизмі | Нені қорғайды | Нені бермейді |\n| --- | --- | --- |\n| FE метадерек репликациясы және сайлауы | Қолдау көрсетілетін FE ақауынан кейінгі метадерек қызметі | Бар клиент TCP сеансының көшуі |\n| Tablet репликалары | Қолдау көрсетілетін BE ақауларына онлайн көшірмелер | Тарихи нұсқалар немесе тәуелсіз сақтық көшірме |\n| Реплика теңгеруі және нұсқа жөндеуі | Ағымдағы деректердің дұрыс орналасуы мен сәйкесуі | Қате бекітілген жазуды кері қайтару |\n| Bucket Shuffle немесе Colocate | Үлестірілген Join дерек тасымалы таңдауы | Сақтау мерзімі, мұрағаттау немесе қалпына келтіру саясаты |\n\nСондықтан 10-модуль басқа бизнес сұрақтан басталады: оқиға тарихы өскен сайын топ сақтау шығынын қалай басқарып, тұтас уақыт ауқымдарын онлайн кестеден алып тастап, кеш деректерді өңдеп, жарамды қате жоюдан қалай қалпына келуі тиіс?\n\n",
+      "target_hash": "e428212d442c158fafc47b02c595932a8786bc0def4355d803584e31d0bc0639",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m09-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 9 English after reading full lesson, every original Lab code cell and all six complete quiz sets. Verified Partition/Bucket/Tablet versus physical replica arithmetic; 2-to-3 BE automatic placement without resharding or row change; Follower/Observer/Master election versus failed TCP session and new HAProxy connections; connection counts/L4OK versus SQL; selected one-copy scans and Fragment/Instance/Pipeline/PipelineTask scopes; strict default majority 2-of-2 versus 2-of-3 and min-load override; heartbeat versus current-version recovery and no invented lag; stop/start persistence versus destructive down; Bucket Shuffle retained per-user distribution/single physical Partition and Colocate stable shared placement/no Join-input Exchange versus allowed final Exchange. Checked all resource limits, data counts, ports, sample IDs and totals, same-answer comparisons and shared-host evidence limits. Six unique quiz answers retained. Viewed seven source PNGs and supplied complete adjacent Kazakh label correspondence with original pixels unchanged. Protected inline/fenced code, links and hashes passed precheck. Native review and rendered admission not performed.",
+          "source_hash": "59a1cfe2725021edfcf58780328d7458d039c517ad17caff33fa15e3382131ad",
+          "target_hash": "e428212d442c158fafc47b02c595932a8786bc0def4355d803584e31d0bc0639"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

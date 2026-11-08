@@ -35,7 +35,7 @@ complete output directory. A failed admission leaves no output artifact.
 | [ui.contract.json](ui.contract.json) | Typed placeholders and explicit count forms, validated by producer and consumers. |
 | [ui.inventory.json](ui.inventory.json) | Auditable message-key/consumer inventory; check with `tools/check_ui_messages.py`. |
 | [glossary.json](glossary.json) | Versioned product/identifier rules and the Kazakh RTA Module 1 terminology. |
-| `locales/kk-Cyrl/overlay.json` | A formal `locale_overlay`, supplied by the current-session LLM with attributed checks. The RTA Module 1 pilot is included; see [revision and quality scope](kk-Cyrl/README.md). |
+| `locales/kk-Cyrl/overlay.json` | A formal `locale_overlay`, supplied by the current-session LLM with attributed checks. Includes all RTA, Data Warehousing and Observability modules and optional work; see [revision and quality scope](kk-Cyrl/README.md). |
 | `locales/kk-Cyrl/assets.json` | Optional JSON object mapping English image paths to committed localized image files. |
 
 Source discovery covers catalog/course display leaves, each course guide,
@@ -120,9 +120,42 @@ python tools/build_content_package.py --source-ref "$SOURCE_REF" build \
 A preview keeps the declared draft locale and reports missing units/assets/Quiz
 bindings. It exposes English only. A release publishes every requested locale
 and fails if any required content is missing, stale, unchecked or withdrawn.
-The committed Kazakh pilot contains current-session LLM translations and a
-separate source/target self-check. Native human review is unperformed. Automated
+The current-session LLM translated the committed Kazakh text and checked each
+source/target pair separately. Native human review is unperformed. Automated
 producer regression tests still use synthetic overlays. The workshop UI consumes the canonical message contract. The [Workshop v2 installer](../workshop/aws/runtime/multilingual.md) and separately pinned [website consumer](../contracts/v2/website-consumer.md) consume this private release. Combined release qualification and cloud publication remain separate checks.
+
+## Complete course selections
+
+`real-time-analytics-complete`, `data-warehousing-complete` and
+`observability-complete` select all 32 primary modules and all nine optional or
+extension materials. The Data Warehousing selection also includes its optional
+Quiz and Notebook shell. They require 3,561 English/Kazakh units and 127 reviewed
+images. AI Integrations is outside this translation scope. The original
+`rta-module-1` selection remains available.
+
+```bash
+python tools/build_content_package.py --source-ref "$SOURCE_REF" build \
+  --profile real-time-analytics-complete \
+  --profile data-warehousing-complete --profile observability-complete \
+  --locale en --locale kk-Cyrl --output /tmp/doris-content-complete
+```
+
+The attributed, self-checked translation fragments are under
+`kk-Cyrl/batches/`. `tools/merge_locale_batches.py` can validate a new set of
+fragments against a saved base overlay and the exact committed source map. It
+rejects replacement or duplicate IDs, stale source hashes, changed protected
+markup and checks for a different target hash. It adds technical admission only
+after those checks pass, then atomically writes the extended overlay. Pass only
+the new fragments; replaying batches already included in the base is an error.
+The committed overlay is the producer input. Batch fragments alone never make
+a locale available. See [revision and quality scope](kk-Cyrl/README.md).
+
+When source text changes, keep the stable unit ID and reconcile the source map
+as described above. Keep the previous translation's original source hash until
+the new source/target pair has actually been translated and checked. Update any
+adjacent image legend's reviewed target hash, build a new complete release and
+test both consumers before selecting the new immutable binding. Do not edit an
+installed learner copy or an existing website release to apply a translation.
 
 ## Artifact layout and consumers
 

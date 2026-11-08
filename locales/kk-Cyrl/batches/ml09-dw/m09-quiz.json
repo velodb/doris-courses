@@ -1,0 +1,1136 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.2135b4270ad24c5dbcb731da3db7b0d8",
+      "source_hash": "6c3372bb874c9d2a33e24bf9f2b588070c5fd9ee8f6d23c8e77757aa84283801",
+      "target_text": "<div>\n  <div>09-ТЕСТ · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Деректер қоймасын модельдеу және біріктірулер</div>\n  <p>Әрқайсысына кері байланыс берілетін, бір дұрыс жауабы бар алты сұрақ; дерекқорға қосылу қажет емес.</p>\n  <span>6 сұрақ · Бір дұрыс жауап · Шамамен 10 минут</span>\n</div>\n\n[Сабақ](course.md) · [Зертханалық жұмыс](lab09_modeling_and_joins.ipynb)\n",
+      "target_hash": "9f89d50a0698eb5e25d500d641394b441e3faf4937f569c221d0571cc279c82f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "6c3372bb874c9d2a33e24bf9f2b588070c5fd9ee8f6d23c8e77757aa84283801",
+          "target_hash": "9f89d50a0698eb5e25d500d641394b441e3faf4937f569c221d0571cc279c82f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4421e1fd2a2c401e9815068f5a99c879",
+      "source_hash": "fd18768d6b59533664626f6888b713e3258ce7717fe6aa2cde4ce029e46610ed",
+      "target_text": "### Тестті жүктеу\n\nТестті жүктеу үшін келесі ұяшықты орындаңыз. Ядроны қайта іске қосқаннан кейін осы жерден қайта орындаңыз.\n",
+      "target_hash": "974461d755c2cb386b87743756c704517b6ef2ac0f8a010f35ff1c53de367818",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "fd18768d6b59533664626f6888b713e3258ce7717fe6aa2cde4ce029e46610ed",
+          "target_hash": "974461d755c2cb386b87743756c704517b6ef2ac0f8a010f35ff1c53de367818"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5ae8d68f8c7d4ff1a8776587590a8eaa",
+      "source_hash": "119f4b6acba2d5344285e6a968bc0ad6d4c35a8204663aa2a81e9ffc3cb89568",
+      "target_text": "## Тестті бастау\n\nЖауапты таңдап, жіберіңіз, содан кейін келесі сұраққа өтпес бұрын түсіндірмені оқыңыз.\n",
+      "target_hash": "103adb2f3351803ea62db122d9cbc65d8d3c157eb858e1aa490b3cb380e339b7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "119f4b6acba2d5344285e6a968bc0ad6d4c35a8204663aa2a81e9ffc3cb89568",
+          "target_hash": "103adb2f3351803ea62db122d9cbc65d8d3c157eb858e1aa490b3cb380e339b7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1c615297db454d74b02c212889f57127",
+      "source_hash": "061e0735afce68afc7cb6870c083a5c50861ca935ac425840a758e5461aea26f",
+      "target_text": "Бір дұрыс жауабы бар алты сұрақ; дерекқорға қосылу қажет емес. Жібергеннен кейін түсіндірмелерді қараңыз.",
+      "target_hash": "ac23d0c80f7e81c749e1728ceeec1671092cfc9e3e92acffaa0f6593a48c4a59",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "061e0735afce68afc7cb6870c083a5c50861ca935ac425840a758e5461aea26f",
+          "target_hash": "ac23d0c80f7e81c749e1728ceeec1671092cfc9e3e92acffaa0f6593a48c4a59"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ca89d8d303094dc9b8650b6811ba8a7e",
+      "source_hash": "e949ceb7b982b6b4089a9f2bf486ed2b951925965c90ca36e33ca197ad2e645a",
+      "target_text": "Түйіршіктіліктер әртүрлі: әр тапсырысқа бір жол және әр төлемге бір жол, сондықтан екі төлемі бар тапсырыс екі рет көрініп, сомасы екі рет саналады. Сол жақ біріктіру сәйкес келмеген тапсырыстарды сақтайды және екі рет сәйкес келетінін бәрібір қайталайды. SUM(DISTINCT) сомасы бірдей екі бөлек тапсырысты да біріктірер еді. Бакеттер біріктірудің қай жолды қайтаратынын емес, деректердің қалай сақталатынын шешеді.",
+      "target_hash": "64496dbc5c30cb217103b4c77bc70155ca9d810968b52d266816314aa0ad5ac9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "e949ceb7b982b6b4089a9f2bf486ed2b951925965c90ca36e33ca197ad2e645a",
+          "target_hash": "64496dbc5c30cb217103b4c77bc70155ca9d810968b52d266816314aa0ad5ac9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.adc4cc6cd0494832977a41b08e397b6a",
+      "source_hash": "d82bfcbd1eae31a38c2db60c8626eb37c84d38a3608f730a1cb1763be8b7bea5",
+      "target_text": "Біріктірмес бұрын факт және өлшем кестелерінің түйіршіктілігін айту.",
+      "target_hash": "7c3b72e95db64c353ba5651d615efbb78d4ae5520625f19d459366f8c7cc3084",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d82bfcbd1eae31a38c2db60c8626eb37c84d38a3608f730a1cb1763be8b7bea5",
+          "target_hash": "7c3b72e95db64c353ba5651d615efbb78d4ae5520625f19d459366f8c7cc3084"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b04e65dae24e439982499887bbd38765",
+      "source_hash": "cb0ed893cc469eec8e6c72a7493edc2c5f071822eb5b2c38acaef9456ce1f21b",
+      "target_text": "Факт жолы — бір тапсырыс, төлем жолы — бір төлем, сондықтан екі рет төленген тапсырыс екі рет сәйкес келеді",
+      "target_hash": "a0b03e27f9f4a2af31e4dfe6333f17f949e61ef1c7e3c704cb1931979f5a80ca",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "cb0ed893cc469eec8e6c72a7493edc2c5f071822eb5b2c38acaef9456ce1f21b",
+          "target_hash": "a0b03e27f9f4a2af31e4dfe6333f17f949e61ef1c7e3c704cb1931979f5a80ca"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9f1d878ff42d4ce29977a4e74600df53",
+      "source_hash": "6b54fa7413bae5fcb18254ab7949bcb53d4c068aa5a69caf1aa80490db28e2d3",
+      "target_text": "Біріктіру LEFT JOIN болуы керек, ол сол кестесінің жолдар санын сақтайды",
+      "target_hash": "45843bb60fc431250a1a7dbf7de17ae427fa1d3017cf09ab3224b16b1a900d04",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "6b54fa7413bae5fcb18254ab7949bcb53d4c068aa5a69caf1aa80490db28e2d3",
+          "target_hash": "45843bb60fc431250a1a7dbf7de17ae427fa1d3017cf09ab3224b16b1a900d04"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.aec0ac72232b4af7b4b38bcef39cb0be",
+      "source_hash": "06bb510333033a028d21387b6da25002cd7c5d7a2987e3708633c5f9e8b1f507",
+      "target_text": "Біріктіру не қайтарса да әр тапсырыс сомасын бір рет санайтын SUM(DISTINCT order_amount) қажет",
+      "target_hash": "2d336168b9f88b27475b32e8c2ea5cdd5797ee26bd13344b11808e4d10b4f720",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "06bb510333033a028d21387b6da25002cd7c5d7a2987e3708633c5f9e8b1f507",
+          "target_hash": "2d336168b9f88b27475b32e8c2ea5cdd5797ee26bd13344b11808e4d10b4f720"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.46da929987934f06a989f0dc9b8d9575",
+      "source_hash": "433ac42cd98915aa4ce64b470577d15b96c50cdc04fb7d42ae1b575e1d1ee5fa",
+      "target_text": "Екі кестеге де көбірек бакет қажет, себебі аз бакет біріктіруде жолдарды қайталатады",
+      "target_hash": "b9339b268f9989aa0ea63ecaf5aacd098d85b4b6fb4a88d9c0e2072833b77c75",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "433ac42cd98915aa4ce64b470577d15b96c50cdc04fb7d42ae1b575e1d1ee5fa",
+          "target_hash": "b9339b268f9989aa0ea63ecaf5aacd098d85b4b6fb4a88d9c0e2072833b77c75"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.98e9fba369974435bbc0d627299f78a1",
+      "source_hash": "9a07495b42343ad2b0f89fd2d21a8711143680e3a595b486da3342b916243f2c",
+      "target_text": "Талдаушы әр тапсырыстың төленген сомасын көрсету үшін тапсырыс фактісін төлем кестесімен біріктіреді, кей тапсырыстың сомасы екі еселенеді. Алдымен нені айту керек еді?",
+      "target_hash": "7c348cd538d61e02637f0faeebe4a168aac5c554ef51802e2dab667d7dec97d5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "9a07495b42343ad2b0f89fd2d21a8711143680e3a595b486da3342b916243f2c",
+          "target_hash": "7c348cd538d61e02637f0faeebe4a168aac5c554ef51802e2dab667d7dec97d5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c24b048859c94542ba0701d0f53d28ef",
+      "source_hash": "87cdd1de873c0d72c4fa99a68a5afdedd8d79cefc1c776b026f44be46d71eb51",
+      "target_text": "Дереккөз күйді ауыстырады, сондықтан бизнес кілті бар Unique Key кестесі әр тұтынушыға бір ағымдағы жол сақтайды. Duplicate Key қабылдаған әр жолды сақтайды; кілті тек сұрыптайды, сондықтан өзгерген тұтынушы тапсырысқа екі рет сәйкес келер еді. Атау не аймақ сияқты атрибуттар қосылмайды. Есептерде бөлек тұтынушыларды санау қайталануларды жасырады, бірақ олар екі еселейтін біріктіруді түзетпейді.",
+      "target_hash": "2a2677ef959aee61a3669cadfc50113832d7f47e49c6c76e4f64444e286c1df5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "87cdd1de873c0d72c4fa99a68a5afdedd8d79cefc1c776b026f44be46d71eb51",
+          "target_hash": "2a2677ef959aee61a3669cadfc50113832d7f47e49c6c76e4f64444e286c1df5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.06d69d90ca4945f5a2a984f9ba29084d",
+      "source_hash": "0b088ef434e48f89e07d8689eaa8a7bc530c8fcd7792987789c15645d55828e3",
+      "target_text": "Дереккөз жазбаларды қосатынына не ағымдағы күйді ауыстыратынына қарай кесте моделі мен кілтін таңдау.",
+      "target_hash": "471343ef175b22b6e270459768aa202e24a42463ad89bdab0a3783f5ddddf3a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0b088ef434e48f89e07d8689eaa8a7bc530c8fcd7792987789c15645d55828e3",
+          "target_hash": "471343ef175b22b6e270459768aa202e24a42463ad89bdab0a3783f5ddddf3a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.545f3c4c3fdc48bfa03cc5a0e7a051f8",
+      "source_hash": "5b65f9af53bc9b1f335c12fcb1cd7605ce5a5c23ae5e865953b141b411fd5b1b",
+      "target_text": "Жаңарақ жазба тұтынушының ескі жолын ауыстыруы үшін customer_id бойынша Unique Key кестесі",
+      "target_hash": "13e680d3349ef1936b3a20cbe7d1613d7d60b2d0e1c9b04d8f0ce5ce78ade6fa",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "5b65f9af53bc9b1f335c12fcb1cd7605ce5a5c23ae5e865953b141b411fd5b1b",
+          "target_hash": "13e680d3349ef1936b3a20cbe7d1613d7d60b2d0e1c9b04d8f0ce5ce78ade6fa"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.77611c453a784d789dc658db8e98c6b1",
+      "source_hash": "b335a9f283dcc8e7907d25c08d7248ae17fa5a7596ddf49b21137657a3dd7d68",
+      "target_text": "Кілті әр тұтынушыға бір жол сақтайтын customer_id бойынша Duplicate Key кестесі",
+      "target_hash": "43f04a737ec18e173dd9e8548a60a5a1b858a4559ac94f53a9ce7418f7402256",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "b335a9f283dcc8e7907d25c08d7248ae17fa5a7596ddf49b21137657a3dd7d68",
+          "target_hash": "43f04a737ec18e173dd9e8548a60a5a1b858a4559ac94f53a9ce7418f7402256"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.40c1130750f74333b4565a0393d2ce9c",
+      "source_hash": "6da8249e0a3f26c40c2289b53c31833c7e9264ce38252783ce2dd2bb3e7ca6ea",
+      "target_text": "Жазбалар ағымдағы күйге қосылуы үшін атрибуттарға SUM қолданатын Aggregate Key кестесі",
+      "target_hash": "ffe08d74aa07737ffc2aa1f57294edaa2959f6da21e2f4c2f08ef817cd31e67e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "6da8249e0a3f26c40c2289b53c31833c7e9264ce38252783ce2dd2bb3e7ca6ea",
+          "target_hash": "ffe08d74aa07737ffc2aa1f57294edaa2959f6da21e2f4c2f08ef817cd31e67e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0a3feabcaf644bf086308e68db09065e",
+      "source_hash": "633f374a4d702fbbb6d59b40bbeed6294301a9b0e2e8dd1bf41e0c4e5f6c70a8",
+      "target_text": "Duplicate Key кестесі және қайталануларды жасыру үшін әр есепте COUNT(DISTINCT customer_id)",
+      "target_hash": "6e713aa8a3e79ac88b7c3e18864883874e60e7b83824ba364099cfee3005ec01",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "633f374a4d702fbbb6d59b40bbeed6294301a9b0e2e8dd1bf41e0c4e5f6c70a8",
+          "target_hash": "6e713aa8a3e79ac88b7c3e18864883874e60e7b83824ba364099cfee3005ec01"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3ef8c7653eee490a8027ce75b9f6bbf6",
+      "source_hash": "59dd343494244caf1ec4a009c3d1bedaefcde74f9a03c5d6403854f4d239c8ad",
+      "target_text": "CRM әр тұтынушы өзгерген сайын толық ағымдағы жазбасын қайта жібереді, қойма әр тұтынушыға бір ағымдағы жол сақтауы керек. Қай кесте жарайды?",
+      "target_hash": "c9463e9d935fd69bf834e84d6ac194fa85832cb375189055e36de7ad1680831a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "59dd343494244caf1ec4a009c3d1bedaefcde74f9a03c5d6403854f4d239c8ad",
+          "target_hash": "c9463e9d935fd69bf834e84d6ac194fa85832cb375189055e36de7ad1680831a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3ec2c4b569e04f81ac3a65f35bf718bc",
+      "source_hash": "1bcf80e571ecdb0657977b5c004c10dc7a75322d3b6678830bb32210beb7a275",
+      "target_text": "9-зертханалық жұмыстың қате өлшемі фактінің өз санындай 11 жолдық ішкі біріктіру береді, бірақ 1510.00 орнына 10 бөлек тапсырыс және 1410.00: бір тапсырыс жоғалды, екіншісі екі еселенді. Бірдей жолдар саны бірін-бірі өтейтін екі қатені жасыра алады. Ішкі біріктіру де кілті екі рет сәйкес келетін жолды көбейтеді. Таратылу біріктірудің қай жолдарды қайтаратынын емес, жолдардың қалай жылжитынын шешеді.",
+      "target_hash": "30f39ee1c4b4884436c0b1edc4bd1d2cc3dfe96f10bcf69d1f2a3668ad2c7512",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "1bcf80e571ecdb0657977b5c004c10dc7a75322d3b6678830bb32210beb7a275",
+          "target_hash": "30f39ee1c4b4884436c0b1edc4bd1d2cc3dfe96f10bcf69d1f2a3668ad2c7512"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a587cb7108be47c4b57e50b3d385b382",
+      "source_hash": "1f63b3e7a96d62cf7861069c52477fa8e41eae3024f3433fb4330be8cd6fc4ec",
+      "target_text": "Біріктіруде жоғалған және қайталанған жолдарды жолдар санымен, бөлек кілттермен және сомалармен тексеру.",
+      "target_hash": "470f25955d93dab7d17ebaa04dcb572efcf8a3fa77948710f7a2a97734fcb560",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "1f63b3e7a96d62cf7861069c52477fa8e41eae3024f3433fb4330be8cd6fc4ec",
+          "target_hash": "470f25955d93dab7d17ebaa04dcb572efcf8a3fa77948710f7a2a97734fcb560"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1c342d1561214027b7c2ee0da2725a8d",
+      "source_hash": "d0d660dcc34e2e9764babefb9c4567ceb5de897dc43396e801e5770f3e2bf25b",
+      "target_text": "Әзірше белгісіз: бөлек тапсырыстар мен соманы да салыстыру керек; жоғалған және екі еселенген тапсырыс әлі 11 жол береді",
+      "target_hash": "b1808857b22aed0a39db640865689cd70f3f5d93c908c0961d0dc642935536b2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d0d660dcc34e2e9764babefb9c4567ceb5de897dc43396e801e5770f3e2bf25b",
+          "target_hash": "b1808857b22aed0a39db640865689cd70f3f5d93c908c0961d0dc642935536b2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2bf3f9e0bd954166ad9b8beee471577b",
+      "source_hash": "c60080d6d363a150a7706cb7039028c788d4a44891de4895b27c4430023bfd9f",
+      "target_text": "Иә: дейінгі және кейінгі бірдей жол саны еш тапсырыс жоғалмағанын не екі еселенбегенін көрсетеді",
+      "target_hash": "41ea88e3337d3e3a2eda3239cdada0884f34974314bd1a20baf23dd120ab4ccd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c60080d6d363a150a7706cb7039028c788d4a44891de4895b27c4430023bfd9f",
+          "target_hash": "41ea88e3337d3e3a2eda3239cdada0884f34974314bd1a20baf23dd120ab4ccd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.05166debfbaf45a09641d5e7ac8f3c13",
+      "source_hash": "673e34d173260c66c70942347831e52213d4636dcee5bbe489dd9d0a490557ba",
+      "target_text": "Иә: ішкі біріктіру тек жолдарды алып тастай алады, сондықтан 11-ден 11 ешқайсысын алып тастамағанын көрсетеді",
+      "target_hash": "359a274c2fdc99851a24233cb867b1fb5ecdcb4b08ec867bdcd17171f7862626",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "673e34d173260c66c70942347831e52213d4636dcee5bbe489dd9d0a490557ba",
+          "target_hash": "359a274c2fdc99851a24233cb867b1fb5ecdcb4b08ec867bdcd17171f7862626"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3f9092895fbf4e249e42e9541432292e",
+      "source_hash": "348fff7c8d3c5b1ce49a468e7c91507ff32596f12c8f8d1c30ccff5b8f2c0550",
+      "target_text": "Тек жоспар айтады: BROADCAST әр тапсырысты сақтайды, екі кестені shuffle ету кейбірін жоғалта алады",
+      "target_hash": "da4cc60fb482ec70bf863ab68d925954eac7446ef6be8707e8b1da27bb90b1bc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "348fff7c8d3c5b1ce49a468e7c91507ff32596f12c8f8d1c30ccff5b8f2c0550",
+          "target_hash": "da4cc60fb482ec70bf863ab68d925954eac7446ef6be8707e8b1da27bb90b1bc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3e339ce67237419da10d9d7f7e60469d",
+      "source_hash": "44d0d4a4fc4b7ded692f79e14310e49eb4793966aed44a67b2e01e92cdda716a",
+      "target_text": "11 тапсырысты тұтынушы өлшемімен ішкі біріктіргеннен кейін нәтижеде 11 жол бар. Біріктіру дұрыс па?",
+      "target_hash": "cb27ac024eb5ad2ac404430f4b5b8066f39d2ae6f522d6cd597507167daef600",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "44d0d4a4fc4b7ded692f79e14310e49eb4793966aed44a67b2e01e92cdda716a",
+          "target_hash": "cb27ac024eb5ad2ac404430f4b5b8066f39d2ae6f522d6cd597507167daef600"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b482988cf01748dd93185f2e25a45ae5",
+      "source_hash": "bda15eac551314fd14e85ea9a09fc5fbc9f8edb474f68a2ce6e332218712c1cd",
+      "target_text": "Сол жақ біріктіру әр тапсырысты сақтап, тұтынушы сәйкес келмесе, өлшем бағандарын NULL толтырады, сондықтан бұл жолдар — тұтынушысы жоқ тапсырыстар: антибіріктіру. Ішкі біріктіру дәл соларды алып тастайды. Екі кестенің жол саны әртүрлі нәрсені өлшейді: 11 тапсырыс және 663 тұтынушы. Өлшемнен басталған сол жақ біріктіру кері бағытты, тапсырысы жоқ тұтынушыларды табады.",
+      "target_hash": "19ec1fa4d08060a3a81232598bfa74b1562c8f9a38f7b3d4a29c9608b139f9e6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "bda15eac551314fd14e85ea9a09fc5fbc9f8edb474f68a2ce6e332218712c1cd",
+          "target_hash": "19ec1fa4d08060a3a81232598bfa74b1562c8f9a38f7b3d4a29c9608b139f9e6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5f6b506de12c4ae1aa7364d876fff556",
+      "source_hash": "c01b09a7ff2d988b9b140ed5788de956419abcd83a66e1d1142328d16ccd2715",
+      "target_text": "Өлшем жолы жетіспейтін фактілерді сол жақ не антибіріктірумен табу.",
+      "target_hash": "6a1220f1cbd42f3f879cc65a2b4bf915bad38c5c1c0680d3cbb17403fcdbde2e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c01b09a7ff2d988b9b140ed5788de956419abcd83a66e1d1142328d16ccd2715",
+          "target_hash": "6a1220f1cbd42f3f879cc65a2b4bf915bad38c5c1c0680d3cbb17403fcdbde2e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0aa31e906c91496991a77ed5c7b80abc",
+      "source_hash": "9a7466abd374c145f98108145b4e2a4c6fcc454100dbaf1f2615bf5c893357da",
+      "target_text": "Тапсырыстарды өлшеммен LEFT JOIN жасап, өлшем кілті IS NULL жолдарын қалдыру",
+      "target_hash": "9fa7d04f341ab45dadd8a009c42d1e6ba0a2835e130a00bf29a8222e8e090e41",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "9a7466abd374c145f98108145b4e2a4c6fcc454100dbaf1f2615bf5c893357da",
+          "target_hash": "9fa7d04f341ab45dadd8a009c42d1e6ba0a2835e130a00bf29a8222e8e090e41"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c8be838640af40d8a9591f14980719d6",
+      "source_hash": "a01557461bd250338334454e597811d1b598253ed101285b8f55074adafd6d34",
+      "target_text": "Тапсырыстарды өлшеммен INNER JOIN жасап, өлшем кілті IS NULL жолдарын қалдыру",
+      "target_hash": "ca8bcdd9749f1d8123811b4dda8d17f2e48eab19a0bf0252d6309568a4a7e521",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "a01557461bd250338334454e597811d1b598253ed101285b8f55074adafd6d34",
+          "target_hash": "ca8bcdd9749f1d8123811b4dda8d17f2e48eab19a0bf0252d6309568a4a7e521"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2dfd2695b5214ac49b9edc7f778a4de3",
+      "source_hash": "c2fd7e74bc9c715eac71a0cd788d86c4d1d10546d91d7681edd680477c33cf70",
+      "target_text": "Тапсырыс COUNT(*) санын өлшем COUNT(*) санымен салыстыру, тұтынушылар жетіспесе, олар өзгеше болады",
+      "target_hash": "d366c86fbf05439d425710081ef3192c6d971b508e98553e4fe9b9f0650452a8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c2fd7e74bc9c715eac71a0cd788d86c4d1d10546d91d7681edd680477c33cf70",
+          "target_hash": "d366c86fbf05439d425710081ef3192c6d971b508e98553e4fe9b9f0650452a8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ed91323a300a46c8857e9ea1b7664ee0",
+      "source_hash": "65ebf909ebd142009724fbb0ce3f0fa277b4b7713eab0a150446c162f7072d0b",
+      "target_text": "Өлшемді тапсырыстармен LEFT JOIN жасап, тапсырысы жоқ тұтынушыларды қалдыру",
+      "target_hash": "3b8925eb6d940eb3429254b3726e1349f9ad09592bc0d579f460089d462c13ef",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "65ebf909ebd142009724fbb0ce3f0fa277b4b7713eab0a150446c162f7072d0b",
+          "target_hash": "3b8925eb6d940eb3429254b3726e1349f9ad09592bc0d579f460089d462c13ef"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.311050eb82b34db785bf0947d058a355",
+      "source_hash": "8d24b3934dfe852528afde563ceb9362934220295967d90cca9be2cbc13dd838",
+      "target_text": "Кей тапсырыстар өлшемде әлі жоқ тұтынушыларға сілтеуі мүмкін. Қай сұрау сол тапсырыстарды тізеді?",
+      "target_hash": "6a6642301f16e58dcb285e5d870bb60d1f71f1105e596c72bd50e212a495b741",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "8d24b3934dfe852528afde563ceb9362934220295967d90cca9be2cbc13dd838",
+          "target_hash": "6a6642301f16e58dcb285e5d870bb60d1f71f1105e596c72bd50e212a495b741"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e50206bd8f82473c9976ea1a651aaee3",
+      "source_hash": "afb6367f37d328b6507a7998f6bd47067b5d750e8c16e58f0fa2eb1c4b76c6d5",
+      "target_text": "Біріктіру түйіні логикалық INNER JOIN және жоспарланған BROADCAST таратылуын көрсетеді: бір жақ екіншісін сканерлейтін даналарға жіберіледі. Жоспар — өлшеу емес, таңдау; Query Profile орындалудың не істегенін тіркейді. Еш стратегия әрқашан ең жылдам емес: үлкен кестені барлық жаққа тарату қымбат. Colocation-ға тек сәйкес хэш бағандары емес, colocation тобы қажет және ол COLOCATE көрсетер еді. Таратылу қай жолдар қалатыны туралы ештеңе айтпайды.",
+      "target_hash": "7eb14e8439aa0e0b89989bbc9bca3a7356af4063658977e179856e129298e70c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "afb6367f37d328b6507a7998f6bd47067b5d750e8c16e58f0fa2eb1c4b76c6d5",
+          "target_hash": "7eb14e8439aa0e0b89989bbc9bca3a7356af4063658977e179856e129298e70c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9eb042f338b3416385f3aefd46f71515",
+      "source_hash": "d5fcb9ccd2c9f3515e955c52805393a84ec8d42c24c5631e09957dd794b1404c",
+      "target_text": "Жоспарды өлшеу деп қабылдамай, EXPLAIN арқылы біріктіру түрі мен таратылуын оқу.",
+      "target_hash": "a09c00dd4a86e0a6de5e561dfb58c868cdb0eb5979481becf44f8fa15333ca73",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d5fcb9ccd2c9f3515e955c52805393a84ec8d42c24c5631e09957dd794b1404c",
+          "target_hash": "a09c00dd4a86e0a6de5e561dfb58c868cdb0eb5979481becf44f8fa15333ca73"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9a17296374b64e17a0e53f5ddbd059bb",
+      "source_hash": "e5e81a614e18defbc5b445ab2108b890969ae8af22b0ded4fefff1b4956d86df",
+      "target_text": "Doris тұтынушыларды тапсырыстарды сканерлейтін әр данаға жіберуді жоспарлайды; орындалуды Profile көрсетеді",
+      "target_hash": "83316f0a9c894c69368a4003a19b0a4922e9db9c9cdbc3e3d03eabd92cee7375",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "e5e81a614e18defbc5b445ab2108b890969ae8af22b0ded4fefff1b4956d86df",
+          "target_hash": "83316f0a9c894c69368a4003a19b0a4922e9db9c9cdbc3e3d03eabd92cee7375"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.288a545c365340a3b11ab885be7cb1f3",
+      "source_hash": "b2aafe523d5ab53e4e675b03089dd12e3bd6cf93c6442aa970ae341251361390",
+      "target_text": "Біріктіру жылдам орындалды, себебі broadcast екі кестені shuffle етуден жылдам",
+      "target_hash": "aea03fe6443c8a0066803b6e17240a11c2f3413ad58f56ec114eab6bcacc9d2a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "b2aafe523d5ab53e4e675b03089dd12e3bd6cf93c6442aa970ae341251361390",
+          "target_hash": "aea03fe6443c8a0066803b6e17240a11c2f3413ad58f56ec114eab6bcacc9d2a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6faa9031348245b3b1d6a0484f7d3c4f",
+      "source_hash": "05058efccdc481799513c7d7e048bd96dd7c0d3d1aa58be80b56be8d20e95e62",
+      "target_text": "Кестелер бірге орналастырылған, себебі екеуі де customer_id хэші бойынша бакеттерге бөлінген",
+      "target_hash": "37b16b0b8805c0a303aa5bdad085739c6d482332e4d984244bcd83f87a50876e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "05058efccdc481799513c7d7e048bd96dd7c0d3d1aa58be80b56be8d20e95e62",
+          "target_hash": "37b16b0b8805c0a303aa5bdad085739c6d482332e4d984244bcd83f87a50876e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8bd7a3ce8fc34d8a82315699f51ab1f1",
+      "source_hash": "f556717d11b507b268eec61884184e246b854d57ef090616167a3d338aec1c62",
+      "target_text": "Біріктіру тұтынушысы жоқ тапсырыстарды сақтайды, себебі broadcast — сол жақ сыртқы біріктіру түрі",
+      "target_hash": "60bc37f6d213cefe5b8264ff2be807ba93ec9d148d53c08961840ef92b4c60ef",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "f556717d11b507b268eec61884184e246b854d57ef090616167a3d338aec1c62",
+          "target_hash": "60bc37f6d213cefe5b8264ff2be807ba93ec9d148d53c08961840ef92b4c60ef"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.64201566293d452bbbc319990d8a9f30",
+      "source_hash": "a8e2553ed351e96a7f497e3c3fb86af80d63937caeeb6b0bb8a91838db77e04c",
+      "target_text": "Тапсырыс фактісі мен тұтынушы өлшемінің біріктіруіне EXPLAIN join op: INNER JOIN(BROADCAST)[] көрсетеді. Бұл нені айтады?",
+      "target_hash": "04ccfe0d6fa2751a9b2706b6aae16965ce56fae4a605f246840dcca26f2e2592",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "a8e2553ed351e96a7f497e3c3fb86af80d63937caeeb6b0bb8a91838db77e04c",
+          "target_hash": "04ccfe0d6fa2751a9b2706b6aae16965ce56fae4a605f246840dcca26f2e2592"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.09875b0118de4bbea4d64b597c48b33f",
+      "source_hash": "6108afb03a16f1d05c0a51879b0a121a48c5eff51d6b806adbd5bc2bbb0116e6",
+      "target_text": "ODS қате соманы қоса келгенді сақтайды, сондықтан ережені түзетіп, қайта орындауға болады; DWD тапсырыстарды нұсқа, төлемдерді ID бойынша шешеді; DWD-тен қайта құрылған DWS және ADS сол жолдарды береді. Қорытындыны қосу қайта орындалған пакетті екі рет санайды және дәлел сақтамайды. Бастапқы жазбаларды түзету дереккөз жібергенді жоғалтады. Жеткізілімдерді санау қайталанған және ескі жеткізілімдерді тапсырыс деп санайды.",
+      "target_hash": "a06418c111c31b86c988a2e14e64d3865242bee5b15950aa480e17568b7348c3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "6108afb03a16f1d05c0a51879b0a121a48c5eff51d6b806adbd5bc2bbb0116e6",
+          "target_hash": "a06418c111c31b86c988a2e14e64d3865242bee5b15950aa480e17568b7348c3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.555952f1cea04d6095584ef2c427a0c8",
+      "source_hash": "67405b879295071c64521f170dea16ed8eda04f166653067e76a59ad1232f8dd",
+      "target_text": "Бастапқы жеткізілімдерді, тексерілген егжей-тегжейлі деректерді және агрегаттарды қайта құруға болатын бөлек қабаттарда сақтау.",
+      "target_hash": "d95ac5aca7385da1427e137765ac97cc9c0208b329be7fbfe04fcd491b02f740",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "67405b879295071c64521f170dea16ed8eda04f166653067e76a59ad1232f8dd",
+          "target_hash": "d95ac5aca7385da1427e137765ac97cc9c0208b329be7fbfe04fcd491b02f740"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.83f2ff236ff94109a82f5a0e6f0f108b",
+      "source_hash": "650c7226b51f0bc71ebd9a49b2d5e29a6af9c29d22f4c0132e8f927ae0a279c9",
+      "target_text": "Әр жеткізілімді ODS ішінде сақтау, DWD-ті бизнес кілті және нұсқамен құру, DWS пен ADS-ті DWD-тен қайта құру",
+      "target_hash": "b2e267eb9e15327c06f3c005707807bb7b10a9e5fa8f27d91c9574df0684f886",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "650c7226b51f0bc71ebd9a49b2d5e29a6af9c29d22f4c0132e8f927ae0a279c9",
+          "target_hash": "b2e267eb9e15327c06f3c005707807bb7b10a9e5fa8f27d91c9574df0684f886"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b89079cd289c4803bda8b2fc4bd5c195",
+      "source_hash": "e56b872821c6f0d6395669e822a5def0abae4927d4cfba1e7651c52a9787a935",
+      "target_text": "Тек жарияланған қорытынды, әр пакет келгенде қорытындысын қосып отыру",
+      "target_hash": "c64cc731d44b6216b06674ab8a33b3b573ed8bacb86cde248a3bbda298994cd9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "e56b872821c6f0d6395669e822a5def0abae4927d4cfba1e7651c52a9787a935",
+          "target_hash": "c64cc731d44b6216b06674ab8a33b3b573ed8bacb86cde248a3bbda298994cd9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f01fe4ac35744afc8d328c2dcb3c2e73",
+      "source_hash": "fc4eea87ade974efc867761d18f2ccb45645b7d2486c74550d35840729cdff05",
+      "target_text": "Бір кестеде тек тазартылған деректер болуы үшін бастапқы жазбаларды орнында түзету",
+      "target_hash": "a2852e214037346d073d3051bf864bb1418824426bf30be19a6c43e1c527dfb8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "fc4eea87ade974efc867761d18f2ccb45645b7d2486c74550d35840729cdff05",
+          "target_hash": "a2852e214037346d073d3051bf864bb1418824426bf30be19a6c43e1c527dfb8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.768c103146a8457e94fd8e4111662e0a",
+      "source_hash": "2f4f70725e26b4934b618f10174c16f81c97f8b3897ef28e1e9f3d7fda9b096a",
+      "target_text": "Әр жеткізілімді бір тапсырыс деп санап, тікелей жеткізілімдерден есептелген қорытынды",
+      "target_hash": "a6a993402d2ceb457105433139068011aced920d34587987eaa6f92bf44d0268",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "2f4f70725e26b4934b618f10174c16f81c97f8b3897ef28e1e9f3d7fda9b096a",
+          "target_hash": "a6a993402d2ceb457105433139068011aced920d34587987eaa6f92bf44d0268"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8b4ebfaf0b494360933494099f0fb67e",
+      "source_hash": "cacde1e7287f08c4253f4684c822b4861684ff1c58fd55147c5c13bf12d23963",
+      "target_text": "Пакетте қате пішімдегі сома, қайталанған төлем және тапсырыстың ескі нұсқасы келеді. Қай жобалау дәлелді сақтап, пакет қайта өңделгенде сол есепті береді?",
+      "target_hash": "8e35b9edd43f89f374bf17f0cb736b4186668b61fc5e760617d48b374aaa7c0a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "cacde1e7287f08c4253f4684c822b4861684ff1c58fd55147c5c13bf12d23963",
+          "target_hash": "8e35b9edd43f89f374bf17f0cb736b4186668b61fc5e760617d48b374aaa7c0a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9f4383f4968c4882a3fb33a68a1d15c1",
+      "source_hash": "d7d387ebad3081604e8d651c41768dd3c303eb9828151fd60e181b67f1a9216b",
+      "target_text": "9-модуль тесті: деректер қоймасын модельдеу және біріктірулер",
+      "target_hash": "e563f6ed18ee2d75d551992d143ea480479c6482b5a375d09fea640901d906a2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m09-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all44 bank leaves as six full four-option sets: order versus payment fan-out, current CRM row requires Unique Key, equal inner-join row count can hide missing-plus-duplicate, anti-join direction, INNER JOIN(BROADCAST) plan versus measured behavior/colocation, and reconstructible ODS/DWD/DWS/ADS evidence. All unique-answer distinctions and numeric conditions preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d7d387ebad3081604e8d651c41768dd3c303eb9828151fd60e181b67f1a9216b",
+          "target_hash": "e563f6ed18ee2d75d551992d143ea480479c6482b5a375d09fea640901d906a2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

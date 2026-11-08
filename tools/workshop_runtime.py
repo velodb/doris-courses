@@ -38,7 +38,7 @@ def course_selection(config, *, repo=config_tool.REPO):
             "slug": metadata.get("slug"), "status": metadata["status"],
         })
         course["profiles"].append(profile_id)
-        course["extensions"] |= profile_id == "dw-extensions"
+        course["extensions"] |= profile_id == "dw-extensions" or any('/extensions/' in path for path in profile['optional_paths'])
         for module in profile["modules"]:
             if not any(m["id"] == module["id"] for m in course["modules"]):
                 identity = identities[module["id"]]
@@ -105,8 +105,9 @@ def create_bundle(config_path, output, *, repo=config_tool.REPO, content_package
         if content is not None:
             shutil.copyfile(Path(content_package) / 'teaching.tar.gz', temporary / 'teaching.tar.gz')
             shutil.copyfile(RUNTIME / 'multilingual.py', temporary / 'multilingual.py')
+            shutil.copyfile(config_tool.SPEC / 'profiles.v2.json', temporary / 'profiles.v2.json')
             plan.update(content=content, capabilities=workshop_content.consumer.CAPABILITIES)
-            payload.extend(['teaching.tar.gz', 'multilingual.py'])
+            payload.extend(['teaching.tar.gz', 'multilingual.py', 'profiles.v2.json'])
         for name in payload:
             with (temporary / name).open("rb") as stream:
                 plan["sha256"][name] = hashlib.file_digest(stream, "sha256").hexdigest()

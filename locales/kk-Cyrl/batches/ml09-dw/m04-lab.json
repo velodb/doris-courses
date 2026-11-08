@@ -1,0 +1,440 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.96ae413c53aa4d52bb95343ef471781b",
+      "source_hash": "4cc7d164eb53da131a595c8bfb618adde7f36143becca20436c9558adaffca0f",
+      "target_text": "**Күтілетін нәтиже**\n\n`SHOW CATALOGS` ағымдағы, түрі `internal` болатын `internal` және түрі `iceberg` болатын `dw_course_l1_demo_lake` Catalog-тарын тізеді; басқа зертханалық дерекқорлар үшін жасаған Catalog-тар да көрінеді. Деректер көлі Catalog-ында `dw_course_l1_demo`, `information_schema` және `mysql` дерекқорлары, ал дерекқорда бір `orders` кестесі бар. Оның анықтамасында `ENGINE=ICEBERG_EXTERNAL_TABLE` және `LOCATION 's3://course-warehouse/dw_course_l1_demo/orders'`, сондай-ақ `\"write.parquet.compression-codec\" = \"zstd\"` сияқты Iceberg қасиеттері көрсетілген, тексеру жасыл. Бағандар курстың ішкі кестелеріндегі `NOT NULL` бағандарынан өзгеше, әдеттегі Iceberg бағандары сияқты NULL қабылдайды.\n",
+      "target_hash": "ba88e259aa7856d6c78b4b3d22547b98eb09812cebd8ed555af6deb73c647126",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "4cc7d164eb53da131a595c8bfb618adde7f36143becca20436c9558adaffca0f",
+          "target_hash": "ba88e259aa7856d6c78b4b3d22547b98eb09812cebd8ed555af6deb73c647126"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.977e628388c64d8c8d8c9d7ea453c7fb",
+      "source_hash": "ba9d26a41d20513ba8affcd10c773fd2dbfbcb9b48e5a4533d3883ec4927642a",
+      "target_text": "## 1. Кестені Catalog арқылы табу\n\n**Catalog** — Doris-тің басқа жүйенің метадеректеріне кіретін нүктесі: Doris-тің өз кестелері `internal` Catalog-ында, ал деректер көлі кестесі дайындық жасаған Catalog-та. `internal` сыртындағы кесте `catalog.database.table` деп аталады. `SHOW CATALOGS`, `SHOW DATABASES FROM` және `SHOW TABLES FROM` осы жолмен төмен өтеді, ал `SHOW CREATE TABLE` кестенің түрін және файлдарының орнын көрсетеді.\n",
+      "target_hash": "ef87ac25ca2c9ca709eb928fd56fc7830ca09d1fbc8f22a58d2c520ec8befe18",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "ba9d26a41d20513ba8affcd10c773fd2dbfbcb9b48e5a4533d3883ec4927642a",
+          "target_hash": "ef87ac25ca2c9ca709eb928fd56fc7830ca09d1fbc8f22a58d2c520ec8befe18"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.308c8da0636b4b9682186e5bd622a815",
+      "source_hash": "03be6468bb3097662a82b17656120c358ad4e78a80a387b6715006dd532aa63d",
+      "target_text": "<div>\n  <div>4-ЗЕРТХАНАЛЫҚ ЖҰМЫС · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Iceberg кестесі мен оның файлдарын сұрау</div>\n</div>\n\n1-модульдің он тарихи тапсырысы шағын жергілікті деректер көлінің Iceberg кестесінде де бар: S3-үйлесімді объектілік сақтау Silo оның файлдарын, ал Iceberg REST Catalog қызметі метадеректерін сақтайды. Doris-ті оған Catalog арқылы қосып, кестені табасыз, snapshot-тары мен деректер файлдарын оқисыз, сұрайсыз, Doris тұтынушы кестесімен біріктіресіз және ішкі кестеге жүктейсіз: бір рет Catalog арқылы, бір рет S3 кестелік функциясымен деректер файлынан. Әр тәсіл он тапсырыс және 12220.60 беруі керек. Шамамен 30 минут жоспарлаңыз.\n\n**4-модуль: сыртқы деректерді сұрау және деректер көлі кестелерін біріктіру** · [Сабақ](course.md) · [Тест](quiz04_internal_files_and_lake_tables.ipynb) · [Курстың README файлы](../../README.md)\n",
+      "target_hash": "0a489eb6ffeee2bea549bdbaac3624834c2dd4bcaeda9ef74f4868335594b7f9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "03be6468bb3097662a82b17656120c358ad4e78a80a387b6715006dd532aa63d",
+          "target_hash": "0a489eb6ffeee2bea549bdbaac3624834c2dd4bcaeda9ef74f4868335594b7f9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f0b0b5f948404b1594fe9fc82f281023",
+      "source_hash": "cc0e152819ba78080b71f2f1485821eaf3bcaedffb35c01d78d241528651ca8d",
+      "target_text": "## Деректер көлін дайындау\n\nАлдымен 1-зертханалық жұмысты аяқтаңыз. Келесі ұяшық курстың Doris жүйесіне қосылып, екі курс контейнерін — Silo және Iceberg REST Catalog — жергілікті 51900 және 51818 порттарында (`DW_LAKE_S3_PORT` және `DW_LAKE_REST_PORT` айнымалылары) іске қосады; алдымен екі портты тексеріп, біреуі бос болмаса, тоқтайды, портты атайды және оны босату не басқасын таңдау тәсілін көрсетеді. Алғаш іске қосқанда екі бейне жүктеледі; кейінгі орындаулар томдардағы деректерді қайта пайдаланады. Курстың README файлындағы [Тазалау](../../README.md#clean-up) бөлімі оларды тоқтату мен жоюды түсіндіреді.\n\nДайындық Doris ішінде зертханалық дерекқорыңыздың атына `_lake` қосып аталған Catalog, ал оның ішінде `orders` Iceberg кестесін жасайды; алғаш орындағанда он тапсырысты енгізеді. **Бұл деректер көлі кестесіне Doris жазады**: курста басқа қозғалтқыш жоқ. Нақты деректер көлінде мұндай кестелерді әдетте Spark, Flink не басқа жүйе жазады, ал Doris оларды сондай Catalog арқылы оқиды. Аяқтағанда ұяшық орындаған SQL-ді көрсетеді. Жұмыс тек `customers_sample`, `orders_from_lake` және `orders_from_file` ішкі кестелерін қайта жасайды.\n",
+      "target_hash": "33082522a0792001a0f561a5dac45000aef55514da73272117aff10bcef3ed35",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "cc0e152819ba78080b71f2f1485821eaf3bcaedffb35c01d78d241528651ca8d",
+          "target_hash": "33082522a0792001a0f561a5dac45000aef55514da73272117aff10bcef3ed35"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2129d32cb8da41a4aa880ce8a004f84e",
+      "source_hash": "6ffdd3d40648dc04f6851537dc977d569c0c97944d922343e00dc99c03bf7d73",
+      "target_text": "## 3. Деректер көлі кестесін тікелей сұрау\n\nCatalog арқылы Doris кесте метадеректерін REST қызметінен оқиды, қай файлдарды оқитынын жоспарлайды, оларды Silo-дан оқып, өз BE-сінде есептейді. Нәтиже тек Doris жадында болады: ішкі кестеде ештеңе сақталмайды. Он тапсырыс және 12220.60 күтіледі.\n",
+      "target_hash": "728c667c6ad129bc41c34c05aa633e7468215cab3c6d756a052d6c00a01ffd67",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "6ffdd3d40648dc04f6851537dc977d569c0c97944d922343e00dc99c03bf7d73",
+          "target_hash": "728c667c6ad129bc41c34c05aa633e7468215cab3c6d756a052d6c00a01ffd67"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d55b77be567d4aa98bd55a2d56bf18f8",
+      "source_hash": "81d3affc4e999ad956920187575dd5051d896dd352e84643a438d2a9ccc86099",
+      "target_text": "## 4. Ішкі кестемен біріктіру және деректер көлі кестесін жүктеу\n\nDoris ішінде әр тұтынушыға бір жолы бар `customers_sample` Unique Key кестесін жасап, көлдегі тапсырыстарды оған `customer_id` арқылы біріктіріңіз: әр тапсырыс дәл бір тұтынушыға сәйкес келеді, сондықтан біріктіру он жол мен 12220.60 сомасын сақтайды. Содан кейін тапсырыстың алты бағанын `INSERT INTO ... SELECT` арқылы `orders_from_lake` ішкі кестесіне жүктеп, деректер көлі кестесімен әр жол бойынша салыстырыңыз. Ішкі кесте — бүгінгі көл деректерінің көшірмесі: ол көлдегі кейінгі өзгерістерге ілеспейді.\n",
+      "target_hash": "7bbe3a49e0835a059162384330092020f6d6df1a3b14ce304fabe54bfc197c07",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "81d3affc4e999ad956920187575dd5051d896dd352e84643a438d2a9ccc86099",
+          "target_hash": "7bbe3a49e0835a059162384330092020f6d6df1a3b14ce304fabe54bfc197c07"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.543f164c93ca4d28a59203f437174a61",
+      "source_hash": "5e07be16b9f8087fc9405c5587f11d1abac01eed5153f13f252763298499de0a",
+      "target_text": "## Жұмысты аяқтау шарттары\n\n- деректер көлі кестесінің Catalog-ын, дерекқорын және кестесін атай аласыз, `ENGINE=ICEBERG_EXTERNAL_TABLE` мен оның `LOCATION` мәні нені білдіретінін айтасыз;\n- snapshot-ын және деректер файлын оқып, кесте сұрауы неге тек ағымдағы snapshot файлдарын оқитынын түсіндіре аласыз;\n- деректер көлі кестесі, біріктіру, `orders_from_lake` және `orders_from_file` барлығы он тапсырыс және 12220.60 береді, әрі олардың қайсысын Doris сақтайтынын айта аласыз.\n",
+      "target_hash": "969abf3b1f157bd02ddb1bda6cb491ab7192b968c825836039998bf30a030a18",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "5e07be16b9f8087fc9405c5587f11d1abac01eed5153f13f252763298499de0a",
+          "target_hash": "969abf3b1f157bd02ddb1bda6cb491ab7192b968c825836039998bf30a030a18"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7e69826317ee418d98f3fcfbf3f504b8",
+      "source_hash": "82ef8b6e4deaf2541ae66f991c1a547292aa56cada665570433ff3b8714f66b1",
+      "target_text": "**Күтілетін нәтиже**\n\nФайлдан алты баған, Doris Parquet-тен оқыған түрлер: `bigint`, `bigint`, `date`, `decimal(18,2)`, `int` және `text`, бәрі NULL қабылдайды. Файлды тікелей оқу 10 тапсырыс және 12220.60 береді, `INSERT INTO ... SELECT` көрсетіледі, тексеру жасыл: файл — кестенің деректері. `use_path_style` Silo күткендей бакет атауын URL жолына қояды.\n",
+      "target_hash": "33ac196debc1e8172d2422b3638664c4fd52156ae2b5a5441c86f3e15a1e9c7e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "82ef8b6e4deaf2541ae66f991c1a547292aa56cada665570433ff3b8714f66b1",
+          "target_hash": "33ac196debc1e8172d2422b3638664c4fd52156ae2b5a5441c86f3e15a1e9c7e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9db3db3129744e2a8d700c0053616525",
+      "source_hash": "a08f641abfc84cd7e783eec4c04c4f3d61c54e20d488333389b42667debb749a",
+      "target_text": "## 5. Деректер файлын кестесінсіз оқу: S3 кестелік функциясы\n\n**Кестелік функция** кесте сияқты жолдар қайтарады. `S3(...)` S3-үйлесімді объектілік сақтаудағы файлдарды оқиды: сіз бір файлдың не `*` арқылы бірнеше файлдың жолын, пішімін, объектілік сақтау мекенжайы мен кілттерін бересіз, ол дәл сол файлдарды оқиды. Оны 2-қадамдағы деректер көлі кестесінің деректер файлына бағыттаңыз. `DESC FUNCTION` Doris Parquet файлының өзінен оқитын бағандарды көрсетеді. Содан кейін файлды `INSERT INTO ... SELECT` арқылы `orders_from_file` ішіне жүктеп, салыстырыңыз.\n\nФункция Iceberg туралы ештеңе білмейді: snapshot-тарды оқымайды. Деректер көлі кестесі кейін өзгерсе, мысалы жаңа snapshot-та жолдар жойылса, бұл ескі файлда олар әлі қалар еді; Catalog ағымдағы snapshot файлдарын оқиды.\n",
+      "target_hash": "c1d7f901d7e682cbfe7c2d34ec6ca2adfc1e77687aef1e8e911df8105860a405",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "a08f641abfc84cd7e783eec4c04c4f3d61c54e20d488333389b42667debb749a",
+          "target_hash": "c1d7f901d7e682cbfe7c2d34ec6ca2adfc1e77687aef1e8e911df8105860a405"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.af2759d44919476e8754291c7ab1c27d",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған күйде. Салыстыру үшін ашыңыз немесе орындаңыз.\n",
+      "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.88d290c85e5946e6bf2009cd57c13337",
+      "source_hash": "f75a43105d843197d42c0f750ec6d2a829387ddc0d45c07110b2d82b368ddec6",
+      "target_text": "## 6. Жаттығу: екінші күн және жетіспейтін тұтынушылар\n\nДеректер көліндегі 2013-01-02 тапсырыстары үшін `LEFT JOIN` қолданып, тапсырыстарды санаңыз, сомаларын қосыңыз және тұтынушысы `customers_sample` кестесінде жоқ тапсырыстарды санаңыз. 5 тапсырыс, 8276.40 және 0 жетіспейтін тұтынушы күтіледі. Содан кейін деректер көлі кестесі мен `orders_from_lake` кестесіндегі бірдей күн сүзгісінің жоспарларын салыстырыңыз: әрқайсысын қай сканерлеу түйіні оқиды және әрқайсысы не оқитынын айтады?\n",
+      "target_hash": "09f094012ec4c0f13eb4a4f489b26388813c9ea40cb196be8c6b8de9dee89ea4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "f75a43105d843197d42c0f750ec6d2a829387ddc0d45c07110b2d82b368ddec6",
+          "target_hash": "09f094012ec4c0f13eb4a4f489b26388813c9ea40cb196be8c6b8de9dee89ea4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8e44bd2c119b4e7c99ac6bfea0105d66",
+      "source_hash": "e622e48d8f5db641e5fbe5a9bb5e4d5ae9721764d7dabca6b5cd1980d11996f8",
+      "target_text": "**Күтілетін нәтиже**\n\n`orders_from_lake` кесте анықтамасы, екі жасыл белгі және екі жол: көл Catalog-ындағы `ENGINE` мәні `iceberg` болатын `orders` көл кестесі және `internal` ішіндегі `ENGINE` мәні `Doris` болатын `orders_from_lake`. Деректер бірдей; оларды кім сақтайтыны өзгеше.\n",
+      "target_hash": "235b491cab81601879a3a90e5cf9029e0e15f7af37f6a6aec72e8acc352d850d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "e622e48d8f5db641e5fbe5a9bb5e4d5ae9721764d7dabca6b5cd1980d11996f8",
+          "target_hash": "235b491cab81601879a3a90e5cf9029e0e15f7af37f6a6aec72e8acc352d850d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3692068897084aaea9c6b1cff003b4eb",
+      "source_hash": "07227fcbf4cdeedbc1681b10fea82e2fe597c7e1e4801ded5bada6c0f803aac4",
+      "target_text": "## Келесі қадам\n\n[4-тест: сыртқы деректерді сұрау және деректер көлі кестелерін біріктіру](quiz04_internal_files_and_lake_tables.ipynb) файлын ашыңыз, содан кейін [5-модуль: деректерді пакеттік және үздіксіз жүктеу](../module05-ingestion/course.md) бөліміне өтіңіз.\n\nДеректер көлін тоқтатып, деректерін сақтау үшін курс каталогынан мынаны орындаңыз:\n\n```bash\ndocker compose --project-name doris-warehousing-lake --file environments/lakehouse/compose.yml stop\n```\n\nЖалғастыру үшін осы жұмысты баптауынан бастап **Деректер көлін дайындау** бөліміне дейін қайта орындаңыз. 4–5-модульдердің кеңейтілген жұмысы сол көл деректерін қолданады; оны аяқтағанша томдарды сақтаңыз.\n",
+      "target_hash": "e9f6d940b116bbb17d41941d4162ac183e175d5008144f0857a6d55266d1d2c3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "07227fcbf4cdeedbc1681b10fea82e2fe597c7e1e4801ded5bada6c0f803aac4",
+          "target_hash": "e9f6d940b116bbb17d41941d4162ac183e175d5008144f0857a6d55266d1d2c3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d13fa46ea78945c492a0af72314b5d1d",
+      "source_hash": "f285d4044fe86008e89bdc2e27450637972a6c4529dc2128da3c29b9e1b3a76b",
+      "target_text": "**Күтілетін нәтиже**\n\nБір жол: 5 тапсырыс, 8276.40, 0 жетіспейтін тұтынушы; `LEFT JOIN` тұтынушысы жоқ тапсырысты сақтап, тұтынушы бағандарын `NULL` қалдырады, сондықтан бұл есеп оны табар еді. Ішкі кесте жоспары `VOlapScanNode`, `partitions=1/1` және `tablets=1/1` арқылы Doris сақтайтын tablet-ті сканерлейді. Деректер көлі кестесінің жоспары `VICEBERG_SCAN_NODE`, `inputSplitNum=1` және `totalFileSize=4349` арқылы кесте метадеректерімен табылған объектілік сақтаудағы файлды сканерлейді, күн сүзгісі Iceberg-ке беріледі.\n",
+      "target_hash": "a8473a2536fd6811e6f36568de7a14dd249856217c9d8e868c83ac76e6956807",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "f285d4044fe86008e89bdc2e27450637972a6c4529dc2128da3c29b9e1b3a76b",
+          "target_hash": "a8473a2536fd6811e6f36568de7a14dd249856217c9d8e868c83ac76e6956807"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6f20dac31a5a47a68aad564e2b870373",
+      "source_hash": "848bf8e95e4c77f2c4b3335144cbc030c57054fcc127fd81898b602b481078bf",
+      "target_text": "**Күтілетін нәтиже**\n\nАлты жасыл қадамы және көлдегі он тапсырысты тексеруі бар панель, содан кейін дайындық орындаған SQL: REST қызметінің `http://course-lake-rest:8181` мекенжайы, `s3://course-warehouse/` қоймасы және объектілік сақтаудың `http://course-lake-silo:9000` мекенжайы мен кілттері бар `CREATE CATALOG IF NOT EXISTS dw_course_l1_demo_lake`; сол Catalog ішінде `CREATE DATABASE` және `CREATE TABLE`; алғаш орындағанда он тапсырыстың `INSERT` операторы немесе кейінгі орындауда кестеде олар бар екені туралы түсініктеме. Бұл мекенжайлар — Doris жұмыс істейтін курс Docker желісіндегі атаулар: ноутбуктен сол қызметтер 127.0.0.1:51900 және 127.0.0.1:51818 арқылы жауап береді.\n\nҰяшық кестенің толық `dw_course_l1_demo_lake.dw_course_l1_demo.orders` атауын `source` ішінде сақтайды (`DW_DATABASE` орнатсаңыз, өз дерекқор атыңызбен).\n",
+      "target_hash": "27a166854d07931fa1cba75a354bf8ecdbb496ccb7a221ae2bba9a75a9351399",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "848bf8e95e4c77f2c4b3335144cbc030c57054fcc127fd81898b602b481078bf",
+          "target_hash": "27a166854d07931fa1cba75a354bf8ecdbb496ccb7a221ae2bba9a75a9351399"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8a08ae71c792427d8fa4f1d5d5f8e949",
+      "source_hash": "e286ae3c15bdac7949dcfb65084820516e9d12174b43fb7658b01aea44b4a298",
+      "target_text": "**Күтілетін нәтиже**\n\nЖасыл белгі, содан кейін жоспар: оның сканерлеуі — кестенің толық атауы, `order_id = 1` предикаты, `inputSplitNum=1, totalFileSize=4349` және сол шартты қамтитын `icebergPredicatePushdown` бар `VICEBERG_SCAN_NODE`: Doris сүзгіні Iceberg-ке береді, ол баған статистикасы сәйкес келмейтінін көрсететін файлдарды өткізіп жібере алады. Содан кейін 1–5 және 80–84 он тапсырысы көрсетіледі.\n",
+      "target_hash": "8f95163a400dec5974413ca1975b64adf26f2b3b21062e335030bae2b2b9b530",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "e286ae3c15bdac7949dcfb65084820516e9d12174b43fb7658b01aea44b4a298",
+          "target_hash": "8f95163a400dec5974413ca1975b64adf26f2b3b21062e335030bae2b2b9b530"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fb7ca79ea9724bb78e44fa640f0d4ea3",
+      "source_hash": "406bb0b4edbae3502277e8640fa274b657f5675ab45557a8edc19a101e781095",
+      "target_text": "**Күтілетін нәтиже**\n\n`operation` мәні `append`, ата-анасы жоқ бір snapshot: дайындықтың алғашқы орындалуындағы `INSERT`. Бір деректер файлы — `s3://course-warehouse/dw_course_l1_demo/orders/data/<random name>.zstd.parquet`, пішімі `PARQUET`, 10 жазба, шамамен 4.3 KB. Ұяшық 5-қадам үшін оның жолын `data_file` ішінде сақтайды. Басқа `INSERT` екінші snapshot пен екінші файл қосар еді; содан кейін Doris екеуін де оқыр еді.\n",
+      "target_hash": "524cd64696003ec343d2219bea12cc399c25fcc29ea2cefa4aae08ee620e8301",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "406bb0b4edbae3502277e8640fa274b657f5675ab45557a8edc19a101e781095",
+          "target_hash": "524cd64696003ec343d2219bea12cc399c25fcc29ea2cefa4aae08ee620e8301"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.23e9792a9ea445469abf60205d05c0ab",
+      "source_hash": "8a6402d094f7148a91c34aac4a41fe97c14722e218455b593019adecd4602056",
+      "target_text": "## 2. Кестенің snapshot-тары мен файлдарын оқу\n\nIceberg кестесі — деректер файлдарының үстіндегі метадеректер. Әр бекіту, мысалы `INSERT`, жаңа файлдар және жаңа **snapshot**, яғни сол сәттегі кестені құрайтын файлдар тізімін жазады. Сұрау ағымдағы snapshot файлдарын оқиды. Doris Iceberg метадеректерін атауы кесте атауына жұрнақ қосу арқылы жасалған кестелер ретінде көрсетеді: `$snapshots` snapshot-тарды, ал `$files` ағымдағы snapshot деректер файлдарын тізеді.\n",
+      "target_hash": "5c170cabb8e512e7f0300b6d427e74995e6de904350475df3a226c24be126720",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 18 Lab cells after reading the full original code: local Silo/REST startup and ports, Catalog/table names and LOCATION, nullable file types, source/data_file variables, ten orders and 12220.60 through four paths, daily 5/8276.40/0 reconciliation, VICEBERG_SCAN_NODE versus VOlapScanNode fields, first-run append snapshot, internal reset scope and stop command. Clarified one Kazakh path/method phrase so it cannot be mistaken for a data row. Technical admission and native human review remain unperformed.",
+          "source_hash": "8a6402d094f7148a91c34aac4a41fe97c14722e218455b593019adecd4602056",
+          "target_hash": "5c170cabb8e512e7f0300b6d427e74995e6de904350475df3a226c24be126720"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

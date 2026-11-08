@@ -172,8 +172,9 @@ def validate_inputs(config, pilot, now=None):
     # Validated pre-overlay images retain their exact old runtime fingerprint.
     operations = {'operations.py'} if 'operations.py' in runtime['sha256'] else set()
     ui = {'ui.tar'} if 'ui.tar' in runtime['sha256'] else set()
+    profiles = {'profiles.v2.json'} if runtime.get('schema_version') == 2 and 'profiles.v2.json' in runtime['sha256'] else set()
     require({'install_host.sh', 'source.tar', 'host.py', 'check.py', 'kernel.py', 'serve.py', 'portal.py',
-             'packages.json', 'doris-workshop-jupyter.service'} | operations | ui | multilingual | set(locks.values()) == runtime['sha256'].keys(),
+             'packages.json', 'doris-workshop-jupyter.service'} | operations | ui | profiles | multilingual | set(locks.values()) == runtime['sha256'].keys(),
             'runtime: incomplete production bundle')
     if config['image']['mode'] == 'prebuilt':
         require(file_hash(bundle / 'runtime.json') == release['runtime_sha256'], 'image: local runtime does not match the released image')

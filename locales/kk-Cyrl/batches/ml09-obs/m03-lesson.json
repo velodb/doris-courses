@@ -1,0 +1,368 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.a8fafb6868ce47d0bdea30cdc8654cfd",
+      "source_hash": "d47596faf26339f69d56c8768cc89b215695c68e345dbef004eb3bdb205cf9c7",
+      "target_text": "## 3.7 Бақылау тақталары\n\nБақылау тақтасы тексеру сұрауларын өздігінен жаңаратын панельдер ретінде сақтайды. Панельде дереккөз, сұрау және визуализация бар. Doris дереккөзінде сұрау — редактордың **Code** режимінде жазылатын SQL.\n\nУақыт қатары үшін сұрау `time` атты уақыт бағанын және әр қатарға бір сандық баған қайтарады, ал **Format** мәні — **Time series**. Grafana SQL-ді тақтаға бейімдейтін макростар ұсынады:\n\n| Макрос | Grafana немен алмастырады |\n| --- | --- |\n| `$__timeFilter(timestamp)` | Тақтаның уақыт аралығындағы жолдарды қалдыратын шарт |\n| `$__timeGroupAlias(timestamp, 1m)` | Әр жол минуты басталатын уақыт, атауы `time` |\n\nМакростар аралықты нақты уақыт сәттерімен бергендіктен, **Last 30 minutes** сияқты салыстырмалы аралық Doris App беттерінен өзгеше, кез келген уақыт белдеуінде жұмыс істейді. 3-зертханалық жұмыстың `Payment incident` тақтасында екі панель бар: сәтті және сәтсіз тапсырыстары жинақталған бағандармен бөлінген минуттық тапсырыстар және хост CPU-ы. Grafana тақталарды өз дерекқорында сақтайды; кез келген көруші оларды Grafana API-ы арқылы қайта оқи алады, 3-зертханалық жұмыс сіздікін осылай тексереді.\n\n",
+      "target_hash": "4bca801c807c3a8d6c68b6d2f4186f080fbd63bbe635e74ecf391d91bae3b27a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "d47596faf26339f69d56c8768cc89b215695c68e345dbef004eb3bdb205cf9c7",
+          "target_hash": "4bca801c807c3a8d6c68b6d2f4186f080fbd63bbe635e74ecf391d91bae3b27a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.dcc22d4fcc0a462cb9785ecd5f665ec6",
+      "source_hash": "db747f8a1d26e429f3468cb76643b4b9f100eb51bc3c721a51dbc4f8981c2d9b",
+      "target_text": "## Қорытынды\n\n- Discover Lucene не SQL шартымен бір кестенің жолдарын іздейді; Traces беті толық трассаларды іздейді; бақылау тақталары SQL панельдерін сақтайды.\n- Doris UTC сақтайды. Doris App аралықты браузердің уақыт белдеуімен салыстырады, сондықтан онда абсолют UTC аралықтарын орнатыңыз; бақылау тақталарының панельдері дұрыс түрлендіреді.\n- `MATCH_PHRASE` пен `MATCH_ANY` мәтінді кіші әріпті сөздерге бөлетін `body` кері индексін қолданады. Фразада сөздер ретімен сәйкесуі керек, сондықтан сұрау параметрлері сияқты қосымша сөздер сәйкестікті бұзады.\n- Маңыздылық бойынша іздеу дереккөз қате ретінде жазғанын ғана табады. Бұл инцидент қате журналын қалдырмайды, тек күйі 500 қатынас журналы жолдарын қалдырады.\n- Трассада қате ең терең қате span-ынан басталады; жоғарыдағы span-дар оны тек хабарлайды. Мұнда ол — payment сервисінің төлем шақыруы.\n- Хосттың жұмысбасты үлесі — 1-ден барлық ядроның орташа бос тұру үлесін шегеру. Хост CPU-ы төмен қалады, демек себеп қолданбада.\n- `$__timeFilter` және `$__timeGroupAlias` SQL панелін тақтаның уақыт аралығына сәйкестендіреді.\n\n",
+      "target_hash": "d1ef6e02259c4294b8bfe1a463e93dd9328672fdff5726420a4194976e87cf2a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "db747f8a1d26e429f3468cb76643b4b9f100eb51bc3c721a51dbc4f8981c2d9b",
+          "target_hash": "d1ef6e02259c4294b8bfe1a463e93dd9328672fdff5726420a4194976e87cf2a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.98f3a83f0dd945be8bcce2b13c34c8a6",
+      "source_hash": "b2f52107b6b6fb4f24dcce11cd04b09624d7a6096c8c9a5f96bba60b4d095417",
+      "target_text": "## Оқу мақсаттары\n\nМодульді аяқтаған соң сіз:\n\n1. Doris App-тың Discover бетінде Lucene және SQL шарттарымен журнал іздей аласыз.\n2. Маңыздылық бойынша іздеу сервис қате ретінде жазбайтын ақауларды неге өткізіп алатынын түсіндіре аласыз.\n3. Doris уақытты сақтауына сәйкес уақыт аралығын орната аласыз.\n4. Журнал жолынан трасса арқылы қате басталған span-ға өте аласыз.\n5. Әр ядро мен әр күйдің үлгілерінен хост CPU-ын өлшей аласыз.\n6. Grafana уақыт макростары бар SQL-ден бақылау тақтасының панельдерін құра аласыз.\n\n",
+      "target_hash": "f0495519bb7ac80efd9686096c4272c5e9255763453a029879c3d6b850f9c699",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "b2f52107b6b6fb4f24dcce11cd04b09624d7a6096c8c9a5f96bba60b4d095417",
+          "target_hash": "f0495519bb7ac80efd9686096c4272c5e9255763453a029879c3d6b850f9c699"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.aac133e7ba154348a075a4092a754dbd",
+      "source_hash": "8b0bb714782d726dd285285a6e1ffbe1e542b0f1b9e2c186c7381bdf8d7eed4d",
+      "target_text": "## 3-тест\n\n[3-тест: Жүйені бақылау деректерін визуализациялау](quiz03_observability_visualization.ipynb) файлын ашыңыз. Бір жауап таңдалатын алты сұрақ бар; іске қосылған орта қажет емес.\n\nӘрі қарай: бұл — 1-деңгейдің соңғы модулі. 2-деңгей [4-модуль: Жүйені бақылау деректерінің кесте модельдері](../../level2/module04-table-model/course.md) бөлімінен басталады.\n\n",
+      "target_hash": "d83e71b3c008a9920f52d0253ae54ce316fa2e0941e15cd0202f9583c4e27324",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "8b0bb714782d726dd285285a6e1ffbe1e542b0f1b9e2c186c7381bdf8d7eed4d",
+          "target_hash": "d83e71b3c008a9920f52d0253ae54ce316fa2e0941e15cd0202f9583c4e27324"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ac3c1cec796447a5875fb7625c7993b9",
+      "source_hash": "10b026122924e7a472356d228a9fd214573c5cd79ae9ac14cd38fd1999f9c8a2",
+      "target_text": "# 3-модуль: Жүйені бақылау деректерін визуализациялау\n\n| Курс ақпараты | Мәні |\n| --- | --- |\n| Курс | Apache Doris көмегімен жүйені бақылау · 1-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Grafana | Doris App 1.0.5 плагині бар Grafana 11.4.0 |\n| Болжалды уақыт | Шамамен 85 минут: оқу 30, зертханалық жұмыс 45, тест 10 |\n\n[Курс README файлы](../../README.md) · [3-зертханалық жұмысты ашу](lab03_data_visualization.ipynb) · [3-тестті ашу](quiz03_observability_visualization.ipynb)\n\n",
+      "target_hash": "04275df1e04c165400ee52433cad1276378ee86de14d0107bf4c53f5604756f1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "10b026122924e7a472356d228a9fd214573c5cd79ae9ac14cd38fd1999f9c8a2",
+          "target_hash": "04275df1e04c165400ee52433cad1276378ee86de14d0107bf4c53f5604756f1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1d4c5b6d23254575857574dd7961e29b",
+      "source_hash": "fb77e7b42c2332b2e320b98ea0b816baccee0afa3ada0f8d62615b55619f83bd",
+      "target_text": "## Модуль мақсаты\n\nGrafana-да төлем ақауларын тексеру: журналдардан іздеу, сәтсіз тапсырыс трассасын ақау басталған span-ға дейін қадағалау, хост CPU-ын себептен алып тастау және дәлелді бақылау тақтасында сақтау.\n\n",
+      "target_hash": "9a35c599a915c6e023b103f5d1a4b6b9a30c710aa9cf42f098365e60b2e6e640",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "fb77e7b42c2332b2e320b98ea0b816baccee0afa3ada0f8d62615b55619f83bd",
+          "target_hash": "9a35c599a915c6e023b103f5d1a4b6b9a30c710aa9cf42f098365e60b2e6e640"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ec0f1e0b20fe4194bcca13bdd493bacb",
+      "source_hash": "1ce0b6bd1d5bb74f203dbc625d69f2c29ba0a54a737b0b712c61ee70d9637209",
+      "target_text": "## 3.2 Уақыт аралықтары мен уақыт белдеулері\n\nGrafana-дағы әр іздеудің уақыт аралығы бар, ал жүйені бақылау деректері уақытқа байланысты: инцидентте ең жаңа минуттар маңызды. Екі сағат қатысады. Doris телеметрия уақытын экспорттаушы жазғандай UTC бойынша сақтайды, Discover сақталған уақытты көрсетеді. Браузеріңіз компьютердің уақыт белдеуінде жұмыс істейді.\n\nGrafana-ның өз панельдері дұрыс түрлендіреді: аралықты дереккөзге нақты уақыт сәттерімен жіберіп, нәтижені браузердің уақыт белдеуінде көрсетеді. Бірақ Doris App 1.0.5 аралықты браузер уақыт белдеуінің мәтініне айналдырып, Doris-тегі UTC уақытымен салыстырады. UTC+8 компьютерінде **Last 15 minutes** осылайша болашақтағы 8 сағат кейінгі жолдарды сұрап, ештеңе таппайды; UTC-ден батысқа қарай өткен уақыттан іздеп, жаңа жолдарды өткізіп алады. UTC қолданатын компьютерде ғана салыстырмалы аралық күткендей жұмыс істейді.\n\nЕкі салдар:\n\n- Discover мен Traces ішінде UTC бойынша **абсолют** аралық орнатыңыз: уақыт таңдағышының **Absolute time range** бөлімінде басталу және аяқталу уақытын теріңіз. 3-зертханалық жұмыс оларды шығарып береді.\n- Бет жол көрсетпесе, дерек жоқ деп қорытпас бұрын аралықты тексеріңіз. Дұрыс кезең сұрауы соны растамайынша, бос панель деректер туралы емес, сұрау туралы дәлел береді.\n\nTraces бетінің сарқырама көрінісі уақытты браузер белдеуімен көрсетеді: UTC+1 компьютерінде бір span Discover-де 19:37, сарқырамада 20:37 болуы мүмкін.\n\n![Doris App салыстырмалы аралықтары браузердің жергілікті мәтінін UTC уақыт белгілерімен салыстырады; абсолют UTC аралықтары оларды сәйкестендіреді, ал бақылау тақталары нақты сәттерді беріп, көрсетілетін уақытты түрлендіреді.](images/01-grafana-time-range-paths.png)\n\n*Doris App ішінде абсолют UTC аралықтарын қолданыңыз; Grafana бақылау тақталары уақыт белдеуін өздері түрлендіреді.*\n\nСурет белгілері: TIME RANGES: ALIGN WITH UTC — уақыт аралықтарын UTC-мен сәйкестендіру; BROWSER-LOCAL TEXT — браузердің жергілікті уақыт мәтіні; UTC TIMESTAMPS — UTC уақыт белгілері; MISMATCH OUTSIDE UTC — UTC-ден өзге белдеудегі сәйкессіздік; ABSOLUTE UTC RANGE — абсолют UTC аралығы; MATCHING TIMES — сәйкес уақыттар; GRAFANA DASHBOARD — Grafana бақылау тақтасы; EXACT INSTANTS — нақты уақыт сәттері; BROWSER-LOCAL DISPLAY — браузердің жергілікті уақытпен көрсетуі. DORIS APP 1.0.5 және DISCOVER + TRACES — өнім мен беттердің атаулары.\n\n",
+      "target_hash": "b126ffab75e3a7205514161bf0fd34f6cbd1232bbb54747dbe62dde363787972",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "1ce0b6bd1d5bb74f203dbc625d69f2c29ba0a54a737b0b712c61ee70d9637209",
+          "target_hash": "b126ffab75e3a7205514161bf0fd34f6cbd1232bbb54747dbe62dde363787972"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4d954fcd8e7a430ea7f2c139d9070a51",
+      "source_hash": "332aeb876686e9b1d0d0ad03b5cb7c24ab06b5f4b25b72230f1b5b5e613514ff",
+      "target_text": "## 3.1 Grafana және Doris App\n\nGrafana әртүрлі дереккөздерден дерек көрсетеді. DOG стегі оған **Doris** атты бір дереккөз береді; ол MySQL протоколымен `otel` дерекқорына қосылады. Осы модульдің әр беті мен панелі Doris-ті сол арқылы SQL-мен оқиды.\n\n**Doris App** — Doris телеметриясына арналған Grafana плагині. Беттері Grafana мәзірінің **Doris App** бөлімінде:\n\n| Бет | Нені іздейді | Не үшін қолданылады |\n| --- | --- | --- |\n| **Discover** | `otel_logs` сияқты бір кестенің жолдары | Журнал жазбаларын табу, сүзу және уақыт бойынша қаншасы келгенін көру |\n| **Traces** | `otel_traces` ішіндегі толық трассалар | Сұрауларды span атрибуттары мен ұзақтығы бойынша тауып, сарқырама көрінісін ашу |\n| **Dashboard** | Grafana бақылау тақталары | Минуттық санақ сияқты SQL сұрау панельдерін сақтау |\n\nDOG стегіндегі Grafana кірушілерге жүйеге кірмей беттерді көруге мүмкіндік береді; бұл Discover мен Traces үшін жеткілікті. Тақта құруға тіркелгі қажет: стек әкімшісі — `admin`, құпиясөзі — `admin`. Grafana бірінші рет жаңа құпиясөз сұрайды; бұл жергілікті стекте оны өткізіп жіберуге болады.\n\n",
+      "target_hash": "0cfbb59509338049b8ef5790a9d856eb02cf33749db5da46c4d32bbf825d7606",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "332aeb876686e9b1d0d0ad03b5cb7c24ab06b5f4b25b72230f1b5b5e613514ff",
+          "target_hash": "0cfbb59509338049b8ef5790a9d856eb02cf33749db5da46c4d32bbf825d7606"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f0c48504908b4dbfb59ff3d2fb873b9e",
+      "source_hash": "25a6b90042593a3254d280ac9fb6ea47364200ffaf7581c468caec0bb7a63b92",
+      "target_text": "## 3.3 Журналдардан іздеу\n\nDiscover іздеуді жазудың **Mode** арқылы таңдалатын екі тәсілін ұсынады.\n\n**Lucene** — өрістерден іздеудің қысқа синтаксисі. Doris App оны SQL-ге айналдырады:\n\n| Lucene | Мағынасы | Doris орындайтын SQL |\n| --- | --- | --- |\n| `service_name:cart` | Өрісте осы сөз бар | `service_name MATCH_ANY 'cart'` |\n| `body:\"POST /api/checkout\"` | Өрісте осы сөздер қатар және осы ретпен бар | `body MATCH_PHRASE 'POST /api/checkout'` |\n| `severity_number:>=17` | Сандық салыстыру | `severity_number >= 17` |\n| `a AND b`, `a OR b`, `NOT a` | Біріктірулер | SQL-де де солай |\n\n**SQL** режимі тікелей `WHERE` шартын, мысалы `severity_number >= 17 AND service_name = 'cart'`, қабылдайды. Оны Lucene өрнектей алмайтын функциялар не `VARIANT` бағандары сияқты жағдайларға қолданыңыз.\n\nМәтіндік іздеу жылдам, өйткені Doris экспорттаушысы `otel_logs` кестесін `body` бағанының **кері индексімен** құрған. Жол жүктелгенде индекс мәтінді токен деп аталатын сөздерге бөліп, әр сөз қай жолдарда барын тіркейді. `body` индексі `unicode` парсерін қолданып, сөздерді кіші әріпке айналдырады: `\"POST /api/checkout?currencyCode=USD HTTP/1.1\" 500` қатынас журналы жолы `post`, `api`, `checkout`, `currencycode`, `usd`, `http`, `1.1` және `500` болады; тыныс белгілері алынып тасталады. `MATCH_ANY` іздеу сөздерінің кез келгені бар жолдарды, `MATCH_ALL` барлығы бар жолдарды, `MATCH_PHRASE` сөздері қатар әрі ретімен тұрған жолдарды табады. Doris бұған әр мәтінді оқымай, индекстен жауап береді.\n\nФраза таңбаларды емес, сөздерді салыстырады; оның екі әсері бар:\n\n- Фраза тыныс белгісі мен регистрді елемейді: `POST /api/checkout` және `post api checkout` бір жолдарды табады.\n- Қосымша сөздер фразаны бұзады. Дүкен беті checkout сұрауын `/api/checkout?currencyCode=USD` адресіне жібереді, сондықтан `\"POST /api/checkout HTTP/1.1 500\"` фразасы оларды өткізіп алады: `currencycode` пен `usd` сөздері `checkout` пен `http` арасында тұр. `AND` арқылы қосылған `body:\"POST /api/checkout\" AND body:\"HTTP/1.1 500\"` екі фразасы жүктеме генераторының да, беттің де сәтсіз checkout сұрауларын табады.\n\n",
+      "target_hash": "ec74e01c6a39335b1c0d651bc2b2baa438d272c510caa472402c65a0d5e65102",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "25a6b90042593a3254d280ac9fb6ea47364200ffaf7581c468caec0bb7a63b92",
+          "target_hash": "ec74e01c6a39335b1c0d651bc2b2baa438d272c510caa472402c65a0d5e65102"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.68f5680643f0419a9a132db7ecd0831a",
+      "source_hash": "cc6c1cac9e058762b4bda65cae02da5b9ff84d3d68092886e1f99dcfd4134599",
+      "target_text": "## 3.5 Трассаны оқу\n\nӘр қатынас журналы жолында сұрауының трасса ID-і бар, сондықтан сәтсіз checkout жолы оның трассасына апарады. Discover ішіндегі `trace_id` басылса, трассаны сарқырама түрінде көрсететін **Trace Panel** ашылады:\n\n- Әр жол — span: қалың қаріппен сервис, операция және ұзақтық. Балалары ата-анасының астына шегініспен жазылады, ал оң жақ жолақ сұрау ішіндегі әр span-ның қашан басталып, қанша уақыт алғанын көрсетеді.\n- Қызыл белгі қате күйі бар span-ды көрсетеді. Қателер жоғары таралады: payment сәтсіз болса, checkout-тың payment шақыруы, кейін checkout-тың өз span-ы, frontend, прокси және жүктеме генераторы сәтсіз болады. Қызыл жолдардың көбі тек төменнен келген қатені хабарлайды.\n- Ақаудың **бастауы** — ең терең қате span-ы: оның балалары бар болса, оларда қате жоқ. Бұл инцидентте ол payment сервисінің `grpc.oteldemo.PaymentService/Charge` span-ы. `charge` span-ы сияқты балалары қатесіз.\n- Жолды басу span егжей-тегжейін: түрін, күйін, атрибуттарын ашады. Payment span атрибутында `grpc.error_message`: `Payment request failed. Invalid token. app.loyalty.level=gold` бар.\n\n**Traces** беті толық трассаларды іздейді. **Service** және **Operation** сүзгілері алғашқы, түбір span бойынша таңдайды; жүктеме генераторының тапсырыстарында ол checkout span-ы емес, өзінің `POST` span-ы. **Tags** кез келген span атрибуты бойынша таңдайды: `http.status_code=500` кей span-ы HTTP 500 тіркеген трассаларды табады. Бұған сәтсіз checkout та, демо іске қосылғандағы GET сияқты қатыссыз сұраулар да кіреді. Трассаны төлем инцидентіне жатқызбас бұрын түбір операциясы мен сервистерін қараңыз. Браузерде берілген тапсырыстың түбірі `load-generator:POST` орнына `frontend-web` болуы мүмкін. Бет әр трассаны басталу уақыты мен ұзақтығына қарай нүкте ретінде көрсетіп, span-дары және сервистерімен тізеді.\n\n![Сәтсіз checkout қатынас журналы трасса ID-ін береді; ішкі span-дар frontend пен checkout таратқан қателерден payment Charge қатесіне апарады.](images/02-log-to-failure-origin.png)\n\n*Бастапқы payment қатесін оны шақырғандар хабарлаған қателерден ажырату үшін трасса ID-імен жүріңіз.*\n\nСурет белгілері: FOLLOW THE TRACE FIND THE ORIGIN — трассаны қадағалап, бастауды табу; ACCESS LOG — қатынас журналы; TRACE WATERFALL — трассаның сарқырама көрінісі; ERROR PROPAGATED — жоғарыға таралған қате; FAILURE STARTS HERE — ақау осы жерден басталады; NO ERROR — қате жоқ; SPAN ATTRIBUTES — span атрибуттары. frontend, checkout, payment: Charge және charge — сервис/операция атаулары; trace_id — байланыстыратын өріс; POST /api/checkout және HTTP 500 — техникалық мәндер.\n\n",
+      "target_hash": "8efebd262f15e2d99e1b589e4de3d2284bfed0ddaa5adcfdf1af89a8a62a696f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "cc6c1cac9e058762b4bda65cae02da5b9ff84d3d68092886e1f99dcfd4134599",
+          "target_hash": "8efebd262f15e2d99e1b589e4de3d2284bfed0ddaa5adcfdf1af89a8a62a696f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.34608f2623404154a245810e8f9f0d21",
+      "source_hash": "922ff8eab8d452a44ec12a5d1e279f6d22617110af61e2b24efb01e1d58e9d3e",
+      "target_text": "## 3.6 Хост CPU-ын өлшеу\n\nҚолданбаны кінәламас бұрын машинаны тексеріңіз: шамадан тыс жүктелген хост көптеген сервисті бірден істен шығарады. DOG Collector Docker хостының CPU-ын әр 15 секунд сайын `otel_metrics_gauge` кестесіндегі `system.cpu.utilization` метрикасы ретінде өлшейді. macOS пен Windows-та Docker хосты — Docker Desktop Linux виртуалды машинасы, Linux-та — компьютеріңіздің өзі.\n\nЖолдар ұсақ түйіршікті. Әрқайсысы алдыңғы өлшемнен бері **бір CPU ядросының** `user`, `system` не `idle` сияқты **бір күйде** болған уақыт үлесін, 0–1 арасында, сақтайды; `attributes` ядро мен күйді атайды. 8 ядролы хостта әр өлшем 8 ядро × 8 күй, яғни 64 жол жазады. Бір жол аз мәлімет береді: уақытының 97% бос тұрған ядро `idle` жолына `0.97` жазады, ал `value > 0.9` сүзгісі көбіне бос ядроларды табады.\n\nСондықтан хосттың жұмысбасты уақыт үлесі — 1-ден барлық ядроның орташа `idle` үлесін шегеру:\n\n```sql\nSELECT (1 - AVG(value)) * 100 AS busy_percent\nFROM otel_metrics_gauge\nWHERE metric_name = 'system.cpu.utilization'\n  AND attributes['state'] = 'idle'\n  AND scope_name LIKE '%hostmetricsreceiver%'\n  AND resource_attributes['host.name'] IS NOT NULL\n  AND timestamp >= UTC_TIMESTAMP() - INTERVAL 1 MINUTE\n```\n\nБірнеше бағдарлама, оның ішінде демо Collector-ы мен екі Python сервисі осы атаулы метриканы береді; соңғы екі шарт хост атауы бар DOG Collector өлшемдерін қалдырады. Бұл инцидентте ақаулар басталғанға дейін де, кейін де хост 5–15 пайыз жұмысбасты болады, сондықтан себеп хостта емес. 8-модуль осы сұрауға 90 пайыз шегінде ескерту құрады.\n\n![DOG хост метрикалары қабылдағышының бос күй жолдары хост ядролары бойынша орташаланып, 1-ден орташа бос үлесті шегеру арқылы хосттың жұмысбасты пайызына айналады.](images/03-host-cpu-from-idle-samples.png)\n\n*Үлкен idle мәні ядроның бос екенін білдіреді; хосттың жұмысбасты CPU-ын есептемес бұрын idle үлгілерін орташалаңыз.*\n\nСурет белгілері: HOST CPU FROM IDLE SAMPLES — бос тұру үлгілерінен хост CPU-ын есептеу; PER-CORE SAMPLES — әр ядроның үлгілері; core — ядро; state — күй; value — мән; DOG HOST METRICS — DOG хост метрикалары; AVG(idle) — орташа бос үлес; HOST BUSY % — хосттың жұмысбасты пайызы. host.name және state = idle — сүзгі өрістері; формула (1 - AVG(idle)) × 100.\n\n",
+      "target_hash": "0c2680db97e61a3adc7ccf6a70f274e17d5aeb98536fd198e084dfb21d8c2b19",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "922ff8eab8d452a44ec12a5d1e279f6d22617110af61e2b24efb01e1d58e9d3e",
+          "target_hash": "0c2680db97e61a3adc7ccf6a70f274e17d5aeb98536fd198e084dfb21d8c2b19"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2d6da7e9eb324ab2a63e3ceaf110b69b",
+      "source_hash": "15307f3c79dc0cc356d8a11bebd2cd7be9bea727b2591d9a296eb70caa8459a3",
+      "target_text": "## 3-зертханалық жұмыс: Grafana-да төлем ақауларын тексеру\n\n[3-зертханалық жұмыс: Grafana-да төлем ақауларын тексеру](lab03_data_visualization.ipynb) файлын ашыңыз. Сіз:\n\n1. Тапсырыстардың сәтсіз болатынын тексеріп, Discover ішінде абсолют UTC аралығын орнатасыз.\n2. Қате журналдарын іздеп, инцидентті неге өткізіп алатынын көресіз.\n3. Қатынас журналынан Lucene және SQL арқылы сәтсіз checkout сұрауларын табасыз.\n4. Сәтсіз checkout трассасын ашып, payment сервисінің қатесін табасыз; Traces бетінен іздейсіз.\n5. Хост CPU-ын себептен алып тастайсыз.\n6. `Payment incident` бақылау тақтасын құрып сақтайсыз.\n7. Жаттығу: сәтсіз төлемдердің үлесін есептейсіз.\n\nТөлем ақауы қосылған 1-модульдің DOG стегі мен демосы қажет.\n\n",
+      "target_hash": "340491583a9581645be98c5c1f3322e1576820e2e079263c00a89c005c74f06b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "15307f3c79dc0cc356d8a11bebd2cd7be9bea727b2591d9a296eb70caa8459a3",
+          "target_hash": "340491583a9581645be98c5c1f3322e1576820e2e079263c00a89c005c74f06b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d2d515db5f414a39958c2e1fce03dd23",
+      "source_hash": "9b1cf311de20c6da22230072f4bf010b78e82d22163de9c0ed6e3bf9239c0b6c",
+      "target_text": "## Дереккөздер\n\n- [Grafana: бақылау тақталары](https://grafana.com/docs/grafana/v11.4/dashboards/) және [тақталарды қолдану (уақыт аралығы)](https://grafana.com/docs/grafana/v11.4/dashboards/use-dashboards/)\n- [Grafana: MySQL дереккөзі, сұрау редакторы және макростар](https://grafana.com/docs/grafana/v11.4/datasources/mysql/query-editor/)\n- [Apache Doris: кері индекс](https://doris.apache.org/docs/4.x/table-design/index/inverted-index/overview/) және `MATCH_ANY`, `MATCH_PHRASE` сияқты [іздеу операторлары](https://doris.apache.org/docs/4.x/table-design/index/inverted-index/search-operators/)\n- [Apache Doris: TOKENIZE](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/scalar-functions/string-functions/tokenize/)\n- [Хост метрикалары қабылдағышы: CPU метрикалары](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/v0.144.0/receiver/hostmetricsreceiver/internal/scraper/cpuscraper/documentation.md)\n",
+      "target_hash": "5e50112c00969482d47b2e894089a3eb9127126b440a38c6c1ebb3d63aebeffb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "9b1cf311de20c6da22230072f4bf010b78e82d22163de9c0ed6e3bf9239c0b6c",
+          "target_hash": "5e50112c00969482d47b2e894089a3eb9127126b440a38c6c1ebb3d63aebeffb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.dfea70e7dfdf4c42a652554bb0771ab8",
+      "source_hash": "96503959ebc6d7fc2b966d6917ec79b7a3407a235c6553bd483e95ee4fb6db8d",
+      "target_text": "## Модуль құрылымы\n\n| Бөлім | Уақыт | Нәтиже |\n| --- | ---: | --- |\n| 3.1 Grafana және Doris App | 3 мин | Жұмыс істейтін беттеріңіз |\n| 3.2 Уақыт аралықтары мен уақыт белдеулері | 4 мин | Ең жаңа жолдарды табатын аралық |\n| 3.3 Журналдардан іздеу | 7 мин | Lucene және SQL іздеулері, олардың индексі |\n| 3.4 Ақаулар қате журналында болмағанда | 3 мин | Маңыздылық іздеуі нені табады және таба алмайды |\n| 3.5 Трассаны оқу | 6 мин | Журнал жолынан ақаулы span-ға дейін |\n| 3.6 Хост CPU-ын өлшеу | 4 мин | Әр ядро үлгілерінен жұмысбасты үлесті есептеу |\n| 3.7 Бақылау тақталары | 3 мин | Уақыт аралығына сәйкес SQL панельдері |\n| 3-зертханалық жұмыс | 45 мин | Тексерілген инцидент және оның бақылау тақтасы |\n| 3-тест | 10 мин | Осы мақсаттар бойынша алты сұрақ |\n\n",
+      "target_hash": "6ea4c5ae467f62e75b6ed9ecf56df7d829b50739863c349cdac2f87564248fc8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "96503959ebc6d7fc2b966d6917ec79b7a3407a235c6553bd483e95ee4fb6db8d",
+          "target_hash": "6ea4c5ae467f62e75b6ed9ecf56df7d829b50739863c349cdac2f87564248fc8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.38d3a9340a6641abb74cdd3a1970a622",
+      "source_hash": "e2f5461ebdfd543a5b19b38dafb58037ec98580b37ed4dff8cec56997780c2db",
+      "target_text": "## 3.4 Ақаулар қате журналында болмағанда\n\nИнцидентте алғашқы қадам — қателерді іздеу: `severity_number:>=17` дереккөз қандай белгі қолданса да, ERROR не FATAL деңгейіндегі әр журнал жазбасын табады. Бұл инцидентте ол ештеңеге жуық нәтиже береді: Doris FE-нің бірнеше қатесі және демо іске қосылғанда оның бір сервисінің ықтимал қатесі; төлем туралы ештеңе жоқ.\n\nСебебі 2-модуль көрсеткендей дереккөздерде. Payment пен checkout Collector-ға журнал жібермейді, ал әр сәтсіз checkout-ты жазатын дүкен проксиінің қатынас журналында маңыздылық деңгейі жоқ. Іздеу тек жүйе тіркегенді, тіркелген түрімен табады. Мұнда дәлел — күйі `500` қатынас журналының жолы; іздеу соны сұрауы керек.\n\nДемек нәтиже бермеген іздеу ақауды көрсететін дерек жиналса ғана оның жоқтығына дәлел болады. Тыныш қате іздеуіне сүйенбес бұрын қай сервис журнал жіберетінін және ақаулары қалай көрінетінін тексеріңіз.\n\n",
+      "target_hash": "53c3d9877f829fb3f27efa06cf9f34109697e903c06180057c642d7ecd0a3ff4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m03-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 3 on 2026-11-08. Re-read all saved targets against frozen English after translation; checked complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked Lucene AND-versus-OR and phrase token boundaries, UTC versus local/exact moments, deepest error origin, generic HTTP 500 versus failed-checkout subset, CPU idle averaging and 90 percent threshold, all 14 dashboard steps and saved JSON time default. Four Quiz options consist entirely of literal search expressions and intentionally retain their original bytes. Corrected ambiguous one-minus-idle caption wording. Viewed all six PNGs including three real Grafana screenshots; added complete adjacent label/control legends without claiming pixel localization. Technical admission and native human review remain unperformed.",
+          "source_hash": "e2f5461ebdfd543a5b19b38dafb58037ec98580b37ed4dff8cec56997780c2db",
+          "target_hash": "53c3d9877f829fb3f27efa06cf9f34109697e903c06180057c642d7ecd0a3ff4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

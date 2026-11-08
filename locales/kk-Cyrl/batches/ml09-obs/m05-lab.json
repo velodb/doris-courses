@@ -1,0 +1,632 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.90d0f2ff0268408f8caf3b5155a78eee",
+      "source_hash": "fdb9c43958871b45c8cbe30a625fc5f06b724a56af458a0b3d0dcebfb69c816f",
+      "target_text": "### Зертханалық жұмысты инициализациялау\n\n`lab.shell(...)` не `lab.sql(...)` қолданбас бұрын осы ұяшықты бір рет орындаңыз.\n",
+      "target_hash": "84a0fe3a11dd934ac49ce8fdb99ffcb0d6308e106314441ed0ce37769b57f1f1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "fdb9c43958871b45c8cbe30a625fc5f06b724a56af458a0b3d0dcebfb69c816f",
+          "target_hash": "84a0fe3a11dd934ac49ce8fdb99ffcb0d6308e106314441ed0ce37769b57f1f1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b135d1a5143a49ac90bb93e9c677f95f",
+      "source_hash": "4660caf6c7975a3bf17172619e6b7d320d4da35a0bd126b20736bdf5ad74e0b4",
+      "target_text": "## Әрі қарай\n\n[5-тест: Жүйені бақылау деректерін бөлімдеу және bucket-терге бөлу](quiz05_partition_and_bucket_choices.ipynb) файлын ашып, [6-модуль: Кесте қасиеттері, материалданған көріністер және индекстер](../module06-property-mv-index/course.md) бөліміне өтіңіз.",
+      "target_hash": "42e420397b79e1440a0c5eb515478dbe7502a79b55b95713e31ad0b5280a7fc9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4660caf6c7975a3bf17172619e6b7d320d4da35a0bd126b20736bdf5ad74e0b4",
+          "target_hash": "42e420397b79e1440a0c5eb515478dbe7502a79b55b95713e31ad0b5280a7fc9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c96d0d5cf3c6479e90f834ec931338f8",
+      "source_hash": "9e84f3743f9446ae7002f8d7901d9016f674f4faa5df1ce5f5cfe91039fb2c5c",
+      "target_text": "**Күтілетін нәтиже**\n\nКөшірілген span-дардың әр күніне бір бөлім, әдетте біреу — бүгінгі, атауы `p20261020000000` сияқты, 10 bucket-пен. `otel_traces` динамикалық бөлімдерінен өзгеше, бос бөлім жоқ: дерексіз өткен күндер де, ертеңгі жол келмейінше ертеңгі бөлім де жоқ.\n\nAUTO PARTITION ескі бөлімдерді өзі жоймайды. Кестенің `\"partition.retention_count\" = \"7\"` қасиеті Doris-тен бүгінге дейінгі ең жаңа жеті бөлімді сақтап, ескілерін жоюды сұрайды. Оны динамикалық бөлімдеудегідей жоспарлағыш әр 10 минутта қолданады, сондықтан кестеде өткен жеті күннен көп дерек болғанда ғана әсер етеді. `SHOW CREATE TABLE spans_by_service` қасиетті көрсетеді. AUTO PARTITION кестесінде динамикалық бөлімдеу де болуы мүмкін, бірақ `partition.retention_count` қасиетімен бірге емес.",
+      "target_hash": "4da49a0ee3b0bf8fd6d879005f52244e6cd7b8b0e048c70dff53760d4e775f07",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9e84f3743f9446ae7002f8d7901d9016f674f4faa5df1ce5f5cfe91039fb2c5c",
+          "target_hash": "4da49a0ee3b0bf8fd6d879005f52244e6cd7b8b0e048c70dff53760d4e775f07"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ff755829f2cc4a89afec64fd473bb303",
+      "source_hash": "9da6ee16a49a487e99c9e5d352dcbad39810fd2543beb24a7fc2c581658e03ff",
+      "target_text": "## 5. AUTO PARTITION: дерек құратын бөлімдер\n\n`spans_by_service` кестесі `AUTO PARTITION BY RANGE (date_trunc(timestamp, 'day'))` арқылы бөлімделеді: ол бөлімсіз құрылған, Doris жүктелген жол тиесілі әр күнге бөлім құрды. Оларды тізіңіз:",
+      "target_hash": "f37506d6df142841e9d1013243e86d17bb0c86e96c535396f4b968b5b4dc5624",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9da6ee16a49a487e99c9e5d352dcbad39810fd2543beb24a7fc2c581658e03ff",
+          "target_hash": "f37506d6df142841e9d1013243e86d17bb0c86e96c535396f4b968b5b4dc5624"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4b570e3791c64dd3a0fe55593432c5b1",
+      "source_hash": "cb13475f17964c0d29a40858930f99b26a96a4a98ea86c2dedbfc76c4d0c9966",
+      "target_text": "## 4. Bucket-тер: RANDOM не HASH\n\nБөлім ішінде тарату әр жолдың қай bucket-ке баратынын анықтайды:\n\n- `DISTRIBUTED BY HASH(column)`: баған мәнінің хешімен. Мәні бірдей барлық жол бір bucket-ке түседі, сондықтан `column = value` сүзгісі біреуін оқиды: **bucket-терді қысқарту**. Bucket-тер мәндердей ғана біркелкі: жолы көп мән bucket-ін үлкейтеді.\n- `DISTRIBUTED BY RANDOM`: бағансыз. Жүктеу әр жол пакетін бір bucket-ке, келесісін келесісіне жібереді; сондықтан шамамен біркелкі, бірақ еш сүзгі bucket-терді қысқарта алмайды.\n\nЭкспорттаушы RANDOM таңдады. `otel_traces` әр tablet жолдарын санаңыз. `lab.tablet_rows(...)` дерегі бар әр бөлімнің tablet-терін `SHOW TABLETS` арқылы тізіп, әрқайсысының жолын `SELECT COUNT(*) FROM ... TABLET(<id>)` арқылы санайды:",
+      "target_hash": "32fd1a0fbaef60f2d1b19ebd32b74e479b5c7f838e34efd736c294d1216d3e38",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "cb13475f17964c0d29a40858930f99b26a96a4a98ea86c2dedbfc76c4d0c9966",
+          "target_hash": "32fd1a0fbaef60f2d1b19ebd32b74e479b5c7f838e34efd736c294d1216d3e38"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.88f686e889854f86ae972f40947b0c9a",
+      "source_hash": "bfbdb143d19312fdd2a3a2c239bd6220828481424368482594d432ea005bbc0a",
+      "target_text": "**Күтілетін нәтиже**\n\nБір жол: алғашқы және соңғы сәтсіз тапсырыстың UTC уақыты, алғашқыдан бері қанша тапсырыс сәтсіз болғаны — одан бері әр минутта шамамен біреуге артық. Ұяшық алғашқы уақытты `INCIDENT_START` ішінде сақтайды.",
+      "target_hash": "bac0088f5d265d6b8f77785fff3ed6836b2c2e9822022464fb86d5441841c622",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "bfbdb143d19312fdd2a3a2c239bd6220828481424368482594d432ea005bbc0a",
+          "target_hash": "bac0088f5d265d6b8f77785fff3ed6836b2c2e9822022464fb86d5441841c622"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9cf3041dc29d41f38d7a54570ca1124f",
+      "source_hash": "3a7fb54883be0402056a62e5cbe45fb7aac162bf9b8e711823395921e0990553",
+      "target_text": "## 1. Инцидент span-дарын тексеру\n\nБұл жұмыстың сұраулары инцидент терезесіне — алғашқы сәтсіз тапсырыстан қазіргі сәтке дейінгі уақытқа — қатысты. Алғашқы және соңғы сәтсіз тапсырысты табыңыз:",
+      "target_hash": "755a52d462186e6f3808afbac2c243f92495104351d018c98a284c2fbcd225a8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3a7fb54883be0402056a62e5cbe45fb7aac162bf9b8e711823395921e0990553",
+          "target_hash": "755a52d462186e6f3808afbac2c243f92495104351d018c98a284c2fbcd225a8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ac924ba4d7994186a15891152b64a05a",
+      "source_hash": "390e6c796c9e5de78c368e491defc7647d98587bd567c876a43f8321ab3db635",
+      "target_text": "## Аяқтау шарттары\n\n- `otel_traces` ішінде неше бөлім барын, неге және инцидент сұрауы қайсысын оқитынын айта аласыз;\n- RANDOM кестесі бөлімнің әр tablet-ін, ал сервиспен бөлінгені тек сол сервистің tablet-ін оқитынын, бірақ tablet-тері біркелкі болмайтынын көрдіңіз;\n- AUTO PARTITION қандай бөлімдер құратынын, `partition.retention_count` пен динамикалық бөлімдеудің `start` мәні нені жоятынын айта аласыз.\n\nКөшірмелер кішкентай, кейінгі модульдер оларды қолданбайды. Жою үшін `lab.execute(...)` не MySQL клиентімен `DROP TABLE IF EXISTS spans_by_service` және `DROP TABLE IF EXISTS spans_by_trace` орындаңыз.",
+      "target_hash": "932d81ea09a3b7fc1ad281a9dabbccdb8de52d143d51e9f3c7fb00866c5bdff2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "390e6c796c9e5de78c368e491defc7647d98587bd567c876a43f8321ab3db635",
+          "target_hash": "932d81ea09a3b7fc1ad281a9dabbccdb8de52d143d51e9f3c7fb00866c5bdff2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6002e63ad7f34a3c9e5873c421702c49",
+      "source_hash": "9eefda42eac40e6617a3b266b96970b7cb0e0952ca0a5f1cf4b632dbde8967c2",
+      "target_text": "**Күтілетін нәтиже**\n\nЭкспорттаушы кестесіне бірден сегіз жол, барлығында `DAY`, `-7`, `1`, `10`. `End` = 1: түн ортасынан кейінгі алғашқы span-дарға орын болуы үшін жоспарлағыш ертеңгі бөлімді алдын ала құрады. `Start` = -7: бүгіннен 7 күннен астам бұрынғы күн бөлімдерін жояды, деректі қайта жазбай бір күндік телеметрияны бірден жояды. Экспорттаушы бұларды `history_days` және `create_history_days` баптауларынан орнатқан (2-модуль): `create_history_days: 3` — кесте өткен үш күнмен басталғанының себебі. `LastSchedulerTime` жоспарлағыштың соңғы 10 минут ішіндегі орындалуын көрсетеді.\n\nКестеде `BUCKETS AUTO` делінсе де `Buckets` — 10. Кестемен бірге құрылған бөлімдер `dynamic_partition.buckets` мәнін, әдепкі 10, алады. Әр кейінгі бөлімге Doris бұрынғы бөлімдердің өлшемінен, шамамен әр 5 GB сығылған дерекке бір bucket, баға береді; баға алдыңғы бөлім санының жартысынан аз болса, бұрынғы сан қалады. Курс бөлімдері мегабайттар, баға — 1, әр бөлім 10 bucket сақтайды.",
+      "target_hash": "3c9b3d895b24f7b6e177890414973e6970268f54574e27602da88744169fc7e4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9eefda42eac40e6617a3b266b96970b7cb0e0952ca0a5f1cf4b632dbde8967c2",
+          "target_hash": "3c9b3d895b24f7b6e177890414973e6970268f54574e27602da88744169fc7e4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.98f41d6c310044da8e47a53e7ac2e777",
+      "source_hash": "77e8319ce4adc82255e0040736ace760e8d1a0b23f602de116be8a1a5bca6583",
+      "target_text": "**Күтілетін нәтиже**\n\nКешегі сұрауда кесте сканерлеуі жоқ, карточка соны айтады: жолдары тек кешегі бөлімде болуы мүмкін, ал ол бос; сондықтан Doris оқымай жауап береді. (Демо кеше де жұмыс істесе, мысалы `lab.teardown(keep_data=True)` арқылы деректі сақтасаңыз, жоспар сол бөлімді оқиды.)\n\nУақыт сүзгісі жоқ сұрау да `1/5` бөлім оқиды: Doris бос бөлімдерді өткізеді, тек бүгінгісінде жолдар бар. Бір апталық телеметрияда бұл сұрау барлық сегіз бөлімді, инцидент терезесінің сұрауы әлі бір не екі бөлімді оқыр еді. Өндірісте уақытпен қысқарту — сұрауды кішірейтетін алғашқы қадам: әрдайым бөлім бағанын Doris жоспарлауда білетін мәндермен, мысалы есептеген уақытыңыз не `UTC_TIMESTAMP() - INTERVAL 1 HOUR` арқылы сүзіңіз.",
+      "target_hash": "324822173e52184449d20c147d7469141cb944f802d01e1d8d22a8e5822c8d20",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "77e8319ce4adc82255e0040736ace760e8d1a0b23f602de116be8a1a5bca6583",
+          "target_hash": "324822173e52184449d20c147d7469141cb944f802d01e1d8d22a8e5822c8d20"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.990be8d1b247470cbb270027c3ae147a",
+      "source_hash": "8ce4130831a5dbe42e01c01ece49985410c2f851300acc192f3f9cb2bc798d9f",
+      "target_text": "Тағы екі жоспар қысқарту қайдан келетінін көрсетеді. Біріншісі кешегі күнді сұрайды, екіншісінде уақыт сүзгісі жоқ. Ұяшық кешегі UTC аралығын есептеп, сұрауға мәтінмен жазады, сондықтан Doris жоспарлауда мәндерді біледі:",
+      "target_hash": "24c20977e120a646684507359f46cf7b371adda5c80f0f5760b2eaaf82f3c1b2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8ce4130831a5dbe42e01c01ece49985410c2f851300acc192f3f9cb2bc798d9f",
+          "target_hash": "24c20977e120a646684507359f46cf7b371adda5c80f0f5760b2eaaf82f3c1b2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.df71da7ec3a5435db953818970cb5300",
+      "source_hash": "36d2d6fbe50ff80034ea7d21f12d97d6ce4e2b4745209a4cd8fa600b2ac9cc2d",
+      "target_text": "**Күтілетін нәтиже**\n\nӘрқайсысында жолдардың шамамен оннан бірі бар он tablet: трасса ID-лері кездейсоқ, бір трассада бірнеше ондағаннан артық span жоқ. Бір трасса іздеуі `1/10` tablet, сол трассаның барлық span-ы бар біреуін оқиды. Сондықтан көбіне трассалап оқылатын, мысалы қолданба трассаларының кестесі трасса ID-імен бөлініп, біркелкі tablet пен қысқартуды қатар ала алады; 7-модульдегі Litefuse солай істейді. Экспорттаушының `otel_traces` кестесі әртүрлі оқылады, сондықтан RANDOM болып қалады.",
+      "target_hash": "7ff7dbc07cca69de04c2bc45404cc2007c0ddf02051897864935e8f759b1729e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "36d2d6fbe50ff80034ea7d21f12d97d6ce4e2b4745209a4cd8fa600b2ac9cc2d",
+          "target_hash": "7ff7dbc07cca69de04c2bc45404cc2007c0ddf02051897864935e8f759b1729e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b0066ec3338240aea77f7e1e9a22f3c4",
+      "source_hash": "e09e4aedec52456fd0d2980654e35e1ef47dbb5f9e7641ba3f162cc22a3511c4",
+      "target_text": "## 6. Жаттығу: span-дарды трасса бойынша бөлу\n\nИнженер 3-модульдегідей трассаны ашқанда, Doris бір `trace_id` барлық span-дарын іздейді. Бағандары, бөлімдеуі және `partition.retention_count = 7` мәні `spans_by_service` сияқты, бірақ `DISTRIBUTED BY HASH(trace_id) BUCKETS 10` болатын `spans_by_trace` құрып, оған `otel_traces` span-дарын жүктеңіз. Жолдар tablet-терге қаншалықты біркелкі таралған? Соңғы сәтсіз тапсырыстың трасса ID-ін алып, оның span-дары сұрауы қанша tablet оқитынын `lab.explain_scan(...)` арқылы тексеріңіз.",
+      "target_hash": "8c8ab00a207561bbe9f078038cda2a2f2b3c4dc441dc7b8a5f4ac12563e0d799",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e09e4aedec52456fd0d2980654e35e1ef47dbb5f9e7641ba3f162cc22a3511c4",
+          "target_hash": "8c8ab00a207561bbe9f078038cda2a2f2b3c4dc441dc7b8a5f4ac12563e0d799"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.755bf2573fc449d98a529f7e6fd72222",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған. Салыстыру үшін ашыңыз немесе орындаңыз.",
+      "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.81aee8b2098e47adb53373909e737e38",
+      "source_hash": "63729beba5dce3534b53b8d563e828dc5086796d33920c3f35845b85bf691099",
+      "target_text": "**Күтілетін нәтиже**\n\nКірістіру әр span-ға бір әсер еткен жол, ондаған мың не одан көп жол хабарлайды. Содан кейін біркелкілігі нашар он tablet. `frontend-proxy` мен `frontend` сияқты ең көп жұмыс істейтін сервистер tablet-терінде жолдардың төрттен бірі не одан көбі бар; бір-екі tablet-те аз не жоқ, payment tablet-і кішкентай. Қай сервистер бірге түсетіні тек хештеріне байланысты. Бөлімнің көп бөлігін сақтайтын tablet оның жүктеуін, compaction-ын және әр сканерлеуін басқалардан баяулатады: бөлім ең үлкен tablet-індей ғана жылдам.",
+      "target_hash": "fc48657c64d372faa72ee7703e3c0ebf2bb308e73d62f10e6c33b4a2f0215dfa",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "63729beba5dce3534b53b8d563e828dc5086796d33920c3f35845b85bf691099",
+          "target_hash": "fc48657c64d372faa72ee7703e3c0ebf2bb308e73d62f10e6c33b4a2f0215dfa"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.243c8cac5b434861b02eab1496575fca",
+      "source_hash": "a48cbe5fd32b3355c8c24af63feda9e1807bb1d767c9fa95b6834f6e7fd99aad",
+      "target_text": "Енді сол span-дарды сервиспен бөліңіз. Келесі ұяшық `otel_traces` негізгі бағандарының көшірмесі `spans_by_service` кестесін `DISTRIBUTED BY HASH(service_name) BUCKETS 10` арқылы құрып, оған `otel_traces` кестесінің барлық span-ын жүктейді. Кесте де күнмен, 5-бөлім түсіндіретін `AUTO PARTITION` арқылы бөлімделеді.",
+      "target_hash": "4b4827fa340f1a6897a47ada754dae619bd98727672d5793ab8ee21128b3ec72",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed. Follow-up source/target comparison on 2026-11-08 restored the second explicit inline-code otel_traces mention in the copy-load instruction; re-read the complete corrected sentence and confirmed the unchanged source table, destination, HASH/service distribution, full-span load and AUTO PARTITION meaning.",
+          "source_hash": "a48cbe5fd32b3355c8c24af63feda9e1807bb1d767c9fa95b6834f6e7fd99aad",
+          "target_hash": "4b4827fa340f1a6897a47ada754dae619bd98727672d5793ab8ee21128b3ec72"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9f8cdc90d7e54a83b725bb581a043749",
+      "source_hash": "725beaf60a9489c0a2ff3dc6c7f88410b0cbdd30d7effa79d2bddfdd856ba117",
+      "target_text": "**Күтілетін нәтиже**\n\n`otel.spans_by_service` бір сканерлеуі, `partitions` — `1/1`, `tablets` — `1/10`: `service_name` HASH бөлуінде Doris `'payment'` bucket-ін есептеп, тек сол tablet-ті оқиды.\n\nДемек bucket-ке бөлу — қысқарту мен теңгерім арасындағы таңдау. Көп сұрау бағанды `=` не `IN` арқылы сүзсе және оның мәндері жолдарды біркелкі таратса, сол бағанмен бөліңіз; бөлек мәні көп, басым мәні жоқ баған ең жақсы таратады. Бастапқы телеметрия көбіне уақытпен оқылып, әртүрлі ізделеді, сервистері өте біркелкі емес. Сондықтан экспорттаушы RANDOM қолданады: біркелкі tablet-тер, ал бір сервис жолдарын `service_name` кері индексі сияқты басқа тәсілдер табады (6-модуль).",
+      "target_hash": "4398874e751483392ca8b64bf66b732ef985de45fde4613bb232b411409cae7a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "725beaf60a9489c0a2ff3dc6c7f88410b0cbdd30d7effa79d2bddfdd856ba117",
+          "target_hash": "4398874e751483392ca8b64bf66b732ef985de45fde4613bb232b411409cae7a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2cf6670e7fd94bef91ddb123c2ae7837",
+      "source_hash": "7280760cdaebbb856244cf6710cd20d1ea984e98510ac9c655e8dc8e0773d52e",
+      "target_text": "Көшірмедегі инцидент сұрауының жоспарын қараңыз:",
+      "target_hash": "19153731da7c4466fe9c592384d9360d16245411fb0ea3b40e780f4adc34cc20",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7280760cdaebbb856244cf6710cd20d1ea984e98510ac9c655e8dc8e0773d52e",
+          "target_hash": "19153731da7c4466fe9c592384d9360d16245411fb0ea3b40e780f4adc34cc20"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ca185a0ddc3d4a6ebc6e4c89ab675204",
+      "source_hash": "63dcab6a78656b556a6785e2c7be023a1f730df95b414e2cb75d98a201c78c5d",
+      "target_text": "**Күтілетін нәтиже**\n\nКүнге сай `p20261020` сияқты аталған бес бөлім: UTC бойынша бүгінге дейінгі үш күн, бүгін және ертең. `Range` әр бөлімнің алғашқы және кірмейтін соңғы уақытын береді. `DistributionKey` — `RANDOM`, әр бөлімнің `Buckets` мәні — 10. `VisibleVersion` жүктеулерді санайды: экспорттаушының әр Stream Load-ы нұсқа қосады, минутына бірнеше рет; сондықтан бүгінгі бөлімде ондағаннан мыңдағанға дейін нұсқа бар, ал нұсқасы 1 бөлім еш жол алмаған.\n\nБөлімдер әр 10 минутта жоспарлағыш қолданатын кестенің динамикалық бөлімдеуінен келеді:",
+      "target_hash": "23b76b758d1e6df444606f3fbc071395706a4aa7e722e7c693969524f1b3f0bf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "63dcab6a78656b556a6785e2c7be023a1f730df95b414e2cb75d98a201c78c5d",
+          "target_hash": "23b76b758d1e6df444606f3fbc071395706a4aa7e722e7c693969524f1b3f0bf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.af03c3e990454e98afaf32b3e6c5fe94",
+      "source_hash": "e14cf97a37d0aafcb8618c6f0bc32f3f850fd29b8e5b4622c7b12ffd813f763c",
+      "target_text": "## 2. Экспорттаушы `otel_traces` кестесін қалай бөлді\n\nЭкспорттаушы `otel_traces` кестесін `PARTITION BY RANGE(timestamp)`, күндік динамикалық бөлімдеу және `DISTRIBUTED BY RANDOM BUCKETS AUTO` арқылы құрған. **Бөлім** бөлім бағанының бір аралығының, мұнда span басталу уақытының бір UTC күнінің жолдарын сақтайды. Әр бөлім **bucket-терге** бөлінеді; Doris әр bucket-ті BE сақтайтын, көшіретін және сканерлейтін **tablet** ретінде сақтайды. Бөлімдерді тізіңіз:",
+      "target_hash": "5ac656d01511f2fadac921d951e26bd79b5e51c1387d36f739e44be0fd0e1a04",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e14cf97a37d0aafcb8618c6f0bc32f3f850fd29b8e5b4622c7b12ffd813f763c",
+          "target_hash": "5ac656d01511f2fadac921d951e26bd79b5e51c1387d36f739e44be0fd0e1a04"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a22e7d68b27e426b990a2f7dac8efe52",
+      "source_hash": "01d7a7e61b2c733c8f4ada72afc8769fa4ea3d14caf89a4c9dac44cc4cb0d46c",
+      "target_text": "**Күтілетін нәтиже**\n\nСұрау: `grpc.oteldemo.PaymentService/Charge` — payment сервисінің әр төлем сұрауының сервер span-ы, шамамен жартысы сәтсіз; `charge` — оның ішіндегі сәтсіз болмайтын span. Кейін бір-екі span-ды жолдар болуы мүмкін, мысалы payment flagd-ден жалауша мәнін сұраған `grpc.flagd.evaluation.v1.Service/ResolveFloat`.\n\nЖоспар: `otel.otel_traces` өзін оқитын (`reads` — `otel_traces`), екі сүзгісі де `predicates` астында тұрған бір сканерлеу. `partitions` — бүгінгі бөлім атауы бар `1/5`: `timestamp` сүзгісі басқаларын алып тастайды. Инцидент UTC түн ортасынан бұрын басталса, `2/5` — кеше мен бүгін. `tablets` — `10/10`: бір сервис сұралса да, оқылатын бөлімдердің барлық tablet-і оқылады. Себебін 4-бөлім түсіндіреді.",
+      "target_hash": "2d06b2a4c2e7c0d3846680e21394e7696bb5e5d4f02b2c33e3e621719a11de16",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "01d7a7e61b2c733c8f4ada72afc8769fa4ea3d14caf89a4c9dac44cc4cb0d46c",
+          "target_hash": "2d06b2a4c2e7c0d3846680e21394e7696bb5e5d4f02b2c33e3e621719a11de16"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.05a27f5eaea54d0babd136762b478135",
+      "source_hash": "ff632dc7d5ccbbdaf4fb612d20a5973429f5cae8e3938d510a47066f2fab8588",
+      "target_text": "## 3. Сұрау қай бөлімдерді оқиды\n\nБөлім бағанын сүзетін сұрау тек сәйкес жолдар болуы мүмкін аралықтағы бөлімдерді оқиды: **бөлімдерді қысқарту**. `EXPLAIN` орындамай, жоспарды көрсетеді. `lab.explain_scan(...)` `EXPLAIN` орындап, әр кесте сканерлеуіне сүзгілерін, бар бөлімдер мен tablet-тердің қаншасын оқитынын көрсетеді; толық жоспар жиналған өрісте бар.\n\nИнцидент терезесіндегі payment span-дарын санап, сол сұраудың жоспарын қараңыз:",
+      "target_hash": "8f89715531e36d54c92d1ee5c35883235c450aaab24e9464a7c40d4b396f622e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ff632dc7d5ccbbdaf4fb612d20a5973429f5cae8e3938d510a47066f2fab8588",
+          "target_hash": "8f89715531e36d54c92d1ee5c35883235c450aaab24e9464a7c40d4b396f622e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.01bb5d088b9d405bb4d5a3219be42b6a",
+      "source_hash": "5c9afe806dcd48687e67bcc08b48cc1b063b9ae200c9d1805a21de595b7c272b",
+      "target_text": "**Күтілетін нәтиже**\n\nАлдымен командалар, содан кейін бүгінгі бөлімнің он tablet-і; әрқайсысында жолдарының шамамен оннан бірі: әр tablet үшін `percent_of_partition` шамамен 7–13 арасында. Пакет көбейген сайын үлестер 10-ға жақындайды.",
+      "target_hash": "24eb7118aec7774566ca8a4e27cdedb8c451cf99a31ddac62999e434b717e05e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "5c9afe806dcd48687e67bcc08b48cc1b063b9ae200c9d1805a21de595b7c272b",
+          "target_hash": "24eb7118aec7774566ca8a4e27cdedb8c451cf99a31ddac62999e434b717e05e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.af610e42564848e187f26e49a44ec481",
+      "source_hash": "69261582bb2d31064dd3b3c29520f90c65f0370777c9fd142c55c17bfe1afed0",
+      "target_text": "**Күтілетін нәтиже**\n\nОсы орындалудан үш қорытынды жол: RANDOM және trace-HASH tablet үлестері 10%-ға жақын, service-HASH ең үлкен tablet-і әлдеқайда ірі. Payment іздеуі таңдалған барлық RANDOM tablet-терін және әр таңдалған бөлімнің бір service-HASH tablet-ін оқиды; трасса іздеуі әр таңдалған бөлімнің бір trace-HASH tablet-ін оқиды. Үлестер — әр дерегі бар бөлім ішіндегі пайыздар; оқылатын tablet-тердің арақатынасы бекітілген мысал санынан емес, нақты жоспарлардан алынған. Bucket кілтін қажетті іздеулерге де, тудыратын теңгеріміне де қарай таңдаңыз.",
+      "target_hash": "f91a5aad163d8be2e0bf7c5c90995841951a9d21bd31e1128d27f043915ebd0b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "69261582bb2d31064dd3b3c29520f90c65f0370777c9fd142c55c17bfe1afed0",
+          "target_hash": "f91a5aad163d8be2e0bf7c5c90995841951a9d21bd31e1128d27f043915ebd0b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bd6218e831d24425a69f854a02d0ad47",
+      "source_hash": "14c217547e1ad5d7915aac8442d578c15e21f997cb7e2453f4497a67d5efa8e0",
+      "target_text": "## 7. Үш bucket таңдауын салыстыру\n\nЖаттығуда `spans_by_trace` құрғаннан кейін нәтижелерді біріктіру үшін осы ұяшықты орындаңыз. Ол 3–4-бөлімнің RANDOM және service-HASH бақылауларын пайдаланып, трасса көшірмесін өлшейді. Жаттығу жауабындағы айнымалы атауларына тәуелді емес. Кірістер әр сәтте өлшенген, сондықтан демо жалғасқанда жалпы жол сандары ерекшеленуі мүмкін.",
+      "target_hash": "e816782f1ff43c6d5e6ef902a1938aeb968ff5744a87e386f670b1ad36b3da76",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "14c217547e1ad5d7915aac8442d578c15e21f997cb7e2453f4497a67d5efa8e0",
+          "target_hash": "e816782f1ff43c6d5e6ef902a1938aeb968ff5744a87e386f670b1ad36b3da76"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.91ea7ec9e54244b78987d2ad409223dd",
+      "source_hash": "b0be4fabe02dde0d1c1355f38fcec3d65aaba780bc799ec00e14b78d9c9ba14f",
+      "target_text": "# Инцидент терезесінің бөлімдері мен bucket-тері\n\n**5-модуль: Жүйені бақылау деректерін бөлімдеу және bucket-терге бөлу** · [Сабақ](course.md) · [Тест](quiz05_partition_and_bucket_choices.ipynb)\n\nТөлем ақаулары басталғанда сұрақтар уақыт терезесі мен бірнеше сервиске тарылды: ақау басталғалы тапсырыстар, payment төлемдері. Тек сол терезе мен сервистердің дерегін оқитын сұрау ерте бітіп, машинаны басқалардың сұрауларына босатады. Doris әр кестені екі рет бөліп, осыны мүмкін етеді: уақытпен бөлімдерге, әр бөлімді tablet ретінде сақталатын bucket-терге.\n\nБұл зертханалық жұмыста экспорттаушы `otel_traces` кестесін қалай бөлгенін қарайсыз, `EXPLAIN` арқылы инцидент сұрауы қай бөлім мен tablet-ті оқитынын тексересіз және экспорттаушы RANDOM бөлуін span көшірмесіндегі сервис бойынша бөлумен салыстырасыз. Әр ұяшықты қайталауға болады.\n\nШамамен 35 минут жоспарлаңыз. Төлем ақауы қосылған 1-модульдің DOG стегі мен демосы қажет (1-зертханалық жұмыстың 5-бөлімі).",
+      "target_hash": "a48e072bb2fa53e1c2cbb301d5167a9dedd9c55e0f209eb8baa35479e4cf890f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m05-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 5 on 2026-11-08. Re-read all saved targets against frozen lesson, complete Lab code/expected outputs and all six Quiz questions/options/explanations with answer mapping. Checked partitions-times-buckets tablet counts, planning-time constants and UTC_DATE limitation, empty-partition pruning, half-open ranges, UTC daily retention/history limits, AUTO PARTITION current/future retention and incompatible policies, HASH skew versus RANDOM balance, trace equality pruning, load_to_single_tablet behavior and BUCKETS AUTO thresholds/floor. Clarified distinction between row-distribution percentages and tablet-read fractions. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "b0be4fabe02dde0d1c1355f38fcec3d65aaba780bc799ec00e14b78d9c9ba14f",
+          "target_hash": "a48e072bb2fa53e1c2cbb301d5167a9dedd9c55e0f209eb8baa35479e4cf890f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,1160 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.cf42acbf55524dcd870957e4871f55f2",
+      "source_hash": "a1d9f55a73095bd82b119a9ae94227a9a43310a6bf7e1b48379b6aacb48b8eb3",
+      "target_text": "### Тестті бастапқы баптау\n\nБастапқы баптау ұяшығын бір рет орындаңыз. Ол курс пакетін тауып, осы модульдің тест анықтамасын оқиды және интерактивті тест нысанын жасайды. Jupyter ядросын қайта іске қосқан сайын оны қайта орындаңыз.",
+      "target_hash": "4dd2f3ec22846ab038e7da2cf7117868483b4e4c1fdfc812e3b7393a1f0289b3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a1d9f55a73095bd82b119a9ae94227a9a43310a6bf7e1b48379b6aacb48b8eb3",
+          "target_hash": "4dd2f3ec22846ab038e7da2cf7117868483b4e4c1fdfc812e3b7393a1f0289b3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ee8905619fda4b818d1b86dff211d1b8",
+      "source_hash": "36269c0c2ae812a98ff4ae58988a3eb613237ecee087e303103e7f8af6522463",
+      "target_text": "## Бұл тест нені бағалайды\n\nСабақтың әр оқу мақсатына бір сұрақтан берілген. Осы модульден кейін сіз:\n\n1. Кіріс өзгерістердің пішіні мен иелігіне қарай толық жолдық upsert, ішінара баған жаңарту, SQL `UPDATE` немесе `MERGE INTO` таңдай аласыз.\n2. Қай күй жеңетінін келу реті емес, дереккөз реті шешуі үшін Sequence бағанын пайдалана аласыз.\n3. Толық жолдық және ішінара жазулар түсірілген бағандарға не істейтінін және түсіріп қалдырудың `NULL` мәнінен айырмасын болжай аласыз.\n4. Жойылатын жолдардың анықталуына қарай предикаттық `DELETE` немесе Delete Sign таңдай аласыз.\n5. Толық Partition жою немесе ауыстыру үшін `TRUNCATE` немесе `INSERT OVERWRITE` таңдай аласыз.\n6. Жарияланған өзгерістің көрінуін кейінгі Compaction физикалық тазалауынан ажырата аласыз.\n\nКей сұрақтар зертханалық жұмыстың бір қадамынан басталады, бірақ ешбірі оның сандарын есте сақтауды сұрамайды. Тест Docker, Doris, S3 немесе Kafka жүйелерінсіз және аяқталған зертханалық жұмыссыз орындалады; оған тек курстың Jupyter ортасы қажет.",
+      "target_hash": "d5e10423272a61ff7d9330ec0bf60a756bed4d66b258aaa6251d566125ab0d8c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "36269c0c2ae812a98ff4ae58988a3eb613237ecee087e303103e7f8af6522463",
+          "target_hash": "d5e10423272a61ff7d9330ec0bf60a756bed4d66b258aaa6251d566125ab0d8c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0baf9a2b87d848a3853e03b19f6b3cb0",
+      "source_hash": "ba88481fadf1183a11b2fce54676c29e3a2a1862160bff93473f5a174d28c586",
+      "target_text": "## Білімді тексеруді бастау\n\nКелесі ұяшықты орындаңыз. Нұсқаны таңдап, түсіндірмесін оқу үшін **Submit answer** басыңыз. Қайту үшін **Previous question** пайдаланыңыз. Кез келген таңдауды өзгерте аласыз; жалғастырмас бұрын түзетілген жауапты жіберіңіз. Жіберілмеген таңдаулар нобай ретінде сақталады. **View results** ұпайыңызды және қате жауап берген сұрақтарыңызды көрсетеді. Сол жерден **Previous question** 6-сұраққа қайтарады, ал **Try again** тест тапсыру әрекетін тазартады.",
+      "target_hash": "c47023fa21f0b9922e28ba9d10e5c0a322db3235f8f85dc6cc9e918d0b9ce5d0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ba88481fadf1183a11b2fce54676c29e3a2a1862160bff93473f5a174d28c586",
+          "target_hash": "c47023fa21f0b9922e28ba9d10e5c0a322db3235f8f85dc6cc9e918d0b9ce5d0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2b408202e9734097b52756f16663ead3",
+      "source_hash": "fc44da6f33b1b813404cdd10c69ffa86fd31ef5d20d834e538880e26e4dcdb26",
+      "target_text": "<div>\n  <div>07-ТЕСТ · APACHE DORIS КӨМЕГІМЕН НАҚТЫ УАҚЫТТАҒЫ АНАЛИТИКА</div>\n  <div>Apache Doris жүйесінде деректерді жаңарту және жою</div>\n  <p>Әр сұрақтан кейін кері байланысы бар, бір жауап таңдалатын алты сұрақ; дерекқорға қосылу қажет емес.</p>\n  <span>6 сұрақ · Бір жауап таңдау · Шамамен 10 минут</span>\n</div>\n\n**7-модуль: Apache Doris жүйесінде деректерді жаңарту және жою** · [Сабақ](course.md) · [Зертханалық жұмыс](lab07_update_delete_data.ipynb)",
+      "target_hash": "d08d00dbf87e0a08b86774a0777de52ee006b7d60e88b469c033fbdd1e7d0454",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "fc44da6f33b1b813404cdd10c69ffa86fd31ef5d20d834e538880e26e4dcdb26",
+          "target_hash": "d08d00dbf87e0a08b86774a0777de52ee006b7d60e88b469c033fbdd1e7d0454"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5b387a732aa44a0bb98e7c1906e5d439",
+      "source_hash": "7c52cdef4375c57422539807f04f33ea77c96aac22421b8739c3ab37f0005425",
+      "target_text": "Алты дербес бизнес сценарийі 7-модульдің жаңарту және жою шешімдерін тексереді; әр оқу мақсатына бір сұрақтан. Жалғастырмас бұрын түсіндірмені оқып, кез келген жауапты түзетіңіз.",
+      "target_hash": "6ae1395b906074e2f0b21ba2cf3c304dfc5b75a042549a8381aa4e5eab0391e5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "7c52cdef4375c57422539807f04f33ea77c96aac22421b8739c3ab37f0005425",
+          "target_hash": "6ae1395b906074e2f0b21ba2cf3c304dfc5b75a042549a8381aa4e5eab0391e5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6ebc719e786544989dbc2f1689a806c7",
+      "source_hash": "a7b8b1554fcf526fa78eb7522708b32af0e25fa2da6f2c88163436fe5a136c08",
+      "target_text": "MERGE INTO дайындалған өзгерістерді мақсатпен біріктіріп, бір операторда сәйкес және сәйкес емес жолдарға әртүрлі әрекет қолданады. SQL UPDATE тек бар жолдарды өзгертеді, қалыпты INSERT upsert жасайды, бірақ жоймайды, ал change_type жазу тек бағанды сақтайды. Алдымен аралық кестеде әр order_id үшін бір жол барын тексеріңіз: бір мақсатты жолға бірнеше бастапқы жол анықталмаған нәтиже береді.",
+      "target_hash": "707810fdf3917f6a26b9c246b2b80e3b8c8bd530f7911f8b877dc57f7a0640fd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a7b8b1554fcf526fa78eb7522708b32af0e25fa2da6f2c88163436fe5a136c08",
+          "target_hash": "707810fdf3917f6a26b9c246b2b80e3b8c8bd530f7911f8b877dc57f7a0640fd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.27e364348f4b4f82834913f8fbb91b77",
+      "source_hash": "ff2f0963f507da140d1151e1b37331b82fe020dc1d736c7981febbdd746b2885",
+      "target_text": "Кіріс өзгерістердің пішіні мен иелігіне қарай толық жолдық upsert, ішінара баған жаңарту, SQL `UPDATE` немесе `MERGE INTO` таңдау.",
+      "target_hash": "0158695a91729a882406b551bb038be2726e3b83b15d56a026e0940cd4767eae",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ff2f0963f507da140d1151e1b37331b82fe020dc1d736c7981febbdd746b2885",
+          "target_hash": "0158695a91729a882406b551bb038be2726e3b83b15d56a026e0940cd4767eae"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0048c392669a465382583957336351f4",
+      "source_hash": "cc1a8f4833ad25370ade01b573e26f806f0cc3ffd24b92a6ad104b7c04d13586",
+      "target_text": "Әр өзгеріс түрі үшін WHEN MATCHED және WHEN NOT MATCHED тармақтары бар MERGE INTO",
+      "target_hash": "247182214a328931154850a419a32d4373733392ec1d4c262f0ad7de9a3f733e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "cc1a8f4833ad25370ade01b573e26f806f0cc3ffd24b92a6ad104b7c04d13586",
+          "target_hash": "247182214a328931154850a419a32d4373733392ec1d4c262f0ad7de9a3f733e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ca8c9dcac6ad46339b1c48ad4713de92",
+      "source_hash": "f4502e48f9c07b767093f72d82b3ec3b889e3f2350a15a9a19a1504852a939a4",
+      "target_text": "Барлық дайындалған тапсырыс ID мәндерін таңдайтын WHERE шарты бар SQL UPDATE",
+      "target_hash": "43b5ec821b99d1abf3e925a75ed864dac7ec3999f616d3d49554d741e7a7a2a1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "f4502e48f9c07b767093f72d82b3ec3b889e3f2350a15a9a19a1504852a939a4",
+          "target_hash": "43b5ec821b99d1abf3e925a75ed864dac7ec3999f616d3d49554d741e7a7a2a1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c870f32167434b7ea036e74fec1ff842",
+      "source_hash": "8e12f21da4b2db08e33998e6ce64ace5680422b7d5c9670bb676b5d7aa17a107",
+      "target_text": "DELETE деп белгіленген тапсырыстарды да жоятын дайындалған жолдардың INSERT амалы",
+      "target_hash": "c863a41c0ad59ddf77dcbe8251f4431aca025e45eaf731424a85f3a0aed400a2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "8e12f21da4b2db08e33998e6ce64ace5680422b7d5c9670bb676b5d7aa17a107",
+          "target_hash": "c863a41c0ad59ddf77dcbe8251f4431aca025e45eaf731424a85f3a0aed400a2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.eafbf379e53c432788f4cd943966ce9d",
+      "source_hash": "fad5f9526493d1b40dfe40d42af40e16b6c7fe1cced95c4e6599bd5b38f61863",
+      "target_text": "Әр тапсырыстың тек change_type мәнін жазатын ішінара баған жаңарту",
+      "target_hash": "e26934eaf871f2f17aac3d6eb3cb0808ee4e8aabdcd690e0716d0a3416bd9072",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "fad5f9526493d1b40dfe40d42af40e16b6c7fe1cced95c4e6599bd5b38f61863",
+          "target_hash": "e26934eaf871f2f17aac3d6eb3cb0808ee4e8aabdcd690e0716d0a3416bd9072"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.84a55773e2e34138ab1f1bb29d7c2bee",
+      "source_hash": "d088e8468377e04297d23c8b6b6e1c8a18e711bb6a3bf0ee5942dd5168f1ca60",
+      "target_text": "Аралық кестеде әр order_id үшін change_type мәні UPSERT немесе DELETE болатын бір жол бар. Кей тапсырыс Unique Key мақсатта бар, кейбірі жоқ. Бір оператор сәйкес UPSERT тапсырыстарын жаңартып, сәйкес DELETE тапсырыстарын жойып, сәйкес емес UPSERT тапсырыстарын енгізуі тиіс. Қай амал сай келеді?",
+      "target_hash": "1fdc9162052b54ea35614c761981fa7ee779990e83bca9d2567d827e50d95539",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "d088e8468377e04297d23c8b6b6e1c8a18e711bb6a3bf0ee5942dd5168f1ca60",
+          "target_hash": "1fdc9162052b54ea35614c761981fa7ee779990e83bca9d2567d827e50d95539"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5f376a87d838418eba7d1e228c164248",
+      "source_hash": "b7bd63b285acb5afb8a34a4d8f044044e4b147f3359dee71b1516397fc418d3b",
+      "target_text": "Sequence бағаны бір кілт күйлерін дереккөз нұсқасымен реттейді, сондықтан кешіккен 9-нұсқа 10-нұсқаны ауыстыра алмайды. Unique Key кестесі әр қабылданған жазуды емес, бір ағымдағы жолды көрсетеді және нұсқаға ұқсас аталған баған кесте оны function_column.sequence_col арқылы жариялағанша ештеңені реттемейді.",
+      "target_hash": "6cc03979b546542ca53d3c780af909d060188a11cfcca51cbb15ee134e42a5cb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b7bd63b285acb5afb8a34a4d8f044044e4b147f3359dee71b1516397fc418d3b",
+          "target_hash": "6cc03979b546542ca53d3c780af909d060188a11cfcca51cbb15ee134e42a5cb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d31da891da0241e8b182d78760af9284",
+      "source_hash": "df5895614eb61d5762f10a00cfef66eb0f0f2453c5da4f475e416041bca00142",
+      "target_text": "Қай күй жеңетінін келу реті емес, дереккөз реті шешуі үшін Sequence бағанын пайдалану.",
+      "target_hash": "79550395acb2b36aa5d429c8d5b39ded1dc2cc5ff92aac0f8ec6467945440401",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "df5895614eb61d5762f10a00cfef66eb0f0f2453c5da4f475e416041bca00142",
+          "target_hash": "79550395acb2b36aa5d429c8d5b39ded1dc2cc5ff92aac0f8ec6467945440401"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.77f41a76415b47cd802327be92b668fd",
+      "source_hash": "5cae853fa5a35227cdb2c36468f3b38bbaeea21326e95ffa34085e0c7491842a",
+      "target_text": "Бір жол, 9-нұсқадағы in_transit, өйткені ол жазба соңынан келді",
+      "target_hash": "afab76f15bb637826442c165158ab8286655ceca899ae1070b080f72e4989cf7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "5cae853fa5a35227cdb2c36468f3b38bbaeea21326e95ffa34085e0c7491842a",
+          "target_hash": "afab76f15bb637826442c165158ab8286655ceca899ae1070b080f72e4989cf7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.75cf7bd457654a1aa3eef275891f7a5f",
+      "source_hash": "bc31855ca8624c3f02a6752344cdbc563cf3e3cf24b23ba8b924c284dba0a5af",
+      "target_text": "Кесте қабылдаған үш күй жазбасының әрқайсысына біреуден үш жол",
+      "target_hash": "cdb5666bb8a9906119fc29c4ae23450f06ff42821278ab3144e3afee3e534e00",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "bc31855ca8624c3f02a6752344cdbc563cf3e3cf24b23ba8b924c284dba0a5af",
+          "target_hash": "cdb5666bb8a9906119fc29c4ae23450f06ff42821278ab3144e3afee3e534e00"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.acc5c3b2fc26446780425dc2b1cf3034",
+      "source_hash": "0acfabcb975baea3e8e15655e86f668ef1940f5bd21899b347fd1c91f8cd4a31",
+      "target_text": "Бір жол, 8-нұсқадағы in_transit, өйткені бірінші жазба сақталады",
+      "target_hash": "f772c3164d7e9fc133108ffcdddbe71d48de59305118bdc148b0aaebec942876",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "0acfabcb975baea3e8e15655e86f668ef1940f5bd21899b347fd1c91f8cd4a31",
+          "target_hash": "f772c3164d7e9fc133108ffcdddbe71d48de59305118bdc148b0aaebec942876"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9face3da4aea407ab9f515044f550488",
+      "source_hash": "72dec3001f03d69088ea79bb7df4d9f60f80af1c203c6d61cda439b651d1534b",
+      "target_text": "Бір жол, 10-нұсқадағы delivered, өйткені ең үлкен Sequence жеңеді",
+      "target_hash": "7308d12836897ac538184536fc826839b478b44d8de5239fe2c9a119129b4cdf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "72dec3001f03d69088ea79bb7df4d9f60f80af1c203c6d61cda439b651d1534b",
+          "target_hash": "7308d12836897ac538184536fc826839b478b44d8de5239fe2c9a119129b4cdf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4a95c93647cd418baf24bccd87117458",
+      "source_hash": "42688cf34531d45dbe20c5e6af70489893f222acfd3647737c52d3ccb13868aa",
+      "target_text": "Unique Key package_status кестесі әр package_id үшін бір жол сақтап, source_version бағанын Sequence деп жариялайды. 41 сәлемдемесі үшін үш толық жазба мына ретпен келеді: 8-нұсқада in_transit, 10-нұсқада delivered, содан кейін кешіккен ескі жаңарту — 9-нұсқада in_transit. Сұрау 41 сәлемдемесі үшін не көрсетеді?",
+      "target_hash": "8982031eec6e3d1eb8db2f0cf9c7642edf3d7755e4ff6ef569e13129b13279a1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "42688cf34531d45dbe20c5e6af70489893f222acfd3647737c52d3ccb13868aa",
+          "target_hash": "8982031eec6e3d1eb8db2f0cf9c7642edf3d7755e4ff6ef569e13129b13279a1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.618d9173543543759391dcf3e705687d",
+      "source_hash": "8642051364a0d0d64287ec6e0a30e34d374466fdff64336a8bac548a6738a897",
+      "target_text": "Толық жолдық upsert жолды ауыстырады, сондықтан түсірілген бағандар әдепкісін немесе NULL алады. Ішінара баған жаңарту бар жолды ішінара өзгертіп, бермеген бағандарын сақтайды. NULL айқын жіберу түсіріп қалдыру емес, ал жаңа кілт үшін ішінара жазуға жеке саясат қажет, өйткені ескі жол жоқ.",
+      "target_hash": "7f8b54e8741b0a9a9775998c70151f9534f1060a0296b93485374b9cc7bbd29b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "8642051364a0d0d64287ec6e0a30e34d374466fdff64336a8bac548a6738a897",
+          "target_hash": "7f8b54e8741b0a9a9775998c70151f9534f1060a0296b93485374b9cc7bbd29b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b185e32c82bb4276834a409480669c4e",
+      "source_hash": "757baf75209766677a661a9fcd4463c409ebc738da9e7e37eabdf8127851a63b",
+      "target_text": "Толық жолдық және ішінара жазулар түсірілген бағандарға не істейтінін және түсіріп қалдырудың `NULL` мәнінен айырмасын болжау.",
+      "target_hash": "72c78f9bccb14e100ac708ef7719f08c09f200335acc2cd9bc4d79c99f6a8941",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "757baf75209766677a661a9fcd4463c409ebc738da9e7e37eabdf8127851a63b",
+          "target_hash": "72c78f9bccb14e100ac708ef7719f08c09f200335acc2cd9bc4d79c99f6a8941"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2c351cd178e34f9bb7d3968b6a1d6cf3",
+      "source_hash": "1500583fb53a2cf7f8dbc87eaeb5cf1d6b83f8eb55996d2a234d99db19579a98",
+      "target_text": "Екі жазу да оларды бермегендіктен, екі көшірме де 75.00 және verified сақтайды",
+      "target_hash": "76be4814a6e1d2c278e9da761a128f7fa7eca6c7c3a5d932a83493771e90c2e7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "1500583fb53a2cf7f8dbc87eaeb5cf1d6b83f8eb55996d2a234d99db19579a98",
+          "target_hash": "76be4814a6e1d2c278e9da761a128f7fa7eca6c7c3a5d932a83493771e90c2e7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e3712b2463734324ae7713eef0a715cb",
+      "source_hash": "b27979e1febdf4d7e8379464599cb8d9d392009c5d491d2f6205d1721a8be93c",
+      "target_text": "Екі жазу да сол бағандарды түсіргендіктен, екі көшірме де 0.00 және NULL болады",
+      "target_hash": "68d526960f62fd5da035b907932e237d8a1893d11e2ab636ce80a3dfaba6afbe",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b27979e1febdf4d7e8379464599cb8d9d392009c5d491d2f6205d1721a8be93c",
+          "target_hash": "68d526960f62fd5da035b907932e237d8a1893d11e2ab636ce80a3dfaba6afbe"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.dde144379e9e4bed838931c7fd5b78bd",
+      "source_hash": "2734d63e3ae619d0b2416df74eb55069e083247bb3c6d5c859e7654dd7dd3d78",
+      "target_text": "Толық жолдық көшірме 0.00 және NULL алады; ішінара көшірме 75.00 және verified сақтайды",
+      "target_hash": "3c9cba6142c2d1453efdaa73640f731256b902569061479a6d7f7134a6589560",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "2734d63e3ae619d0b2416df74eb55069e083247bb3c6d5c859e7654dd7dd3d78",
+          "target_hash": "3c9cba6142c2d1453efdaa73640f731256b902569061479a6d7f7134a6589560"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c92d0e6efcd5400f91003839f307b461",
+      "source_hash": "54b0ebde61171c2dbe6f56e118f5526b3235cb7cc0e43fc438c98ec720555d8d",
+      "target_text": "Толық жолдық көшірме 75.00 және verified сақтайды; ішінара көшірме 0.00 және NULL алады",
+      "target_hash": "16ac521685fdaf4c7ae2b698917c8f5aec87026a135963badb386d603a585d4e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "54b0ebde61171c2dbe6f56e118f5526b3235cb7cc0e43fc438c98ec720555d8d",
+          "target_hash": "16ac521685fdaf4c7ae2b698917c8f5aec87026a135963badb386d603a585d4e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9c726e74b8c04e8892f6a73665cf266d",
+      "source_hash": "b32d21538c1b3037657eb2522d507ff8a43887eaf52d68f7ddbbd572f422b6ed",
+      "target_text": "Бар Unique Key жолының екі көшірмесінде balance 75.00 және note 'verified' бар. balance үшін DEFAULT '0.00', ал note NULL рұқсат етеді және әдепкісі жоқ. Бір көшірмеге толық жолдық upsert, екіншісіне ішінара баған жаңарту келеді; екеуі де тек кілт пен күйді береді. Не болады?",
+      "target_hash": "fd460689860983c7bfa925134e10a6b3e78c92ec554b5f7c7397e087fa8455eb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b32d21538c1b3037657eb2522d507ff8a43887eaf52d68f7ddbbd572f422b6ed",
+          "target_hash": "fd460689860983c7bfa925134e10a6b3e78c92ec554b5f7c7397e087fa8455eb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c02bb3f90e774c5b8f79bb8c5733e6ff",
+      "source_hash": "2cca4ce0d28bb32c0679e15f0775663c9aac9282948fc5c6082e041a438598c6",
+      "target_text": "Дерек ретінде келген кілттер жүктеу арқылы жасырын Delete Sign (__DORIS_DELETE_SIGN__ = 1) көмегімен жойылады, ал шарт таңдаған жолдар предикаттық DELETE арқылы жойылады. Бағандарды NULL орнату немесе upsert күйді жоюдың орнына жазады, сынақ жолдарымен үстінен жазу қате жолдарды сақтайды, ал truncate тұтас Partition бөлімдерін тазартады.",
+      "target_hash": "33989ea02fba390311931f5cbb3148ed6a58a9a5bfa420702c1bef8f02cea196",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "2cca4ce0d28bb32c0679e15f0775663c9aac9282948fc5c6082e041a438598c6",
+          "target_hash": "33989ea02fba390311931f5cbb3148ed6a58a9a5bfa420702c1bef8f02cea196"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.70d10b056a894b1fa8ecbf09f2cdeafe",
+      "source_hash": "d2e6028edb535e03a92c87a2e7c0062136848d92eeb30a6dc83b858c1bab354e",
+      "target_text": "Жойылатын жолдардың анықталуына қарай предикаттық `DELETE` немесе Delete Sign таңдау.",
+      "target_hash": "45a8bc184d9bd208c926369778e19189f3c79f3749acadefd45839fe5197f0d6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "d2e6028edb535e03a92c87a2e7c0062136848d92eeb30a6dc83b858c1bab354e",
+          "target_hash": "45a8bc184d9bd208c926369778e19189f3c79f3749acadefd45839fe5197f0d6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f511b1734c65424596c5a7dc504a2aee",
+      "source_hash": "51f349f8a3ace03248f9931567b095ac56718bab9f91c2db74d8047e0038e384",
+      "target_text": "CDC кілттері үшін Delete Sign жолдары, category = test үшін предикаттық DELETE",
+      "target_hash": "fe24866034f9171b1908262f9f3551792addda5b92fa35e377d2b99a85c9406e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "51f349f8a3ace03248f9931567b095ac56718bab9f91c2db74d8047e0038e384",
+          "target_hash": "fe24866034f9171b1908262f9f3551792addda5b92fa35e377d2b99a85c9406e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6c254f0c08604c349988ee5f10f23224",
+      "source_hash": "20aacd3f90a3883fa41257382d3a74584ddf6ba1336f5956a416c3ae59d084a4",
+      "target_text": "Екеуі де кесте жолдарын жоятындықтан, екеуіне де TRUNCATE PARTITION",
+      "target_hash": "9aa82a52497f228bff834c85645f9cac959b21fdfe6ea90925f1425db276668f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "20aacd3f90a3883fa41257382d3a74584ddf6ba1336f5956a416c3ae59d084a4",
+          "target_hash": "9aa82a52497f228bff834c85645f9cac959b21fdfe6ea90925f1425db276668f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1f5c899089784ae4aab2d14adcd9f5b1",
+      "source_hash": "339883cd60f3b9a1bf9a4dc1669815193d5dd76727770402f1c28eccf1783b92",
+      "target_text": "CDC кілттерін NULL орнататын ішінара жаңарту және сынақ жолдары үшін UPDATE",
+      "target_hash": "5d692b8e13882a7a8bb77ddbf73f1ad9e90c89132c99fbcbd4d66b17dbef0efd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "339883cd60f3b9a1bf9a4dc1669815193d5dd76727770402f1c28eccf1783b92",
+          "target_hash": "5d692b8e13882a7a8bb77ddbf73f1ad9e90c89132c99fbcbd4d66b17dbef0efd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b4a7203e911b4d45a0119c523a2a096e",
+      "source_hash": "8b14a4e7ea0f4fb15e3b7f30f1f6bb0892efa496649c64a796fcd138ca40f128",
+      "target_text": "CDC кілттерінің қалыпты upsert амалы және сынақ жолдарының INSERT OVERWRITE амалы",
+      "target_hash": "36ebbb894e37c64e4c29cc4100be125ec64273f3cd67f2410abd5ab637ccda8f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "8b14a4e7ea0f4fb15e3b7f30f1f6bb0892efa496649c64a796fcd138ca40f128",
+          "target_hash": "36ebbb894e37c64e4c29cc4100be125ec64273f3cd67f2410abd5ab637ccda8f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2cf713f4f26440909607d99e410cec2b",
+      "source_hash": "ee925262cb2110986a42ab41535febb0703ed662e9cd3e156193b5abfb45674b",
+      "target_text": "CDC топтамасы Unique Key кестесі үшін жойылған тұтынушылардың кілттерін алып келеді. Бөлек күтім тапсырмасы category мәні test жолдарын жоюы тиіс. Қай сәйкестік екі дереккөзге сай?",
+      "target_hash": "ea6d76d4c0dfaa255273aeb12bf3fe68a8294abb166179ffa4917b5982f38d68",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ee925262cb2110986a42ab41535febb0703ed662e9cd3e156193b5abfb45674b",
+          "target_hash": "ea6d76d4c0dfaa255273aeb12bf3fe68a8294abb166179ffa4917b5982f38d68"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2570b048b74a4ea08c407e2efc6b7a11",
+      "source_hash": "ca77578514b8ce360ea85003243a3ae864d7763ec4cddcd020365dd837725767",
+      "target_text": "INSERT OVERWRITE жаңа мазмұнды құрып, Partition бөлімін оған атомарлы ауыстырады. Алдымен truncate немесе delete жасау күн бос болатын аралық қалдырады, ал Duplicate Key кестесіне қалыпты INSERT INTO алмастырудың орнына қосады. Зертханалық жұмыс алдындағы және кейінгі мазмұнды көрсетеді; атомарлы ауысу — құжатталған әрекет.",
+      "target_hash": "bf31fa4aed14482c32510537a1c7181e467fd7b5e69ff31293067bdb84f77747",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ca77578514b8ce360ea85003243a3ae864d7763ec4cddcd020365dd837725767",
+          "target_hash": "bf31fa4aed14482c32510537a1c7181e467fd7b5e69ff31293067bdb84f77747"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1979bcd66f1e4d98be330c09e0b0b228",
+      "source_hash": "a7e95a6c52fe3740f21631984a80d96419ad51530846ea6800585276f9574f4e",
+      "target_text": "Толық Partition жою немесе ауыстыру үшін `TRUNCATE` немесе `INSERT OVERWRITE` таңдау.",
+      "target_hash": "b0524a92d73686828dbf7c069e18770e5c357eb2686d93f9b24f7267c076b5d0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a7e95a6c52fe3740f21631984a80d96419ad51530846ea6800585276f9574f4e",
+          "target_hash": "b0524a92d73686828dbf7c069e18770e5c357eb2686d93f9b24f7267c076b5d0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.15113019b10e4341b6e1aa93f77c052d",
+      "source_hash": "20ffeb8dec3e49e9a1588e92ab1f78c9e4064f853fa14535e9c820cf238f555b",
+      "target_text": "Partition TRUNCATE жасап, содан кейін екінші операторда түзетілген жолдарды INSERT INTO арқылы енгізу",
+      "target_hash": "5b47efe9395cc7457d0639848d88c2f6ed4d000d89af6c0731bb77121f3c41c3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "20ffeb8dec3e49e9a1588e92ab1f78c9e4064f853fa14535e9c820cf238f555b",
+          "target_hash": "5b47efe9395cc7457d0639848d88c2f6ed4d000d89af6c0731bb77121f3c41c3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fac568dc88f14ed3b06af931e50b6560",
+      "source_hash": "4456007eef31f657acf36cf35c6041579cdb5c7a939a95c1bcaddbe1470300ba",
+      "target_text": "Бірдей мәндері бар жолдарды ауыстыратын бар Partition ішіне INSERT INTO",
+      "target_hash": "6fba49680dc31963f954607357d05e41b0968c384a345740472ae86344807720",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "4456007eef31f657acf36cf35c6041579cdb5c7a939a95c1bcaddbe1470300ba",
+          "target_hash": "6fba49680dc31963f954607357d05e41b0968c384a345740472ae86344807720"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.abed49eb2ff6475a8c6af0b67ad85526",
+      "source_hash": "f57da7491f57df8c56aa4359991e530359efef217ad1259427daa37618e402a4",
+      "target_text": "Күннің әр ескі жолын DELETE жасап, содан кейін басқа операторда түзетілген жолдарды жүктеу",
+      "target_hash": "6847f195547a8b8e7e6a2d4f064c4466334d3dbb6f388f7039dfeee2a45ff8d5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "f57da7491f57df8c56aa4359991e530359efef217ad1259427daa37618e402a4",
+          "target_hash": "6847f195547a8b8e7e6a2d4f064c4466334d3dbb6f388f7039dfeee2a45ff8d5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f96d30b7cd804d2188c5f2925a19665f",
+      "source_hash": "5cfd0a09845a273aab6bd48877bd1a0da12b37e4e5f99be56eb60a7e35c9664f",
+      "target_text": "Тек сол Partition бөлімін толық түзетілген деректерімен INSERT OVERWRITE арқылы ауыстыру",
+      "target_hash": "8f6b53e2c2f3abf13c7a59e2187b76d5444559ac25a93ae1b2c0ce50adf37203",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "5cfd0a09845a273aab6bd48877bd1a0da12b37e4e5f99be56eb60a7e35c9664f",
+          "target_hash": "8f6b53e2c2f3abf13c7a59e2187b76d5444559ac25a93ae1b2c0ce50adf37203"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.616c9ebb2df94a2291e4896fccf328db",
+      "source_hash": "4ed2e7f8ae941e9759951d417388891a5ddfc6aee56c2478cff137895685cccf",
+      "target_text": "Бір күндік Partition толық түзетілген деректер жиынынан қайта құрылуы тиіс. Оқу сұраулары алмастыру көрінгенше ескі мазмұнды көруді жалғастыруы тиіс, екеуінің арасында бос аралық болмауы керек. Қай амал сай?",
+      "target_hash": "e160d27537d27b0f695ca2aad158671ac005715e388f914b1ef08f8531ccae13",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "4ed2e7f8ae941e9759951d417388891a5ddfc6aee56c2478cff137895685cccf",
+          "target_hash": "e160d27537d27b0f695ca2aad158671ac005715e388f914b1ef08f8531ccae13"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.56f9db24ce1e45969c4af7f9a6d2e175",
+      "source_hash": "482d1317bf89b9f581389359bf97c7624ed4c6a9e294e70cb600a43164388bb0",
+      "target_text": "Көріну және физикалық тазалау — бөлек кезеңдер: жариялаудан кейін жаңа сұраулар жойылған кілтті бірден алып тастайды, ал ескі деректер фондық Compaction Rowset жиынтықтарын қайта жазғанша дискіде қала алады. Сұрау Compaction іске қоспайды және кіріс Delete Sign Merge-on-Write ішкі delete bitmap құрылымы емес.",
+      "target_hash": "7ba1cbb71df77251d8e5cd43927cb1b0a95371312f7693152b9e65ebd6e1a243",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "482d1317bf89b9f581389359bf97c7624ed4c6a9e294e70cb600a43164388bb0",
+          "target_hash": "7ba1cbb71df77251d8e5cd43927cb1b0a95371312f7693152b9e65ebd6e1a243"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e467fe3f88004fcebfb176a66119a14c",
+      "source_hash": "8a45c618dde77a679bd753e28b2f2378bda40063e73d72a10760aeb6f706f719",
+      "target_text": "Жарияланған өзгерістің көрінуін кейінгі Compaction физикалық тазалауынан ажырату.",
+      "target_hash": "6f683554239b9cb198af52af0912416d5266cb697c3eeed9ab876b9d2dcb9117",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "8a45c618dde77a679bd753e28b2f2378bda40063e73d72a10760aeb6f706f719",
+          "target_hash": "6f683554239b9cb198af52af0912416d5266cb697c3eeed9ab876b9d2dcb9117"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.895554278d4749fa9352158a66526a6d",
+      "source_hash": "00112484b9594eb8d1574633a5092b74b6c253f8b874b94973799041b238178b",
+      "target_text": "Жою сәтсіз болды, өйткені жойылған жол байттары босатылғанша көрінетін қалады",
+      "target_hash": "3eb5e070bb6eea6928a70d27a68b1bfa00a90adfd2f803175e20a0f4a2c7edf7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "00112484b9594eb8d1574633a5092b74b6c253f8b874b94973799041b238178b",
+          "target_hash": "3eb5e070bb6eea6928a70d27a68b1bfa00a90adfd2f803175e20a0f4a2c7edf7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3be4b148a1ae4fff8f8344632c913869",
+      "source_hash": "7ff1c90dc4d2e55d00e4a7089e5d2837c10f456eccf40fed2388ffa2354144ad",
+      "target_text": "Жою көрінеді; Compaction ескі деректерді кейін босата алады",
+      "target_hash": "e70128ade6acc884592873e74f53142234f354756325bf0ab1019bcf30c63f81",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "7ff1c90dc4d2e55d00e4a7089e5d2837c10f456eccf40fed2388ffa2354144ad",
+          "target_hash": "e70128ade6acc884592873e74f53142234f354756325bf0ab1019bcf30c63f81"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bbece4d4540943d7b53119ccd1fbec86",
+      "source_hash": "747dd4fee296a14736d53e95bc8fe4d86ab9865233bfcd7504c556a3b2b48516",
+      "target_text": "SELECT жолды жасыру үшін Compaction орындады, ал орын келесіде босатылады",
+      "target_hash": "fccd9b09164896d0a876f7c85ada8e663277e896f7e8fbddb53d9edfb14b173b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "747dd4fee296a14736d53e95bc8fe4d86ab9865233bfcd7504c556a3b2b48516",
+          "target_hash": "fccd9b09164896d0a876f7c85ada8e663277e896f7e8fbddb53d9edfb14b173b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.df9bfa7034e54fa4979cfdc3214920a9",
+      "source_hash": "1e6665403a183750fdc56a3952d90e1f0d2442d6631609cd212256841515f260",
+      "target_text": "Delete Sign бағаны мен delete bitmap бір нысан, сондықтан орын қалады",
+      "target_hash": "4163e978da3b0f10f5f81f8ef1b9150983fde22c57ffbb17a0548a8ef7046abe",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "1e6665403a183750fdc56a3952d90e1f0d2442d6631609cd212256841515f260",
+          "target_hash": "4163e978da3b0f10f5f81f8ef1b9150983fde22c57ffbb17a0548a8ef7046abe"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2826ffd0c47943c3a4e4c301ff32af93",
+      "source_hash": "8f9f88237aeefc10c8a669a6692537d58c67353a3c336a16f37251c7be1175c3",
+      "target_text": "Unique Key Merge-on-Write кестесіндегі жою жарияланды. Жаңа SELECT кілтті енді қайтармайды, бірақ кестенің диск қолдануы азаймаған. Қай түсіндіру негізді?",
+      "target_hash": "19dc9b00cf1d46263ced3ab54ff72275b727dbf4a348734e98c8efce57314fba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "8f9f88237aeefc10c8a669a6692537d58c67353a3c336a16f37251c7be1175c3",
+          "target_hash": "19dc9b00cf1d46263ced3ab54ff72275b727dbf4a348734e98c8efce57314fba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2e95c30618994436adc8424b5288b41c",
+      "source_hash": "05a137304d5e4dc40913969409a87ae63f1d4a879e88057f568cb27b6f5aed8a",
+      "target_text": "7-модуль тесті: Apache Doris жүйесінде деректерді жаңарту және жою",
+      "target_hash": "9a7952666a752aaf7b0dfdd72aecd0852b8176de2d7350484a4c6e988a9f1fb9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m07-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct comparison completed for every frozen Module 7 source/target unit after reading full lesson, executable Lab code and all six complete quiz questions. Verified current state versus append-only history, full versus partial omitted columns and explicit NULL, session variable versus load header, APPEND versus ERROR for new patch keys, Sequence source ordering and ties, SQL UPDATE value-only restriction, MERGE MOW requirement/WHEN order/privileges/unique staging keys and target-only preservation, predicate DELETE versus incoming Delete Sign and internal delete bitmap, whole-Partition TRUNCATE versus atomic INSERT OVERWRITE, query visibility versus later Compaction. Corrected concurrent readers to оқу сұраулары and shipping package to сәлемдеме. All IDs/counts/status literals/timestamps/defaults and six unique quiz answers preserved. Viewed five PNGs and supplied full adjacent Kazakh label correspondence; pixels remain English. Protected inline/fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "05a137304d5e4dc40913969409a87ae63f1d4a879e88057f568cb27b6f5aed8a",
+          "target_hash": "9a7952666a752aaf7b0dfdd72aecd0852b8176de2d7350484a4c6e988a9f1fb9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

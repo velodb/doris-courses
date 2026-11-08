@@ -1,0 +1,728 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.6f49c0dc99864120b5a4dffeea9c7be5",
+      "source_hash": "9e24e9700085aa34d663b4fc2bb14975e0bfdb33aa2c624bbe84420c6540e8c1",
+      "target_text": "**Күтілетін нәтиже**\n\nБес кесте анықтамасы, 227 өнімге, жалпы 250.00 болатын екі төлемге, 150.00 бір қайтарымға, екі жөнелту оқиғасына және әр ағымдағы тапсырыстың тауарларына, төлемдері мен қайтарымдарына сәйкес екеніне жасыл белгілер; тізілім екі рет жазылса да, әр жазбаны бір рет санайды. `wwi_products` жоқ болса, алдымен 227 жолдық Stream Load жауабы шығады.\n\nАғымдағы тапсырыстар: 900001 — DELIVERED, 4-нұсқа, 100.00 төленген; 900002 — CANCELLED, 2-нұсқа; 900003 — REFUNDED, 4-нұсқа, 150.00 төленген және 150.00 қайтарылған; 900004–900010 — CREATED, 1-нұсқа; 900011 — жаңа CREATED тапсырысы. Бәрі `COURSE_SIMULATION`.\nАяқтау қорытындысында бір жол бар: **11 ағымдағы тапсырыс, тапсырыс сомасы 1510.00, төленгені 250.00, қайтарылғаны 150.00, таза түсім 100.00**. Бұлар WWI шот түсімдері емес, модельденген ағымдағы тапсырыстар. Қайтарылған тапсырыс төлемін де, қайтарымын да сақтайды; таза түсімді табу үшін айырмасын алыңыз.\n",
+      "target_hash": "639e28b231b0217abcfd4f6c14c9b58642f54d4af5c77a1273aef0b252ec69e0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "9e24e9700085aa34d663b4fc2bb14975e0bfdb33aa2c624bbe84420c6540e8c1",
+          "target_hash": "639e28b231b0217abcfd4f6c14c9b58642f54d4af5c77a1273aef0b252ec69e0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1b4f37c70bb54efd94408e140117ac02",
+      "source_hash": "2e2a9c9e44a38cc8a8498c0c77850549e8c13eafb4dc8b33e93b93bbadb910b3",
+      "target_text": "### Ағымдағы күйді бизнес транзакцияларының жазбаларымен тәуелсіз тексеру\n\nbusiness_events.json ішінде бөлек тізілген тауарлармен, төлемдермен, қайтарымдармен және жөнелту оқиғаларымен салыстырыңыз: тауарлар сомасы тапсырыс сомасына, төлемдер қосындысы 250.00-ге, қайтарымдар 150.00-ге тең болуы керек. Төлемдер мен қайтарымдардың қайталанулары өз бизнес ID-лері арқылы жойылады.\n\nҚайтарымдар бастапқы төлемдерге, жөнелту оқиғалары тапсырыстарға байланысуы керек. Өнім өлшемі 5-модульдегі wwi_products кестесінен алынады (227 жол). Сол бизнес транзакцияларын қайта жазғаннан кейін бөлек бизнес жазбаларының саны мен сомалары өзгермеуі керек.\n\nwwi_products жоқ болса, бизнес тізілімін баптау WWI Parquet пакетінен 227 жолын жүктейді. Бар wwi_products кестесі өзгеріссіз қайта пайдаланылады.\n",
+      "target_hash": "2adb291595f5e07cfe5f136f6802bcfac2eb225f07d8d72465da085f53223fcf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "2e2a9c9e44a38cc8a8498c0c77850549e8c13eafb4dc8b33e93b93bbadb910b3",
+          "target_hash": "2adb291595f5e07cfe5f136f6802bcfac2eb225f07d8d72465da085f53223fcf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.94e060b81a38472a8f8fb09899ce3a2f",
+      "source_hash": "1a3f75f684a26eaec78a678a07a0bf25aedb588edf0f73adfff6b949edcecf97",
+      "target_text": "<div>\n  <div>7-ЗЕРТХАНАЛЫҚ ЖҰМЫС · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Ретсіз оқиғаларды шешу, тарихты сақтау және қалпына келетіндей қайта ойнату</div>\n</div>\n\nТапсырыс оқиғалары екі рет, ретсіз және үзілістен кейін келеді. Әр тапсырыстың ағымдағы күйін бизнес нұсқаларымен сақтайсыз, әр бөлек оқиғаны тарихта бір рет сақтайсыз, әр жеткізілімді тіркейсіз және модельденген сәтсіздіктен кейін үшеуі де төлемдер, қайтарымдар және жөнелтулердің тәуелсіз тізіліміне сәйкес келгенше бүкіл пакетті қайта ойнатасыз. Содан кейін бөлек көшірмелерде тапсырыстың бір бағанын жаңартып, тапсырыстарды жоясыз. Шамамен 45 минут жоспарлаңыз.\n\n**7-модуль: деректерді жаңарту, жою және оқиғаларды қайта ойнату** · [Сабақ](course.md) · [Тест](quiz07_state_changes_and_replay.ipynb) · [Курстың README файлы](../../README.md)\n",
+      "target_hash": "66d7054de957ef7775afa5303cbbfd1cc7041a6a6c749ec3121c257f931f20f3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "1a3f75f684a26eaec78a678a07a0bf25aedb588edf0f73adfff6b949edcecf97",
+          "target_hash": "66d7054de957ef7775afa5303cbbfd1cc7041a6a6c749ec3121c257f931f20f3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9c141344418d4cf0803c439ed6d9c864",
+      "source_hash": "f89f1431db629acc12122d173c19348dc564927b71082079df08f32f6be4afe8",
+      "target_text": "## Алғышарттар және бизнес дереккөздері\n\nАлдымен 6-модульді аяқтаңыз. Бұл жұмыс orders_clean ішінен қабылданған тапсырыстарды оқып, COURSE_SIMULATION дереккөзімен 900001–900011 тапсырыстарының модельденген өзгерістерін өңдейді.\n\nТек orders_update_walkthrough, orders_replay_practice, orders_current, order_events, event_deliveries, orders_partial_update, orders_delete_demo, order_items, products, payments, refunds және shipment_events кестелерін қайта жасаңыз.\n\nҚалыпты ағым: жасалды → төленді → жөнелтілді → жеткізілді; қайтарым ағымы: жасалды → төленді → бас тартылды → қайтарылды.\nБұл жұмыс файлдан модельденген оқиғаларды оқып, жеткізілген оқиғаны төленген оқиғадан бұрын жеткізеді. Әр оқиға толық жаңартылған күйді (after-image) қамтиды; бір оқиғаның қайталанған жеткізілімдері бірдей мазмұнда.\n\nwwi_products жоқ болса, бизнес тізілімін баптау WWI Parquet пакетінен 227 жолын жүктейді. Бар wwi_products кестесі өзгеріссіз қайта пайдаланылады.\n",
+      "target_hash": "6eac5f8767d49b7faa80bfa9c807384adcdda7dcf0849e3ea0014676bd0d290d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "f89f1431db629acc12122d173c19348dc564927b71082079df08f32f6be4afe8",
+          "target_hash": "6eac5f8767d49b7faa80bfa9c807384adcdda7dcf0849e3ea0014676bd0d290d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.caefdb22bce24f6da90622006582d332",
+      "source_hash": "648f32d1a056ce6f7f8a49cece2f92d7539a8d87e76adabe770132575cc6d0e7",
+      "target_text": "## 5. Тәуелсіз жою тәжірибесі\n\nНегізгі ағымда қайтарылған тапсырыстарды жоймаңыз. Көшірмеде бизнес жұмсақ жоюы үшін is_deleted, содан кейін басқа жол үшін SQL DELETE қолданыңыз; сұрауға көрінбеу дисктің бірден босауын білдірмейді. `UPDATE` тек осы көшірме сияқты Unique Key кестелерінде істейді; Duplicate не Aggregate Key кестесінде Doris `Only unique table could be updated` қатесімен бас тартады.\n",
+      "target_hash": "05c87b7f7930cd20cc6b2355d1aa41f825b74d1c205646f524be74636e70bc1c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "648f32d1a056ce6f7f8a49cece2f92d7539a8d87e76adabe770132575cc6d0e7",
+          "target_hash": "05c87b7f7930cd20cc6b2355d1aa41f825b74d1c205646f524be74636e70bc1c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.022325dd710c4cb1b3e2d08d86942a0c",
+      "source_hash": "d571136b9eea8abe3a2a27e649027726834197c4af94f97f2310eb60bd764e41",
+      "target_text": "## 6. Жаттығу: қайтарылған тапсырыстың тарихы\n\n`order_events` ішінен 900003 тапсырысының тарихын `event_time` ретімен, күйімен, нұсқасымен, төленген және қайтарылған сомасымен, сондай-ақ тізілімдегі төлемі мен қайтарымын көрсетіңіз. Содан кейін түсіндіріңіз: қайтарымнан кейін `paid_amount` неге 150.00 қалады және таза алынған соманы қайдан оқисыз?\n",
+      "target_hash": "a04511b37639d7a0483da3da2a85a0c978ceb0d4f94b6cc7217b4f42c53d6718",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "d571136b9eea8abe3a2a27e649027726834197c4af94f97f2310eb60bd764e41",
+          "target_hash": "a04511b37639d7a0483da3da2a85a0c978ceb0d4f94b6cc7217b4f42c53d6718"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8f12db927b7d482aacb6984a7edd53cf",
+      "source_hash": "d5353a472102e0b8721acacf34c8c9c7329e65ae5275d661c54fb7913651abff",
+      "target_text": "## 1. Ағымдағы күй мен тарихқа бөлек кестелер жасау\n\nАғымдағы кесте UNIQUE KEY(order_id) қолданып, event_version бойынша жаңарақ күйді сақтайды; тарих кестесі UNIQUE KEY(event_id) қолданып, бөлек оқиғаларды сақтайды; жеткізілім кестесі әр әрекетті тіркейді.\n\nБұл кестелер бөлек қадамдарда жазылады. Келесіде бір кесте жаңартылып, екіншісі жаңартылмағандағы қалпына келтіруді бақылаңыз.\n",
+      "target_hash": "bbe2c2ba7083b1e268d85f2cc92208713ad83a19b304fecf6d602d75433e7690",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "d5353a472102e0b8721acacf34c8c9c7329e65ae5275d661c54fb7913651abff",
+          "target_hash": "bbe2c2ba7083b1e268d85f2cc92208713ad83a19b304fecf6d602d75433e7690"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e8cab60335ad48feace0ded3caf97cae",
+      "source_hash": "1eef4cb50ab0ff7a6ff8e1f4ebda844ec60b73c47dd8a006fb8a54b67956bce0",
+      "target_text": "## 2. Үзілісті модельдеу, содан кейін қалпына келтіру\n\nАлғашқы жеткізілімді тіркеп, тарихты жазыңыз, содан кейін ағымдағы кестені жазбас бұрын үзілісті модельдеңіз. Әр жеткізілімді сақтап, тұрақты оқиға ID-і арқылы тарих қайталануларын жоя отырып, бүкіл оқиғалар пакетін қайта жеткізіңіз. Бұл тәжірибе дерекқор процесін емес, тек курс қадамдарын үзеді.\n",
+      "target_hash": "9f603916f8e20a4e802ac77b07d916d7550225936c62e1b6f57d192cd3b770fc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "1eef4cb50ab0ff7a6ff8e1f4ebda844ec60b73c47dd8a006fb8a54b67956bce0",
+          "target_hash": "9f603916f8e20a4e802ac77b07d916d7550225936c62e1b6f57d192cd3b770fc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ccfb89a9e8134a169a23556d6c78e44c",
+      "source_hash": "dd018031a9a38bed9e6658098ed71de2572917bc4258612a570d7768f0590070",
+      "target_text": "## 3. Әр жолды салыстыру, содан кейін бүкіл пакетті қайта ойнату\n\n900001 DELIVERED, 4-нұсқа болып қалады; 900003 REFUNDED, 4-нұсқа болып, жинақталған төлемі әлі 150.00 қалады.\n10 бастапқы snapshot және 8 бөлек оқиға 18 логикалық тарих жазбасын және 11 ағымдағы тапсырысты береді.\nӘр пакетте бір қайталануды қоса 9 жеткізілім бар; үзіліске дейінгі 1 жеткізілім және бүкіл пакетті екі рет қайта ойнату 19 бастапқы жеткізілім береді.\n",
+      "target_hash": "dac0980b517a23d078b504ba878220018f1858c23fca636c5bea4c38157bf311",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "dd018031a9a38bed9e6658098ed71de2572917bc4258612a570d7768f0590070",
+          "target_hash": "dac0980b517a23d078b504ba878220018f1858c23fca636c5bea4c38157bf311"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.61cb8f468ac34e429ce1e72530139b02",
+      "source_hash": "4e18bcd3ce27feebba19943d830a09ee2bea35d0d740c5eea9e341afedea6533",
+      "target_text": "## 4. Бағандарды ішінара жаңарту\n\nТәуелсіз orders_partial_update кестесінде бағандарды ішінара жаңартуды уақытша қосып, тапсырыс ID-ін, жаңа күйді және өсетін нұсқаны жіберіңіз. Күй CANCELLED болғанын, ал сома 100.00, аймақ EAST болып қалғанын тексеріңіз. Кейін сеанс параметрлерін қалпына келтіріңіз.\n",
+      "target_hash": "93ca7d6349025cf434ca015ee5a79096974ae42aa6eead7fa8b59015b1a3e681",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "4e18bcd3ce27feebba19943d830a09ee2bea35d0d740c5eea9e341afedea6533",
+          "target_hash": "93ca7d6349025cf434ca015ee5a79096974ae42aa6eead7fa8b59015b1a3e681"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8f203786e35b4a6ea8c39cf1fbe35955",
+      "source_hash": "c1e53a7f249e2cba8b40c262c189eaf611fc2d6aaa091c6e3ceb4288695f746e",
+      "target_text": "**Күтілетін нәтиже**\n\nТөрт жасыл белгі: жұмсақ жоюдан кейін көшірмеде әлі 2 жол бар, 900001-ді тек `WHERE is_deleted=false` жасырады; `DELETE` кейін кәдімгі сұраулар тек 900001 қайтарады. Соңғы тексеру 3-қадамды қайталайды, сондықтан негізгі кестелер өзгермеген.\n",
+      "target_hash": "9574047ff51cbe9b9c8970931adf4ecc4243c8c708236acf5b21162a95e646d3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "c1e53a7f249e2cba8b40c262c189eaf611fc2d6aaa091c6e3ceb4288695f746e",
+          "target_hash": "9574047ff51cbe9b9c8970931adf4ecc4243c8c708236acf5b21162a95e646d3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ca586c9c03114949b0825b94c62e44b3",
+      "source_hash": "e7272a322538a87138b03d1b7223d3bcf8f7dc354c9f889ef46b062eb9560142",
+      "target_text": "## Жұмысты аяқтау шарттары\n\n- `orders_current` ішінде 11 тапсырыс, `order_events` ішінде 18 оқиға, `event_deliveries` ішінде 19 жеткізілім бар, әр санды түсіндіре аласыз;\n- қайталану мен кешіккен оқиға ағымдағы күйді өзгертпегенін көрдіңіз, мұны қай параметр қамтамасыз ететінін айта аласыз;\n- ағымдағы күй тәуелсіз тізілімге сәйкес: тапсырыс сомасы 1510.00, төленгені 250.00, қайтарылғаны 150.00;\n- бағандарды ішінара жаңартуды толық жол жазуынан, жұмсақ жоюды `DELETE` операторынан ажырата аласыз.\n",
+      "target_hash": "d5d24f4d8bae6e218c625847f249e9167ba0de914cb7883cc642dfc168221439",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "e7272a322538a87138b03d1b7223d3bcf8f7dc354c9f889ef46b062eb9560142",
+          "target_hash": "d5d24f4d8bae6e218c625847f249e9167ba0de914cb7883cc642dfc168221439"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9dc9d98f395441349c2b61dbc0e8ff1e",
+      "source_hash": "8d418c95cd6b90f1e8929dff55853c6784b6ff79e231ee9afef94d971dab4dc3",
+      "target_text": "**Күтілетін нәтиже**\n\nСол бір жол, PAID, 2-нұсқа, жасыл белгі: бір жол, ең жоғары нұсқа — 2. Сол оқиғаның екінші рет келуі ештеңені өзгертпейді.\n",
+      "target_hash": "9cc7ffa14af32429742bba6a5cbe9a1a0577b2e9e207102717564f39aaa1dfec",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "8d418c95cd6b90f1e8929dff55853c6784b6ff79e231ee9afef94d971dab4dc3",
+          "target_hash": "9cc7ffa14af32429742bba6a5cbe9a1a0577b2e9e207102717564f39aaa1dfec"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6c32142875074a4aaf240734d7d6726f",
+      "source_hash": "e5f48c38dd4297bdcdef9f34f5c2538d22e8842c373df7e1cd75cc5e255d843b",
+      "target_text": "### Қайталанған жеткізілім\n\nСол төлем оқиғасын қайта жазыңыз. Тапсырысқа тағы бір жол қосыла ма, әлде бір жол болып қала ма, болжаңыз, содан кейін нәтижені қараңыз.\n",
+      "target_hash": "a95e3b23fa4745c3d6bc8f8f378376dcac8376d6f1ecc01eb30568e5d21c0b4b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "e5f48c38dd4297bdcdef9f34f5c2538d22e8842c373df7e1cd75cc5e255d843b",
+          "target_hash": "a95e3b23fa4745c3d6bc8f8f378376dcac8376d6f1ecc01eb30568e5d21c0b4b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0b57f819d7d44d4cb99ae5f7091ae238",
+      "source_hash": "80013555c03a0d082e04c3003091b9b35a0ed64d711872bd16e6c2d602919adc",
+      "target_text": "**Күтілетін нәтиже**\n\nТөрт оқиға: `S1003` CREATED, 1-нұсқа; `E04` PAID, 2-нұсқа, 150.00 төленген; `E07` CANCELLED, 3-нұсқа; `E05` REFUNDED, 4-нұсқа, 150.00 қайтарылған. Тізілімде 150.00 сомалы `P03` төлемі және соған қатысты 150.00 сомалы `R03` қайтарымы бар, тексеру жасыл.\n\n`paid_amount` төленгенді тіркейді, қайтарым төлем фактісін жоймайды: бұл `refund_amount` ретінде тіркелген екінші факт. Таза түсім — `paid_amount - refund_amount`, мұнда 0.00. Нөл көрсету үшін төлемді жою ақшаның келіп, қайта кеткен фактісін өшірер еді.\n",
+      "target_hash": "0093752a74bf34685124cc898672f49c20d5bde3cb332ff5601a28114de3de1c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "80013555c03a0d082e04c3003091b9b35a0ed64d711872bd16e6c2d602919adc",
+          "target_hash": "0093752a74bf34685124cc898672f49c20d5bde3cb332ff5601a28114de3de1c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5e189b3d762a4244b7c8e15bb6997bce",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған күйде. Салыстыру үшін ашыңыз немесе орындаңыз.\n",
+      "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7774355a1e8e4b79ae84f9e75d2fe581",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған күйде. Салыстыру үшін ашыңыз немесе орындаңыз.\n",
+      "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.10f6d36840a74039bc9c9f17e0d5aefb",
+      "source_hash": "09a256e02caaf8ccd032f442f671bb7fef707f6d3dc6b78cb3e132257dfd08ae",
+      "target_text": "## 7. Жаттығу: кешіккен оқиғаны екі рет қайта ойнату\n\n900001 тапсырысының ағымдағы күйін тәуелсіз orders_replay_practice кестесіне көшіріңіз, содан кейін PAID күйі және 2-нұсқасы бар толық ескі оқиға жасап, қатарынан екі рет жеткізіңіз. Орындап, тексермес бұрын күйді, нұсқаны және жолдар санын болжаңыз. Әлі DELIVERED, 4-нұсқадағы бір тапсырыс күтіледі.\n\nБұл жаттығу тек orders_replay_practice кестесін қайта жасайды; негізгі тарих пен жеткізілім кестелері өзгермейді.\n\nКодты келесі ұяшыққа жазыңыз, содан кейін одан кейінгі үлгі шешіммен салыстырыңыз.\n",
+      "target_hash": "c37f5b11362cf797e45320d429d807d90324b2295a466fff9cd0d16abbcc9fca",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "09a256e02caaf8ccd032f442f671bb7fef707f6d3dc6b78cb3e132257dfd08ae",
+          "target_hash": "c37f5b11362cf797e45320d429d807d90324b2295a466fff9cd0d16abbcc9fca"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e84aa78e5108470a9b874c392bac55a8",
+      "source_hash": "cb315e3af41b43a9b9da97fab44a600d1a653ff8423aea2e8d1011b0444d6499",
+      "target_text": "**Күтілетін нәтиже**\n\nЖасыл белгі: үзілістен кейін 900001 тапсырысы `orders_current` ішінде әлі CREATED, бірақ алғашқы жеткізілген оқиғасы тарихта бар. Содан кейін алғашқы толық қайта ойнату ештеңе шығармай орындалады.\n",
+      "target_hash": "ddcfbb970e01a42eea3848321c4bef01e4df638ad4411878e4ae3d35ff061aa1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "cb315e3af41b43a9b9da97fab44a600d1a653ff8423aea2e8d1011b0444d6499",
+          "target_hash": "ddcfbb970e01a42eea3848321c4bef01e4df638ad4411878e4ae3d35ff061aa1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d135ab7ba25b4b6f9c07eab47fb86f28",
+      "source_hash": "7af2b71da89f55ac95d50c824abef3447d4eb2dbc534b37cb0b328f6c5fb9cf3",
+      "target_text": "**Күтілетін нәтиже**\n\nБір жол, SHIPPED, 3-нұсқа, жасыл белгі. Кешіккен PAID 2-нұсқасы 3-нұсқадан кейін келіп, оны ауыстырмады: Sequence бағаны келу ретін емес, нұсқаларды салыстырады.\n",
+      "target_hash": "dac9cd16130e18203ab59b916fb942559a81db6becb696750b4d7d4fbd450ca8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "7af2b71da89f55ac95d50c824abef3447d4eb2dbc534b37cb0b328f6c5fb9cf3",
+          "target_hash": "dac9cd16130e18203ab59b916fb942559a81db6becb696750b4d7d4fbd450ca8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.081bc6445b2c46c4bb761c04f515616d",
+      "source_hash": "b1f64aa03e33f3f0373d84bbab4c64e9138da49af38b3f015a95c05d9670724b",
+      "target_text": "### Ретсіз жеткізілім\n\nАлдымен 3-нұсқаның жөнелтуін өңдеп, содан кейін 2-нұсқаның ескі төлемін қайта жеткізіңіз. Sequence бағаны ағымдағы күйді бизнес нұсқасы бойынша таңдайды.\n",
+      "target_hash": "16a13bd8daae16719f0abc9bc7f68cc57746182cd1a3e6d1302515ab76a15081",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "b1f64aa03e33f3f0373d84bbab4c64e9138da49af38b3f015a95c05d9670724b",
+          "target_hash": "16a13bd8daae16719f0abc9bc7f68cc57746182cd1a3e6d1302515ab76a15081"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4ad1245a31ea465fa4877fc1875dd16d",
+      "source_hash": "d9389128d2408a6aa6c9dbe3961d59da6bf38ebafd8846cc37cde65c2b5bf1d2",
+      "target_text": "## Келесі қадам\n\n[7-тест: деректерді жаңарту, жою және оқиғаларды қайта ойнату](quiz07_state_changes_and_replay.ipynb) файлын ашыңыз. Бұл — 1-деңгейдің соңғы зертханалық жұмысы; 2-деңгей [8-модуль: көріністер және материалданған көріністер](../../level2/module08-views-materialized-views/course.md) бөлімінен басталады.\n",
+      "target_hash": "a1fb9474f90d425459ff0643eb6e24cf2c6add9c4dc9cfd38374ad6fc4a93543",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "d9389128d2408a6aa6c9dbe3961d59da6bf38ebafd8846cc37cde65c2b5bf1d2",
+          "target_hash": "a1fb9474f90d425459ff0643eb6e24cf2c6add9c4dc9cfd38374ad6fc4a93543"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.532264342af2418795576b1e18bd3fe3",
+      "source_hash": "c5d147a4847f0b6624dc3f3d04599798d0f8e23f769d3ffe0ebc6c39ff26328c",
+      "target_text": "**Күтілетін нәтиже**\n\n900001 үшін әлі бір жол, енді PAID, 2-нұсқа, 100.00 төленген, жасыл белгі. Жаңа жол ескісін ауыстырды, себебі кілттері бірдей, жаңа нұсқа жоғарырақ.\n",
+      "target_hash": "b6e5a66a1aae8c024a136d437f60dbcd2a72ec5a6a8ed2414a937ca19164afa1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "c5d147a4847f0b6624dc3f3d04599798d0f8e23f769d3ffe0ebc6c39ff26328c",
+          "target_hash": "b6e5a66a1aae8c024a136d437f60dbcd2a72ec5a6a8ed2414a937ca19164afa1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5113a35b71184f029ce6d36a56cacd6c",
+      "source_hash": "345299e11abe981b67b4a05e72fbf071ce8bb40e3ca24536ce59874996215e26",
+      "target_text": "### Қалыпты жаңарту\n\n2-нұсқа аяқталған төлемді білдіреді. Жаңа оқиға тапсырыс ID-ін өзгертпей, толық тапсырыс күйін қамтиды.\n",
+      "target_hash": "dfbc7eaf33481543ea43d3aba69db98e4c3089616daa227588042edb44fbb983",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "345299e11abe981b67b4a05e72fbf071ce8bb40e3ca24536ce59874996215e26",
+          "target_hash": "dfbc7eaf33481543ea43d3aba69db98e4c3089616daa227588042edb44fbb983"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c6917b32663549bc8e518fb8bf4b7977",
+      "source_hash": "54e580ae1d5abd8ec25ccd668bd14e6860d5652a5bbb717d296248b0d2574848",
+      "target_text": "**Күтілетін нәтиже**\n\nКесте анықтамасы және жасыл белгі: 900001 тапсырысы CANCELLED, 2-нұсқа, сома 100.00 және аймақ EAST өзгермеген, `INSERT` тек үш бағанды атаған болса да. Сеанс параметрі бұрынғы мәніне қайтты.\n",
+      "target_hash": "35376bcd41841a633b45650d94d39e3d229ccf8663907c52937dc3aebdd125af",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "54e580ae1d5abd8ec25ccd668bd14e6860d5652a5bbb717d296248b0d2574848",
+          "target_hash": "35376bcd41841a633b45650d94d39e3d229ccf8663907c52937dc3aebdd125af"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fce6b5be1bb449ceb22d1a16cded917c",
+      "source_hash": "2865376ef9c3e91c513ecb09651006d550e7eccd3a7d08b0a8e54156c5ac5801",
+      "target_text": "**Күтілетін нәтиже**\n\nКесте анықтамасы, содан кейін бір жол: 900001 тапсырысы, DELIVERED, 4-нұсқа, 100.00 төленген, жасыл белгі. Ескі 2-нұсқа оқиғасының екі жеткізілімі ештеңені өзгертпеді: Sequence жоғары нұсқаны, Unique Key бір жолды сақтайды.\n",
+      "target_hash": "990c707dc0838a0107291d9954e26e2fe5d64e8effc667653754b8d24106ff88",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "2865376ef9c3e91c513ecb09651006d550e7eccd3a7d08b0a8e54156c5ac5801",
+          "target_hash": "990c707dc0838a0107291d9954e26e2fe5d64e8effc667653754b8d24106ff88"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.20e8dd5dbf9f4eff923c4d6191dd5a22",
+      "source_hash": "445e06f2c291b2c3e83aea78fbd60b114c02cd04b38b2f5e713cf6a4c520805e",
+      "target_text": "**Күтілетін нәтиже**\n\nЕкі кесте анықтамасы: `event_version` Sequence бағаны және `order_id` кілті бар `orders_current`, `event_id` кілті бар `order_events`. Жасыл белгі: 6-модульдің он қабылданған тапсырысы, 1400.00, ағымдағы күй және алғашқы тарих болады.\n",
+      "target_hash": "c96da20713fb32d33f2cb9ef91f91aed6051bdff36c6d095f7ab473706f7a976",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "445e06f2c291b2c3e83aea78fbd60b114c02cd04b38b2f5e713cf6a4c520805e",
+          "target_hash": "c96da20713fb32d33f2cb9ef91f91aed6051bdff36c6d095f7ab473706f7a976"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6c38d348f52b41eb8082b12bcf49c97c",
+      "source_hash": "40695fd28cbdc471daecfd770e5079c3e50ac54ebbc73cbdaeb98f288b618474",
+      "target_text": "**Күтілетін нәтиже**\n\n`UNIQUE KEY(order_id)`, `\"enable_unique_key_merge_on_write\" = \"true\"` және `\"function_column.sequence_col\" = \"event_version\"` бар кесте анықтамасы, содан кейін бір жол: 900001 тапсырысы, CREATED, 1-нұсқа.\n",
+      "target_hash": "786567195cabf0b41091ace7429c432cfb51fd48debc3a01d5a395e6ef756945",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "40695fd28cbdc471daecfd770e5079c3e50ac54ebbc73cbdaeb98f288b618474",
+          "target_hash": "786567195cabf0b41091ace7429c432cfb51fd48debc3a01d5a395e6ef756945"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.14296151b42d4b72b7f2d38bc244c52a",
+      "source_hash": "9a33eab8fdc15d051c6e96cd7db683f398aa734e734c02b108e8fb566470d8e1",
+      "target_text": "## Шағын мысалдан бастау: қалыпты жаңарту, қайталану және ретсіз оқиғалар\n\nБұл қадам 6-модульдің қабылданған кестесін сақтап, тек orders_update_walkthrough кестесін қайта жасайды. Алдымен тапсырыстың CREATED күйінен PAID күйіне өзгеруін бақылаңыз, сол оқиғаны қайталаңыз, содан кейін SHIPPED және кешіккен PAID оқиғасын алыңыз. Әр қадамнан кейін ағымдағы күйді сұраңыз.\n\nАлдымен көрсетілген кесте жасау SQL-ін қарап, үш параметрді табыңыз:\n\n| Параметр | Мақсаты |\n| --- | --- |\n| UNIQUE KEY(order_id) | Бір тапсырысты анықтайды |\n| \"enable_unique_key_merge_on_write\"=\"true\" | Merge-on-Write моделін қолданады |\n| \"function_column.sequence_col\"=\"event_version\" | Бір тапсырыстың бизнес нұсқаларын салыстыратын өрісті көрсетеді |\n\norder_ddl(..., current=True) — дерекқор синтаксисі емес, осы DDL жасайтын курс көмекшісі.\nЖай event_version атаулы баған қосу нұсқаларды шешуді қоспайды; оны Sequence бағаны ретінде баптау қажет.\nӘр келесі оқиға толық жол мен нұсқа береді. 3-нұсқа 2-нұсқадан бұрын келсе, 3-нұсқа сақталады.\nБірдей нұсқаның басқа мазмұны бұл жұмыста қауіпсіз қайта жеткізу емес; бөлек қайшылық ережелері қажет.\n",
+      "target_hash": "95c15aff02fcc6b6ccd3e6e479541a2e37edffc3e70de28735981d61db690bdd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "9a33eab8fdc15d051c6e96cd7db683f398aa734e734c02b108e8fb566470d8e1",
+          "target_hash": "95c15aff02fcc6b6ccd3e6e479541a2e37edffc3e70de28735981d61db690bdd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f96eb48b540b4037b0e6f710fde27d47",
+      "source_hash": "1a52ca8bd2d5105ce91d4090765dd2868edc4f8125b4554b43e19b9c5a9d2ca5",
+      "target_text": "**Күтілетін нәтиже**\n\nҮш жасыл белгі: 1-қайта ойнатудан кейінгі алғашқы тексеру, 2-қайта ойнатудан кейінгі екіншісі және 19 бастапқы жеткізілім. Содан кейін үш сан: 11 ағымдағы тапсырыс, 18 тарих жазбасы, 19 бастапқы жеткізілім. Бүкіл пакетті екінші рет қайта ойнату тоғыз жеткізілім қосып, ағымдағы күйді де, тарихты да өзгертпеді.\n",
+      "target_hash": "48805999f7e5bfbc2d23a272b19864a7bb2cda30b1829b60ff81442c63014c48",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m07-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 30 Lab Markdown cells after reading the complete original code. Checked limited table resets and 227-product fallback, normal/duplicate/late walkthrough, complete event state, separate history/current/delivery writes, interruption and two replays, all 11/18/19 counts, independent ledger IDs and 1510/250/150/100 totals, payment/refund evidence, partial-column preservation and setting restoration, soft/SQL deletion on copies, history chronology and old-event practice. Clarified that a refund does not erase the prior payment fact. Technical admission and native human review remain unperformed.",
+          "source_hash": "1a52ca8bd2d5105ce91d4090765dd2868edc4f8125b4554b43e19b9c5a9d2ca5",
+          "target_hash": "48805999f7e5bfbc2d23a272b19864a7bb2cda30b1829b60ff81442c63014c48"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,320 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.b0e614ac73e14215bced76cf33ad4bda",
+      "source_hash": "df77d5e74482dbc1251a59f9b6a5c7c32367d622fbe924c25ee7f07940589df7",
+      "target_text": "<div>\n  <div>6-ЗЕРТХАНАЛЫҚ ЖҰМЫС · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Кірісті сақтау, қабылданбағандарды бағыттау және тексеруді автоматтандыру</div>\n</div>\n\nОн үш жаңа тапсырыс келеді, үшеуі қате: сан емес сома, тапсырыс ID-і жоқ жол және жоқ тұтынушы. Stream Load арқылы он үшін де мәтін түрінде жүктеп, SQL ережелерімен әрқайсысын қабылданған не қабылданбаған кестеге бағыттайсыз, әр қабылдамауды бастапқы кірісіне дейін қадағалайсыз және деректерді әдейі бұзып, тексерулерді сынайсыз. 7-модуль он қабылданған тапсырыстан басталады. Шамамен 30 минут жоспарлаңыз.\n\n**6-модуль: деректер сапасы және схеманы тексеру** · [Сабақ](course.md) · [Тест](quiz06_data_quality_and_rejection.ipynb) · [Курстың README файлы](../../README.md)\n",
+      "target_hash": "bd48262bbc06f59f75321e101c4266ce89b1376a7fef49bb30b8581a918c58ed",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "df77d5e74482dbc1251a59f9b6a5c7c32367d622fbe924c25ee7f07940589df7",
+          "target_hash": "bd48262bbc06f59f75321e101c4266ce89b1376a7fef49bb30b8581a918c58ed"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0cf5469755fd47848200ebfd49784e82",
+      "source_hash": "4a001410b104911ce0f7fd2b27fb53c57794fc85eae9fced22789ebe969bf540",
+      "target_text": "## Зертханалық жұмыстың қамту аясы\n\nБұл жұмыс `orders_raw`, `customers`, `orders_classified` көрінісін, `orders_clean` және `orders_rejected` кестелерін қайта жасайды. 7-модуль `orders_clean` және `customers` оқиды.\n\nТұтынушы өлшемі 5-зертханалық жұмыс жүктейтін `wwi_customers` кестесінен алынады (663 жол). 5-зертханалық жұмыс бұл дерекқорда орындалмаса, баптау ұяшығы сол бір кестені commit-ке енгізілген WWI Parquet пакетінен жүктейді; бар `wwi_customers` өзгеріссіз қайта пайдаланылады, ал жол саны қате көшірме ештеңе қалпына келтірілмей тұрып жұмысты тоқтатады.\n",
+      "target_hash": "d8424c5edc45249196d7ede33f8f80379ca4f707f41cedb2401588c97fe42293",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "4a001410b104911ce0f7fd2b27fb53c57794fc85eae9fced22789ebe969bf540",
+          "target_hash": "d8424c5edc45249196d7ede33f8f80379ca4f707f41cedb2401588c97fe42293"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.014f149e3cb8476eac4ccbec7b49ceeb",
+      "source_hash": "852d3d329cde3634b6116918e117972904342fc94525dbc91d6e8780391f2ae3",
+      "target_text": "## 1. Бастапқы кірісті Stream Load арқылы аралық кестеге сақтау\n\n`datasets/raw_orders.json` он үш кірісті бір JSON массиві ретінде сақтайды. Әр нысанда осы келуді анықтайтын `input_id` және дереккөз жіберген тапсырыс өрістері бар: 11-кірісте `\"order_amount\": \"not-a-number\"`, 12-кірісте `\"order_id\": null`, 13-кірісте `\"customer_id\": \"999999\"`.\n\n`orders_raw` әр бизнес бағанын `VARCHAR` ретінде сақтайды. Мәтін бағаны кез келген мәтінді қабылдайды, сондықтан 5-зертханалық жұмыстағы `strict_mode` және `max_filter_ratio` = 0 параметрлері бар Stream Load он үш жолдың ешқайсысын қабылдамай тастамайды, сан емес мән дәл келген күйінде қалады. Түрлері қатаң берілген кесте қате жолдарды кіреберісте қабылдамай, мазмұны жоғалар еді. JSON үшін Stream Load әр нысан кілтін `columns` ішіндегі атауларға сәйкестендіреді; `strip_outer_array` файлдың нысандардан тұратын бір массив екенін айтады.\n\n`customers` тұтынушы өлшемі — `wwi_customers` кестесінен көшірілген Unique Key кестесі: осы кірістерден жасалған емес, нақты тұтынушылардың тәуелсіз тізімі.\n",
+      "target_hash": "af8911bd4f46b17c17cbb8d08f09674761792e9dd1faa8b66f3fbbf1c6f90357",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "852d3d329cde3634b6116918e117972904342fc94525dbc91d6e8780391f2ae3",
+          "target_hash": "af8911bd4f46b17c17cbb8d08f09674761792e9dd1faa8b66f3fbbf1c6f90357"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.41a6fb6f25b74e43afff0589510b3845",
+      "source_hash": "8faa652a25795854eedf11403261555ef1624ba2c8c18078f2bd26d0ad3a833e",
+      "target_text": "## 2. Жазбаларды тұрақты ережелермен бағыттау\n\nЖіктеу көрінісі TRY_CAST арқылы өрістерді түрлендіруге тырысып, тапсырыс ID-ін, соманы, тұтынушы сілтемесін және дереккөзді ретімен тексереді, алғашқы сәйкес қабылдамау себебін тіркейді. Содан кейін қабылданған жолдарды orders_clean ішіне, мәселелі input_id мәндері мен себептерін orders_rejected ішіне жазыңыз.\n\nОн қабылданған және үш қабылданбаған жол күтіңіз; әр қатенің бастапқы мәтінін көру үшін orders_raw кестесіне input_id бойынша біріктіріңіз.\n",
+      "target_hash": "9d6ff2045562551ca6d827603c0dcd1252df8273dce6e0fa6a5d28466748d4ed",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "8faa652a25795854eedf11403261555ef1624ba2c8c18078f2bd26d0ad3a833e",
+          "target_hash": "9d6ff2045562551ca6d827603c0dcd1252df8273dce6e0fa6a5d28466748d4ed"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0d55bcd0fa3e4369a3619e85d312acba",
+      "source_hash": "197d5747715bd5665885ba13cc884a3e900a5a4c428728191d6487df4dc0111c",
+      "target_text": "## 3. Бизнес сапасын тексеру және қателер енгізу\n\nАлдымен он үш кірістің бәрі бағытталғанын, содан кейін тапсырыс бірегейлігін, тұтынушы сілтемелерін, сомаларды, күйлерді және толық жазбаларды тексеріңіз. Оқиға уақыттарын осы үлгі пакетінің бекітілген шегімен салыстырыңыз.\n\nСодан кейін агрегаттық тексерудің сәтсіз болуын күтпей, әр жолы бірегейлік тексеруін тікелей шақырып, екі қарсы мысалды сынаңыз:\n\n1. Қайталанған тапсырыс қосып, қайталанған тапсырыс ID-ін сұрап, көрсетіңіз.\n2. Деректерді қалпына келтіргеннен кейін тек екінші жолдың тапсырыс ID-ін біріншісінің ID-іне өзгертіп, басқа өрістерді өзгертпеңіз. Әлі жалпы сомасы 1400.00 болатын он жол бар, бірақ бір тапсырыс ID-і қайталанады, басқа тапсырыс жоқ.\n\nБірегейлік тексеруі екі қатені де табуы керек. Әр тәжірибеден кейін қабылданған кестені сақталған жіктелген кірістен қалпына келтіріп, 7-модульге бермес бұрын барлық өрісті қайта тексеріңіз.\n",
+      "target_hash": "c0a970b8af0a280beaa55d5ebd8e0579fb3a5e3ffc4f508a312adac8f4047d60",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "197d5747715bd5665885ba13cc884a3e900a5a4c428728191d6487df4dc0111c",
+          "target_hash": "c0a970b8af0a280beaa55d5ebd8e0579fb3a5e3ffc4f508a312adac8f4047d60"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.522c986f1e0d4536a3e1564343570e67",
+      "source_hash": "cff2e54c679909f23c7fb7b4a6d1f4d539c54cc4e3ff41a669427b3a642faa76",
+      "target_text": "**Күтілетін нәтиже**\n\nБағыттауға арналған үш жасыл белгі, содан кейін он қабылданған тапсырыс пен 1400.00 сомасын, қайталанған тапсырыс ID-і жоқтығын, әр оқиғаның `2026-01-02 12:00:00` шегінен бұрын екенін, бәрі CREATED және төленген не қайтарылған сома жоқтығын, әр тұтынушы барын, әр тапсырыстың модельдеуден келгенін және әр өрістің күтілетін тапсырысқа теңдігін тексеретін сапа есебінің бір карточкасы.\n\nӘр тексеру атауын, күтілетін және нақты мәндерін, PASS/FAIL нәтижесін көру үшін **Quality report: expected and actual for every check** ашыңыз. Әр әдейі қате үшін шағын **Uniqueness check details** кестесі де бар: онда тек сол ереже бағаланады, сондықтан алдымен жалпы сома тексеруінің сәтсіздігі бірегейлік қатесін жасыра алмайды.\n\nСодан кейін екі тәжірибе. Көшірме қосылғаннан кейін 900001 тапсырысының 2 көшірмесі бар және бірегейлік тексеруі сәтсіз, жасыл карточкамен көрсетіледі: бұл күтілетін сәтсіздік. Деректер қалпына келтіріліп, есеп қайта өтеді. Екінші тәжірибеде он жолдың сомасы әлі 1400.00, сондықтан қорытындылар дұрыс көрінеді, бірақ 900001 екі рет, 900002 жоқ, бірегейлік тексеруі қайта сәтсіз. Екінші қалпына келтіруден кейін соңғы кесте 10 тапсырыс және 1400.00 көрсетеді: 7-модуль оқитын күй.\n",
+      "target_hash": "5f3881e641c94eb6dad118fed3b1e8890551cf4d0fd81f04751e9c1c0883d794",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "cff2e54c679909f23c7fb7b4a6d1f4d539c54cc4e3ff41a669427b3a642faa76",
+          "target_hash": "5f3881e641c94eb6dad118fed3b1e8890551cf4d0fd81f04751e9c1c0883d794"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c786c68c5d854c868ab98fecd5f4df35",
+      "source_hash": "3dcc7d0693cf2752f0572a23637fe701fa350c3232f7208e65fdaf02b82a515d",
+      "target_text": "## Жұмысты аяқтау шарттары\n\n- он үш кірістің бәрі `orders_raw` ішінде сақталған, он кіріс `orders_clean` ішінде (1400.00), үшеуі `orders_rejected` ішінде, әрқайсысын `input_id` арқылы бастапқы мәтініне дейін қадағалауға болады;\n- `999999` тұтынушысының бүтін санға түрленіп, бәрібір қабылданбау себебін түсіндіре аласыз;\n- екі белгілі қатеде, соның ішінде жалпы сомалары дұрыс болған біреуінде бірегейлік тексеруінің сәтсіз болуын және әр қалпына келтіруден кейін өтуін көрдіңіз.\n",
+      "target_hash": "3f5f22c34645d1f075cc347dfb292bb0b4fbce26df824892ee03dc1f1de2864c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "3dcc7d0693cf2752f0572a23637fe701fa350c3232f7208e65fdaf02b82a515d",
+          "target_hash": "3f5f22c34645d1f075cc347dfb292bb0b4fbce26df824892ee03dc1f1de2864c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.82388918cfbd4e00b7e794c72d9aa828",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған күйде. Салыстыру үшін ашыңыз немесе орындаңыз.\n",
+      "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.07216a63df5e4848b9a7f5d346fc0e9a",
+      "source_hash": "2e8ef8f40225e77db6fa64e3f1079f1413f740612351210659acc73e88b53ac0",
+      "target_text": "## 4. Жаттығу: жаңа ережені қолданбас бұрын сынау\n\nБизнес ереже қосады: қабылданған тапсырыстың сомасы 200-ден жоғары болса, қолмен қарау қажет; басқалары қабылданады. Қабылданған тапсырыстарды саны және сомасымен `ACCEPT` пен `REVIEW` топтарына бөлетін `CASE` бар `SELECT` жазыңыз. Қабылдауға 8 тапсырыс және 850.00, қарауға 2 тапсырыс және 550.00 күтіледі. Мұнда ережені тек сынаңыз: 7-модуль үшін `orders_clean` өзгеріссіз қалсын.\n",
+      "target_hash": "1011b7447c9813da4d6eb97a0464ac9cb8d2ab1a1f6e764e33aa3028c1c163f2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "2e8ef8f40225e77db6fa64e3f1079f1413f740612351210659acc73e88b53ac0",
+          "target_hash": "1011b7447c9813da4d6eb97a0464ac9cb8d2ab1a1f6e764e33aa3028c1c163f2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1349f7243389400ca3a656e67ed9af57",
+      "source_hash": "27f76549d36edb16aa41c8033be3ca27ddd187ee4661af72ce90a13091ffc17c",
+      "target_text": "## Келесі қадам\n\n[6-тест: деректер сапасы және схеманы тексеру](quiz06_data_quality_and_rejection.ipynb) файлын ашыңыз, содан кейін [7-модуль: деректерді жаңарту, жою және оқиғаларды қайта ойнату](../module07-state-changes/course.md) бөліміне өтіңіз.\n",
+      "target_hash": "16ff1f6f70ebc2a39bb664f620cff3911dcfa8a0ebd8388008f8a40be9a7c214",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "27f76549d36edb16aa41c8033be3ca27ddd187ee4661af72ce90a13091ffc17c",
+          "target_hash": "16ff1f6f70ebc2a39bb664f620cff3911dcfa8a0ebd8388008f8a40be9a7c214"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2a8bf88a3dba4918b3c4e83ec72ea1ed",
+      "source_hash": "e43d0ad071b4b038f00d67692e543b51800e7eff08ba5e942d2f0daf537bae18",
+      "target_text": "**Күтілетін нәтиже**\n\nЕкі жол: 8 тапсырыс және 850.00 бар `ACCEPT`, 2 тапсырыс және 550.00 бар `REVIEW`, екі жасыл белгі, екіншісі `orders_clean` ішінде әлі он тапсырыс және 1400.00 барын көрсетеді. Сынақ `SELECT` ештеңені өзгертпейді; ережені қолдану үшін оны жіктеу көрінісіне қосып, қайта бағыттар едіңіз.\n",
+      "target_hash": "877851346798f55fc1e2ab27a5621aaf4f8eea5303ca438f8744101ca9a1b323",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "e43d0ad071b4b038f00d67692e543b51800e7eff08ba5e942d2f0daf537bae18",
+          "target_hash": "877851346798f55fc1e2ab27a5621aaf4f8eea5303ca438f8744101ca9a1b323"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3ca3e87f7858412d8890eec37a45bdd9",
+      "source_hash": "d4af3199bb6dd311a814ff13225a2336e4c344f20be398a4b3ce135b837edbde",
+      "target_text": "**Күтілетін нәтиже**\n\n`orders_clean` анықтамасы, содан кейін бағыттау нәтижесі: себебі жоқ (`NULL`) 10 кіріс, `INVALID_AMOUNT`, `INVALID_CUSTOMER` және `INVALID_ORDER_ID` себептерінің әрқайсысына бір кіріс. Қабылданбаған үш жазба бастапқы мәтініне бірігеді: 11-кірісте `not-a-number`, 12-кірісте тапсырыс ID-і жоқ, 13-кірісте `999999` тұтынушысы бар.\n\n`999999` бүтін санға оңай түрленеді: түрі дұрыс. Ол `customers` ішінде 999999 тұтынушысы жоқ болғандықтан қабылданбайды, бұл — баған түрі білдіре алмайтын бизнес ережесі.\n",
+      "target_hash": "eeeed57d56f872ffeb37b8e489099a1bfdbce8c22134c5897b338a9bd4d37569",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "d4af3199bb6dd311a814ff13225a2336e4c344f20be398a4b3ce135b837edbde",
+          "target_hash": "eeeed57d56f872ffeb37b8e489099a1bfdbce8c22134c5897b338a9bd4d37569"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e5848af9b7fa448aac69be6c127d2c54",
+      "source_hash": "2fc010b165249abc8c25c48d3d96a3ae479b591f4f72fb1a08eac26c45a34bc9",
+      "target_text": "**Күтілетін нәтиже**\n\nКесте анықтамасы, сұрау және жауабы: `Status` Success, `NumberLoadedRows` 13, `NumberFilteredRows` 0 және жасыл белгі. Соңғы төрт кіріс мәселелерді мәтін ретінде көрсетеді: 10-кіріс — қалыпты тапсырыс (900010, 10-тұтынушы, 250.00), 11-кірістің сомасы `not-a-number`, 12-кірісте тапсырыс ID-і жоқ (`NULL`), 13-кірісте `999999` тұтынушысы бар. Төртеуі де `COURSE_SIMULATION`.\n\nСодан кейін 663 тұтынушыға арналған жасыл белгі. 5-зертханалық жұмыс осы дерекқорда орындалмаса, ұяшық алдымен `wwi_customers` жүктеп, сол жүктеудің 663 жолдық жауабын көрсетеді.\n",
+      "target_hash": "3955c43b17bdd74c4c62504a6f146ea3f8945fb6e939de4eb8063e78e8071b90",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m06-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 13 Lab Markdown cells after reading every code cell. Checked fallback loading and reuse of 663-customer dimension, staged JSON fields and no rejection at text ingress, first-reason classification, exact accepted/rejected traceability, direct uniqueness probes with unchanged totals, restoration before Module 7, fixed cutoff and CASE >200 producing 8/850 and 2/550 without modifying orders_clean. Clarified a numeric noun phrase to explicitly mean ten accepted inputs. Technical admission and native human review remain unperformed.",
+          "source_hash": "2fc010b165249abc8c25c48d3d96a3ae479b591f4f72fb1a08eac26c45a34bc9",
+          "target_hash": "3955c43b17bdd74c4c62504a6f146ea3f8945fb6e939de4eb8063e78e8071b90"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

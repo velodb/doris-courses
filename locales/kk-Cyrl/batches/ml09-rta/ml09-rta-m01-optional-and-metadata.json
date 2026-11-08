@@ -1,0 +1,776 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.a0efdf4fed0d4156b2d7a914d032d2d3",
+      "source_hash": "50bde89ae7f811e451782256d6a05e15140c439bd2034fbdc294d7479befb78c",
+      "target_text": "1-зертханалық жұмыстың қосымша бөлімі: Metabase қосу және бақылау тақтасын жасау",
+      "target_hash": "305f8a7643daa8f81d9d2164a6de17d6248c8bcbe2641cc80ab3baa0a4eead84",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "50bde89ae7f811e451782256d6a05e15140c439bd2034fbdc294d7479befb78c",
+          "target_hash": "305f8a7643daa8f81d9d2164a6de17d6248c8bcbe2641cc80ab3baa0a4eead84"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4cd2b07a1221476a9d9ce827921b965b",
+      "source_hash": "40f345229da83955f66baa9668ece0aad413a88fe9e45d907678e8639e7035e5",
+      "target_text": "FE жоспарлауын, BE орындауын және Partition, Bucket, Tablet таңдауларын сканерлеу көлемімен байланыстырыңыз.",
+      "target_hash": "f6b6bc3b5b48e30aab59f3ec12c2fbf25d923784c4747cf35d6846b03281d014",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "40f345229da83955f66baa9668ece0aad413a88fe9e45d907678e8639e7035e5",
+          "target_hash": "f6b6bc3b5b48e30aab59f3ec12c2fbf25d923784c4747cf35d6846b03281d014"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.de501ac5e9d74461acb55efb815685e2",
+      "source_hash": "d72f4f1caac39977596b65b1351238774f71a76e052900b438a2e4e7c91076dd",
+      "target_text": "Apache Doris архитектурасын тереңірек зерттеу",
+      "target_hash": "f321d610c6a99235cf8b0ecf6692ac4e129edf69078df434e68ab5db2bd3311b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "d72f4f1caac39977596b65b1351238774f71a76e052900b438a2e4e7c91076dd",
+          "target_hash": "f321d610c6a99235cf8b0ecf6692ac4e129edf69078df434e68ab5db2bd3311b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.15cb808926584b588a6cca57d98fc9af",
+      "source_hash": "7a2dd73c54f3040615de3c656840d593a320507d7b145c04d8dd4d291d0da1fe",
+      "target_text": "Кідіріс, дереккөз, қайта ойнату және қайталау талаптарына сай жүктеу жолын таңдаңыз.",
+      "target_hash": "2fa9d853586d59e4b1dacac6a9a829143827d912cb26d2efebbde5643145ee85",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "7a2dd73c54f3040615de3c656840d593a320507d7b145c04d8dd4d291d0da1fe",
+          "target_hash": "2fa9d853586d59e4b1dacac6a9a829143827d912cb26d2efebbde5643145ee85"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ab8ad7adb4f541a1aab304069646a1ac",
+      "source_hash": "a80d88207a7eeec6090148f0325d0c2a4a5570bf24b126d6795c07ac7f58ae81",
+      "target_text": "Apache Doris жүйесіне деректерді жүктеу",
+      "target_hash": "2a3ce3e798281aad4810e493caac0c899719c48b9688f9f2f8ba491342821395",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "a80d88207a7eeec6090148f0325d0c2a4a5570bf24b126d6795c07ac7f58ae81",
+          "target_hash": "2a3ce3e798281aad4810e493caac0c899719c48b9688f9f2f8ba491342821395"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.16841d6f7358456aa65edf3fe5269577",
+      "source_hash": "bdc8259d42a891cb004cee0a0630b5043ee709a5ab0cc10deae3776ff1658904",
+      "target_text": "Оқиғалардың толық деректеріне, соңғы күйге және жиынтықтарға сай кесте моделін таңдаңыз.",
+      "target_hash": "663dee8dccbcad19d4cf8daad0d9a7477e9fb15d54e9e045dafc7ce6f7b833fb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "bdc8259d42a891cb004cee0a0630b5043ee709a5ab0cc10deae3776ff1658904",
+          "target_hash": "663dee8dccbcad19d4cf8daad0d9a7477e9fb15d54e9e045dafc7ce6f7b833fb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ce73029f7fc845a8af099ebb3b90f25b",
+      "source_hash": "bc8c6d65bb679f07f4e3621a63313924d2f72a8b8536bf419f28a9ae9813a6d2",
+      "target_text": "Apache Doris жүйесінде деректерді модельдеу",
+      "target_hash": "2c5477de30c68d65b4410e70b78d87e7aaa10ee401df8cf852f744d468674581",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "bc8c6d65bb679f07f4e3621a63313924d2f72a8b8536bf419f28a9ae9813a6d2",
+          "target_hash": "2c5477de30c68d65b4410e70b78d87e7aaa10ee401df8cf852f744d468674581"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.18848e7452b246f490bcdd1d5249d861",
+      "source_hash": "e9061c754a0f4545704a361041bb1d24e5f1cda2c3ab5dc6d2c9b11e3f375ea4",
+      "target_text": "Скалярлық түрлендірулерден агрегаттар мен кестелік функцияларға өтіңіз.",
+      "target_hash": "7b2790a9f5c1873aff895af0073c87589476162f0acae9c7a2ef41b613186551",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "e9061c754a0f4545704a361041bb1d24e5f1cda2c3ab5dc6d2c9b11e3f375ea4",
+          "target_hash": "7b2790a9f5c1873aff895af0073c87589476162f0acae9c7a2ef41b613186551"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.264d839e93ea4d538697e2e3755d494b",
+      "source_hash": "2b19ddba5a7c21f2e137c874ae0b63acf6252f590802c48ea75b3aea92d045e0",
+      "target_text": "Apache Doris жүйесінде деректерді талдау",
+      "target_hash": "4bbbf33a9e9776ff6f0a5468176c9b70ad75da3df275f1428910ecdcfd8b415c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "2b19ddba5a7c21f2e137c874ae0b63acf6252f590802c48ea75b3aea92d045e0",
+          "target_hash": "4bbbf33a9e9776ff6f0a5468176c9b70ad75da3df275f1428910ecdcfd8b415c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5d916be9901b422aa3b5a914ffd32050",
+      "source_hash": "73ab70e387174e34a976f75e1237801de11834399ebed38197a7b40bd000c849",
+      "target_text": "Join амалдарының логикалық мағынасын, физикалық орындалуын және тарату стратегиясын ажыратыңыз.",
+      "target_hash": "1824dd4c1c8720dbacf3c9ecfe6d47969e89031cc8d3146034592e57667c37a4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "73ab70e387174e34a976f75e1237801de11834399ebed38197a7b40bd000c849",
+          "target_hash": "1824dd4c1c8720dbacf3c9ecfe6d47969e89031cc8d3146034592e57667c37a4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c599370965dc42198c19d337c4578e6b",
+      "source_hash": "b33e0c9d2937d969e13587e473bece975d6620efb1d046b2ef1cdafcfbe1827e",
+      "target_text": "Apache Doris жүйесінде деректерді біріктіру",
+      "target_hash": "05a40b29fc33a251963969bfd89eb51a9e4c4759266901c1a1dce4a858d2b0d0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "b33e0c9d2937d969e13587e473bece975d6620efb1d046b2ef1cdafcfbe1827e",
+          "target_hash": "05a40b29fc33a251963969bfd89eb51a9e4c4759266901c1a1dce4a858d2b0d0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1efbbaf20a4b4f6aa37c507c3ef882f6",
+      "source_hash": "c6ee41240635215ff0533bd96bca865233197cd9c3fc73048b2fb65e0b8f60eb",
+      "target_text": "Upsert, ішінара жаңарту, жою және MERGE INTO тәсілдерінің арасынан таңдаңыз.",
+      "target_hash": "b1463a035ae618a63f490b59ce8135505c0c2d22a239c50f1d5a393b8b16a78b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "c6ee41240635215ff0533bd96bca865233197cd9c3fc73048b2fb65e0b8f60eb",
+          "target_hash": "b1463a035ae618a63f490b59ce8135505c0c2d22a239c50f1d5a393b8b16a78b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4b0d10d1579740b4b5b078c913060498",
+      "source_hash": "c532ccac629f5ca86dfb3465c72e4e9785d3353fc3f967f192d9d8517d464e2e",
+      "target_text": "Apache Doris жүйесінде деректерді жаңарту және жою",
+      "target_hash": "6253424ccde43a1dc4e9b3db9750c77cd1478b45894d63adc465370505ea0c89",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "c532ccac629f5ca86dfb3465c72e4e9785d3353fc3f967f192d9d8517d464e2e",
+          "target_hash": "6253424ccde43a1dc4e9b3db9750c77cd1478b45894d63adc465370505ea0c89"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.23b882c837ee4ad3a779d55d16cbae07",
+      "source_hash": "d52485f1cd5bcf65a9755c26b1ddd097b1b5a81d429f789ba9d8b3c481d4c4e5",
+      "target_text": "Логикалық көріністер, материалданған көріністер, сұрауды қайта жазу және қосымша индекстер арасынан таңдаңыз.",
+      "target_hash": "5f25d99a05e963c5094f53f59e4c5431e03cf708a3c673802729f0ac030ba04d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "d52485f1cd5bcf65a9755c26b1ddd097b1b5a81d429f789ba9d8b3c481d4c4e5",
+          "target_hash": "5f25d99a05e963c5094f53f59e4c5431e03cf708a3c673802729f0ac030ba04d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f654390520f24ebb9f5ab75e811c141e",
+      "source_hash": "8c52d5171b333ae137c4ce0391a23ae58a467da72cf0a458e297944eb4017259",
+      "target_text": "Apache Doris жүйесінде сұрауларды жеделдету",
+      "target_hash": "c498d22c4c125b5845e7d99bdf685a9ccb340aeb8f3deaa8df08ba45fd905e8e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "8c52d5171b333ae137c4ce0391a23ae58a467da72cf0a458e297944eb4017259",
+          "target_hash": "c498d22c4c125b5845e7d99bdf685a9ccb340aeb8f3deaa8df08ba45fd905e8e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7c9ca6fbbaa84b3bae033f3fc87edd25",
+      "source_hash": "388d7ec9f4cac7d7abb2c06c8c1f751ec892f74bc88c02d43ab6118139a66d3d",
+      "target_text": "Деректерді таратуды, репликалардың орналасуын, Join кезіндегі тасымалдауды және қолжетімділікті талдаңыз.",
+      "target_hash": "f3d0ecc5edb35084d06b8a896abec6225c15cac24b5fd674029eaf05234f017d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "388d7ec9f4cac7d7abb2c06c8c1f751ec892f74bc88c02d43ab6118139a66d3d",
+          "target_hash": "f3d0ecc5edb35084d06b8a896abec6225c15cac24b5fd674029eaf05234f017d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.98faa0bc3940440db2afbacb792124a7",
+      "source_hash": "2713b706b10c589dbaae0579a8a0f87628d6813885c14ab637867be091ac8dd8",
+      "target_text": "Apache Doris жүйесінде шардтау, репликация және үлестірілген орындау",
+      "target_hash": "e8394fafac7e4ef375b5fab86763fb9dc936de105488409d41f7d81e231d133e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "2713b706b10c589dbaae0579a8a0f87628d6813885c14ab637867be091ac8dd8",
+          "target_hash": "e8394fafac7e4ef375b5fab86763fb9dc936de105488409d41f7d81e231d133e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e79f76206dc4456e9aef492cb722888f",
+      "source_hash": "f20aa4a9403fd0f1ea2e3854ba2fae8a3486c4fc1b90b83ef3139176dc698053",
+      "target_text": "Сығу, сақтау мерзімі, бөлімдер және қалпына келтірілетін жою үшін деректердің өмірлік цикліне қатысты шешімдер қабылдаңыз.",
+      "target_hash": "c2a270ab663e031cf70965dba7fff0b748d69295f3f85a9e1d3bf7c34ad5bf76",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "f20aa4a9403fd0f1ea2e3854ba2fae8a3486c4fc1b90b83ef3139176dc698053",
+          "target_hash": "c2a270ab663e031cf70965dba7fff0b748d69295f3f85a9e1d3bf7c34ad5bf76"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.006fff5065fe4288b2de1e6e6040f4db",
+      "source_hash": "f773cc4ef091113c66ef3c7595e2294b96403a169da97a878bda8528796c2f46",
+      "target_text": "Apache Doris жүйесінде сақтау шығындары мен деректердің өмірлік циклін басқару",
+      "target_hash": "d78cd15e01d30bc12c8d66727115d8d2b3ff73b09b74fb3a3865659256c39aae",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "f773cc4ef091113c66ef3c7595e2294b96403a169da97a878bda8528796c2f46",
+          "target_hash": "d78cd15e01d30bc12c8d66727115d8d2b3ff73b09b74fb3a3865659256c39aae"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8ef1c70a1d404b53bbddd364f9816d84",
+      "source_hash": "e08a87d20618e7ffbef0f23e4d762f63c0eb67ec57ca5c5b6006db346e81fddd",
+      "target_text": "**Күтілетін нәтиже:** браузерде ашуға арналған бір сілтеме пайда болады. Оны ашып, жұмыс істеп тұрған қызметке өтіңіз. Бұл зертханалық жұмыс қашықтағы хостта орындалса, сілтеме бапталған браузер мекенжайын пайдаланады; хост жағындағы API сұраулары ішкі мекенжайын сақтайды.",
+      "target_hash": "34593e1245011f82b489bb491e8d83c48191e8062ec13805b1c240866dcfc538",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "e08a87d20618e7ffbef0f23e4d762f63c0eb67ec57ca5c5b6006db346e81fddd",
+          "target_hash": "34593e1245011f82b489bb491e8d83c48191e8062ec13805b1c240866dcfc538"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.632cdec224a142609e1f562e3a13b6b8",
+      "source_hash": "e08a87d20618e7ffbef0f23e4d762f63c0eb67ec57ca5c5b6006db346e81fddd",
+      "target_text": "**Күтілетін нәтиже:** браузерде ашуға арналған бір сілтеме пайда болады. Оны ашып, жұмыс істеп тұрған қызметке өтіңіз. Бұл зертханалық жұмыс қашықтағы хостта орындалса, сілтеме бапталған браузер мекенжайын пайдаланады; хост жағындағы API сұраулары ішкі мекенжайын сақтайды.",
+      "target_hash": "34593e1245011f82b489bb491e8d83c48191e8062ec13805b1c240866dcfc538",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "e08a87d20618e7ffbef0f23e4d762f63c0eb67ec57ca5c5b6006db346e81fddd",
+          "target_hash": "34593e1245011f82b489bb491e8d83c48191e8062ec13805b1c240866dcfc538"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6b6eb00732674ec2a7dc4b2c5c570c20",
+      "source_hash": "4d31c45ba480f60550b8cc68d98c161a30bb8b22a894120fe8367ea7bfe415f1",
+      "target_text": "**Күтілетін нәтиже:** Docker `container=exited` деп хабарлайды; Metabase атаулы томы қолжетімді болып қалады.\n\n### Metabase қызметін қайта іске қосу\n\nСақталған бақылау тақтасын қайта ашқыңыз келгенде осы ұяшықты орындаңыз. Ол Doris тәуелділігін қалпына келтіреді, бар Metabase контейнерін іске қосады немесе қайта пайдаланады және Metabase күйін тексеру API қолданбаның дайын екенін хабарлағанша күтеді.\n\nБұл қайта іске қосу ұяшығы идемпотентті: оны Docker Desktop пен контейнер тоқтаған, іске қосылып жатқан немесе жұмыс істеп тұрған кезде орындауға болады. macOS жүйесінде қажет болса Docker Desktop ашылады; Linux жүйесінде ұяшықты орындамас бұрын Docker Engine іске қосыңыз.\n",
+      "target_hash": "55ebb28027c73981e42cf2d1ce10149e3b7aec48f8d9b8e09073dd2380095525",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "4d31c45ba480f60550b8cc68d98c161a30bb8b22a894120fe8367ea7bfe415f1",
+          "target_hash": "55ebb28027c73981e42cf2d1ce10149e3b7aec48f8d9b8e09073dd2380095525"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d50106693c794aac81a8247118ad29ee",
+      "source_hash": "0a74fba13c324e2dff47cd6996b0c5ba29bfa44d5ef8fb74d4a9dbc7b47d030c",
+      "target_text": "## 3. Metabase ашып, Doris қосу\n\nТөмендегі Metabase браузер сілтемесін ашыңыз. Алғаш іске қосқанда Metabase әкімшісін баптауды аяқтаңыз. Әкімші тіркелгісі Metabase жүйесіне тиесілі; ол Doris пайдаланушысынан бөлек.\n\nMetabase 0.59.6.3 нұсқасында жоғарғы оң жақтағы **Settings** мәзірін ашыңыз, содан кейін **Admin → Databases → Add database** тармағын таңдаңыз, **Apache Doris** таңдап, мыналарды енгізіңіз:\n\n| Өріс | Мән |\n|---|---|\n| Display name | `Doris Course` |\n| Host | `doris-rta` |\n| Port | `9030` |\n| Catalog | `internal` |\n| Database | `doris_course` |\n| Username | `root` |\n| Password | Тек осы уақытша жергілікті сынақ ортасында бос қалдырыңыз |\n| SSL | Өшірілген |\n\n> **Database өрісіне `doris_course` орнатыңыз:** Metabase бұл өрісті міндетті емес деп көрсеткенімен, оны бос қалдырсаңыз, `internal` Catalog ішіндегі бірнеше дерекқорды іздеу қосылады. Сонда Metabase бірнеше көрінетін дерекқордың кестелерін көрсете алады және толық нақтыланбаған `events` атауы `internal.doris_course.events` кестесін сенімді түрде білдірмейді.\n\nHost ретінде `127.0.0.1` орнына `doris-rta` пайдаланыңыз. Metabase контейнерінің ішінде `127.0.0.1` Metabase жүйесінің өзін білдіреді; Docker DNS ортақ `doris-rta` желісіндегі `doris-rta` атауын Doris контейнерінің мекенжайына шешеді.\n\nҚосылым Database көрсетілмей сақталған болса, Metabase контейнерін немесе метадерек томын жоймаңыз. **Settings → Admin → Databases → Doris Course** ашып, қосылымды өңдеңіз, **Database** өрісін `doris_course` деп орнатып, сақтаңыз. Содан кейін **Sync database schema now** орындаңыз. Бұл түзету жасалғанша, Native SQL ішінде қажетті кестеге `internal.doris_course.events` толық атауымен жүгінуге болады.\n\n**Күтілетін нәтиже:** қосылым сынағы сәтті өтіп, синхрондау `internal.doris_course` дерекқорымен шектеледі. Metabase курстың `events` кестесін табады; қосылым сақталғаннан кейін метадеректерді синхрондау аз уақыт жалғасуы мүмкін.\n",
+      "target_hash": "3c5b2a26ac28302094e729fd7016708c8d04e463a493415551ed084a109332a6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "0a74fba13c324e2dff47cd6996b0c5ba29bfa44d5ef8fb74d4a9dbc7b47d030c",
+          "target_hash": "3c5b2a26ac28302094e729fd7016708c8d04e463a493415551ed084a109332a6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a02acbb2cb40417194c6fafcfd5c9776",
+      "source_hash": "a81b1a1f25c723b795941e8790f558d09267bf54be7ceb0f9c5f7591b29e8d61",
+      "target_text": "<div>\n  <div>1-ЗЕРТХАНАЛЫҚ ЖҰМЫСТЫҢ ҚОСЫМША БӨЛІМІ · APACHE DORIS КӨМЕГІМЕН НАҚТЫ УАҚЫТТАҒЫ АНАЛИТИКА</div>\n  <div>1-зертханалық жұмыстың қосымша бөлімі: Metabase қосу және бақылау тақтасын жасау</div>\n  <p>Metabase қызметін 1-зертханалық жұмыстың Doris сынақ ортасының жанында іске қосыңыз, Apache Doris қауымдастық драйверін орнатыңыз, <code>events</code> кестесіне қосылып, күнделікті түсім графигін бақылау тақтасына жариялаңыз.</p>\n  <span>Қосымша бөлім · Metabase 0.59.6.3 · Metabase Apache Doris Driver 1.0.0 · Docker · Бақылау тақтасы</span>\n</div>\n\nБұл қосымша бөлім міндетті емес және шамамен 20–30 минут алады. Ол Doris жүйесінің BI қолданбасына арналған талдамалық дерекқор ретінде қалай жұмыс істейтінін көрсетеді; 1-зертханалық жұмысты аяқтау үшін оны орындау міндетті емес.\n",
+      "target_hash": "b19560ed254c9761669c0e56469720cfcf98486b46f8ed73133e3f0dd7818a55",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "a81b1a1f25c723b795941e8790f558d09267bf54be7ceb0f9c5f7591b29e8d61",
+          "target_hash": "b19560ed254c9761669c0e56469720cfcf98486b46f8ed73133e3f0dd7818a55"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.68f3ba3ec19441058c69ddb50e69d68c",
+      "source_hash": "5854b26cab24fe0ceb08aa592a4ad94b9a18deba9bb291f3ed5cee16d8b9ceec",
+      "target_text": "## 5. Бақылау тақтасын жариялау\n\nЖасау диалогы бос Dashboard тақтасын және Metabase оны қайда сақтайтынын анықтайды. Диалогта көрсетілген өрістерді толтырыңыз:\n\n1. **+ New → Dashboard** таңдаңыз.\n2. **Name** өрісіне `Doris Course Overview` енгізіңіз.\n3. **Description** өрісіне `Daily purchase revenue from Apache Doris.` енгізіңіз.\n4. **Which collection should this go in?** астынан `Our analytics` таңдаңыз.\n5. **Create** таңдаңыз.\n\nMetabase жаңа бос Dashboard тақтасын өңдеу режимінде ашады. Осы экраннан сақталған Question сұрағын қосыңыз:\n\n6. Dashboard тақтасының жоғарғы оң жағындағы **Add questions** деп белгіленген **+** түймесін таңдаңыз.\n7. Ашылған бүйірлік панельден сақталған `Daily Revenue` Question сұрағын тауып, таңдаңыз.\n8. Сызықтық график карточкасын Dashboard тақтасына орналастырыңыз, қажет болса өлшемін өзгертіңіз.\n9. Dashboard орналасуын сақтау үшін жоғарғы оң жақтағы **Save** таңдаңыз.\n\n**Күтілетін нәтиже:** `Doris Course Overview` тақтасы `Our analytics` ішінде сақталады және `Daily Revenue` атты бір карточкадан тұрады. Карточка күнделікті сатып алу түсімінің сызықтық графигін көрсетеді. Dashboard тақтасынан шығып, оны қайта ашқанда карточка мен оның орналасуы сақталады.\n",
+      "target_hash": "ac2b1469f1532b80478da4339a984aa3afb7f013ec4649ea2a98e3161f10d3a0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "5854b26cab24fe0ceb08aa592a4ad94b9a18deba9bb291f3ed5cee16d8b9ceec",
+          "target_hash": "ac2b1469f1532b80478da4339a984aa3afb7f013ec4649ea2a98e3161f10d3a0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b9b24fecf63a427c955bf971f88680d9",
+      "source_hash": "1941e0ac4238a23bf5fab6d503bf72d75f2f798c2c5ead44e07e1ad312646fcf",
+      "target_text": "### 1-зертханалық жұмыстың қосымша бөлімін бастапқы баптау\n\nЖалғастырмас бұрын келесі ұяшықты бір рет орындаңыз. Ол 1-зертханалық жұмыста қолданылған жергілікті безендіру мен пәрмен орындаушысын жүктейді. Бағдарламаларды жүктемейді, контейнерлерді іске қоспайды және Doris деректерін өзгертпейді. Jupyter ядросын қайта іске қосқаннан кейін оны қайта орындаңыз.\n",
+      "target_hash": "af45b9ed050742fa3922b9a3e7bc5c54a3d2b5a667f4181eace916a735553e7d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "1941e0ac4238a23bf5fab6d503bf72d75f2f798c2c5ead44e07e1ad312646fcf",
+          "target_hash": "af45b9ed050742fa3922b9a3e7bc5c54a3d2b5a667f4181eace916a735553e7d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1534db6795b94ba496d4c880ddb8bfd2",
+      "source_hash": "a81069f4e7ef97d74a1676fb216f36a5b3d043dac7ecd2809f93d5e4f45bcc66",
+      "target_text": "**Күтілетін нәтиже:** жұмыс барысының барлық бес тармағы сәтті аяқталады. Күй жауабында `\"status\":\"ok\"` бар, ал `docker ps` пәрмені `doris-rta-metabase` және `doris-rta` контейнерлерінің екеуі де жұмыс істеп тұрғанын көрсетеді. Жүктелген драйвер `assets/` ішінде қалады, ал Metabase қолданбасының деректері `doris-rta-metabase-data` атаулы томында сақталады.\n\nҰяшық сәтсіз аяқталса, **View diagnostic log** ашыңыз. Порт қақтығысы жаңа Metabase контейнері жасалғанға дейін жұмыс барысын тоқтатады.",
+      "target_hash": "05a78f824df4b99a597e45f44e1906162b554177f4ff6a9ace3d17f3095b67cf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "a81069f4e7ef97d74a1676fb216f36a5b3d043dac7ecd2809f93d5e4f45bcc66",
+          "target_hash": "05a78f824df4b99a597e45f44e1906162b554177f4ff6a9ace3d17f3095b67cf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.470819e0e0dc49ec87d4d7a075766fef",
+      "source_hash": "cabb0c551e15d8149efd15c2c3933bcc938aa9bb9d58ae76e7d00f55601d03cb",
+      "target_text": "## 2. Metabase ортасын дайындау\n\nАлдымен 1-зертханалық жұмысты аяқтаңыз. Келесі ұяшыққа дұрыс жұмыс істейтін `doris-rta` контейнері, `doris-rta` Docker желісі және 10,158,080 жолы бар `doris_course.events` кестесі қажет.\n\n<div>\n<table>\n<tr>\n<td><strong>1 · Doris тексеру</strong><br><span>Контейнерді, желіні және бастапқы кестені тексеру</span></td>\n<td>&#8594;</td>\n<td><strong>2 · Драйверді жүктеу</strong><br><span>Нұсқасы бекітілген қауымдастық драйверінің JAR файлын алу</span></td>\n<td>&#8594;</td>\n<td><strong>3 · Сақтау орнын жасау</strong><br><span>Metabase атаулы томын жасау немесе қайта пайдалану</span></td>\n<td>&#8594;</td>\n<td><strong>4 · Metabase іске қосу</strong><br><span>Образды қайта пайдалану немесе жүктеу және контейнерді іске қосу немесе қайта пайдалану</span></td>\n<td>&#8594;</td>\n<td><strong>5 · Дайындықты күту</strong><br><span>Metabase күйін тексеру API тексеру</span></td>\n</tr>\n</table>\n</div>\n\nBash ұяшығының басындағы айнымалылар барлық қайта пайдаланылатын ресурс атаулары мен нұсқаларын басқарады. Сол пәрмендер macOS Apple Silicon және Linux x86_64 жүйелерінде орындалады; Docker платформаға сәйкес образ архитектурасын таңдайды.",
+      "target_hash": "58191acc9e1f390834d5e8b3fa0c3b1f7107073a09546fa875ef1988bb009304",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "cabb0c551e15d8149efd15c2c3933bcc938aa9bb9d58ae76e7d00f55601d03cb",
+          "target_hash": "58191acc9e1f390834d5e8b3fa0c3b1f7107073a09546fa875ef1988bb009304"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fa1cd8e7d0b641db8b275ffbfd9fc540",
+      "source_hash": "65be5364270ff9e2e14707dc268f9fe5c90df8cc6f88f6b7fff6a36cc9368b82",
+      "target_text": "## 4. Сұрақ пен сызықтық график жасау\n\n**New → SQL query** таңдаңыз, **Doris Course** таңдап, орындаңыз:\n\n```sql\nSELECT\n    TO_DATE(event_time) AS event_date,\n    SUM(revenue) AS total_revenue\nFROM internal.doris_course.events\nWHERE event_type = 'purchase'\nGROUP BY TO_DATE(event_time)\nORDER BY event_date;\n```\n\nCatalog, дерекқор және кестеден тұратын толық кесте атауы Native SQL ұқсас аталған `information_schema.EVENTS` жүйелік көрінісінің орнына курс кестесін оқитынын қамтамасыз етеді. `TO_DATE(event_time)` бір күнтізбелік күндегі барлық сатып алуды топтайды.\n\n**Visualization → Line** таңдаңыз, X осіне `event_date`, Y осіне `total_revenue` орнатыңыз және Question сұрағын `Our analytics` Collection жинағына **Daily Revenue** атымен сақтаңыз.\n\n**Күтілетін нәтиже:** сұрау хронологиялық ретпен жеті жол қайтарады, сатып алу болған әр күнге бір жол: 2019-12-01 мен 2019-12-04 аралығы және 2020-03-01 мен 2020-03-03 аралығы. Деректер жиынының қалған 19 күнінде қарау немесе себет оқиғалары бар, бірақ сатып алу жоқ, сондықтан түсім де жоқ. Сызықтық график қосымша деректер қатарысыз күнделікті сатып алу түсімін көрсетеді: 2019-12-04 күнгі 2,756,102.03 мәнінен 2020-03-02 күнгі 9,933,097.98 мәніне дейін.\nГрафиктегі жеті нүкте ғана сұрау нәтижелері болып табылады. Әдепкі сызық қаңтар мен ақпанды аттап өтіп, 2019-12-04 күнін 2020-03-01 күнімен байланыстырады; бұл бөлік аралықтағы күнделікті бақылауларды білдірмейді. Сатып алу күні туралы деректің болмауы мен өлшенген нөл есеп берудегі әртүрлі таңдаулар болғандықтан, бұл сұрау жетіспейтін күндерді нөлмен толтырмайды.\n",
+      "target_hash": "82cacf02d209720d40cfd24ebbd2ad91e52521f794467abfce6a651b3d270d16",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "65be5364270ff9e2e14707dc268f9fe5c90df8cc6f88f6b7fff6a36cc9368b82",
+          "target_hash": "82cacf02d209720d40cfd24ebbd2ad91e52521f794467abfce6a651b3d270d16"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2bceba5e236a4056a9380faaf4c39bdc",
+      "source_hash": "83c9d0e102367129cdd7671d5c26abf7fe16b7b3931fbe91cb44492ff6d951cd",
+      "target_text": "**Күтілетін нәтиже:** күй жауабында `\"status\":\"ok\"` бар. Төмендегі Metabase браузер сілтемесін қайта ашыңыз; Doris қосылымы, сақталған Question сұрағы және бақылау тақтасы қолжетімді болып қалады.\n\n### Жиі кездесетін мәселелер\n\n| Белгісі | Тексеру |\n|---|---|\n| Дерекқор түрлері тізімінде **Apache Doris** жоқ | `docker logs doris-rta-metabase` орындап, `/plugins/doris.metabase-driver.jar` тіркелгенін растаңыз. |\n| Қосылым сынағы сәтсіз аяқталды | Host мәні `doris-rta`, Port мәні `9030` екенін, екі контейнер де `doris-rta` желісін пайдаланатынын және Doris контейнерінің дұрыс жұмыс істейтінін растаңыз. |\n| `events` көрінбейді | Database мәні `doris_course` екенін растаңыз, содан кейін Metabase ішінде **Sync database schema now** орындаңыз. |\n| `DESC events` нәтижесінде `EVENT_CATALOG` және `EVENT_SCHEMA` көрсетіледі | Толық нақтыланбаған атау `information_schema.EVENTS` ретінде шешілді. Native SQL ішінде `internal.doris_course.events` пайдаланыңыз. |\n| Браузер 13000 портын аша алмайды | `docker ps`, күйді тексеру мекенжайын және хосттағы басқа үдерістің `13000` портын иеленіп тұрмағанын тексеріңіз. |\n\n## 1-зертханалық жұмыстың қосымша бөлімі аяқталды\n\nСіз қауымдастық драйверін орнаттыңыз, Metabase пен Doris жүйелерін бір Docker желісінде іске қостыңыз, Metabase қызметін Doris FE түйініне қостыңыз, Doris ішінде талдамалық сұрау орындадыңыз және нәтижесін сақталатын бақылау тақтасы ретінде жарияладыңыз.\n\nРесми анықтама: [Apache Doris — Metabase интеграциясы](https://doris.apache.org/docs/4.x/connection-integration/data-integration/metabase/)\n",
+      "target_hash": "16d98982d7ad3b98ac4cbfce67c7d9251381e71db646a75f9ed58adbed111790",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "83c9d0e102367129cdd7671d5c26abf7fe16b7b3931fbe91cb44492ff6d951cd",
+          "target_hash": "16d98982d7ad3b98ac4cbfce67c7d9251381e71db646a75f9ed58adbed111790"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.865aac9394df4a0da038260482bfe237",
+      "source_hash": "00e49d7ac8fd95ef4d80d321e81f4389a684300f7a0f321429731701eb4b385c",
+      "target_text": "### Metabase тоқтату\n\nMetabase үдерісін және 13000 портын босатқыңыз келгенде осы қосымша ұяшықты орындаңыз. Ол контейнер мен `doris-rta-metabase-data` атаулы томын сақтайды, сондықтан Doris қосылымы, сақталған Question сұрағы және бақылау тақтасы жойылмайды. Doris контейнері мен `events` кестесіне әсер етпейді.\n",
+      "target_hash": "bf92473d9790fe738cc0b5e7c84072f55f24c6c4c4bd33fe7f0b9db6508e6803",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "00e49d7ac8fd95ef4d80d321e81f4389a684300f7a0f321429731701eb4b385c",
+          "target_hash": "bf92473d9790fe738cc0b5e7c84072f55f24c6c4c4bd33fe7f0b9db6508e6803"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6b061846acbb4371bce5879f7db52923",
+      "source_hash": "e92924d59ac8400eb2b1c50b5e42924bdda12c0f4482bea51b2eac3b1446a71c",
+      "target_text": "## 1. Интеграцияны түсіну\n\nMetabase — бастапқы коды ашық бизнес-аналитика қолданбасы. Metabase Apache Doris Driver — Metabase жүйесіне Doris метадеректерін табуға және MySQL үйлесімді протоколы арқылы FE `9030` портына SQL жіберуге мүмкіндік беретін дербес қауымдастық драйвері.\n\n| Компонент | Осы қосымша зертханалық жұмыстағы рөлі |\n|---|---|\n| Браузер | Хосттың `13000` портында Metabase веб-интерфейсін ашады. |\n| Metabase контейнері | Сұрақтар мен бақылау тақталарын сақтайды, Doris драйверін жүктейді және SQL жібереді. |\n| `doris-rta` Docker желісі | `doris-rta` хост атауы арқылы Doris контейнерінің мекенжайын шешеді. |\n| Frontend (FE) | `9030` портында SQL қабылдап, талдайды, үлестірілген сұрау жоспарын құрып, оңтайландырады және оның жоспар фрагменттерін тағайындайды. |\n| Backend (BE) | 1-зертханалық жұмыстың `events` кестесін сканерлеу және агрегаттау үшін тағайындалған жоспар фрагменттерін орындайды. |\n\nMetabase контейнері `doris-rta-metabase-data` атаулы томын пайдаланады, сондықтан оның қолданба дерекқоры контейнер тоқтатылғаннан кейін сақталады. Doris кестесі 1-зертханалық жұмыста жасалған бөлек `doris-rta-fe-meta` және `doris-rta-be-storage` томдарында қалады.\n\n<div><strong>Үшінші тарап драйвері</strong>Metabase Apache Doris Driver Apache Doris жобасынан тыс қолдау табады. Ноутбук 1.0.0 нұсқасын орнатады. Өндірісте пайдаланбас бұрын оның қауіпсіздігін, лицензиясын және үйлесімділігін бөлек бағалаңыз.</div>\n",
+      "target_hash": "47c2daf6ee4945064f6b970e6af165a006f237eb3c6fb8c5612cd230a3337395",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m01-optional-and-metadata",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for 32 units. Checked all course titles/summaries, Metabase UI controls and connection fields, remote browser versus internal API addressing, idempotent restart, retained named volumes, 10,158,080 baseline rows, seven purchase dates and no zero-fill, SQL literals and third-party driver caveat. Original application control labels retained. Native review and rendered UI admission not performed.",
+          "source_hash": "e92924d59ac8400eb2b1c50b5e42924bdda12c0f4482bea51b2eac3b1446a71c",
+          "target_hash": "47c2daf6ee4945064f6b970e6af165a006f237eb3c6fb8c5612cd230a3337395"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

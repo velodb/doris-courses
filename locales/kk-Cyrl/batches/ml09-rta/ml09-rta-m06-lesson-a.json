@@ -1,0 +1,416 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.726deb80b8844eb0a2f9350e771e37a5",
+      "source_hash": "2cd742ab08c6a550eecbeba45ec7f0f95dae089579d38ad26a770593cdb7a71d",
+      "target_text": "### Тарихи атрибуттарды дұрыс уақытқа сәйкестендіру\n\nАғымдағы күй өлшемі «өнім санаты қазір қандай?» дегенге жауап береді. Ол «оқиға болғанда қай санат күшінде болды?» дегенге жауап бермеуі мүмкін. Өнім тарихында күшіне ену уақыттары болса, оқиға мен күй уақытын дәл теңестіру әдетте қате, өйткені күй жолы көптеген кейінгі оқиғадан бұрын басталуы мүмкін.\n\nASOF Join уақыт бойынша ең жақын көрші мағынасын береді. Мысалы:\n\n```sql\nFROM product_events e\nASOF LEFT JOIN product_history h\nMATCH_CONDITION(e.event_time >= h.effective_time)\nON e.product_id = h.product_id\n```\n\nӘр тең `product_id` ішінде бұл бағыт күшіне ену уақыты оқиға уақытына тең немесе одан бұрын болған ең жақын тарих жолын таңдайды. «Ең жақын» берілген салыстыру бағытына сай; ол ең кіші абсолют уақыт айырмасын білдірмейді. ASOF Left Join сәйкес тарих жолы жоқ оқиғаны сақтап, оң жақ бағандарды `NULL` толтырады; ASOF Inner Join оны алып тастайды.\n\n6-зертханалық жұмыс ағымдағы өнім анықтамалығын пайдаланады және екінші тарихи өлшем қоспайды. Қолдау көрсетілетін уақыт типтері, салыстыру бағыттары және шектеулер үшін [ASOF Join](https://doris.apache.org/docs/4.x/query-data/asof-join/) құжатын қараңыз.\n\n",
+      "target_hash": "2a65d2be9f818edc9835337bac793a818650a40bb1e3903ec84ce6b86b7780f9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "2cd742ab08c6a550eecbeba45ec7f0f95dae089579d38ad26a770593cdb7a71d",
+          "target_hash": "2a65d2be9f818edc9835337bac793a818650a40bb1e3903ec84ce6b86b7780f9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1787945b123b4c8a96f94dc8be40d615",
+      "source_hash": "4b3b0477f7010c12ac7dda8a9d2470785c2b2555047fd44db106be5d864530a4",
+      "target_text": "## 6.1 Атрибуттар қоспас бұрын байланысты анықтау\n\n**Факт кестесі** бақылауларды немесе әрекетті тіркейді. **Өлшем кестесі** сол фактілерді түсіндіруге арналған бизнес нысандарын сипаттайды. Бұл модульде:\n\n- бір `events_modelled` жолы бір бастапқы оқиғаны білдіреді;\n- бір жарамды `dim_products` жолы бір өнім анықтамасын білдіреді.\n\nЕкі кестеде де `product_id` бар, бірақ баған атауының ортақтығы қауіпсіз байланысты кепілдемейді. SQL жазбас бұрын сұраңыз:\n\n1. Әр жақтағы бір жол нені білдіреді?\n2. Join шартын қай бағандар құрайды?\n3. Әр жақта сол Join кілті қанша жолда қайталана алады?\n4. Бір кіріс жолы нөл, бір немесе бірнеше нәтиже жолын беруі тиіс пе?\n5. Байланыс бірнеше жұп берсе, қай метрикалар қайталанар еді?\n\n",
+      "target_hash": "fc672552b312d76d5a9e3baa216d8451c131046fa152f59075192deac2e008dc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "4b3b0477f7010c12ac7dda8a9d2470785c2b2555047fd44db106be5d864530a4",
+          "target_hash": "fc672552b312d76d5a9e3baa216d8451c131046fa152f59075192deac2e008dc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b546dacc818d4c4281afe8f4a60e51da",
+      "source_hash": "ac4d4ca5c98275d2d966d4dc7b71b9541459be23618e699caf2da73646856b98",
+      "target_text": "## 6.5 Құру кірісі көшіріп таратуға жеткілікті шағын болғанда Broadcast пайдалану\n\nЖаппай параллель өңдеу (MPP) кластерінде тең кілттер бір Join орындау орнында кездесуі тиіс. Broadcast физикалық сол/тексеру кірісін орнында қалдырып, толық физикалық оң/құру кірісін Join амалына қатысатын әр түйінге жібереді.\n\n![Толық шағын құру қатынасы әр Join қатысушысына көшіріледі, ал әр жергілікті тексеру бөлігі орнында қалады.](images/05-broadcast-build-input.png)\n\n*Broadcast құру кірісін әр қатысатын орындау орнына көшіреді.*\n\nСурет жазулары: Broadcast the small build input — шағын құру кірісін Broadcast арқылы тарату; Small filtered build — шағын сүзілген құру кірісі; Keys — кілттер; Broadcast — көшіріп тарату; Join A/B/C — A/B/C Join даналары; Complete build copy — құру кірісінің толық көшірмесі; Local probe — жергілікті тексеру кірісі; Stays in place — орнында қалады; Hash Join — Hash Join. 10 және 20 кілттері өзгермейді. Сурет ағылшын түпнұсқасында сақталған.\n\nБұл стратегияда үлкен факт кірісі әр BE түйініне көшірілмейді. Көшірілетін деректер — құру қатынасы. Әр қатысатын данаға жергілікті тексеру жолдарын сәйкестендіру үшін өзінің толық құру жағы жиыны қажет.\n\n",
+      "target_hash": "2c7eca9073a4f98ff8a788e8087e346d38ad7427226b3f15ad3c81027a17d66a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ac4d4ca5c98275d2d966d4dc7b71b9541459be23618e699caf2da73646856b98",
+          "target_hash": "2c7eca9073a4f98ff8a788e8087e346d38ad7427226b3f15ad3c81027a17d66a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5a76a64866864a9b9768582dd613d420",
+      "source_hash": "75cc4628fb02681e619caaf820062b49637cca1735867f0c8a05487a2af464ba",
+      "target_text": "### Атрибуттармен байытуды бар-жоғын тексеруден ажырату\n\nЖауапқа санат пен бренд қажет болса, қалыпты Join оң жақ бағандарды қайтара алады. Жауап тек өнім анықтамасының бар-жоғын сұраса, Semi Join өлшем бағандарын қайтармай-ақ осы талапты білдіреді. Бірнеше оң жақ жол бар-жоқ шартын қанағаттандырды екен деп сол жолды да көбейтпейді.\n\nJoin пішінін таңдамас бұрын қажетті шығысты анықтаңыз.\n\n",
+      "target_hash": "ebbc3cf21fd23ed88b5d21f5c8e6efd285de550ea933dc93f07a8cba1420fc92",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "75cc4628fb02681e619caaf820062b49637cca1735867f0c8a05487a2af464ba",
+          "target_hash": "ebbc3cf21fd23ed88b5d21f5c8e6efd285de550ea933dc93f07a8cba1420fc92"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7959214f34ec473aab3a959ea7942afe",
+      "source_hash": "5a4996c31ab11461bc3d89f3ab26ec36b11773429f67b19d9c924d4454299ee2",
+      "target_text": "## 6-зертханалық жұмыс: Apache Doris жүйесінде деректерді біріктіру\n\n4 және 5-модульдерден кейін [6-зертханалық жұмыс — Apache Doris жүйесінде деректерді біріктіру](lab06_join_data.ipynb) ашып, шамамен 30 минут жоспарлаңыз. Ноутбук тұрақты `events_modelled` кестесін оқып, 6-модульдің үш кестесін жасайды:\n\n- `dim_products` — жергілікті өнім идентификаторларынан жасалған детерминді 204,231 жолдық өнім өлшемі;\n- `join_event_cases` — төрт жолдық оқиға сынақ жиыны;\n- `join_product_cases` — қайталанатын кілт және `NULL` кілті бар бес жолдық сынақ жиыны.\n\nОл сырттан файл жүктемейді және Amazon S3 оқымайды.\n\n| Зертханалық қадам | Не істейсіз | Нәтиже нені дәлелдейді |\n| --- | --- | --- |\n| 1 | Бақыланатын өнім байланысын құру | Әр өнімге бір өлшем жолы оқиғаны байытуды қолдайды, ал әдейі сәйкес емес кілттер жетіспеудің екі бағытын көрсетеді |\n| 2 | Inner, Left Outer, Left Semi және Left Anti Join орындау | Join түрі жауап сақтауы тиіс жолдар мен бағандарға сай |\n| 3 | Санат және аймақ бойынша сатып алу түсімін агрегаттау | Көп оқиғадан бір өнімге байланысы агрегаттауға дейін әр оқиғаға бір сәйкес жол сақтайды |\n| 4 | Бір оқиғаны қайталанатын өнім-нұсқа кілттерімен біріктіру | Join әр сәйкес жұпты шығарып, метриканы қайталай алады |\n| 5 | `NULL` оқиға кілті үшін `=` және `<=>` салыстыру | Қалыпты теңдік NULL-NULL жұбын жасамайды; NULL-қа қауіпсіз теңдік сынақ шартына сай бір жұп жасайды |\n| 6 | Теңдік және таза теңдік емес жоспарларды салыстыру | Сыналған жоспарда теңдік шарты Hash Join, ал таза ауқым шарты Nested Loop Join қолданады |\n| 7 | Тарату жоспарларын салыстырып, Query Profile тексеру | Әдепкі жоспар Broadcast қолданады, қабылданған салыстыру Bucket Shuffle көрсетеді және Profile санағыштары тексеру жағындағы нақты сүзуді көрсетеді |\n\nЗертханалық жұмыс тек шектелген логикалық жағдайларды орындайды. Right, Full, Cross, NULL-aware Anti, ASOF, жалпы Partition Shuffle бағыттауы және Colocate сабақта түсіндіріледі, өйткені олардың әрқайсысын үлкен кестеде орындау қажетті дәлелді жақсартпай, қайталау қосар еді.\n\n6-зертханалық жұмыс нәтижелерін үш деңгейде оқыңыз:\n\n1. Сұрау нәтиже жолдары логикалық Join мағынасын анықтайды.\n2. `EXPLAIN SHAPE PLAN` орындамай-ақ таңдалған физикалық жоспарды анықтайды.\n3. Query Profile санағыштары бір орындауда не болғанын анықтайды.\n\nКөп түйінді тарату стратегияларына орын беру үшін бір BE өткен уақытын пайдаланбаңыз. Талдамалық ағын үшін `events_modelled` сақтаңыз; 6-модуль тек өз өлшемін және бақыланатын Join кестелерін иеленеді әрі қайта құра алады.\n\nЗертханалық жұмыс жаттығумен аяқталады: шарт `ON` ішінен `WHERE` ішіне ауысқанда Outer Join жолдарын болжаңыз. Алдымен нәтижені болжаңыз, содан кейін бос ұяшыққа код жазыңыз; одан кейінгі жиналған үлгі шешім де Run All арқылы орындалып, зертханалық жұмыс кестелерін бастапқы күйінде қалдырады.\n\n",
+      "target_hash": "7adb332e620bf3dc16fabd9a21891dee08687296630655acea201e0c0e77e874",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "5a4996c31ab11461bc3d89f3ab26ec36b11773429f67b19d9c924d4454299ee2",
+          "target_hash": "7adb332e620bf3dc16fabd9a21891dee08687296630655acea201e0c0e77e874"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7e18886bcf134f30a724b94ad0d486c9",
+      "source_hash": "5b1b2b37c446167fa3c627b27a10a16cb881559958f542a7c97b1cfa4349a75d",
+      "target_text": "## 6.2 Жауап сақтауы тиіс жолдарға қарай логикалық Join операторын таңдау\n\nЛогикалық Join операторы алдымен жолдарды сақтау шешімі. `INNER`, `OUTER`, `SEMI` және `ANTI` жауапқа қай сәйкес немесе сәйкес емес жолдар кіретінін сипаттайды. Олар сол жолдардың қайда сақталғанын немесе орындауда Doris оларды қалай тасымалдайтынын айтпайды. Ең қысқа синтаксистен емес, қажетті нәтижеден бастаңыз.\n\n",
+      "target_hash": "5617a10aaea4fa12d149308683d7c11e21e0b59e07fce420b940e2b691bb3f83",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "5b1b2b37c446167fa3c627b27a10a16cb881559958f542a7c97b1cfa4349a75d",
+          "target_hash": "5617a10aaea4fa12d149308683d7c11e21e0b59e07fce420b940e2b691bb3f83"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.53664c308eb047d190ba0b90ba5d0434",
+      "source_hash": "6d9fd363f5e1476efe0ed3d8d550916fee50a6cb7a714506fdf05b444e33a4ac",
+      "target_text": "## 6.8 Тұрақты, қайталанатын Join байланысы үшін Colocate пайдалану\n\nColocate Join күштірек және тұрақтырақ талапты шешеді. Сол тұрақты кілтпен үлкеннен үлкенге Join жиі орындайтын екі кесте бір Colocation Group ішінде орналастырыла алады. Үйлесімді Bucket ұяшықтары бірге сақталады, сондықтан әр жергілікті орындау орнында сәйкес жолдар бар болады.\n\n![Сәйкес orders және customers Bucket ұяшықтары әр BE түйінінде бірге орналасып, BE арасында кіріс алмасусыз жергілікті Join амалдарына беріледі.](images/08-colocate-local-joins.png)\n\n*Тұрақты бірге орналастыру шарты Join кірістерінің екеуін де алдын ала орналастырады.*\n\nСурет жазулары: Colocate matching buckets before the Join — сәйкес Bucket ұяшықтарын Join алдында бірге орналастыру; Stable colocation group — тұрақты Colocation Group; BE A/B/C — A/B/C BE түйіндері; Orders Bucket 0/1/2 — тапсырыстардың 0/1/2 Bucket ұяшықтары; Customers Bucket 0/1/2 — тұтынушылардың 0/1/2 Bucket ұяшықтары; Local Hash Join — жергілікті Hash Join; No Join-input exchange — Join кірістері алмаспайды. Суреттің ағылшын түпнұсқасы сақталған.\n\nКестелер ағымдағы бірге орналастыру шартына, соның ішінде үйлесімді тарату бағандары мен типтеріне, Bucket санына, реплика бөлуге және топ мүшелігіне сай болуы тиіс. Сәйкес Bucket репликалары нақты бірге орналасуы үшін топ тұрақты болуы тиіс. Қайта теңгеру немесе тұрақсыз топ кезінде тек кесте қасиеті бар екен деп жергілікті орындауды болжауға болмайды.\n\nColocate — қайталанатын жүктемеге арналған физикалық деректер құрылымының міндеттемесі. Ол бір сұрауға арналған әмбебап hint емес. Қатаңырақ орналасу қайталанатын Join тасымалын азайта алады, бірақ кесте құрылымы мен орналастыру амалдарын да шектейді.\n\n6-зертханалық жұмыс Colocation Group жасамайды. Бір BE әр Tablet-ті жергілікті етіп, көп түйінді орналастыру пайдасын көрсетпес еді. Курс сценарийі Colocate қашан қарастырылатынын анықтайды; өндірістік шешімге кесте анықтамалары, топ тұрақтылығы, жоспар, жүктеме жиілігі және орындалу дәлелі қажет.\n\n",
+      "target_hash": "62688b1c0cb46c5a18f07d83c085eef193a17ed908ae14b6d6ad6d2de7de5007",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "6d9fd363f5e1476efe0ed3d8d550916fee50a6cb7a714506fdf05b444e33a4ac",
+          "target_hash": "62688b1c0cb46c5a18f07d83c085eef193a17ed908ae14b6d6ad6d2de7de5007"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.860d621d09324718b4484f37c692b135",
+      "source_hash": "4118e8483c7d1c83f447fcd2eb86deef1c8dd1390f2788685e069b7d463dc593",
+      "target_text": "## 6.4 Join шартын физикалық іске асырумен байланыстыру\n\nDoris физикалық іске асыру ретінде Hash Join және Nested Loop Join қолдайды. Шарт теңдік кілтінің үміткер сәйкестіктерді ұйымдастыра алатынын анықтайды.\n\n6.2 және 6.3-бөлімдер логикалық нәтижені анықтады: қай жолдар қалады, `NULL` қалай әрекет етеді және предикаттар қайда қолданылады. Физикалық жоспарлау осы жерден басталып, екі бөлек сұраққа жауап береді:\n\n1. **Бір Join орындау данасы сәйкес үміткерлерді қалай табады?** Hash Join теңдік кілтін пайдаланады; Nested Loop Join онсыз да байланыстарды есептей алады.\n2. **Үлестірілген кластерде сәйкес жолдар бір орындау данасына қалай жетеді?** Broadcast, Partition Shuffle, Bucket Shuffle және Colocate — 6.5–6.8-бөлімдерде қарастырылатын деректерді тарату стратегиялары.\n\nТарату стратегиясын таңдау Inner Join амалын Outer Join амалына айналдырмайды және теңдік шартын өзгертпейді. Ол таңдалған Join іске асыруы жұмыс істейтін физикалық кірістерді береді.\n\n",
+      "target_hash": "d79c2a9a4b28f911fe4e1435d8559735f3b4aad1443fb2366a8603829ad59672",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "4118e8483c7d1c83f447fcd2eb86deef1c8dd1390f2788685e069b7d463dc593",
+          "target_hash": "d79c2a9a4b28f911fe4e1435d8559735f3b4aad1443fb2366a8603829ad59672"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3da1061b5fc7422fb0e9f196d45e9552",
+      "source_hash": "c9802c4f58024c1d35fdfd222b6de19d5046472709aff5c8f3797a01ab102bb7",
+      "target_text": "## 6.10 Жоспар дәлелін орындалу әсерінен бөлек оқу\n\nFrontend (FE) үлестірілген сұрау жоспарын құрып, оңтайландырады және жоспар фрагменттерін тағайындайды. BE түйіндері тағайындалған жоспар фрагменттерін орындайды. Қойған сұрағыңызға жауап беретін артефактіні пайдаланыңыз.\n\n| Сұрақ | Дәлел |\n| --- | --- |\n| Қай Join түрі мен шарты жоспарланған? | `EXPLAIN` немесе `EXPLAIN SHAPE PLAN` |\n| Қай тарату және Exchange пішіні жоспарланған? | `EXPLAIN` жоспар ағашы |\n| Runtime Filter қайда жасалып, қайда тұтынылады? | Жоспардағы `build RFs` және `apply RFs` |\n| Орындалған Join амалына қанша жол жетті? | Query Profile ішіндегі Hash Join санағыштары |\n| Нақты Runtime Filter қанша жолды қабылдамады? | Сәйкес `RF... InputRows` және `RF... FilterRows` Profile санағыштары |\n| Қанша уақыт және желі жұмысы кетті? | Query Profile ішіндегі тиісті оператор және Exchange санағыштары |\n\n`EXPLAIN` ішінде `apply RFs` көру тек жоспардың тұтынушыны орналастырғанын дәлелдейді. Ол сүзгінің ерте келгенін, жолдарды қабылдамағанын немесе сақтау оқуларын болдырмағанын дәлелдемейді. Сұрауды орындап, Profile жазбасын тексеріңіз.\n\n",
+      "target_hash": "9968f341f4cbfd1d004afda3e8bd62706d26fc71762493b322d364965ef6f225",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "c9802c4f58024c1d35fdfd222b6de19d5046472709aff5c8f3797a01ab102bb7",
+          "target_hash": "9968f341f4cbfd1d004afda3e8bd62706d26fc71762493b322d364965ef6f225"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9348b27b784d4f2abdb46e9b524c1a5b",
+      "source_hash": "280e70e9604afc7eeb947ce2ba602fe83ecfcbea557996e21711e038fe1040d2",
+      "target_text": "### Anti Join амалын NULL бар `NOT IN` шартынан ажырату\n\nLeft Anti Join өз Join шарты бойынша сәйкес оң жақ жолы жоқ сол жақ жолдарды сұрайды. `NOT IN` ішкі сұрауы SQL үш мәнді логикасын қолданады: үміткер жиында `NULL` болса, қалыпты салыстырулар true орнына unknown болуы мүмкін.\n\nDoris тиісті NULL-aware мағына үшін `NULL AWARE LEFT ANTI JOIN` береді. Ресми Join шарты оның `NULL` ерекше өңдейтінін және сәйкестік бағаны `NULL` сол жақ жолдарды елемейтінін айтады. Қажетті NULL әрекеті анықталғанша `NOT IN` шартын қалыпты Anti Join ретінде қайта жазбаңыз.\n\n",
+      "target_hash": "4df39b0dc7034ef0da74ece921ae31747ddcbbd1c623c28afdc6bb5134bfb506",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "280e70e9604afc7eeb947ce2ba602fe83ecfcbea557996e21711e038fe1040d2",
+          "target_hash": "4df39b0dc7034ef0da74ece921ae31747ddcbbd1c623c28afdc6bb5134bfb506"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.20ba50b11be24b72b7079e02c5d07809",
+      "source_hash": "3f1284ec9f8bf7341391910a285695fdf316458bba673d66c9b68d0b09c01663",
+      "target_text": "## 6.3 Жетіспейтін кілттер мен предикаттардың мағынасын анықтау\n\nЖетіспейтін мәндер сәйкестендіруге де, алып тастауға да әсер етеді. `NULL` «салыстыруға келетін кілт жоқ» дегенді білдіре ме, әлде екі жетіспейтін мән бір әдейі белгісіз топқа жатуы тиіс пе, соны шешіңіз.\n\n",
+      "target_hash": "65a02ddfa9d456b18ce6716b3a4cb990b537904911f037b5ff55260785913426",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3f1284ec9f8bf7341391910a285695fdf316458bba673d66c9b68d0b09c01663",
+          "target_hash": "65a02ddfa9d456b18ce6716b3a4cb990b537904911f037b5ff55260785913426"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c96ed4a4e8334dbc9725ee830a4e29ab",
+      "source_hash": "799bab33a6ee583d67ddd4acdbfeb990c84d446776c2501274a7c6967797765a",
+      "target_text": "### Outer Join предикаттарын саналы орналастыру\n\nЕсеп әр оқиғаны сақтап, тек белсенді өнім жолдарын тіркеуі тиіс делік. Мына екі үлгі әртүрлі:\n\n```sql\n-- Preserve every event; only active product rows can match.\nLEFT JOIN dim_products d\n  ON e.product_id = d.product_id\n AND d.is_active = 1\n```\n\n```sql\n-- The WHERE predicate removes the NULL-extended unmatched rows.\nLEFT JOIN dim_products d\n  ON e.product_id = d.product_id\nWHERE d.is_active = 1\n```\n\nБіріншісі өнімі жоқ немесе белсенді емес оқиғаны оң жақ бағандары `NULL` күйінде сақтайды. Екіншісі сол нәтижені кейін сүзіп, осы предикат үшін Inner Join сияқты әрекет етеді. `ON` жарамды сәйкестіктерді анықтайды; `WHERE` Join жасаған нәтиже жолдарын сүзеді.\n\n",
+      "target_hash": "65f9565ed1146bcdce2cee2e314b55c89bb827c661b256f195b81ffc9a59375d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "799bab33a6ee583d67ddd4acdbfeb990c84d446776c2501274a7c6967797765a",
+          "target_hash": "65f9565ed1146bcdce2cee2e314b55c89bb827c661b256f195b81ffc9a59375d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c3a1a95699bf44278935c69e88d77360",
+      "source_hash": "2a8955f3747c164960d2f7b5169c0e2d9027e59cad4642a74a79e21c4fc589f2",
+      "target_text": "## Модуль құрылымы\n\n| Бөлім | Уақыт | Нәтиже |\n| --- | ---: | --- |\n| 6.1 Атрибуттар қоспас бұрын байланысты анықтау | 6 мин | Екі түйіршіктіліктен бірден бірге, бірден көпке немесе көптен көпке нәтижелерді болжау |\n| 6.2 Жауап сақтауы тиіс жолдарға қарай логикалық Join операторын таңдау | 6 мин | Inner, Outer, Semi, Anti, Cross немесе ASOF мағынасын таңдау |\n| 6.3 Жетіспейтін кілттер мен предикаттардың мағынасын анықтау | 6 мин | `=` немесе `<=>` таңдап, оң жақ предикаттарын `ON` не `WHERE` ішіне қою |\n| 6.4 Join шартын физикалық іске асырумен байланыстыру | 7 мин | Hash Join мен Nested Loop Join, құру жағы мен тексеру жағын ажырату |\n| 6.5 Құру кірісі көшіріп таратуға жеткілікті шағын болғанда Broadcast пайдалану | 5 мин | Шағын құру кірісін әр қатысушыға көшіру |\n| 6.6 Екі кірісті де қайта тарату қажет болғанда Partition Shuffle пайдалану | 5 мин | Екі кірісті Join кілтімен бағыттау |\n| 6.7 Бар орналасудың бірін қайта пайдалануға болатын кезде Bucket Shuffle пайдалану | 5 мин | Бір үйлесімді bucket-ке бөлінген кірісті орнында қалдыру |\n| 6.8 Тұрақты, қайталанатын Join байланысы үшін Colocate пайдалану | 4 мин | Екі кірісті сәйкес Bucket ұяшықтарымен алдын ала сақтау |\n| 6.9 Runtime Filter арқылы тексеру үміткерлерін азайту | 6 мин | Тексеру жағының сканерлеуін сүзуге құру жағының кілттерін пайдалану |\n| 6.10 Жоспар дәлелін орындалу әсерінен бөлек оқу | 5 мин | Жоспар, Profile және hint нені көрсететінін оқу |\n| 6-зертханалық жұмыс | 30 мин | Бақыланатын жағдайларда Join түрлерін орындап, жоспарлар мен Profile оқу |\n| 6-тест | 10 мин | Осы мақсаттар бойынша алты сұрақ |\n\n",
+      "target_hash": "665da7262a5f59ed28b1a30159212a3fc5cebff26e0428baa68a86e5b97d67e0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "2a8955f3747c164960d2f7b5169c0e2d9027e59cad4642a74a79e21c4fc589f2",
+          "target_hash": "665da7262a5f59ed28b1a30159212a3fc5cebff26e0428baa68a86e5b97d67e0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2bfe784e4b0d41e58edd979f24b9cbb2",
+      "source_hash": "433fb3f02906f036de6cecf4ba0c60d41664036ef64dc1d86dd27df1d414800c",
+      "target_text": "### Сәйкес кілттер кездесу үшін жолдарды тасымалдау\n\nҚатысатын деректер мен Join орындауы бірнеше Backend (BE) түйіні немесе орындау данасы арасында таралғанда, деректерді тасымалдау үлестірілген Join мәселесіне айналады. Бір BE-дегі жол екінші кірістен тиісті жолды ешқашан алмайтын Hash Join данасында сәйкестендіріле алмайды.\n\nҮш BE бастапқыда өзара байланыссыз мына бөліктерді ұстайды делік:\n\n![Оқиға және өнім кілттері бастапқыда әртүрлі BE түйіндерінде, сондықтан сәйкес кілттер сол жергілікті Join үшін міндетті түрде қолжетімді емес.](images/04-initial-join-placement.png)\n\n*Ортақ Join кілттері үйлесімді физикалық орналасуды білдірмейді.*\n\nСурет жазулары: Matching keys can start on different BEs — сәйкес кілттер бастапқыда әртүрлі BE-де болуы мүмкін; BE 1/2/3 — 1/2/3 BE түйіндері; Local rows — жергілікті жолдар; Events — оқиғалар; Products — өнімдер; Matching keys begin apart — сәйкес кілттер бастапқыда бөлек. product_id бағаны және 10, 20, 30, 40 кілттері өзгермейді. Сурет ағылшын түпнұсқасында сақталған.\n\nТек жергілікті Join жарамды сәйкестіктерді жіберіп алар еді: 10 кілтінің өнім жолы BE 2 ішінде, ал 10 кілтті оқиға жолдары BE 1 және BE 3 ішінде. Сондықтан үлестірілген жоспар сәйкес кілттерді кездестіруі тиіс:\n\nБұл таңдаулар желі тасымалын, әр дана жадын, қисықтықты және бар орналасуды қайта пайдалану мүмкіндігін теңгереді:\n\n- **Broadcast** үлкен тексеру кірісін жылжытпайды, бірақ әр қатысатын дана кіші кірістің толық көшірмесін алып, құрады. Ол сүзуден және проекциядан кейінгі құру кірісі әр қатысушының жад бюджетіне сыйғанда ғана қауіпсіз. Бұл шектеулі жадқа үлкен құру кірісін сыйғызу тәсілі емес.\n- **Partition Shuffle** — ешбір жақты көшіруге болмайтын үлкеннен үлкенге жалпы таңдау. Әр дана тек өзінің Join кілті бөлігін алып, сол ішкі жиында құру немесе тексеру жасайды; жұмыс пен hash күйі кластерге таралады. Екі кіріс те желіден өтуі мүмкін және қисайған кілт тым үлкен бөлік жасай алады.\n- **Bucket Shuffle** бұрыннан үйлесімді бір кірісті орнында қалдырып, тек екіншісін жылжыту арқылы тасымалды азайтады.\n- **Colocate** қайталанатын байланыс үшін екі кіріс үйлесімді Bucket орналасуымен әдейі сақталса, Join кезіндегі тасымалды болдырмай алады.\n\nБір BE сынақ ортасында да `EXPLAIN` таңдалған тарату стратегиясын анықтай алады және жергілікті алмасулар орындау даналарын байланыстыра алады, бірақ зертханалық жұмыс нақты BE аралық тасымалды өлшей алмайды. Бұл стратегияларды оқудың себебі — өндірістегі бірнеше BE жағдайы.\n\n",
+      "target_hash": "0e5bd806000de9a4d22b3dd2836f15ca1ac8d076b0dea463b060bbb866a6bd5f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "433fb3f02906f036de6cecf4ba0c60d41664036ef64dc1d86dd27df1d414800c",
+          "target_hash": "0e5bd806000de9a4d22b3dd2836f15ca1ac8d076b0dea463b060bbb866a6bd5f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.05b2e502fd3140a4bdf0fa0257f13bb2",
+      "source_hash": "5c1f46424e99f97bf7fc782bb793768f9a286e8c4af74d437fddf5c71fa8beb0",
+      "target_text": "### Теңдік Join үшін құру және тексеру\n\nМынадай теңдік шарты үшін\n\n```sql\ne.product_id = d.product_id\n```\n\nDoris физикалық оң жақ кірістен жадтағы hash кестесін құрып, физикалық сол жақ жолдарды одан ағынмен өткізе алады:\n\n![Өнім кілттері hash іздеуін құрады, оқиға кілттері оны тексереді және тек екі жақта бар кілттер сәйкес жұптар жасайды.](images/03-hash-join-build-probe.png)\n\n*Құру кірісі тексеру кірісі пайдаланатын іздеу құрылымын жасайды.*\n\nСурет жазулары: Build and probe an equi-Join — теңдік Join үшін құру және тексеру; Hash Join execution — Hash Join орындауы; Probe input — тексеру кірісі; Events — оқиғалар; Key — кілт; Probe — тексеру; Hash table — hash кестесі; Product row — өнім жолы; Build — құру; Build input — құру кірісі; Products — өнімдер; Matching pairs — сәйкес жұптар; Event key — оқиға кілті; Product key — өнім кілті; Row 10 / Row 20 — 10 / 20 жолы; No match — сәйкестік жоқ. 10, 20, 30 кілттері өзгермейді. Суреттің ағылшын түпнұсқасы сақталған.\n\n**Құру жағы** және **тексеру жағы** — Join операторының ішіндегі рөлдер. Олар факт не өлшем кестесінің тұрақты қасиеттері емес және бір BE данасы әрдайым «құру BE», екіншісі әрдайым «тексеру BE» дегенді білдірмейді. Әр қатысатын Join орындау данасы үлестірілген жоспар тағайындаған кірістерді алып, өзінің құру және тексеру жұмысын орындайды.\n\nОңтайландырғыш осы физикалық рөлдерді тағайындамас бұрын логикалық кірістердің ретін өзгерте алады. Тек SQL мәтіні оларды бекітеді деп ойламай, жоспарды оқыңыз. Сүзілген өлшемнің hash кестесі кішірек болғандықтан, ол көбіне құру кірісіне айналады, бірақ шешім Join мағынасына, статистикаға, сүзгілерге және проекцияларға байланысты.\n\n",
+      "target_hash": "40a6b6f574dfcc6e11e9ea23c914bc1ee0fe737e5282aaa5134be60af4b53320",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "5c1f46424e99f97bf7fc782bb793768f9a286e8c4af74d437fddf5c71fa8beb0",
+          "target_hash": "40a6b6f574dfcc6e11e9ea23c914bc1ee0fe737e5282aaa5134be60af4b53320"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.03752d661a2f4ff1acba9a4671f5b97a",
+      "source_hash": "731666247b9ec0eaaad38e0c815c4afc22503a560e10bd9c7f7e656163adcdd3",
+      "target_text": "### Жол санымен бірге метрикаларды да қорғау\n\nОқиға түсімі 29.95 болып, екі өлшем нұсқасына сәйкес келеді делік. Join кейін топтайтын сұрау алдымен оқиғаға тиесілі бір нұсқаны таңдамаса, 59.90 қосуы мүмкін.\n\nМұны ойланбай `SUM(DISTINCT revenue)` арқылы түзетпеңіз. Екі нақты оқиғаның түсімі бірдей болуы мүмкін, сондықтан бірегей мәндер бірегей оқиғаларды анықтамайды. Байланысты бизнес ережесімен шешіңіз: бір ағымдағы өлшем жолын міндеттеу, нұсқа шартын қосу, нақты уақыт сәтіне сәйкестендіру немесе әр сәйкестікті әдейі қамтитын түйіршіктілікте агрегаттау.\n\n",
+      "target_hash": "63d14e4b21495407cca90f969a6f579481d5117d6f6a35ad3f6b2c8f5dfd7b43",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "731666247b9ec0eaaad38e0c815c4afc22503a560e10bd9c7f7e656163adcdd3",
+          "target_hash": "63d14e4b21495407cca90f969a6f579481d5117d6f6a35ad3f6b2c8f5dfd7b43"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f233209c7f044e4aa01d98b2e9d180f1",
+      "source_hash": "252e7ef87e81911f5fb1354399ff667a0ae8e66eab7f9aaa8ffeabe8ae503642",
+      "target_text": "### Hint құралдарын бақыланатын салыстыру ретінде пайдалану\n\nDoris әдетте ретті және таратуды таңдау үшін статистика, предикаттар, Join мағынасы және орналасуларды пайдаланады. `[broadcast]` немесе `[shuffle]` hint оңтайландырғыштан салыстыру немесе анықталған баптау қажеттілігі үшін берілген таратуды қарастыруды сұрайды. Ол жай айқын болғандықтан сұрауды жақсартпайды.\n\nHint тек мынадан кейін пайдаланылсын:\n\n1. ағымдағы жоспарды тексеру;\n2. нақты жоспар немесе орындалу мәселесін анықтау;\n3. тиісті сүзілген кіріс өлшемдері мен оператор әрекетін өлшеу;\n4. өкілдік деректер мен қатар орындауда hint бар жоспарды салыстыру;\n5. дерек өсуінің таңдауды қалай жарамсыз ете алатынын қарастыру.\n\n6-зертханалық жұмыс жоспарларды салыстыру үшін `[shuffle]` пайдаланып, Hint журналын тексереді. Ол hint құралын өндірісте ұсынылатын пішінге айналдырмайды.\n\n",
+      "target_hash": "240f2b49f92ccf493a20e52a8700f270f235cb4df656552ff44d669a0e5f00b4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m06-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct unit-by-unit source/target comparison completed against frozen Module 6 source after reading full lesson, original notebook code and complete six-question bank. Checked one-to-many/many-to-many multiplication and no SUM DISTINCT repair; retained sides and Semi/Anti existence; ASOF direction and unmatched retention; ordinary versus null-safe equality, NULL-aware NOT IN, ON versus WHERE; physical build/probe reassignment and Hash versus pure non-equi Nested Loop; Broadcast build memory and unsupported right joins; Partition Shuffle execution partitions versus table partitions; Bucket Shuffle one-layout reuse and accepted hint; stable Colocate contract; Runtime Filter approximate versus exact behavior and ScanRows versus rejected candidates; all counts/IDs/revenue and single-BE evidence limits. Original unique answers preserved across six prompts and 24 options. Viewed nine source PNGs and added complete adjacent Kazakh label correspondence without changing English pixels. Protected inline code, fenced code, URLs and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "252e7ef87e81911f5fb1354399ff667a0ae8e66eab7f9aaa8ffeabe8ae503642",
+          "target_hash": "240f2b49f92ccf493a20e52a8700f270f235cb4df656552ff44d669a0e5f00b4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,1160 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.bc4480aa27c143b2a129767cebccc389",
+      "source_hash": "a1d9f55a73095bd82b119a9ae94227a9a43310a6bf7e1b48379b6aacb48b8eb3",
+      "target_text": "### Тестті бастапқы баптау\n\nБастапқы баптау ұяшығын бір рет орындаңыз. Ол курс пакетін тауып, осы модульдің тест анықтамасын оқиды және интерактивті тест нысанын жасайды. Jupyter ядросын қайта іске қосқан сайын оны қайта орындаңыз.",
+      "target_hash": "4dd2f3ec22846ab038e7da2cf7117868483b4e4c1fdfc812e3b7393a1f0289b3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a1d9f55a73095bd82b119a9ae94227a9a43310a6bf7e1b48379b6aacb48b8eb3",
+          "target_hash": "4dd2f3ec22846ab038e7da2cf7117868483b4e4c1fdfc812e3b7393a1f0289b3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fad700ce699e4ff993b5920c6bb8e5d5",
+      "source_hash": "ee5c1a6c54ee56449eb0f7cb0fd901f92b97b76f50f16a6e2225671c59154cc3",
+      "target_text": "## Бұл тест нені бағалайды\n\nСабақтың әр оқу мақсатына бір сұрақтан берілген. Осы модульден кейін сіз:\n\n1. Қалыпты көріністі, қолмен толтырылатын жиынтық кестені, синхронды және асинхронды материалданған көріністі ажырата аласыз.\n2. SQL ауқымы, өзектілік талабы және жазу не жаңарту шығыны бойынша синхронды немесе асинхронды материалдандыруды таңдай аласыз.\n3. Материалданған нәтиже басқа сұрауға жауап беруге қажетті өлшемдер мен метрика күйін сақтайтынын анықтай аласыз.\n4. Қызмет етуі тиіс предикатқа қарай инверттелген индекс, BloomFilter индексі немесе NGram BloomFilter индексін таңдай аласыз.\n5. Жеделдету құрылымын тексергенде құру күйін, жоспар таңдауын, статистиканы және орындалу дәлелін ажырата аласыз.\n6. Құрылымның оқу үнемі сақтау, жазу және жаңарту шығынын ақтайтынын шеше аласыз.\n\nКей сұрақтар зертханалық жұмыстың бір қадамынан басталады, бірақ ешбірі оның сандарын есте сақтауды сұрамайды. Тест Docker, Doris, S3 немесе Kafka жүйелерінсіз және аяқталған зертханалық жұмыссыз орындалады; оған тек курстың Jupyter ортасы қажет.",
+      "target_hash": "e51632da65692d2d6a790444f78db2d210a1f372cddfcd85bc9d637999362178",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ee5c1a6c54ee56449eb0f7cb0fd901f92b97b76f50f16a6e2225671c59154cc3",
+          "target_hash": "e51632da65692d2d6a790444f78db2d210a1f372cddfcd85bc9d637999362178"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ae9de2014cd74e74930763860da92185",
+      "source_hash": "ba88481fadf1183a11b2fce54676c29e3a2a1862160bff93473f5a174d28c586",
+      "target_text": "## Білімді тексеруді бастау\n\nКелесі ұяшықты орындаңыз. Нұсқаны таңдап, түсіндірмесін оқу үшін **Submit answer** басыңыз. Қайту үшін **Previous question** пайдаланыңыз. Кез келген таңдауды өзгерте аласыз; жалғастырмас бұрын түзетілген жауапты жіберіңіз. Жіберілмеген таңдаулар нобай ретінде сақталады. **View results** ұпайыңызды және қате жауап берген сұрақтарыңызды көрсетеді. Сол жерден **Previous question** 6-сұраққа қайтарады, ал **Try again** тест тапсыру әрекетін тазартады.",
+      "target_hash": "c47023fa21f0b9922e28ba9d10e5c0a322db3235f8f85dc6cc9e918d0b9ce5d0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ba88481fadf1183a11b2fce54676c29e3a2a1862160bff93473f5a174d28c586",
+          "target_hash": "c47023fa21f0b9922e28ba9d10e5c0a322db3235f8f85dc6cc9e918d0b9ce5d0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.183eeec899924303bed0218b6c5735e6",
+      "source_hash": "ed506a68922f0e65cd96147dccdd13af33377e25b62dd9a939b4639709201c8c",
+      "target_text": "<div>\n  <div>08-ТЕСТ · APACHE DORIS КӨМЕГІМЕН НАҚТЫ УАҚЫТТАҒЫ АНАЛИТИКА</div>\n  <div>Apache Doris жүйесінде сұрауларды жеделдету</div>\n  <p>Әр сұрақтан кейін кері байланысы бар, бір жауап таңдалатын алты сұрақ; дерекқорға қосылу қажет емес.</p>\n  <span>6 сұрақ · Бір жауап таңдау · Шамамен 10 минут</span>\n</div>\n\n**8-модуль: Apache Doris жүйесінде сұрауларды жеделдету** · [Сабақ](course.md) · [Зертханалық жұмыс](lab08_accelerate_queries.ipynb)",
+      "target_hash": "d2c933cada63dcf264c30f6b4b0c8ff88ac5c8d184b09c9f5756a48f10d63e34",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ed506a68922f0e65cd96147dccdd13af33377e25b62dd9a939b4639709201c8c",
+          "target_hash": "d2c933cada63dcf264c30f6b4b0c8ff88ac5c8d184b09c9f5756a48f10d63e34"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.471995166f7a4535a957e807310faeca",
+      "source_hash": "119302c1b34fd64d48a74b501d787bdc10e937c4ad881bb2f396f447015bf1ea",
+      "target_text": "Алты дербес сценарий анықтамалар, жоспарлар, орындалу дәлелдері және бизнес нәтижелерін шатастырмай, Doris сұрауларын жеделдету құрылымдарын таңдап, тексере алатыныңызды тексереді; әр оқу мақсатына бір сұрақтан.",
+      "target_hash": "745000c0da660a07cdf8bfd23824de6cdaf5a5e6c6b5e30f51af4c5493b71f6d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "119302c1b34fd64d48a74b501d787bdc10e937c4ad881bb2f396f447015bf1ea",
+          "target_hash": "745000c0da660a07cdf8bfd23824de6cdaf5a5e6c6b5e30f51af4c5493b71f6d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7a8ae96846d2493487f29b3975fde68b",
+      "source_hash": "57bf9882fea1933cb959f9f7032f78c951de29b030e8cb2f67c87e98f51a917d",
+      "target_text": "Қалыпты көрініс тек анықтаманы сақтайды: әр сұрау оны негізгі кестелерге жаяды, сондықтан қолдайтын сақталған көшірме жоқ. Қалған үшеуі жол сақтап, жүктеу, жазумен қолдау немесе жаңарту жұмысын қосады. Жайылған сұраудың жеткілікті жылдам болуы — жоспар мен Profile үшін бөлек сұрақ.",
+      "target_hash": "66e787b6858d6458ddf0a6c5457483e9cb7cfdaac58dc14f71b8c569921f4980",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "57bf9882fea1933cb959f9f7032f78c951de29b030e8cb2f67c87e98f51a917d",
+          "target_hash": "66e787b6858d6458ddf0a6c5457483e9cb7cfdaac58dc14f71b8c569921f4980"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c7d89131cb994aebb72e220982823a99",
+      "source_hash": "454878dba06faf28a51c80a50b2362a277b141842eb98a096813195ec6857579",
+      "target_text": "Қалыпты көріністі, қолмен толтырылатын жиынтық кестені, синхронды және асинхронды материалданған көріністі ажырату.",
+      "target_hash": "5f9794d38ea38f28d6f088d39aeeffd44bbd4c3617e1d7b6d890152a15652799",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "454878dba06faf28a51c80a50b2362a277b141842eb98a096813195ec6857579",
+          "target_hash": "5f9794d38ea38f28d6f088d39aeeffd44bbd4c3617e1d7b6d890152a15652799"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.94355b6d3740453d947f479b79956c8d",
+      "source_hash": "38478a1a389a1caad3349cd9da1b639e2bdeb0544386904a5085aff041f60644",
+      "target_text": "Ортақ SQL анықтамасын сақтайтын қалыпты көрініс",
+      "target_hash": "70d277b7a2f2004c0d2831c5576496617b47cfede4030a28b64e826997b93033",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "38478a1a389a1caad3349cd9da1b639e2bdeb0544386904a5085aff041f60644",
+          "target_hash": "70d277b7a2f2004c0d2831c5576496617b47cfede4030a28b64e826997b93033"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0f255195c39c4a0a814e95ecaa84df83",
+      "source_hash": "88a92db8b3efc25ad7ef9b0d3fcb614fac365dd2a4b7b0e86e293ef8fa36c814",
+      "target_text": "Жоспарланған тапсырма алдын ала есептелген жолдармен толтыратын жиынтық кесте",
+      "target_hash": "6fd2ed4dd6132aad8b43ed5537797d3b9baa62b864a99818aac85ab0554b2293",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "88a92db8b3efc25ad7ef9b0d3fcb614fac365dd2a4b7b0e86e293ef8fa36c814",
+          "target_hash": "6fd2ed4dd6132aad8b43ed5537797d3b9baa62b864a99818aac85ab0554b2293"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f96a353ea8c84e5c89932da052f6643f",
+      "source_hash": "36480616ec410213c0fdba5e32bc8547bc592710221121e231670b5129c2ea9a",
+      "target_text": "Әр негізгі кесте жазуы қолдайтын синхронды материалданған көрініс",
+      "target_hash": "8dc973f47e5cb9cb8f751d73f84830072817f4e13682bb76714b98011dbaa765",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "36480616ec410213c0fdba5e32bc8547bc592710221121e231670b5129c2ea9a",
+          "target_hash": "8dc973f47e5cb9cb8f751d73f84830072817f4e13682bb76714b98011dbaa765"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.991a1fa68a8045679c17bb247bf0a6bc",
+      "source_hash": "2b428d0ebfa9eaf511db5b84262d19ae74e37c09fcf955c55413d28aebf61674",
+      "target_text": "Жоспарланған тапсырма жаңартатын асинхронды материалданған көрініс",
+      "target_hash": "2babd746b5d9ee540196a03d3be9037bc789f34d0f6ccde87650b17ca7c10ab4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "2b428d0ebfa9eaf511db5b84262d19ae74e37c09fcf955c55413d28aebf61674",
+          "target_hash": "2babd746b5d9ee540196a03d3be9037bc789f34d0f6ccde87650b17ca7c10ab4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1ad370252bff4e008f36f30194a3a318",
+      "source_hash": "ab93913a416279a9110a7ed0566a06072d48bc84e98ec3583923654b2452e4ec",
+      "target_text": "Бірнеше бақылау тақтасы сатып алу түсімінің бір тексерілген SQL анықтамасын ортақ пайдалануы тиіс. Анықтама орталықтан өзгеруі мүмкін және топ екінші сақталған дерек көшірмесін де, жаңарту үдерісін де қаламайды. Қай нысан тікелей сай?",
+      "target_hash": "4ac4e99dc1788dafedb979c4a00b724b07188dea56ad9b4849c2a0fa214d8c34",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ab93913a416279a9110a7ed0566a06072d48bc84e98ec3583923654b2452e4ec",
+          "target_hash": "4ac4e99dc1788dafedb979c4a00b724b07188dea56ad9b4849c2a0fa214d8c34"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.05527e79d33e495790dfa68851f52a10",
+      "source_hash": "3f0fd4e12ae4f67a48ae8de453bec879844f97024be3031dd120880bb8556f1b",
+      "target_text": "Асинхронды материалданған көрініс көп кестелік нәтиже сақтап, жазулардан бөлек жаңара алады; бұл қабылданған кідірісті айқын етеді. Синхронды материалданған көрініс бір кестелік анықтаманы қолдап, әр жүктеуге жұмыс қосады, қалыпты көрініс нәтиже сақтамайды, ал қолмен жасалған жиынтыққа оны өзекті ұстайтын үдеріс қажет. Таңдау жаңарту нақты бес минут талабына сай болғанда ғана жарамды.",
+      "target_hash": "cd4dc97f2c2876966c6d4b9c6825d8494c9d080605f3fd3f57510c2e9929447e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3f0fd4e12ae4f67a48ae8de453bec879844f97024be3031dd120880bb8556f1b",
+          "target_hash": "cd4dc97f2c2876966c6d4b9c6825d8494c9d080605f3fd3f57510c2e9929447e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8bae5897a1984fc6a4911f59dbc483a3",
+      "source_hash": "d7e56065e279a4ecde0e3dc2f1f6eecc15c923cb7b161d3712c0419ab8543aca",
+      "target_text": "SQL ауқымы, өзектілік талабы және жазу не жаңарту шығыны бойынша синхронды немесе асинхронды материалдандыруды таңдау.",
+      "target_hash": "595d82cf505b250c55505dc1dfae1a5078c1f8875238e517b2106e367b9de7de",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "d7e56065e279a4ecde0e3dc2f1f6eecc15c923cb7b161d3712c0419ab8543aca",
+          "target_hash": "595d82cf505b250c55505dc1dfae1a5078c1f8875238e517b2106e367b9de7de"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.84a6bcd3406c46ab9a441c0d03b71bcd",
+      "source_hash": "4217d80faa8427a5f3e450fec2d88ac9127bbdbe9bcd4d9337ff154ceaf8c7f0",
+      "target_text": "Join нәтижесін әр жазумен өзекті ұстайтын синхронды материалданған көрініс",
+      "target_hash": "6583ce7e602daf39e81982548f0b027d3516655a70c81f3688ddbb36d0dc92b5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "4217d80faa8427a5f3e450fec2d88ac9127bbdbe9bcd4d9337ff154ceaf8c7f0",
+          "target_hash": "6583ce7e602daf39e81982548f0b027d3516655a70c81f3688ddbb36d0dc92b5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6675624886774cfaaa516a7a6a4ed0ea",
+      "source_hash": "8cef2f35bbc83487c363b73f14981c16dd4522948eea0570928cc802acc7e184",
+      "target_text": "Жаңарту саясаты бес минуттан аспайтын асинхронды материалданған көрініс",
+      "target_hash": "6f7a5a756a7a59e89dc58381e53052b74d89e23f60ebc895a8677293fb24b6c8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "8cef2f35bbc83487c363b73f14981c16dd4522948eea0570928cc802acc7e184",
+          "target_hash": "6f7a5a756a7a59e89dc58381e53052b74d89e23f60ebc895a8677293fb24b6c8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d7baa16a8fb745b7a0c44637fd61c50e",
+      "source_hash": "f37d975679507c4a8324d410cd4dce0a375e148ddcf725d473f48d550c4b303d",
+      "target_text": "Join атауын бір рет беру біріктірілген нәтижесін сақтайтындықтан, қалыпты көрініс",
+      "target_hash": "dabdde6f291cdbe5ac7ea1f880c9e1da4f2cb92fa28bb2c489d72d8cf48194ca",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "f37d975679507c4a8324d410cd4dce0a375e148ddcf725d473f48d550c4b303d",
+          "target_hash": "dabdde6f291cdbe5ac7ea1f880c9e1da4f2cb92fa28bb2c489d72d8cf48194ca"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e2d1e9589b844511860cbb99f2aeef08",
+      "source_hash": "2fc3f30442c9d2d99f8bccd0b263408b16245419832027666ceb45656db83a2d",
+      "target_text": "Жолдары өздігінен өзекті қалатын, жаңарту шарты жоқ жиынтық кесте",
+      "target_hash": "654064ab7fff3f687c92fc87c237095521ccc0a0f6014e1a698d28b699fb6f29",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "2fc3f30442c9d2d99f8bccd0b263408b16245419832027666ceb45656db83a2d",
+          "target_hash": "654064ab7fff3f687c92fc87c237095521ccc0a0f6014e1a698d28b699fb6f29"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8ae234fe697e4c4abe165186ef2d1bb3",
+      "source_hash": "b8093419c87bb1197cbd882ab78e8bda70d683eda099560acd5b0c919387acd2",
+      "target_text": "Санат бақылау тақтасы оқиға фактілерін өнім өлшемімен біріктіріп, түсімді агрегаттайды. Бес минут кідіріс рұқсат етіледі және топ факт кестесінің әр жазуына қолдау жұмысын қосуды қаламайды. Қай бастапқы таңдау сай?",
+      "target_hash": "e98e278e446b69a5c00fb9dea98c935003432b95bfce76c301dd71fb2bbb26ac",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b8093419c87bb1197cbd882ab78e8bda70d683eda099560acd5b0c919387acd2",
+          "target_hash": "e98e278e446b69a5c00fb9dea98c935003432b95bfce76c301dd71fb2bbb26ac"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.230df97c5aab4443b9cd3b841f3f61b4",
+      "source_hash": "b8bef85765e140ca681fc816c8032510b0b085cbdbb11e897384bd6cd06b73be",
+      "target_text": "Сағаттық түсім қосындылары қосылады, сондықтан аймақ бойынша күндік қосындыларға іріленеді. Бірегей сатып алушы санын оқиға сандарынан немесе сағаттық бірегей сандардан қалпына келтіруге болмайды, өйткені бір сатып алушы бірнеше сағатта болуы мүмкін; жиынтыққа идентификаторлар немесе біріктірілетін күй қажет. Ұсақтау сақталған түйіршіктілік жаңа сұрауға керегін сақтағанда ғана көмектеседі.",
+      "target_hash": "98611a1a4eabc2bf4af1d3b1969e0584f1c828a186f6a85d5c9ff3a783dc3ce1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "b8bef85765e140ca681fc816c8032510b0b085cbdbb11e897384bd6cd06b73be",
+          "target_hash": "98611a1a4eabc2bf4af1d3b1969e0584f1c828a186f6a85d5c9ff3a783dc3ce1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5187982fe94e45eeaac77b2d0159903d",
+      "source_hash": "fae23e0830fd5a06a4562c06eb26fb6bdea4b25a67d6ac507b6f454317ea05be",
+      "target_text": "Материалданған нәтиже басқа сұрауға жауап беруге қажетті өлшемдер мен метрика күйін сақтайтынын анықтау.",
+      "target_hash": "bbe25c408b7ba30f236ff07e0d6b46a6211b3bef8361219105970c5b0419ff62",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "fae23e0830fd5a06a4562c06eb26fb6bdea4b25a67d6ac507b6f454317ea05be",
+          "target_hash": "bbe25c408b7ba30f236ff07e0d6b46a6211b3bef8361219105970c5b0419ff62"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bbea7878588f4c7b83c18e6331de5c83",
+      "source_hash": "c8d7db9c0ad04c8515a458fc970382fe61ed95fda03c81b5c95917da9cffe5aa",
+      "target_text": "Екеуіне де, өйткені сағаттық жиынтық кез келген күндік метрикаға ірілене алады",
+      "target_hash": "79910952094eff02c217e4d628f847a5064c277973e86c48683f44adbf7dc7e7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "c8d7db9c0ad04c8515a458fc970382fe61ed95fda03c81b5c95917da9cffe5aa",
+          "target_hash": "79910952094eff02c217e4d628f847a5064c277973e86c48683f44adbf7dc7e7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1f421f7ce48e4e0cb7696749a18d84d4",
+      "source_hash": "01647aac11f0ba3d8414097fe343b24ce04f99bf7d376815b78f1b7890b2fdaa",
+      "target_text": "Тек күндік түсімге; жиынтықта бірегей санауға сатып алушы сәйкестіктері жоқ",
+      "target_hash": "2af7bf22ec23e364d0c8f2513a46e728af3f96853845ecbba057e50c38fc4a53",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "01647aac11f0ba3d8414097fe343b24ce04f99bf7d376815b78f1b7890b2fdaa",
+          "target_hash": "2af7bf22ec23e364d0c8f2513a46e728af3f96853845ecbba057e50c38fc4a53"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c4034244304c465698e3800cc281bb41",
+      "source_hash": "06576e0dd5f8b9210590817dae06496aedc25ee11b4131e6a968b5ec97e201bb",
+      "target_text": "Тек бірегей сатып алушыларға, өйткені event_count сатып алушы санын алмастыра алады",
+      "target_hash": "9136f6dac9cf1a462ec77e6b76f33ec4010a433fab3202892289f45cf64fc186",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "06576e0dd5f8b9210590817dae06496aedc25ee11b4131e6a968b5ec97e201bb",
+          "target_hash": "9136f6dac9cf1a462ec77e6b76f33ec4010a433fab3202892289f45cf64fc186"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c6c1c4e249c34175bba54bb639708742",
+      "source_hash": "26334ae8dd36c58a3fd4183386a3a68254ff795be9f7c54a3dd58e9a03c979a1",
+      "target_text": "Ешқайсысына, өйткені материалданған нәтиже тек өз GROUP BY шартына дәл жауап береді",
+      "target_hash": "e7f6c2a97d3b53f74db542bc2daaf1e003a841629344ba6efabb60156ba1cbe5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "26334ae8dd36c58a3fd4183386a3a68254ff795be9f7c54a3dd58e9a03c979a1",
+          "target_hash": "e7f6c2a97d3b53f74db542bc2daaf1e003a841629344ba6efabb60156ba1cbe5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.280509c3328640289f15e519c81e1a54",
+      "source_hash": "31cc08d23aac0c3c169d792717dd516405d0aec7f1b3ceb63d8ed8a21d83fa50",
+      "target_text": "Сақталған жиынтықта әр (event_hour, region) үшін event_count және revenue_sum бар бір жол сақталған. Жаңа есепке аймақ бойынша күндік revenue_sum және COUNT(DISTINCT buyer_id) қажет. Сақталған жиынтық неге жауап бере алады?",
+      "target_hash": "41c0c0a0cb25b20f9bb13ea5aefa6d3c1ba549faf2ee9a472f3ce4724e27d1b8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "31cc08d23aac0c3c169d792717dd516405d0aec7f1b3ceb63d8ed8a21d83fa50",
+          "target_hash": "41c0c0a0cb25b20f9bb13ea5aefa6d3c1ba549faf2ee9a472f3ce4724e27d1b8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5ac6b4b4573743bf8e85693b9f65d9ff",
+      "source_hash": "eceba4474fd48cb56d1b0a672c923f2dcd7847e6610d0bc4d0a7b6878cac5032",
+      "target_text": "Токенге бөлінбейтін инверттелген индекс әр product_id мәнін әр Segment ішіндегі сәйкес Row ID мәндеріне сәйкестендіреді, бұл іріктемелі теңдік іздеуіне сай; индекстелмеген көшірмемен бақыланатын салыстыру не үнемдегенін көрсетеді. NGram BloomFilter ішкі жол сәйкестігіне қызмет етеді, Runtime Filter тек бір Join кезінде бар, ал Prefix Index product_id емес, сұрыптау кілтінің бастапқы бағандарын қамтиды.",
+      "target_hash": "dbb1f8085285bf5cb571d6317c61e7492e4ef5f1eae32de2919d6762fd5fc8fc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "eceba4474fd48cb56d1b0a672c923f2dcd7847e6610d0bc4d0a7b6878cac5032",
+          "target_hash": "dbb1f8085285bf5cb571d6317c61e7492e4ef5f1eae32de2919d6762fd5fc8fc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0e9cac25ef13463da70c6c2e7182ec5a",
+      "source_hash": "a892a3d726ff2c6ccefbf4c10f159f128c30bfd5e09d2ba6234fb253582b9c5a",
+      "target_text": "Қызмет етуі тиіс предикатқа қарай инверттелген индекс, BloomFilter индексі немесе NGram BloomFilter индексін таңдау.",
+      "target_hash": "7a592f3536e713900c5f279ad2f4569c6acaa5de0e8832535c5698ee6949d24d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a892a3d726ff2c6ccefbf4c10f159f128c30bfd5e09d2ba6234fb253582b9c5a",
+          "target_hash": "7a592f3536e713900c5f279ad2f4569c6acaa5de0e8832535c5698ee6949d24d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.73616eab4fe84b03b53c2f67916e1616",
+      "source_hash": "376cd54d5402d4e59879fea676c0c3f4454c9264c3e5b62af291b81367e10816",
+      "target_text": "product_id бойынша токенге бөлінбейтін инверттелген индекс және кейін бақыланатын салыстыру",
+      "target_hash": "d2071966380cf5cc502862740c4f290e8dc9d7a2b2547671aefc8d084293ea24",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "376cd54d5402d4e59879fea676c0c3f4454c9264c3e5b62af291b81367e10816",
+          "target_hash": "d2071966380cf5cc502862740c4f290e8dc9d7a2b2547671aefc8d084293ea24"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f25ca297db0d42928ba0e99c534ea39c",
+      "source_hash": "db9ae712e49d493b2b39f09c45be44e0f14987a4ffa45f20c7bca1f99af52806",
+      "target_text": "Дәл сандық іздеу ішкі жол сәйкестігі болғандықтан, NGram BloomFilter индексі",
+      "target_hash": "d4fac4574e8a739acb92a4ef72f32b8490248f66197b4da986fe0091b2136921",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "db9ae712e49d493b2b39f09c45be44e0f14987a4ffa45f20c7bca1f99af52806",
+          "target_hash": "d4fac4574e8a739acb92a4ef72f32b8490248f66197b4da986fe0091b2136921"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.96576ef0026d4ad1b2ae9aaae35a8050",
+      "source_hash": "3c8ecc354a04671cb9d969caee802d9489c5012f49b789e48263c8df89974793",
+      "target_text": "Doris кейінгі іздеулерге кестемен бірге сақтайтын Join Runtime Filter",
+      "target_hash": "c00bceb0210475eeba59f5e679c7a87ab41e934f96d8261514884c1ae327c6ba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3c8ecc354a04671cb9d969caee802d9489c5012f49b789e48263c8df89974793",
+          "target_hash": "c00bceb0210475eeba59f5e679c7a87ab41e934f96d8261514884c1ae327c6ba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.301ba0dd9d8642dbabd3cbd7d0053dc1",
+      "source_hash": "9a16f7990c228fb99047e39473e8ee7c48a1d2f410decfb23e330e83df7627f3",
+      "target_text": "Өнім іздеулерін де тарылтатын event_time бойынша ұзынырақ Prefix Index",
+      "target_hash": "78144d47090759acea91e37a28d54155174edc52795d20782ded1a68b136e20e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "9a16f7990c228fb99047e39473e8ee7c48a1d2f410decfb23e330e83df7627f3",
+          "target_hash": "78144d47090759acea91e37a28d54155174edc52795d20782ded1a68b136e20e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.75a39b5f817344d980eaa6f4ae4aa94e",
+      "source_hash": "ca3dabe8f70a732c1e372840e84dd20de31edd811102ee8048ecb66b4e98a71f",
+      "target_text": "Оқиға кестесі event_time бойынша сұрыпталған. Зерттеушілерге бастапқы кілт бағаны ретінде пайдалы емес нақты бір сандық product_id жолдарының егжей-тегжейі жиі қажет және өте аз жол сәйкес келеді. Қай қосымша құрылым ең тікелей бастапқы тәсіл?",
+      "target_hash": "df4a867b06c8a76c941fea6227fc2d47f3726ee4845c52e218c305232a0465b6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ca3dabe8f70a732c1e372840e84dd20de31edd811102ee8048ecb66b4e98a71f",
+          "target_hash": "df4a867b06c8a76c941fea6227fc2d47f3726ee4845c52e218c305232a0465b6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.32927dc36aee4dacb186118134b7894c",
+      "source_hash": "3cdf680f81e0e86ed33e1bd64ea69918b420b8e31c628a5eeadb81eba1f2045e",
+      "target_text": "Жол саны мен бірегей мәндер сияқты статистика оңтайландырғышқа болжам береді: екі әртүрлі оқиға түрі және жиіліктер жоқ болғанда, жолдардың жартысын сатып алу деп болжады. EXPLAIN cardinality мәні — сол болжам, ал Profile бір орындаудың не істегенін санайды. Жаңа статистика болжамдарды дәл етпей жақсартады, ал жоспардағы таңдалған Scan материалданған көрініс қолданылғанын көрсетеді.",
+      "target_hash": "007d475f2639eb1a26220a7415cf2459d1ade5aad2d0610a1330e3ce375f21f8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "3cdf680f81e0e86ed33e1bd64ea69918b420b8e31c628a5eeadb81eba1f2045e",
+          "target_hash": "007d475f2639eb1a26220a7415cf2459d1ade5aad2d0610a1330e3ce375f21f8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.68405f20a78b4825b29eede2cfe6e6c0",
+      "source_hash": "cc8e2dfbd8ca2b463979d43b9d622c5e2311f06fe9309ee2c60215adcc382a15",
+      "target_text": "Жеделдету құрылымын тексергенде құру күйін, жоспар таңдауын, статистиканы және орындалу дәлелін ажырату.",
+      "target_hash": "f4b396f67b354a79dd1c90fdf6e736c0de2b78cf8be700e21c0e938645fb4103",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "cc8e2dfbd8ca2b463979d43b9d622c5e2311f06fe9309ee2c60215adcc382a15",
+          "target_hash": "f4b396f67b354a79dd1c90fdf6e736c0de2b78cf8be700e21c0e938645fb4103"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f267b5a72a034799b5af1eb599155123",
+      "source_hash": "1cab5ddc82fed9c8c6799f3480b748239c10886619562b1be8ca9fe976a1daec",
+      "target_text": "EXPLAIN статистикадан жасалған болжамды көрсетеді; Profile нақты жолдарды санайды",
+      "target_hash": "59807ba0448a58d4b37f9316b5a086de6412a10f12f4684158aad3f3f829ccde",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "1cab5ddc82fed9c8c6799f3480b748239c10886619562b1be8ca9fe976a1daec",
+          "target_hash": "59807ba0448a58d4b37f9316b5a086de6412a10f12f4684158aad3f3f829ccde"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b9efa3d50543406d870b3db52e0da8f4",
+      "source_hash": "fd3d066719c79b3960f2e1d071729be1e17d341809dfcf77e6566dbbf700b19a",
+      "target_text": "ANALYZE аяқталмаған, өйткені жаңа статистика нақты жол санын берер еді",
+      "target_hash": "9c708a9d0a31f41735ec80e89505009769e5b5b8ffd638182b348008abea47a4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "fd3d066719c79b3960f2e1d071729be1e17d341809dfcf77e6566dbbf700b19a",
+          "target_hash": "9c708a9d0a31f41735ec80e89505009769e5b5b8ffd638182b348008abea47a4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cf43862a9e1346c4938ccc5ded9ba17a",
+      "source_hash": "901ad6c1c7c491e21a36beadc08a7c5f9eb1080d998f0f6409dd304802683072",
+      "target_text": "Profile қате, өйткені жоспар cardinality мәні — сұрау нақты оқыған жолдар",
+      "target_hash": "4ccd7e7bbf90ffe07e6aab2d0fee7386e50c28e79ea2a966571be733016b7da7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "901ad6c1c7c491e21a36beadc08a7c5f9eb1080d998f0f6409dd304802683072",
+          "target_hash": "4ccd7e7bbf90ffe07e6aab2d0fee7386e50c28e79ea2a966571be733016b7da7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5e02e7e81cc64e91bd13efda02b81c1e",
+      "source_hash": "ac1027c886e4a5095941464fbade5715f6f55715e205651272b11a82ba57697a",
+      "target_text": "Сұрауға материалданған көрініс жауап берді, сондықтан екі сан әртүрлі кестелерді сипаттайды",
+      "target_hash": "a7d297bc1ceb9f11ceda4411568a25f41f069c95857cc5f241cc2e9d6ce99cf1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ac1027c886e4a5095941464fbade5715f6f55715e205651272b11a82ba57697a",
+          "target_hash": "a7d297bc1ceb9f11ceda4411568a25f41f069c95857cc5f241cc2e9d6ce99cf1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f4c8f687ca384627b583017af7c3cb8d",
+      "source_hash": "eb3cf50cb91b0623b26614960a677c81986bdc49cd818c79fbeaea4d959bd489",
+      "target_text": "ANALYZE жаңа статистика жинағаннан кейін Join EXPLAIN нәтижесінде cardinality=37,400, ал Query Profile ішінде Join амалынан 17,798 жол шыққаны көрсетілген. Айырмашылықты не түсіндіреді?",
+      "target_hash": "5d095d5acf692b32c0af32e1bd1bab9053fcb3895c81f1ffc0633150ff0c1c72",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "eb3cf50cb91b0623b26614960a677c81986bdc49cd818c79fbeaea4d959bd489",
+          "target_hash": "5d095d5acf692b32c0af32e1bd1bab9053fcb3895c81f1ffc0633150ff0c1c72"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.38683bfc2a0345b7860a04772f387c6f",
+      "source_hash": "1c148324f2b19395a81e82e23bd42e2877b29d43d570d100af9dd9cb29215746",
+      "target_text": "Есеп көрініссіз мақсатына жеткен және сирек орындалады, ал көрініс жазуы көп кестеге қайталанатын жаңарту жұмысын, сақтауды және өзектілік тәуекелін қосады. Бір жылдамырақ орындау бұдан басым емес. Шешімді жорамалдарымен тіркеңіз: жиірек сұрау, қатаңырақ кідіріс мақсаты немесе арзанырақ жаңарту оны өзгертер еді.",
+      "target_hash": "8390f2709ad7892e6c9e0169858078df72b7317e9f70d900809a37c5c7ff2c39",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "1c148324f2b19395a81e82e23bd42e2877b29d43d570d100af9dd9cb29215746",
+          "target_hash": "8390f2709ad7892e6c9e0169858078df72b7317e9f70d900809a37c5c7ff2c39"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.62d67c5929ca4925b0061223fb96a2a5",
+      "source_hash": "a87146e3ac1247b168db054c8b95b4f9cd0bce217c46bee977241cbedb362c62",
+      "target_text": "Құрылымның оқу үнемі сақтау, жазу және жаңарту шығынын ақтайтынын шешу.",
+      "target_hash": "4243d72d955e626b2c412ad36522622da83327fd4bdd64888ff93829053f4f08",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "a87146e3ac1247b168db054c8b95b4f9cd0bce217c46bee977241cbedb362c62",
+          "target_hash": "4243d72d955e626b2c412ad36522622da83327fd4bdd64888ff93829053f4f08"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.eac38b4a485f47cd866ea3df67dd94e5",
+      "source_hash": "7ece877d3317f14e6fa8b9c39be083d3a8cf0d89efb23f0006504432d602fcbc",
+      "target_text": "Көріністі жою: сирек оқу пайдасы жаңарту мен сақтауды ақтамайды",
+      "target_hash": "549bd86e83f6d9a2fbe23de4443bc3b39937e7cf8d3dcd07ed28f0cb632bc13e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "7ece877d3317f14e6fa8b9c39be083d3a8cf0d89efb23f0006504432d602fcbc",
+          "target_hash": "549bd86e83f6d9a2fbe23de4443bc3b39937e7cf8d3dcd07ed28f0cb632bc13e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6beed2d182fd4f81b9cd3bfa39b02a6a",
+      "source_hash": "51e957fac485654da607be0847f1aa4f270653cdcba93fb7c76da30a0a67f204",
+      "target_text": "Көріністі сақтау, өйткені бір жылдамырақ орындау тұрақты жақсаруды көрсетеді",
+      "target_hash": "0a142bf8c707cdc9db41bef36e30b4c62c20a6c875e032730bc3b319b5d3b90c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "51e957fac485654da607be0847f1aa4f270653cdcba93fb7c76da30a0a67f204",
+          "target_hash": "0a142bf8c707cdc9db41bef36e30b4c62c20a6c875e032730bc3b319b5d3b90c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5da94bb4e830451ea0b414d361cfe9a0",
+      "source_hash": "24f1ebd26cd81efebc3401f2ee1fcf73b365720207f5cabd13ce74b5778cd63d",
+      "target_text": "Сирегірек жаңарту, өйткені мұнда тек жаңарту шығыны маңызды",
+      "target_hash": "0cbaf62e0ae5b3bb2bb423d6875c96d3c181418381e00a45ebdef983dabe1e49",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "24f1ebd26cd81efebc3401f2ee1fcf73b365720207f5cabd13ce74b5778cd63d",
+          "target_hash": "0cbaf62e0ae5b3bb2bb423d6875c96d3c181418381e00a45ebdef983dabe1e49"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2e0287105b524f1a82512ecc9c82330c",
+      "source_hash": "ac70f59ded0f9815aa4aa886acd736afeb021552b36c1ba1dde2f9385ec87330",
+      "target_text": "Негізгі кестені көрініспен ауыстыру, сонда жазу мен сақтау шығындары жоғалады",
+      "target_hash": "2831b4213ebcec7c327f576b717d2284218d72ff7464cdbef962526ed6007fd7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "ac70f59ded0f9815aa4aa886acd736afeb021552b36c1ba1dde2f9385ec87330",
+          "target_hash": "2831b4213ebcec7c327f576b717d2284218d72ff7464cdbef962526ed6007fd7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.426eb6b4b3a440ad9cd37fba03d08b21",
+      "source_hash": "0e5eada4f1e66ff9624a630f1adf69883cddbdfd25fba6f64e45b72cb859268e",
+      "target_text": "Есеп күніне төрт рет орындалады және асинхронды материалданған көрініс жасалмас бұрын кідіріс мақсатына жеткен. Негізгі кестесіне үздіксіз жазулар келеді, көрініс елеулі сақтау және жаңарту жүктемесін қосады, ал бизнес ағымдағыға жуық деректерді талап етеді. Дәлел нені қолдайды?",
+      "target_hash": "ac70c8730b212beca3adf1e23e26e0dbdf8dbc4336755d9e45c06b78e246fc99",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "0e5eada4f1e66ff9624a630f1adf69883cddbdfd25fba6f64e45b72cb859268e",
+          "target_hash": "ac70c8730b212beca3adf1e23e26e0dbdf8dbc4336755d9e45c06b78e246fc99"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.31ce03cfdd1b4820a30e068a2eb0f5c3",
+      "source_hash": "bf4157794d1568a02c647eccfc432a0c601d032f0641340d070732d12a35614f",
+      "target_text": "8-модуль тесті: Apache Doris жүйесінде сұрауларды жеделдету",
+      "target_hash": "29e3da41e8dcbddfdcc3bb4762668268cbfd819c9356402a85f80a2b7de0584b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m08-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for all units against frozen Module 8 source after reading complete lesson, original executable Lab code, complete six-question bank and all six source PNGs. Checked regular definition reuse versus stored summaries, sync single-table support/write maintenance, async build/refresh/grace-period versus direct stale reads, unique new build/task checks, dimension reclassification and conserved totals, rewrite population/grain/mergeable-measure eligibility versus cost selection, no distinct-buyer state, Segment-local Row IDs, inverted/Bloom/NGram predicate boundaries and persistent indexes versus Runtime Filters, controlled copied inputs, Profile merged/detail scopes and non-addition, missing versus zero counters, warm-cache limitations, statistics estimates versus runtime observations, and read/storage/write/refresh tradeoff. Preserved all dates/counts/scan examples/IDs/revenue and original six unique quiz answers. PNGs retain English pixels with full adjacent Kazakh alt/caption/label correspondence. Inline/fenced code, links and hashes passed local precheck. Native review and rendered admission not performed.",
+          "source_hash": "bf4157794d1568a02c647eccfc432a0c601d032f0641340d070732d12a35614f",
+          "target_hash": "29e3da41e8dcbddfdcc3bb4762668268cbfd819c9356402a85f80a2b7de0584b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

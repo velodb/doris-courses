@@ -210,8 +210,9 @@ class IndexHandler(PortalHandler):
             modules = [self.module_view(course, module, records) for module in course.get('modules', [])]
             row = {'title': course.get('title', course['course_dir'].rsplit('/', 1)[-1]), 'modules': modules, 'levels': course.get('levels', {})}
             row.update(self.installed_ui.display('course', course.get('slug'), {'title': row['title'], 'levels': row['levels']}, self.ui.context.locale))
-            row['optional'] = [{**self.installed_ui.display('optional', (course.get('slug'), part['path']), {'title': part['title']}, self.ui.context.locale), 'href': self.notebook(course['course_dir'] + '/' + part['path'])}
-                               for part in course.get('optional', []) if part['path'] in course.get('notebooks', [])]
+            row['optional'] = [{**self.installed_ui.display('optional', (course.get('slug'), part['path']), {'title': part['title']}, self.ui.context.locale),
+                                'href': self.notebook(course['course_dir'] + '/' + part['path']) if part['path'].endswith('.ipynb') else content_url(self.base_url, course['course_dir'] + '/' + part['path'])}
+                               for part in course.get('optional', []) if part['path'] in course.get('notebooks', []) or self.content_adapter and part['path'].endswith('.md')]
             if self.progress and records is not None:
                 row['progress'] = self.progress.summary([m for (slug, _), m in self.modules.items() if slug == course['slug']], records)
             courses.append(row)

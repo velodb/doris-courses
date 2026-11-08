@@ -11,11 +11,90 @@
       "course_dir": "doris-course/01-real-time-analytics",
       "kernel": "doris-rta",
       "requires": [],
-      "conflicts": [],
+      "conflicts": [
+        "real-time-analytics-complete"
+      ],
       "module_ids": [
         "module-1"
       ],
       "optional_paths": [],
+      "requires_browser_host": false
+    },
+    "real-time-analytics-complete": {
+      "course_dir": "doris-course/01-real-time-analytics",
+      "kernel": "doris-rta",
+      "requires": [],
+      "conflicts": [
+        "rta-module-1"
+      ],
+      "module_ids": [
+        "module-1",
+        "module-2",
+        "module-3",
+        "module-4",
+        "module-5",
+        "module-6",
+        "module-7",
+        "module-8",
+        "module-9",
+        "module-10"
+      ],
+      "optional_paths": [
+        "level1/module01-introduction/optional01_metabase_dashboard.ipynb"
+      ],
+      "requires_browser_host": false
+    },
+    "data-warehousing-complete": {
+      "course_dir": "doris-course/02-data-warehousing",
+      "kernel": "doris-dw",
+      "requires": [],
+      "conflicts": [],
+      "module_ids": [
+        "module-1",
+        "module-2",
+        "module-3",
+        "module-4",
+        "module-5",
+        "module-6",
+        "module-7",
+        "module-8",
+        "module-9",
+        "module-10",
+        "module-11",
+        "module-12",
+        "module-13",
+        "module-14"
+      ],
+      "optional_paths": [
+        "level1/extensions/extension23_physical_design.ipynb",
+        "level1/module05-ingestion/optional05_continuous_ingestion.md",
+        "level1/module05-ingestion/optional05_invoice_and_receipts.md",
+        "level1/module05-ingestion/optional05_kafka_routine_load.ipynb",
+        "level1/module05-ingestion/optional05_flink_mysql_cdc.ipynb",
+        "level1/extensions/extension45_files_and_group_commit.ipynb",
+        "level1/extensions/extension67_schema_and_delete.ipynb",
+        "level1/module05-ingestion/quiz05_continuous_ingestion.ipynb"
+      ],
+      "requires_browser_host": false
+    },
+    "observability-complete": {
+      "course_dir": "doris-course/03-observability",
+      "kernel": "doris-obs",
+      "requires": [],
+      "conflicts": [],
+      "module_ids": [
+        "module-1",
+        "module-2",
+        "module-3",
+        "module-4",
+        "module-5",
+        "module-6",
+        "module-7",
+        "module-8"
+      ],
+      "optional_paths": [
+        "level2/module07-data-analysis-litefuse/optional07_trace_a_real_model.ipynb"
+      ],
       "requires_browser_host": false
     }
   }

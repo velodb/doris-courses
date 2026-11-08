@@ -1,0 +1,344 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.b16577115ef247378c0e6a5876f1f686",
+      "source_hash": "6cbbaa046fda335bcbcb8abd2a5d241993534a72c756e6ce5172bac1fd3c66d0",
+      "target_text": "## 14.5 Шамадан тыс сұрауды тоқтату\n\nТоп барлық сұрауының жиынтық ресурсын шектейді; жеке сұрауға да шек керек. Doris үшеуін әр уақытта қолданады:\n\n![SQL Block Rule орындалуға дейін, timeout не Workload Policy жұмыс істеп тұрған сұрауға әсер етеді.](images/03-query-protection-stages.png)\n\n*Бұғаттау ережесі сканерлеуге дейін қабылдамайды; уақыт шегі/саясат орындалып жатқанды тоқтатады.*\n\nСурет белгілері: QUERY PROTECTION ACTS AT DIFFERENT STAGES — сұрау қорғанысы әр кезеңде іске асады; SQL QUERY — SQL сұрауы; SQL BLOCK RULE — SQL бұғаттау ережесі; BEFORE EXECUTION — орындалуға дейін; ALLOWED — рұқсат етілген; EXECUTION — орындалу; MATCH — сәйкес; REJECT BEFORE SCAN — сканерлеуге дейін қабылдамау; ENDS A WAIT — күтуді аяқтайды; CANCEL WHEN TIME IS UP — уақыт біткенде тоқтату; WORKLOAD POLICY — жұмыс жүктемесі саясаты; CANCEL ON CONDITION — шартпен тоқтату. queue_timeout және query_timeout — нақты баптау атаулары.\n\n| Тетік | Қашан | Қай сұрауларға | Нәтиже |\n| --- | --- | --- | --- |\n| `query_timeout` | Орындалуда уақыт біткенде | Әр сұрауға | Тоқтайды: `query timeout` |\n| Workload Policy | Орындалуда шарт сәйкескенде | Топ сұраулары не барлығы | `cancel_query` сияқты әрекет |\n| SQL Block Rule | Орындалуға дейін | Global болса барлық, әйтпесе байланған тіркелгілер | Сканерлемей қабылданбайды |\n\n**Орындалу уақытының шегі.** Секундпен берілетін `query_timeout` әдепкіде 900. Пайдаланушы сеанста көтере алады; әкімші орнатқан сол аттағы тіркелгі қасиеті басым, пайдаланушы өзгерте алмайды.\n\n**SQL оқу мысалы: жұмыста орындалмайды.**\n\n<!-- reading-only-example -->\n```sql\nSET PROPERTY FOR 'adhoc_analyst' 'query_timeout' = '600';\n```\n\nЖұмыс қатені көру үшін сеанста екі секунд орнатады. Шек шығынды тоқтатады, бірақ оған дейін ресурс қолданылды; кезек уақытының бітуі, керісінше, сұрау мүлде орындалмағанын білдіреді.\n\n**Workload Policy.** Саясат орындалып жатқан сұрауларды тексеріп, шарт сәйкессе әрекет етеді; мынасы минуттан ұзақ ad hoc сұрауларды тоқтатады.\n\n**SQL оқу мысалы: жұмыста орындалмайды.**\n\n<!-- reading-only-example -->\n```sql\nCREATE WORKLOAD POLICY course_adhoc_guard_l3\nCONDITIONS (query_time > 60000)\nACTIONS (cancel_query)\nPROPERTIES (\"workload_group\" = \"course_adhoc_l3\");\n```\n\n`query_time` миллисекундпен; басқа шарттар: `be_scan_rows`, `be_scan_bytes`, `query_be_memory_bytes`. FE саясаттарды BE-ге мерзіммен жібереді, BE шамамен жарты секунд сайын тексереді; сондықтан тоқтату кешігеді, хабарда `cancelled by workload policy` және атауы бар. Топсыз саясат барлық сұрауға әсер етіп, қате шарт қымбатқа түседі. Саясат сілтейтін топ алдымен жойылмайды; `information_schema.workload_policy` саясаттарды тізеді. Жұмыс оны орындамайды: уақытқа тәуелділігі сенімді тексеру бермейді.\n\n**SQL Block Rule.** Мәтін не жоспардың сканерлеуі бойынша сәйкес сұрауды орындамай қабылдамайды:\n\n| Түр | Қасиеттер | Не оқиды |\n| --- | --- | --- |\n| Мәтін | Тұрақты өрнек `sql` не `sqlHash` | Сұраудың мәтіні |\n| Сканерлеу | `partition_num`, `tablet_num`, `cardinality` | Жоспардағы бөлім/tablet/бағаланған жолдар |\n\n**SQL оқу мысалы: жұмыс соңында жоятын ереже. Сыртында орындамаңыз: жаһандық.**\nЕң көбі екі бөлімге рұқсат береді:\n\n<!-- reading-only-example -->\n```sql\nCREATE SQL_BLOCK_RULE course_scan_guard_l3\nPROPERTIES (\"partition_num\" = \"2\", \"global\" = \"true\", \"enable\" = \"true\");\n```\n\n`orders_monthly_l3` үш айлық бөлімді. Сүзгісіз `SUM(amount)` үшеуін оқыр еді, Doris `sql hits sql block rule: course_scan_guard_l3, reach partition_num : 2` деп қабылдамайды; 2 — оқылған саны емес, шек. Наурыз сұрауы бір бөлімге қысқарып өтеді. Төрт жайт:\n\n- `global` әдепкі false: әкімші ережені тіркелгінің өзі алып тастай алмайтын `sql_block_rules` қасиетімен байлайды. Global root пен тақталарды қоса бәріне қатысты.\n- Мәтін ережесі бастапқы мәтінді әдепкі регистрге сезімтал салыстырады: `select * from orders_monthly_l3` ережесі `SELECT * FROM db.orders_monthly_l3` таппайды. Талап ауқым туралы болса, scan ережесін қолданыңыз.\n- Scan ережесіне сканерлейтін жоспар керек. Duplicate Key сүзгісіз `COUNT(*)` FE статистикасынан оқымай жауап ала алады; сондықтан жұмыс `SUM(amount)` қолданады.\n- SQL кэшіндегі сұрау жаңа ережеде де бұрынғы нәтижесін қайтара береді: кэшті өшіріп тексеріңіз.\n\nТетіктер бірге істейді: scan ережесі шексіз сканерлеуді кіреберісте, саясат ұзақ ad hoc сұрауды орындалуда тоқтатады, әкімші уақыты әр сұрауды шектейді.\n\n",
+      "target_hash": "e2c985acd5ecbbacbca35859ef578b97b4e7c58726151e28dc6ed12872bcd807",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "6cbbaa046fda335bcbcb8abd2a5d241993534a72c756e6ce5172bac1fd3c66d0",
+          "target_hash": "e2c985acd5ecbbacbca35859ef578b97b4e7c58726151e28dc6ed12872bcd807"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d5f33e2a2d2e47f49b9b453b43692580",
+      "source_hash": "f20500f092882349a30971b42c53abbd43e1bc0b15b1f1304247ce5d32f84ec0",
+      "target_text": "## 14.1 Тақтамен кім бәсекелеседі\n\n11-модуль тақтасы бір секундқа жетпей жаңарады. Дүйсенбілік айлық тексеруде аналитиктер күн сүзгісіз егжей-тегжей, бірнеше ірі агрегаттау жібереді; жаңару 20 секунд болып, кей сұрау уақыттан асады. Екеуі әдепкі `normal` тобында: іс жүзінде қатар орындалу шегі де, кезек те жоқ, толық сканерлеуді ештеңе тоқтатпайды.\n\n| | Тақта сұраулары | Ad hoc талдау |\n| --- | --- | --- |\n| Жиілік | Жоғары: әр жаңаруда бірнешеу | Төменірек, бірақ бірі ұзақ |\n| Сканерлеу | Шағын, соңғы күндер | Болжамсыз, күн сүзгісі ұмытылуы мүмкін |\n| Кідіріс мақсаты | Шамамен секунд | Ондаған секунд жарауы мүмкін |\n\n**Workload Group** (жұмыс жүктемесі тобы) сұрауларына екі деңгейде шек қояды:\n\n| Қайда | Не басқарады | Қасиеттер |\n| --- | --- | --- |\n| Әр FE | Нешеуі орындалады/күтеді, қанша күтеді | `max_concurrency`, `max_queue_size`, `queue_timeout` |\n| Әр BE | Топ жады, CPU, сканерлеу ресурсы | `max_memory_percent`, `max_cpu_percent`, `scan_thread_num`, `read_bytes_per_second` |\n\nБөлек топ ad hoc-ты тақта орындарынан шығарып, BE-де әрқайсысын шектейді. Бір BE процесін, кэш/ағындарын бөліседі: толық оқшауламай, әсерін азайтады; мүлде әсер етпеуі тиісіне бөлек түйін керек.\n\n![FE-нің бөлек қабылдау топтары ортақ BE процесіне топтық орындау бюджетімен жібереді.](images/01-fe-be-control-boundaries.png)\n\n*FE қабылдауды, әр BE топтарының орындау ресурстарын басқарады.*\n\nСурет белгілері: FE ADMISSION — BE EXECUTION RESOURCES — FE қабылдауы және BE орындау ресурстары; FRONTEND (FE)/BACKEND (BE) — алдыңғы/артқы түйін; DASHBOARD GROUP — тақта тобы; AD HOC GROUP — ad hoc тобы; SLOTS — орындар; QUEUE — кезек; WAIT TIMEOUT — күту шегі; SHARED BE PROCESS — ортақ BE процесі; MEMORY — жады; SCANS — сканерлеулер; LINUX CPU CGROUPS REQUIRED — Linux CPU cgroup қажет; SANDBOX CPU LIMIT NOT ENFORCED — сынақ ортасында CPU шегі орындалмайды. Apache Doris және CPU — техникалық атаулар.\n\nDoris топты осы ретпен таңдайды:\n\n1. Сұрау hint-і: `SET_VAR(workload_group = ...)`.\n2. Бос болмаса, сеанстың `workload_group` мәні.\n3. Тіркелгі `default_workload_group` қасиеті.\n4. Әр тіркелгі қолданатын, жойылмайтын `normal`.\n\n",
+      "target_hash": "bf5c5045304182c5c01786bcbb69b62731c79fd97b74ec116321c2fa13cf35fe",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f20500f092882349a30971b42c53abbd43e1bc0b15b1f1304247ce5d32f84ec0",
+          "target_hash": "bf5c5045304182c5c01786bcbb69b62731c79fd97b74ec116321c2fa13cf35fe"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d90bf4f301fc4316a841f1baee7bd050",
+      "source_hash": "4874dbc1c4d2f4fd685d928b4422bf4f0efe2ceed84a948d0b97659a101274f4",
+      "target_text": "## 14.3 Әр BE-дегі жады мен CPU\n\nҚасиеттер бүкіл кластерге емес, әр BE-ге қатысты:\n\n| Қасиет | Мағынасы | Әдепкі |\n| --- | --- | --- |\n| `max_memory_percent` | BE процесінің `mem_limit` үлесі ретінде топтың ең көп жады | 100% |\n| `min_memory_percent` | Жады азда топқа сақталатын үлес | 0% |\n| `memory_high_watermark` | Топ жаңа жады сұрауы сәтсіз бола бастайтын максимум үлесі | 85% |\n| `memory_low_watermark` | Кідірген сұраулар әдетте жалғасатын төменгі үлес | 75% |\n| `max_cpu_percent` | CPU бос болса да, қатаң шек | 100% |\n| `min_cpu_percent` | CPU бос емес кезде сақталатын үлес | 0% |\n\nБарлық минимум қосындысы ең көбі 100%, максимум одан аса алады. Шекке жақындағанда сұраулар жады ала алмай, кідіреді; Doris аралық деректі дискіге шығарады не жады босағанда жалғастырады, әйтпесе `memory limit is exceeded while handling workload group memory pressure` деп тоқтатады. Нәтиже сол сәттегі BE жүктемесіне тәуелді, сондықтан жұмыс жады шегін орнатып, артық жүктемені қайталаймын демейді.\n\nЖады Doris есебімен шектеледі. CPU үшін Linux CPU cgroup керек: BE `doris_cgroup_cpu_path` бос болса, Doris топтарға cgroup құрмайды, `max_cpu_percent` ештеңе орындатпайтын баптау болып қалады. Курс ортасында сол жол жоқ.\n\n",
+      "target_hash": "a72f18b977b0f52a1585352b17d087a78375db0ab2720bdfc80037e1f7f9c500",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4874dbc1c4d2f4fd685d928b4422bf4f0efe2ceed84a948d0b97659a101274f4",
+          "target_hash": "a72f18b977b0f52a1585352b17d087a78375db0ab2720bdfc80037e1f7f9c500"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e6735922694341e3942869bc537c52e6",
+      "source_hash": "c4ba68e54fee2a7bddd22308b7f40b6f5c32e652135f2a90a69f9cd6e48019b9",
+      "target_text": "## 14.4 Тіркелгіні тобына бағыттау\n\nЕкі нәрсе бағыттайды, әрқайсысы жалғыз жеткіліксіз.\n\n**SQL оқу мысалы: жұмыс уақытша пайдаланушыға орындайды. Сыртында орындамаңыз.**\n\n<!-- reading-only-example -->\n```sql\nGRANT USAGE_PRIV ON WORKLOAD GROUP 'course_dashboard_l3' TO ROLE 'course_dashboard_reader_l3';\nSET PROPERTY FOR 'bi_dashboard_user' 'default_workload_group' = 'course_dashboard_l3';\n```\n\n| Баптау | Нәтиже |\n| --- | --- |\n| Әдепкі/өзге таңдаусыз `USAGE_PRIV` | Әлі `normal` |\n| `USAGE_PRIV` жоқ әдепкі | Әр сұрау өтпейді: `Access denied; you need (at least one of) the USAGE/ADMIN privilege(s) to use workload group '...'` |\n| Екеуі | Сұраулар топта |\n\nЖұмыс рөлі/әдепкісі бар уақытша қарапайым пайдаланушымен тексереді. Топ атамаса да, баяу сұрауы `information_schema.active_queries` көрсеткен `course_dashboard_l3` ішінде. Кейін сеансты рөл қолдана алмайтын `course_adhoc_l3` етеді: `SET` өтеді, келесі сұрау қабылданбайды, себебі рұқсат орындалуда тексеріледі. Пайдаланушы өз `default_workload_group` мәнін өзгерте алады, бірақ тек рұқсатты топтарда орындайды; `query_timeout`, `sql_block_rules` сияқты өзге қасиеттерді тек әкімші `SET PROPERTY FOR` арқылы орнатады. Біреудің әдепкі тобы сол мән өзгермей жойылмайды.\n\nӘр пайдаланушы сеансына `bypass_workload_group = true` қоя алады: FE кезегін, `max_concurrency`, `max_queue_size`, `queue_timeout` өткізеді; топты өзгертпейді, рұқсат тексеруі мен BE жады шегін алып тастамайды. Жұмыста ad hoc орны/кезегі толы болса да осындай сұрау өтеді. Демек кезек — қарапайым пайдаланушы өте алмайтын шекара емес; BE шектері, әкімші уақыты, SQL Block Rule — шекара.\n\n",
+      "target_hash": "de71549f23d4ec985b35fa28aead13a3c73f5d9610fb4744fe4b4bbbf8bb96ee",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "c4ba68e54fee2a7bddd22308b7f40b6f5c32e652135f2a90a69f9cd6e48019b9",
+          "target_hash": "de71549f23d4ec985b35fa28aead13a3c73f5d9610fb4744fe4b4bbbf8bb96ee"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6fcaeb390a4e4a5ea97aaba16e5fac7b",
+      "source_hash": "74cff598ddf77a3bb67b73f1beff8d47d844e83936ecfcafe4df9ae5003e805f",
+      "target_text": "## Модуль мақсаты\n\nAd hoc талдаудың тақтаны баяулатуын азайту: әр жүктемеге топ беру, тіркелгіні бағыттау, артық сұрауды орындалуға дейін/кезінде тоқтату, кейін тәуелділік ретімен бәрін жою.\n\n",
+      "target_hash": "508b576ef50a6c328c86a4f86f9e5c1ef89b06172d90cd9af4c1f3934973e8a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "74cff598ddf77a3bb67b73f1beff8d47d844e83936ecfcafe4df9ae5003e805f",
+          "target_hash": "508b576ef50a6c328c86a4f86f9e5c1ef89b06172d90cd9af4c1f3934973e8a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.04cb83564c8345feb1517c47fb2659c8",
+      "source_hash": "ee1506a245503ddb0518f89e116829c380dea050a8c007facff3d9e72a845609",
+      "target_text": "## Оқу мақсаттары\n\nМодульді аяқтаған соң сіз:\n\n1. Doris Workload Group таңдау ретін түсіндіре аласыз.\n2. max_concurrency, max_queue_size, queue_timeout бойынша орындала ма, күте ме, қабылданбай ма болжай аласыз.\n3. Жады/CPU шектері қайда қатысты, CPU-ға не қажет екенін түсіндіре аласыз.\n4. USAGE_PRIV және default_workload_group арқылы бағыттап, bypass_workload_group неге оқшаулау шекарасы еместігін түсіндіре аласыз.\n5. query_timeout, Workload Policy, SQL Block Rule-ды уақыты/орны бойынша ажырата аласыз.\n6. Топ, бағыттау, қорғаныс, бақылау, тәуелділік ретімен қайтаруы бар ресурс нұсқаулығын жаза аласыз.\n\n",
+      "target_hash": "b9ab3092a2e3f622bc6e44199ba68cb984e90071473e8dd54c01c061e5172386",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ee1506a245503ddb0518f89e116829c380dea050a8c007facff3d9e72a845609",
+          "target_hash": "b9ab3092a2e3f622bc6e44199ba68cb984e90071473e8dd54c01c061e5172386"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e05bcc66fc5e4c748bcad900213b9eb5",
+      "source_hash": "fc1716ff581d47fb99bea5a997b186234d333e68fce70b071d65ed3ba33cc92a",
+      "target_text": "## Қорытынды\n\n- Топ реті: hint, сеанс, тіркелгі әдепкісі, `normal`.\n- Орын бос болса орындалады, кезек бос болса күтеді, әйтпесе қабылданбайды; оң `queue_timeout` күтуді бітіртеді; әр FE өз орын/кезегін ұстайды.\n- Шектер әр BE-ге қатысты; CPU үшін ортада жоқ cgroup қажет.\n- `USAGE_PRIV` пен `default_workload_group` екеуі бағыттайды; рұқсат орындалуда тексеріледі, `bypass_workload_group` тек FE кезегін өткізеді.\n- `query_timeout` орындалғанды, Workload Policy шартқа сәйкес орындалғанды тоқтатады, SQL Block Rule орындалуға дейін қабылдамайды.\n- Нұсқаулық топ, бағыттау, қорғаныс, бақылауды атап, саясат/әдепкі/рұқсат/рөл/топ/ережені тәуелділікпен жояды.\n\n",
+      "target_hash": "720855775d2b239a49231aeb5a3efdd19b89ca89dd74e6987c092f2a17afa737",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "fc1716ff581d47fb99bea5a997b186234d333e68fce70b071d65ed3ba33cc92a",
+          "target_hash": "720855775d2b239a49231aeb5a3efdd19b89ca89dd74e6987c092f2a17afa737"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8f564281d074466bbf76d3c61bfda774",
+      "source_hash": "d1abda9ed257cab224ea83bbd87fa2c6359cbcbfe8caf40f2daeb2c29075d839",
+      "target_text": "## 14.6 Ресурс нұсқаулығы және кері қайтаруы\n\nӨзгеріске иесі, бақылау, қайтару жолы керек:\n\n| Бөлік | Мысал |\n| --- | --- |\n| Топтар | Тақта: 8 орын, кезекте 20, 10 s күту, 50% жады. Ad hoc: 1, 1, 30 s, 30% жады және орта орындатпайтын 30% CPU |\n| Бағыттау | `course_dashboard_reader_l3` тақта тобының `USAGE_PRIV` рұқсатын ұстайды; тіркелгілерге әдепкі беріледі |\n| Қорғаныс | `course_scan_guard_l3` екі бөлімге шектейді; әкімші уақыт шегін орнатады |\n| Бақылау | Орындалған/күткен сандар, `WAIT_IN_QUEUE`, нақты қателер |\n| Кері қайтару | Саясат сілтемесін жою, тіркелгі әдепкісін басқаға ауыстыру, рұқсатты қайтару, қажетсіз рөл/топтарды, ережелерді жою; әрқайсысын `SHOW` арқылы тексеру |\n\nРет тәуелділікке сай: саясат сілтесе не тіркелгі әдепкісі болса, Doris топты жоймайды. Жою пайдалану рұқсатын жоймайды: сол атпен жаңа топ `SHOW ROLES` ішінде бұрынғы `USAGE_PRIV` қайта көрсетеді. Алдымен рұқсатты қайтарыңыз не қажетсіз рөлді жойыңыз. Жаттығу жоспарды қолданбай тұрып тексереді: үш FE-де 8 орын 20 шың сұрауды тек қосылымдар таралса ұстайды.\n\n",
+      "target_hash": "f1ceeb56e9e2d6011288d9a543227a0546434b3c6542da32f25f62ef976e709b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d1abda9ed257cab224ea83bbd87fa2c6359cbcbfe8caf40f2daeb2c29075d839",
+          "target_hash": "f1ceeb56e9e2d6011288d9a543227a0546434b3c6542da32f25f62ef976e709b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.be39efcf00f54faf8da4e6da7b8694e0",
+      "source_hash": "142caa1fbdfd4dd5a62da7d0ca25c16e06baab2a9196abc22ada7889653a31ea",
+      "target_text": "## Дереккөздер\n\n- [Apache Doris: Workload Group](https://doris.apache.org/docs/4.x/admin-manual/workload-management/workload-group/)\n- [Apache Doris: қатар орындалу мен кезекті басқару](https://doris.apache.org/docs/4.x/admin-manual/workload-management/concurrency-control-and-queuing/)\n- [Apache Doris: SQL бұғаттау және Workload Policy](https://doris.apache.org/docs/4.x/admin-manual/workload-management/sql-blocking/)\n- [Apache Doris: CREATE SQL_BLOCK_RULE](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/data-governance/CREATE-SQL_BLOCK_RULE/)\n- [Apache Doris: CREATE WORKLOAD POLICY](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/cluster-management/compute-management/CREATE-WORKLOAD-POLICY/)\n- [Apache Doris: SET PROPERTY](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/account-management/SET-PROPERTY/)\n- [Apache Doris: active_queries](https://doris.apache.org/docs/4.x/admin-manual/system-tables/information_schema/active_queries/)\n- [Apache Doris: SQL Cache](https://doris.apache.org/docs/4.x/query-acceleration/sql-cache-manual/)\n",
+      "target_hash": "41e4580bce7184233dc16cb9af237bfa55ce38ec2ff62bd0e8696472d71f8d53",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "142caa1fbdfd4dd5a62da7d0ca25c16e06baab2a9196abc22ada7889653a31ea",
+          "target_hash": "41e4580bce7184233dc16cb9af237bfa55ce38ec2ff62bd0e8696472d71f8d53"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.853da0f1e04c435f8488b31514531284",
+      "source_hash": "387a322b72b0da8b611449264bcd4e3a224f47d131bd6f0a5032d6b5e3a2cef5",
+      "target_text": "## 14-зертханалық жұмыс: Тақта мен ad hoc ресурстарын бөлу\n\n[14-зертханалық жұмыс: Тақта мен ad hoc ресурстарын бөлу](lab14_resource_isolation.ipynb) файлын ашыңыз. Сіз:\n\n1. Root топ таңдауын көресіз.\n2. Кестені дайындап, бұрынғы қалдықты жоясыз.\n3. Екі топ құрып, тақта тобын рөлге бересіз.\n4. Бес сұраудың орындалу, күту, қабылданбау, кезекті айналып өтуін көресіз.\n5. Кезек/орындалу уақыт шегін ажыратасыз.\n6. Уақытша пайдаланушыны әдепкімен бағыттап, ad hoc тобына тыйым көресіз.\n7. SQL Block Rule арқылы толық сканерлеуді қабылдамайсыз.\n8. Саясат/әдепкі топты ұстамайтынын тексеріп, рұқсатты қайтарып, рөл/топтарды жоясыз.\n9. Жаттығу: ресурс жоспарын тексеріп, сынақ атауларымен қолданасыз.\n\nТек сынақ ортасы қажет. Нысандар бүкіл кластерге тиесілі; жұмыс өзінікін жойып, `normal` мен root тіркелгісін өзгертпейді.\n\n",
+      "target_hash": "810386b92502c2682776ff2daebc89c5842faf7f1ee35565e5249822f763c05c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "387a322b72b0da8b611449264bcd4e3a224f47d131bd6f0a5032d6b5e3a2cef5",
+          "target_hash": "810386b92502c2682776ff2daebc89c5842faf7f1ee35565e5249822f763c05c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fe84cbab6b0045f4a9a3cd6f5bc93be9",
+      "source_hash": "3d018448f6ce2a66b6add89e392324e04344b97bbe218373ab42a082ea328128",
+      "target_text": "## Модуль құрылымы\n\n| Бөлім | Уақыт | Нәтиже |\n| --- | ---: | --- |\n| 14.1 Тақтамен кім бәсекелеседі | 6 мин | Екі жүктеме, бір топ, бағыттау реті |\n| 14.2 Орындалу, күту не қабылданбау | 9 мин | Қатар орындалу, кезек, күту, айналып өту |\n| 14.3 Әр BE жады/CPU-ы | 6 мин | BE шектері, CPU cgroup талабы |\n| 14.4 Тіркелгіні тобына бағыттау | 8 мин | Қарапайым пайдаланушы көретін рұқсат/әдепкі |\n| 14.5 Артық сұрауды тоқтату | 10 мин | Timeout, Workload Policy, SQL Block Rule |\n| 14.6 Ресурс нұсқаулығы және қайтаруы | 6 мин | Баптау, бақылау, жою реті |\n| 14-зертханалық жұмыс | 45 мин | Екі топ, кезек/тыйым, қарапайым пайдаланушы, толық сканерлеуді бұғаттау, жоспар |\n| 14-тест | 10 мин | Осы мақсаттарға арналған алты сұрақ |\n\n",
+      "target_hash": "1b050c46e840107cc0aa2cb1d33fce06b8a1abc087f24f2a3f6a13b4e5bb5da9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3d018448f6ce2a66b6add89e392324e04344b97bbe218373ab42a082ea328128",
+          "target_hash": "1b050c46e840107cc0aa2cb1d33fce06b8a1abc087f24f2a3f6a13b4e5bb5da9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5dd4e997816b4f9eb832882e896ded80",
+      "source_hash": "41c7f82bc0ad5019c0a1baf4965eb3f5d9b4e60d0993479aadb07e3b50b7e039",
+      "target_text": "## 14.2 Орындалу, күту не қабылданбау\n\nТоп сұрауына FE шешеді:\n\n1. Орындалып жатқаны `max_concurrency` мәнінен аз: басталады.\n2. Орын толы, күткені `max_queue_size` мәнінен аз: күтеді.\n3. Кезек те толы: `query waiting queue is full` деп қабылданбайды.\n4. Рұқсат уақытынан ұзақ күтті: `query queue timeout`.\n\nAd hoc тобында бір орын/бір кезек орны бар. Үш баяудың біріншісі орындалады, екіншісі күтеді, үшіншісі бірден `query waiting queue is full, queue capacity=1, waiting num=1` алады. Әдепкілер маңызды:\n\n![Бір орындау/бір кезек орнында бірінші сұрау орындалып, екіншісі күтеді, үшіншісі қабылданбайды.](images/02-fe-admission-control.png)\n\n*Әр FE орынға қабылдап, артығын кезекке қояды, толса қабылдамайды.*\n\nСурет белгілері: DEFAULT ADMISSION: RUN, WAIT, OR REJECT — әдепкі қабылдау: орындау, күту, қабылдамау; ONE FE — бір FE; WORKLOAD GROUP — жұмыс жүктемесі тобы; ONE EXECUTION SLOT — бір орындау орны; ONE QUEUE PLACE — бір кезек орны; QUERY 1/2/3 — 1/2/3-сұраулар; RUNNING — орындалады; WAIT_IN_QUEUE — кезекте күтеді; QUEUE / QUERY TIMEOUT — кезек/сұрау уақыт шегі; REJECTED — қабылданбады; QUEUE FULL — кезек толы; SLOT BECOMES FREE — орын босайды; SKIPS FE ADMISSION — FE қабылдауын өткізеді; BE LIMITS STILL APPLY — BE шектері әлі бар. bypass_workload_group — нақты айнымалы.\n\n| Қасиет | Әдепкі | Мағынасы |\n| --- | --- | --- |\n| `max_concurrency` | 2147483647 | Іс жүзінде шексіз |\n| `max_queue_size` | 0 | Кезек жоқ: орыннан артығы қабылданбайды |\n| `queue_timeout` | 0 | Миллисекунд; 0 жеке күту шегін қоймайды, сұраудың өз шегі шектейді |\n\nТек `max_concurrency` кезек құрмайды; артық сұрау күтуі үшін `max_queue_size` да қойыңыз. Оң `queue_timeout` миллисекундпен, `query_timeout` секундпен бірге күтуді шектейді: бұрын біткені жеңеді.\n\nКей сұрау кезекке тұрмайды. FE дерек сканерлейтіндерді қояды; `SELECT 1`, тек `information_schema` сұраулары тұрмайды. SQL кэші де бірден қайтарады; ортада кэш қосулы, кесте 30 секундтай өзгермесе қайталау кэштелуі мүмкін, сондықтан сеанстар өшіреді. Әр FE өз орын/кезегін ұстайды: үш FE × 8 орын = 24, қосылымдар таратылса. `SHOW WORKLOAD GROUPS` `running_query_num`, `waiting_query_num` көрсетеді; `information_schema.active_queries` ішінде күткені `WAIT_IN_QUEUE`, орындалғаны `RUNNING`.\n\n",
+      "target_hash": "285b4b229de14437a61cf3bd62a2ac90f8d2b5f03676e370438054c6f1986ba8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "41c7f82bc0ad5019c0a1baf4965eb3f5d9b4e60d0993479aadb07e3b50b7e039",
+          "target_hash": "285b4b229de14437a61cf3bd62a2ac90f8d2b5f03676e370438054c6f1986ba8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.750614a7fbb44ad5850d73ab5b85608f",
+      "source_hash": "d8ec018d49fc90634d376c7d2c00dbfe786ecadff704343beef4093a1741f61d",
+      "target_text": "# 14-модуль: Ресурстарды оқшаулау және сұрауларды қорғау\n\n| Курс туралы ақпарат | Мәні |\n| --- | --- |\n| Курс | Apache Doris көмегімен деректер қоймасын құру · 3-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Орта | 1-модуль сынақ ортасы |\n| Болжалды уақыт | Шамамен 100 минут: оқу 45, зертханалық жұмыс 45, тест 10 |\n\n[Курстың README файлы](../../README.md) · [14-зертханалық жұмысты ашу](lab14_resource_isolation.ipynb) · [14-тестті ашу](quiz14_resource_isolation.ipynb)\n\n",
+      "target_hash": "d2c4ba3ccf65b1c4b3125dc77dbdc07424ccaf5c378afe860d4a89ee803bc159",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d8ec018d49fc90634d376c7d2c00dbfe786ecadff704343beef4093a1741f61d",
+          "target_hash": "d2c4ba3ccf65b1c4b3125dc77dbdc07424ccaf5c378afe860d4a89ee803bc159"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.62aebbd88bec423784577bb5e96682fd",
+      "source_hash": "21172f6b621206c7d881bb1c65c6b2ac859883683f604c8f983b2b586cc0788e",
+      "target_text": "## 14-тест\n\n[14-тест: Ресурстарды оқшаулау және сұрауларды қорғау](quiz14_resource_isolation.ipynb) файлын ашыңыз. Бір жауап таңдалатын алты сұрақ бар; іске қосылған орта қажет емес.\n\nӘрі қарай: бұл — соңғы модуль. Он төрт модульде тапсырыс/тарихты жүктеп, тек тексерілген кірісті сақтадыңыз, өзгерісті қадағалап, факт/өлшеммен модельдедіңіз, жазылған келісімшарттары бар метрикаларға айналдырып, тақта/модельге жарияладыңыз; рөлмен рұқсат беріп аудиттедіңіз; бөлімдерде сыналған қайтаруы бар өмірлік цикл, әр жүктемеге жеке ресурс жасадыңыз. [Курстың README файлы](../../README.md) нысандарды жоюды айтады; [Apache Doris көмегімен нақты уақыттағы аналитика](../../../01-real-time-analytics/README.md) сияқты серияның өзге курстары — қосымша оқу.\n\n",
+      "target_hash": "fd4636b171d7e0233503d2d949b061a08f2b30c275a6b962d42a8aaa794cda3c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m14-lesson",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all Data Warehousing Module 14 units on 2026-11-08. Re-read all saved targets against frozen English after translation; read complete Lab code and all six Quiz answer mappings. Checked hint/session/account/default precedence, per-FE slots/queue and zero/positive timeout semantics and units, cached/metadata-only no-scan exceptions, cross-FE connection distribution, per-BE memory versus cgroup-dependent CPU enforcement and watermark/min/max scope, USAGE plus routing and query-time permission checks, ordinary-user bypass limited to FE admission, administrator-owned account limits, execution versus queue resource use, delayed running Workload Policies versus pre-scan SQL Block Rules, global/root/text-case/cache/COUNT(*) caveats, rule message limit versus actual scan count, and cleanup dependency/resurrected grants. Clarified two one-minute queries, no-queue versus timeout wording, retired group wording and metrics-with-contract summary. Viewed all three PNGs and checked full adjacent Kazakh legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "21172f6b621206c7d881bb1c65c6b2ac859883683f604c8f983b2b586cc0788e",
+          "target_hash": "fd4636b171d7e0233503d2d949b061a08f2b30c275a6b962d42a8aaa794cda3c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

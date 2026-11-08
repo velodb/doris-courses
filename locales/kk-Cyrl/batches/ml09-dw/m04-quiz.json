@@ -1,0 +1,1136 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.8e4fef3c5e354af69e3f79b80afb51ce",
+      "source_hash": "7fe8ff60cdf78314bbc2f43878eae4efc02ae5b7499675149ede54b23993dcbb",
+      "target_text": "<div>\n  <div>04-ТЕСТ · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Сыртқы деректерді сұрау және деректер көлі кестелерін біріктіру</div>\n  <p>Әр сұраққа кері байланыс берілетін, бір дұрыс жауабы бар алты сұрақ; дерекқорға қосылу қажет емес.</p>\n  <span>6 сұрақ · Бір дұрыс жауап · Шамамен 10 минут</span>\n</div>\n\n[Сабақ](course.md) · [Зертханалық жұмыс](lab04_query_iceberg.ipynb)\n",
+      "target_hash": "f9b75ab89de807587fdb235bda3eb635b06f3097fa6ec57e36292d1075815321",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "7fe8ff60cdf78314bbc2f43878eae4efc02ae5b7499675149ede54b23993dcbb",
+          "target_hash": "f9b75ab89de807587fdb235bda3eb635b06f3097fa6ec57e36292d1075815321"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.420eaee44f35463ebb6da09aa85c4a3e",
+      "source_hash": "48854cf063580a1fef133192f06bcda89906098043ee7a3f8e3e90f7fd626a3e",
+      "target_text": "### Тестті жүктеу\n\nТестті жүктеу үшін келесі ұяшықты орындаңыз. Ядроны қайта іске қосқаннан кейін осы жерден қайта орындаңыз.\n",
+      "target_hash": "974461d755c2cb386b87743756c704517b6ef2ac0f8a010f35ff1c53de367818",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "48854cf063580a1fef133192f06bcda89906098043ee7a3f8e3e90f7fd626a3e",
+          "target_hash": "974461d755c2cb386b87743756c704517b6ef2ac0f8a010f35ff1c53de367818"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7cf9f2895ca8445da1acd81e9727a1ca",
+      "source_hash": "bab21324ed233c825de00dc51458c7dfff232ac8df7cbbca7bd77cbddcb7494d",
+      "target_text": "## Тестті бастау\n\nЖауапты таңдап, жіберіңіз, содан кейін келесі сұраққа өтпес бұрын түсіндірмені оқыңыз.\n",
+      "target_hash": "103adb2f3351803ea62db122d9cbc65d8d3c157eb858e1aa490b3cb380e339b7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "bab21324ed233c825de00dc51458c7dfff232ac8df7cbbca7bd77cbddcb7494d",
+          "target_hash": "103adb2f3351803ea62db122d9cbc65d8d3c157eb858e1aa490b3cb380e339b7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.47781b30f59343e2a2c97e42b52104ce",
+      "source_hash": "061e0735afce68afc7cb6870c083a5c50861ca935ac425840a758e5461aea26f",
+      "target_text": "Бір дұрыс жауабы бар алты сұрақ; дерекқорға қосылу қажет емес. Жібергеннен кейін түсіндірмелерді қараңыз.",
+      "target_hash": "ac23d0c80f7e81c749e1728ceeec1671092cfc9e3e92acffaa0f6593a48c4a59",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "061e0735afce68afc7cb6870c083a5c50861ca935ac425840a758e5461aea26f",
+          "target_hash": "ac23d0c80f7e81c749e1728ceeec1671092cfc9e3e92acffaa0f6593a48c4a59"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.01219bbf99de48a4a26a812f183a9cc7",
+      "source_hash": "e9986751526685b1c2f95b4d641e6491d37d9c041ebf46f78aa9dd7ba0e3d6a1",
+      "target_text": "Parquet файлы бағандық деректерді сақтайды; Iceberg кестесі — сондай файлдарды тізетін метадеректер мен snapshot-тар; External Catalog — Doris-тің басқа жүйе кестелеріне кіретін нүктесі және ештеңе көшірмейді. Iceberg метадеректері жоқ файлдар, пішімі қандай болса да, Iceberg кестесі емес. Catalog бар метадеректерді оқиды; файлдардан кесте жасамайды. Catalog арқылы сұрау Doris-те ештеңе сақтамайды; жүктеу сақтайды.",
+      "target_hash": "32bc4d9cdedf0ea85913f890c560dcddfccd87a3d2e5bacf9d6c83faf8a7072c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "e9986751526685b1c2f95b4d641e6491d37d9c041ebf46f78aa9dd7ba0e3d6a1",
+          "target_hash": "32bc4d9cdedf0ea85913f890c560dcddfccd87a3d2e5bacf9d6c83faf8a7072c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b4bc370281034f72a4d53b8a011b8c3a",
+      "source_hash": "696e097143467e1130a2e294b03a34096080fde7a8498ed0e558286385c6cf58",
+      "target_text": "Doris ішкі кестелерін, Parquet файлдарын, Iceberg кестелерін және External Catalog-тарды ажырату.",
+      "target_hash": "79391b2cd59f415d4c42b8e5ea69a5c43047ff7d0c0e2040216130c2b12051f7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "696e097143467e1130a2e294b03a34096080fde7a8498ed0e558286385c6cf58",
+          "target_hash": "79391b2cd59f415d4c42b8e5ea69a5c43047ff7d0c0e2040216130c2b12051f7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6a66eb0295204be5bdb7d4903d333215",
+      "source_hash": "b86e02eb3b1aa6c1faaf757e611d957a68a711fd950348df89af60b4caa3881b",
+      "target_text": "Parquet — файл пішімі, Iceberg файлдар үстіне метадеректер қосады, Catalog тек Doris-ке қатынау береді",
+      "target_hash": "e09207d2edd3f41d0371fe31fef85f40970113de6316e88a016163bc4cb01509",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "b86e02eb3b1aa6c1faaf757e611d957a68a711fd950348df89af60b4caa3881b",
+          "target_hash": "e09207d2edd3f41d0371fe31fef85f40970113de6316e88a016163bc4cb01509"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.53013a0ac9cf4aa99403a84ad240ac23",
+      "source_hash": "8813774032e2a5a7f88c18e2687b269c882fc608d3fec05b41fc4e5edbe5e386",
+      "target_text": "Parquet файлдарының кез келген каталогы — Iceberg кестесі, ал Catalog оны Doris сақтауына көшіреді",
+      "target_hash": "5dbdd2d10f13a2f4d6f44e97df7a33df2c6a82512c19b14b9d68bebe31cf59de",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "8813774032e2a5a7f88c18e2687b269c882fc608d3fec05b41fc4e5edbe5e386",
+          "target_hash": "5dbdd2d10f13a2f4d6f44e97df7a33df2c6a82512c19b14b9d68bebe31cf59de"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.80528d1a3f474bcd8c0d1d7aae504be1",
+      "source_hash": "0a24f30300bcab20778bc3f5d8925e222820a54ec4a27aace80ec3905ce53fe3",
+      "target_text": "Catalog жасау файлдарды Iceberg кестесіне айналдырады, содан кейін Doris оны өз кестесі ретінде сақтайды",
+      "target_hash": "6c64222162cc7a081f9f092057094541d3217809cd9fad16b4e58d122b373ee1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0a24f30300bcab20778bc3f5d8925e222820a54ec4a27aace80ec3905ce53fe3",
+          "target_hash": "6c64222162cc7a081f9f092057094541d3217809cd9fad16b4e58d122b373ee1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c64e6b6c3eef4d51b7168dab66bb5535",
+      "source_hash": "e3edcd7aa483f9362eac6817a003736af2969b6339c0b01eb33a6ba156b6bf0f",
+      "target_text": "Файлдар қазірдің өзінде кесте, ал Catalog арқылы алғашқы сұрау оны ішкі кестеге айналдырады",
+      "target_hash": "e7e8f385f037162328268cf22065593c80096c76ec12335fdcbdfe9a7e97b8bc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "e3edcd7aa483f9362eac6817a003736af2969b6339c0b01eb33a6ba156b6bf0f",
+          "target_hash": "e7e8f385f037162328268cf22065593c80096c76ec12335fdcbdfe9a7e97b8bc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2ef0488137734c15a2a7006d1b1b9cbd",
+      "source_hash": "0bdba860e0a87c98132f8727a809ab66494ea7e6cbb60e18341dd083d48212f4",
+      "target_text": "Әріптес объектілік сақтаудан Parquet файлдарын тауып, олар қазірдің өзінде Iceberg кестесін құрайды және External Catalog пайда болғанда Doris оны сақтайды деп ойлайды. Мұны қай ескерту түзетеді?",
+      "target_hash": "860f86570fd1a39c7565c27df721c4ea634d2365750c841fdd3a21afcb0c92cd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0bdba860e0a87c98132f8727a809ab66494ea7e6cbb60e18341dd083d48212f4",
+          "target_hash": "860f86570fd1a39c7565c27df721c4ea634d2365750c841fdd3a21afcb0c92cd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f36c7b138fbb43c58aca3316e6e4924d",
+      "source_hash": "1ced48c37186a93c1e97f47cb503e43f69a2392b2432e041c92503b3a28362bb",
+      "target_text": "Басқа Catalog-тағы кестенің үш бөлікті атауы бар: catalog, database, table, сондықтан lake_prod.reporting.orders өндірістік көшірмені таңдайды. Екі бөлікті атау әр Catalog-тан ізделмейді, ағымдағы Catalog-та, мұнда internal ішінде шешіледі. Файл орны кесте атауы емес, ал файлдарды сұрау кесте метадеректерін айналып өтер еді. internal деректер көлінің емес, Doris-тің өз кестелерін қамтиды.",
+      "target_hash": "5d05b544786f95e34d82d0cb52b444ee106cf92c2a1f8d3c4ec77b2cc431b7bf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "1ced48c37186a93c1e97f47cb503e43f69a2392b2432e041c92503b3a28362bb",
+          "target_hash": "5d05b544786f95e34d82d0cb52b444ee106cf92c2a1f8d3c4ec77b2cc431b7bf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.37749e6ed58d4c2fa178aa81cd0f800d",
+      "source_hash": "958781dc2f6b5388a440dd651e2ce9c5cf68c122e2a530373de99d658ef287c0",
+      "target_text": "Деректер көлі кестесін Catalog арқылы тауып, catalog.database.table түрінде атау.",
+      "target_hash": "b796f8734fd1c0492dde5ab79cb27610d9eae1fcaacdd234c90709913ff5d591",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "958781dc2f6b5388a440dd651e2ce9c5cf68c122e2a530373de99d658ef287c0",
+          "target_hash": "b796f8734fd1c0492dde5ab79cb27610d9eae1fcaacdd234c90709913ff5d591"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8051898b1f80400190b3e0855ee88c1e",
+      "source_hash": "962d2d6863ce8a63353b60e28a6d140a48621334db974a80fc2212d99852e7bc",
+      "target_text": "lake_prod.reporting.orders: Catalog, дерекқор және кесте",
+      "target_hash": "53a1f9e8532be2699ff5467a42a9dbeb578cdcf166af74a4f6f43ec517665a0c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "962d2d6863ce8a63353b60e28a6d140a48621334db974a80fc2212d99852e7bc",
+          "target_hash": "53a1f9e8532be2699ff5467a42a9dbeb578cdcf166af74a4f6f43ec517665a0c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cb40fce162264c52b9146df9f5f1cdc9",
+      "source_hash": "c52c0d6ead0113d1779244ca3a01e782ada99dbbc57d523c267a07b098564cfa",
+      "target_text": "reporting.orders, Doris оны өзі білетін әр Catalog-тан іздейді",
+      "target_hash": "cdf3f80b2ab2460688c011a0bcc41945241a5e704bded76f8adb4fde07e32f9a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c52c0d6ead0113d1779244ca3a01e782ada99dbbc57d523c267a07b098564cfa",
+          "target_hash": "cdf3f80b2ab2460688c011a0bcc41945241a5e704bded76f8adb4fde07e32f9a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a7cf299571144c9ab43951a072e855ba",
+      "source_hash": "d210703b359c72cc9330f0dd637c18b9d7abfce47f4b56fb1a0d2ff5ae9d4e5a",
+      "target_text": "s3://warehouse/reporting/orders, кесте деректер файлдарының орны",
+      "target_hash": "5d05d90ac4c3506f74ea2be77d74ebd131263112d58a7c8adab249c8f4038606",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d210703b359c72cc9330f0dd637c18b9d7abfce47f4b56fb1a0d2ff5ae9d4e5a",
+          "target_hash": "5d05d90ac4c3506f74ea2be77d74ebd131263112d58a7c8adab249c8f4038606"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.73c0a62fde014d5aa404d8acea38f28c",
+      "source_hash": "57ef0628243df2b1dc236c1adb31f82304af1ddf2353c96b95fe098a8f753cad",
+      "target_text": "internal.reporting.orders, себебі internal — сеанстың ағымдағы Catalog-ы",
+      "target_hash": "5ef6b0b4868b71298a6d894edd3a7bf03fe405d4fb6b80f71789512a7617b9dd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "57ef0628243df2b1dc236c1adb31f82304af1ddf2353c96b95fe098a8f753cad",
+          "target_hash": "5ef6b0b4868b71298a6d894edd3a7bf03fe405d4fb6b80f71789512a7617b9dd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.837f878684cc4316a54008e04bfe40d2",
+      "source_hash": "7fef2c438500635e89ab3dc6e455a247a996d17a76c32cd51d2cd15c6c0fda86",
+      "target_text": "Екі External Catalog, lake_prod және lake_test, екеуінде де reporting.orders бар. Сеанстың ағымдағы Catalog-ы — internal, ал есеп өндірістік кестені оқуы керек. Қай атау оны таңдайды?",
+      "target_hash": "cbc5a8f77304005c8c7bf9405823fd20845440c5daadac6755d02ce7ba6ad767",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "7fef2c438500635e89ab3dc6e455a247a996d17a76c32cd51d2cd15c6c0fda86",
+          "target_hash": "cbc5a8f77304005c8c7bf9405823fd20845440c5daadac6755d02ce7ba6ad767"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.32bd057501e4497b86209498513ee85a",
+      "source_hash": "ddd6722129559cb7132571c89b20f0e55cfee8af5e1147e058a7d1c6f6eedce2",
+      "target_text": "Snapshot сол сәтте кестені құрайтын файлдарды тізеді, ал сұрау ағымдағы snapshot файлдарын, яғни $files тізіміндегілерді оқиды. Ескі snapshot файлы тазаланғанға дейін объектілік сақтауда қалады, бірақ енді кестенің бөлігі емес. Қайта жазу бірінші snapshot-ты ауыстырды. Кестеге қай файлдар жататынын каталог мазмұны емес, Iceberg метадеректері анықтайды.",
+      "target_hash": "5f224395f5109d92bf473cc78e51ba389f624375a9c1dbc4dbcc0d5f5554d202",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "ddd6722129559cb7132571c89b20f0e55cfee8af5e1147e058a7d1c6f6eedce2",
+          "target_hash": "5f224395f5109d92bf473cc78e51ba389f624375a9c1dbc4dbcc0d5f5554d202"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b144ed317f3243b28db8a572f9636b48",
+      "source_hash": "ef4b57918411485ae61e2f1d6f12196fc464c60c4c3b5921c96af77798e8bbdd",
+      "target_text": "Iceberg кестесінің snapshot-тары мен файлдарын оқып, кесте сұрауы қай файлдарды оқитынын түсіндіру.",
+      "target_hash": "0df5915898f415dd808b17802db5fa944f79929f1a9943fcb2d45fa7093170ae",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "ef4b57918411485ae61e2f1d6f12196fc464c60c4c3b5921c96af77798e8bbdd",
+          "target_hash": "0df5915898f415dd808b17802db5fa944f79929f1a9943fcb2d45fa7093170ae"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b9c39f71b22745149b4a39491eaec808",
+      "source_hash": "6ff710125f29c30d2d32e1dc2c9a91ea6fb691cac83d9520cb83caeae01ed02f",
+      "target_text": "Ағымдағы snapshot деректер файлын, яғни $files тізіміндегі файлды",
+      "target_hash": "591b9f2df37092011e71b9042fdf2ac930026dd0409ef9f4eef38c183fb7f67e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "6ff710125f29c30d2d32e1dc2c9a91ea6fb691cac83d9520cb83caeae01ed02f",
+          "target_hash": "591b9f2df37092011e71b9042fdf2ac930026dd0409ef9f4eef38c183fb7f67e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c389d85cbe344773a446374ae630e473",
+      "source_hash": "c58a0b5b46a487a19f263c55baa709b45f008a8be6b2eb1b66244deedff80ee1",
+      "target_text": "Кестеде болған барлық деректер файлдарын, екі snapshot-тың екеуін бірге",
+      "target_hash": "2444a3693673c1ded658e0011a6ec0434908d840ba6ebaaa0923696e086d339c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c58a0b5b46a487a19f263c55baa709b45f008a8be6b2eb1b66244deedff80ee1",
+          "target_hash": "2444a3693673c1ded658e0011a6ec0434908d840ba6ebaaa0923696e086d339c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.aebd8770ff3e4612894bdb87ab5022e0",
+      "source_hash": "4b3cc587a6f335846ee8d235b15d0e188ae7f4254a786d2fddd62d23cb0fdf5f",
+      "target_text": "Бірінші snapshot файлдарын, себебі кесте сол файлдармен жасалған",
+      "target_hash": "662f8b3c143a919e3ebe83f8a4bd3f38a4b11f0d86a6b1365625dee941249604",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "4b3cc587a6f335846ee8d235b15d0e188ae7f4254a786d2fddd62d23cb0fdf5f",
+          "target_hash": "662f8b3c143a919e3ebe83f8a4bd3f38a4b11f0d86a6b1365625dee941249604"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b46924d28ed848318002faf3d5541787",
+      "source_hash": "097cdfa086c2b8b056667d51873a5d42a958708a73e070310f9a3c4f02d0d0c4",
+      "target_text": "Объектілік сақтаудағы кесте каталогында бар кез келген ескі не жаңа файлдарды",
+      "target_hash": "d1e7f9906dc197ef805fa8af4ed5393d47418edafd9aa8c399546193b78fcb28",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "097cdfa086c2b8b056667d51873a5d42a958708a73e070310f9a3c4f02d0d0c4",
+          "target_hash": "d1e7f9906dc197ef805fa8af4ed5393d47418edafd9aa8c399546193b78fcb28"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.90a7b9fbded34ab3a55b61d4abce2326",
+      "source_hash": "2ba79b163b5b8b25f44d68bc65dec056c589af0eb23bc5cdfebc0030389911a6",
+      "target_text": "Iceberg кестесінің $snapshots тізімінде алдымен append, содан кейін барлық жолын ауыстырған overwrite бар; $files бір деректер файлын тізеді. Catalog арқылы кесте сұрауы нені оқиды?",
+      "target_hash": "2f6e4c87a8ca8b00c73598852bab219c13f3046c22fb1d2d5cda0fdc43fb7c9a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "2ba79b163b5b8b25f44d68bc65dec056c589af0eb23bc5cdfebc0030389911a6",
+          "target_hash": "2f6e4c87a8ca8b00c73598852bab219c13f3046c22fb1d2d5cda0fdc43fb7c9a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6304d24f8f694703a83056fe96c62486",
+      "source_hash": "6f452f9660329184ec525db529f1d62476d5fff2875584b6f8eb6dae64f52017",
+      "target_text": "Орнында сұрау көшірме қажет етпейді және зерттеуге жарайды; сол деректерді қайта-қайта оқитын есеп ішкі кестеден пайда көре алады, ал ол көшірмеге жаңарту жоспары қажет, себебі жүктеу бір сәтті көшіреді. Деректер көлі кестелерін Doris кестелерімен біріктіруге болады, сондықтан зерттеуге дейін жүктеуге ештеңе мәжбүрлемейді. Жүктеу көлдегі кейінгі өзгерістерге ілеспейді. Көлді жою басқа жүйелер әлі жазатын тарихты жоғалтар еді.",
+      "target_hash": "a13d33d1644df2d0c2f996080442ff34ebcb19fd66a8dbdd77c18460d1e53572",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "6f452f9660329184ec525db529f1d62476d5fff2875584b6f8eb6dae64f52017",
+          "target_hash": "a13d33d1644df2d0c2f996080442ff34ebcb19fd66a8dbdd77c18460d1e53572"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c7a9c0f9f5dd4c6599fd64044214d800",
+      "source_hash": "2536cdd5ede4694d852b95c808da14124a1835a222ade20ee91dc29898ee8cd3",
+      "target_text": "Сыртқы деректерді орнында сұрау мен ішкі кестеге жүктеудің бірін таңдау.",
+      "target_hash": "1f193c6646cb279f0868a560b1ba6c248e4be7263978e0129ccbdd7ba5c8ece5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "2536cdd5ede4694d852b95c808da14124a1835a222ade20ee91dc29898ee8cd3",
+          "target_hash": "1f193c6646cb279f0868a560b1ba6c248e4be7263978e0129ccbdd7ba5c8ece5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0e9a0a9c3a3e4b62b3583f17ffb470d8",
+      "source_hash": "73fa7e7573723e62ebd734b4129d3d9d44d7018d90796d28c452c1221cc46dbd",
+      "target_text": "Алдымен Catalog арқылы зерттеу, содан кейін есеп оқитын деректерді жүктеп, жаңарту тәсілін жоспарлау",
+      "target_hash": "c5c3c7a4b4d22f063683568516422d5973b907faea93178e3dc9628fa3c0b355",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "73fa7e7573723e62ebd734b4129d3d9d44d7018d90796d28c452c1221cc46dbd",
+          "target_hash": "c5c3c7a4b4d22f063683568516422d5973b907faea93178e3dc9628fa3c0b355"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7a747c064a814c288bbfbce221fd58e8",
+      "source_hash": "083c7d9904342ad7a2ca8b2ec961ad5cff25a374300144b9d1909a4a3b66eff6",
+      "target_text": "Көл сұраулары біріктіре алмайтындықтан, алғашқы сұраққа дейін бүкіл тарихты Doris-ке жүктеу",
+      "target_hash": "a2f12c3361930a4efb5d5c8b0c42b473586a36a4ad494ca5e06a7bd4bad293ba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "083c7d9904342ad7a2ca8b2ec961ad5cff25a374300144b9d1909a4a3b66eff6",
+          "target_hash": "a2f12c3361930a4efb5d5c8b0c42b473586a36a4ad494ca5e06a7bd4bad293ba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ff5084f09d704fa89484e8fe76a77343",
+      "source_hash": "070e72f954c370033cb83a3b274d118ad4728f58f65b37f55ff0b2c8a91c78c5",
+      "target_text": "Екеуі үшін де көлді орнында сұрау, себебі жүктеу көл өзгерістеріне ілесе береді",
+      "target_hash": "ae30feaef6a42b87bea014b59b7f26d12628dde8b2c365dae51a71a91b8fd13f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "070e72f954c370033cb83a3b274d118ad4728f58f65b37f55ff0b2c8a91c78c5",
+          "target_hash": "ae30feaef6a42b87bea014b59b7f26d12628dde8b2c365dae51a71a91b8fd13f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8322343e9ef54dc7a969dc6958706e98",
+      "source_hash": "0cd639a1a35eb4db08a806c754f2097e4db13fea41b547fb32a0fc36b371b5b3",
+      "target_text": "Бір рет жүктеп, деректер көлі кестелерін жою, себебі енді Doris барлық болашақ өзгерістерді де сақтайды",
+      "target_hash": "854ce82d742f7378b3c9ea2f40abe543160506ce6bc98e98e7afc1608f6ddaaf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0cd639a1a35eb4db08a806c754f2097e4db13fea41b547fb32a0fc36b371b5b3",
+          "target_hash": "854ce82d742f7378b3c9ea2f40abe543160506ce6bc98e98e7afc1608f6ddaaf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fb66b8a9fdfe4359beb2520e46f05a84",
+      "source_hash": "99f26b99f9ddd0aa76713c064745bb945a181a00fee9375203284c09e4fd5b82",
+      "target_text": "Тарихи тапсырыстар деректер көлінде. Талдаушы сұрақты алғаш зерттейді; кейін күндік есеп сол тарихты күніне көп рет оқиды. Қандай тәсіл орынды?",
+      "target_hash": "6c156e4d3a82dee5d8f1f53dd3dc4f06ccc9e9e3c570265805b5a42646a88a3d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "99f26b99f9ddd0aa76713c064745bb945a181a00fee9375203284c09e4fd5b82",
+          "target_hash": "6c156e4d3a82dee5d8f1f53dd3dc4f06ccc9e9e3c570265805b5a42646a88a3d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d92edf68a817484f96c3f0e0a4e555df",
+      "source_hash": "57abb7498d606f018b1c579c55dbc727e0b43003982cf2b345bb8d3ebbf050e7",
+      "target_text": "S3 кестелік функциясы дәл берілген файлдарды оқиды, сондықтан топ алдымен қарай алады, ал сол функциядан INSERT INTO ... SELECT орындау жолдарды ішкі кестеде сақтайды. Iceberg метадеректері жоқ файлдар Iceberg кестесі емес. Routine Load файлдарды емес, Kafka сияқты хабарлар ағынын тұтынады. SELECT жолдарды қайтарады және ештеңе сақтамайды.",
+      "target_hash": "4dc73b7f3d1a967567f6e10f04aab2eab6a154e8e28b072e48b82f1b6323c2c6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "57abb7498d606f018b1c579c55dbc727e0b43003982cf2b345bb8d3ebbf050e7",
+          "target_hash": "4dc73b7f3d1a967567f6e10f04aab2eab6a154e8e28b072e48b82f1b6323c2c6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b57dd5f79dcb47dda4904678441997a6",
+      "source_hash": "c7867b21d738aa8bdd8dc486062912c3dca322f5a9bcb38483771fe8d990dde5",
+      "target_text": "Объектілік сақтаудағы файлдарды S3 кестелік функциясымен оқып, INSERT INTO SELECT арқылы жүктеу.",
+      "target_hash": "bc37de5af0f53b0a4f5ddf1328984f921b0740cb42a382fa00bf092a5918f661",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c7867b21d738aa8bdd8dc486062912c3dca322f5a9bcb38483771fe8d990dde5",
+          "target_hash": "bc37de5af0f53b0a4f5ddf1328984f921b0740cb42a382fa00bf092a5918f661"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7cab26919e0d4e1c917e73a5af942204",
+      "source_hash": "a559fde785aa7d17b46ad16a02dc86763257faa8bec5ed922de7d2c9c37b2fb4",
+      "target_text": "Оларды S3 кестелік функциясымен сұрап, содан кейін ішкі кестеге INSERT INTO және функциядан SELECT орындау",
+      "target_hash": "adc507e7dc45193483d73dc3ec24bd50c527f277e2adfe4b572ea011ae7a21f7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "a559fde785aa7d17b46ad16a02dc86763257faa8bec5ed922de7d2c9c37b2fb4",
+          "target_hash": "adc507e7dc45193483d73dc3ec24bd50c527f277e2adfe4b572ea011ae7a21f7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.df2cc111b026475fb130b6cd9d54e96b",
+      "source_hash": "5ae46ab505f62c4ceb4c80a2fc454629833516870a9e071d146737ea3dac90d4",
+      "target_text": "Бакет үстінде Iceberg Catalog жасау, себебі Parquet файлдарының кез келген жиыны — Iceberg кестесі",
+      "target_hash": "80f761e6f30dfbb56a3f912f9a467c90e885fb623129004c6f070e6b2eda9375",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "5ae46ab505f62c4ceb4c80a2fc454629833516870a9e071d146737ea3dac90d4",
+          "target_hash": "80f761e6f30dfbb56a3f912f9a467c90e885fb623129004c6f070e6b2eda9375"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.82d11d99f152478a9a164b2c13dd7210",
+      "source_hash": "1db1504159659cb6a957c630f5058f6bbf9e07e499deafea94d01fcbe8776983",
+      "target_text": "Doris үш файл үшін бакетті қайта-қайта тексеріп отыруы үшін онда Routine Load тапсырмасын жасау",
+      "target_hash": "fecb3647847ba8d0c0a33b787881f494e2ce443b6d5511dbd4ea04aadfab76bd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "1db1504159659cb6a957c630f5058f6bbf9e07e499deafea94d01fcbe8776983",
+          "target_hash": "fecb3647847ba8d0c0a33b787881f494e2ce443b6d5511dbd4ea04aadfab76bd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.64e11ccbfab245bc9c4831ae1944a95a",
+      "source_hash": "c7d89ee22f9c4962e012af67fa2e90a776760638688cb8fd0c4f31514778a75e",
+      "target_text": "Тек S3 кестелік функциясында SELECT орындау; сұрау оқыған жолдарды Doris-те сақтайды",
+      "target_hash": "a1c2c877a20a8da9f8619b4870c3d85464fa856c9008c0ad45b99b85875cd082",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c7d89ee22f9c4962e012af67fa2e90a776760638688cb8fd0c4f31514778a75e",
+          "target_hash": "a1c2c877a20a8da9f8619b4870c3d85464fa856c9008c0ad45b99b85875cd082"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d83ddfc20d714317893f838a96683c23",
+      "source_hash": "b10e7234561538d7abab6a9612e4e52d913b9974f9d7b2f0aaf5f571849cbd58",
+      "target_text": "Өткен ай тапсырыстарының үш Parquet файлы объектілік сақтауда, енді жаңасы қосылмайды. Топ алдымен оларды SQL арқылы қарап, содан кейін жолдарды Doris-те сақтағысы келеді. Қай тәсіл жарайды?",
+      "target_hash": "b7fccf38cf953b59fe3dc81ccf22325695c5f69f405edd21673cd8c1c1f937fc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "b10e7234561538d7abab6a9612e4e52d913b9974f9d7b2f0aaf5f571849cbd58",
+          "target_hash": "b7fccf38cf953b59fe3dc81ccf22325695c5f69f405edd21673cd8c1c1f937fc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2203136dc06142cd9772ad3ced5d2fa8",
+      "source_hash": "0bd14b7bc4c98952e13c69cf6d539464055b290f2e30e6a8420c68ac938f1221",
+      "target_text": "Біріктіруден кейін жолдар тапсырыстардан көп болса, кей тапсырыстар бірнеше өлшем жолына сәйкес келген: қайталанған тұтынушы кілттерін және солар көбейткен тапсырыстарды табыңыз. INNER JOIN сол жолдарды да көбейтеді, әрі тұтынушысы жоқ тапсырыстарды алып тастайды. Артық жолдар деректер көлі кестесінен емес, өлшеммен біріктіруден шықты. LEFT JOIN әр тапсырысты сақтайды, бірақ бірнеше жолға сәйкес келген тапсырысты бәрібір көбейтеді.",
+      "target_hash": "dd8d546706cc6252a45ecf912bef152dfcfaf0949acaaec4471ad4ff96a50e1c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0bd14b7bc4c98952e13c69cf6d539464055b290f2e30e6a8420c68ac938f1221",
+          "target_hash": "dd8d546706cc6252a45ecf912bef152dfcfaf0949acaaec4471ad4ff96a50e1c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b09a8b276ca440cebcba4d7ddf7f3af4",
+      "source_hash": "239371fdf2a4c001b990e936335fa6112945e5a8bc559bb5e9de22b55a9c6f68",
+      "target_text": "Біріктіруге дейінгі және кейінгі нәтижелерді салыстырып, өлшем кестесіндегі қайталанған не жетіспейтін жолдарды табу.",
+      "target_hash": "81a2d8165f275324e77c950f97c9e363519a8e6fc920de5899c5deb2901c27f3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "239371fdf2a4c001b990e936335fa6112945e5a8bc559bb5e9de22b55a9c6f68",
+          "target_hash": "81a2d8165f275324e77c950f97c9e363519a8e6fc920de5899c5deb2901c27f3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ccab01ba68474dd296b64515c2b22ea8",
+      "source_hash": "c0e3e3db09ea6d52bb8e1d9c84b6a5926d589bccb2440022b1df5991cdb99bbc",
+      "target_text": "Бір кілтке бірнеше жолы бар тұтынушыларды іздеп, солар көбейткен тапсырыстарды тексеру",
+      "target_hash": "1110bbf106a63b1e0d14a8dedce2b3c90c78bb86195024b2351f7b7f66a0be42",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c0e3e3db09ea6d52bb8e1d9c84b6a5926d589bccb2440022b1df5991cdb99bbc",
+          "target_hash": "1110bbf106a63b1e0d14a8dedce2b3c90c78bb86195024b2351f7b7f66a0be42"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.74e41bada8754024935ee392773284ff",
+      "source_hash": "0e3f3b0cd587f62c3b14bc5064b06799ceb97a96fbd0efd0cd5848caf03fe907",
+      "target_text": "Оның орнына INNER JOIN қолдану, ол әр тапсырысты тек бір рет сақтап, жалпы соманы бастапқы мәнде қалдырады",
+      "target_hash": "0d9b799534d90c6429c686ce477eaacffd36469a2759e3c49c8232092f6f6af9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0e3f3b0cd587f62c3b14bc5064b06799ceb97a96fbd0efd0cd5848caf03fe907",
+          "target_hash": "0d9b799534d90c6429c686ce477eaacffd36469a2759e3c49c8232092f6f6af9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.85dd60fe2085488790ad384f587ba6ed",
+      "source_hash": "99a15fea9772519536860b1ed2c6afb68650515620c55341d6f395ed67e88a50",
+      "target_text": "Барлық көл тапсырыстарын жойып, қайта жүктеу, себебі артық жолдар деректер көлі кестесінен шыққан",
+      "target_hash": "3de6aefb52e2f2513bd2ea8e0bde34bdccb980bf23ec7d7b5e57da15ba1245aa",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "99a15fea9772519536860b1ed2c6afb68650515620c55341d6f395ed67e88a50",
+          "target_hash": "3de6aefb52e2f2513bd2ea8e0bde34bdccb980bf23ec7d7b5e57da15ba1245aa"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a1ce010e0dca4760aa3d5da9e7d97aa0",
+      "source_hash": "4851d20b068d635398c83a41bee3a1d4ee1c3ed1a743e98dbcc4685289ca2556",
+      "target_text": "Үлкен жалпы соманы қабылдау, себебі LEFT JOIN әр тапсырысты сақтайды, сондықтан соманы асыра көрсете алмайды",
+      "target_hash": "9e1999f34b6f622e0748cbb4f04b2a6ca9a165dd28310dc9a36b722ae8055cc4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "4851d20b068d635398c83a41bee3a1d4ee1c3ed1a743e98dbcc4685289ca2556",
+          "target_hash": "9e1999f34b6f622e0748cbb4f04b2a6ca9a165dd28310dc9a36b722ae8055cc4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9a1e4148cba8408da8ee17aa7c365d23",
+      "source_hash": "0ba62ba45461f0ec59284816b12581d39ae00307ff39ee8fd49901a364ca4d8b",
+      "target_text": "Тұтынушы кестесімен LEFT JOIN жасағаннан кейін көлдегі 100 тапсырыс 103 жолға айналып, жалпы сома өседі. Топ келесіде не істеуі керек?",
+      "target_hash": "d829b1828c85dd922f997a9d84ba4b7cd7da8821b1ad766b7627352cc3ebcf5e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0ba62ba45461f0ec59284816b12581d39ae00307ff39ee8fd49901a364ca4d8b",
+          "target_hash": "d829b1828c85dd922f997a9d84ba4b7cd7da8821b1ad766b7627352cc3ebcf5e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2e45d60dea634fa1a8f8f22da0ec9ea7",
+      "source_hash": "ad6922c2db42d64e97afdf9a643893acacbf9b63cda1430072b728848758644a",
+      "target_text": "4-модуль тесті: сыртқы деректерді сұрау және деректер көлі кестелерін біріктіру",
+      "target_hash": "340a0000270dfe923d817635257a1ecdfd3d9880da7178514c55989592084818",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m04-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared three shell cells and all 44 quiz-bank leaves as six complete four-option sets. Checked file/table/Catalog distinction, production Catalog selection, overwrite snapshot membership, query-in-place versus refreshable internal copy, S3 TVF plus INSERT versus Routine Load, and 100-to-103 duplicate dimension join diagnosis. Unique answers and all numbers preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "ad6922c2db42d64e97afdf9a643893acacbf9b63cda1430072b728848758644a",
+          "target_hash": "340a0000270dfe923d817635257a1ecdfd3d9880da7178514c55989592084818"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

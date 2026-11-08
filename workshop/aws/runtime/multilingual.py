@@ -5,6 +5,8 @@ Full content-contract admission runs in the operator builder and server startup.
 """
 import copy
 import hashlib
+from html import escape
+from html.parser import HTMLParser
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -20,12 +22,59 @@ PROFILE = 'rta-module-1'
 COURSE = 'doris-course/01-real-time-analytics'
 
 
+def profile_registry():
+    # The new runtime ships the operator's allowlist as a hashed payload; local
+    # operator imports read that same source. Old frozen bundles use old code.
+    location = Path(__file__).with_name('profiles.v2.json')
+    if not location.is_file():
+        location = Path(__file__).resolve().parent.parent / 'profiles.v2.json'
+    return json.loads(location.read_text())['profiles']
+
+
 def canonical(value):
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
 
 
 def digest(value):
     return hashlib.sha256(value).hexdigest()
+
+
+def notebook_html_images(text, rewrite, parser):
+    """Rewrite actual HTML image tags, keeping fenced/inline code examples intact."""
+    offsets = [0]
+    for line in text.splitlines(keepends=True):
+        offsets.append(offsets[-1] + len(line))
+    protected = [(offsets[t.map[0]], offsets[t.map[1]]) for t in parser.parse(text)
+                 if t.type in {'fence', 'code_block'}]
+    protected.extend((m.start(), m.end()) for m in re.finditer(r'(`+)(.*?)\1', text, re.S))
+    replacements = []
+
+    class Images(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            self.image(tag, attrs, False)
+
+        def handle_startendtag(self, tag, attrs):
+            self.image(tag, attrs, True)
+
+        def image(self, tag, attrs, closed):
+            start = offsets[self.getpos()[0] - 1] + self.getpos()[1]
+            if tag != 'img' or any(a <= start < b for a, b in protected):
+                return
+            if not any(name == 'src' and value is not None for name, value in attrs):
+                return
+            rendered = []
+            for name, value in attrs:
+                if value is None:
+                    rendered.append(name)
+                else:
+                    rendered.append(name + '="' + escape(rewrite(value) if name == 'src' else value, quote=True) + '"')
+            replacement = '<img ' + ' '.join(rendered) + (' />' if closed else '>')
+            replacements.append((start, start + len(self.get_starttag_text()), replacement))
+
+    Images(convert_charrefs=False).feed(text)
+    for start, end, replacement in reversed(replacements):
+        text = text[:start] + replacement + text[end:]
+    return text
 
 
 def safe(root, name):
@@ -75,7 +124,13 @@ def validate_binding(value):
     if not isinstance(value, dict) or set(value) != keys or type(value['schema_version']) is not int or value['schema_version'] != 1:
         raise ValueError('content: unsupported binding version')
     locales = value['available_locales']
-    if (value['abi'] != ABI or value['capabilities'] != CAPABILITIES or value['profiles'] != [PROFILE]
+    profiles = value['profiles']
+    registry = profile_registry()
+    if (not isinstance(profiles, list) or not profiles or len(profiles) != len(set(profiles))
+            or any(tag not in registry for tag in profiles)
+            or len({registry[tag]['kernel'] for tag in profiles}) != len(profiles)):
+        raise ValueError('content: unknown, duplicate or overlapping profiles')
+    if (value['abi'] != ABI or value['capabilities'] != CAPABILITIES
             or not isinstance(locales, list) or locales != ['en', 'kk-Cyrl']
             or value['default_locale'] not in locales or set(value['locale_digests']) != set(locales)):
         raise ValueError('content: unsupported ABI, profile, capability or language set')
@@ -95,13 +150,23 @@ def validate_plan(plan):
             raise ValueError('runtime: v1 cannot declare multilingual capabilities')
         return
     validate_binding(plan['content'])
+    registry = profile_registry()
+    selected = {registry[p]['kernel']: p for p in plan['content']['profiles']}
     if (plan.get('capabilities') != CAPABILITIES or plan['course_ref'] != plan['content']['source_ref']
-            or len(plan['courses']) != 1):
+            or [course['kernel'] for course in plan['courses']] != list(selected)):
         raise ValueError('runtime: incompatible content binding')
-    course = plan['courses'][0]
-    if (course['profiles'] != [PROFILE] or course['course_dir'] != COURSE or course['kernel'] != 'doris-rta'
-            or [m['id'] for m in course['modules']] != ['module-1'] or course.get('optional') or course.get('extensions')):
-        raise ValueError('runtime: pilot selection differs from its admitted profile')
+    seen = set()
+    for course in plan['courses']:
+        kernel = course['kernel']
+        if kernel not in selected or kernel in seen:
+            raise ValueError('runtime: unknown or duplicate course')
+        seen.add(kernel)
+        profile = registry[selected[kernel]]
+        if (course['profiles'] != [selected[kernel]] or course['course_dir'] != profile['course_dir']
+                or [m['id'] for m in course['modules']] != profile['module_ids']
+                or not {p['path'] for p in course.get('optional', [])}.issubset(profile['optional_paths'])
+                or course.get('extensions') != any('/extensions/' in p for p in profile['optional_paths'])):
+            raise ValueError('runtime: selection differs from its admitted profile')
 
 
 def verify_tree(root, expected, *, full=False, source=None):
@@ -178,13 +243,24 @@ class Content:
         self.package = verify_tree(self.root, plan['content'])
         self.assets = read(self.root, 'indexes/assets.json')
         self.inventory = {r['path']: r for r in self.package['snapshot']['files']}
-        selected = next(p for p in self.package['profiles'] if p['id'] == PROFILE)
-        selected_assets = set(selected['asset_ids'])
+        selected = [p for p in self.package['profiles'] if p['id'] in plan['content']['profiles']]
+        selected_assets = {a for p in selected for a in p['asset_ids']}
+        source_asset_ids = {a['file']['path']: a['id'] for a in self.package['assets'] if a['locale'] in {'en', 'shared'}}
+        selected_keys = {(m['course_slug'], m['module_id']) for p in selected for m in p['modules']}
+        if set(plan['content']['profiles']) != {p['id'] for p in selected}:
+            raise ValueError('content: selected profile is absent')
+        self.selected_quizzes = {q for p in selected for q in p['quiz_ids']}
+        navigation_paths = {r['source_path'] for r in self.assets['links']}
+        selected_files = {a['file']['path'] for a in self.package['assets'] if a['id'] in selected_assets}
+        selected_paths = selected_files | {r['source_path'] for r in self.assets['links']
+                                          if r['locale'] == 'en' and r['path'] in selected_files}
+        selected_paths.update(q['source_path'] for q in self.package['quizzes'] if q['id'] in self.selected_quizzes)
         self.links = {locale: {} for locale in plan['content']['available_locales']}
-        # links includes navigation mirrors. Their actual locale is explicit.
+        # A package can carry extra checked translations for other profiles.
+        # Only this selection may expose them; outside navigation stays English.
         for row in self.assets['links']:
             for locale in self.links:
-                if row['locale'] == locale:
+                if row['locale'] == locale and (locale == 'en' or row['source_path'] in selected_paths):
                     self.links[locale][row['source_path']] = (row['path'], row['locale'])
         for locale in self.links:
             for row in self.assets['links']:
@@ -192,6 +268,13 @@ class Content:
                     self.links[locale].setdefault(row['source_path'], (row['path'], 'en'))
         for asset in self.package['assets']:
             if asset['id'] not in selected_assets:
+                # Extra checked translations must not expand this selection.
+                # Keep their original English lessons as explicit navigation.
+                if asset.get('kind') == 'lesson' and asset['locale'] == 'en':
+                    path = asset['file']['path']
+                    if path in navigation_paths:
+                        for locale in self.links:
+                            self.links[locale].setdefault(path, (path, 'en'))
                 continue
             if asset['locale'] == 'en' and not asset['file']['path'].startswith('rendered/'):
                 self.links['en'].setdefault(asset['file']['path'], (asset['file']['path'], 'en'))
@@ -200,12 +283,35 @@ class Content:
                     self.links[locale].setdefault(asset['file']['path'], (asset['file']['path'], locale))
         self.notebooks = {c['course_dir'] + '/' + p: c for c in plan['courses'] for p in c['notebooks']}
         self.allowed_paths = {path for links in self.links.values() for path, _ in links.values()}
-        metadata = read(self.root, f'rendered/en/{COURSE}/course.json')
-        module = next(m for m in metadata['modules'] if m['id'] == 'module-1')
-        installed = plan['courses'][0]['modules'][0]
-        if any(installed[k] != module[k] for k in ('course', 'lab', 'quiz')) or set(self.notebooks) != {
-                COURSE + '/' + module['lab'], COURSE + '/' + str(Path(module['quiz']).with_suffix('.ipynb'))}:
-            raise ValueError('content: runtime paths differ from the admitted profile')
+        expected_notebooks, actual_keys = set(), set()
+        for course in plan['courses']:
+            metadata = read(self.root, f'rendered/en/{course["course_dir"]}/course.json')
+            if course['slug'] != metadata['slug']:
+                raise ValueError('content: course identity differs')
+            expected_optional = []
+            for installed in course['modules']:
+                key = course['slug'], installed['id']; actual_keys.add(key)
+                module = next(m for m in metadata['modules'] if m['id'] == installed['id'])
+                if key not in selected_keys or any(installed[k] != module[k] for k in ('course', 'lab', 'quiz')):
+                    raise ValueError('content: runtime paths differ from the admitted profile')
+                expected_notebooks.add(course['course_dir'] + '/' + module['lab'])
+                shell = course['course_dir'] + '/' + str(Path(module['quiz']).with_suffix('.ipynb'))
+                if shell in self.inventory:
+                    expected_notebooks.add(shell)
+                for part in module.get('optional', []):
+                    path = course['course_dir'] + '/' + part['path']
+                    if source_asset_ids.get(path) in selected_assets:
+                        expected_optional.append(part)
+                        if path.endswith('.ipynb'):
+                            expected_notebooks.add(path)
+                        if part.get('quiz'):
+                            shell = course['course_dir'] + '/' + str(Path(part['quiz']).with_suffix('.ipynb'))
+                            if shell in self.inventory:
+                                expected_notebooks.add(shell)
+            if course.get('optional', []) != expected_optional:
+                raise ValueError('content: optional selection differs from admitted assets')
+        if actual_keys != selected_keys or set(self.notebooks) != expected_notebooks:
+            raise ValueError('content: runtime Notebook selection differs from admitted assets')
         self.units = {u['id']: u for u in self.package['source_units']}
         self.anchor_rows = {r['unit_id']: r for r in read(self.root, 'indexes/anchors.json')}
 
@@ -234,14 +340,17 @@ class Content:
                            labels=self.labels, anchors=self.anchors)
 
     def labels(self, kind, identity, values, locale):
-        course = self.plan['courses'][0]
+        slug = identity if kind == 'course' else identity[0]
+        course = next(c for c in self.plan['courses'] if c['slug'] == slug)
         document = read(self.root, f'rendered/{locale}/{course["course_dir"]}/course.json')
         if kind == 'course':
             selected = document
         elif kind == 'module':
             selected = next(m for m in document['modules'] if m['id'] == identity[1])
+        elif kind == 'optional':
+            selected = next(p for m in document['modules'] for p in m.get('optional', []) if p['path'] == identity[1])
         else:
-            raise ValueError('content: optional work was not admitted')
+            raise ValueError('content: unknown display kind')
         return {key: selected[key] for key in values}
 
     def headings(self, path):
@@ -306,6 +415,7 @@ class Content:
             if cell['cell_type'] == 'markdown':
                 text = ''.join(cell['source'])
                 text = re.sub(r'(!?\[[^\]\n]*\]\()([^\s)]+)(\))', lambda m: m[1] + url(m[2]) + m[3], text)
+                text = notebook_html_images(text, url, parser)
                 source_tokens = parser.parse(''.join(english[cell['id']]['source']))
                 target_tokens = parser.parse(text)
                 source_titles = [source_tokens[i + 1].content for i, t in enumerate(source_tokens) if t.type == 'heading_open']
@@ -346,7 +456,7 @@ class Content:
         plan = copy.deepcopy(self.plan)
         for course in plan['courses']:
             for module in course['modules']:
-                quiz = next(q for q in self.package['quizzes'] if q['course_slug'] == course['slug'] and q['module_id'] == module['id'])
+                quiz = next(q for q in self.package['quizzes'] if q['source_path'] == course['course_dir'] + '/' + module['quiz'] and q['id'] in self.selected_quizzes)
                 module['quiz_binding'] = quiz
                 module['policy_revision'] = next(c['policy_revision'] for c in self.package['courses'] if c['slug'] == course['slug'])
                 module['quiz_presentations'] = []
@@ -355,6 +465,18 @@ class Content:
                     if actual != locale:
                         raise ValueError('content: Quiz language is missing')
                     module['quiz_presentations'].append({'locale': locale, 'path': path, 'source_digest': self.inventory[path]['sha256']})
+            for part in course.get('optional', []):
+                if not part.get('quiz'):
+                    continue
+                quiz = next(q for q in self.package['quizzes'] if q['source_path'] == course['course_dir'] + '/' + part['quiz'] and q['id'] in self.selected_quizzes)
+                part['quiz_binding'] = quiz
+                part['policy_revision'] = next(c['policy_revision'] for c in self.package['courses'] if c['slug'] == course['slug'])
+                part['quiz_presentations'] = []
+                for locale in self.links:
+                    path, actual = self.resolve(quiz['source_path'], 'asset', locale)
+                    if actual != locale:
+                        raise ValueError('content: optional Quiz language is missing')
+                    part['quiz_presentations'].append({'locale': locale, 'path': path, 'source_digest': self.inventory[path]['sha256']})
         return plan
 
 
@@ -369,8 +491,7 @@ def configure_quiz(content, locale):
         path = Path(path).resolve()
         course_root = Path(os.environ['DORIS_WORKSHOP_SHARED_SOURCE']).resolve()
         relative = path.relative_to(course_root).as_posix()
-        quiz = next((q for q in content.package['quizzes'] if q['source_path'] == relative and q['module_id'] == 'module-1'
-                     and q['course_slug'] == 'real-time-analytics'), None)
+        quiz = next((q for q in content.package['quizzes'] if q['source_path'] == relative and q['id'] in content.selected_quizzes), None)
         if quiz is None:
             raise ValueError('content: Quiz is outside the installed profile')
         selected, actual = content.resolve(relative, 'asset', locale)

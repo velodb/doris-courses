@@ -1,0 +1,320 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.0b248af9ea5a4a31881f6a3938967898",
+      "source_hash": "a17aed80a237da8300e3dff71f4eb38a8b437c0b18d54137af0428009394ceae",
+      "target_text": "### Саясатты бақыланатын зертханалық терезеге сәйкестендіру\n\nТолық күн күту нашар басқарылатын жаттығу болар еді. 10-зертханалық жұмыс сол шекара логикасын `HOUR`, `start = -3` және `end = 1` арқылы қолданады. Белгілі оқиғаны ең ескі сағаттық Partition ішіне қойып, терезені бір сағат алға жылжытады немесе қосымша ретінде нақты сағаттың келесі толық сағат шекарасын күтеді. Бұл Dynamic Partitioning мағынасын емес, көрсетілім ауқымын өзгертеді. Сағаттық зертханалық баптау бұл сауда қызметіне өндірістік ұсыныс емес.\n\nТерезені анықтау Doris әрекет еткенін әлі дәлелдемейді. Топ енді қабылданған саясатты жоспарлағыш белсенділігінен, онлайн дерек көрінуінен және соңғы сақтау босатуынан ажыратуы тиіс.\n\n",
+      "target_hash": "cfbd6789dcd98677d706cc4b531e4519b8c00bdbeb2ce67e66cd08350edc1730",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "a17aed80a237da8300e3dff71f4eb38a8b437c0b18d54137af0428009394ceae",
+          "target_hash": "cfbd6789dcd98677d706cc4b531e4519b8c00bdbeb2ce67e66cd08350edc1730"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.94dff0eaed2d4948b5e579e1c1dd0f6d",
+      "source_hash": "48af9d385b8195d213827907723522862f8b052ed056a4f6f19a1dbdec746b53",
+      "target_text": "### Баған кодтауы мәндерді тиімді көрсетеді\n\nКодтау жалпы Page сығуынан бұрын мәндердің көрінісін өзгертеді. Мысалдар:\n\n- қайталанатын жолдарды кішірек сөздік идентификаторларымен алмастыратын сөздік кодтауы;\n- қатар қайталануды мән және қайталану саны ретінде көрсете алатын Run-Length Encoding (RLE).\n\n`event_type` бағанын қарастырайық:\n\n```text\ncart, cart, purchase, cart, purchase, cart, ...\n```\n\nСөздік `cart -> 0` және `purchase -> 1` тағайындаса, кодталған ағын ықшам идентификаторлар қолдана алады. Бұл «Doris сөзді бір рет сақтап, әр жолды соған сілтетеді» дегеннен дәлірек. Segment әр жол мәнін қалпына келтіруге жеткілікті метадерек пен кодталған орындарды әлі қажет етеді және Doris кодтауды сақтау пішімі мен дерек қасиеттеріне қарай таңдайды.\n\n",
+      "target_hash": "ff1688e8bbe0876059d27ef4147378d593b478be30a27298822330d9dabe4e55",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "48af9d385b8195d213827907723522862f8b052ed056a4f6f19a1dbdec746b53",
+          "target_hash": "ff1688e8bbe0876059d27ef4147378d593b478be30a27298822330d9dabe4e55"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5c70f46164d546498761a8ecad38614f",
+      "source_hash": "dedd298566fc194739c5023bee79aa754eb87752279b117ec4f00fa9f130b37e",
+      "target_text": "## 10.4 Partition қалай жасалып, жойылатынын таңдау\n\nСығу сақталған жолдар қолданатын байттарды азайтады. Сақтау мерзімі қай жолдар онлайн қалатынын басқарады. Doris ішінде сақтау мерзімі құрылымы көбіне оқиға уақыты бағанындағы Range Partition бөлімдерінен басталады.\n\nҮш Partition режимі жасауға қатысты әртүрлі сұраққа жауап береді:\n\n| Режим | Partition не жасайды? | Сай сценарий | Өмірлік цикл салдары |\n| --- | --- | --- | --- |\n| Manual Partitioning | Айқын кесте DDL немесе `ALTER TABLE` | Дәл бақылау қажет тұрақты не бизнес анықтаған ауқымдар | Кейінгі қосу мен жоюды қолданба не оператор да басқарады |\n| Auto Partitioning | Қабылдау кезіндегі кіріс Partition мәні | Сирек, болжамсыз не дерекке негізделген мәндер | Жетіспейтін Partition сұраныспен жасайды; AUTO RANGE кестелері тек ең жаңа N тарихи ауқымды сақтау үшін `partition.retention_count = N` қолдана алады |\n| Dynamic Partitioning | Ағымдағы уақыт пен кесте қасиеттерін түсіндіретін жоспарлағыш | Болашақ алдын ала жасау және жылжымалы мерзім өтуі бар болжамды уақыт қатары терезесі | Ығысулар бойынша толық уақыт ауқымдарын жасап, жояды |\n\nАғымдағы Doris құжаттарында автоматты жасауға жалпы ұсынылатын тәсіл — Auto Partitioning. Талапқа арнайы сағатқа негізделген жылжымалы терезе кірсе, Dynamic Partitioning тиісті таңдау болып қалады: ағымдағы уақыттан кері саналатын ауқымдар және алдын ала жасалған болашақ ауқымдар.\n\n",
+      "target_hash": "0eabcdbe3ddb17d443cde4c2d6782a1c87657052c59bf67851c694149700944a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "dedd298566fc194739c5023bee79aa754eb87752279b117ec4f00fa9f130b37e",
+          "target_hash": "0eabcdbe3ddb17d443cde4c2d6782a1c87657052c59bf67851c694149700944a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.04135411eea842a58756a8e2c1c0deae",
+      "source_hash": "1584d1cc232b02667ec08e105fd3ff551d3016263d9bef0f7233f815472dcf7e",
+      "target_text": "## 10.5 Жылжымалы терезе мен кеш дерек саясатын анықтау\n\nDynamic Partition қасиеттері жоспарлағыштың ағымдағы уақытына қатысты терезені сипаттайды. Сауда тобы бүгінге дейінгі жеті күнтізбелік күн ауқымы және ертеңге дайындалған бір ауқымы бар өндірістік саясат таңдайды.\n\nҚарастырыңыз:\n\n```sql\nPROPERTIES (\n    \"dynamic_partition.enable\" = \"true\",\n    \"dynamic_partition.time_unit\" = \"DAY\",\n    \"dynamic_partition.start\" = \"-6\",\n    \"dynamic_partition.end\" = \"1\",\n    \"dynamic_partition.create_history_partition\" = \"true\",\n    \"dynamic_partition.time_zone\" = \"Asia/Shanghai\"\n)\n```\n\n`D0` күнтізбелік күнінде көзделген терезе мынаны қамтиды:\n\n![Manual, Auto және Dynamic Partition жасауы және сағатқа қатысты жылжымалы терезе](images/04-partition-rolling-window.png)\n\n*Dynamic Partitioning толық уақыт ауқымдарын басқарады, сондықтан жол жеке TTL бойынша емес, Partition бөлімімен бірге мерзімінен шығады.*\n\nСурет жазулары: Partitions follow a rolling window — Partition жылжымалы терезеге сай; Manual — қолмен; DDL defines ranges — DDL ауқымдарды анықтайды; Auto — автоматты; Values create ranges — мәндер ауқым жасайды; Incoming value — кіріс мән; Dynamic — динамикалық; Scheduler manages ranges — жоспарлағыш ауқымдарды басқарады; Range — ауқым; Partition — Partition; Scheduler — жоспарлағыш; History enabled — тарих қосылған; Six previous days + today — алдыңғы алты күн және бүгін; Tomorrow prepared — ертең дайын; Oldest range may leave at next day boundary — ең ескі ауқым келесі күн шекарасында кетуі мүмкін; Removal waits for the scheduler — жою жоспарлағышты күтеді; Late event — кеш оқиға; Outside all ranges: reject or use an explicit late-data path — барлық ауқымнан тыс: қабылдамау немесе айқын кеш дерек жолын қолдану. DAY, start = -6, end = 1, Asia/Shanghai, D-6–D-1, D0 және D+1 белгілері сақталған. Сурет ағылшын түпнұсқасында қалады.\n\nТарихи жасау қосылғанда, бұл баптаулар сегіз күндік Partition жасайды: алдыңғы алты күн, ағымдағы күн және бір болашақ күн. Әр Range Partition солы жабық, оңы ашық аралық қолданады:\n\n```text\n[2026-09-22 00:00:00, 2026-09-23 00:00:00)\n```\n\nАлғашқы жеті ауқым ағымдағы онлайн сақтау терезесін құрайды; сегізіншісі ертеңгі ерте жазуларды қабылдайды. Дәл `2026-09-23 00:00:00` оқиғасы сол уақытта аяқталатынға емес, келесі Partition бөліміне тиесілі.\n\n",
+      "target_hash": "63bd3b1da496c506455d5c4943c555518de48a370a190e9d3c734737d57fedf3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "1584d1cc232b02667ec08e105fd3ff551d3016263d9bef0f7233f815472dcf7e",
+          "target_hash": "63bd3b1da496c506455d5c4943c555518de48a370a190e9d3c734737d57fedf3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cc9e4f31bba04fd7b6c10eb1dd040d1d",
+      "source_hash": "87ca54954fdb259cd16f75ba2c7ec6436ac754e3909c9e9f366126d9a7260073",
+      "target_text": "## 10-зертханалық жұмыс: сығуды салыстыру және Partition өмірлік циклін тексеру\n\n9-зертханалық жұмысты аяқтағаннан кейін [10-зертханалық жұмыс — сығуды салыстыру және Partition өмірлік циклін тексеру](lab10_manage_data.ipynb) ашып, шамамен 45 минут жоспарлаңыз; қосымша нақты сағат бөлігі келесі толық сағаттан кейін қайта оралуды қажет етеді. Жұмыс 1–8-модульдердің бір түйінді `doris-rta` контейнеріне және `doris_course` дерекқорына оралады. `events_modelled` ішінен бір шектелген күнді оқиды, дереккөзді өзгертпейді және тек 10-модуль нысандарын жасайды. Amazon S3 қатынаспайды.\n\n| Зертханалық бөлім | Не істейсіз | Нәтиже нені дәлелдейді |\n| --- | --- | --- |\n| **1. Құрылымды оқиға журналдарында сығу таңдауларын салыстыру** | Шектелген күнді тексеру, бірдей `NO_COMPRESSION`, `LZ4F`, `ZSTD` көшірмелерін жүктеу, оқиға санын бірегей жасалған хабарлармен салыстыру және сақтау есептерін күту. | Page сығу баптауы өзгергенде орналасу, жолдар, жүктеу пішіні және реплика саны бірдей; Doris осы үлгінің тұтас кесте сақтау айырмасын көрсетеді, бұл бір бағанды оқшауламайды және CPU өнімділігіне орын бермейді. |\n| **2. Сағаттық Dynamic Partition терезесін жасау** | `HOUR`, `start=-3`, `end=1`, тарих жасау және `Asia/Shanghai` бар Dynamic Partition кестесін қайта құрып, үш сағат бұрынғы, екі сағат бұрынғы және қазіргі оқиғаларды енгізу. | Бес толық сағаттық ауқым жылжымалы ережені білдіреді; терезе жылжып, жоспарлағыш әрекет еткенше жол тұтас сағатымен онлайн қалады. |\n| **3. Терезені алға жылжытып, автоматты мерзім өтуді бақылау** | `start` `-3` мәнін `-2` етіп тарылту, FE аралығын 10 секунд ету, ең ескі сағат жоғалуын күту, аралықты қалпына келтіру және нысаналы SQL қайталау. | Қолмен жою емес, жоспарлағыш `start` мәнінен ескі әр толық ауқымды жояды; ең ескі оқиға онлайн кестеден кетеді, бірақ бұл байттары босатылып қойғанын дәлелдемейді. |\n| **Ағымдағы терезеден тыс оқиғаны сынау** | Терезеден ескі оқиғаны енгізіп, жетіспейтін Partition қатесін талап ету. | Dynamic Partitioning мерзімі өткен тарихты үнсіз қайта жасамайды. |\n| **Қосымша: сол мерзім өтуді нақты сағатпен бақылау** | 2-бөлім терезесін қайта құрып, 3-бөлім қысқа жолын өткізіп, көрсетілген шекарадан кейін шектелген жоспарлағыш күтуіне оралу. | Табиғи мерзім өту ережені өзгертпей ең ескі ауқымды жояды; күту жол TTL дәлдігін емес, жоспарлау кідірісін көрсетеді. |\n| **4. Алдын ала тіркелген ID жоқ қолмен жойылған Partition қалпына келтіру** | Бөлек қолмен бөлінген кесте жасап, бір Partition `FORCE` қолданбай жою, recycle bin тексеру, атаумен қалпына келтіру және бизнес жиынтығын қайта орындау. | Қалпына келтіру мысалы жоспарлағыштан оқшау; осы бақыланатын жағдайда атаумен қалпына келтіру жаңа жойылған нысанды қайтарады, ал атаулар екіұшты болса ID әлі қажет. |\n| **Тоқтату және қайта бастау** | Қажет болса контейнер тоқтату, қайта бастау, қайта қосылу және жұмыс кестелерін санау. | Атаулы том тұрақтылығы жергілікті нысандарды сақтайды; сақтық көшірме не кластерлер арасындағы қалпына келуді дәлелдемейді. |\n\nДәлелді мына ретпен оқыңыз:\n\n1. дереккөз және жол тексерулері логикалық кірісті анықтайды;\n2. DDL және FE конфигурациясы нақты сығу не сақтау мерзімі ережесін анықтайды;\n3. сақтау немесе жоспарлағыш метадеректері ағымдағы физикалық не жоспарлау күйін көрсетеді;\n4. `SHOW PARTITIONS` онлайн ауқымдарды көрсетеді;\n5. SQL көрінетін бизнес жауабын көрсетеді;\n6. recycle bin метадеректері жарамды жойылған нысанды анықтайды.\n\nТек қосымша сағатқа тәуелді қадам екі ноутбук сеансына созыла алады. Онда шекарадан кейін баптауды қайта орындамаңыз, өйткені кестені қайта құру дәлелді жаңа тереземен ауыстырар еді.\n\nЖұмыс жаттығумен аяқталады: күндік Dynamic Partition терезесін жасамас бұрын болжаңыз. Алдымен нәтижені болжаңыз, содан кейін бос ұяшыққа код жазыңыз; одан кейінгі жиналған үлгі шешім де Run All арқылы орындалып, зертханалық жұмыс кестелерін бастапқы күйінде қалдырады.\n\n",
+      "target_hash": "53e726931c984c4a08e445294382390bff505e0cc01ebd27bc18de88de8afeb6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "87ca54954fdb259cd16f75ba2c7ec6436ac754e3909c9e9f366126d9a7260073",
+          "target_hash": "53e726931c984c4a08e445294382390bff505e0cc01ebd27bc18de88de8afeb6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6c4e8e7ee81848cbb06ab5546b456e68",
+      "source_hash": "1cc7af987ba20a12324e4603a119a8a27fd85583148180f57a808cedf9577b98",
+      "target_text": "### Тек атаумен қалпына келтіруді түсіну\n\nDoris нысан ID бермей атаумен қалпына келтіруге рұқсат етеді. Бірнеше жойылған нысанның атауы бірдей болса, тек атаумен қалпына келтіру ең соңғы жойылған сәйкес метадеректерді таңдайды.\n\nМақсат жаңа жойылған бақыланатын жаттығуда бұл пайдалы. Нақты оқиғада екіұшты болуы мүмкін. ID мен `DropTime` тексеріп, қажет болса көзделген нысанды айқын анықтаңыз. `RECOVER` кейін құрылымды және белгілі бизнес деректерін тексеріңіз; жалғыз пәрмен сәттілігі дұрыс тарихи нысан оралғанын анықтамайды.\n\n",
+      "target_hash": "e8628534621c1f018368217272a7d65b486ad98fa8262f4dc44a311229b4382f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "1cc7af987ba20a12324e4603a119a8a27fd85583148180f57a808cedf9577b98",
+          "target_hash": "e8628534621c1f018368217272a7d65b486ad98fa8262f4dc44a311229b4382f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3e19e1d635fe4a8b91652ff7dc34dfa3",
+      "source_hash": "f0edd1b48c2f23e8850750b57ad6d045a2fbc9d4b5a288a2b2f4238086a41bce",
+      "target_text": "## Модуль құрылымы\n\n| Бөлім | Уақыт | Нәтиже |\n| --- | ---: | --- |\n| 10.1 Мүмкіндікті таңдамас бұрын өмірлік циклді анықтау | 6 мин | Алдымен ыстықтық, сақтау мерзімі, кеш дерек және қалпына келу талаптарын айту |\n| 10.2 Doris деректерді қайда сығатынын түсіну | 9 мин | Баған кодтауын Page сығуымен байланыстырып, шектелген ресурсқа қарай таңдау |\n| 10.3 Бақыланатын кіріспен сығу таңдауларын салыстыру | 8 мин | Кіріс пен орналасуды бірдей ұстап, сақтау есебін сақтықпен оқу |\n| 10.4 Partition қалай жасалып, жойылатынын таңдау | 7 мин | Manual, Auto немесе Dynamic Partitioning таңдау |\n| 10.5 Жылжымалы терезе мен кеш дерек саясатын анықтау | 9 мин | Терезе ауқымдарын оқып, кеш оқиғалармен не болатынын шешу |\n| 10.6 Конфигурация, жоспарлау, көріну және босатуды ажырату | 8 мин | Мерзім өтуді төрт қабатта тексеру |\n| 10.7 Деңгейлі сақтауды орналастыру шешімі ретінде қарастыру | 5 мин | Сақталған суық деректерді тек нақты деңгейлерге орналастыру |\n| 10.8 Деректер жойылмас бұрын қалпына келтіру шекарасын анықтау | 8 мин | Нақты ақауға recycle bin, сақтық көшірме немесе қайта ойнату қолдану |\n| 10-зертханалық жұмыс | 45 мин | Үш сығу баптауын салыстыру, сағаттық Partition мерзімін өткізу және жойылғанын қалпына келтіру |\n| 10-тест | 10 мин | Осы мақсаттар бойынша алты сұрақ |\n\n",
+      "target_hash": "9f393de329a72f0d9fdef682937e2d01d9fae00934d4e469eba15584e3109736",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "f0edd1b48c2f23e8850750b57ad6d045a2fbc9d4b5a288a2b2f4238086a41bce",
+          "target_hash": "9f393de329a72f0d9fdef682937e2d01d9fae00934d4e469eba15584e3109736"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b1d31877b6c347389cb210aaf48e63dc",
+      "source_hash": "3b2a218a0e29dca107cdd405f2d160a4cb74b73ab4ee28a8f182f23f43bdb303",
+      "target_text": "## 10.3 Бақыланатын кіріспен сығу таңдауларын салыстыру\n\nТоп ағымдағы әдепкіні ауыстыруды қарастырып жатыр делік. Әділ сынақ сығу алгоритмін өзгертіп, сақтау өлшемінің басқа себептерін тұрақты ұстайды.\n\nМына айнымалыларды бірдей ұстаңыз:\n\n- бағандар, типтер және NULL рұқсаты;\n- кесте моделі және Key реті;\n- Partition шекаралары;\n- тарату бағаны және Bucket саны;\n- реплика саны;\n- кіріс жолдары және жасалған мәндер;\n- жүктеу топтамаларының саны мен пішіні;\n- сақтау метадеректері алынатын уақыт.\n\nБір кесте екі рет жүктелсе, репликалары көп немесе Segment көбірек жасалса, жалпы өлшемі басқалармен бақыланатын салыстыру емес.\n\nСол детерминді `INSERT ... SELECT` қайта пайдаланып, тең жол санын растау көзделген салыстыруды қолдайды.\n\n",
+      "target_hash": "b9c1ee9e6b3572280d52fbffe2094f01e6078e4b5734c48724bebdcb1f7bf8cd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "3b2a218a0e29dca107cdd405f2d160a4cb74b73ab4ee28a8f182f23f43bdb303",
+          "target_hash": "b9c1ee9e6b3572280d52fbffe2094f01e6078e4b5734c48724bebdcb1f7bf8cd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f08598d9114448d289d6ebd92d6eea27",
+      "source_hash": "d980e2d9011d989d7d07d1d685fff4a7e18d43c283c2c04364579248deef327c",
+      "target_text": "### Сақтау есебін сақтықпен оқу\n\nЖарияланған не нақты алгоритмді анықтау үшін `SHOW CREATE TABLE` пайдаланыңыз. Doris ағымдағы сақталған өлшем есебін оқу үшін `SHOW DATA` және байланысты метадеректерді пайдаланыңыз. `SHOW DATA` барлық репликаның жалпы дерек көлемін қамтиды, сондықтан реплика саны бірдей қалуы не есепке алынуы тиіс.\n\nБақыланатын салыстыру үшін пайдалы нәтиже пішіні:\n\n| Алгоритм | Логикалық жолдар | Partition | Tablet | Әр Tablet репликасы | Көрсетілген сақталған өлшем |\n| --- | ---: | ---: | ---: | ---: | ---: |\n| Page сығусыз | бірдей | бірдей | бірдей | бірдей | өлшенген мән |\n| LZ4F | бірдей | бірдей | бірдей | бірдей | өлшенген мән |\n| ZSTD | бірдей | бірдей | бірдей | бірдей | өлшенген мән |\n\nТең өрістер бақыланатын орналасуды анықтайды. Өлшем өрісі Doris тұтас кестеге қазір не көрсететінін анықтайды. Файл тақырыптары, индекстер, Segment саны, шағын кесте шығыны, метадерек хабарлау кідірісі және дөңгелектеу нәтижеге әсер ете алады.\n\n",
+      "target_hash": "ad9b17dc90a6dab3a7315992034cd6dba3431640c6cd7c301b0698f9ef0b4265",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "d980e2d9011d989d7d07d1d685fff4a7e18d43c283c2c04364579248deef327c",
+          "target_hash": "ad9b17dc90a6dab3a7315992034cd6dba3431640c6cd7c301b0698f9ef0b4265"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5f67c6dbc2a74534af579688c59ab361",
+      "source_hash": "ba026785ffb154dad66d578d14c98be9841c943564ac75c1c9345c92c55eb94a",
+      "target_text": "## Қорытынды\n\n- Doris әр баған мәндерін, мысалы сөздік немесе қайталану ұзындығымен кодтап, содан кейін кодталған байттарды кесте алгоритмімен Page бойынша сығады; алгоритмді шектелген ресурсқа қарай таңдаңыз: әдепкі ZSTD, ашу CPU тар орын болса LZ4 немесе Snappy.\n- Әділ салыстыру тек `compression` қасиетін өзгертеді: бірдей жолдар мен жүктеу топтамалары, сол кесте моделі, Partition, Bucket және репликалар; сақтау есебі содан кейін сұрау жылдамдығын емес, сол үлгі айырмасын көрсетеді.\n- Manual Partitioning жасау мен жоюды айқын бақылауда ұстайды. Auto Partitioning кіріс мәндерінен Partition жасайды; AUTO RANGE кестелері `partition.retention_count` арқылы ең жаңа N тарихи ауқымды сақтай алады. Dynamic Partitioning ағымдағы уақытқа қатысты терезені ұстап, болашақ ауқымдарды алдын ала жасайды.\n- Dynamic Partition терезесі — `time_unit` және `time_zone` ішінде `start` мәнінен `end` мәніне дейін саналатын жартылай ашық ауқымдар жиыны; жол тұтас ауқымымен кетеді, ал барлық ауқымнан тыс кеш оқиға кеш дерек жолы өңдемесе жүктелмейді.\n- Қабылданған `ALTER` ережені орнатады, жоспарлағыш келесі тексеруде қолданады, `SHOW PARTITIONS` пен сұрау онлайн деректі көрсетеді және ешқайсысы BE байттарды қашан босатқанын көрсетпейді.\n- Recycle bin `FORCE` қолданбай жақында жасалған жоюды шектеулі уақытта және сол кластер ішінде қалпына келтіре алады; репликалар жоюды да көшіреді, сондықтан `FORCE` жойылған ауқымға, мерзімі өткен терезеге немесе жоғалған кластерге тәуелсіз сақтық көшірме не дереккөзді қайта ойнату қажет.\n\n",
+      "target_hash": "f132f0721a83f15e1bc660ead40a519d0e278dc5e72627c1ba7154582a60a5bd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "ba026785ffb154dad66d578d14c98be9841c943564ac75c1c9345c92c55eb94a",
+          "target_hash": "f132f0721a83f15e1bc660ead40a519d0e278dc5e72627c1ba7154582a60a5bd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.442c9b718d664970ab39f9ed0894ad7d",
+      "source_hash": "b1e52643a1cdada59fc1c73df14ef92d2af272220fa57bc367e270fc15e73f1c",
+      "target_text": "## Анықтамалар\n\n- Сығу: [Деректерді сығу](https://doris.apache.org/docs/4.x/table-design/column-compression/), [FE конфигурациясы](https://doris.apache.org/docs/4.x/admin-manual/config/fe-config/) және [`SHOW DATA`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/table-and-view/data-and-status-management/SHOW-DATA/)\n- Partition режимдері: [Manual Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/manual-partitioning/), [Auto Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/auto-partitioning/) және [Dynamic Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/dynamic-partitioning/)\n- Деңгейлеу: [Деңгейлі сақтау](https://doris.apache.org/docs/4.x/table-design/tiered-storage/overview/)\n- Қалпына келтіру: [Recycle bin ішінен қалпына келтіру](https://doris.apache.org/docs/4.x/admin-manual/data-admin/recyclebin/), [`SHOW CATALOG RECYCLE BIN`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/recycle/SHOW-CATALOG-RECYCLE-BIN/), [`RECOVER`](https://doris.apache.org/docs/4.x/sql-manual/sql-statements/recycle/RECOVER/) және [Сақтық көшірме және қалпына келтіру](https://doris.apache.org/docs/4.x/admin-manual/data-admin/backup-restore/overview/)\n",
+      "target_hash": "fa7bb2092c67d29962446a6db00018c48ccede99c862d3fae0571e9223b0af80",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "b1e52643a1cdada59fc1c73df14ef92d2af272220fa57bc367e270fc15e73f1c",
+          "target_hash": "fa7bb2092c67d29962446a6db00018c48ccede99c862d3fae0571e9223b0af80"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.91b8223d739a4803afa34b90ff4d3cfe",
+      "source_hash": "3cedc164aa0b0072d75b4bcb4bab5fdb055e9916893679f262bbffdc10691495",
+      "target_text": "## 10.1 Мүмкіндікті таңдамас бұрын өмірлік циклді анықтау\n\n«Ескі деректерді басқару» бірнеше түрлі талапты сипаттай алады. Алдымен оларды ажыратыңыз.\n\n| Талап | Негізгі Doris механизмі | Жауап беретін сұрағы |\n| --- | --- | --- |\n| Сол жолдарды азырақ байтпен сақтау | Баған кодтауы және кесте деңгейіндегі сығу | Сақталған дерек қанша орын алады? |\n| Жолдарды басқарылатын уақыт ауқымдарына ұйымдастыру | Partition құрылымы | Қай толық ауқымды қосуға, сканерлеуге, жылжытуға немесе жоюға болады? |\n| Тек жылжымалы онлайн терезені сақтау | Dynamic Partitioning немесе сыртқы өмірлік цикл үдерісі | Қай уақыт ауқымдары қазір сұрауға қолжетімді болуы тиіс? |\n| Жарамды жақындағы нысан жоюын кері қайтару | Catalog recycle bin және `RECOVER` | Жақында жойылған дерекқор, кесте немесе Partition қайтара ала ма? |\n| Кластер жоғалуы немесе ескі логикалық қатеден қалпына келу | Repository сақтық көшірмесі немесе беделді дереккөзді қайта ойнату | Деректерді осы тірі кластерден тәуелсіз қалпына келтіруге бола ма? |\n| Суықтау деректерді арзанырақ ортаға жылжыту | Жергілікті не қашықтағы деңгейлі сақтау | Сақталған суық деректер қайда тұруы тиіс? |\n\n![Сығу, Partition бөлу, сақтау мерзімі, деңгейлеу, recycle bin кері қайтаруы және тәуелсіз қалпына келтіру міндеттері](images/01-lifecycle-responsibilities.png)\n\n*Толық өмірлік цикл бірнеше механизм қолданады; ешқайсысы қалғанның бәрін алмастырмайды.*\n\nСурет жазулары: One table, a complete lifecycle — бір кесте, толық өмірлік цикл; Apache Doris — Apache Doris; Compression — сығу; Fewer bytes for retained rows — сақталған жолдарға аз байт; Retention — сақтау мерзімі; Which ranges stay online — қай ауқымдар онлайн қалады; Recycle bin — жойылған нысандар себеті; Limited same-cluster undo — сол кластердегі шектеулі кері қайтару; Partition design — Partition құрылымы; Manage complete time ranges — толық уақыт ауқымдарын басқару; Tiered storage — деңгейлі сақтау; Hot local — ыстық жергілікті; Retained cold data — сақталған суық дерек; Where retained cold data lives — сақталған суық деректердің орны; Backup or source replay — сақтық көшірме не дереккөзді қайта ойнату; Independent recovery — тәуелсіз қалпына келтіру; Replicas support availability, not earlier business state — репликалар бұрынғы бизнес күйін емес, қолжетімділікті қолдайды. Сурет ағылшын түпнұсқасында сақталған.\n\nБұл механизмдер біріктіріле алады, бірақ бірін-бірі алмастырмайды. Сығу ескі жолдарды жоймайды. Реплика бұрынғы бизнес күйді сақтамайды. Recycle bin кластерден тәуелсіз емес. Деңгейлі сақтау орын мен шығынды өзгертеді; дерек қанша уақыт қажет екенін анықтамайды.\n\n",
+      "target_hash": "f6eb828e5e47dd074fa143054ae1c7c4231392915d02b73834c03e97c0774a03",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "3cedc164aa0b0072d75b4bcb4bab5fdb055e9916893679f262bbffdc10691495",
+          "target_hash": "f6eb828e5e47dd074fa143054ae1c7c4231392915d02b73834c03e97c0774a03"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9d8ba28f50134aa9941c9d3dc5d32ce9",
+      "source_hash": "75c358db16eb0eb582ba3c352f0ae0cefe04355bda83bc35540ecf7713c18357",
+      "target_text": "### Кесте қасиеті бір сығу тобын таңдайды\n\nDoris сығуды кесте қасиеті ретінде береді:\n\n```sql\nPROPERTIES (\n    \"compression\" = \"ZSTD\"\n)\n```\n\nҚасиет таңдалған сығу алгоритмін кестенің баған Page беттеріне қолданады. Бұл әр бағанның codec жариялауы емес. Кесте бағанға тән ішкі кодтауларды әлі қолдана алады, бірақ бұл DDL курста әр бағанға бөлек сығу алгоритмін тағайындауға мүмкіндік бермейді.\n\nApache Doris `none`, `LZ4`, `LZ4F`, `LZ4HC`, `ZSTD`, `Snappy` және `Zlib` қолдайды. Жұмыс қолданатын жергілікті Doris 4.1.3 жинағы Page сығусыз баптауды `NO_COMPRESSION` деп қабылдап, көрсетеді. Doris 4.x ішінде Frontend (FE) әдепкісі ZSTD; әкімші `default_compression_type` өзгерте алатындықтан, мақсатты жинақтағы нақты мәнді растаңыз.\n\n",
+      "target_hash": "bb23a0121bb8f585ab349f26f96c70fb13b47379a1f22625468853e491a6579c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lesson-c",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "75c358db16eb0eb582ba3c352f0ae0cefe04355bda83bc35540ecf7713c18357",
+          "target_hash": "bb23a0121bb8f585ab349f26f96c70fb13b47379a1f22625468853e491a6579c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,1160 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.4500e331a1274508828532eebe457bca",
+      "source_hash": "a3434181e10102c79e788ceb72f0062644be2c03bd909e19a38e1c2c9baf40ee",
+      "target_text": "<div>\n  <div>01-ТЕСТ · APACHE DORIS КӨМЕГІМЕН ЖҮЙЕНІ БАҚЫЛАУ</div>\n  <div>DOG стегіндегі жүйені бақылау негіздері</div>\n  <p>Телеметрия сигналдарын таңдай алатыныңызды, span-дардың сұрауды қалай құрайтынын түсінетініңізді, демо телеметриясының Doris-ке дейінгі жолын қадағалап, курстағы инцидентті растай алатыныңызды тексеріңіз.</p>\n  <span>6 сұрақ · Бір жауап таңдау · Шамамен 10 минут</span>\n</div>",
+      "target_hash": "d24eb49c7d7f164fb5881f659c02e316530744427aba2da5789b4bf097b732be",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "a3434181e10102c79e788ceb72f0062644be2c03bd909e19a38e1c2c9baf40ee",
+          "target_hash": "d24eb49c7d7f164fb5881f659c02e316530744427aba2da5789b4bf097b732be"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3e992a82c977407184b944164982aabd",
+      "source_hash": "359d1d9895f7da6d0c7767e767f9b6c7af4b1f3f3f11d878890340f41717e461",
+      "target_text": "## Бұл тест нені бағалайды\n\nАлты сұрақ [1-модуль сабағының](course.md) алты мақсатына сәйкес келеді: сигнал таңдау, span-дарды ID-лері бойынша біріктіру, DOG стегіндегі міндеттерді бөлу, демо телеметриясының жолы, оның Doris-ке жеткенінің дәлелі және төлем ақауын растау.\n\nБұл — өзін-өзі тексеру, бағаланатын зертханалық жұмыс емес. Docker, іске қосылған DOG стегі немесе сыртқы тіркелгі деректері қажет емес.",
+      "target_hash": "5e161665c60618e81532312025fa1ff8774cbb707c22bad609949097c0eb3155",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "359d1d9895f7da6d0c7767e767f9b6c7af4b1f3f3f11d878890340f41717e461",
+          "target_hash": "5e161665c60618e81532312025fa1ff8774cbb707c22bad609949097c0eb3155"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.02757f4359fe4be98bbbf2610cd70478",
+      "source_hash": "88855008e9a27b01cda9c29da0ce4471101cf92b9275cdd649db701ff94a2d1b",
+      "target_text": "### Тестті инициализациялау\n\nҰяшықты бір рет орындаңыз. Ол курс пакетін тауып, осы модульдің тест анықтамасын оқиды және интерактивті тест объектісін жасайды.",
+      "target_hash": "942b9d92b4f357c6cae67b6c4f3c117574fa1b14fc6b936eecc1082f54db4ad3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "88855008e9a27b01cda9c29da0ce4471101cf92b9275cdd649db701ff94a2d1b",
+          "target_hash": "942b9d92b4f357c6cae67b6c4f3c117574fa1b14fc6b936eecc1082f54db4ad3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9c996ecec817487fb690c757ec230412",
+      "source_hash": "ee67e0ac672237014946d22f52275d624b9c164e0050d4be2d7716bdbebee5da",
+      "target_text": "## Білімді тексеруді бастау\n\n1-сұрақты көрсету үшін келесі ұяшықты орындаңыз. Бір нұсқа таңдап, **Submit answer** басыңыз.",
+      "target_hash": "749c18a34bd61e4358f7dc22a2f0d0ba26439cc8fae29a93eff905b1d649216c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ee67e0ac672237014946d22f52275d624b9c164e0050d4be2d7716bdbebee5da",
+          "target_hash": "749c18a34bd61e4358f7dc22a2f0d0ba26439cc8fae29a93eff905b1d649216c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2ddbc22c4c15459186cd364fb442d070",
+      "source_hash": "dfe293bec45e023c33f743af556b394edddb4915f7646d22c52e27d3c1ccd788",
+      "target_text": "Алты сұрақ телеметрия сигналын таңдай алатыныңызды, span-дарды біріктіретін өрістерді түсінетініңізді, DOG стегінің міндеттерін бөле алатыныңызды, демо телеметриясының Doris-ке дейінгі жолын қадағалап, оның жеткенінің дәлелін бағалай және төлем ақауын растай алатыныңызды тексереді.",
+      "target_hash": "91d1fd7778e980f8fa03486b740089bcc1467526ed49a08b81c3b90a6637d1c7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "dfe293bec45e023c33f743af556b394edddb4915f7646d22c52e27d3c1ccd788",
+          "target_hash": "91d1fd7778e980f8fa03486b740089bcc1467526ed49a08b81c3b90a6637d1c7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d506725f98524d85b0238fdb90ca492d",
+      "source_hash": "65de985d990c3acf75c537a7d043af9b4d96cdaa101b6f81d6533aa245c775ae",
+      "target_text": "Трассалар бір сұрауды сервистер арасында қадағалайды: тапсырыстың әр span-ында оның трасса ID-і бар, ал ақаулы қадамның span-ында қате күйі болады. Сәтсіз төлемдер санауышы тапсырыстардың қаншалықты жиі сәтсіз болатынын көрсетеді, бір тапсырыстың өткен жолын көрсетпейді. Журналдарда тек әр сервис жазуды таңдаған мәлімет болады; демода payment пен checkout сервистері журнал жібермейді. Бақылау тақтасы сұрауларының нәтижесін көрсетеді; сұрау span-дарын өздігінен біріктірмейді.",
+      "target_hash": "bd6c345913ea7472cfb27440adac1a9f9761ced6868f46ff335b959d5bd85e7b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "65de985d990c3acf75c537a7d043af9b4d96cdaa101b6f81d6533aa245c775ae",
+          "target_hash": "bd6c345913ea7472cfb27440adac1a9f9761ced6868f46ff335b959d5bd85e7b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5a77bff0a35d4a92afd8abb2b5e9e3d8",
+      "source_hash": "e42585eca11d77e98a60e57465d3c6f9f633e694994e8c482c7a3e6af2ffe745",
+      "target_text": "Пайдалану кезіндегі сұраққа журналдарды, метрикаларды не трассаларды таңдау.",
+      "target_hash": "39cd6a48bf2966d38ecc672ea86a6c5208efc0adf359e565dceaeb2119a7fce9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e42585eca11d77e98a60e57465d3c6f9f633e694994e8c482c7a3e6af2ffe745",
+          "target_hash": "39cd6a48bf2966d38ecc672ea86a6c5208efc0adf359e565dceaeb2119a7fce9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d8073f4bc06c48ee83c79b06440b739e",
+      "source_hash": "e74833dc1f89d307a29e6819468ced9873c666fdbe273f6b2cbccdcabdca0bf5",
+      "target_text": "Трассалар, өйткені әр сервистегі тапсырыс span-дарының трасса ID-і ортақ және олар ақаулы қадамды белгілейді",
+      "target_hash": "229e3bb9691ca8367802ee5eb0f7d69bcb12a6328f9903d957e83a1b7ea630d3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e74833dc1f89d307a29e6819468ced9873c666fdbe273f6b2cbccdcabdca0bf5",
+          "target_hash": "229e3bb9691ca8367802ee5eb0f7d69bcb12a6328f9903d957e83a1b7ea630d3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fb1c42eb50b54d25a68a75aa9629ce7c",
+      "source_hash": "f7d45d3e2d372dc116671a3c5c0b1ac7e407638a1abded84457cc541052a99bb",
+      "target_text": "Метрикалар, өйткені минутына сәтсіз төлемдер санауышы әр сәтсіз тапсырыстың жолын көрсетеді",
+      "target_hash": "b268063d70f9e6e4160d86a51d41571252780a32d7f8b77481a8c594d8ccb02d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f7d45d3e2d372dc116671a3c5c0b1ac7e407638a1abded84457cc541052a99bb",
+          "target_hash": "b268063d70f9e6e4160d86a51d41571252780a32d7f8b77481a8c594d8ccb02d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c5808aca23fe4bd1894f12042b00fb90",
+      "source_hash": "3d1536928928d536bab5783199b6c85a1ea9c7bb56e4212c11ef4cef8abbbda3",
+      "target_text": "Журналдар, өйткені әр сервис әр сұрауға ақаулы сервис аталған жол жазады",
+      "target_hash": "8e5a3f1098c735674a4ed2172d39e173a946bc86bdba182ad51f23ce5eb8f9fb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3d1536928928d536bab5783199b6c85a1ea9c7bb56e4212c11ef4cef8abbbda3",
+          "target_hash": "8e5a3f1098c735674a4ed2172d39e173a946bc86bdba182ad51f23ce5eb8f9fb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.272d6d5031e64526a632ef5accc159af",
+      "source_hash": "86fcb2e67c3b19f4c378062ea8389d4e86c424eb43786365f7c21fb22cf123ba",
+      "target_text": "Бақылау тақтасы, өйткені оның панельдері бір сұраудың сервистерін ортақ көрініске біріктіреді",
+      "target_hash": "a0e364e9213ed287be3fe770975b02e9b37396b09127c9247a713fa736c375cf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "86fcb2e67c3b19f4c378062ea8389d4e86c424eb43786365f7c21fb22cf123ba",
+          "target_hash": "a0e364e9213ed287be3fe770975b02e9b37396b09127c9247a713fa736c375cf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.50d53e4d4737456ea08bb9568fe5b422",
+      "source_hash": "a5b508e5ec83aad6435d0d345772cf0c4456777b2f14f001da0ca51b01d85255",
+      "target_text": "Тұтынушылар кей тапсырыстардың сәтсіз болатынын хабарлады. Кезекші инженер бір сәтсіз тапсырыстың сұрауы қай сервистерден өткенін және қай қадам қате қайтарғанын көруі керек. Қай сигнал бұған тікелей жауап береді?",
+      "target_hash": "16ffb76fe669cbd0546269a19c4e558d8b4a5c38d1b3f36cd9b9f18d3ab3860c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "a5b508e5ec83aad6435d0d345772cf0c4456777b2f14f001da0ca51b01d85255",
+          "target_hash": "16ffb76fe669cbd0546269a19c4e558d8b4a5c38d1b3f36cd9b9f18d3ab3860c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f53757fe25f943b192bceb63c52f939a",
+      "source_hash": "179a525f86d36021177c7a64d1fb4db584dcd034f1a0ecc9805748d49853be0f",
+      "target_text": "Сұраудың әр span-ында сұраудың трасса ID-і бар, ал span-ның ата-аналық span ID-і — оны бастаған span-ның ID-і. B-де A-ның трасса ID-і, ал ата-анасы ретінде A-ның span ID-і бар, сондықтан B — сол сұраудағы A-ның баласы, ал ата-анасы жоқ A — түбір span. C-нің трасса ID-і басқа, сондықтан ол басқа сұрауға жатады және A-ның ата-анасы бола алмайды. Ортақ трасса ID-і ортақ сервисті білдірмейді: контексті тарату трасса ID-ін сервистен сервиске жеткізеді. Ата-аналық span ID-і қатені білдірмейді; оны күй коды көрсетеді.",
+      "target_hash": "49fc35f7f5929ec0b89771293a4e1347911e95c426cc6a634874f4fe49ca6cad",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "179a525f86d36021177c7a64d1fb4db584dcd034f1a0ecc9805748d49853be0f",
+          "target_hash": "49fc35f7f5929ec0b89771293a4e1347911e95c426cc6a634874f4fe49ca6cad"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.13f0d3bb20994708b4eca096c955fe56",
+      "source_hash": "fff4c7b572bbf563520e91b46348112b7252ee87ab62e0ace555ebde3443834f",
+      "target_text": "Трасса ID-і мен ата-аналық span ID-і бір сұраудың span-дарын қалай біріктіретінін түсіндіру.",
+      "target_hash": "b9297f16e6afb7fa83a89d92fba942b7d91d4d3332ed91bf767e8a25954db8a1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "fff4c7b572bbf563520e91b46348112b7252ee87ab62e0ace555ebde3443834f",
+          "target_hash": "b9297f16e6afb7fa83a89d92fba942b7d91d4d3332ed91bf767e8a25954db8a1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f1fb2d91ce3f49d58df6263fcc2b6f33",
+      "source_hash": "dbb2818b7b855fdbda43eff0f6c7a648d4f77acfa8b5c6ca5747e8589b7cc377",
+      "target_text": "B — сол сұраудағы A-ның баласы, ал C басқа сұрауға жатады",
+      "target_hash": "c76fff31f675011fc6bd401318ca98790c4003ce6f422584afad17c948aa47f5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "dbb2818b7b855fdbda43eff0f6c7a648d4f77acfa8b5c6ca5747e8589b7cc377",
+          "target_hash": "c76fff31f675011fc6bd401318ca98790c4003ce6f422584afad17c948aa47f5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1a686425866f4b08824c96e8fc0685dd",
+      "source_hash": "0fc92bfde822c1add078b6a7e45dfed1cfd6f3fa065d3ef4f04c77b0e476c956",
+      "target_text": "C — A-ның ата-анасы, өйткені A-ның өзінің ата-аналық span ID-і жоқ",
+      "target_hash": "ce907cf9ee365fffb9686d6e7a8b99469eabd7e46a88067c9126c3bb5c2426c5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "0fc92bfde822c1add078b6a7e45dfed1cfd6f3fa065d3ef4f04c77b0e476c956",
+          "target_hash": "ce907cf9ee365fffb9686d6e7a8b99469eabd7e46a88067c9126c3bb5c2426c5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.44ce890bea8c4b9ca7bbc961b6ca4712",
+      "source_hash": "6b3115a244ec48d5890d30a277a6f0fdc308532ea1b3d07065bd6cf95a86d31e",
+      "target_text": "A мен B-ні бір сервис жазған, өйткені олардың трасса ID-і ортақ",
+      "target_hash": "724c17f9887f010e1c646836df5e3435e726d485a0de0d6469a92b9a15575dfb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "6b3115a244ec48d5890d30a277a6f0fdc308532ea1b3d07065bd6cf95a86d31e",
+          "target_hash": "724c17f9887f010e1c646836df5e3435e726d485a0de0d6469a92b9a15575dfb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7e37cd171f3c4a97ae600bba91bd4fac",
+      "source_hash": "661ee0dbf1ee9eec1386cc6b4c27e21108ccce66e2a9ba902e0bca799658a782",
+      "target_text": "B сәтсіз болды, өйткені ата-аналық span ID-і бар span ата-анасына қате хабарлайды",
+      "target_hash": "6caecdefc083ffad768e95d753a4ee42fa1e8a811b42a5ad64455cfa7c489e70",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "661ee0dbf1ee9eec1386cc6b4c27e21108ccce66e2a9ba902e0bca799658a782",
+          "target_hash": "6caecdefc083ffad768e95d753a4ee42fa1e8a811b42a5ad64455cfa7c489e70"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c92d70e6c1194584aa6a3882c7743959",
+      "source_hash": "8323f32081b4d1e81023f1aeef268edd704933f9342b59b9b1b772e0a566688f",
+      "target_text": "otel_traces кестесінде A span-ының span ID-і 7f3a, ал ата-аналық span ID-і жоқ. B span-ының трасса ID-і A-мен бірдей, ал ата-аналық span ID-і 7f3a. C span-ының трасса ID-і басқа. Бұл өрістер нені білдіреді?",
+      "target_hash": "f58519a24b0fd2ab3633fa59343ceb7eff366e42db84707fe330056e0de5b7fb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8323f32081b4d1e81023f1aeef268edd704933f9342b59b9b1b772e0a566688f",
+          "target_hash": "f58519a24b0fd2ab3633fa59343ceb7eff366e42db84707fe330056e0de5b7fb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2c4560c6dbf84e058c46e2c9cce9a683",
+      "source_hash": "ea0eca0b3acfa7fdeeb998c9ebf7ad7aeb7c06e34bbe6942454babdeeeb59ea8",
+      "target_text": "OpenTelemetry Collector телеметрияны қабылдап, өңдеп, экспорттайды; Doris оны кестелерде сақтап, SQL сұрауларына жауап береді; Grafana оны іздеу, трассалар, бақылау тақталары және ескертулер арқылы көрсетеді. Grafana телеметрияны емес, тек бақылау тақталары мен баптауларын сақтайды. Doris сервистерден жинамайды: Collector экспорттаушысы оған деректерді жүктейді. Сервистер телеметриясын өзінде сақтамайды, Collector-ға жібереді.",
+      "target_hash": "8ff35a6d1a2963f1288775cca1eca2fe82a264c748179d6044961bbf534767d3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ea0eca0b3acfa7fdeeb998c9ebf7ad7aeb7c06e34bbe6942454babdeeeb59ea8",
+          "target_hash": "8ff35a6d1a2963f1288775cca1eca2fe82a264c748179d6044961bbf534767d3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.934e8f20d06d494796ae214db53cb712",
+      "source_hash": "e8829055ba4338a76f710ad829a655652cdc108d398c1d2107da8ab87c0cedfa",
+      "target_text": "Жинау, сақтау және визуализацияны DOG стегінің бөліктеріне сәйкестендіру.",
+      "target_hash": "e8d91ba4208a00803c1a510fe059128e96eebc540a3b9b223028bc7a79fee83b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e8829055ba4338a76f710ad829a655652cdc108d398c1d2107da8ab87c0cedfa",
+          "target_hash": "e8d91ba4208a00803c1a510fe059128e96eebc540a3b9b223028bc7a79fee83b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c7abe7ff98444caea7b47b1a285925e8",
+      "source_hash": "5264e5fc448771de44fd724fb404c80ceb20c17c9a55ec46c277e7d2bbe0c859",
+      "target_text": "Collector телеметрияны қабылдап экспорттайды, Doris сақтап сұрайды, ал Grafana көрсетеді",
+      "target_hash": "2bd3c16a5129e71a0eeabe9f085320278f8bee80bf0e96429673d7b924bc6b2b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "5264e5fc448771de44fd724fb404c80ceb20c17c9a55ec46c277e7d2bbe0c859",
+          "target_hash": "2bd3c16a5129e71a0eeabe9f085320278f8bee80bf0e96429673d7b924bc6b2b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.759ed10084f344df9fb7ca5ceb23f264",
+      "source_hash": "4fd9a7b6d84ad2963c4cb7d286e7d26b3d3d81b10b29fc4fe0e13b84b07159b7",
+      "target_text": "Grafana телеметрияны бақылау тақталарында сақтайды, Doris жинайды, ал Collector диаграммалар салады",
+      "target_hash": "6eb8bbda2b4eec1f59934ff776ddf3e7bc4c532186f886614b7c384481241b8e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4fd9a7b6d84ad2963c4cb7d286e7d26b3d3d81b10b29fc4fe0e13b84b07159b7",
+          "target_hash": "6eb8bbda2b4eec1f59934ff776ddf3e7bc4c532186f886614b7c384481241b8e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.22e706897f614379ba44cafb167718bd",
+      "source_hash": "7f058f1035f2de408373ab61dd6789748d176ce0a543e3e522ba77b5f7b72a74",
+      "target_text": "Doris телеметрияны әр сервистен тартып алады, Grafana бастапқы жазбаларды сақтайды, ал Collector пайдаланушыларды жүйеге кіргізеді",
+      "target_hash": "29c3c823fda35faf52055a1fda058965f8943dc6d160d58fae7b3ffd5050f4a8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7f058f1035f2de408373ab61dd6789748d176ce0a543e3e522ba77b5f7b72a74",
+          "target_hash": "29c3c823fda35faf52055a1fda058965f8943dc6d160d58fae7b3ffd5050f4a8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6e519006089d45e294c066255b54ba66",
+      "source_hash": "e66f7e20ef96348c03cc33847295314442c7d53f7ba5d2855ca29f3cdbe5a2e4",
+      "target_text": "Әр сервис өз телеметриясын сақтайды, ал Doris пен Grafana тек соңғы сұрауларды кэштейді",
+      "target_hash": "6ad35004dc90e265c30ba480d51d9ba5311664416e431583b5adac7f76835199",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e66f7e20ef96348c03cc33847295314442c7d53f7ba5d2855ca29f3cdbe5a2e4",
+          "target_hash": "6ad35004dc90e265c30ba480d51d9ba5311664416e431583b5adac7f76835199"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a60d6fb8202f458eaf367a9246d1dc8a",
+      "source_hash": "e2836bf77aa9ed40abc04b52599160331b634f7ef46190486dee72c43649bc02",
+      "target_text": "Топ көптеген сервистің журналдары, метрикалары мен трассалары үшін DOG стегін енгізді. Қай міндеттер бөлінісі стекке сәйкес келеді?",
+      "target_hash": "3053a8586b018a61f6d3d59101f4d513fe9fc209a7000776a4af31e51f22a65a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e2836bf77aa9ed40abc04b52599160331b634f7ef46190486dee72c43649bc02",
+          "target_hash": "3053a8586b018a61f6d3d59101f4d513fe9fc209a7000776a4af31e51f22a65a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3c3927aa76ab4e6e99660a1201322f2d",
+      "source_hash": "263960681f269e7f894f638b57063f8777205350419f1b1ff7006c76c6a5d2ce",
+      "target_text": "Демо сервистері телеметрияны OTLP арқылы демо Collector-ына жібереді, ол DOG Collector-ына бағыттайды. Сондықтан демо Collector-ы тоқтағанда демодан Doris-ке ештеңе жетпейді. DOG Collector-ының өз хост метрикалары демо Collector-ынан өтпейді және келе береді. Сервистер бапталған Collector-ына жібереді, басқасына ауыспайды. Doris сервистерден телеметрия тартпайды: оны экспорттаушы жібереді, ал Collector-ға мүлде жетпеген деректер жоғалады.",
+      "target_hash": "716627d8e58da7d0253c2a14766de0bb06247e335cc9cf1f1eadebedb759f889",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "263960681f269e7f894f638b57063f8777205350419f1b1ff7006c76c6a5d2ce",
+          "target_hash": "716627d8e58da7d0253c2a14766de0bb06247e335cc9cf1f1eadebedb759f889"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fd90fc8e231d419c9483a63ef7069796",
+      "source_hash": "c206e0262f4cdcb8500152353aa2fea6d248448feab0671a1c256eda70cb23aa",
+      "target_text": "Демо телеметриясының сервистен Doris кестесіне дейінгі жолын қадағалау.",
+      "target_hash": "4e35fe550104062d4812abc0ddd92d674789c63646c83528ba75f28208d75a93",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "c206e0262f4cdcb8500152353aa2fea6d248448feab0671a1c256eda70cb23aa",
+          "target_hash": "4e35fe550104062d4812abc0ddd92d674789c63646c83528ba75f28208d75a93"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.333f4034e774454fb853c06a05adff66",
+      "source_hash": "e2ff29371142049d4f1f67862b8153f122a4554c01bf1ae3d093c53ba3c06b13",
+      "target_text": "Демо сервистерінің жолдары тоқтайды, ал DOG Collector-ының өз хост метрикалары келе береді",
+      "target_hash": "9dfd241f606010f0e69d3e2550b4142d816530f9b1bccffdb581d67da306deba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e2ff29371142049d4f1f67862b8153f122a4554c01bf1ae3d093c53ba3c06b13",
+          "target_hash": "9dfd241f606010f0e69d3e2550b4142d816530f9b1bccffdb581d67da306deba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3771c129333243289bd8eaac6b71c0bc",
+      "source_hash": "e5b77f20afcdb93c05f9aed0fdc909727f0d405a4fef11b4869fd88872164c59",
+      "target_text": "Сервистер оның орнына тікелей DOG Collector-ына жібереді, сондықтан Doris-те ештеңе өзгермейді",
+      "target_hash": "06b81399a82b71f97a31543b9c474454d36f213d76ed96b9bd2e122b0c48be89",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e5b77f20afcdb93c05f9aed0fdc909727f0d405a4fef11b4869fd88872164c59",
+          "target_hash": "06b81399a82b71f97a31543b9c474454d36f213d76ed96b9bd2e122b0c48be89"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6ba8e8221c0242789ed9bbe512a42298",
+      "source_hash": "8032911753d792e5fb27e63408d71eaf98c6db8d3261a17d1074727701d6f788",
+      "target_text": "Демо Collector-ы қайта қосылған соң Doris жетіспейтін телеметрияны сервистерден тартып алады",
+      "target_hash": "fcdfe6ac27f7be378d447be366c6334ff9f67998b7947205a689b238447befe0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8032911753d792e5fb27e63408d71eaf98c6db8d3261a17d1074727701d6f788",
+          "target_hash": "fcdfe6ac27f7be378d447be366c6334ff9f67998b7947205a689b238447befe0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a83158f4975848db8683014ca12cc963",
+      "source_hash": "ce31dfba2a2827139a669a5ede0f965cfd7738baba2a590d16a7c8c66daf92e8",
+      "target_text": "Doris-тегі барлық кестеге жол келуі тоқтайды, өйткені бүкіл телеметрия демо Collector-ынан өтеді",
+      "target_hash": "af81d0f17552898baf005b482775f192d23c2db8fe8489608f6db09bd30f4ff2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ce31dfba2a2827139a669a5ede0f965cfd7738baba2a590d16a7c8c66daf92e8",
+          "target_hash": "af81d0f17552898baf005b482775f192d23c2db8fe8489608f6db09bd30f4ff2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9fc97e3d38c34d0298a5bf823985e0b5",
+      "source_hash": "65a544655e0700978c2ecd7300eebba12c107fea30c145f6a59ad80257e3c340",
+      "target_text": "Демоның өз Collector-ы тоқтады, ал DOG Collector-ы мен Doris жұмысын жалғастырып жатыр. Doris-тегі телеметрияға не болады?",
+      "target_hash": "5e422cece61dcdf94cac10d8f67994020cd0013b67465f6299cb3b853d390891",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "65a544655e0700978c2ecd7300eebba12c107fea30c145f6a59ad80257e3c340",
+          "target_hash": "5e422cece61dcdf94cac10d8f67994020cd0013b67465f6299cb3b853d390891"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2bc8c56d20314a2d871faf42a619ffa3",
+      "source_hash": "ce4b72a86833495cb85adf19ccfce9163a4124e2cfea6c798239448476369fc1",
+      "target_text": "Демо сервистерінің otel_traces кестесіндегі жаңа жолдары — жолдың соңы: span-дар жіберіліп, бағытталып, экспортталып, жүктелген. Жұмыс істейтін контейнерлер тек процестердің іске қосылғанын көрсетеді. Жұмыс істейтін дүкен сервистердің сұрауларға жауап беретінін көрсетеді, телеметрияның олардан шыққанын көрсетпейді. Дайын Collector деректі қабылдай алады, бірақ оның журналы span-дардың одан өткенін не Doris оларды жүктегенін көрсетпейді.",
+      "target_hash": "5fc9f42f9b64970291276fd02817af71b920d55f93425ace6bfb3385aa36c420",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ce4b72a86833495cb85adf19ccfce9163a4124e2cfea6c798239448476369fc1",
+          "target_hash": "5fc9f42f9b64970291276fd02817af71b920d55f93425ace6bfb3385aa36c420"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.404556dc0f14479083479880b7c5c8e1",
+      "source_hash": "2dc61eef49a036fdc0ca90b4a306572b577dc773b21b70aa5ffd3902d2d10090",
+      "target_text": "Телеметрияның Doris-ке жеткенін қандай дәлел көрсететінін бағалау.",
+      "target_hash": "2d83accd444624d2ddde3e4ba5c701a2e7fb5a3a7d20109de7e52dc2274e7474",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "2dc61eef49a036fdc0ca90b4a306572b577dc773b21b70aa5ffd3902d2d10090",
+          "target_hash": "2d83accd444624d2ddde3e4ba5c701a2e7fb5a3a7d20109de7e52dc2274e7474"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.785abc0c6da544a4970b436232ac5b6e",
+      "source_hash": "da3367246d4e718d70bcbff672f981a2cb23d7232b263d1a5dd70ac9b89d6210",
+      "target_text": "otel_traces кестесінде демо сервистері жіберген соңғы бірнеше минуттың жолдары бар",
+      "target_hash": "e9f2113e0c58b7a4757960682d67669024abc9059ae2a4f98cad6cd889a97afe",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "da3367246d4e718d70bcbff672f981a2cb23d7232b263d1a5dd70ac9b89d6210",
+          "target_hash": "e9f2113e0c58b7a4757960682d67669024abc9059ae2a4f98cad6cd889a97afe"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7dc12996e73a42a7b5a41d2fdb761ba3",
+      "source_hash": "1425a976fb6a4f9072b76880ce1fad226295ac7cd0b02ad6ebafccad7fff9ae5",
+      "target_text": "Демоның барлық 23 контейнері мен DOG стегінің төрт контейнері жұмыс істейді",
+      "target_hash": "9dca936660fcc28da864f55e16beacef80bcce9dab1ea4d41c11358fd91049c5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "1425a976fb6a4f9072b76880ce1fad226295ac7cd0b02ad6ebafccad7fff9ae5",
+          "target_hash": "9dca936660fcc28da864f55e16beacef80bcce9dab1ea4d41c11358fd91049c5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2dd19b9d1639419286ff616be20cc2af",
+      "source_hash": "221dc18984754662a286e506ed0d69e2ce6f96e1d09eb042e01ac7e8d3d84d0f",
+      "target_text": "Дүкен беті ашылады және тауарды себетке қатесіз қоса аласыз",
+      "target_hash": "36efcdaf84a03aa74e66358f3f3fc462b47d5dcfe6846ce1e7dd0e18ad6e46cd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "221dc18984754662a286e506ed0d69e2ce6f96e1d09eb042e01ac7e8d3d84d0f",
+          "target_hash": "36efcdaf84a03aa74e66358f3f3fc462b47d5dcfe6846ce1e7dd0e18ad6e46cd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.689e1e876d8941fb9d59a4e48786bcd3",
+      "source_hash": "69a087f543ac7eb0a32ea61a9c0273440930e303c210e57c4e30632970cfaabe",
+      "target_text": "DOG Collector журналы оның дайын екенін және трасса конвейерін іске қосқанын айтады",
+      "target_hash": "c8363b168bd758caeb368ff7e9da2594d6625fef5635996d33412a664fae1b4a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "69a087f543ac7eb0a32ea61a9c0273440930e303c210e57c4e30632970cfaabe",
+          "target_hash": "c8363b168bd758caeb368ff7e9da2594d6625fef5635996d33412a664fae1b4a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7ebb1f8863d44db98c752b302d32d4fb",
+      "source_hash": "94db84d99cb9781e852de32517946281e1782baf465ffc17c6a6c29e8e77fa11",
+      "target_text": "Демоны іске қосқаннан кейін қай бақылау оның трассалары Doris-ке жеткенін ең жақсы көрсетеді?",
+      "target_hash": "1bf9375773407cd6cb5d4fd98af01f2123ee06c585051a21b91da470de4683b0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "94db84d99cb9781e852de32517946281e1782baf465ffc17c6a6c29e8e77fa11",
+          "target_hash": "1bf9375773407cd6cb5d4fd98af01f2123ee06c585051a21b91da470de4683b0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5d000a15216b4e15b70aefac5849d2c0",
+      "source_hash": "53b9a49a1993c330c1406948204bd0a58b54b810d03a07fb75cd549a6ac6aa37",
+      "target_text": "Checkout сервисі әр тапсырысты PlaceOrder span-ы ретінде тіркейді; төлем сәтсіз болса, күйі STATUS_CODE_ERROR болады, сондықтан жаңа қате span-дары тапсырыстардың енді сәтсіз болатынын растайды. Жалауша беті тек сақталған баптауды көрсетеді, оның әсерін көрсетпейді. Payment сервисі қатесін тек контейнер шығысына жазады, сондықтан otel_logs кестесіне қате жолдары келмейді. Ақау CPU жүктемесін арттырмайды: payment сервисі төлемді дереу қабылдамай, ештеңені қайталап орындамайды.",
+      "target_hash": "aabb8ce11fcfe156f7687021a6cb0e3cb6558d8b52c8bce82d17c66ec8163af0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "53b9a49a1993c330c1406948204bd0a58b54b810d03a07fb75cd549a6ac6aa37",
+          "target_hash": "aabb8ce11fcfe156f7687021a6cb0e3cb6558d8b52c8bce82d17c66ec8163af0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9fec470435b1496cb865c767b597ce15",
+      "source_hash": "e01329a04837117dae1458e3ae61669ea53774e595f1673d7cbdf9d1630dc3c4",
+      "target_text": "Мүмкіндік жалаушасымен ақау тудырып, оны телеметриядан растау.",
+      "target_hash": "a367dc91f7ab258e13ef6fa1d2cb0b62857c523a52799395a3021a9b935fa3d3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e01329a04837117dae1458e3ae61669ea53774e595f1673d7cbdf9d1630dc3c4",
+          "target_hash": "a367dc91f7ab258e13ef6fa1d2cb0b62857c523a52799395a3021a9b935fa3d3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2796341df07743c6a2dcfb15ee020c89",
+      "source_hash": "9a5ccfe7091157da6a5aeb934f8c09e65df28b61806c7d60c25f085fb426c93c",
+      "target_text": "oteldemo.CheckoutService/PlaceOrder жаңа span-дарының күйі STATUS_CODE_ERROR",
+      "target_hash": "8f17f2168b5137334e6710d2dcd6527d54a72b6bb26fe9e7c3f52323ca4a999c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9a5ccfe7091157da6a5aeb934f8c09e65df28b61806c7d60c25f085fb426c93c",
+          "target_hash": "8f17f2168b5137334e6710d2dcd6527d54a72b6bb26fe9e7c3f52323ca4a999c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f0c97a845fa541e0bcf9106d8583c32a",
+      "source_hash": "55abefd5983dcda8c0f1d04ff7ce8c8979286d61ef5654e6a4a35179a9c718e9",
+      "target_text": "Жалауша бетін қайта жүктегенде paymentFailure карточкасында 50% көрсетіледі",
+      "target_hash": "fd68aa7fbe7ceb09fb1d9e86ba023ae2df631e9be021ad8928e8a120f30cdd70",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "55abefd5983dcda8c0f1d04ff7ce8c8979286d61ef5654e6a4a35179a9c718e9",
+          "target_hash": "fd68aa7fbe7ceb09fb1d9e86ba023ae2df631e9be021ad8928e8a120f30cdd70"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.75cecbc9f27b44bc848655703ef122d0",
+      "source_hash": "defa0a12ce233665e5f507dde011e852df7bc720154362cf3e2f7d7a3a7db219",
+      "target_text": "otel_logs кестесінде payment сервисінің ERROR деңгейіндегі жаңа журнал жолдары, әр сәтсіз төлемге бір жол пайда болады",
+      "target_hash": "15ebe60ed234559e47ff4b4810d799645ba46a2a41a3d1bc2a3ec1839694d0cb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "defa0a12ce233665e5f507dde011e852df7bc720154362cf3e2f7d7a3a7db219",
+          "target_hash": "15ebe60ed234559e47ff4b4810d799645ba46a2a41a3d1bc2a3ec1839694d0cb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d2ccc2f3a3ed40f39562508b9207a1e0",
+      "source_hash": "41aa4f6afc5259954fdea3271a39c310e80bee22abd2e5f730026d8c058ce240",
+      "target_text": "Хост CPU-ы өседі, өйткені payment сервисі әр сәтсіз төлемді қайталап орындайды",
+      "target_hash": "6976e5904dd72814e683f437646ece2fd851372f61fa07525bff33055820ff35",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "41aa4f6afc5259954fdea3271a39c310e80bee22abd2e5f730026d8c058ce240",
+          "target_hash": "6976e5904dd72814e683f437646ece2fd851372f61fa07525bff33055820ff35"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8919ee9055824e9097604399dd02f190",
+      "source_hash": "affa7e1d7b4f34ed73099ac30d8c88886805734b624d31ee03e7368fce88f26d",
+      "target_text": "Демоның paymentFailure жалаушасын 50% етіп сақтадыңыз. Қай бақылау ақаудың болып жатқанын растайды?",
+      "target_hash": "9aeef82d41a3753440179ace45b29088d3452842ad09034d74cd7ec2f50f2730",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "affa7e1d7b4f34ed73099ac30d8c88886805734b624d31ee03e7368fce88f26d",
+          "target_hash": "9aeef82d41a3753440179ace45b29088d3452842ad09034d74cd7ec2f50f2730"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.49bf4f131ade4e7590e43bbf4954b4ed",
+      "source_hash": "1eab0260b6e18d73db75774650356788decd37f3b9e615118e65e86415c5aa12",
+      "target_text": "1-модуль тесті: DOG стегіндегі жүйені бақылау негіздері",
+      "target_hash": "a8d52a7f2931aee133b4cbae8190f22fd4d743356ea336c32b7fb81955e25144",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all units of Observability Module 1 on 2026-11-08. Re-read saved target text against the frozen lesson, complete Lab including actual code and expected outputs, and all six Quiz questions/options/explanations. Checked signal distinctions, trace/parent IDs, UTC, counts, waiting limits, feature-flag actions and the unique correct answers. Inspected all three source PNGs and supplied complete adjacent Kazakh label legends. Corrected image-download wording and removed extra inline-code wrappers from appended legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "1eab0260b6e18d73db75774650356788decd37f3b9e615118e65e86415c5aa12",
+          "target_hash": "a8d52a7f2931aee133b4cbae8190f22fd4d743356ea336c32b7fb81955e25144"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

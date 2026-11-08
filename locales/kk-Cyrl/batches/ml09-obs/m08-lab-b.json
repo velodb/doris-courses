@@ -1,0 +1,608 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.e5f8f2633e56454e925d12fd1f6acd9b",
+      "source_hash": "a4e1197f1b23846a1cae50c91601e3b1ee3f5150c5e21fe11e8502820e09cd9e",
+      "target_text": "## 6. Ескерту ережесін құру\n\nGrafana ішінде **Alerting** > **Alert rules** ашып, **+ New alert rule** таңдаңыз. Формада бес бөлім бар.\n\n**1. Enter alert rule name** (ереже атауын енгізу): `Host CPU busy`. Төменгі ұяшықтар осы атаумен табады.\n\n**2. Define query and alert condition** (сұрау мен шартты анықтау)\n\n- **A** сұрауы `Doris` дереккөзін қолданады. Редакторды **Builder** орнына **Code** етіп, **Format** мәнін `Table` қалдырыңыз; 3-бөлімнің `HOST_CPU_QUERY` SQL-ін қойыңыз. **Run query** таңдаңыз: төмендегі кестеде `{host=\"...\"}` және жұмысбасты пайыз шығады.\n- **Expressions** астында Grafana **Reduce** B және **Threshold** C қосқан. Table сұрауы хостқа бір сан береді, Grafana Reduce қажет емес деп ескертеді: B өрнегін қоқыс белгісімен жойыңыз.\n- **C (Threshold)** ішінде **Input** — `A`, **IS ABOVE** қалдырып, `90` енгізіңіз. C — ескерту шарты. **Preview** таңдаңыз: хост `0` және `Normal` көрсетеді.\n\n**3. Set evaluation behavior** (бағалау тәртібін орнату)\n\n- **Folder**: **+ New folder** таңдап, `Doris course` құрыңыз.\n- **Evaluation group and interval**: **+ New evaluation group** таңдап, `host-cpu` атауын, `30s` аралығын орнатыңыз. Grafana әр ережені 30 секунд сайын бағалайды.\n- **Pending period**: `1m`. Іске қосылмас бұрын шарт бір минуттың әр бағалауында орындалуы тиіс. Шектен төмен бір бағалау Normal күйіне қайтарады, минут қайта басталады. Өндірісте қысқа шың оятпау үшін 10 минуттай ұзағырақ күтеді; мұнда іске қосылуын көруге бір минут.\n- **Configure no data and error handling** ашып, әдепкілерін қалдырыңыз: **Alert state if no data or all values are null** — `No Data`, **Alert state if execution error or timeout** — `Error`. 8-бөлім біріншісін көрсетеді.\n\n**4. Configure labels and notifications** (белгілер мен хабарландыруларды баптау)\n\n- **Labels**: **Add labels** таңдап, `team` = `doris-course`, `severity` = `warning` қосыңыз (жаңа кілт/мәнді теріп Enter басыңыз), **Save** таңдаңыз.\n- **Notifications**: **Use notification policy**, кейін **Preview routing** таңдаңыз. Дана `team = doris-course` саясатына барады, «Delivered to doris-course-email».\n\n**5. Configure notification message** (хабар мәтінін баптау)\n\n- **Summary**: `CPU of {{ $labels.host }} is {{ $values.A }}% busy`\n- **Description**: `The CPU cores of {{ $labels.host }} have been more than 90% busy on average for at least 1 minute.`\n\n`{{ $labels.host }}` — дана хостының белгісі, `{{ $values.A }}` — сол бағалаудағы A мәні. **Save rule and exit** таңдаңыз. Тізім `Doris course > host-cpu` және `1 normal` көрсетеді. Келесі ұяшық Grafana API-ымен ережені оқиды.",
+      "target_hash": "b508e1a8eb03a499ed11080632aa3dd4229ba2bc153ec8d03e5d022cac0803fc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "a4e1197f1b23846a1cae50c91601e3b1ee3f5150c5e21fe11e8502820e09cd9e",
+          "target_hash": "b508e1a8eb03a499ed11080632aa3dd4229ba2bc153ec8d03e5d022cac0803fc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.19f85026fedb49b4a900c257a8af37d6",
+      "source_hash": "c786dc62fda8f666de5c32bdce568b4bd2f7f7e944a94e529d02e6eecf59528a",
+      "target_text": "**Күтілетін нәтиже**\n\nХостыңыз бар бір `host=...` данасы `Normal` күйінде, «CPU of docker-desktop is 8.5% busy» сияқты қорытындымен. Атауы соңғы бағалаудың ең көбі 30 секунд бұрынғы уақытын, `ok` денсаулығын береді. Сақтағаннан кейін бірден «No instances yet» болуы мүмкін: жаңа ереже топтың келесі 30 секундтық сәтінде бағаланады, ұяшықты қайталаңыз. «Grafana has no alert rule named 'Host CPU busy'» деп тоқтаса, атауын тексеріңіз.",
+      "target_hash": "4d057a299e6439d92624ebc31e866580f316fd98432d14a2658bd33bf21f1a50",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "c786dc62fda8f666de5c32bdce568b4bd2f7f7e944a94e529d02e6eecf59528a",
+          "target_hash": "4d057a299e6439d92624ebc31e866580f316fd98432d14a2658bd33bf21f1a50"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4d3177f28aba42349d785c30e7a929d3",
+      "source_hash": "09faad43121d1c517b0b48a1cbe6608b168f5b42dfc9ba7fd791af7640238bbb",
+      "target_text": "**Күтілетін нәтиже**\n\n`timestamp` бірдей сегіз жол, күйге бірден: `idle`, `user`, `system`, `softirq`, `wait`, `nice`, `interrupt`, `steal`. Үлестер қосындысы 1. `idle` ең үлкен, жиі 0.9 маңында; қалған уақытта ядро жұмысбасты болған.",
+      "target_hash": "b9170e474e8c10c8185b3cf567412d1053f9b18eb5d794c9ee29c361ab2dc11b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "09faad43121d1c517b0b48a1cbe6608b168f5b42dfc9ba7fd791af7640238bbb",
+          "target_hash": "b9170e474e8c10c8185b3cf567412d1053f9b18eb5d794c9ee29c361ab2dc11b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.190025b975db431681ac7c7cff0155d9",
+      "source_hash": "73f95ea9c6457e0974be80320a0e4668197beac68dab624f43bdd397c5d0d973",
+      "target_text": "### Бір ядроның бір үлгісі\n\nӘр жол — соңғы 15 секундта бір ядроның бір күйде болған уақыт үлесі. Келесі ұяшық `cpu0` ең жаңа үлгісін көрсетеді.",
+      "target_hash": "5b0659be7021b1f1622b0a6797857f381bee116589f14db1b86b66ac86ee651a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "73f95ea9c6457e0974be80320a0e4668197beac68dab624f43bdd397c5d0d973",
+          "target_hash": "5b0659be7021b1f1622b0a6797857f381bee116589f14db1b86b66ac86ee651a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4ed0573a53bf401cb8b7b86537dcfb29",
+      "source_hash": "93635a6e9c58d380180a9be23eb05f1baf8ff6f9c08e46142170920682c9def8",
+      "target_text": "**Күтілетін нәтиже**\n\nШығыс төрт баптауды тізеді: `GF_SMTP_ENABLED=true`, `GF_SMTP_HOST=doris-obs-mailpit:1025` (`doris-obs` желісіндегі Mailpit контейнері мен SMTP порты), `GF_SMTP_FROM_ADDRESS`, `GF_SMTP_FROM_NAME`. Онсыз Grafana email жібере алмайды, байланыс нүктесінің Test әрекеті SMTP қатесімен сәтсіз. Нақты сервердің адресі, пайдаланушысы, құпиясөзі сол баптауларға не `grafana.ini` ішіндегі `[smtp]` бөліміне жазылады.",
+      "target_hash": "7acc6d00b03333db5b0090ba1150c859439ba143db1c3003d41ebea1f104e712",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "93635a6e9c58d380180a9be23eb05f1baf8ff6f9c08e46142170920682c9def8",
+          "target_hash": "7acc6d00b03333db5b0090ba1150c859439ba143db1c3003d41ebea1f104e712"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0dc80e51db404f7093ca41490bc40b77",
+      "source_hash": "07b7448781fc358b08b1d7433861f80a632c0eeea0ec0ad617f5cde4fa559a55",
+      "target_text": "**Күтілетін нәтиже**\n\nТерезе минут емес, сағат: бес минут бұрын тоқтаған хосттың әлі жолы бар, сондықтан нәтижеде `seconds_since_latest_sample` шамамен 300 жолы қалады. IS ABOVE 120 шартты ереже оны атымен ескертеді. Бір сағат үлгі келмесе, хост бұл нәтижеден де шығады; ұзағырақ үнсіздікке терезені үлкейтіңіз не есеп беруі тиіс хосттар тізімімен салыстырыңыз.",
+      "target_hash": "3607685110dfecda9c5fd06ad4e6db7788770e2cd3c50d94724f94b551ce49f1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "07b7448781fc358b08b1d7433861f80a632c0eeea0ec0ad617f5cde4fa559a55",
+          "target_hash": "3607685110dfecda9c5fd06ad4e6db7788770e2cd3c50d94724f94b551ce49f1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7abbbb36718c442bbcec27fbd642d5d1",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған. Салыстыру үшін ашыңыз немесе орындаңыз.",
+      "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "d29b7dbad139b7831065747e93f190536c8e31efdeacd23d4d4482d98375c3ab"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6614cc51ebd6448b94a4f7e80324c0b0",
+      "source_hash": "4fc5dc1fbf5184cb395efb5e8bf92c10e554ad7febf799e5b2c9c049f0e515bb",
+      "target_text": "**Күтілетін нәтиже**\n\nДемо қосулыда төрт жол, онсыз тек DOG Collector жолы. Демо Collector-ы мен Python сервистері минутына, DOG Collector әр 15 секундта бір рет хабарлайды, сондықтан `row_count` өзгеше:\n\n| `scope_name` | `scope_version` | `service_name` | `host` | Дереккөз |\n| --- | --- | --- | --- | --- |\n| `github.com/.../hostmetricsreceiver/internal/scraper/cpuscraper` | `0.144.0` | (бос) | хостыңыз | DOG Collector хост метрикалары |\n| сол атау | `0.120.1` | (бос) | NULL | Демо Collector хост метрикалары |\n| `opentelemetry.instrumentation.system_metrics` | `0.51b0` | `load-generator`, `recommendation` | NULL | Демоның екі Python сервисінің жүйелік метрикалары, әрқайсысына бір жол |\n\nТөртеуі бір ядроларды санайды: контейнерлер Docker хостының ядросын бөліседі. Тек метрика атауын сүзетін ереже сол CPU-лардың бірнеше көшірмесін араластырады; тек алғашқы көз жолдарының қай хост екенін атайды. Ескерту хостқа бір көз оқиды: хост атауы бар Collector хост метрикалары қабылдағышының жолдары (`scope_name LIKE '%hostmetricsreceiver%'`). DOG Collector атауды `environments/dog-stack/collector-host-metrics.yml` ішіндегі `resourcedetection` өңдегішімен қосады.",
+      "target_hash": "a8a403db17dc0ffa9b69b814b95e29ab8479e7781d834a39f6bfbc2093920648",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4fc5dc1fbf5184cb395efb5e8bf92c10e554ad7febf799e5b2c9c049f0e515bb",
+          "target_hash": "a8a403db17dc0ffa9b69b814b95e29ab8479e7781d834a39f6bfbc2093920648"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d9e840c7270b48f1a59d51b80f4be7cf",
+      "source_hash": "52dab88af5ca37bc23d1d921e434b7d1060c20e88d29feefd7d36f0223027660",
+      "target_text": "## 2. Хост CPU-ын өлшейтін жолдарды таңдау\n\n### `system.cpu.utilization` барлық дереккөзі\n\nБасқа бағдарламалар сол атаулы метриканы береді. Келесі ұяшық соңғы екі минутта `system.cpu.utilization` хабарлаған әр көзді тізеді; кейбірі минутына бір рет қана жібереді.",
+      "target_hash": "eb254adab75ec35b8e001e42786acb89ea6ead112569d4dcd39198d84b9e1116",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "52dab88af5ca37bc23d1d921e434b7d1060c20e88d29feefd7d36f0223027660",
+          "target_hash": "eb254adab75ec35b8e001e42786acb89ea6ead112569d4dcd39198d84b9e1116"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.74d9d8b861174a9e8f91b8aeae11bdcf",
+      "source_hash": "fd8e5d8d1a2e7e61e23dc8253fca8973e00d770e4387d996044f45858b287dd8",
+      "target_text": "**Күтілетін нәтиже**\n\n`idle` орташа 0.9 үлесімен бірінші, 0.9-дан асқан дерлік әр жол — `idle`; өзге күйлерде ондай жоқ. (`irq` — Python сервистерінің interrupt атауы.) Мұндай ереже CPU бос болғандықтан іске қосылады: хост тынышырақ болса, көбірек жол өтеді. Әр жол бір көздің ядросы мен күйі болғандықтан, ескертулер қай хост жұмысбасты екенін айта алмайды.",
+      "target_hash": "f0c8ac3de2740c4bc4062395b8339386874f602ac049892cdbd332dd6302d799",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "fd8e5d8d1a2e7e61e23dc8253fca8973e00d770e4387d996044f45858b287dd8",
+          "target_hash": "f0c8ac3de2740c4bc4062395b8339386874f602ac049892cdbd332dd6302d799"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3700cd79e97f426b9b9d6533d6e4fed0",
+      "source_hash": "babdc38e5d36eabeede07965992b8657878a2e273a23d47ea1f67be4682bed1c",
+      "target_text": "### Тек метрика атауының сүзгісі неге бос хостқа іске қосылады\n\nТек `metric_name` бойынша сүзіп, әр жолды 0.98 сияқты шекпен салыстыратын ереже әр жолды CPU жұмысбастылығының өлшемі деп алады. Келесі ұяшық күй бойынша соңғы минут жолдарын және қаншасы 0.9-дан жоғары екенін санайды.",
+      "target_hash": "e61d03e3094eb62fe44ab56d8642a615a97f9e37048f3f1eed8e2bf38ccd9725",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "babdc38e5d36eabeede07965992b8657878a2e273a23d47ea1f67be4682bed1c",
+          "target_hash": "e61d03e3094eb62fe44ab56d8642a615a97f9e37048f3f1eed8e2bf38ccd9725"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8ad9bd90473348d6aabd31eefa64b6a5",
+      "source_hash": "305e75019493eab57b226c7e25ae9483f62f708f8392d8220a39598ea980d5fc",
+      "target_text": "**Күтілетін нәтиже**\n\n`Grafana (DOG course) <grafana@example.com>` жіберушісінен `oncall@example.com` адресіне, тақырыбы `[FIRING:1] TestAlert Grafana` бір хатты кесте. Браузер жәшігінде де сол хат. Мәтінінде «Notification test» қорытындысы, `alertname=TestAlert`, `instance=Grafana` белгілері бар.\n\nБұл хат Grafana осы нүктеге жеткізетінін көрсетеді. Ереже дұрыс іске қосылатынын, сол бағытпен баратынын не шешілу хаты келетінін көрсетпейді. Келесі бөлімдер әрқайсысын тексереді.",
+      "target_hash": "1bcd866292309285ae3c0a8db8841223c903fda26f5d4ed0fa72b116722e0244",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "305e75019493eab57b226c7e25ae9483f62f708f8392d8220a39598ea980d5fc",
+          "target_hash": "1bcd866292309285ae3c0a8db8841223c903fda26f5d4ed0fa72b116722e0244"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.46607416f559493dbb3643945ae3b1a7",
+      "source_hash": "32e56885542a21c4785acea9a114558e33c72de05ea3975da06119761754ca61",
+      "target_text": "# Grafana ескертулерін баптау\n\n**8-модуль: Grafana көмегімен ескерту** · [Сабақ](course.md) · [Тест](quiz08_alerting_rules.ipynb)\n\nБұл жұмыста хост CPU-ы жұмысбасты болып тұрса хат жіберетін ескерту құрасыз. DOG стегі CPU-ды Doris-те қалай сақтайтынын қарап, бағаланатын сұрауды жазасыз. Кейін Grafana үш бөлігін баптайсыз: қалай жіберуді шешетін байланыс нүктесі, қай ескертулер сонда баратынын шешетін саясат, Grafana нені бағалап, қашан іске қосылатынын шешетін ереже. CPU-ды жүктеп, іске қосылып шешілуін бақылайсыз; хост метрикаларын тоқтатып, дерек келмегенде Grafana әрекетін көресіз. Соңында төлем инцидентіне екінші ережені кодпен жазып, жалаушасын өшіріп инцидентті аяқтайсыз.\n\nGrafana хаттарын DOG стегімен бірге қосылған жергілікті Mailpit-ке жібереді. Еш хат компьютеріңізден шықпайды.\n\nШамамен 55 минут жоспарлаңыз. Үш қадам Grafana-ны күтеді: CPU жүктелгенде 4 минуттай, метрикалар тоқтағанда 3 минуттай, соңғы ереже терезесінен сәтсіз тапсырыстар шыққанша 6 минутқа дейін. 4–6 және 11-бөлімдер веб-беттерде; айналасындағы ұяшықтарды ретімен орындаңыз. Төлем ақауы қосылған 1-модульдің DOG стегі мен демосы қажет (1-зертханалық жұмыстың 5-бөлімі).",
+      "target_hash": "0c19d28d0cc1d2f65922a474e91e13705ea5455faebfffd4da88a12bd404e5a5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "32e56885542a21c4785acea9a114558e33c72de05ea3975da06119761754ca61",
+          "target_hash": "0c19d28d0cc1d2f65922a474e91e13705ea5455faebfffd4da88a12bd404e5a5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1c333f406072461ba33957cb82ed7d2b",
+      "source_hash": "f318918b0c0ef36b1db5f16736cdb7619be3e0b83fedc9c19261419bfda182da",
+      "target_text": "**Күтілетін нәтиже**\n\nСоңғы минуттар тапсырыстары бар бір `succeeded` жолы, `failed` жоқ. Инцидент аяқталды.\n\nӨткеніне қарасақ: 1-модуль ақауды бастап, трассадан көрді; 2-модуль әр сигналдағы дәлелін және қай сервис жібермейтінін тапты; 3-модуль Grafana-да бастауын тауып, хостты себептен алып тастады; 4–7-модульдер санын ықшам кестелерде сақтап, іздеуді аз оқытты, SQL-мен өлшеді; бұл модуль ескерту жасап, себебі кеткенде шешілгенін көрді.",
+      "target_hash": "a16cbc5ec94b4e69e767366d101a184435e9484d27fe7d9f207a6555860fb77f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f318918b0c0ef36b1db5f16736cdb7619be3e0b83fedc9c19261419bfda182da",
+          "target_hash": "a16cbc5ec94b4e69e767366d101a184435e9484d27fe7d9f207a6555860fb77f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ab62e363b22b4c6eb4b40ba0a6e00ce3",
+      "source_hash": "b42ec3e839de45059c4620d1a5ae92c030aac201b8f157359f42159acd919b8e",
+      "target_text": "Жалаушаны өшіргелі дүкен алған тапсырыстарды тексеріңіз:",
+      "target_hash": "75ee04800f9f9fe0e28e207c7b340011abfaa822bade04d8573c441aa0564206",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "b42ec3e839de45059c4620d1a5ae92c030aac201b8f157359f42159acd919b8e",
+          "target_hash": "75ee04800f9f9fe0e28e207c7b340011abfaa822bade04d8573c441aa0564206"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bc3317aeaacf41668ec2edc3b7bf8e36",
+      "source_hash": "cf69f0d41bee7e8e24a5d2e35865b82bc3a61fa2fec851e908fd0719711f0124",
+      "target_text": "**Күтілетін нәтиже**\n\n`off` нұсқасымен `paymentFailure` бір жолы. Енді әр төлем сәтті. **save** баспай орындасаңыз, үш минутқа дейін күтеді.",
+      "target_hash": "90e05b36d4272203c715bf04c3e6648b200b8149059a1051dea2c55c72509002",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "cf69f0d41bee7e8e24a5d2e35865b82bc3a61fa2fec851e908fd0719711f0124",
+          "target_hash": "90e05b36d4272203c715bf04c3e6648b200b8149059a1051dea2c55c72509002"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.40eb77cb180a461fbb8ade119104d781",
+      "source_hash": "e742f202d773a72ed66c6d3f303803b44788087249bbf386c341acc94f47e2ae",
+      "target_text": "## 11. Инцидентті аяқтау\n\nТексеру аяқталды. 1-модульден бері payment төлем сұрауларының жартысына жуығын `Payment request failed. Invalid token. app.loyalty.level=gold` қатесімен қабылдамады, checkout тапсырыстарын сәтсіз етті. Дүкен тұтынушыға ештеңе көрсетпеді, сервистер қате журналын жібермеді, хост бос тұрды. Нақты жүйеде түзету payment-ке енгізілер еді; мұнда себеп — 1-модульде қосқан мүмкіндік жалаушасы. Өшіріңіз:\n\n1. [http://127.0.0.1:28082/feature](http://127.0.0.1:28082/feature) бетін (не `DORIS_OBS_DEMO_PORT` портын) ашыңыз.\n2. **paymentFailure** карточкасында **off** таңдаңыз.\n3. Жоғарғы **save** басыңыз.\n\nКелесі ұяшық flagd жаңа мән бергенше күтеді:",
+      "target_hash": "f05cb1fbfd36198f599ddf2f3686c23e67b34fd387e9c845b9ca6f825bceaf8c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "e742f202d773a72ed66c6d3f303803b44788087249bbf386c341acc94f47e2ae",
+          "target_hash": "f05cb1fbfd36198f599ddf2f3686c23e67b34fd387e9c845b9ca6f825bceaf8c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ca7e44f2283a48c2b683911b488989dc",
+      "source_hash": "cedd791eb09aa40928805ff9143b86cf4809557133d9a7308c7a83a4e76b2107",
+      "target_text": "**Күтілетін нәтиже**\n\nТерезеде сәтсіз тапсырыс барда дана `Alerting` болып, үлесі 10% не аз болған алғашқы бағалауда, шамамен 5 минутта `Normal` қайтады: әдетте соңғы сәтсіз тапсырыс шығып, үлес 0 болғанда. Кері жолда күту кезеңі жоқ. Ең көбі бір минут кейін келесі топ аралығында `[RESOLVED] Failed orders Doris course (critical doris-course)` хаты келеді. Қорытындысы шешкен бағалаудың үлесін, мәндері `A=0 C=0` көрсетеді: шарт жалған.",
+      "target_hash": "3686eccbf19e57d549dd1cd4d5a8392ffc4c41b259fe7f0c812d023f33c84bed",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "cedd791eb09aa40928805ff9143b86cf4809557133d9a7308c7a83a4e76b2107",
+          "target_hash": "3686eccbf19e57d549dd1cd4d5a8392ffc4c41b259fe7f0c812d023f33c84bed"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a5c3b965d6434adc9df8d5899a100dfc",
+      "source_hash": "10f0c47d795a5e5498dea5f0659fea80a3e18ce04ffe11d57b2e631b309f9aaa",
+      "target_text": "Шешілуін бақылаңыз. Ереже терезесінде соңғы 5 минуттың сәтсіз тапсырыстары әлі бар, үлес олар шыққан сайын ғана түседі:",
+      "target_hash": "00aee16514f0f104b8474b75d0d34e21df0d31d7a2d263d56235a50dfa73e71d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "10f0c47d795a5e5498dea5f0659fea80a3e18ce04ffe11d57b2e631b309f9aaa",
+          "target_hash": "00aee16514f0f104b8474b75d0d34e21df0d31d7a2d263d56235a50dfa73e71d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8c8acc4e87b74b2ebcd73033f809d5c2",
+      "source_hash": "d8ac23b1de4acf371864b14da7ad576df6bca656cdcb21c36092de3eee8a4f7f",
+      "target_text": "**Күтілетін нәтиже**\n\nШамамен екі минутта: `(no labels)` данасы алғашқы бағалауда `Pending`, бір минут кейін `Alerting`, «42.9% of the orders of the last 5 minutes failed» сияқты қорытындымен. Сұрау хостқа жол емес, бір сан береді, сондықтан өз белгілері жоқ бір дана бар. `since_utc` — `Alerting` болған уақыты; ұяшық содан кейінгі хатты күтеді. Тақырыбы `[FIRING:1] Failed orders Doris course (critical doris-course)`; іске қосылғаннан 10 секундтай кейін қорытынды, үлес `A=`, `C=1` және белгілермен келеді. Ереже тұтынушы көретін сәтсіз тапсырысты, CPU ережесі ықтимал себеп — жұмысбасты хостты бақылайды. Мұнда хост ешқашан себеп болған жоқ.",
+      "target_hash": "628fcef4a436b9e7055736c27705d5beafc82cdba8453217a6eb0ea5d7148eea",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d8ac23b1de4acf371864b14da7ad576df6bca656cdcb21c36092de3eee8a4f7f",
+          "target_hash": "628fcef4a436b9e7055736c27705d5beafc82cdba8453217a6eb0ea5d7148eea"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a519be219d0040838989977ab88830c2",
+      "source_hash": "4793325af6c65e106d8b1b08a7a4ec6d65f156c0a0726752073196925074adac",
+      "target_text": "Жаңа ереженің іске қосылуын және хатын күтіңіз:",
+      "target_hash": "f47c241e913eb84fc7921fcef5c011d3d0c71ed36e969d0cd1b0677141024d34",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "4793325af6c65e106d8b1b08a7a4ec6d65f156c0a0726752073196925074adac",
+          "target_hash": "f47c241e913eb84fc7921fcef5c011d3d0c71ed36e969d0cd1b0677141024d34"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.435adfd3e9a24f089b8414895f0c9092",
+      "source_hash": "12b66c14ed3718193cc5fe1789ad7633c95ee351da1c1bede10e7760e83af912",
+      "target_text": "## 10. Сәтсіз тапсырыстарға ескерту\n\n1-модульден бері тапсырыстардың жартысы сәтсіз болды, еш ескерту айтпады. 9-бөлім ереже — Grafana экспорттайтын құжат екенін көрсетті. Оны өзіңіз де жазып жібере аласыз; топ нұсқа бақылауында сақтап, кодтай тексере алады. Келесі ұяшықтар осылай `Failed orders` екінші ережесін құрады:\n\n- Сұрау соңғы 5 минутта аяқталған тапсырыстардың сәтсіз үлесін пайызбен есептейді. Дүкен минутына бір-төрт тапсырыс алады, 5 минутта шамамен он; қысқа терезеде бір-екеу болып, үлес 0 мен 100 арасында секірер еді.\n- Шарт — 10-нан жоғары, 1 минут бойы орындалуы керек.\n- 5 минутта тапсырыс аяқталмаса, үлес NULL, сұрауда мән жоқ. Бұл ереженің `noDataState` мәні — `OK`: тапсырысы жоқ дүкенде сәтсіз тапсырыс жоқ. Мүлде тапсырыс тоқтауы — жаттығудағыдай басқа ереженің сұрағы.\n- `team=doris-course`, `severity=critical` белгілері 5-бөлім саясатымен 4-бөлім нүктесіне бағыттайды.\n\nАлдымен сұрауды тексеріңіз:",
+      "target_hash": "f7bf074b3e35dbed1beaa80c5d7df5b4d8d560b6ae5539c6ccb10f519de45887",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "12b66c14ed3718193cc5fe1789ad7633c95ee351da1c1bede10e7760e83af912",
+          "target_hash": "f7bf074b3e35dbed1beaa80c5d7df5b4d8d560b6ae5539c6ccb10f519de45887"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9cfeb27482be4b3ea583b5d997d0b4f4",
+      "source_hash": "2e89c609d1c81662166ebff44a0a52ad3e00fee281ac376313f6e0c47b9aabef",
+      "target_text": "**Күтілетін нәтиже**\n\nБір `failed_percent` жолы, әдетте 30–70: жартысына жуығы сәтсіз, он тапсырыста кездейсоқтыққа орын бар. Демо тоқтаса, мән NULL.",
+      "target_hash": "3f58d6363bd129ba2f33d28ba567207d54d6e17e53ff21137e65688c246de1d1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "2e89c609d1c81662166ebff44a0a52ad3e00fee281ac376313f6e0c47b9aabef",
+          "target_hash": "3f58d6363bd129ba2f33d28ba567207d54d6e17e53ff21137e65688c246de1d1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e6b7640595ac4d64b970e3916cdb52fc",
+      "source_hash": "18791520ebd3dda241fb4eaa3cbb04ac368eca0cea06dee35181b0ed2f79981b",
+      "target_text": "**Күтілетін нәтиже**\n\nҚұпиясөзсіз екі `curl` сұрауы, кейін бір жол: `failed-orders` uid-лі `Failed orders`, `1m` күту кезеңі және екі белгі. Grafana **Alerting** > **Alert rules** ішінде `Doris course` бумасын `host-cpu`, `orders` екі тобымен көрсетеді. Ереже provisioned деп белгіленбеген, веб-бетте өңдей аласыз; файлдан жүктелгені онда тек оқылады. «Grafana refused the admin password» деп тоқтаса, `GRAFANA_ADMIN_PASSWORD` мәнін өз құпиясөзіңізге қойып қайталаңыз.",
+      "target_hash": "1ebabc7ef8b56a6081aa10b56124eaeecdfc2e24dbec5dc89a5a68e7b1535838",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "18791520ebd3dda241fb4eaa3cbb04ac368eca0cea06dee35181b0ed2f79981b",
+          "target_hash": "1ebabc7ef8b56a6081aa10b56124eaeecdfc2e24dbec5dc89a5a68e7b1535838"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fc1ccdacb46d4e53a22b31177a7e5074",
+      "source_hash": "c32574480292cca59052b87e40c982c2d75e1bb17b4af51d8dc16dcc24e26769",
+      "target_text": "Келесі ұяшық ережені Grafana provisioning API пішімінде, 9-бөлім YAML-ының JSON нұсқасы ретінде жазады: `doris` дереккөзіндегі `A` сұрауы, `C` шегі, күту кезеңі, дерексіз/қате өңдеуі, белгілер мен аннотациялар. `lab.provision_alert_rule_group(...)` `Doris course` бумасын тауып, осы ереже мен 30 секунд аралығы бар `orders` тобын HTTP `PUT` арқылы жібереді; кейін топта дәл жіберілгендер қалады. Тұрақты `uid` қайталағанда сол ережені жаңартқызады. Жазуға `admin` пайдаланушысының құпиясөзі керек: 4-бөлімде жаңасын қоймасаңыз — `admin`.",
+      "target_hash": "1cf24d399d96adeb5fda37386aa6049bded3566e748f050138cb1f9e01902200",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m08-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 8 on 2026-11-08. Re-read all four saved target files against frozen English after translation; read the complete Lab code and all six Quiz questions/options/explanations with answer mapping. Checked per-host CPU source/core/state filtering and one-minus-idle, windows ending now, continuous Pending reset timeline and immediate recovery, recovery thresholds, distinct evaluation/group-wait/group-interval/repeat timing, test-delivery-only limits, routing labels and contact dependencies, all-no-data versus one missing host, freshness lookback limits, POST-before-group-PUT and exact group replacement, API provenance/editability, preserved notification templates/placeholders and actual control names, failed-order denominator/end_time/NULL handling, >10 percent and one-minute hold, five-minute recovery window and cleanup persistence. Clarified current-time reference, Pending wording, unlabeled values and mail-destination wording; added Kazakh meanings beside the five literal UI form headings. Viewed all three PNGs and checked full adjacent Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "c32574480292cca59052b87e40c982c2d75e1bb17b4af51d8dc16dcc24e26769",
+          "target_hash": "1cf24d399d96adeb5fda37386aa6049bded3566e748f050138cb1f9e01902200"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

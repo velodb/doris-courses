@@ -1,0 +1,152 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.b6a0b6d7359e4307949299c6a02ac9a8",
+      "source_hash": "64135a92d79cd1be61dccce8b1c36d8c4557b358f8f36c82178525e85eb62c56",
+      "target_text": "## Тазалау\n\nКідірту үшін ортаны тоқтатып, дерегін сақтаңыз, кейін қайта бастаңыз:\n\n```bash\ndocker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml stop\ndocker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml start --wait\n```\n\nКөл, ағын сервистері, тақта, көшірме сақтау солай тоқтайды: төмендегі жоба/файл командаларында `down --volumes` орнына `stop` қолданыңыз. 4-жұмыс көлді қайта қосады.\n\nБәрін жою үшін курс каталогында осы ретпен орындаңыз:\n\n1. 5A/5B ағын сервистерін жойыңыз. Орта желісіне қосылғандықтан алдымен бұлар; тапсырмалары да аяқталады:\n\n   ```bash\n   docker compose --project-name doris-warehousing-streaming --file environments/streaming/compose.yml --profile kafka --profile cdc down --volumes\n   ```\n\n2. Ортаны база/пайдаланушы/рөл/топтарымен жойыңыз:\n\n   ```bash\n   docker compose --project-name doris-warehousing-course --file environments/single-node/compose.yml down --volumes\n   ```\n\n3. Көл/тақта/көшірме сақтауын жойыңыз. Олардың желісіне Doris қосылған, сондықтан ортадан кейін:\n\n   ```bash\n   docker compose --project-name doris-warehousing-lake --file environments/lakehouse/compose.yml down --volumes\n   docker compose --project-name doris-warehousing-bi --file environments/bi/compose.yml down --volumes\n   docker compose --project-name doris-warehousing-backup --file environments/backup/compose.yml down --volumes\n   ```\n\n4. Қаласаңыз құрастырылған `doris-course-superset:4.1.2-pydoris1.1.0`, `doris-course-flink:1.20.1-cdc3.4.0-doris25.0.0` және жүктелген бейнелерді `docker image rm` арқылы жойып, каталогтағы `.runtime/`, `.venv/` өшіріңіз.\n\nКейін `docker ps -a --filter name=doris-warehousing`, `docker volume ls --filter name=doris-warehousing` ештеңе көрсетпейді.\n\n",
+      "target_hash": "75d796d9b67a536773d6518230e231b9207ce25745ff6010532eedd309fa5d71",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-meta-readme-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 54 selected Data Warehousing metadata and full README units on 2026-11-08. Re-read all three saved target files against frozen English and full course.yaml/README; compared module title wording with existing genuine head-module translations. Checked all 14 main modules and optional title/path inventory without taking extension content, module ordering/timing/dependency tables, source history versus labelled simulation and account-receipt boundaries, every dataset path/amount/date/count, local platform/version/digest/resource/port/image/network/database/credential details, optional memory-limit reset and preserved connections, Python/kernel/setup commands, delayed/failed environment guidance, and pause versus destructive cleanup dependency order. Restored explicit order/history, view/materialized-view and file-load wording in overview rows, named lab owners in port descriptions and the three-chart dashboard. Code/URLs/anchors/machine identifiers remain preserved. No catalog unit in the frozen map has data-warehousing scope; only the explicitly selected course.yaml and README are in this metadata batch. Technical admission and native human review remain unperformed.",
+          "source_hash": "64135a92d79cd1be61dccce8b1c36d8c4557b358f8f36c82178525e85eb62c56",
+          "target_hash": "75d796d9b67a536773d6518230e231b9207ce25745ff6010532eedd309fa5d71"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.97cddb34de814517a42bef55f2e6ea8a",
+      "source_hash": "7cb01c52f191e4df5631795b3cd5ee659887700a718b4067db4cc6df3c6456db",
+      "target_text": "## Деректер жиыны\n\nЕкі түр дереккөзімен ажыратылады:\n\n- **WWI тарихы.** Microsoft [Wide World Importers v1.0 үлгі базасы](https://github.com/microsoft/sql-server-samples/releases/tag/wide-world-importers-v1.0), көтерме бизнестің MIT лицензиялы имитациясы (`datasets/wwi/LICENSE.txt`). 1-модуль салыққа дейін 12220.60 тұратын он тапсырыстан басталады; 5-жұмыс 2013–2016 жылдардың 701,846 жолын, он кестенің керек бағандарын жүктейді. Күндері бүгінге жылжытылмайды. Клиент түсімдері тапсырысқа емес, шоттарға тиесілі, сондықтан тапсырыс төлемі саналмайды.\n- **Жаңа имитациялық тапсырыстар.** Курс үшін жазылып, `COURSE_SIMULATION` белгіленген 2026 жылғы 900001–900011. WWI клиенттері мен 1–11 өнімдеріне сілтейді; баға, EAST/WEST аймақтары, Asia/Shanghai оқиғалары — оқу болжамдары. 7-жұмыстан соң 11 тапсырыс 1510.00, бас тартылғанынсыз 1310.00; 2-деңгей осыдан басталады. 9-жұмыс бес клиенттің сегіз тапсырысы, жеткізу/төлем/ішінара қайтарымы бар шағын кейс қосады.\n\n| `datasets/` файлы | Мазмұны | Қайда |\n| --- | --- | --- |\n| `wwi/sample.json` | Он WWI тапсырысы, сілтенген клиент/өнім | 1–4-жұмыс |\n| `wwi/wwi-core.tar.gz`, `wwi/manifest.json` | Он Parquet кестесі, hash/жол саны | 5; 6/7 клиент/өнімін оқиды |\n| `orders.csv`, `orders.json` | 1400.00 тұратын он жаңа имитациялық 900001–900010 | 5–7, 4–5 кеңейтімі |\n| `malformed_orders.csv`, `orders_reordered.csv` | Бір қате жолды пакет, баған реті бөлек екі тапсырыс | 5 |\n| `raw_orders.json` | Он тапсырыс, үш қате: сан емес сома, бос ID, белгісіз клиент | 6 |\n| `deliveries.json`, `business_events.json`, `expected_current.json` | Екі рет/ретсіз оқиғалар; тауар, төлем, қайтарым, жөнелтудің тәуелсіз тізілімі; күтілетін күй | 7 |\n| `warehouse_case.json` | 9–11-жұмыс кейсі мен күтілетін нәтижесі | 9–11 |\n\n5-жұмыс WWI-ды `.runtime/wwi/` ішіне ашып, әр файлды manifest-пен тексереді. Бұрын ашқанды қолдануға Jupyter-ге дейін `DW_WWI_DATA_DIR` орнатыңыз. 10-жұмыс пен 2–3 кеңейтімі бекітілген ережемен 100,000 жол жасайды.\n\n",
+      "target_hash": "a97e11a565fd814a49d0cd418945d5939881a5ef6f1dc2407627648a7d04fff0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-meta-readme-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 54 selected Data Warehousing metadata and full README units on 2026-11-08. Re-read all three saved target files against frozen English and full course.yaml/README; compared module title wording with existing genuine head-module translations. Checked all 14 main modules and optional title/path inventory without taking extension content, module ordering/timing/dependency tables, source history versus labelled simulation and account-receipt boundaries, every dataset path/amount/date/count, local platform/version/digest/resource/port/image/network/database/credential details, optional memory-limit reset and preserved connections, Python/kernel/setup commands, delayed/failed environment guidance, and pause versus destructive cleanup dependency order. Restored explicit order/history, view/materialized-view and file-load wording in overview rows, named lab owners in port descriptions and the three-chart dashboard. Code/URLs/anchors/machine identifiers remain preserved. No catalog unit in the frozen map has data-warehousing scope; only the explicitly selected course.yaml and README are in this metadata batch. Technical admission and native human review remain unperformed.",
+          "source_hash": "7cb01c52f191e4df5631795b3cd5ee659887700a718b4067db4cc6df3c6456db",
+          "target_hash": "a97e11a565fd814a49d0cd418945d5939881a5ef6f1dc2407627648a7d04fff0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c2f721226d694155b31e276c30ad75ef",
+      "source_hash": "17aacd2a7b6a00fa5700cb548277a7e2f658d54e23ec96333e3e1b167f23ac90",
+      "target_text": "## Курс кімдерге арналған\n\n- Doris-те қойма құратын не құруға дайын дерек/аналитика инженерлеріне.\n- `SELECT`, `WHERE`, `GROUP BY`, `JOIN` SQL жаза, `try` / `finally` бар шағын Python функциясын оқи, сөздік не шақыру мәнін өзгерте алуыңыз керек; 5-жұмыс HTTP жіберетіндіктен әдіс/URL/тақырып/күй кодын тану, `docker ps`, `docker logs` сияқты командаларды орындау қажет.\n- Doris тәжірибесі керек емес. 1-модуль ортаны қосып, алғашқы кестеден өткізеді.\n\n",
+      "target_hash": "00fece9d0dd99578fb60b273cf44dd58c3e840f94ba02fc05dba2549e8726915",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-meta-readme-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 54 selected Data Warehousing metadata and full README units on 2026-11-08. Re-read all three saved target files against frozen English and full course.yaml/README; compared module title wording with existing genuine head-module translations. Checked all 14 main modules and optional title/path inventory without taking extension content, module ordering/timing/dependency tables, source history versus labelled simulation and account-receipt boundaries, every dataset path/amount/date/count, local platform/version/digest/resource/port/image/network/database/credential details, optional memory-limit reset and preserved connections, Python/kernel/setup commands, delayed/failed environment guidance, and pause versus destructive cleanup dependency order. Restored explicit order/history, view/materialized-view and file-load wording in overview rows, named lab owners in port descriptions and the three-chart dashboard. Code/URLs/anchors/machine identifiers remain preserved. No catalog unit in the frozen map has data-warehousing scope; only the explicitly selected course.yaml and README are in this metadata batch. Technical admission and native human review remain unperformed.",
+          "source_hash": "17aacd2a7b6a00fa5700cb548277a7e2f658d54e23ec96333e3e1b167f23ac90",
+          "target_hash": "00fece9d0dd99578fb60b273cf44dd58c3e840f94ba02fc05dba2549e8726915"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.83f1a42bc36c49f184f4c71f3e28c6bc",
+      "source_hash": "59898d27e5e15ef86e1d7f42f7e55fa8327f3f2865712435af2325827c0769ea",
+      "target_text": "### Қосымша бөлімдер\n\nНегізгі жол бұларға тәуелді емес:\n\n| Қосымша | Не қосады | Қажет |\n| --- | --- | --- |\n| [Оқу материалы: Үздіксіз жүктеу](level1/module05-ingestion/optional05_continuous_ingestion.md), өз тестімен | Kafka/Routine Load, Flink CDC, Streaming Jobs/CDC_STREAM, үздіксіз файл жүктеу | 5-модуль |\n| [Қосымша оқу: WWI шот-фактуралары және шотқа түскен төлемдер](level1/module05-ingestion/optional05_invoice_and_receipts.md) | WWI сомасының үш түрі | 5-жұмыс |\n| [5A: Kafka → Routine Load → Doris](level1/module05-ingestion/optional05_kafka_routine_load.ipynb) | Нақты Kafka тақырыбын оқитын Routine Load | Docker 8 GiB, 4 CPU; 30 мин |\n| [5B: MySQL → Flink CDC → Doris](level1/module05-ingestion/optional05_flink_mysql_cdc.ipynb) | Savepoint-пен тоқтап, қайтарылатын MySQL Flink CDC | Docker 10 GiB, 4 CPU; 40 мин |\n| [2–3 кеңейтілген жұмыс: Пакеттер, бөлімдер және Profile](level1/extensions/extension23_physical_design.ipynb) | 100,000 жолда 2/3-модульді қайталау | 2/3-жұмыс; 25–35 мин |\n| [4–5 кеңейтілген жұмыс: Файлдарды тікелей сұрау, пакеттік жүктеу, Group Commit растаулары](level1/extensions/extension45_files_and_group_commit.ipynb) | Broker Load, әдепкі/генерацияланған бағандар, үш Group Commit режимі | 4/5, PyArrow ([Бастау](#get-started)); 30–45 мин |\n| [6–7 кеңейтілген жұмыс: Схема өзгерістері, жүктеумен жою, қайшылық анықтау](level1/extensions/extension67_schema_and_delete.ipynb) | Схема, жүктеудің жою белгісі, қайшы оқиғалар | 6/7; 25–35 мин |\n| 11-жұмыс, 5/6-бөлімдер | 10-жұмыс төлем келісімшартына үш диаграммалы Superset тақтасы | Тағы 2 GiB Docker жады, алғаш құрастыруға интернет; 15 мин |\n| 13-жұмыс, 6–8-бөлімдер | Объектілік сақтауға көшірме, басқа базаға қайтару | Тағы 512 MiB; 15 мин |\n\nКеңейтімдерді аталған негізгі жұмыстардан кейін бір-бірден орындаңыз; әрқайсысы өз `ext_*` кестелерін ғана қайта құрады. 11/13 қосымшалары тек қосқанда орындалады. 5A/5B Doris контейнерін 6 GiB шекпен қайта құрып, BE-ге 2.4 GiB қалдырады: негізгіге қайтпас бұрын 1-жұмыстың **Start and Connect** қадамын орындаңыз — шексіз қайта құрып, деректі сақтап, көл/тақта/көшірме желілерінің бар қосылымын қайтарады.\n\n",
+      "target_hash": "88b42f2e288fd952c6295ab5fe2e4219966271ef7021da09e78d13fc54b196d1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-meta-readme-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 54 selected Data Warehousing metadata and full README units on 2026-11-08. Re-read all three saved target files against frozen English and full course.yaml/README; compared module title wording with existing genuine head-module translations. Checked all 14 main modules and optional title/path inventory without taking extension content, module ordering/timing/dependency tables, source history versus labelled simulation and account-receipt boundaries, every dataset path/amount/date/count, local platform/version/digest/resource/port/image/network/database/credential details, optional memory-limit reset and preserved connections, Python/kernel/setup commands, delayed/failed environment guidance, and pause versus destructive cleanup dependency order. Restored explicit order/history, view/materialized-view and file-load wording in overview rows, named lab owners in port descriptions and the three-chart dashboard. Code/URLs/anchors/machine identifiers remain preserved. No catalog unit in the frozen map has data-warehousing scope; only the explicitly selected course.yaml and README are in this metadata batch. Technical admission and native human review remain unperformed.",
+          "source_hash": "59898d27e5e15ef86e1d7f42f7e55fa8327f3f2865712435af2325827c0769ea",
+          "target_hash": "88b42f2e288fd952c6295ab5fe2e4219966271ef7021da09e78d13fc54b196d1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b66871b033c64cc59693c1c6e897074d",
+      "source_hash": "10a6ac4fd16c7a764e5193ca190bff396b080f5535feac5139d50132dd41c915",
+      "target_text": "### Жұмысты орындау\n\n- Ұяшықтарды ретімен орындаңыз. Қадамнан кейінгі **Күтілетін нәтиже** не көру, қалай түсіну керегін айтады. Жасыл — өтті, қызыл — тоқтатып, айырмасын айтады. Өзгертпес бұрын егжей-тегжей мен орындау ретін қараңыз.\n- Соңында жаттығу: бос ұяшыққа код жазып, жиналған үлгі шешімді ашып салыстырыңыз. **Run All** үлгі шешімдерді де орындайды, алдымен өзіңіз байқасаңыз бір-бірден орындаңыз.\n- Басында қай кестелер қайта құрылатыны айтылады. Ядроны қайта бастағанда алғашқы ұяшықтармен қосылыңыз; Docker-ді олар емес, 1-жұмыс бастайды. Аяқтағанда қосылымдарын босатуға ядроны тоқтатыңыз; кестелер ортада қалады.\n\n",
+      "target_hash": "84b5c691ea20985a67149d8550796f9c17d915913a39adfca7ee477a29085bac",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-meta-readme-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 54 selected Data Warehousing metadata and full README units on 2026-11-08. Re-read all three saved target files against frozen English and full course.yaml/README; compared module title wording with existing genuine head-module translations. Checked all 14 main modules and optional title/path inventory without taking extension content, module ordering/timing/dependency tables, source history versus labelled simulation and account-receipt boundaries, every dataset path/amount/date/count, local platform/version/digest/resource/port/image/network/database/credential details, optional memory-limit reset and preserved connections, Python/kernel/setup commands, delayed/failed environment guidance, and pause versus destructive cleanup dependency order. Restored explicit order/history, view/materialized-view and file-load wording in overview rows, named lab owners in port descriptions and the three-chart dashboard. Code/URLs/anchors/machine identifiers remain preserved. No catalog unit in the frozen map has data-warehousing scope; only the explicitly selected course.yaml and README are in this metadata batch. Technical admission and native human review remain unperformed.",
+          "source_hash": "10a6ac4fd16c7a764e5193ca190bff396b080f5535feac5139d50132dd41c915",
+          "target_hash": "84b5c691ea20985a67149d8550796f9c17d915913a39adfca7ee477a29085bac"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.17ad65071a1e4002852823bed70fa160",
+      "source_hash": "0d0178b82d6b6751c52e61daeb5c02e809c3fb92c24d0fb8201cdc47882d7514",
+      "target_text": "## Бастау\n\n1. Python 3.10–3.13 арқылы виртуалды орта құрып, тәуелділіктерін орнатыңыз. Тұтас репозиторийдің курс каталогында орындаңыз: ортақ ноутбук ортасы `../common` ішінен орнатылады. `python3 --version` 3.14 көрсетсе, әлі қолдау жоқ, `python3.12` не `python3.13` қолданыңыз:\n\n   ```bash\n   cd doris-course/02-data-warehousing\n   python3.12 -m venv .venv\n   .venv/bin/python -m pip install -r requirements.txt\n   ```\n\n   4–5 кеңейтіміне PyArrow да орнатыңыз: `.venv/bin/python -m pip install -e '.[extensions]'`.\n\n2. Docker қосып, `docker info` сәтті болғанша күтіп, сол ортадан Jupyter бастаңыз. Бірнеше ядро болса `.venv` таңдаңыз.\n\n   ```bash\n   .venv/bin/jupyter lab\n   ```\n\n3. Markdown бастапқы мәтінмен ашылуы мүмкін: оң басып **Show Markdown Preview** таңдап, бетті/сілтемелерін оқыңыз. [1-модуль: Doris-пен танысу және алғашқы тапсырыстарды талдау](level1/module01-introduction/course.md) және `level1/module01-introduction/lab01_connect_and_query.ipynb` ашыңыз. **Initialize the Lab Tools** орындап, тазалау ескертуін оқып, **Start and Connect** орындаңыз. Алғаш бейне жүктеуі бірнеше минут алады; `connection_ok` 1 болғанда жалғастырыңыз. Кейінгілер сол ортаға қосылады.\n\n",
+      "target_hash": "70921ab19e4ef6b537434859617458397ccde9651fd867c8d054c1c950e50cc9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-meta-readme-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 54 selected Data Warehousing metadata and full README units on 2026-11-08. Re-read all three saved target files against frozen English and full course.yaml/README; compared module title wording with existing genuine head-module translations. Checked all 14 main modules and optional title/path inventory without taking extension content, module ordering/timing/dependency tables, source history versus labelled simulation and account-receipt boundaries, every dataset path/amount/date/count, local platform/version/digest/resource/port/image/network/database/credential details, optional memory-limit reset and preserved connections, Python/kernel/setup commands, delayed/failed environment guidance, and pause versus destructive cleanup dependency order. Restored explicit order/history, view/materialized-view and file-load wording in overview rows, named lab owners in port descriptions and the three-chart dashboard. Code/URLs/anchors/machine identifiers remain preserved. No catalog unit in the frozen map has data-warehousing scope; only the explicitly selected course.yaml and README are in this metadata batch. Technical admission and native human review remain unperformed.",
+          "source_hash": "0d0178b82d6b6751c52e61daeb5c02e809c3fb92c24d0fb8201cdc47882d7514",
+          "target_hash": "70921ab19e4ef6b537434859617458397ccde9651fd867c8d054c1c950e50cc9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

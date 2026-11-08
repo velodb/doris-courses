@@ -1,0 +1,608 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.689df6dabdf24c2490de5129f47ab316",
+      "source_hash": "7ff1a49ecb3089e9caee33797fcf84dfd8dbef684c7b0e29628b418efc64b11a",
+      "target_text": "## 5. Сақталған нәтиженің ескіруін, содан кейін қуып жетуін бақылау\n\nКейінгі жұмыстар 1-деңгей кестелерін оқиды, сондықтан бұл қадам 100.00 сомалы бір тапсырысы бар жеке шағын `orders_refresh_source_l2` кестесіне жазады. Оған бірдей күндік сұрауы бар кәдімгі және материалданған көрініс беріледі. Содан кейін 50.00 сомалы екінші тапсырыс келеді. Ұяшықты орындамас бұрын екі нәтижені болжаңыз: кәдімгі көрініс сұрауын қазір орындайды; `ON MANUAL` материалданған көрініс әлі соңғы жаңарту нәтижесін сақтайды.\n",
+      "target_hash": "33e7743c636b750a9b58792d2c6070c4b534a5e45ab04273c7fb0f44d3a8719a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "7ff1a49ecb3089e9caee33797fcf84dfd8dbef684c7b0e29628b418efc64b11a",
+          "target_hash": "33e7743c636b750a9b58792d2c6070c4b534a5e45ab04273c7fb0f44d3a8719a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b9230fdbcde4447cb907f4baca427b3d",
+      "source_hash": "114debcf6184a353d6cc8b0ab18fae2bd5877a5c792ab1941bc0f0dc89f42dbd",
+      "target_text": "<div>\n  <div>8-ЗЕРТХАНАЛЫҚ ЖҰМЫС · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Бір анықтаманы ортақ қолдану, нәтижесін сақтау және қайта жазуды тексеру</div>\n</div>\n\nЕкі топ 1-деңгей қалдырған тапсырыстардан «күндік тапсырысты» санап, әртүрлі сан алады. Бір анықтаманы келісіп, кәдімгі көрініс ретінде жариялайсыз, күндік нәтижесін асинхронды материалданған көріністе сақтайсыз, жаңартуы мен жолдарын тексересіз және `EXPLAIN` арқылы қай сұрауларға жауап беретінін оқисыз. Содан кейін жеке шағын кестелерде сақталған нәтиженің ескіріп, қуып жетуін, әр жазу жүргізетін синхронды материалданған көріністі және бір не екі күнді жаңартатын бөлімделген материалданған көріністі бақылайсыз. Шамамен 65 минут жоспарлаңыз.\n\n**8-модуль: көріністер және материалданған көріністер** · [Сабақ](course.md) · [Тест](quiz08_views_and_materialized_views.ipynb) · [Курстың README файлы](../../README.md)\n",
+      "target_hash": "7f531ae5b1a951435d65f692a9f6868b868c66cd413394257e2e7899cf935ea5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "114debcf6184a353d6cc8b0ab18fae2bd5877a5c792ab1941bc0f0dc89f42dbd",
+          "target_hash": "7f531ae5b1a951435d65f692a9f6868b868c66cd413394257e2e7899cf935ea5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.aea34271e1db4685bbe9ec3f491e2ba1",
+      "source_hash": "df46dcbcd9cbd7b6e51e52bbfbbfe889588e894fc6af938d1bcedf158141800d",
+      "target_text": "## 9. Жаттығу: аймақ бойынша күндік тапсырыстар\n\nАймақтық бақылау тақтасы әр күн мен аймақ тапсырыстарын сұрайды. 4-қадам `orders_daily_mv_l2` жауап бере алмайтынын көрсетті: жолдарында аймақ жоқ. `orders_view_l2` кестелерімен, біріктіруімен және сүзгісімен бақылау тақтасына қажет түйіршіктілікте екінші `orders_region_mv_l2` материалданған көрінісін жасаңыз. Алғашқы құруын күтіп, жолдарын көріністің күн мен аймақ қорытындыларымен салыстырыңыз, содан кейін 4-қадамның аймақ сұрауын қайта түсіндіріңіз. `orders_daily_mv_l2` өзгеріссіз қалсын: тұтынушылары әлі оны оқиды.\n",
+      "target_hash": "59134b5ea73648abe26122a37428c9b988eaffdcfe5146ba2113b258279e4509",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "df46dcbcd9cbd7b6e51e52bbfbbfe889588e894fc6af938d1bcedf158141800d",
+          "target_hash": "59134b5ea73648abe26122a37428c9b988eaffdcfe5146ba2113b258279e4509"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.141030ebe7f0436e9f7e38863e80829d",
+      "source_hash": "6453aab85612dd0f389351b239cb0191bd140cc8f97bda30b669e4052578e78e",
+      "target_text": "## 4. EXPLAIN арқылы сұраудың материалданған көріністі қолданғанын оқу\n\nБақылау тақталары материалданған көріністі емес, `orders_view_l2` сұрайды. Сұрау материалданған көрініс сақтайтынды сұраса, Doris негізгі кестелердің орнына сақталған жолдарды оқитындай қайта жаза алады: мөлдір қайта жазу. `EXPLAIN` сұрауды орындамай жоспарды көрсетеді: әр сканерлеу қай кестені не материалданған көріністі оқитынын және Doris сынаған материалданған көріністерді таңдалған, жарамды, бірақ таңдалмаған не себебімен жарамсыз деп тізеді.\n\nҰяшық көріністің үш сұрауын түсіндіреді: күндік қорытындылар, күн мен аймақ қорытындылары және тек 1 қаңтар қорытындысы. Материалданған көрініс қайсысына жауап бере алатынын болжаңыз.\n",
+      "target_hash": "ed9a6e5272699fbfd74469011277a92781eb7da2c84a56616116bd25212e223c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "6453aab85612dd0f389351b239cb0191bd140cc8f97bda30b669e4052578e78e",
+          "target_hash": "ed9a6e5272699fbfd74469011277a92781eb7da2c84a56616116bd25212e223c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2d6b4d31211c4125a94ccb67ecdabedf",
+      "source_hash": "ce9c30445f03580bc54fabeabae5dfee05e3976817073627aaddcf35d550e62a",
+      "target_text": "## Бастамас бұрын\n\nАлдымен сол дерекқорда 7-зертханалық жұмысты аяқтаңыз. Бұл жұмыс 7-зертханалық жұмыс қалдырған тапсырыстардың ағымдағы күйі мен тарихын — `orders_current` және `order_events` — оқиды, екеуін де өзгертпейді. Олар жоқ болса, баптау ұяшығы тоқтап, қай жұмысты аяқтау керегін айтады.\n\nЖұмыс тек `_l2` жұрнағымен аяқталатын өз нысандарын қайта жасайды: `orders_view_l2` көрінісі, `orders_daily_mv_l2` материалданған көрінісі, жаттығуда `orders_region_mv_l2`. 5–8-бөлімдер жеке шағын кестелерде орындалады: `orders_refresh_view_l2` және `orders_refresh_mv_l2` бар `orders_refresh_source_l2`; `mv_sync_sum_l2` бар `mv_sync_source_l2`; `orders_region_partition_mv_l2` бар `orders_region_partition_l2` және `customer_region_mv_l2`. Жұмыстан кейін олар зертханалық дерекқорыңызда қалады. Бәрі курс сынақ ортасында орындалады; басқа контейнер қажет емес.\n",
+      "target_hash": "93954b8d9e709ea9cb7603fa4292b4d34adfb0d1c1b75c84f56943c45e189339",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "ce9c30445f03580bc54fabeabae5dfee05e3976817073627aaddcf35d550e62a",
+          "target_hash": "93954b8d9e709ea9cb7603fa4292b4d34adfb0d1c1b75c84f56943c45e189339"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2c8280b035064360a00e6da2afd4237e",
+      "source_hash": "4fbc0b1963b7d6dc2816b616a8bed6e5849240905fd1bfa353d53d5773393b99",
+      "target_text": "## 2. Анықтаманы кәдімгі көрініс ретінде жариялау\n\nКәдімгі көрініс сұрауды атаумен сақтайды. `orders_view_l2` есеп үшін тапсырыс не екенін айтады: `order_date` — 1-нұсқа оқиғасының күні, бас тартылған тапсырыстар тыс қалады, есептер қолданатын бағандар көрсетіледі. Әр сұрау сақталған сұрауды ағымдағы кестелерде орындайды: көрініс жолдар сақтамайды. Ол қатынау рұқсатын да бермейді; 12-модуль рұқсат береді.\n\nҚайта орындауға болу үшін ұяшық алдымен осы жұмыстың көріністерін жояды.\n",
+      "target_hash": "a9c0524c500acc45e2a105ee6a57322dc3d09aef18ef8946f116f4e3bd7ff458",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "4fbc0b1963b7d6dc2816b616a8bed6e5849240905fd1bfa353d53d5773393b99",
+          "target_hash": "a9c0524c500acc45e2a105ee6a57322dc3d09aef18ef8946f116f4e3bd7ff458"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d863f13fc31b4142860793f428526e60",
+      "source_hash": "644676392977c0aca42d30e3287d54458a579d7db13d7f5913de8e9e4787c4c9",
+      "target_text": "**Күтілетін нәтиже**\n\nБарыс карточкасы, содан кейін бөлімдер: екеуінде де жаңа `PartitionId`, тексеру жасыл. Салыстыру: бір факт күні бір бөлімді жариялады; өлшем өзгерісі екеуін де жариялады, 2 ақпанның 250.00 сомасы өзгермесе де. Ең жаңа тапсырмада `RefreshMode` COMPLETE және `NeedRefreshPartitions` ішінде екі бөлім де бар.\n\nЖаңарту аясы Doris нені материалданған көріністің бөлімдеріне сәйкестендіре алатынына байланысты. Факт бөлімі бір күнге сәйкес; бөлімделмеген кестедегі өзгеріс ешбір күнге сәйкес емес, сондықтан бәрі қайта есептеледі.\n",
+      "target_hash": "a0b3a5f1d2c77ffad5bf9a4f085a4af4e1b33143cb23a6de964573c1fd1fb894",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "644676392977c0aca42d30e3287d54458a579d7db13d7f5913de8e9e4787c4c9",
+          "target_hash": "a0b3a5f1d2c77ffad5bf9a4f085a4af4e1b33143cb23a6de964573c1fd1fb894"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.648b4b4b573846fd9918b92bd4baa3c4",
+      "source_hash": "39e50dd7eef52c65ed083ebe242a8136f68cbe75891d68a7089a5793caae8576",
+      "target_text": "## Жұмысты аяқтау шарттары\n\n- екі орынды сұрау 1 қаңтарда неге 7 және 9 тапсырыс санағанын және `orders_view_l2` қай анықтаманы жариялайтынын айта аласыз;\n- `orders_daily_mv_l2` `RefreshState` SUCCESS хабарлайды, жолдары анықтамаға тең және `EXPLAIN` арқылы қай сұрауларға жауап беретінін, басқалары неге қолдана алмайтынын оқи аласыз;\n- қолмен жаңартылатын нәтиженің ескіріп, қуып жетуін, жүктеу жаңартатын синхронды материалданған көріністі және бір бөлім жаңартуын екі бөлім жаңартуымен салыстырып көрдіңіз.\n",
+      "target_hash": "3a2c20273b0a41d9de28c166ebd84948c2663cceaf639a68c17af77fa59221d9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "39e50dd7eef52c65ed083ebe242a8136f68cbe75891d68a7089a5793caae8576",
+          "target_hash": "3a2c20273b0a41d9de28c166ebd84948c2663cceaf639a68c17af77fa59221d9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a1391fee847b4dd3aae4a744b32c10cb",
+      "source_hash": "f1e71fdfdbea80dc9449377ca25bb285140a31a62668b001c140bb0e10352122",
+      "target_text": "## 6. Әр жазу жүргізетін синхронды материалданған көрініс\n\nСинхронды материалданған көрініс бір кестеге тиесілі және кестеге әр жүктеу оны да сол транзакцияда жаңартады: орындайтын бөлек жаңарту жоқ. Жеке `mv_sync_source_l2` Duplicate Key кестесінде күн бойынша соманы қосатын көрініс жасаңыз. Алғашқы құруы — фондық тапсырма, сондықтан ұяшық `CREATE` алдындағы уақытты тіркеп, `SHOW ALTER TABLE MATERIALIZED VIEW` осы құруды `FINISHED` деп көрсеткенше күтеді. Содан кейін екінші тапсырысты жүктеп, негізгі кестенің күндік қосындысын түсіндіреді.\n\nБолжаңыз: күндік қосындыға кіру үшін екінші тапсырысқа жаңарту қажет пе?\n",
+      "target_hash": "338291d4e0421391c815bd3ff2c25c7ee133fc627eb324983c5cd2d511e23458",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "f1e71fdfdbea80dc9449377ca25bb285140a31a62668b001c140bb0e10352122",
+          "target_hash": "338291d4e0421391c815bd3ff2c25c7ee133fc627eb324983c5cd2d511e23458"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.adff09564b9748f386e7812b7471badd",
+      "source_hash": "da3b6e390ec8f6c78f659ef3a1ec79068561b330d5ee2e1cda4f79e9cf7fca52",
+      "target_text": "## 7. Тек өзгерген бөлімді жаңарту\n\nБөлімделген асинхронды материалданған көрініс дереккөзінің бір бөлімі ғана өзгерсе, бір бөлімді жаңарта алады. `orders_region_partition_l2` екі күндік бөлімге ие және бөлімделмеген шағын `customer_region_mv_l2` тұтынушы кестесімен біріктіріледі; `PARTITION BY (order_date)` материалданған көрінісі тапсырыстарды күн мен аймақ бойынша топтайды, сондықтан әр бөлімі бір факт күніне сәйкес келеді.\n\nБолжаңыз: 2 ақпанның жаңа тапсырысы 2 ақпан бөлімін жаңартып, 1 ақпанды қалдыруы керек. Ұяшық әр бөлімнің бұрынғы және кейінгі `PartitionId` мәнін салыстырады: қайта жарияланған бөлім `VisibleVersion` 2 болып қалса да, жаңа ID алады. Содан кейін жаңарту тапсырмасының жазбасын оқиды.\n",
+      "target_hash": "01737a707ecc14e88da961034f909ef6e77b68eb4dee0343a96857da7163d588",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "da3b6e390ec8f6c78f659ef3a1ec79068561b330d5ee2e1cda4f79e9cf7fca52",
+          "target_hash": "01737a707ecc14e88da961034f909ef6e77b68eb4dee0343a96857da7163d588"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bcaa85c4148a40d8a54658a3e39cdf6e",
+      "source_hash": "fbcb5915bbd039440e641f3645f9310f6a43cfe0af9a4435c599c06accf9a59c",
+      "target_text": "## 8. Өлшем өзгерісі жаңарту аясын кеңейте алады\n\nЕнді 1-тұтынушының аймағын EAST-тен NORTH-қа өзгертіңіз. Тұтынушы кестесі бөлімделмеген, сондықтан өзгерісті бір күнге сәйкестендіретін ештеңе жоқ. `REFRESH ... AUTO` материалданған көріністің әр бөлімі өзгеруі мүмкін деп қабылдауы керек, бұл жаңарту сандары өзгермегенін қоса екі бөлімді де жариялайды.\n\nЖаңа `PartitionId` бөлімнің қайта жарияланғанын көрсетеді, оған қанша жұмыс кеткенін емес. Тапсырма жазбасы қай бөлімдер қайта есептелгенін, ал Query Profile істелген жұмысты көрсетер еді.\n",
+      "target_hash": "385fcbd351523998268fd3649b4067128edf5d851d4e64c99a71f0ece4ae4e16",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "fbcb5915bbd039440e641f3645f9310f6a43cfe0af9a4435c599c06accf9a59c",
+          "target_hash": "385fcbd351523998268fd3649b4067128edf5d851d4e64c99a71f0ece4ae4e16"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.19fd6ba525ec4fc09c7522ef5188f2f2",
+      "source_hash": "26bb6368440e42de3918cd5fdf41103faff84696a89e0275c996d5ec21008d40",
+      "target_text": "Енді оны жаңартыңыз. `REFRESH ... COMPLETE` бүкіл нәтижені қайта есептейді; оператор тапсырма жіберілгенде қайтады, сондықтан ұяшық салыстырмас бұрын жаңа нәтижені күтеді. Кәдімгі көрініске жаңарту қажет емес: оның сақталған нәтижесі жоқ.\n",
+      "target_hash": "576501840778fd3b6327f94b23c5ce1a65c313be26b66da065d2d5d5514d637f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "26bb6368440e42de3918cd5fdf41103faff84696a89e0275c996d5ec21008d40",
+          "target_hash": "576501840778fd3b6327f94b23c5ce1a65c313be26b66da065d2d5d5514d637f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6559cb6b182f453da58480afeecfe6df",
+      "source_hash": "70e418d6fb9339e8f66e19301d9a43d005b7ea0e41d52502b461b87df97edf5b",
+      "target_text": "**Күтілетін нәтиже**\n\nҮш жоспар, әрқайсысында жасыл белгі.\n\n- Күндік қорытындылар: таңдалған деп тізілген `orders_daily_mv_l2` оқитын бір сканерлеу.\n- Күн мен аймақ қорытындылары: `orders_current` және `order_events` екі сканерлеуі, `orders_daily_mv_l2` жарамсыз: `View struct info is invalid, View dimensions doesn't not cover the query dimensions`.\n- 1 қаңтар қорытындысы: тағы екі сканерлеу, `orders_daily_mv_l2` жарамсыз: `View struct info is invalid, Rewrite compensate predicate by view fail`. Толық жоспарда `order_events` сканерлеуінің предикаты `event_time >= '2026-01-01 00:00:00' AND event_time <= '2026-01-01 23:59:59'`.\n\nСодан кейін күндік қорытындылар: 9 тапсырыс және 1200.00, 1 тапсырыс және 110.00.\n\nКүндік сұрау тек көріністі атайды, ал Doris сақталған нәтижені оқыды. Аймақ сұрауы оны қолдана алмайды: сақталған жолдарда аймақ жоқ, қайта жазу материалданған көрініс сақтамаған бағанды қайтара алмайды. Бір күн сұрауы таңғалдырады: сақталған жолдарда `order_date` бар, бірақ Doris `DATE(event_time) = '2026-01-01'` шартын материалданған көрініс сақтамайтын `event_time` бағанының ауқымына айналдырды, сондықтан сүзгіні сақталған жолдарға қолдана алмады (Doris 4.1.3). Қай сұраулар қайта жазылғанын тек `EXPLAIN` көрсетеді; еш жоспар жауаптың дұрыстығын айтпайды: 3-қадам сақталған жолдарды анықтамамен салыстырды.\nЖоспардың `tablets` саны нәтиже жолдарының санын емес, физикалық сақтауды сипаттайды. Бұл шағын MV Doris-тің әдепкі таратуын қолданады, сондықтан жоғарыдағы екі күндік жолды ғана сақтаса да, осы сынақ ортасында `tablets=10/10` бере алады. Tablet саны мен сұрау нәтижесін бөлек оқыңыз; көбірек tablet көбірек күндік топ не жылдамырақ сұрау деген сөз емес.\n",
+      "target_hash": "297cbe1c8448397d603773a76448e76ddfeaefe00c7af87469eda04f8b38689d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "70e418d6fb9339e8f66e19301d9a43d005b7ea0e41d52502b461b87df97edf5b",
+          "target_hash": "297cbe1c8448397d603773a76448e76ddfeaefe00c7af87469eda04f8b38689d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cec3b045433c41e7b8c8ae44bac5b2a7",
+      "source_hash": "b395fdbec3f934f76ae4c9f902e456eeb4ee7940db90f03ae4d91547f66cbd5d",
+      "target_text": "## 3. Күндік нәтижені асинхронды материалданған көріністе сақтау\n\nКүндік қорытындыларды ашатын әр бақылау тақтасы тапсырыстар өзгергенше бірдей жауап алады. Асинхронды материалданған көрініс сол жауапты сақтайды: көрініс сияқты сұрауы, кесте сияқты жаңарту қайта есептейтін нәтижесі бар.\n\n- `BUILD IMMEDIATE` көрініс жасалғанда алғашқы құруды бастайды.\n- `REFRESH AUTO` Doris-ке қаншасын қайта есептеуді шешкізеді: қайсысы өзгергенін анықтай алса, өзгерген бөлімдер, әйтпесе бәрі.\n- `ON MANUAL`: жаңартуды тек `REFRESH MATERIALIZED VIEW` операторы бастайды. Сұрау бастамайды.\n\nМатериалданған көрініс `orders_view_l2` кестелерімен, біріктіруімен және сүзгісімен бірдей. Құруы `CREATE` қайтқаннан кейін тапсырма ретінде орындалады, сондықтан ұяшық `mv_infos` құруды хабарлағанша күтіп, кейін сақталған жолдарды анықтамамен салыстырады.\n",
+      "target_hash": "3eabf406100a796eda0e7c05891981297eca824e5c8bf7bf42f628f2b6bdbdf7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "b395fdbec3f934f76ae4c9f902e456eeb4ee7940db90f03ae4d91547f66cbd5d",
+          "target_hash": "3eabf406100a796eda0e7c05891981297eca824e5c8bf7bf42f628f2b6bdbdf7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5165dcf0f2ae4c37a3746b3abcd6d7d8",
+      "source_hash": "b5aa9cca9086134073af5c08639956564bd8d3674c16f3ab4151b3cdfd86c084",
+      "target_text": "**Күтілетін нәтиже**\n\nАнықтама, бірнеше секундтан кейін жасыл болатын барыс карточкасы, содан кейін күй: `State` NORMAL, `RefreshState` SUCCESS, `SyncWithBaseTables` 1. Сақталған нәтижеде екі жол бар: 2026-01-01 күні 9 тапсырыс және 1200.00, 2026-01-02 күні 1 тапсырыс және 110.00, тексеру жасыл.\n\nҮш күй бағаны әртүрлі сұраққа жауап береді: `State` материалданған көріністі мүлде қолдануға бола ма, `RefreshState` соңғы жаңарту сәтті ме, `SyncWithBaseTables` нәтиже негізгі кестелерге әлі сәйкес пе. Сәтті `CREATE` бұлардың ешқайсысын айтпайды; тек анықтаманы қабылдады.\n",
+      "target_hash": "f6727e62508a78982db7bf20ef343be08c79dc56d50ade8f8cd0d3184f3cab7c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "b5aa9cca9086134073af5c08639956564bd8d3674c16f3ab4151b3cdfd86c084",
+          "target_hash": "f6727e62508a78982db7bf20ef343be08c79dc56d50ade8f8cd0d3184f3cab7c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.79bdd230094148cf8961afa736ab0ab7",
+      "source_hash": "34919ac156efe07c7e12f4d7cf305678f19017ecae6644161daae5051839c164",
+      "target_text": "## Келесі қадам\n\n[8-тест: көріністер және материалданған көріністер](quiz08_views_and_materialized_views.ipynb) файлын ашыңыз, содан кейін [9-модуль: деректер қоймасын модельдеу және біріктірулер](../module09-modeling-and-joins/course.md) бөліміне өтіңіз.\n",
+      "target_hash": "0d713064274645966851055f2f482b82ce0150cd8b2356f0e9eb7e1685a5d8f1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "34919ac156efe07c7e12f4d7cf305678f19017ecae6644161daae5051839c164",
+          "target_hash": "0d713064274645966851055f2f482b82ce0150cd8b2356f0e9eb7e1685a5d8f1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2a3732c8c96f4e6d9224d6ced42724de",
+      "source_hash": "a664f6ae1b4e88666222521674f9cf6e8ee3d278cf19745f3047cf6826573aad",
+      "target_text": "**Күтілетін нәтиже**\n\nБарыс карточкасы және материалданған көріністің екі бөлімі; жаңа тапсырыстан кейін екінші барыс карточкасы және бөлімдер қайта көрсетіледі, мұнда `p_20260202_20260203` жаңа `PartitionId` алады, `p_20260201_20260202` бұрынғысын сақтайды. Жасыл белгі: дәл бір бөлім қайта жарияланды. Тапсырмалар жаңасынан бастап: `RefreshMode` PARTIAL және `NeedRefreshPartitions` `[\"p_20260202_20260203\"]` бар жаңарту, содан кейін екі бөлімі бар алғашқы құру.\n",
+      "target_hash": "35c5e67b46fa1918b0c01e79c3511805b2480b4b217ffb45e495e546317eea6a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "a664f6ae1b4e88666222521674f9cf6e8ee3d278cf19745f3047cf6826573aad",
+          "target_hash": "35c5e67b46fa1918b0c01e79c3511805b2480b4b217ffb45e495e546317eea6a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c49cefb60f754c64b1c363337553bb4e",
+      "source_hash": "52d201fbbda36284908d3d32b285bc724252f9a0d5449edaf7351cfa7b38dc10",
+      "target_text": "**Күтілетін нәтиже**\n\nБарыс карточкасы, содан кейін екі нәтиже де 2 тапсырыс және 150.00 көрсетеді, екі жасыл белгі: сақталған нәтиже қуып жетті, ал 7-зертханалық жұмыстың `orders_current` кестесінде әлі 11 тапсырыс және 1510.00 бар.\n\nЖаңарту операторының сәттілігі, бақылау тақтасына жеткілікті өзекті нәтиже және нәтижені оқуға қайта жазылған сұрау — үш бөлек тексеру: 4-қадам қайта жазуды, бұл қадам жаңартуды тексерді.\n",
+      "target_hash": "4a0c4b4f640322c22d8755e00aba0b8034885feaba40562baca622d7af7fea45",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "52d201fbbda36284908d3d32b285bc724252f9a0d5449edaf7351cfa7b38dc10",
+          "target_hash": "4a0c4b4f640322c22d8755e00aba0b8034885feaba40562baca622d7af7fea45"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2106b2fa3af446b48be66d49613a070f",
+      "source_hash": "5c73db3d74b4930cde7bde36745445d5dff79a1dd4be77319fcae085fd63141d",
+      "target_text": "**Күтілетін нәтиже**\n\nБарыс карточкасы, содан кейін сақталған үш жол: (2026-01-01, EAST, 5, 720.00), (2026-01-01, WEST, 4, 480.00), (2026-01-02, EAST, 1, 110.00), жасыл белгі: олар көрініс қорытындыларына тең. Жоспар таңдалған деп тізілген `orders_region_mv_l2` оқиды, `orders_daily_mv_l2` бұл сұрауға әлі жарамсыз; соңғы тексеру жасыл.\n\nЖаңа материалданған көрініс `orders_daily_mv_l2` кестесіне қарағанда егжей-тегжейлі түйіршіктілік сақтайды, сондықтан жолдары көбірек және жоспарлап, тексеретін тағы бір жаңарту қосады.\n",
+      "target_hash": "b8d3a6a1dcbef076774706598a21918c2cd04882fa33063a0df379b248e4e94e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "5c73db3d74b4930cde7bde36745445d5dff79a1dd4be77319fcae085fd63141d",
+          "target_hash": "b8d3a6a1dcbef076774706598a21918c2cd04882fa33063a0df379b248e4e94e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1a4b62a5c74242cd84400abe52340196",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған күйде. Салыстыру үшін ашыңыз немесе орындаңыз.\n",
+      "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a792a928f9304181b77f7175ae56741d",
+      "source_hash": "c85e3df2033d8b93acba882b446d5ee723877385dff6ac8589ceae499a1b1dbf",
+      "target_text": "**Күтілетін нәтиже**\n\nАлғашқы құрудың барыс карточкасы, содан кейін екі жолдық кесте: 2 тапсырыс және 150.00 бар `regular view`, 1 тапсырыс және 100.00 бар `stored MV`, екі жасыл белгі. Материалданған көрініс алғашқы құру есептеген нәтижені әлі сақтайды.\n",
+      "target_hash": "8daf379ecf488cd9803eda0e6b00ae652c3ebd9d8fd0beaee9b215fe3daa23a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "c85e3df2033d8b93acba882b446d5ee723877385dff6ac8589ceae499a1b1dbf",
+          "target_hash": "8daf379ecf488cd9803eda0e6b00ae652c3ebd9d8fd0beaee9b215fe3daa23a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.919794d835514645bb4d2bbb50ef2be6",
+      "source_hash": "269d4208690000cc57ab8368a88424b6a1bcdaa8b83388c8703c2ed54ab3a48d",
+      "target_text": "**Күтілетін нәтиже**\n\nБарыс карточкасы, осы орындаудың `FINISHED` құру тапсырмасы, содан кейін жоспар: `mv_sync_sum_l2` оқитын `mv_sync_source_l2` бір сканерлеуі, материалданған көрініс таңдалған деп тізілген, екі жасыл белгі — жоспар `mv_sync_sum_l2` оқиды, күндік қосынды 150.00.\n\nЕкінші тапсырыс жүктеуі бекітілген бойда `mv_sync_sum_l2` ішінде болды, себебі жүктеу оны жаңартты. Шығын жазуларға ауысты, олар енді жолдардың екі жиынын жүргізеді; кестедегі әр синхронды материалданған көрініс жүктеулерге көбірек жұмыс істетеді.\n",
+      "target_hash": "342a08bc177d942b77e1b9c3e24768accd2b779326856a41dbd12c25bc5018ca",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "269d4208690000cc57ab8368a88424b6a1bcdaa8b83388c8703c2ed54ab3a48d",
+          "target_hash": "342a08bc177d942b77e1b9c3e24768accd2b779326856a41dbd12c25bc5018ca"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.98ab83dc4d804f8fa99aafb4d2f217a8",
+      "source_hash": "bcec91b246ae29c2b4c3833c8a433678f9bfc269cdcae8197fd0a34b640a3e9b",
+      "target_text": "**Күтілетін нәтиже**\n\nЕкі кесте. Соңғы оқиға бойынша: 2026-01-01 күні 7 тапсырыс және 950.00, 2026-01-02 күні 4 тапсырыс және 560.00. Жасалу бойынша, бас тартылғансыз: 2026-01-01 күні 9 тапсырыс және 1200.00, 2026-01-02 күні 1 тапсырыс және 110.00.\n\nЕкі сұрау да орындалады, екеуінің SQL-і де орынды. Біріншісі 900001, 900002 және 900003 тапсырыстарын жеткізілген, бас тартылған және қайтарылған 2 қаңтарда санайды, бас тартылған 900002 мен оның 200.00 сомасын да санайды. Екіншісі бас тартылмаған әр тапсырысты берілген күнінде бір рет санайды. Курс екінші анықтаманы алады: тапсырыс күні — жасалған күні, бас тартылған тапсырыс саналмайды. Келесі қадам мұны барлығына бір рет жазып қояды.\n",
+      "target_hash": "bd7472501e7e193115ca4afe4b171c372faf953a97ab579da351416f8df9685a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "bcec91b246ae29c2b4c3833c8a433678f9bfc269cdcae8197fd0a34b640a3e9b",
+          "target_hash": "bd7472501e7e193115ca4afe4b171c372faf953a97ab579da351416f8df9685a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d4057c1ca0f64118b297fd243937dfc2",
+      "source_hash": "60aec5b76e5008c27565ea64667a2ce2c3ee36c2d25cd732288afa54ccc78c5a",
+      "target_text": "## 1. «Күндік тапсырысқа» екі жауап\n\nОперация және қаржы топтары күндік тапсырыстарды сұрайды. `orders_current` әр тапсырысқа бір жол сақтайды, оның `event_time` мәні — берілген уақыты емес, жеткізілген, бас тартылған не ақшасы қайтарылған соңғы оқиғасының уақыты. `order_events` әр оқиғаны сақтайды; тапсырыстың 1-нұсқасы — оны жасаған оқиға.\n\nБірінші сұрау ағымдағы тапсырыстарды соңғы оқиғасының күнімен топтайды. Екіншісі оларды жасаған оқиғаның күнімен топтап, бас тартылғандарды тыс қалдырады. Әрқайсысы 1 қаңтарда қанша тапсырыс санайтынын болжап, ұяшықты орындаңыз.\n",
+      "target_hash": "526578761ac671ac315513e99ebf38ba142a89094ab1bfe0d907053e36a1730a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "60aec5b76e5008c27565ea64667a2ce2c3ee36c2d25cd732288afa54ccc78c5a",
+          "target_hash": "526578761ac671ac315513e99ebf38ba142a89094ab1bfe0d907053e36a1730a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.787472a50cf2496b93ada701027c11cb",
+      "source_hash": "b0823dd230bcdcc74bcfa603bd4664d46a46ac40e9d180a62d3e98c839bfc825",
+      "target_text": "**Күтілетін нәтиже**\n\nАнықтама, содан кейін он жол: 900002-сіз 900001 және 900003–900011 тапсырыстары. Тоғызының `order_date` мәні 2026-01-01, 900011-дікі 2026-01-02; 900001 DELIVERED, 900003 REFUNDED, 150.00 төленген және 150.00 қайтарылған, басқалары CREATED. Жасыл белгі: он тапсырыс, 1310.00.\n\n`order_amount` — алынған ақша емес, тапсырыстың салыққа дейінгі құны: 900003 ақшасы қайтарылса да, 150.00 сақтайды. Төлемдер мен қайтарымдар — өз көрсеткіштері, `paid_amount` және `refund_amount`.\n",
+      "target_hash": "81699035a8d12f2b26d4a0cf4109d4f6d2f38d0c94c553414490b4b82846cd64",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m08-lab",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 25 Markdown cells after reading every original code cell: same-database prerequisites and all _l2 reset objects, two definitions and exact daily counts/amounts, view no storage/access grant, async first build/state/rows, all three EXPLAIN cases and tablets distinct from result rows, manual stale100 versus150 and catch-up, sync background build matched by time and no refresh after load, fact partial versus dimension complete refresh with exact partition IDs/tasks, regional MV finer grain. Restored explicit EXPLAIN mention in the step-4 heading. Technical admission and native human review remain unperformed.",
+          "source_hash": "b0823dd230bcdcc74bcfa603bd4664d46a46ac40e9d180a62d3e98c839bfc825",
+          "target_hash": "81699035a8d12f2b26d4a0cf4109d4f6d2f38d0c94c553414490b4b82846cd64"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

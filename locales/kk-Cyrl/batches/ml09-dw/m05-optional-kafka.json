@@ -1,0 +1,416 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.85f418ef962c4f838d6dd5b45414592a",
+      "source_hash": "6cb70cdc6c72c7b0595deec6bdb54a27ec8ab70cf39f6cad7b4ec0075fbb8a2b",
+      "target_text": "<div>APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ · ҚОСЫМША ЗЕРТХАНАЛЫҚ ЖҰМЫС</div>\n\n# Қосымша 5A жұмысы: Kafka → Routine Load → Doris\n\n**5-модуль: деректерді пакеттік және үздіксіз жүктеу** · [Сабақ](course.md) · [Тест](quiz05_load_methods_and_retry_safety.ipynb) · [Оқу: үздіксіз жүктеу](optional05_continuous_ingestion.md)\n\nKafka topic-і тапсырыс оқиғаларын бір-бірден қабылдайды. Doris ішіндегі Routine Load тапсырмасы оларды үздіксіз тұтынып, шағын пакеттермен жазады және topic-тегі өз орнын сақтайды. Тапсырыстарды жіберіп, тапсырма барысын оқисыз, кезек жинау үшін кідіртесіз, жалғастырасыз, қайталану мен жаңартуды жібересіз және қате хабар тапсырмаға қалай әсер ететінін көресіз.\n\nШамамен 30 минут жоспарлаңыз. Жұмыс таңдау бойынша: басқа жұмыстар оған тәуелді емес.\n\n**Не қажет**\n\n- Кемінде 8 GiB жады және 4 CPU бар Docker (Docker Desktop: Settings → Resources). Бұл жұмыста Apple silicon бар Docker Desktop-та өлшенген ең жоғары пайдалану: Doris 2.9 GiB, Kafka 0.4 GiB. Бірінші ұяшық ештеңе іске қоспас бұрын Docker ресурстарын тексереді.\n- Алғаш жүктеуге шамамен 640 MB (`apache/kafka:3.9.0`).\n- 1-зертханалық жұмыстың курс сынақ ортасы. Бірінші ұяшық Doris контейнерін 6 GiB жады шегімен қайта жасайды; деректері сақталады. Алдымен басқа ноутбуктерді аяқтаңыз. 1-зертханалық жұмыстың **Іске қосу және қосылу** ұяшығы бұл шекті қайта алып тастайды: негізгі жұмыстарға оралмас бұрын оны орындаңыз, себебі олардың BE-сіне шек қалдыратын 2.4 GiB-тан көбірек қажет.\n\nЖұмыс тек `ext_kafka_orders`, ал жаттығуда `ext_kafka_practice` кестесін қайта жасайды; екеуі де `dw_course_l1_streaming` дерекқорында, сондықтан негізгі курс кестелері өзгермейді. Әр орындау жаңа topic пен жаңа тапсырма қолданады. Қызметтері — `doris-warehousing-streaming` Compose жобасы: жұмыстың соңында тоқтату тәсілі, курстың README файлындағы [Тазалау](../../README.md#clean-up) бөлімінде жою тәсілі берілген.\n\nЖұмысты орындай алмасаңыз да оқыңыз: әр қадамның **Күтілетін нәтижесі** орындалу кезінде не шығатынын көрсетеді.\n",
+      "target_hash": "d032d64214357eb67c3edf6243d7fcd2e174bb4b895d8a796811ea6427a8cd7e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "6cb70cdc6c72c7b0595deec6bdb54a27ec8ab70cf39f6cad7b4ec0075fbb8a2b",
+          "target_hash": "d032d64214357eb67c3edf6243d7fcd2e174bb4b895d8a796811ea6427a8cd7e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.45ee2ffaf17748a785534dca4f60df42",
+      "source_hash": "f735b415094a8156f7518ee35212d3bd206683b3a2abc0fc57d13b7292595c28",
+      "target_text": "## 4. Жалғастыру, содан кейін қайталану мен жаңартуды жіберу\n\nТапсырманы жалғастырыңыз: ол өз барысынан жалғасып, күтіп тұрған тапсырысты жүктейді. Содан кейін 910001 тапсырысын өзгеріссіз қайта жіберіңіз, тағы бір рет PAID күйімен жіберіңіз. Кесте әр тапсырысқа бір жол сақтайды, сондықтан қайталану ештеңені өзгертпейді, жаңарту тапсырыс жолын ауыстырады. Unique Key кестесі әр тапсырыстың тарихын емес, соңғы күйін сақтайды; 7-модуль ретсіз келген оқиғаларды нұсқалармен шешеді.\n",
+      "target_hash": "950862071f074bef28b40e636b737b1b8573a572356a941f7298012815f52a0a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "f735b415094a8156f7518ee35212d3bd206683b3a2abc0fc57d13b7292595c28",
+          "target_hash": "950862071f074bef28b40e636b737b1b8573a572356a941f7298012815f52a0a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8bb85f604324404a9e1623acb337c9a4",
+      "source_hash": "7f593840d629e3585393fa5179afd0da947b11f2d563257e52b2f65948783116",
+      "target_text": "## 6. Тапсырманы тоқтату және нәтижелерді сақтау\n\n`STOP` тапсырманы біржола аяқтайды: кідіртілгеннен өзгеше, тоқтатылған тапсырманы жалғастыру мүмкін емес, жаңа тапсырма өз әдепкі offset-терінен бастар еді. Ұяшық осы орындаудың тапсырмасын тоқтатып, тек осы орындаудың topic-ін жояды және қосылымды жабады; жолдар Doris-те қалады.\n",
+      "target_hash": "6cdf9d8abc4cd706a34d509a01206be383067b72f65571459e2ea5e442ea5a1b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "7f593840d629e3585393fa5179afd0da947b11f2d563257e52b2f65948783116",
+          "target_hash": "6cdf9d8abc4cd706a34d509a01206be383067b72f65571459e2ea5e442ea5a1b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7263bda145c04b7a9736702c92bba747",
+      "source_hash": "fb1f98883af48f39acedc33862e667297b0db2deeaa045159d8fed38b1449753",
+      "target_text": "## 2. Екі тапсырыс жіберіп, көрінгенше күту\n\nӨндіруші Kafka контейнерінің ішінде жұмыс істеп, екі JSON хабарын жазады. Kafka-дағы хабар әлі Doris жолы емес: келесі ұяшық екі жолды да сұрауға болғанша, ең көбі 3 минут күтеді және әр әрекетте тапсырманы тексереді. Тапсырма кідірсе не тоқтаса, күту тапсырма себебі мен қате URL-ін көрсетіп тоқтайды.\n",
+      "target_hash": "6849ce35a415e48937fe73a07511c95f6b7c42180e4fd1515d8b9a374e003ff7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "fb1f98883af48f39acedc33862e667297b0db2deeaa045159d8fed38b1449753",
+          "target_hash": "6849ce35a415e48937fe73a07511c95f6b7c42180e4fd1515d8b9a374e003ff7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.46be49bff4c64ded8fddecee9bf7b1a2",
+      "source_hash": "dc25386f7da05714c89c917b4d35808a51cbeabfcac92da49f1dd34b584a1e9c",
+      "target_text": "## 3. Тапсырманы кідірту және кезек жинау\n\nТапсырманы кідіртіп, кідіргенін тексеріңіз, содан кейін үшінші тапсырысты жіберіңіз. 12 секундтан, яғни екі пакет аралығынан ұзақ уақыттан кейін кестеде әлі тек алғашқы екі жол болуы керек. Кідірту тапсырма мен барысын сақтайды және бұрын жүктелген жолдарды жоймайды.\n",
+      "target_hash": "71ca0323cf5c1f8ff6fd0de5191db6bcf79469b01c97594cf0eb5505aee5eab0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "dc25386f7da05714c89c917b4d35808a51cbeabfcac92da49f1dd34b584a1e9c",
+          "target_hash": "71ca0323cf5c1f8ff6fd0de5191db6bcf79469b01c97594cf0eb5505aee5eab0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.495d02f09c2342479e132b5094a47a21",
+      "source_hash": "acea112ca6194aacafb0c185a7fb83ba3d26c83424040b2c2065b5096ad779cc",
+      "target_text": "## 1. Мақсатты кестені, topic-ті және жүктеу тапсырмасын жасау\n\nБаптау алдымен атаулары мен мақсатты кестелерін тексеріп, осы жұмыстың бұрынғы орындауы қалдырған ескі тапсырмаларды тоқтатады; басқа Routine Load тапсырмасына тимейді. Содан кейін әр тапсырысқа бір жол сақтайтын `ext_kafka_orders` Unique Key кестесін қайта жасайды, бір бөлімді topic жасап, тапсырманы жасайды:\n\n| Тапсырма параметрі | Мағынасы |\n| --- | --- |\n| `\"format\"=\"json\"` | Әр Kafka хабары — бір JSON нысаны; кілттері — баған атаулары |\n| `\"max_batch_interval\"=\"5\"` | Әр жүктеу жұмысы оқығанын бекітпес бұрын ең көбі 5 секунд орындалады |\n| `\"max_error_number\"=\"0\"`, `\"strict_mode\"=\"true\"` | Кестеге сәйкес келмейтін алғашқы жолда тапсырманы кідірту |\n| `\"property.kafka_default_offsets\"=\"OFFSET_BEGINNING\"` | Жаңа тапсырма әр бөлімнің басынан басталады |\n\nDoris тапсырманың орнын, яғни **барысын**, әр бекітілген жұмыспен бірге өзі сақтайды; бұл қарапайым Kafka consumer group бекіткен offset емес.\n",
+      "target_hash": "732fbd0f13ee2ea9944c19e021fd681d7b4a4183b8e4997b4957e6e2a171ed64",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "acea112ca6194aacafb0c185a7fb83ba3d26c83424040b2c2065b5096ad779cc",
+          "target_hash": "732fbd0f13ee2ea9944c19e021fd681d7b4a4183b8e4997b4957e6e2a171ed64"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.67ce6eff6cb54496b0d38010d6070da3",
+      "source_hash": "ee3fdf3e0925cbf795542d1b047c36085937f7351a1ece9b6c93457b221e6d45",
+      "target_text": "**Күтілетін нәтиже**\n\nБұрынғы Routine Load тапсырмалары белсенді емес екенін көрсететін жасыл белгі, содан кейін `Created topic course_orders_<12 hexadecimal digits>.`, мұнда topic атауларындағы нүкте мен астыңғы сызық туралы Kafka ескертуінің мәні жоқ, содан кейін `CREATE ROUTINE LOAD` операторы. Тапсырма мен topic атауы бірдей. Қате болмаса, тапсырма бар және хабарларды күтеді.\n",
+      "target_hash": "4f6cfca83182a79170f34726b1b27fb4c6b2e882d2d6ae0967ad2bd7405bdc16",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "ee3fdf3e0925cbf795542d1b047c36085937f7351a1ece9b6c93457b221e6d45",
+          "target_hash": "4f6cfca83182a79170f34726b1b27fb4c6b2e882d2d6ae0967ad2bd7405bdc16"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1256e900e9004b80ae6d15e5d5e1cbf7",
+      "source_hash": "5a549202a3d3182050537d6f93528c3b02ad04698e6244076214632324e37339",
+      "target_text": "## Жұмысты аяқтау шарттары\n\n- тапсырма кідіргенде үшінші тапсырыс неге Kafka-да қалғанын және тапсырма орнын қайда сақтағанын түсіндіре аласыз;\n- Routine Load тапсырмасының `State`, `Progress`, `Lag` және `Statistic` өрістерін оқи аласыз;\n- `max_error_number` = 0 тапсырмаға, сол жұмыстың жолдарына және барысына не істейтінін айта аласыз.\n\nKafka-ны тоқтатып, деректерін сақтау үшін курс каталогында мынаны орындаңыз:\n\n```bash\ndocker compose --project-name doris-warehousing-streaming --file environments/streaming/compose.yml --profile kafka stop\n```\n\nНегізгі жұмыстарға оралмас бұрын 1-зертханалық жұмыстың **Іске қосу және қосылу** ұяшығын орындаңыз: ол Doris контейнерін 6 GiB шектеуінсіз қайта жасап, деректерін сақтайды.\n\n**Бірдеңе дұрыс болмаса:**\n\n- Бірінші ұяшық іске қосудан бас тартты: Docker-ге көрсетілген жады мен CPU санын беріңіз.\n- `MEM_LIMIT_EXCEEDED` не `MEM_ALLOC_FAILED`: 1-зертханалық жұмыстың іске қосу ұяшығы Doris-тің 6 GiB шегін алып тастаған болуы мүмкін. Басқа ноутбуктерді аяқтап, осы жұмыстың бірінші ұяшығын қайта орындаңыз, ол шекті қайта орнатады; сонда `docker inspect doris-warehousing-course-doris-1 --format '{{.HostConfig.Memory}}'` 6442450944 көрсетеді.\n- Тапсырма кідіргендіктен күту тоқтады: карточкасы `ReasonOfStateChanged`, `ErrorLogUrls` және қалған мәлімет үшін орындалатын операторды көрсетеді. Doris Kafka-ға курс Docker желісіндегі `course-stream-kafka:9092` арқылы қатынайды.\n- Жұмыс үзілді: бірінші ұяшықтан қайта орындаңыз. Ол осы жұмыстың бұрынғы орындауы қалдырған `course_orders_<12 hexadecimal digits>` және `course_practice_<12 hexadecimal digits>` тапсырмаларын тоқтатады, басқа Routine Load тапсырмасына тимейді.\n- Kafka журналы: `docker compose --project-name doris-warehousing-streaming --file environments/streaming/compose.yml logs --tail 100 kafka`.\nІске қосу және қосылу сынақ ортасының бұрынғы деректер көлі, бақылау тақтасы және сақтық көшірме желілік қосылымдарын да қалпына келтіреді. Ол қызметтерді бұрын жасасаңыз, көл сұрауы мен сақталған Superset диаграммалары әлі жүктелетінін тексеріңіз; деректері мен рұқсаттары сақталады.\n",
+      "target_hash": "629d28a7dfec109e86551a07ebea6a3e23ad93e46965af342ae0cfa362270b09",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "5a549202a3d3182050537d6f93528c3b02ad04698e6244076214632324e37339",
+          "target_hash": "629d28a7dfec109e86551a07ebea6a3e23ad93e46965af342ae0cfa362270b09"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a4c666f6fa4f41efa90d06fb7bbbd624",
+      "source_hash": "40a33bfaf4f01145afc75b1baada3329f3bcfdc78d11abd78a3c7351378c1814",
+      "target_text": "**Күтілетін нәтиже**\n\n`State` PAUSED, `PauseTime` бар. Он екі секундтан кейін кестеде әлі 910001 және 910002 бар: үшінші хабар Kafka-да, тапсырма барысынан кейін күтеді.\n",
+      "target_hash": "dff298db5f454b3f448cfd505507a67bd627ab998750239410d055efd7dfee17",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "40a33bfaf4f01145afc75b1baada3329f3bcfdc78d11abd78a3c7351378c1814",
+          "target_hash": "dff298db5f454b3f448cfd505507a67bd627ab998750239410d055efd7dfee17"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ae39db53b40f44e38d023e0d788a846f",
+      "source_hash": "b70afc2cef269396d7e92d94ae7dc0bf5288ed7c10c3d946c6be0f08d1517db2",
+      "target_text": "## 5. Жаттығу: кесте қабылдамайтын хабар\n\nСол параметрлермен екінші `course_practice_<12 hexadecimal digits>` topic-і мен тапсырмасын жасаңыз, ол `ext_kafka_orders` бағандары бар жаңа `ext_kafka_practice` кестесіне жүктейді. Дұрыс 930001 тапсырысын және сомасы `not-a-number` болатын 930002 тапсырысын жіберіңіз.\n\nОрындамас бұрын болжаңыз: тапсырма 930001-ді жүктей ме? Соңында қандай күйде болады? Содан кейін `State`, `ReasonOfStateChanged`, `Statistic` және `ErrorLogUrls` оқып, қате журналын ашыңыз, соңында осы жұмыстың келесі орындауы сіздің тапсырмаңызды таппауы үшін тапсырманы тоқтатып, topic-ті жойыңыз. Қате URL-і контейнер ішіндегі BE-нің `127.0.0.1:8040` мекенжайын атайды; ноутбуктен сол жолды `os.environ[\"DW_BE_HTTP_URL\"]` арқылы оқыңыз.\n",
+      "target_hash": "859b536143c106da1fc22743000d5ecfab6b91bbb784eb0d44562e0dd7b5a543",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "b70afc2cef269396d7e92d94ae7dc0bf5288ed7c10c3d946c6be0f08d1517db2",
+          "target_hash": "859b536143c106da1fc22743000d5ecfab6b91bbb784eb0d44562e0dd7b5a543"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.995cabcd4db14f04b254249606b0605b",
+      "source_hash": "469c1530e95304549b7e2135d4f5f7cf44b388845e9ba3984654bd92dd4e9523",
+      "target_text": "**Күтілетін нәтиже**\n\nШамамен 5 секунд ішінде тапсырма PAUSED болады. `ReasonOfStateChanged` мәні `current error rows is more than max_error_number or the max_filter_ratio is more than the value set`, `Statistic` ішінде `\"loadedRows\":1` және `\"errorRows\":1`, ал `Progress` `{\"0\":\"1\"}` болады. Қате журналы жолды атайды: `Reason: column(order_amount) value is incorrect while strict mode is true, src value is not-a-number. src line [930002 2 CREATED not-a-number]`.\n\n`ext_kafka_practice` ішінде 930001 бар. `max_error_number` = 0 алғашқы қате жолда тапсырманы кідіртеді, бірақ сол жұмыста жүктелген дұрыс жолдарды кері қайтармайды, әрі барыс қате хабардан өтіп кеткен болады: `RESUME` одан кейін жалғасар еді, сондықтан түзетілген тапсырысты қайта жіберу керек. 5-зертханалық жұмыстағы Stream Load-пен салыстырыңыз: онда `strict_mode` және `max_filter_ratio` = 0 бүкіл пакетті қабылдамайды.\n",
+      "target_hash": "0a24ade624a04be7ef4b05793122b726e33ff655b4121ad42a2087ac47dae0c8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "469c1530e95304549b7e2135d4f5f7cf44b388845e9ba3984654bd92dd4e9523",
+          "target_hash": "0a24ade624a04be7ef4b05793122b726e33ff655b4121ad42a2087ac47dae0c8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5c3a8032e07740e6ae9b324acafd89a4",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшықта үлгі шешім бар; ол жиналған күйде. Салыстыру үшін ашыңыз немесе орындаңыз.\n",
+      "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "a8d623078d849631f4a6a137b0847fc704ced831aba86477df1279e81ad215a7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1aa8c97c44b64b63b03fe37b511042bc",
+      "source_hash": "c33bfd02b250723e627b81ee68a79428bdabacf8967d135a93448b841fcdee50",
+      "target_text": "**Күтілетін нәтиже**\n\nЕкі жасыл күту: `RESUME` кейін 910003 келеді, содан кейін 910001 PAID болады. Тапсырма жолында `State` RUNNING, `Progress` `{\"0\":\"4\"}`, 0–4 offset-тері бар бес хабар, `Lag` `{\"0\":0}` және `Statistic` ішінде `\"loadedRows\":5` көрсетіледі. Кестеде жалпы сомасы 350.00 болатын 3 жол бар: бес хабар, бірақ қайталану мен жаңарту 910001 жолын ауыстырды, сондықтан жол саны қанша хабар келгенін көрсетпейді.\n",
+      "target_hash": "52f98658be9b4a02b68e77307fc45f1879cbc7f1165ed26f5b9358040a528502",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "c33bfd02b250723e627b81ee68a79428bdabacf8967d135a93448b841fcdee50",
+          "target_hash": "52f98658be9b4a02b68e77307fc45f1879cbc7f1165ed26f5b9358040a528502"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.72580563e4f54286b1294ebf9414443b",
+      "source_hash": "18859ad72f8f5eaeaa8b44c1d274fe058c23246091125b9f76898ee0d1592e6d",
+      "target_text": "**Күтілетін нәтиже**\n\nКүту карточкасы шамамен 10 секунд ішінде жасыл болады, жасыл белгі екі 910001 және 910002 жолын растайды. Тапсырма жолында `State` RUNNING және `Progress` `{\"0\":\"1\"}` бар: 0-бөлімде тапсырма 1-offset-ке, екінші хабарға дейін жүктеді, себебі offset-тер 0-ден саналады. `Lag` `{\"0\":0}` ешбір хабар күтіп тұрмағанын білдіреді, `Statistic` ішінде `\"loadedRows\":2` және `\"errorRows\":0` көрсетіледі.\n",
+      "target_hash": "7b66a80a318a22a9a5c8daf1ca4c57244b3de1d2dfa9cf3629d3d77013d000e2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "18859ad72f8f5eaeaa8b44c1d274fe058c23246091125b9f76898ee0d1592e6d",
+          "target_hash": "7b66a80a318a22a9a5c8daf1ca4c57244b3de1d2dfa9cf3629d3d77013d000e2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.67a918b63f1a44269660c606b99186bc",
+      "source_hash": "53d9cab84652150a4c3cdcfd5f94bf4a2fbd4caba98325df4c0b3a30e9485320",
+      "target_text": "**Күтілетін нәтиже**\n\n`Docker capacity: … GiB RAM, … CPUs`, кемінде 8 GiB және 4 CPU, содан кейін алты жасыл қадамы бар іске қосу панелі. Алғаш орындағанда Compose Doris контейнерін 6 GiB шегімен қайта жасайды, оған шамамен 20 секунд кетеді. Содан кейін `Isolated lab database: dw_course_l1_streaming`, ал Compose алғаш орындағанда Kafka бейнесін жүктеп, `doris-warehousing-streaming-kafka-1` іске қосады.\n\nЖады аз болса, ұяшық ештеңе іске қоспай тұрып тоқтап, жұмысқа қанша қажет екенін айтады.\n",
+      "target_hash": "3936c020b695bd06c90755de3eb2722c394c0648b3c3df581b092d50189d239e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "53d9cab84652150a4c3cdcfd5f94bf4a2fbd4caba98325df4c0b3a30e9485320",
+          "target_hash": "3936c020b695bd06c90755de3eb2722c394c0648b3c3df581b092d50189d239e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.188200e3a354423eb3d3fec3a0968b66",
+      "source_hash": "863b796d6ffc0eb7ef9a6f80e3762c759bf66caf8f77afa1ebd39b443fce4e1f",
+      "target_text": "**Күтілетін нәтиже**\n\nҚате жоқ. `SHOW ROUTINE LOAD` тапсырманы енді тізбейді; `SHOW ALL ROUTINE LOAD` оны әлі STOPPED ретінде көрсетеді.\n",
+      "target_hash": "d633e066517374edee1f1023dd4e47cfd9d10caccab9c3d686803ecfd0245a42",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "863b796d6ffc0eb7ef9a6f80e3762c759bf66caf8f77afa1ebd39b443fce4e1f",
+          "target_hash": "d633e066517374edee1f1023dd4e47cfd9d10caccab9c3d686803ecfd0245a42"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bb009e01a6a046d1a55f50ee4f7434d0",
+      "source_hash": "4b3ea5e50099382e6680a8f94cd6f0a5e496804bfa59c34452f1d3b7a306d20e",
+      "target_text": "## Келесі қадам\n\nӘлі тапсырмасаңыз, [үздіксіз жүктеу тестін](quiz05_continuous_ingestion.ipynb) тапсырыңыз немесе [5-модуль сабағына](course.md) оралыңыз не [Қосымша 5B жұмысын: MySQL → Flink CDC → Doris](optional05_flink_mysql_cdc.ipynb) орындап көріңіз. 6-модуль [6-модуль сабағынан](../module06-data-quality/course.md) басталады.\n",
+      "target_hash": "4cf51da17bb5ef30b21f6a739506eefa6c6da81011a8c1a756a7f244eb798452",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m05-optional-kafka",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08. Compared all 17 Lab 5A Markdown cells after reading every original code cell: 8GiB/4CPU prerequisites, 6GiB limit and restoration, restricted job/topic cleanup, JSON settings and five-second tasks, pause backlog and 12s check, offsets 0-4 versus three retained orders/350, bad-row PAUSED with one valid row kept, ErrorURL host routing, progress past bad row and resend requirement, STOP irreversibility. Clarified undo to explicitly mean rollback of already loaded valid rows. Technical admission and native human review remain unperformed.",
+          "source_hash": "4b3ea5e50099382e6680a8f94cd6f0a5e496804bfa59c34452f1d3b7a306d20e",
+          "target_hash": "4cf51da17bb5ef30b21f6a739506eefa6c6da81011a8c1a756a7f244eb798452"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

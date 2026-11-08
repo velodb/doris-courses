@@ -1,10 +1,14 @@
 # Multilingual Workshop runtime
 
-Runtime v2 installs the complete English and Kazakh (`kk-Cyrl`) RTA Module 1
-release before learners enter. The `rta-module-1` profile includes its lesson,
-Lab, Quiz, course guide, UI and linked assets. It excludes Metabase and the other
-nine modules. Runtime v1 and `rta-main` retain the original ten-module selection.
-The old English AMIs have no multilingual capability.
+Runtime v2 installs a complete English and Kazakh (`kk-Cyrl`) release before
+learners enter. The `real-time-analytics-complete`, `data-warehousing-complete`
+and `observability-complete` profiles cover all 32 primary modules, nine optional
+or extension materials and the optional Data Warehousing Quiz. They may be
+selected together, in the binding's declared course order. The retained
+`rta-module-1` pilot selects only its primary lesson, Lab and Quiz and cannot be
+combined with the complete RTA profile. Runtime v1 selections retain their
+original English behavior. Existing English AMIs do not acquire these profiles
+or multilingual capability by changing a configuration.
 
 ## Prepare one complete release
 
@@ -17,6 +21,18 @@ python tools/build_content_package.py --source-ref "$SOURCE_REF" build \
 python tools/workshop_content.py --package /tmp/rta-content \
   --output /tmp/rta-content-binding.json
 ```
+
+For all three complete courses, replace the profile option with
+`--profile real-time-analytics-complete --profile data-warehousing-complete
+--profile observability-complete`. Use that same ordered list for
+`course_profiles` and the generated content binding. The runtime bundles its
+reviewed v2 profile registry, validates every course and exact Notebook
+selection, and keeps identical module IDs in different courses separate.
+
+Optional Markdown is available through the reader; optional Notebooks have the
+same persistent per-language working copies as primary Labs. The optional
+Data Warehousing Quiz uses its own exact source-path and presentation binding.
+It never writes a primary module's receipt or completion credit.
 
 Copy [the v2 configuration example](../examples/multilingual.example.json) to a
 private operational directory. Replace its example account/image/expiry values,
@@ -31,10 +47,12 @@ python tools/workshop_runtime.py --config /private/event.json \
 python /tmp/rta-runtime/host.py verify --bundle /tmp/rta-runtime
 ```
 
-For a future private AMI build, prepare fixed inputs with
+For a future private pilot AMI build, prepare fixed inputs with
 `tools/workshop_image.py prepare --config /private/event.json
 --content-package /tmp/rta-content --output /tmp/rta-image-inputs`.
-These commands only prepare local artifacts. The existing image-build,
+These commands only prepare local artifacts. Complete-course profiles have
+local content/runtime support; multi-course image preparation and cloud
+qualification are separate work. The existing image-build,
 independent-instance, course, browser and cleanup gates still apply. The v2 image
 cache selects only Module 1's pinned Doris image. Neither local tests nor the
 [release-shape example](../examples/image-release.v2.example.json) qualify an AMI.

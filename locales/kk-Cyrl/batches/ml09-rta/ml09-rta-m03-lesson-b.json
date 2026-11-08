@@ -1,0 +1,392 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.74fdebf0ab3243aa968e1f6cd5af5773",
+      "source_hash": "0603daeb15b9ca447487bc0a96e2a48926f3b174e26d5c917e5b1d26e34833a1",
+      "target_text": "## 3.3 S3 нысандарын оқу және SQL нәтижесін тұрақты сақтау\n\n**S3 кестелік функциясы (S3 TVF)** S3 үйлесімді объектілік сақтау орнындағы файлдарды уақытша қатынас ретінде көрсетеді. Ол Parquet, CSV, JSON және ORC пішімдерін қолдайды.\n\n```sql\nSELECT\n    event_time,\n    event_id,\n    user_id,\n    event_type,\n    region,\n    product_id,\n    revenue\nFROM S3(\n    \"uri\" = \"s3://course-bucket/events/*.parquet\",\n    \"s3.endpoint\" = \"https://s3.us-east-1.amazonaws.com\",\n    \"s3.region\" = \"us-east-1\",\n    \"s3.access_key\" = \"<read-only access key>\",\n    \"s3.secret_key\" = \"<read-only secret key>\",\n    \"format\" = \"parquet\"\n)\nLIMIT 10;\n```\n\n`SELECT` сұрау орындалғанда қашықтағы нысандарды оқиды. Ол ішкі кесте жасамайды және нәтижені Doris басқаратын сақтау орнында тұрақты сақтамайды.\n\nБұл мысал жабық bucket оқиды, сондықтан тек оқуға арналған кілт жұбын береді. 3-зертханалық жұмыстағы курс bucket-і ашық: онда екі кілт қасиеті `\"s3.credentials_provider_type\" = \"ANONYMOUS\"` мәнімен ауыстырылады; ол Doris жүйесіне тіркелгі деректерін іздеудің орнына қол қойылмаған сұраулар жіберуді айтады.\n\nКурстың S3 шақырулары `\"s3.connection.timeout\" = \"10000\"` және `\"s3.connection.request.timeout\" = \"30000\"` (миллисекунд) мәндерін де орнатады. Әдепкіде қосылымды ашу 1 секундтан асса немесе оқу 3 секунд бойы дерек алмаса, Doris күтуді тоқтатады. Баяу желі немесе прокси екі шектен де асып, сұрау `curlCode: 28, Timeout was reached` қатесімен аяқталуы мүмкін. Ұзынырақ күту шектерімен сол желі тек оқуды баяулатады.\n\n",
+      "target_hash": "de03e97659405a1c3e6354bcfe89ef60d63ce171bb26ee1ac81413701b6a2d7b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "0603daeb15b9ca447487bc0a96e2a48926f3b174e26d5c917e5b1d26e34833a1",
+          "target_hash": "de03e97659405a1c3e6354bcfe89ef60d63ce171bb26ee1ac81413701b6a2d7b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.be40a2037e4346e88dafbc1f9b3f9321",
+      "source_hash": "c411872e59000c31d2a668abda9795838fb736779841ce03a42e5ade39ef7ee2",
+      "target_text": "### Ұзақ және қысқа тапсырмалардың міндеттері\n\nRoutine Load **job тапсырмасы** ұзақ мерзімді конфигурация мен ілгерілеуді ұстайды. Doris оны қысқа мерзімді **task тапсырмаларына** бөледі. Әр қысқа тапсырма Kafka хабарларының ауқымын тұтынып, бір микротоптамалық жүктеу транзакциясын жазады. Ол аяқталғанда, тұтыну жалғасуы үшін Doris келесі қысқа тапсырманы жоспарлайды.\n\nFE және BE жұмысты былай бөледі:\n\n- FE Routine Load ұзақ тапсырмасының күйін басқарады, қысқа тапсырмаларды жоспарлайды және жүктеу транзакцияларын бекітеді;\n- BE түйіндері тағайындалған қысқа тапсырмаларды орындайды, Kafka хабарларын тұтынады, жолдарды талдап, түрлендіреді және мақсатты деректерді жазады.\n\nRoutine Load кесте деректері мен тиісті Kafka ығысу ілгерілеуін бір транзакциялық нәтиже ретінде бекітеді. Doris құжаттары мұны Exactly-Once тұтыну деп атайды: қалыпты тапсырма қайталауынан немесе қалпына келтіруден кейін бекітілген ығысулар қайта ойнатылмайды, ал бекітілмеген транзакция үшін ығысу ілгерілемейді. Бұл кепілдік өндіруші бизнес мазмұны бірдей етіп әдейі жазған екі бөлек хабарды біріктірмейді.\n\n",
+      "target_hash": "44b949f442750f412223ebb2a8c7edfaa04a2c64875d85e4c021fd8f33f28a5e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "c411872e59000c31d2a668abda9795838fb736779841ce03a42e5ade39ef7ee2",
+          "target_hash": "44b949f442750f412223ebb2a8c7edfaa04a2c64875d85e4c021fd8f33f28a5e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7b955be54afa47309b0d7b32e1b03d20",
+      "source_hash": "64a4351606fe7f8df336fe572e381bfd55304afca6a56172133d0678fdfb3603",
+      "target_text": "## 3.2 Stream Load арқылы шектелген файлды жіберу\n\n**Stream Load** — клиент жағындағы шектелген байт ағынына арналған HTTP негізіндегі жүктеу әдісі. Ол көбіне жергілікті CSV немесе JSON файлдары үшін және топтаманы HTTP сұрауымен жібере алатын қолданбалар үшін пайдаланылады.\n\nКурс сынақ ортасында клиент Frontend (FE) HTTP портына сұрау жібереді. FE аутентификация жасап, сұрауды Backend (BE) түйініне қайта бағыттайды. BE жолдарды талдап, жазады, ал жүктеу транзакциясы FE арқылы бекітіледі. Клиент бір синхронды JSON жауабын алады.\n\n`curl --location-trusted` аутентификацияланған FE-ден BE-ге қайта бағыттауға өтеді. Қорғалған ортада құпиясөзсіз жергілікті курс тіркелгісінің орнына TLS және тиісті шектелген рұқсаттары бар Doris тіркелгісін пайдаланыңыз.\n\n",
+      "target_hash": "976976a6c5d301500164d1a5432ba8b81a003fa87acca3de81eae6b367caf157",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "64a4351606fe7f8df336fe572e381bfd55304afca6a56172133d0678fdfb3603",
+          "target_hash": "976976a6c5d301500164d1a5432ba8b81a003fa87acca3de81eae6b367caf157"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f918069e10e8454fae20405c281b6ab4",
+      "source_hash": "758253e04a4e17ec1ec110d54b7c7854d224b74b477dab1d78e382129ac966ec",
+      "target_text": "## Модуль құрылымы\n\n| Бөлім | Уақыт | Нәтиже |\n| --- | ---: | --- |\n| 3.1 Жұмыс жүктемесі шарты бойынша жүктеу әдісін таңдау | 7 мин | Дереккөз бен талаптарын жүктеу әдісіне сәйкестендіру |\n| 3.2 Stream Load арқылы шектелген файлды жіберу | 10 мин | Талдауды, сәйкестендіруді, сапа сандарын және label негізіндегі қайталау қорғанысын түсіндіру |\n| 3.3 S3 нысандарын оқу және SQL нәтижесін тұрақты сақтау | 7 мин | S3 TVF арқылы S3 оқуды жолдарды сақтайтын `INSERT INTO SELECT` операторынан ажырату |\n| 3.4 Routine Load арқылы Kafka деректерін үздіксіз жүктеу | 10 мин | Ұзақ және қысқа тапсырмаларды, микротоптамаларды, бекітілген ығысуларды және тапсырма күйін түсіндіру |\n| 3.5 Group Commit арқылы шағын жазулар қысымын азайту | 5 мин | Шағын жазуларды топтауды дереккөз коннекторынан ажырату |\n| 3.6 Нәтижелерді тексеру және қауіпсіз қайталауды жобалау | 6 мин | Әр әдістің аяқталу, сапа және қайталау дәлелін таңдау |\n| 3-зертханалық жұмыс | 30 мин | CSV файлын, Parquet нысандарын және Kafka JSON хабарларын үш әдіспен жүктеу |\n| 3-тест | 10 мин | Осы мақсаттар бойынша алты сұрақ |\n\n",
+      "target_hash": "49e681c585f705d828a3815ad15a0e51b2fa253e14fa3e1778b18c885cbecb71",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "758253e04a4e17ec1ec110d54b7c7854d224b74b477dab1d78e382129ac966ec",
+          "target_hash": "49e681c585f705d828a3815ad15a0e51b2fa253e14fa3e1778b18c885cbecb71"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3664f67f5afa4fe3affac0706e3d1d81",
+      "source_hash": "00052fa5694064da0b3fad98f326025f0c8df29b40f7382de16415cab1234964",
+      "target_text": "## Модуль мақсаты\n\nДереккөз бен оның тұтынушыларының талаптарына сай жүктеу әдісін таңдап, содан кейін әр жүктеу нәтижесін тексеріңіз және қайталауды қауіпсіз етіңіз.\n\nЖүктеу — шарттар жиыны: деректердің қайда екені, шектелген бе әлде үздіксіз бе, қаншалықты тез көрінуі керектігі, қандай түрлендіру қажет екені, клиент қандай аяқталу дәлелін алатыны және қандай күй қайталауда сол деректерді екі рет жүктеуге жол бермейтіні.\n\n",
+      "target_hash": "65b66fdaa10b1500fba71cff69a61e8002c1c8e5e6a159b527022a1b80f6767b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "00052fa5694064da0b3fad98f326025f0c8df29b40f7382de16415cab1234964",
+          "target_hash": "65b66fdaa10b1500fba71cff69a61e8002c1c8e5e6a159b527022a1b80f6767b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e70746b66b7942c48b486487c501edaf",
+      "source_hash": "3ce25af346155397b0785bbca23a5b74605163dc1e72b455e76896f951a37f45",
+      "target_text": "## 3-тест: Apache Doris жүйесіне деректерді жүктеу\n\n[3-тест: Apache Doris жүйесіне деректерді жүктеу](quiz03_load_methods_and_retry_safety.ipynb) ашыңыз.\nОнда бір жауап таңдалатын алты сұрақ бар және жұмыс істеп тұрған орта қажет емес.\n\nКелесі қадам: бұл — 1-деңгейдің соңғы модулі. 2-деңгей [4-модуль: Apache Doris жүйесінде деректерді модельдеу](../../level2/module04-modeling/course.md) бөлімінен басталады.\n\n",
+      "target_hash": "af2a7db4bbcbb71beeb984096bd12b2c4a1333cbdd83c3f8b4a468f1b7a9aaa6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "3ce25af346155397b0785bbca23a5b74605163dc1e72b455e76896f951a37f45",
+          "target_hash": "af2a7db4bbcbb71beeb984096bd12b2c4a1333cbdd83c3f8b4a468f1b7a9aaa6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5384046c40da4f1dba2619a71536d3f4",
+      "source_hash": "b21957a20daa86ee33d9badafb34750e18e25fbde6729384b73e12cbccbb2e54",
+      "target_text": "## 3.1 Жұмыс жүктемесі шарты бойынша жүктеу әдісін таңдау\n\nФайл кеңейтімі жүктеу талабын толық сипаттамайды. CSV файлы ноутбуктан жүктелетін бес жол немесе қашықтағы сақтау орнындағы бірнеше терабайт нысандар жиыны болуы мүмкін. Екеуі де CSV жазбаларын қамтиды, бірақ пайдалану шарттары әртүрлі.\n\nЖүктеу әдісін таңдамас бұрын мына сұрақтарды қарастырыңыз:\n\n| Талап | Қойылатын сұрақ |\n| --- | --- |\n| Дереккөз | Деректер клиент хостында ма, объектілік сақтау орнында ма, әлде Kafka-ға келіп жатыр ма? |\n| Көлем және шектелгендік | Бұл бір шектелген топтама, бекітілген нысандар жиыны, көптеген ұсақ жазу немесе үздіксіз ағын ба? |\n| Кідіріс | Шақырушы қайтар алдында нәтижені білуі тиіс пе, әлде басқарылатын тапсырма деректерді асинхронды түрде көрінетін ете ала ма? |\n| Жеткізу бағыты | Клиент байттарды жібере ме, Doris қашықтағы нысандарды оқи ма, әлде Doris хабарларды үздіксіз тұтына ма? |\n| Түрлендіру | Бағандарды сәйкестендіру жеткілікті ме, әлде толық SQL сұрауы қажет пе? |\n| Аяқталу дәлелі | Сәттілікті HTTP жауабы, SQL операторы немесе ұзақ жұмыс істейтін тапсырма күйі хабарлай ма? |\n| Қайталау күйі | Doris label сақтай ма, оркестратор нысандар жиынын қадағалай ма, әлде тапсырма Kafka ығысуларын қадағалай ма? |\n\n",
+      "target_hash": "ee0402bc63f36de39578c5ee484072bc8da7e2e0f408d70231cb54a4fee215b4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "b21957a20daa86ee33d9badafb34750e18e25fbde6729384b73e12cbccbb2e54",
+          "target_hash": "ee0402bc63f36de39578c5ee484072bc8da7e2e0f408d70231cb54a4fee215b4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a2f2dce8afde423ba5a0217bad854297",
+      "source_hash": "d9875c12b7a998d2f0584de5ea0ee0e469b242959e7bc6c7d76be6f56a4e7734",
+      "target_text": "# 3-модуль: Apache Doris жүйесіне деректерді жүктеу\n\n| Курс туралы ақпарат | Мән |\n| --- | --- |\n| Курс | Apache Doris көмегімен нақты уақыттағы аналитика · 1-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Орта | 1-зертханалық жұмыстың курс сынақ ортасы; 3-зертханалық жұмыс Kafka брокерін де іске қосады |\n| Болжамды уақыт | Шамамен 85 минут: оқу 45, зертханалық жұмыс 30, тест 10 |\n\n[Курстың README файлы](../../README.md) · [3-зертханалық жұмысты ашу](lab03_load_data.ipynb) · [3-тестті ашу](quiz03_load_methods_and_retry_safety.ipynb)\n\n",
+      "target_hash": "e68d5a56db72d113cff66e192e82cf2f967cba92a970100ccd9bd073884add43",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "d9875c12b7a998d2f0584de5ea0ee0e469b242959e7bc6c7d76be6f56a4e7734",
+          "target_hash": "e68d5a56db72d113cff66e192e82cf2f967cba92a970100ccd9bd073884add43"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.de0fa6d52c5e45dd8a84d9b4244d0c5f",
+      "source_hash": "2056ab9d993fd297083f2129dd80f160a9fd14b9121f867956a7e33b64beb6fd",
+      "target_text": "### Асинхронды тапсырманы бақылау\n\n`CREATE ROUTINE LOAD` тапсырманы жасайды, бірақ дереккөз үздіксіз болғандықтан, шекті «аяқталды» күйін күтпейді. Пайдаланыңыз:\n\n```sql\nSHOW ROUTINE LOAD FOR module3_events_json;\n```\n\nТексеріңіз:\n\n- `NEED_SCHEDULE`, `RUNNING` немесе `PAUSED` сияқты тапсырма күйі;\n- қысқа тапсырмалар саны және Kafka ілгерілеуі;\n- жалпы, жүктелген, қате және таңдалмаған жол санағыштары;\n- диагностика қажет болғанда `ReasonOfStateChanged` және `ErrorLogUrls`.\n\nБекітілген деректерді мақсатты кесте сұрауларымен бөлек тексеріңіз. Тапсырма ілгерілеуі «тұтынушы қай жерге дейін бекітті?» дегенге жауап береді. Кесте сұрауы «қазір неге сұрау жасауға болады?» дегенге жауап береді.\n\n",
+      "target_hash": "a06386574be6bccc449795733519bc7b7c9ffd3d01c5bacd3310adf7794617b8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "2056ab9d993fd297083f2129dd80f160a9fd14b9121f867956a7e33b64beb6fd",
+          "target_hash": "a06386574be6bccc449795733519bc7b7c9ffd3d01c5bacd3310adf7794617b8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bfff5f0e2770470fbf60ea99d4266786",
+      "source_hash": "e95f71291d0bbf9d24bc8ea784c31ffd4a045de29fc12a6c2880e3af9da7fee6",
+      "target_text": "## Анықтамалар\n\n- [Apache Doris бастапқы код репозиторийі](https://github.com/apache/doris)\n- [Жүктеуге шолу](https://doris.apache.org/docs/4.x/data-operate/import/load-manual/)\n- [Stream Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/)\n- [S3 кестелік функциясы](https://doris.apache.org/docs/4.x/sql-manual/sql-functions/table-valued-functions/s3/)\n- [`INSERT INTO SELECT`](https://doris.apache.org/docs/4.x/data-operate/import/import-way/insert-into-manual/)\n- [Routine Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/routine-load-manual/)\n- [Routine Load қағидалары және үздік тәжірибелері](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/routine-load-best-practices/)\n- [Group Commit](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/group-commit-manual/)\n",
+      "target_hash": "9a3160339d3e52fce1351e20b9c9379d1cc65210cc491d8ff61f141e7ac7fbfc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "e95f71291d0bbf9d24bc8ea784c31ffd4a045de29fc12a6c2880e3af9da7fee6",
+          "target_hash": "9a3160339d3e52fce1351e20b9c9379d1cc65210cc491d8ff61f141e7ac7fbfc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.140936ed42264be0b00e897434f37a5b",
+      "source_hash": "117882ab524fd58764be832832dbf4238309945b0fc18ec7b784d4bbc4555ef1",
+      "target_text": "### Кідірту, жалғастыру және тоқтату\n\n`PAUSE ROUTINE LOAD` тапсырманы, бекітілген ығысуларды немесе мақсатты жолдарды жоймай, жаңа тұтыну тапсырмаларын тоқтатады. `RESUME ROUTINE LOAD` тұтынуды тапсырманың бекітілген ығысуларынан қайта жоспарлайды.\n\n`STOP ROUTINE LOAD` сол тапсырманы түпкілікті тоқтатады. Оны жалғастыру мүмкін емес, бірақ мақсатты кестеге бекітіліп қойған жолдар қалады. Routine Load тапсырмасын тоқтату Kafka контейнерін немесе Doris сынақ ортасын тоқтатудан өзгеше: соңғылары үдерістердің қолжетімділігін өзгертеді, ал SQL пәрмені басқарылатын тұтынушының өмірлік циклін өзгертеді.\n\n[Routine Load](https://doris.apache.org/docs/4.x/data-operate/import/import-way/routine-load-manual/) және [Routine Load қағидалары және үздік тәжірибелері](https://doris.apache.org/docs/4.x/data-operate/import/load-best-practices/routine-load-best-practices/) құжаттарын қараңыз.\n\n",
+      "target_hash": "186c9cfc2f77a98f2eb34177b305e10bb0ec8a7e8b8ba23615224d27e676c551",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "117882ab524fd58764be832832dbf4238309945b0fc18ec7b784d4bbc4555ef1",
+          "target_hash": "186c9cfc2f77a98f2eb34177b305e10bb0ec8a7e8b8ba23615224d27e676c551"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.117a14d0333c44b0ba639f830b77da0c",
+      "source_hash": "76e1f0d20db41c3a73f90dcf68fed7de4ad280c7832c60c7341cfbfb610bd251",
+      "target_text": "### Шектелген және үздіксіз дереккөздер\n\n**Шектелген дереккөздің** соңы белгілі: бір клиент файлы, бір сұрау денесі немесе бір бекітілген нысандар жиыны. **Үздіксіз дереккөз** жүктеу басталғаннан кейін де жаңа жазбалар қабылдай алады.\n\n![Шектелген клиент топтамасы Stream Load, S3 нысандары INSERT INTO SELECT арқылы TVF, Kafka Routine Load пайдаланады, ал ұсақ жазулар Group Commit қолдана алады.](images/01-load-method-selection.png)\n\n*Дереккөз және аяқталу шарттары дербес жүктеу жолдарын таңдауға негіз болады.*\n\nСурет жазулары: Choose a load path from its contract — жүктеу жолын оның шартына сай таңдау; Bounded client batch — шектелген клиент топтамасы; S3 object set — S3 нысандар жиыны; Kafka topic — Kafka тақырыбы; Frequent tiny writes — жиі ұсақ жазулар; Apache Doris — Apache Doris; Stream Load — Stream Load; HTTP push — HTTP арқылы жіберу; Synchronous JSON response — синхронды JSON жауабы; S3 TVF — S3 TVF; INSERT INTO SELECT — INSERT INTO SELECT; Committed internal table — ішкі кестеге бекітілген деректер; Routine Load — Routine Load; Committed rows + offsets — бекітілген жолдар және ығысулар; INSERT / Stream Load — INSERT / Stream Load; Group Commit — Group Commit; Fewer load transactions — жүктеу транзакцияларының азаюы. Сурет ағылшын түпнұсқасында сақталған.\n\nТөрт механизм де транзакциялық жазуға қатыса алады, бірақ басқару және аяқталу модельдері әртүрлі. Әр дереккөзді бір интерфейс арқылы өткізуге тырысудың орнына өндірушіге сай модельді таңдаңыз.\n\nЖүктеу әдістерінің толық матрицасы үшін ресми [Жүктеуге шолуды](https://doris.apache.org/docs/4.x/data-operate/import/load-manual/) қараңыз.\n\n",
+      "target_hash": "c6a8fb62c42c26d6e4b31b40c03397c1b82e337eb58c5b6304dc666c282a7829",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "76e1f0d20db41c3a73f90dcf68fed7de4ad280c7832c60c7341cfbfb610bd251",
+          "target_hash": "c6a8fb62c42c26d6e4b31b40c03397c1b82e337eb58c5b6304dc666c282a7829"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6bd5a3ed8aa84730b00309bdfbaa14cf",
+      "source_hash": "0db3b8a40af5ae4d75b72ce3dfa9e31733c0ce1cd6b67f7fa4f1484ae94be0fd",
+      "target_text": "### Тек жол санын емес, тұрақты шарттарды тексеру\n\nЖол саны жетіспейтін немесе қайталанған топтаманы анықтай алады, бірақ сандардың теңдігі мәндердің дұрыс сәйкестендірілгенін дәлелдемейді. Аз ғана тұрақты шарттарды пайдаланыңыз:\n\n```sql\nSELECT\n    COUNT(*) AS row_count,\n    COUNT(DISTINCT event_id) AS distinct_events,\n    MIN(event_time) AS min_event_time,\n    MAX(event_time) AS max_event_time,\n    SUM(revenue) AS total_revenue\nFROM events_stream;\n```\n\nДереккөз шартына сай тексерулерді таңдаңыз:\n\n- жол саны толықтықты тексереді;\n- бірегей бизнес идентификаторлар қайталанған немесе жетіспейтін жазбаларды көрсетеді;\n- ең кіші және ең үлкен уақыт белгілері қысқарып қалған нысанды немесе ығысу ауқымын көрсетеді;\n- сандық жиынтықтар сәйкестендіру, түрлендіру және әдепкі мән қателерін көрсетеді;\n- шағын реттелген үлгі жолдарды қалыпқа келтіруді көрінетін етеді.\n\n",
+      "target_hash": "1c7a6c1df46e83a63939236a3ada654cbf95e5cd40a5b9ef0a96fcefe1099554",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "0db3b8a40af5ae4d75b72ce3dfa9e31733c0ce1cd6b67f7fa4f1484ae94be0fd",
+          "target_hash": "1c7a6c1df46e83a63939236a3ada654cbf95e5cd40a5b9ef0a96fcefe1099554"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2d9cbf4dc6514a54a120da631ebd66a7",
+      "source_hash": "082bdfde43ae08cd0e0b01c84fae7308b4397edb016161abea5f81dfe4bf8777",
+      "target_text": "### Сол топтаманы сол label мәнімен қайталау\n\nHTTP қосылымы Doris бекіткеннен кейін, бірақ клиент жауап алғанға дейін үзілуі мүмкін. Онда клиент транзакцияның сәтсіз болғанын емес, нәтижесінің белгісіз екенін біледі.\n\nСол байттарды **сол label мәнімен** қайталаңыз. Алдыңғы жүктеу аяқталса, Doris label бұрыннан бар екенін хабарлап, топтаманы қайта қоспайды. `ExistingJobStatus` тексеріңіз: `FINISHED` алдыңғы топтаманың сәтті болғанын білдіреді, ал `RUNNING` клиент оның нәтижесін күтуі керектігін білдіреді. Басқа label жаңа жүктеу транзакциясын білдіреді және сол жолдарды Duplicate Key моделіндегі кестеге қайта қосуы мүмкін.\n\n![FE Stream Load сұрауын BE түйініне қайта бағыттайды, ал сол байттарды сол сәтті label мәнімен қайталау екінші бекітуге жол бермейді.](images/02-stream-load-request-and-retry.png)\n\n*Алғашқы жауап жоғалғанда label топтаманың бірегейлігін сақтайды.*\n\nСурет жазулары: Stream Load routing and retry identity — Stream Load бағыттауы және қайталау идентификаторы; Client-local CSV — клиенттегі жергілікті CSV; HTTP PUT — HTTP PUT; Apache Doris — Apache Doris; Frontend (FE) — Frontend (FE); Authenticate — аутентификация; Redirect — қайта бағыттау; Backend (BE) — Backend (BE); Parse — талдау; Map — сәйкестендіру; Write — жазу; FE transaction commit — FE транзакциясын бекіту; Commit — бекіту; JSON response — JSON жауабы; First attempt — алғашқы әрекет; bytes A — A байттары; label L — L белгісі; Label check — label тексеру; Transaction commits — транзакция бекітіледі; Response lost — жауап жоғалды; Same logical retry — сол логикалық әрекетті қайталау; Existing finished load — бар аяқталған жүктеу; No second commit — екінші бекіту болмайды; New write — жаңа жазу; label M — M белгісі; New transaction — жаңа транзакция; Can append again — қайта қосуы мүмкін. Сурет ағылшын түпнұсқасында сақталған.\n\nБұл бір Stream Load топтамасы үшін label негізіндегі At-Most-Once қайталанудан қорғауын береді. Ол әртүрлі бастапқы топтамалардағы мағыналық көшірмелерді анықтамайды.\n\nТолық сұрау тақырыптары, жауап өрістері және label күйлері үшін ресми [Stream Load құжатын](https://doris.apache.org/docs/4.x/data-operate/import/import-way/stream-load-manual/) қараңыз.\n\n",
+      "target_hash": "20a1f846efb831779c7ecffe93bec96951f2a6bdb0a3829a76c94290c14a686c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "082bdfde43ae08cd0e0b01c84fae7308b4397edb016161abea5f81dfe4bf8777",
+          "target_hash": "20a1f846efb831779c7ecffe93bec96951f2a6bdb0a3829a76c94290c14a686c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5d0a4778da6b4e029aadd929828ec109",
+      "source_hash": "2e21347de7eb26b11e92ea51a4aedbe19dd2ec01a3b76bc1d3beaaf6c6155b97",
+      "target_text": "### Сүзілген жолды қабылданбаған транзакциядан ажырату\n\n**Сүзілген жол** — талдау, тип немесе дерек сапасы шартын қанағаттандыра алмайтын жеке бастапқы жол. **Қабылданбаған транзакция** — сүзілген жол үлесі `max_filter_ratio` мәнінен асқандағы бүкіл топтаманың нәтижесі.\n\nБір `revenue` мәні `not-a-number`, ал `max_filter_ratio` мәні `0` болса, Doris түрлендіру мәселесін хабарлап, бүкіл жүктеу транзакциясын қабылдамайды. Сол сұраудың басқа жарамды жолдары көрінетін болмайды. Жауапта `ErrorURL` болса, оны дереу алыңыз:\n\n```bash\ncurl \"<ErrorURL from the Stream Load response>\"\n```\n\n`ErrorURL` — тұрақты аудит қоймасы емес, қысқа мерзімді диагностикалық ресурс. Бастапқы деректер құбыры қабылданбаған деректері мен қате тарихын өзі сақтауы тиіс.\n\n",
+      "target_hash": "343065a2f959a0ea9de58fd15a51692675c2df55e8091f78f2d3433af4e9504c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "2e21347de7eb26b11e92ea51a4aedbe19dd2ec01a3b76bc1d3beaaf6c6155b97",
+          "target_hash": "343065a2f959a0ea9de58fd15a51692675c2df55e8091f78f2d3433af4e9504c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a4502b7a15a448349cd3b328e1c95273",
+      "source_hash": "5da8da23fd38ccc1682d849e6c31219e1e0b88dca9dfc271d8bc3aeacb302fd6",
+      "target_text": "### «Қайталау» сөзінің дұрыс мағынасын пайдалану\n\n| Әрекет | Сол логикалық әрекет пе? | Күтілетін салдар |\n| --- | --- | --- |\n| Сол Stream Load байттарын сол сәтті label мәнімен жіберу | Иә | Doris бар топтаманы анықтап, оны қайта бекітпейді |\n| Сол Stream Load байттарын басқа label мәнімен жіберу | Жоқ | Doris оны жаңа жүктеу транзакциясы ретінде қарастырады |\n| Сәтті `INSERT INTO SELECT` операторын ойланбай қайта орындау | Жоқ | Жаңа жүктеу транзакциясы сұрау нәтижесін қайта қосуы мүмкін |\n| Бір Routine Load тапсырмасын кідіртіп, жалғастыру | Иә | Тұтыну бекітілген Kafka ығысуларынан жалғасады |\n| Сол JSON мазмұнын Kafka-ға қайта жариялау | Жоқ | Kafka ішінде Routine Load тұтынатын жаңа хабарлар бар |\n\nҚайталау қауіпсіздігі тұрақты сақталатын идентификатор мен ілгерілеу күйінен туындайды. Оның механизмі — екі сұраудың мәтіні кездейсоқ бірдей болуы емес, Stream Load label мәні, оркестратордың топтама жазбасы немесе бекітілген Kafka ығысулары.\n\n",
+      "target_hash": "85d739407e9413badd72acde1dc23af94be822a1927a705c132b43c7ca67eeb9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m03-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit of this batch against frozen Module 3 English, with full lesson, executable Lab code and all six complete question sets as context. Checked bounded versus continuous sources; Stream Load FE redirect, CSV separator and CAST mapping; total/loaded/filtered/unselected distinctions; max_filter_ratio 0 rejection versus 0.1 nine-row commit; same label versus new transaction; SQL WITH LABEL and unlabeled reruns; anonymous S3 credentials and 10/30-second versus 1/3-second timeouts; Routine Load job/task boundaries, nested JSON mapping, offset/data atomic commit and no semantic deduplication; terminal STOP and persistent rows; Group Commit sync visibility versus async durable WAL. All counts, dates, totals, four options per question and unique answers preserved. Reviewed all five PNGs and added full adjacent label legends; pixels remain English. Fixed Python literal handling to retain shell backslash line continuations. Native review and rendered admission not performed.",
+          "source_hash": "5da8da23fd38ccc1682d849e6c31219e1e0b88dca9dfc271d8bc3aeacb302fd6",
+          "target_hash": "85d739407e9413badd72acde1dc23af94be822a1927a705c132b43c7ca67eeb9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

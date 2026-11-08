@@ -1,0 +1,1136 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.94f1c12ceab44fd695c1f4ae3a621e2e",
+      "source_hash": "8cbcd74217f50d9109e02e89a8e1a39141cb57aaaab5160370ea1b4951057129",
+      "target_text": "<div>\n  <div>10-ТЕСТ · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Метрикаларды өңдеу және ұсыну</div>\n  <p>Әрқайсысына кері байланыс берілетін, бір дұрыс жауабы бар алты сұрақ; дерекқорға қосылу қажет емес.</p>\n  <span>6 сұрақ · Бір дұрыс жауап · Шамамен 10 минут</span>\n</div>\n\n[Сабақ](course.md) · [Зертханалық жұмыс](lab10_metric_processing.ipynb)\n",
+      "target_hash": "bb8ab06ad2c15abbfde9b59ce780020a26dd673e532b767c55cf4e1b90e45ea0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "8cbcd74217f50d9109e02e89a8e1a39141cb57aaaab5160370ea1b4951057129",
+          "target_hash": "bb8ab06ad2c15abbfde9b59ce780020a26dd673e532b767c55cf4e1b90e45ea0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e48fec54fc0444aba807ec0520ac6ec4",
+      "source_hash": "fd18768d6b59533664626f6888b713e3258ce7717fe6aa2cde4ce029e46610ed",
+      "target_text": "### Тестті жүктеу\n\nТестті жүктеу үшін келесі ұяшықты орындаңыз. Ядроны қайта іске қосқаннан кейін осы жерден қайта орындаңыз.\n",
+      "target_hash": "974461d755c2cb386b87743756c704517b6ef2ac0f8a010f35ff1c53de367818",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "fd18768d6b59533664626f6888b713e3258ce7717fe6aa2cde4ce029e46610ed",
+          "target_hash": "974461d755c2cb386b87743756c704517b6ef2ac0f8a010f35ff1c53de367818"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.689eaa63f28b4c3eb5468083e10b5783",
+      "source_hash": "119f4b6acba2d5344285e6a968bc0ad6d4c35a8204663aa2a81e9ffc3cb89568",
+      "target_text": "## Тестті бастау\n\nЖауапты таңдап, жіберіңіз, содан кейін келесі сұраққа өтпес бұрын түсіндірмені оқыңыз.\n",
+      "target_hash": "103adb2f3351803ea62db122d9cbc65d8d3c157eb858e1aa490b3cb380e339b7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "119f4b6acba2d5344285e6a968bc0ad6d4c35a8204663aa2a81e9ffc3cb89568",
+          "target_hash": "103adb2f3351803ea62db122d9cbc65d8d3c157eb858e1aa490b3cb380e339b7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.606f96fde9a84fe1bfc29609d880f9f0",
+      "source_hash": "061e0735afce68afc7cb6870c083a5c50861ca935ac425840a758e5461aea26f",
+      "target_text": "Бір дұрыс жауабы бар алты сұрақ; дерекқорға қосылу қажет емес. Жібергеннен кейін түсіндірмелерді қараңыз.",
+      "target_hash": "ac23d0c80f7e81c749e1728ceeec1671092cfc9e3e92acffaa0f6593a48c4a59",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "061e0735afce68afc7cb6870c083a5c50861ca935ac425840a758e5461aea26f",
+          "target_hash": "ac23d0c80f7e81c749e1728ceeec1671092cfc9e3e92acffaa0f6593a48c4a59"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.45eb987173ed4cf68f36230df9bea153",
+      "source_hash": "60399098938c1a1b93802f17ae2e69e89f5c73d0b3b291e6b373351f08f05572",
+      "target_text": "Айырма — қате емес, анықтама: EAST 144.00 және WEST 120.00 орташаларын орташалау 132.00, ал 9 тапсырысқа 1200.00 бөлу 133.33 береді. Жиынды, түйіршіктілікті, көрсеткіштерді және қатынас ережесін айтатын келісімшарт бақылау тақтасы не көрсететінін шешеді. Сол сақталған жолдарды екі тәсілмен де орташалауға болады. Дөңгелектеу айырманы шешпей, жасырады. Бір мән әрқашан жоғары емес: мұнда үлкен EAST тобының орташасы жоғары болғандықтан, орташалардың орташасы төмен.",
+      "target_hash": "ff24239f9c24bc0ffcd0ed6750a7af76bf2bcbbf019b238981bac31f1d857d01",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "60399098938c1a1b93802f17ae2e69e89f5c73d0b3b291e6b373351f08f05572",
+          "target_hash": "ff24239f9c24bc0ffcd0ed6750a7af76bf2bcbbf019b238981bac31f1d857d01"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f52b6b0eb886441eb7b23402a36eae04",
+      "source_hash": "aaf0b10ea65f8fd249a5fbbfc6d6ed8b5d9807b7bebe8f5fac19d19c950a2d79",
+      "target_text": "SQL жазбас бұрын метриканың жиынын, түйіршіктілігін, көрсеткіштерін, уақыт және қатынас ережесін анықтау.",
+      "target_hash": "c9383f7a17aca7e62a0b49d10cc58c9016695bcdca4384f5cf5fa6eaf278b959",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "aaf0b10ea65f8fd249a5fbbfc6d6ed8b5d9807b7bebe8f5fac19d19c950a2d79",
+          "target_hash": "c9383f7a17aca7e62a0b49d10cc58c9016695bcdca4384f5cf5fa6eaf278b959"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.253dbbd95c7244ebaa038e50e84a2c03",
+      "source_hash": "d1d70841575c7e1731ec62d585629a197762d42b3a13b162f38cf669af94a887",
+      "target_text": "Орташа — аймақ орташаларының орташасы емес, күн сомасының тапсырыс санына қатынасы дейтін келісімшарт",
+      "target_hash": "5467691cae13b779e2dc1a7201c464037336750ae9d4b56f600aa5b5bab90877",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d1d70841575c7e1731ec62d585629a197762d42b3a13b162f38cf669af94a887",
+          "target_hash": "5467691cae13b779e2dc1a7201c464037336750ae9d4b56f600aa5b5bab90877"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.41db921432ed4ebbb974ea783508fde7",
+      "source_hash": "7a1ad6db26d37c5632874d1e80ebc04be337b76f804b2a90561455d438c941f7",
+      "target_text": "Бірдей сақталған жолдарды оқу үшін екі сұрауды бір ұсыну кестесінде орындау",
+      "target_hash": "c7bd938dd97efcb84c6d070331095b80478950314c5c0ad6fde2ffce14e7e2f1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "7a1ad6db26d37c5632874d1e80ebc04be337b76f804b2a90561455d438c941f7",
+          "target_hash": "c7bd938dd97efcb84c6d070331095b80478950314c5c0ad6fde2ffce14e7e2f1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.105d21732c254bd6b3538e47deaebedc",
+      "source_hash": "70d1bbae34f62914e80ab047963e7dccef3f5f7b2427c7f0a738b6e4202d0fbe",
+      "target_text": "Айырма ондық арифметикадан болғандықтан, екеуін бүтін санға дөңгелектеу",
+      "target_hash": "49caf8502f05d95480babf0728e31462d70706d48e192afd44192d3ec067b05c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "70d1bbae34f62914e80ab047963e7dccef3f5f7b2427c7f0a738b6e4202d0fbe",
+          "target_hash": "49caf8502f05d95480babf0728e31462d70706d48e192afd44192d3ec067b05c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ef819f6bceef4ad69ddc08df1f9d192e",
+      "source_hash": "8d48cf24b8429aaab11db185b85ddc68b05e42e4908d402e6ed733b2e429de98",
+      "target_text": "Орташалардың орташасы үлкен аймақтарды кем санайтындықтан, екеуінің жоғарысын алу",
+      "target_hash": "1c5ad4282a3b77501410311d27390df323b859452e49838568355b8992813c81",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "8d48cf24b8429aaab11db185b85ddc68b05e42e4908d402e6ed733b2e429de98",
+          "target_hash": "1c5ad4282a3b77501410311d27390df323b859452e49838568355b8992813c81"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.966d2c2482204c8aab4cfe31fedeacb0",
+      "source_hash": "6c241d1bced5413e6d47b60a14209755662af8af475bae5a59cc09f0fe5648fb",
+      "target_text": "Екі бақылау тақтасы 1 қаңтардың орташа тапсырыс құнын көрсетеді: бірі 132.00, екіншісі 133.33. Екі сұраудың SQL-і де дұрыс. Айырманы не шешеді?",
+      "target_hash": "f2664443a6bbd9583e1025e72f7c1bc40b94675d87cb3d173332d8a09f0e6643",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "6c241d1bced5413e6d47b60a14209755662af8af475bae5a59cc09f0fe5648fb",
+          "target_hash": "f2664443a6bbd9583e1025e72f7c1bc40b94675d87cb3d173332d8a09f0e6643"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.af881194e9044e9493bc8b5a0654c736",
+      "source_hash": "bd4754ca1a1cb3256f9aa1c17908a96934711daa712a04cbae5e96178d9e2c7d",
+      "target_text": "Aggregate Key кестесі бірдей кілтті жолдарды қосады, сондықтан қайталанған пакет қосындыларды екі еселейді; кесте қайталауды жаңа тапсырыстан ажырата алмайды, оны тапсырма егжей-тегжейлі деректерден қайта құру не жүктеген пакеттерін тіркеу арқылы шешуі керек. Aggregate Key қайталануды тастамайды; Unique Key оларды ауыстырар еді. Сақталған орташаны басқа түйіршіктіліктерге қосуға болмайды. Бөлу әр жол бірдей рет қайталанды деп болжайды.",
+      "target_hash": "de9fccc2530ef08f6314fb4d46c27295c0d38db76b8d1d04de3e8d5483dc4f25",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "bd4754ca1a1cb3256f9aa1c17908a96934711daa712a04cbae5e96178d9e2c7d",
+          "target_hash": "de9fccc2530ef08f6314fb4d46c27295c0d38db76b8d1d04de3e8d5483dc4f25"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bd6e1f6c70084b52973014f3200311e8",
+      "source_hash": "719c1161c573f06f73befe469732fd1580a44d11e85de5b1052a3dba24548752",
+      "target_text": "Жарияланған түйіршіктілікте ұсыну кестесін жасап, бір пакетті екі рет жүктеудің орнына қайта құру.",
+      "target_hash": "6750297666bd58ac5fb994a928a0c1482a4902448b7c3d68df822170900c05b1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "719c1161c573f06f73befe469732fd1580a44d11e85de5b1052a3dba24548752",
+          "target_hash": "6750297666bd58ac5fb994a928a0c1482a4902448b7c3d68df822170900c05b1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.005b91c4d119418eb5cf8c3401bb8bb5",
+      "source_hash": "79005b20346a922144fbee065d674b171bd14b84892a1353d270a6cf72f887cd",
+      "target_text": "Әсер еткен жолдарды егжей-тегжейлі деректерден қайта құру не әр пакетті бір рет жүктеу: SUM әр жолды қосады",
+      "target_hash": "663a8ce83c918d88714b1df15f9597d292cd0b2e1913a55caed034342f45f1f3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "79005b20346a922144fbee065d674b171bd14b84892a1353d270a6cf72f887cd",
+          "target_hash": "663a8ce83c918d88714b1df15f9597d292cd0b2e1913a55caed034342f45f1f3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.96b9730a883542d0981d5258728dac46",
+      "source_hash": "eb8decefeaf4d68a1b2441b8ed7ada376b8dc8af04504da379e6744205f846b3",
+      "target_text": "Енгізе беру, себебі Aggregate Key бір кілтті қайталайтын жолдарды алып тастайды",
+      "target_hash": "5e071127c775b4a5ea42b7d842cdebec5566ffb0fe3576bd1f2f6059028eb81e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "eb8decefeaf4d68a1b2441b8ed7ada376b8dc8af04504da379e6744205f846b3",
+          "target_hash": "5e071127c775b4a5ea42b7d842cdebec5566ffb0fe3576bd1f2f6059028eb81e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9dc51b5001a343bc8e4a47f1ac1bffaa",
+      "source_hash": "f53431173d50fb3980f2e9224165ed235a2b05a2e98e888966658402d752b32c",
+      "target_text": "Сол пакетті екінші жүктеу өзгертпейтіндіктен, орнына орташа тапсырыс сомасын сақтау",
+      "target_hash": "92521b4e492e18fdbcd42eddbadd3d6978097beaf21dda6bf1b46f2d02d7bb8f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "f53431173d50fb3980f2e9224165ed235a2b05a2e98e888966658402d752b32c",
+          "target_hash": "92521b4e492e18fdbcd42eddbadd3d6978097beaf21dda6bf1b46f2d02d7bb8f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.09fc871a5eb34b179282bd3078300b29",
+      "source_hash": "b4f7a523a22adc92fe4ca49b7a1f7e216d41380cfb99f49b4780b5a479a1b0c5",
+      "target_text": "Сақталған мәндерді қайталау санына бөлу, бұл дұрыс қорытындыны қайтарады",
+      "target_hash": "6b4c77bafbd14b0bfe8f2e9d2ee4fc077a5e3fa4d9390e797fe6f8ccab4253ec",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "b4f7a523a22adc92fe4ca49b7a1f7e216d41380cfb99f49b4780b5a479a1b0c5",
+          "target_hash": "6b4c77bafbd14b0bfe8f2e9d2ee4fc077a5e3fa4d9390e797fe6f8ccab4253ec"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8632d9eb70724d5f91c638ea868692a4",
+      "source_hash": "33c0cc26f457ebaed05321df4ad1ec8b29acd42e173ae675e9905d18ad2a6830",
+      "target_text": "Тапсырма әр күн қорытындысын SUM бағандары бар Aggregate Key ұсыну кестесіне енгізеді. Қайталаудан кейін 1 қаңтар EAST 5 тапсырыс пен 720.00 орнына 10 және 1440.00 көрсетеді. Тапсырма не істеуі керек?",
+      "target_hash": "50629f766e054c1c8fe48427a10bc8e6db1bfd514072bd54207ceebf6cf27f12",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "33c0cc26f457ebaed05321df4ad1ec8b29acd42e173ae675e9905d18ad2a6830",
+          "target_hash": "50629f766e054c1c8fe48427a10bc8e6db1bfd514072bd54207ceebf6cf27f12"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1e50ef05525841d5b9f58aa9a358673e",
+      "source_hash": "83a6ff2beaaff01992d113a50b6952677a8e2b6e658f460d972df2a4cf008ea5",
+      "target_text": "Ішкі біріктіру тек екі жақта бар жолдарды қайтарады, сондықтан жоғалған күн салыстырудан кетіп, салыстыру өтеді; толық сыртқы біріктіру оны ұсыну жағында NULL қалдырып сақтайды. Еш біріктіру нөл ойлап таппайды. Сәйкестіктің жоқтығы қате емес. NULL жолын ішкі емес, толық сыртқы біріктіру көрсетеді.",
+      "target_hash": "cf288c6dc5dc8d4fb5f960eafa2014a941a78dbceb7d400738dd62db2935c0a6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "83a6ff2beaaff01992d113a50b6952677a8e2b6e658f460d972df2a4cf008ea5",
+          "target_hash": "cf288c6dc5dc8d4fb5f960eafa2014a941a78dbceb7d400738dd62db2935c0a6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a11263d829c249b4986a27e7abd5e1fa",
+      "source_hash": "f3a66a7d901e854ab731aa18941689b45773c81e8409789125c7b5381789d63b",
+      "target_text": "Толық сыртқы біріктіру арқылы ұсыну кестесін егжей-тегжейлі деректермен салыстыру.",
+      "target_hash": "b5c176089e77e6cf8dc16934a6d04100b85fc1d3101d153537ba2e52c2f5afe3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "f3a66a7d901e854ab731aa18941689b45773c81e8409789125c7b5381789d63b",
+          "target_hash": "b5c176089e77e6cf8dc16934a6d04100b85fc1d3101d153537ba2e52c2f5afe3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5517ef010c634c3eb758ec9d9e1ed54e",
+      "source_hash": "1aca6b4299500387664711ddfc5a9406c25457b2d2406ee0b3c92cf8366b4d33",
+      "target_text": "2 қаңтар туралы ештеңе: ішкі біріктіру тек екі жақта да бар күндерді сақтайды",
+      "target_hash": "cdb84691b8562d18481d77fa51f2387bc8ee59c93a61df65d8b2b5f55cb2d069",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "1aca6b4299500387664711ddfc5a9406c25457b2d2406ee0b3c92cf8366b4d33",
+          "target_hash": "cdb84691b8562d18481d77fa51f2387bc8ee59c93a61df65d8b2b5f55cb2d069"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4a7a9221ea684f5f84c4b1e33e02cbbc",
+      "source_hash": "cbdc7e8567794f78eefca01c41434ea4a759ae8c4da5b179b3ee789e6e7eef93",
+      "target_text": "Ұсыну кестесінде 0 тапсырысы бар 2 қаңтар, бұл сәтсіз жүктеуді көрсетеді",
+      "target_hash": "7ae8bd0b138a39f1a8efb6599e3fe290f013fab740035fd6e999547f86a5324d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "cbdc7e8567794f78eefca01c41434ea4a759ae8c4da5b179b3ee789e6e7eef93",
+          "target_hash": "7ae8bd0b138a39f1a8efb6599e3fe290f013fab740035fd6e999547f86a5324d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cb7adca598b5451e870286f935b58678",
+      "source_hash": "debf3d10c33d8df8fb2eff5e76f0605b63f90430258a8fed7ec6fbef4c8b66d6",
+      "target_text": "Қате, себебі бір жақта кілт жолы жоқ болса, ішкі біріктіру сәтсіз болады",
+      "target_hash": "1f5e46a324c709d44f7aef71f4f81f00c37f24b6306d6788afcfdedfdfa61de1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "debf3d10c33d8df8fb2eff5e76f0605b63f90430258a8fed7ec6fbef4c8b66d6",
+          "target_hash": "1f5e46a324c709d44f7aef71f4f81f00c37f24b6306d6788afcfdedfdfa61de1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8d70c469fac84e41b55449a397a5830d",
+      "source_hash": "f4b6a0ae4bc879cf6bca71b6d8a64ae73b4d5240b35200c8adec02546280b2a7",
+      "target_text": "Біріктірудің ұсыну жағында NULL бар 2 қаңтар, бұл жүктеу сәтсіздігін көрсетеді",
+      "target_hash": "f865531bd624a34f8937225113aca3631af82d033487e3d2fd450299f1f19893",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "f4b6a0ae4bc879cf6bca71b6d8a64ae73b4d5240b35200c8adec02546280b2a7",
+          "target_hash": "f865531bd624a34f8937225113aca3631af82d033487e3d2fd450299f1f19893"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.194a5abe2d884970ad613e3207fa1218",
+      "source_hash": "f6525a3391ac06da48dfc02a504aeca11875da663f373d9f91831755ec8ef92c",
+      "target_text": "Салыстыру егжей-тегжейлі қорытындыларды ұсыну кестесімен күн мен аймақ бойынша INNER JOIN арқылы біріктіреді, әр жол сәйкес. Ұсыну кестесінің 2 қаңтар жүктеуі сәтсіз болған. Салыстыру не көрсетеді?",
+      "target_hash": "2ee810d8ff467f8a19ca99a135d235d0988b92694f093d7e91134bf04951eb8c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "f6525a3391ac06da48dfc02a504aeca11875da663f373d9f91831755ec8ef92c",
+          "target_hash": "2ee810d8ff467f8a19ca99a135d235d0988b92694f093d7e91134bf04951eb8c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.151858d1a42b4224ad63ff5c84670a89",
+      "source_hash": "19fcfc3a5d6a13acaac4d5e88027049bcb881599931416d00751a6fa2b1ae66a",
+      "target_text": "CTE әр күнге бір жол түйіршіктілігін жасайды, терезе оны өзгертпей бірінші күннен ағымдағысына дейін қосады. Аймақ жолдарындағы терезе әр күнге емес, әр аймақ пен күнге бір жол сақтайды. Әр тапсырыста қайталанған күндік қорытындыны қосу күнді әр тапсырысқа бір рет санайды. LAG жинақталған қосындыны емес, тек алдыңғы жол мәнін қайтарады.",
+      "target_hash": "c6385a2acf5e597dd93f2d052bd5454ad16faf8e1e9ab37ebaf23c158ce8872a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "19fcfc3a5d6a13acaac4d5e88027049bcb881599931416d00751a6fa2b1ae66a",
+          "target_hash": "c6385a2acf5e597dd93f2d052bd5454ad16faf8e1e9ab37ebaf23c158ce8872a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.47f1d324191f4257ba7b561ce8d76cae",
+      "source_hash": "245a979419017a8f097ba8b7e42d2a0eec41ac5776007884c3d6af24545498c2",
+      "target_text": "Нәтиже түйіршіктілігін өзгертпей, терезе функциялары мен шартты агрегаттауды қолдану.",
+      "target_hash": "27208906880cd7851cc93e799d8fa7cf670b448058af6ef0d773119a8231bfea",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "245a979419017a8f097ba8b7e42d2a0eec41ac5776007884c3d6af24545498c2",
+          "target_hash": "27208906880cd7851cc93e799d8fa7cf670b448058af6ef0d773119a8231bfea"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bbd2b436e20247868dc1b2b66e5f5113",
+      "source_hash": "d32da4f79d4f2f4f75e715035365c9940b998b848fda1261158c6d63ffb5e13c",
+      "target_text": "Ұсыну жолдарын күн бойынша топтайтын CTE, содан кейін оның үстіндегі жинақтаушы SUM(amount) OVER (ORDER BY order_date)",
+      "target_hash": "13eec42e95973cf9d616c10650685cdb7edca490ccceb4fdb038905746c1192c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d32da4f79d4f2f4f75e715035365c9940b998b848fda1261158c6d63ffb5e13c",
+          "target_hash": "13eec42e95973cf9d616c10650685cdb7edca490ccceb4fdb038905746c1192c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.875fb55c74f947e58107e432ff36a56a",
+      "source_hash": "08d6a83eb9d306ba116745d7ae10b10502f1206b0828f9ffcc288f99012cf367",
+      "target_text": "Күндер ретінде көрсетілген аймақтық ұсыну жолдарының үстіндегі сол терезе",
+      "target_hash": "5f1fa371d011dcd980da543bfa740336773bed3b9f1f811f4d391d71ea2164e2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "08d6a83eb9d306ba116745d7ae10b10502f1206b0828f9ffcc288f99012cf367",
+          "target_hash": "5f1fa371d011dcd980da543bfa740336773bed3b9f1f811f4d391d71ea2164e2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ca9851484a7d4bc1aadbd46f2e21e555",
+      "source_hash": "474ecce17130e62ff3bebd8f2c70f009bbd1d2a838e1379efd908dc018db0b5b",
+      "target_text": "Тереземен әр тапсырыста қайталанған күн қорытындысы, содан кейін сол терезе бағанын әр күнге қосу",
+      "target_hash": "ea6a40f5479f236c40505471094d2568eedea9e317d6d2d47d4ee01bc8048b42",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "474ecce17130e62ff3bebd8f2c70f009bbd1d2a838e1379efd908dc018db0b5b",
+          "target_hash": "ea6a40f5479f236c40505471094d2568eedea9e317d6d2d47d4ee01bc8048b42"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f463c14b9b0445439592675a951b84d1",
+      "source_hash": "1c523fcc5d1e325611f67ea45a178e6a631b60d1897718fd602a63404fdfdf21",
+      "target_text": "Барлық бұрынғы күндердің жалпы сомасын қайтаратын LAG(amount) OVER (ORDER BY order_date)",
+      "target_hash": "195e64b8d8170a35cb06465ee0bc55cfa4b205a8dd60b20381682bbea81adf69",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "1c523fcc5d1e325611f67ea45a178e6a631b60d1897718fd602a63404fdfdf21",
+          "target_hash": "195e64b8d8170a35cb06465ee0bc55cfa4b205a8dd60b20381682bbea81adf69"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.360e869bebb2471ca20282ce18348de8",
+      "source_hash": "8a338c5fd222a21cfe4c5c135784215a66775023b96bb3e366a81d813296d3a9",
+      "target_text": "Есепке күн сомасы және сол күнге дейінгі сомасы бар әр күнге бір жол қажет. Қай сұрау береді?",
+      "target_hash": "96b4952ea3d1152c0c25ae6bb7a8a0f533edde0e77bc0244f0a50c4e33471566",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "8a338c5fd222a21cfe4c5c135784215a66775023b96bb3e366a81d813296d3a9",
+          "target_hash": "96b4952ea3d1152c0c25ae6bb7a8a0f533edde0e77bc0244f0a50c4e33471566"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a301c27e60704f799f8ceec5af7258ce",
+      "source_hash": "b9373e45a2f75bd2fc3078d0a8d628d0b9f3aa654c9c6ec9b509408c9b153e53",
+      "target_text": "Төленген GMV терезедегі қайталанулары жойылған төлемдерден алынады — 660.00; қайтарым бөлек факт, сондықтан таза түсім 660.00 минус 50.00, яғни 610.00. Тапсырыс сомасы ешқашан төленбегендерді де санайды. GMV-ден қайтарымды алу оны таза түсімге айналдырады. PARTIALLY_REFUNDED күйі төлем фактісін жоймайды: тапсырыс бір рет төленген.",
+      "target_hash": "250bedc060a414e06e4229a89d71fcf2cab42052fa5c616a75ff083627a5e8a3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "b9373e45a2f75bd2fc3078d0a8d628d0b9f3aa654c9c6ec9b509408c9b153e53",
+          "target_hash": "250bedc060a414e06e4229a89d71fcf2cab42052fa5c616a75ff083627a5e8a3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.08d04fbd95064871be119ffc57d316fc",
+      "source_hash": "1dbce919caf487c94c87bffb2b988834002ff786f7beee6b626f280592a45a07",
+      "target_text": "Төленген GMV, тапсырыс сомасы мен таза түсімді ажыратып, әр қатынастың алымы мен бөлімін сақтау.",
+      "target_hash": "b594c7e8b71b3f74c92f543563662030ac06ad72bc695c7a15704b603e222a9e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "1dbce919caf487c94c87bffb2b988834002ff786f7beee6b626f280592a45a07",
+          "target_hash": "b594c7e8b71b3f74c92f543563662030ac06ad72bc695c7a15704b603e222a9e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.408269f837cb4fd9a9b35173f1163205",
+      "source_hash": "8be911b6571d4869e8377418a45f52fec97457644430649fcbb5db21b99d0bcc",
+      "target_text": "Төлемдердің өзінен төленген GMV 660.00; қайтарымнан кейін таза түсім 610.00",
+      "target_hash": "caff49c1ce8226b4b708bea987447e53d9aecc6caa3e027f2b43e8970c445890",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "8be911b6571d4869e8377418a45f52fec97457644430649fcbb5db21b99d0bcc",
+          "target_hash": "caff49c1ce8226b4b708bea987447e53d9aecc6caa3e027f2b43e8970c445890"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2bf0c6b5b96b432383521956c6fbb6bd",
+      "source_hash": "92b2b912e3ba8511ef28f73f87287c717f1d883ba13fb77c249635ca8a6af0c7",
+      "target_text": "Төленген GMV 800.00, себебі бас тартылмаған әр тапсырыс төленген деп саналады",
+      "target_hash": "6f2a8347c255233f0d34cff66d4d113bfa72fd890588b63c8cef96e508317390",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "92b2b912e3ba8511ef28f73f87287c717f1d883ba13fb77c249635ca8a6af0c7",
+          "target_hash": "6f2a8347c255233f0d34cff66d4d113bfa72fd890588b63c8cef96e508317390"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f843d75f6f9048358c34026adf41cdb3",
+      "source_hash": "d730fdad54980b0c47bc856ef80cf8d9dd38b2325a2e92f2263634e25016c92d",
+      "target_text": "Төленген GMV 610.00, себебі қайтарым төлемін GMV-ден алып тастайды",
+      "target_hash": "04d06cd827fe0cac275c5a3c11cb695ef60d73183bc5909f7ede918454be9595",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d730fdad54980b0c47bc856ef80cf8d9dd38b2325a2e92f2263634e25016c92d",
+          "target_hash": "04d06cd827fe0cac275c5a3c11cb695ef60d73183bc5909f7ede918454be9595"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8939f30d5ac94ea5a1b069596321052c",
+      "source_hash": "dda66acc3295607bae0d16d41531f07130cd4a2e63a0ee26d462797c3de1fc4c",
+      "target_text": "Соңғы күйі PAID болатын, ақшасы қайтарылғансыз тапсырыстардың төленген GMV-і",
+      "target_hash": "b02bcfb05cceb6436b4cf29d0e7057bb24d7236336531560738e2aaeb5e52fe3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "dda66acc3295607bae0d16d41531f07130cd4a2e63a0ee26d462797c3de1fc4c",
+          "target_hash": "b02bcfb05cceb6436b4cf29d0e7057bb24d7236336531560738e2aaeb5e52fe3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.79bd0eea97ff43889ea7a97fef419850",
+      "source_hash": "9d9dcfd1b48bd300f78bf323f0aba2c1d8f9fb9e782343345416143b1db4db9d",
+      "target_text": "Мысалдың бас тартылғансыз тапсырыстары 800.00 тұрады. Терезедегі төлемдері 660.00, төленген бір тапсырысқа терезеде 50.00 қайтарылған. Терезенің төленген GMV-і мен таза түсімі қандай?",
+      "target_hash": "1b8c04003c1cc016841d498aa8a31f89d69e728b4c60e318c24bedad22ed8778",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "9d9dcfd1b48bd300f78bf323f0aba2c1d8f9fb9e782343345416143b1db4db9d",
+          "target_hash": "1b8c04003c1cc016841d498aa8a31f89d69e728b4c60e318c24bedad22ed8778"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.43f0c52452b841a8910914d7cf21b03d",
+      "source_hash": "b1034bef1c9ddf15f050f14abcaca3744f33fc62c11dda846c264d1ecea206bc",
+      "target_text": "Бірлікке дейін салыстыруға COUNT(DISTINCT) не бүтін ID Bitmap-ы қажет; HLL бағалайды, бір сәйкестік қате шегі емес. Оңтайландыру бірдей жолдар қайтарғанда және Profile үнемдеген жұмысты көрсеткенде қабылданады; уақыттар соңында, өз жағдайларына тиесілі. Уақыттың өзі екеуін де көрсетпейді, аз оқу әрқашан жылдамырақ емес. Bitmap кез келген жолдық мәндерді емес, теріс емес бүтін ID-лерді алады.",
+      "target_hash": "ce569ab1cf09fb0dd1fad93b1e7b71f18cb6e95da523486e2ec4c6eb2b9a8927",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "b1034bef1c9ddf15f050f14abcaca3744f33fc62c11dda846c264d1ecea206bc",
+          "target_hash": "ce569ab1cf09fb0dd1fad93b1e7b71f18cb6e95da523486e2ec4c6eb2b9a8927"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1fe22acd1e094403bb40931fe36ece28",
+      "source_hash": "85df15ba7d5a29605d3191d05bb95eab8f2bce4dfc082df11584dd902bc98524",
+      "target_text": "Нақты не жуық бөлек мәндер санын таңдап, оңтайландыруды тең нәтижелер және өлшенген жұмыспен тексеру.",
+      "target_hash": "902058e683687fd47e05706d8d8f280c6fb471eab314ad80bc7d15324242c5a9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "85df15ba7d5a29605d3191d05bb95eab8f2bce4dfc082df11584dd902bc98524",
+          "target_hash": "902058e683687fd47e05706d8d8f280c6fb471eab314ad80bc7d15324242c5a9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3b002b233a9d4c4bb6b9e9f5ec6808dc",
+      "source_hash": "c8fc521b2392bf5040ee207f2160ee17ee717c5d2bd14bef2cba77032b7ce262",
+      "target_text": "Қаржы үшін нақты сан; кестені тең нәтижелер мен азырақ жұмысты көрсететін Profile-дардан кейін қабылдау",
+      "target_hash": "43f7b2907a3b921dbe327ec58d4082ba9ea4cbce878af469b429c88438956451",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c8fc521b2392bf5040ee207f2160ee17ee717c5d2bd14bef2cba77032b7ce262",
+          "target_hash": "43f7b2907a3b921dbe327ec58d4082ba9ea4cbce878af469b429c88438956451"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cff4555642a34017bdc5060d413a80d2",
+      "source_hash": "c600249a786300e8ac8369422cd8f4cfc2a0d41273066a3748fa0dacd66790a0",
+      "target_text": "Қаржы үшін HLL, себебі үлгідегі нақты сәйкестік қатесі нөл екенін көрсетеді",
+      "target_hash": "507fa09f7a04e10cdabf8b63a58a50a686ad9940838d2e88147e938c6291b350",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c600249a786300e8ac8369422cd8f4cfc2a0d41273066a3748fa0dacd66790a0",
+          "target_hash": "507fa09f7a04e10cdabf8b63a58a50a686ad9940838d2e88147e938c6291b350"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d6a0e1ccc97a4ad69216121c7d79de19",
+      "source_hash": "d03c0c70e0ac6d9ddbd6a5ff083e7d53ab8eccdf495ec49fa1a06128341d493f",
+      "target_text": "Шағын кестені қазір қабылдау, себебі жылдам сұрауы азырақ жол оқығанын көрсетеді",
+      "target_hash": "2c0e15bb1a38e1d2d628d7509cd0fe2e4eb34e5676bb7db5f08da7a333acf699",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d03c0c70e0ac6d9ddbd6a5ff083e7d53ab8eccdf495ec49fa1a06128341d493f",
+          "target_hash": "2c0e15bb1a38e1d2d628d7509cd0fe2e4eb34e5676bb7db5f08da7a333acf699"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a8564b1fb14e41299cfae4b0aa7a2b19",
+      "source_hash": "7e7ce9c9d050dd5ffcfaa47c2c293483022de5b6dc98e1ecdfbd7c5de617c5df",
+      "target_text": "Кез келген бағанды нақты санайтын тұтынушы аттарының Bitmap-ы",
+      "target_hash": "c6ccf043df1ca14937606163815347a00d31d467d5e99a50ab66b9960c9debe2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "7e7ce9c9d050dd5ffcfaa47c2c293483022de5b6dc98e1ecdfbd7c5de617c5df",
+          "target_hash": "c6ccf043df1ca14937606163815347a00d31d467d5e99a50ab66b9960c9debe2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4679df6ce6bc4dfeb5b55f5a7ab7e939",
+      "source_hash": "c76d4b27a8639e6af0a64d73acd41236d772854ccd0a0ec379a17e16ed5f01e8",
+      "target_text": "Қаржы бөлек төлем жасаған тұтынушыларды бірлікке дейін салыстырады, топ үлгіге дәл сәйкес болған HLL ұсынады. Бөлек жағдайда шағын ұсыну кестесі 7.2 ms орнына 3.7 ms жауап берді. Не істеу керек?",
+      "target_hash": "1a7de5d2dca13d404b085c718ac1d5a81869c834ce395a00b052a32a91743388",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c76d4b27a8639e6af0a64d73acd41236d772854ccd0a0ec379a17e16ed5f01e8",
+          "target_hash": "1a7de5d2dca13d404b085c718ac1d5a81869c834ce395a00b052a32a91743388"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.969c1f31bd224a659a530edcf112e785",
+      "source_hash": "b110af1e7b94e1b773689ac17b3b48111744cf128cb15d4e81193396309a0380",
+      "target_text": "10-модуль тесті: метрикаларды өңдеу және ұсыну",
+      "target_hash": "0b3205a7a978953bdb9c9640d1d0cefc22c5e52cfcecc72cca326e3a2ed3a5ad",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared three shell cells andall44 bank leaves as six complete four-option sets: metric definition versus rounding, AggregateSUM retries, innerjoin omitting missing day versusNULL/zero, dailyCTE before cumulativewindow,660 paidGMV versus800 order and610net, exact finance count versusHLL and Profile/equality before speed claim. All unique-answer distinctions, negations andnumeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "b110af1e7b94e1b773689ac17b3b48111744cf128cb15d4e81193396309a0380",
+          "target_hash": "0b3205a7a978953bdb9c9640d1d0cefc22c5e52cfcecc72cca326e3a2ed3a5ad"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

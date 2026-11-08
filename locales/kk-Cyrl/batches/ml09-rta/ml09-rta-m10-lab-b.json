@@ -1,0 +1,320 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.2bbec6890a984a1daee61a973c53ec20",
+      "source_hash": "24aa1e0a4973af0652e5ba27b71a44d5baf4cd68bec2302b1d983f119c930bf9",
+      "target_text": "### Doris сынақ ортасын тоқтату\n\nАяқтап, контейнер CPU мен жадын босатқыңыз келгенде осы қосымша ұяшықты орындаңыз. Ол Doris тоқтатады, бірақ контейнерді, образды, FE метадерек томын, BE сақтау томын және барлық `m10_*` нысандарын сақтайды. Сынақ ортасын пайдалануды жалғастырғыңыз келсе, өткізіп жіберіңіз.",
+      "target_hash": "1dfe6650eb7457a57c01ab3c884655920210f57dd3287886ce08af4d6a8bb6d0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "24aa1e0a4973af0652e5ba27b71a44d5baf4cd68bec2302b1d983f119c930bf9",
+          "target_hash": "1dfe6650eb7457a57c01ab3c884655920210f57dd3287886ce08af4d6a8bb6d0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9f6e16aa6798498e9540e09f60c503ce",
+      "source_hash": "655ab32c99e5c0591f6fedbd0bf9b21bd95722f33038ed7a4359d46789ca61f3",
+      "target_text": "**Күтілетін нәтиже:** тек 2 наурыз жолы сұрауға қолжетімді қалады. Recycle bin нәтижесінде `p_recover` атты `Partition` және жою уақыты бар. Жұмыс бұрын орындалса, сол атаудағы ескі жазбалар да болуы мүмкін. Бұл ID диагностикаға көрсетіледі; келесі пәрмен әдейі біреуін де бермейді.\n\nDoris тек атаулы `RECOVER PARTITION` сол атаудың ең соңғы жойылған метадеректері деп түсінеді. Мұнда оқшауланған жұмыста жою жаңа болды, сондықтан таңдау әдейі. Нақты оқиғада `TableId`, `PartitionId` және `DropTime` тексеріп, ең жаңа жазба қажетіңіз болмауы мүмкін кезде дұрыс ID көрсетіңіз. Қалпына келу үшін жазба recycle bin ішінде жарамды қалуы тиіс.\n",
+      "target_hash": "cb27e67313cb393a2eb4222a156dfa7bcd9680ca0f2b438c948efb683dd9e1d6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "655ab32c99e5c0591f6fedbd0bf9b21bd95722f33038ed7a4359d46789ca61f3",
+          "target_hash": "cb27e67313cb393a2eb4222a156dfa7bcd9680ca0f2b438c948efb683dd9e1d6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d7e03d9b9abd4c5c82df36636615325c",
+      "source_hash": "6f8420d55049724b966f91844ef5a1fab0fe019e52d771abe9bcd4139869c5fe",
+      "target_text": "**Күтілетін нәтиже:** Doris төрт сағат бұрынғы оқиға үшін `no partition for this tuple` көрсетеді. Онлайн кестеде `1002` және `1003` бар, ал `1001` және қабылданбаған `1099` жоқ.\n\nУақыты сақталған Partition ішінде болса, кеш оқиға әлі қабылдана алады. Терезеден тыс уақытқа бөлек бизнес шешімі қажет: қабылдамау, басқаға бағыттау немесе тарихи Partition айқын басқару. Dynamic Partitioning бұл шешімді автоматты жасамайды.",
+      "target_hash": "e8cc2d83709b9b31dd9d0bea8a73775ba2a0c669bbf35bd1eceb815f55548307",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "6f8420d55049724b966f91844ef5a1fab0fe019e52d771abe9bcd4139869c5fe",
+          "target_hash": "e8cc2d83709b9b31dd9d0bea8a73775ba2a0c669bbf35bd1eceb815f55548307"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3f9cd52a698e4125b4b20d158bf76a3d",
+      "source_hash": "f7cc22d29a406a1c1beba7ff37c2cd2832c5720800e8e52b0050d2b14f7ab2c2",
+      "target_text": "**Күтілетін нәтиже:** екі жол — `cart` (**56,961**) және `purchase` (**18,298**). Әр түр үшін `distinct_contexts = event_count`: ешбір толық жасалған хабар қайталанбайды. Толық жолдары өзгеше болса да, көрсетілген префикстердің JSON кілттері мен сипаттама құрылымы ортақ. Екі оқиға түрін баған кодтауымен көрсету арзан болуы мүмкін, ал бірегей хабарлардағы қайталанатын ішкі жолдар Page сығуына бөлек мүмкіндік береді. Ешбір нәтиже әр бағанның физикалық сығу қатынасын көрсетпейді.\n\nСодан кейін сол кірісті қамтитын үш кестені салыстырыңыз. `SHOW DATA` әр **тұтас кестені** көрсетеді, сондықтан нәтиже `event_type` не `event_context` жеке қанша байт үнемдегенін оқшаулай алмайды.\n",
+      "target_hash": "8e1586679e4fafcc860a38bcec865ad1967c50ccc825be96410a5ba4f1ac08ba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "f7cc22d29a406a1c1beba7ff37c2cd2832c5720800e8e52b0050d2b14f7ab2c2",
+          "target_hash": "8e1586679e4fafcc860a38bcec865ad1967c50ccc825be96410a5ba4f1ac08ba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.edf4feb15abc47fdbc44ccd830dcd50f",
+      "source_hash": "6eb9eb8579df13fc651f3f9d5a285de7029e7c23e2d00f7edb2f18620761cc54",
+      "target_text": "## 2. Сағаттық Dynamic Partition терезесін жасау\n\nСығу сақталған байттарды азайтады; сақтау мерзімі **қай толық уақыт ауқымдары онлайн қалатынын** шешеді. Осы не келесі бөлімнің ешбір ұяшығы `DROP PARTITION` бермейді: мерзімі өткен ауқымды Dynamic Partition жоспарлағышы жояды.\n\nКесте `event_time` **DATETIME** Partition кілтін және Doris сеанс сағаты мен жоспарлағышына `Asia/Shanghai` пайдаланады. `time_unit = HOUR`, `start = -3` және `end = 1` алдыңғы үш толық сағатты, ағымдағы және бір болашақ сағатты жасайды. `create_history_partition = true` ескі сағаттарды бірден қолжетімді етеді. Терезеде әр жолға жылжымалы үш сағаттық таймер емес, **бес сағаттық Partition** бар.\n\nКелесі ұяшық тек `m10_retained_events` қайта құрып, бес алғашқы Partition күтеді. Жаңа бақылауды бастауға бір рет орындаңыз. Қайта орындау дәлелді жойып, қайта жасайды.",
+      "target_hash": "de4a962220d5afb08c859e2942d378c5a103d3f02b778381541c37ca4499165e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "6eb9eb8579df13fc651f3f9d5a285de7029e7c23e2d00f7edb2f18620761cc54",
+          "target_hash": "de4a962220d5afb08c859e2942d378c5a103d3f02b778381541c37ca4499165e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.232b21667ac34ebe976c3095140bdfc9",
+      "source_hash": "ec026f6c9c05456a6ca25584efca569c9a34bb1983f885befc4953673a5078e2",
+      "target_text": "## 1. Құрылымды оқиға журналдарында сығу таңдауларын салыстыру\n\n**Қажеттілік:** сауда аналитикасы тобы көп оқиға журнал хабарын сақтайды. Диск орны маңызды, бірақ жиі оқу Page ашуға CPU да жұмсайды. Қай кесте деңгейіндегі сығу баптауы әрі қарай сынауға лайық?\n\nКелесі ұяшық 9-модуль кластері әлі жұмыс істесе алдымен тоқтайды: бір түйінді ортамен бірге курс минимумынан көп жад қажет етеді. Кейін бар жергілікті Doris 4.1.3 контейнерін бастайды не қайта пайдаланады, `doris_course` дерекқорын таңдайды және 4-зертханалық жұмыстың `events_modelled` кестесінің толықтығын тексереді. `events_modelled` өзгертпей бір күнін оқыңыз. Әр көшірілген жол детерминді синтетикалық `event_context` алады: `event_id` толық хабарды бірегей етеді, ал JSON өріс атаулары мен сипаттама мәтіні қайталанады. Бұл — бар бастапқы өріс не өлшенген өндірістік жүктеме емес, бақыланатын оқу кірісі.\n\nКіріс аралығы — **[2020-03-01 00:00:00, 2020-03-02 00:00:00)**. Бірінші шекара кіреді, екіншісі кірмейді. Жұмыс кестелерін қайта құрмас бұрын тек белгілі жол санын тексеріңіз.",
+      "target_hash": "052c23687dd1327b2fce4a1aacec5d42c90843276c55d147b516573c71563588",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "ec026f6c9c05456a6ca25584efca569c9a34bb1983f885befc4953673a5078e2",
+          "target_hash": "052c23687dd1327b2fce4a1aacec5d42c90843276c55d147b516573c71563588"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6f0c677e5dbb4e8ab574a7fd45b54b36",
+      "source_hash": "7dac70b9bc6ea397cea7c90bc7517e64ff7ba5a7b2dd192112280e830dbece59",
+      "target_text": "### Мәндерді тексеріп, содан кейін сақтау есептерін салыстыру\n\n`event_type` сияқты бірегей мәні аз баған **баған кодтауынан** кейін ықшам болуы мүмкін. Бұл Page сығуынан кесте өлшемі көп азаятынын кепілдемейді. Керісінше, толық `event_context` бірегей, бірақ қайталанатын JSON кілттері мен хабар мәтіні ортақ **байт үлгілерін** береді. Кесте өлшемі салыстыруын оқымас бұрын екі пішінді де тексеріңіз. Үш таңдаудың пайдалану мақсаттары бөлек:\n\n| Таңдау | Doris Page қабатында не істейді | Негізгі таңдау салдары | Таңдаудың әдеттегі себебі |\n|---|---|---|---|\n| `NO_COMPRESSION` | Баған кодтауын сақтап, Page сығуын өткізеді | Page сығу/ашу жұмысын болдырмайды, бірақ әдетте көп байт оқып, сақтайды | Мазмұн сығылған немесе CPU шығыны сақтаудан маңызды |\n| `LZ4F` | Әр кодталған Page LZ4 Frame пішімімен сығады | Жылдам, орташа сығу қатынасы | Doris жылдам таңдау нұсқаулығы сақтау шығыны мен сұрау өнімділігі теңгерімі үшін ZSTD жанында тізеді |\n| `ZSTD` | Әр кодталған Page Zstandard арқылы сығады | Жоғары сығу қатынасы; ашу жылдам қалады | Сол теңгерім; Doris әдепкі ұсынысы және осы жинақ әдепкісі |\n\nБұл қасиеттер Doris Data Compression бетінен алынған; осы шағын жұмыс өлшеген қорытындылар емес. Эксперимент мән сандарын, тең бекітілген жол сандарын және Doris ағымдағы сақтау есебін тікелей бақылайды. CPU тұтынуын немесе өндірістік сұрау кідірісін өлшемейді.\n\nБарлық Tablet өлшемі мен жол саны FE түйініне жеткенге дейін бекітілген жолдар сұрауға қолжетімді болады. Көмекші алдымен әр кестені `SELECT COUNT(*)` арқылы тексереді, кейін `SHOW DATA` 75,259 жол және нөлден үлкен өлшем көрсеткенше күтеді. Күту 180 секундпен шектелген және шексіз жүрмей, соңғы метадеректермен сәтсіз аяқталады.\n\nСоңғы кесте төрт дәлел бөлігін біріктіреді:\n\n- әдепкі емес сығу қасиетіне `SHOW CREATE TABLE`;\n- Doris қайтарған DDL ішінен әдепкіні алып тастағанда FE `default_compression_type`;\n- ағымдағы физикалық есепке `SHOW DATA`, `SHOW PARTITIONS` және `SHOW TABLETS`;\n- сол метадерек көшірмесінен есептелген `m10_events_none` салыстырмалы үнем пайызы.",
+      "target_hash": "256e32a1c8a78ed6a8aa4c8d05783540ae1d975ff0ab79a05438ed8aaa062d21",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "7dac70b9bc6ea397cea7c90bc7517e64ff7ba5a7b2dd192112280e830dbece59",
+          "target_hash": "256e32a1c8a78ed6a8aa4c8d05783540ae1d975ff0ab79a05438ed8aaa062d21"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f1a19dc191b94e5890d9902b4c762086",
+      "source_hash": "e01fcdca10c756dd99f31ce567500a6b8231eb2cc87eaa58d83f8ca5e19a2830",
+      "target_text": "### Екі оқиға түрі мен ортақ хабар префиксін көру\n\nБастапқы күнде тек екі `event_type` мәні бар. Төмендегі сұрау әр мән мен жол санын көрсетеді. **Бірегей толық** `event_context` жолдарын санап, әр түрдің бір мысалынан қысқа префикс көрсетеді. Екі префикстен сол `source`, `schema` және `pipeline` кілттерін іздеңіз. `COUNT(DISTINCT ...)` мәндерді санайды; жолдарды алып тастамайды, физикалық баған өлшемдерін ашпайды және Doris қай кодтауды таңдағанын дәлелдемейді.\n",
+      "target_hash": "ce78c14ec56c5435868e1a26629288a298b27f80ef78289681e1c3a480658013",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "e01fcdca10c756dd99f31ce567500a6b8231eb2cc87eaa58d83f8ca5e19a2830",
+          "target_hash": "ce78c14ec56c5435868e1a26629288a298b27f80ef78289681e1c3a480658013"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.34c6c05b2500405b90637a8dd1bccbf9",
+      "source_hash": "0692ae6e5793f8b4e446dfecbf0daf582af61e07fc4a26df2902504cc50e6d23",
+      "target_text": "### Қосымша: сол мерзім өтуді нақты сағатпен бақылау\n\nҚысқа жол ережені өзгертті. Partition ешбір өзгеріссіз мерзімінен шығуын көру үшін сағатқа терезені жылжытуға мүмкіндік беріңіз:\n\n1. 2-бөлімнің екі ұяшығын қайта орындаңыз. Бұл `start = -3` бар `m10_retained_events` қайта құрып, жаңа `eligible_at` шығарады.\n2. Осы бөлімнің қысқа жол ұяшығын өткізіп жіберіңіз.\n3. Төменде `WAIT_FOR_REAL_HOUR = True` орнатып, ұяшықты `eligible_at` кезінде не одан кейін орындаңыз. Арада ноутбукты жаба аласыз; контейнерді жұмыс істетіп қалдырыңыз. Kernel қайта басталса, алдымен **Initialize the Lab** орындаңыз.\n\nҰяшықты `eligible_at` дейін орындасаңыз, қашан оралу керектігін көрсетіп, тоқтайды. Шекарадан кейін тікелей таймер жоспарлағыштың келесі тексеруін ең көбі 15 минут күтеді; әдепкі тексеру 600 секунд сайын. Содан кейін баптауды не қысқа жолды қайта орындамай [Ең ескі оқиға мен ағымдағы терезені тексеру](#check-the-oldest-event-and-current-window) орындаңыз. Ол `1001` үшін 0 жол қайтарып, бұрынғыдан бір сағат кейінгі бес Partition көрсетеді.",
+      "target_hash": "f9b27219c18599d580e0bb833520747eb4b8a2479c048fcf7965f184734dbca2",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "0692ae6e5793f8b4e446dfecbf0daf582af61e07fc4a26df2902504cc50e6d23",
+          "target_hash": "f9b27219c18599d580e0bb833520747eb4b8a2479c048fcf7965f184734dbca2"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d7d21ce5beea470b8827bf14d3e11af9",
+      "source_hash": "f4112c62130338c4fe042fe70ad94de9b2cad277eceac3bc5e68603458cbcbc8",
+      "target_text": "## Келесі қадам\n\n[10-тест: Apache Doris жүйесінде сақтау шығындары мен деректердің өмірлік циклін басқару](quiz10_data_lifecycle_and_recovery.ipynb) ашыңыз. Бұл — курстың соңғы зертханалық жұмысы: сабақ [курсты шолумен](course.md#where-the-course-leaves-you) және курс жасағанның бәрін тазалау жолымен аяқталады.",
+      "target_hash": "4f5a6dc96814f3021962bf94bab91a0492b35a7933b437e23321219f812d4d1a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "f4112c62130338c4fe042fe70ad94de9b2cad277eceac3bc5e68603458cbcbc8",
+          "target_hash": "4f5a6dc96814f3021962bf94bab91a0492b35a7933b437e23321219f812d4d1a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b3b20b5e95384c9794b1381c424f4664",
+      "source_hash": "b2b9b76164fa7bd664fc16be0436517b1eb41ae6ec9df3c3a15e832c679fbc83",
+      "target_text": "**Күтілетін нәтиже**\n\n- Кестемен бірге жасалған **бес** Partition: бүгіннен екі күн бұрын, бүгін және екі күн кейін. Атаулары күнге сай, мысалы Asia/Shanghai бүгін 2026-10-22 болса, `p20261020`–`p20261024`.\n- Әр Partition — бір жартылай ашық күн: біріншісі екі күн бұрынғы 00:00:00 бастап, бір күн бұрынғы 00:00:00 мәнін қоспай созылады.\n- Үш күн бұрынғы енгізу `no partition for this tuple` қатесімен аяқталады: ол терезеден ескі және Dynamic Partitioning кеш оқиғаға Partition жасамайды.\n\n`start` және `end` қазірден 24 сағаттық кезеңдерді емес, терезе уақыт белдеуіндегі бүгінге қатысты тұтас күндерді санайды, сондықтан терезе бес толық күнтізбелік күнді қамтиды: алдыңғы екі күн, бүгін және алдағы екі күн. Соңында кесте тек жаттығуға арналғандықтан `FORCE` арқылы жойылады; ол бастапқы күйге келтіру 4-бөлімдегідей қалпына келетін жою емес.",
+      "target_hash": "4e9f02bf9556036f20e9544779cf193183f953ef18de352e483c3aac86bf1ae1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "b2b9b76164fa7bd664fc16be0436517b1eb41ae6ec9df3c3a15e832c679fbc83",
+          "target_hash": "4e9f02bf9556036f20e9544779cf193183f953ef18de352e483c3aac86bf1ae1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4b499f9373044e449d187b12bd172567",
+      "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+      "target_text": "Келесі ұяшық — үлгі шешім; ол жиналған. Салыстыру үшін оны ашыңыз немесе орындаңыз.",
+      "target_hash": "8ff01ffd0add6539a325148c45f23769418c2dd1c4e538452e07910e50c04bf1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "8fdd5ccb60d85287b2286861221c4c7969c1aad9c63cca8853549fd2aa15cffd",
+          "target_hash": "8ff01ffd0add6539a325148c45f23769418c2dd1c4e538452e07910e50c04bf1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9c984b83b6d14881a97c2e594e8f5d66",
+      "source_hash": "8cbfcdb46f42f045d6bcedc021196648a977241f80610c983e852d85c2591240",
+      "target_text": "## 5. Жаттығу: күндік терезені жасамас бұрын болжау\n\nСабақтың өндірістік саясаты — күндік терезе. `DATETIME` Partition кілті және мына Dynamic Partition қасиеттері бар `m10_practice_window` жаттығу кестесін жасаңыз: `time_unit = DAY`, `start = -2`, `end = 2`, `prefix = p`, `create_history_partition = true`, `time_zone = Asia/Shanghai`.\n\nЖасамас бұрын жазып алыңыз:\n\n- Doris бірден қанша Partition жасайды және бүгінгі Asia/Shanghai күні үшін бірінші мен соңғысының атаулары;\n- бірінші Partition төменгі және жоғарғы шекарасы;\n- оқиға уақыты қазірден үш күн бұрын болатын енгізумен не болады.\n\nСодан кейін кесте жасап, `lab.partition_window_summary` арқылы бөлімдерін көрсетіңіз, `lab.expect_statement_error` арқылы ескі оқиғаны сынап, кестені жойыңыз.",
+      "target_hash": "4030133b471af6ba2e556ab82347e885d924cbb694ada588ebe51a20cf4f570b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m10-lab-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed unit by unit against frozen Module 10 English after reading complete lesson, all original executable Lab code and full six-question bank. Checked column encoding versus Page compression/table-wide codec, CPU/storage/I-O tradeoffs and no universal benchmark claims; equal layouts/replicas/loads and whole-table size scope; Manual/Auto/Dynamic creation versus count-based retention; clock-relative left-closed/right-open windows, start/end/history/reserved periods/time zones and no per-row TTL; late data policy; accepted configuration versus scheduler/online ranges/SELECT versus later reclamation; temporary FE interval restoration and optional real-clock path; actual-tier prerequisites; replica versus recycle-bin versus independent backup/replay, FORCE bypass, same-name latest recovery and ID/DropTime ambiguity, RPO/RTO and backup restrictions. Re-read exact property unit and corrected it to all six original properties including reserved_history_periods and session-zone alignment; restored protected inline -3/-2 formatting in two units; translated formal Partition as тұрақты Partition. Checked all dates/counts/storage figures/percentages and original six unique answers. Viewed six original PNGs and supplied complete adjacent Kazakh labels with English pixels retained. Native review and rendered admission not performed.",
+          "source_hash": "8cbfcdb46f42f045d6bcedc021196648a977241f80610c983e852d85c2591240",
+          "target_hash": "4030133b471af6ba2e556ab82347e885d924cbb694ada588ebe51a20cf4f570b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

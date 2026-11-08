@@ -1,0 +1,512 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.e079dbcf4cec4b4b87110c0c43e66fb8",
+      "source_hash": "b73af9ad429199a2b8057cb0b1dd4f3d6386dc978a7d47eb0bd56f0b174b9541",
+      "target_text": "### Ақшаға дәл бекітілген нүктелі мәндерді, өлшемдерге саналы жуықтауды пайдалану\n\n`DECIMAL(p, s)` дәл бекітілген нүкте шартын береді:\n\n- `p`, дәлдік — маңызды ондық цифрлардың жалпы саны.\n- `s`, масштаб — ондық нүктеден кейінгі цифрлар саны.\n\n`DECIMAL(12,2)` үшін екі цифр центке тиесілі, ал қалған сыйымдылық бүтін бөлік ауқымын қолдайды. Болашақ жарамды мәндерге, аралық есептеулерге және қажетті жиынтықтарға жеткілікті дәлдік таңдаңыз.\n\n`FLOAT` және `DOUBLE` — IEEE 754 стандартының жуық екілік жылжымалы нүктелі типтері. Оларды температура, сигнал күші, координаттар немесе статистикалық ұпай сияқты мәндер үшін тек шағын көрсету айырмашылықтары рұқсат етілгенде таңдаңыз. `DOUBLE` `FLOAT` типіне қарағанда көбірек дәлдік пен ауқым береді, бірақ бәрібір әр ондық бөлшекті дәл көрсетпейді. Жылжымалы нүктелі қосу қатаң ассоциативті емес, сондықтан үлестірілген агрегаттау реті де шағын айырмашылықтарды көрсете алады. Жылжымалы нүктелі бағандарды дәл Join кілттері немесе теңдікке негізделген бизнес идентификаторлар ретінде пайдаланбаңыз.\n\nАқша үшін жеткілікті үлкен жылжымалы нүктелі мәндер әр центті көрсете алмай қалады. Мәтін таңбаларды сақтайды, бірақ жарамды соманы кепілдемейді және сандық амалдар алдында түрлендіруді міндеттейді. 4-зертханалық жұмыс екі мәселені де көрсетеді: бір мәтін мәні түрленбейді, ал үлкен `DOUBLE` мәніне бір цент қосу дәл ондық нәтиже бермейді. [DECIMAL](https://doris.apache.org/docs/4.x/sql-manual/basic-element/sql-data-types/numeric/DECIMAL/) және [Жылжымалы нүктелі типтер](https://doris.apache.org/docs/4.x/sql-manual/basic-element/sql-data-types/numeric/FLOATING-POINT/) құжаттарын қараңыз.\n\n",
+      "target_hash": "040c9fd16b0962e2263256bdd051c52a092ff0e6b3c4bd0fbad4674f2a4e012d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "b73af9ad429199a2b8057cb0b1dd4f3d6386dc978a7d47eb0bd56f0b174b9541",
+          "target_hash": "040c9fd16b0962e2263256bdd051c52a092ff0e6b3c4bd0fbad4674f2a4e012d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7d3ce41d819c40d1be91d2906f68ac71",
+      "source_hash": "5671734e4d64746f93eb66c93ac411f7637478e0dea60e5d9749e50d86477ba4",
+      "target_text": "### Пайдалы уақыт түйіршіктілігін таңдау\n\nPartition түйіршіктілігі жұмыс жүктемесіне сай болады:\n\n- Күндік Partition бөлімдері өмірлік циклді ұсақ деңгейде басқаруға мүмкіндік береді, бірақ көбірек метадерек және кішірек физикалық бірліктер жасайды.\n- Айлық Partition бөлімдері Partition нысандарының санын азайтады, бірақ тұтас айды табиғи өмірлік цикл шекарасына айналдырады.\n- Өте ірі Partition дәл сақтау мерзімі немесе ауыстыру жұмысы үшін тым көп дерек қамтуы мүмкін.\n\nКүн немесе ай жөнінде әмбебап жауап жоқ. Әр кезеңдегі дерек көлемін, жиі сүзілетін ауқымдарды, сақтау мерзімі саясатын, кері толықтыру көлемін және күтілетін Partition нысандарының санын ескеріңіз.\n\n",
+      "target_hash": "dda7c4345db436892af7795dae5971f85182a1b012bea7645dc6706f512eb5f6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "5671734e4d64746f93eb66c93ac411f7637478e0dea60e5d9749e50d86477ba4",
+          "target_hash": "dda7c4345db436892af7795dae5971f85182a1b012bea7645dc6706f512eb5f6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.58c7e7204fc048c1bcf045973b576832",
+      "source_hash": "4d5e47b92e38adffa23b5b4eae6f24ed15bd94862e89d5d6dd413956e263d272",
+      "target_text": "### `DEFAULT` мәнін тек келісілген түсіріп қалдыру ережесі үшін пайдалану\n\nЕнгізу кезінде мақсатты баған түсіріліп қалдырылса, әдепкі мән беріледі. Мысалы:\n\n```sql\nregion VARCHAR(16) NOT NULL DEFAULT \"unknown\"\n```\n\nтүсірілген аймақ `unknown` есеп санатына жататын шартты қолдайды. Бұл айқын берілген `NULL` байқатпай түрленуі тиіс дегенді білдірмейді және қате аймақ мәнін түзетпейді.\n\nБұл айырмашылық пайдалану кезінде маңызды:\n\n| Кіріс шарты | Зертханалық жұмыс шартына сай нәтиже |\n| --- | --- |\n| `product_id` жоқ және жоқтық рұқсат етілген | NULL рұқсат етілетін бағанға `NULL` сақтау |\n| `region` түсіріліп қалдырылған және `unknown` келісілген | Әдепкі мән қолданылуы үшін мақсатты бағанды түсіріп қалдыру |\n| `NOT NULL` бағанында `region` айқын `NULL` | Қабылдау саясатына сай енгізуден бұрын қабылдамау немесе түрлендіру |\n| Түсім мәтіні `DECIMAL(12,2)` бола алмайды | Жарамсыз жолды санап, бағыттау немесе қабылдамау; оны жарамды жетіспейтін түсім деп санамау |\n\n",
+      "target_hash": "ac8fe168432da6655623effa25cd97103c313aa486cc20ab7aa376d4bdbef3cc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "4d5e47b92e38adffa23b5b4eae6f24ed15bd94862e89d5d6dd413956e263d272",
+          "target_hash": "ac8fe168432da6655623effa25cd97103c313aa486cc20ab7aa376d4bdbef3cc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c433df2a7eb341bf95789a2e96f8014a",
+      "source_hash": "8c5890c31a0b80bc4a7bdc97931498d1b5cfef8e4601fc8af68fbe3734e107af",
+      "target_text": "## 4-тест: Apache Doris жүйесінде деректерді модельдеу\n\n[4-тест: Apache Doris жүйесінде деректерді модельдеу](quiz04_schema_and_modeling_choices.ipynb) ашыңыз.\nОнда бір жауап таңдалатын алты сұрақ бар және жұмыс істеп тұрған орта қажет емес.\n\nКелесі модуль: [5-модуль: Apache Doris жүйесінде деректерді талдау](../module05-analyzing/course.md).\n\n",
+      "target_hash": "aab37efc3b2b65b634bd3ec92740d86fe4dbb40f68a43eb905163c47bb2232b7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "8c5890c31a0b80bc4a7bdc97931498d1b5cfef8e4601fc8af68fbe3734e107af",
+          "target_hash": "aab37efc3b2b65b634bd3ec92740d86fe4dbb40f68a43eb905163c47bb2232b7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.dcb253a85b2b400bb677b1b1687ea5b1",
+      "source_hash": "d57b3e6094243c346f7282710e3b6fa0b21b1ffe1af5a5a2abf18a1b81fbaff3",
+      "target_text": "## 4.2 Қайталанатын кілт мағынасына қарай кесте моделін таңдау\n\n2-модуль (Apache Doris архитектурасын тереңірек зерттеу) бар кілтпен жол келгенде әр кесте моделінің не істейтінін көрсетті: Duplicate Key екі жолды да сақтайды, Unique Key соңғысын сақтайды, ал Aggregate Key мән бағандарын біріктіреді. Модельдеу кері сұрақ қояды: әр деректер өніміне қандай әрекет қажет?\n\n| Деректер өнімі | Қайталанатын кілт не істеуі тиіс | Кесте моделі |\n| --- | --- | --- |\n| Оқиға тарихы | Әр қабылданған жолды сақтау | Duplicate Key |\n| Ағымдағы күй | Бизнес кілттің көрінетін күйін ауыстыру | Unique Key |\n| Жиынтық метрикалар | Әр есеп кілті бойынша өлшем үлестерін біріктіру | Aggregate Key |\n\nӨнімділікті ойламас бұрын модельді жол мағынасына қарай таңдаңыз. Doris бар кестені басқа кесте моделіне айналдыра алмайды; өзгерген шартқа жаңа кесте және бақыланатын ауысу қажет. [Кесте модельдеріне шолу](https://doris.apache.org/docs/4.x/table-design/data-model/intro/) және [Кесте модельдерінің үздік тәжірибелері](https://doris.apache.org/docs/4.x/table-design/data-model/tips/) құжаттарын қараңыз.\n\n",
+      "target_hash": "8543283377f9ca766f7532364bbb1270941f4fd11d35474c4bd5298973cc596a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "d57b3e6094243c346f7282710e3b6fa0b21b1ffe1af5a5a2abf18a1b81fbaff3",
+          "target_hash": "8543283377f9ca766f7532364bbb1270941f4fd11d35474c4bd5298973cc596a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2e08f6e6f35740f3b447659581b3069f",
+      "source_hash": "7d4b51ea2ae45ac140809a77cfa33ea8b00530a127fa1bbe2e78499651f2d594",
+      "target_text": "### Ағымдағы күй: Unique Key\n\nТапсырыс күйінің кестесінде басқа шарт бар:\n\n| `order_id` | `status` | Мағынасы |\n| ---: | --- | --- |\n| 7842 | `paid` | Бұрын қабылданған күй |\n| 7842 | `shipped` | Сол тапсырыстың жаңа ағымдағы күйі |\n\nҚалыпты сұраулар `order_id = 7842` үшін бір ағымдағы жол көруі тиіс болса, `order_id` — Unique Key, ал оған әр жаңа жазба upsert болады. Doris 4.x әдепкіде Unique Key кестелерін Merge-on-Write арқылы жасайды, сондықтан жазудың өзі жаңа күйді көрінетін етеді. Келу реті әрдайым бизнес реті емес, өйткені CDC оқиғалары кешігіп келуі немесе қайталануы мүмкін: Sequence бағаны қай күй жеңетінін бастапқы нұсқаға анықтатуға мүмкіндік береді. 7-модуль upsert, ішінара жаңарту, Sequence бағандары және жою арқылы ағымдағы күйді құрады. [Unique Key моделі](https://doris.apache.org/docs/4.x/table-design/data-model/unique/) және [Merge-on-Write](https://doris.apache.org/docs/4.x/table-design/data-model/merge-on-write/) құжаттарын қараңыз.\n\n",
+      "target_hash": "38d616a0e122da955986c701001236eea63cf228043a0963b9a41fbda2ce1238",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "7d4b51ea2ae45ac140809a77cfa33ea8b00530a127fa1bbe2e78499651f2d594",
+          "target_hash": "38d616a0e122da955986c701001236eea63cf228043a0963b9a41fbda2ce1238"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.eeca3ea2df06423ca4666108db44be42",
+      "source_hash": "6b0bbb497a89bb522834e820dac9c5db0be4d89f696c1f2ee936c74873992b22",
+      "target_text": "## 4.8 Сұрыптау кілтін негізгі қатынау жолына сәйкестендіру\n\nDoris кесте деректерін Key бағандары анықтаған ретпен сақтайды. Бұл рет префикске негізделген дерекке қатынауды және сығу әрекетін қолдайды. Кесте моделі сол Key бағандарының қосымша мағынасын анықтайды:\n\n| Кесте моделі | Кілттің қосымша міндеті |\n| --- | --- |\n| Duplicate Key | Жолдарды сұрыптау; кілттердің сәйкес келуі бірегейлікті білдірмейді |\n| Unique Key | Жолдарды сұрыптау және логикалық upsert кілтін анықтау |\n| Aggregate Key | Жолдарды сұрыптау және агрегаттау тобын анықтау |\n\n",
+      "target_hash": "92ecbf91ecb5a645277fe2e6d9169f17e9d80fdc13da627582a31a02a9eed14d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "6b0bbb497a89bb522834e820dac9c5db0be4d89f696c1f2ee936c74873992b22",
+          "target_hash": "92ecbf91ecb5a645277fe2e6d9169f17e9d80fdc13da627582a31a02a9eed14d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9c279a7046ec4ac0953c5eb3fe30a143",
+      "source_hash": "3526da35c08b821761606c79af7cff142e7e3a4c81ed000132272f681eba8791",
+      "target_text": "### Жарияланған шартты бақылаулармен тексеру\n\nЖол саны күтілетін дереккөздің қолжетімді екенін растай алады. Бірегей сандар, ең кіші және ең үлкен мәндер және қайталануды тексерулер бұзушылықтарды көрсете алады. Олар жолдың жарияланған мағынасын алмастырмайды.\n\nМысалы, қайталанған `event_id` нашар бастапқы деректі, басқа өріс ауқымына ғана тиесілі оқиға идентификаторын немесе заңды қайта жеткізуді білдіруі мүмкін. Қай түсінік дұрыс екенін тек дереккөз шарты айтады. Сондықтан 4-зертханалық жұмыс бастапқы жиынды `COUNT(*)` арқылы растап, оның баған метадеректерін оқиды; түйіршіктілік шарттың өзінен келеді.\n\n",
+      "target_hash": "bae42be5532b63507383242f76fbe97e90f3234aa4c9bb1a35ab4120a3b82aff",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "3526da35c08b821761606c79af7cff142e7e3a4c81ed000132272f681eba8791",
+          "target_hash": "bae42be5532b63507383242f76fbe97e90f3234aa4c9bb1a35ab4120a3b82aff"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6ebb5fa7e7c44c199b336aa42b717567",
+      "source_hash": "a0add6a825c0b32483a846a4c7092a3164d99bbc89f08d2e091a86a2d6fe8617",
+      "target_text": "### Ережеге сай келетін деректер үшін Auto Range Partitioning пайдалану\n\nЖаңа уақыт мәндері үздіксіз келіп, шекаралары тұрақты ережеге бағынса, Auto Range Partitioning деректерге қажет болғанда тиісті Partition жасай алады. Зертханалық жұмыс жариялауы мынаны пайдаланады:\n\n```sql\nAUTO PARTITION BY RANGE (date_trunc(event_time, 'month'))\n```\n\nКурс деректерінде 2019 жылғы желтоқсан мен 2020 жылғы наурыз оқиғалары бар, сондықтан Doris сол екі айлық ауқымды жасайды; қаңтар мен ақпанда оқиғалар жоқ және оларға Partition жасалмайды.\n\nШекаралар алдын ала мақұлдауды, арнайы атауларды немесе қатаң бақыланатын өмірлік цикл үдерісін қажет етсе, Partition басқаруын айқын таңдаңыз. Auto Partitioning ауқымдар жасайды; кесте моделі, түйіршіктілік, Bucket кілті және сұрыптау кілті сіздің шешіміңіз болып қалады. [Auto Partitioning](https://doris.apache.org/docs/4.x/table-design/data-partitioning/auto-partitioning/) құжатын қараңыз.\n\n",
+      "target_hash": "932397dad475860ecc2d450b17a60112a5b5f29781c615af88f26c594c7ebe33",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "a0add6a825c0b32483a846a4c7092a3164d99bbc89f08d2e091a86a2d6fe8617",
+          "target_hash": "932397dad475860ecc2d450b17a60112a5b5f29781c615af88f26c594c7ebe33"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e508db9c2a3148afb129762f412af3a2",
+      "source_hash": "fe1a8c4ebb12b48dd5598882efc94acc88e2f17c262815324e35566f48ee2db5",
+      "target_text": "### Жиынтық метрикалар: Aggregate Key\n\nЕсеп құбыры бір `(event_date, region, event_type)` үшін бірнеше үлес жеткізуі мүмкін. `event_count` және `total_revenue` қосылуы тиіс болса, өлшемдер — Aggregate Key, ал метрикалар — `SUM` жарияланған мән бағандары:\n\n![Duplicate Key жолдарды сақтайды, Unique Key ағымдағы күйді ауыстырады, ал Aggregate Key төрт және үш оқиға үлесін жетіге біріктіреді.](images/02-table-model-repeated-key-semantics.png)\n\n*Қайталанатын кілт әрекеті деректер өнімінің жол шартына сәйкес келуі тиіс.*\n\nСурет жазулары: Choose the repeated-key result — қайталанатын кілт нәтижесін таңдау; Duplicate Key — Duplicate Key; Same key — бірдей кілт; Row A / Row B — A жолы / B жолы; Both rows retained — екі жол да сақталған; Unique Key — Unique Key; One current row — бір ағымдағы жол; Aggregate Key — Aggregate Key. order_id, status, paid, shipped, event_count, total_revenue өріс/мәндері, 7842, 2026-09-15, east, purchase және 4 + 3 = 7, 90.00 + 65.00 = 155.00 мәндері түпнұсқада сақталған. Сурет ағылшын тілінде қалады.\n\nКілт бағандары агрегаттау тобы да, сұрыптау кілті де болады және әр мән бағаны үлестердің қалай бірігетінін жариялайды. Мұндай кесте оқиға идентификаторларын немесе уақыт белгілерін сақтамайды, сондықтан егжей-тегжейлі деректерді алмастыра алмайды, ал екі рет жүктелген үлес екі рет қосылады: қайталау қауіпсіздігі әлі де 3-модульдің жүктеу шарттарынан келеді. [Aggregate Key моделі](https://doris.apache.org/docs/4.x/table-design/data-model/aggregate/) құжатын қараңыз.\n\n",
+      "target_hash": "57f64b598807052ea7a31d56f2dce26f508731b8b609d1e73a799ba6a99b4543",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "fe1a8c4ebb12b48dd5598882efc94acc88e2f17c262815324e35566f48ee2db5",
+          "target_hash": "57f64b598807052ea7a31d56f2dce26f508731b8b609d1e73a799ba6a99b4543"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c8cbd287ad744bce8eeb14cd988b14c1",
+      "source_hash": "3d9cac22ab803bfd4fe8ab7b75fe718189c4c78aef70b74a985c457f1e48855f",
+      "target_text": "## 4.5 Жоқ, түсіріліп қалдырылған және жарамсыз мәндерге әртүрлі ереже беру\n\nМына бастапқы жағдайлар бірдей емес:\n\n1. Өнім оқиғаға қолданылмайды.\n2. Аймақ түсіріліп қалдырылған және бизнес оны `unknown` санатына жатқызуға келіскен.\n3. Түсімде `not-a-number` бар және ол ақшалай мән шартына сай емес.\n\nБәріне ортақ бір `NULL` немесе әдепкі ереже бұл айырмашылықтарды жасырар еді.\n\n",
+      "target_hash": "eefb8e13285711da50270d07a316199a5d9cb29754c4e3ad90b9cc5973481943",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "3d9cac22ab803bfd4fe8ab7b75fe718189c4c78aef70b74a985c457f1e48855f",
+          "target_hash": "eefb8e13285711da50270d07a316199a5d9cb29754c4e3ad90b9cc5973481943"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.94d6ebc5900b465895966b48ebcda001",
+      "source_hash": "24ee3787c12becc5650e1c5ab8195059e9938b507997c5b772b23e0f512fd43f",
+      "target_text": "## 4.3 Есеп беру талабынан жиынтық моделін шығару\n\nБақылау тақтасына күн сайын аймақ пен оқиға түрі бойынша оқиға саны және жалпы түсім қайта-қайта қажет. Сол нәтижеден бастап, содан кейін кесте шартын шығарыңыз.\n\n",
+      "target_hash": "b93463a6eced50a17ae9ff96b9d8725c206a56a76c3511084c01b96c704c59d8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "24ee3787c12becc5650e1c5ab8195059e9938b507997c5b772b23e0f512fd43f",
+          "target_hash": "b93463a6eced50a17ae9ff96b9d8725c206a56a76c3511084c01b96c704c59d8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c8198d136c4f4c79816b40508b60ba35",
+      "source_hash": "1e1759e233c2dd74a8f02c1d11b87d6f6c55f20eaa3d9ce9dd442620f727188f",
+      "target_text": "## 4.1 Бір жол нені білдіретінін анықтау\n\nБағандарға атау бермес бұрын мына сөйлемді аяқтаңыз:\n\n> Бұл кестедегі бір жол мынаны білдіреді ...\n\nОсы тұжырым кестенің **түйіршіктілігін** анықтайды. Түйіршіктілік бизнес және дереккөз шартынан келеді. Ол бүгінгі үлгіде кездейсоқ бірегей болған кез келген бағанды таңдау арқылы табылмайды.\n\n",
+      "target_hash": "c7907856007b9053ee4e33cbc921744ec3acddb181c7970c141ae617c5825972",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "1e1759e233c2dd74a8f02c1d11b87d6f6c55f20eaa3d9ce9dd442620f727188f",
+          "target_hash": "c7907856007b9053ee4e33cbc921744ec3acddb181c7970c141ae617c5825972"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bc5874e434c24162ae179b973d28959d",
+      "source_hash": "cb4a35ac88d1fd7fedb6735f93001f25ac490debc54721ae7216eef3f193cac0",
+      "target_text": "### NULL рұқсатын рұқсат етілетін бизнес күйлерден таңдау\n\nБелгісіз, әлі берілмеген немесе қолданылмайтын сияқты жоқтық жарамды күй болғанда NULL рұқсат етілетін бағанды пайдаланыңыз. Сонда сұраулар сол күйдің сүзгілерде, топтарда, сандарда және Join амалдарында қалай әрекет ететінін анықтауы тиіс. Мысалы, `COUNT(product_id)` `NULL` елемейді, ал `COUNT(*)` оқиға жолын бәрібір санайды.\n\nӘр қабылданған жолда жарамды мән болуы міндетті болса, `NOT NULL` пайдаланыңыз. Бұл дерек сапасының ең төменгі талабын кесте шартына қосады. Бастапқы талдағыш жетіспейтін мән шығара алады екен деп әр өрісті NULL рұқсат етілетін етіп жарияламаңыз. Бұл шешілмеген таңдауларды әр кейінгі сұрауға жүктейді.\n\n",
+      "target_hash": "a69c16f93409c31ff1a2064eedc77794dc8538fd6223c0fb795c77d95420f3d5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "cb4a35ac88d1fd7fedb6735f93001f25ac490debc54721ae7216eef3f193cac0",
+          "target_hash": "a69c16f93409c31ff1a2064eedc77794dc8538fd6223c0fb795c77d95420f3d5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.968a402829954ae59c5c9eac5b67f399",
+      "source_hash": "4fb7b3594df209e21727df70897e8a7f08bf066dcf267db99ace182bb189301c",
+      "target_text": "### Жұмыс жүктемесін тарата алатын Hash кілтін таңдау\n\nHash тарату кезінде Doris жолдың Partition ішіндегі Bucket ұяшығын таңдау үшін таңдалған тарату бағандарын хэштейді. Кілтте жүктемеге жеткілікті бірегей және жеткілікті таралған мән болуы тиіс.\n\nКурс деректерінде екі үміткер бар:\n\n| Үміткер | Дерек пішіні | Тарату салдары |\n| --- | --- | --- |\n| `region` | Әрқайсысында шамамен 1.27 миллион оқиға бар сегіз жасанды мән | Partition ішіндегі он Bucket-тің ең көбі сегізі жол алады және аймақ қанша өссе де, сол Partition ішіндегі аймақтың барлық жолы бір Tablet-ке түседі |\n| `user_id` | Барлық оқиғаларда шамамен 1.58 миллион пайдаланушы | Hash мәндері жолдарды барлық Bucket бойынша таратады |\n\nСондықтан `events_modelled` `HASH(user_id)` пайдаланады. Хэштеу кілттің қай Bucket-ке түсетінін шешеді; әр Tablet қанша жол алатыны әр кілттің қаншалықты жиі кездесетініне бәрібір байланысты. Мәні аз кілт, мұндағыдай мәндер біркелкі пайдаланылса да, таратуды шектейді; қисайған мәндер жағдайды нашарлатады, өйткені басым мәндердің Bucket ұяшықтары ең тез өседі.\n\nRandom тарату кілтке негізделген орналасу байланысын сақтамай жолдарды тарата алады. Doris 4.x нұсқасында ол Duplicate Key кестелеріне және мән бағандары `REPLACE` немесе `REPLACE_IF_NOT_NULL` қолданбайтын Aggregate Key кестелеріне қолданылады; Unique Key кестелері және сондай бағандары бар Aggregate Key кестелері Hash таратуды қолдануы тиіс, ал Doris олар жасалғанда `DISTRIBUTED BY RANDOM` қабылдамайды. Таңдалған бағандар бойынша тұрақты орналасу сүзуге немесе Join құрылымына пайдалы болса, Hash тарату пайдалы. 6-модуль үйлесімді таратудың Join амалына көмегін түсіндіреді; бәрібір Hash кілтін бір болашақ Join үшін емес, бүкіл жүктеме мен оның қисықтығына қарай таңдаңыз.\n\n",
+      "target_hash": "92d881a354a9fac179db212be03cee030931287c8362ec27cea18c1cf9bdbff7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "4fb7b3594df209e21727df70897e8a7f08bf066dcf267db99ace182bb189301c",
+          "target_hash": "92d881a354a9fac179db212be03cee030931287c8362ec27cea18c1cf9bdbff7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2adb8d867a7a4b92897fe84eb97da5be",
+      "source_hash": "9d1eafa850ed40e0bd797f1e27aca4e034520401fe5064464d91abd030278c21",
+      "target_text": "## 4.4 Дерек типтерін бизнес мағынасына қарай таңдау\n\nДерек типі өрістің жарамды мәндер ауқымын көрсетіп, маңызды амалдарды қолдауы тиіс. Бір файлда көрінетін мәндерге қарап таңдау болашақ ауқым, дәлдік немесе құрылым қажеттіліктерін кем бағалауы мүмкін.\n\nАлдымен қажетті амалдар мен дұрыстықтан бастап, содан кейін сақтау және есептеу шығынын қарастырыңыз:\n\n| Бизнес мәні және қажетті әрекет | Сай келетін бастапқы тип | Бағаланатын негізгі таңдау |\n| --- | --- | --- |\n| Бүтін сандар, мөлшерлер немесе сан ретінде анықталған идентификаторлар | Болашаққа қауіпсіз ауқымы бар ең кіші бүтін тип | Тар тип аз орын алады, бірақ кем бағаланған ауқым толып кетуі мүмкін |\n| Ақша, шот қалдығы, салық мөлшерлемесі немесе жарияланған масштабы қажет басқа ондық мөлшер | `DECIMAL(p, s)` | Дәл ондық әрекетке жеткілікті дәлдік қажет және дәлдік өскенде кеңірек арифметика қолданылуы мүмкін |\n| Жуықтауға болатын сенсор өлшемдері, ғылыми бақылаулар, координаттар немесе модель ұпайлары | `FLOAT` немесе `DOUBLE` | Кең ауқым мен қалыпты жылжымалы нүктелі есептеу көрсету қатесімен, ассоциативті емес агрегаттаумен және дәл теңдікке жарамсыз мағынамен келеді |\n| Ішкі мағынасы ашылмайтын идентификаторлар немесе санат белгілері | Шектелген `VARCHAR` | Пішім мен сандық емес сәйкестікті сақтайды, бірақ әр сұрау талдауы тиіс санды алмастырмауы керек |\n| Күнтізбелік күн немесе оқиға уақыт белгісі | `DATE` немесе `DATETIME(p)` | Дәлдік пен уақыт белдеуі мағынасы дереккөзге және есеп шекараларына сай болуы тиіс |\n\n`DOUBLE` арифметикасы кең `DECIMAL` арифметикасынан арзанырақ болуы мүмкін. Бұл — өкілдік деректерде өлшенетін өнімділік мәселесі, ақшаны жуық сақтаудың себебі емес: алдымен жуықтауға мүлде бола ма, соны шешіңіз.\n\n",
+      "target_hash": "4deeaefec106312292df7a37e3f1f6f21293a38e7a03b9d8665ff944a92b79c5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "9d1eafa850ed40e0bd797f1e27aca4e034520401fe5064464d91abd030278c21",
+          "target_hash": "4deeaefec106312292df7a37e3f1f6f21293a38e7a03b9d8665ff944a92b79c5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d78631ed0c464f15bbac15c76d1ef17d",
+      "source_hash": "d07b511c7294f323374d0a5293c5510ff2ef2b7f1c7a066497f8aea7e2abcd94",
+      "target_text": "# 4-модуль: Apache Doris жүйесінде деректерді модельдеу\n\n| Курс туралы ақпарат | Мән |\n| --- | --- |\n| Курс | Apache Doris көмегімен нақты уақыттағы аналитика · 2-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Орта | Курс сынақ ортасы және 1-зертханалық жұмыстың `events` кестесі |\n| Болжамды уақыт | Шамамен 90 минут: оқу 50, зертханалық жұмыс 30, тест 10 |\n\n[Курстың README файлы](../../README.md) · [4-зертханалық жұмысты ашу](lab04_model_data.ipynb) · [4-тестті ашу](quiz04_schema_and_modeling_choices.ipynb)\n\n",
+      "target_hash": "f350898c7efe1787c19bb6bee8446122a4aab1afb0c508315fb72391bf4c5ba7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "d07b511c7294f323374d0a5293c5510ff2ef2b7f1c7a066497f8aea7e2abcd94",
+          "target_hash": "f350898c7efe1787c19bb6bee8446122a4aab1afb0c508315fb72391bf4c5ba7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.47c3bd962eca4adfb59046461b150398",
+      "source_hash": "8215cceed2aca0df911c05607db3496fe67c48c8b5730682a6ee5c412d4604ba",
+      "target_text": "## Оқу мақсаттары\n\nОсы модульді аяқтағаннан кейін сіз:\n\n1. Кесте түйіршіктілігін оның дереккөз шартынан анықтап, егжей-тегжейлі деректер мен жиынтық түйіршіктілігін бөлек кестелерде сақтай аласыз.\n2. Қайталанатын кілтке қажетті әрекетке қарай Duplicate Key, Unique Key немесе Aggregate Key моделін таңдай аласыз.\n3. Есеп беру талабынан жиынтық өлшемдері мен қосылатын метрикаларын шығарып, оны егжей-тегжейлі деректермен салыстырып тексере аласыз.\n4. Идентификатор, уақыт, ақша, санат және ішкі құрылымды мәндердің типтерін олардың мағынасы мен қажетті амалдарына қарай таңдай аласыз.\n5. Жоқ, түсіріліп қалдырылған немесе жарамсыз мәндер үшін `NULL`, `NOT NULL` және `DEFAULT` ажырата аласыз.\n6. Кесте Partition бөлімдерін, Bucket ұяшықтарын және сұрыптау кілтін уақыт сүзгілеріне, өмірлік цикліне, таратуына және көлеміне қарай жобалай аласыз.\n\n",
+      "target_hash": "d0dac95acdcad923344cb5e1a7fe44bfdb72b9f80c3d567a480908c4b5dda8cc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "8215cceed2aca0df911c05607db3496fe67c48c8b5730682a6ee5c412d4604ba",
+          "target_hash": "d0dac95acdcad923344cb5e1a7fe44bfdb72b9f80c3d567a480908c4b5dda8cc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4eda0935f93e4658bba14f91404c3339",
+      "source_hash": "9ff2b5b960745c9f745b80df22d3e166654c1d34879f53ecb40d2cdc280f593b",
+      "target_text": "### Тұрақты талдамалық өрістерді бөлек шығару\n\nСүзу, Partition бөлу, bucket бөлу, сұрыптау, Join, топтау немесе метрикалар үшін жиі пайдаланылатын өрістер әдетте қалыпты типтелген бағандарға лайық. `event_time`, `user_id`, `region` және `revenue` өрістерін икемді дерек мазмұнының ішінде қалдыру әр сұрауға сол шартты қайта қалпына келтіруді міндеттер еді.\n\nІшкі құрылымы бір жолға тиесілі қосалқы атрибуттар үшін күрделі мәндер қолайлы. Өндірісте пайдаланбас бұрын ағымдағы Doris нұсқасынан мыналарды тексеріңіз:\n\n- қолдау көрсетілетін ішкі құрылым мен элемент типтері;\n- қолжетімді қатынау, түрлендіру және жаю функциялары;\n- NULL рұқсаты және түрлендіру әрекеті;\n- Key, Partition, тарату, индекс және Join қолдану шектеулері;\n- қабылдау пішімі және схема эволюциясының әрекеті.\n\nБұл мүмкіндіктер өзгеріп отырады. Үміткерлерді таңдау үшін қолданба пішімін пайдаланып, содан кейін ағымдағы [ARRAY](https://doris.apache.org/docs/4.x/sql-manual/basic-element/sql-data-types/semi-structured/ARRAY/), [MAP](https://doris.apache.org/docs/4.x/sql-manual/basic-element/sql-data-types/semi-structured/MAP/), [STRUCT](https://doris.apache.org/docs/4.x/sql-manual/basic-element/sql-data-types/semi-structured/STRUCT/), [JSON](https://doris.apache.org/docs/4.x/sql-manual/basic-element/sql-data-types/semi-structured/JSON/) және [VARIANT](https://doris.apache.org/docs/4.x/sql-manual/basic-element/sql-data-types/semi-structured/VARIANT/) құжаттарынан синтаксис пен шектеулерді растаңыз. 4-зертханалық жұмыс күрделі типті бағандар жасамайды; 5-зертханалық жұмыс оқиға схемасын өзгертпей, жол және элемент амалдарын көрсету үшін шағын массив литералын пайдаланады.\n\n",
+      "target_hash": "a3716c422b7c011cb28f373604f47101b881512c04ce3bb42b69199e7452c6e7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "9ff2b5b960745c9f745b80df22d3e166654c1d34879f53ecb40d2cdc280f593b",
+          "target_hash": "a3716c422b7c011cb28f373604f47101b881512c04ce3bb42b69199e7452c6e7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5ff1af1cf60441c08aadee843a718b09",
+      "source_hash": "fb534292ee486c7d06a723d0f27ddf96db970e5c5c59823a268639edcbbb4b85",
+      "target_text": "### Өлшемдер мен метрикаларды бөлек анықтау\n\nБір жиынтық жолы мына бір тіркесті білдіреді:\n\n```text\n(event_date, region, event_type)\n```\n\nОсы үш өлшем Aggregate Key болады. Кесте екі Value бағанын сақтайды:\n\n- `event_count BIGINT SUM` топқа үлес қосатын оқиғалар санын білдіреді.\n- `total_revenue DECIMAL(18,2) SUM` олардың қосылатын түсімін білдіреді.\n\n`DECIMAL(18,2)` жинақталған жиынтыққа әр оқиғалық `DECIMAL(12,2)` дереккөзінен кеңірек бүтін ауқым береді. Қажетті дәлдік егжей-тегжейлі дерек типін автоматты көшірудің орнына күтілетін топ көлемі мен түсім ауқымына сай болуы тиіс.\n\nЖиынтық `event_id`, `user_id` немесе `product_id` ұстамайды, өйткені олар оның түйіршіктілігін өзгертер еді. Сондықтан ол қай пайдаланушы сатып алғанын айта алмайды, жеке оқиғаны қалпына келтіре алмайды немесе өнім бойынша дәл топтай алмайды.\n\n",
+      "target_hash": "17cc0c5e187a3ed45d193a4fbe6c1ed9acd49931dc27492074040b6d799f2669",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "fb534292ee486c7d06a723d0f27ddf96db970e5c5c59823a268639edcbbb4b85",
+          "target_hash": "17cc0c5e187a3ed45d193a4fbe6c1ed9acd49931dc27492074040b6d799f2669"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fcafc8f1f325456fb93783ddee261745",
+      "source_hash": "ab68faa9853fcda4ba7567fde54ff9ca1d193597d44e20e97240ef6b838226e3",
+      "target_text": "## 4.7 Әр Partition ішіндегі деректерді тарату үшін Bucket пайдалану\n\nБір айлық Partition ішінде де миллиондаған жол болуы мүмкін. Doris әр Partition бөлімін Bucket ұяшықтарына бөледі, олардың әрқайсысын Tablet көрсетеді. Tablet — Backend (BE) түйіндері тарататын және өңдейтін физикалық деректер шарды.\n\n",
+      "target_hash": "0a81e2a38fc02e4d4633a8f23d7b04e0e10cccfadccaa0f07978ebd2b3209920",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-rta-m04-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / 2026-11-08-ml09",
+          "record": "Second direct source/target comparison completed for every unit against frozen Module 4 English and original Lab code; full lesson and complete six-question bank read. Verified grain versus sample uniqueness, detail versus summary double-counting, all repeated-key models, additive versus distinct/average measures, exact versus approximate numeric types and leading-zero IDs, NULL/default/omission/invalid separation, TRY_CAST invalid count, final-model stricter nullability, monthly gaps, Hash key cardinality/skew and RANDOM restrictions, sorting versus partitioning/distribution, complex-type boundaries, all dates/counts/revenue/large floating-point values and evidence limitations. Corrected detail data to егжей-тегжейлі деректер to distinguish complete толық. Six question prompts, four options each, explanations and original unique answers checked. Viewed four original PNGs; all visible labels have adjacent Kazakh correspondence; image pixels remain English. Native review and rendered admission not performed.",
+          "source_hash": "ab68faa9853fcda4ba7567fde54ff9ca1d193597d44e20e97240ef6b838226e3",
+          "target_hash": "0a81e2a38fc02e4d4633a8f23d7b04e0e10cccfadccaa0f07978ebd2b3209920"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

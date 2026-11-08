@@ -1,0 +1,800 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.42a28ee5970742b3acc2c78d10ef279c",
+      "source_hash": "1b09e31e864abdf3c8a38ab2f802b67d773e10e585fd693e87052c222e52a864",
+      "target_text": "## Орта\n\nЗертханалық жұмыстар Docker-де орындалады. 1-модуль DOG стегін және жүктеме генераторы үздіксіз тапсырыс беретін OpenTelemetry демо онлайн дүкенін іске қосады. Екеуі де upstream [ai-observe-stack](https://github.com/ai-observe/ai-observe-stack) репозиторийінің `2c1fbee` commit-інен (2026-09-23): орта ұяшығы осы commit-ті Git елемейтін `.runtime/` каталогына алып, жаңа upstream кодын ешқашан тартпайды. `environments/dog-stack/` түзету файлдары әр контейнерге, желіге және томға `doris-obs` префиксін береді, тек төмендегі порттарды 127.0.0.1 адресінде ашады, Mailpit қосады және хост метрикаларына Docker хостының атауын белгілейді.\n\n| Компонент | Бейне | Контейнерлер |\n| --- | --- | --- |\n| Apache Doris 4.1.3 | `apache/doris:all-in-one-4.1.3` | `doris-obs` |\n| OpenTelemetry Collector | `otel/opentelemetry-collector-contrib:0.144.0` | `doris-obs-otel-collector` |\n| Doris App плагині бар Grafana 11.4.0 | `grafana/grafana:11.4.0` | `doris-obs-grafana` |\n| Mailpit, Grafana хаттарына арналған жергілікті пошта сервері мен кіріс жәшігі | `axllent/mailpit:v1.31.3` | `doris-obs-mailpit` |\n| OpenTelemetry демосы (Astronomy Shop) 2.0.2 | 23 бейне, көбіне `ghcr.io/open-telemetry/demo:2.0.2-*` | `doris-obs-demo-*` (23) |\n| 2-модуль collector-лары | `otel/opentelemetry-collector-contrib:0.144.0` | `doris-obs-log2doris`, `-metric2doris`, `-traces2doris` |\n| 7-модульге арналған Litefuse 26.3.0: веб-интерфейс пен API, worker | `litefuse/litefuse-web:26.3.0`, `litefuse/litefuse-worker:26.3.0` | `doris-obs-litefuse-web`, `doris-obs-litefuse-worker` |\n| Litefuse PostgreSQL, Redis және объектілік сақтауы ([Silo](https://github.com/pgsty/silo), MinIO-ның қолдау көрсетілетін форкі) | `postgres:17.11`, `redis:7.4.11`, `pgsty/silo:RELEASE.2026-10-18T00-00-00Z` | `doris-obs-litefuse-postgres`, `-redis`, `-silo` |\n| Қосымша 7A зертханалық жұмысына Qwen2.5 0.5B Instruct (4-бит, Apache 2.0) бар llama.cpp сервері | `ghcr.io/ggml-org/llama.cpp:server-b11429`; модель файлы [Hugging Face](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF) ішінен | `doris-obs-llm` |\n| 8-модульдің бірнеше минуттық CPU жүктемесі | `busybox:1.37.0` | `doris-obs-cpu-load` |\n\nDoris бейнесінің дайджесті — `sha256:82a5cabc7900ebcd3d080412d636c0cebd6602799fffe2605c652b2ea7d42609`. `SHOW FRONTENDS` және `SHOW BACKENDS` нұсқасын `doris-4.1.3-rc02-7126cf65d96` деп хабарлайды: 4.1.3 шығарылымы — осы құрастырылым.\n\n- **Платформалар:** барлық бейне linux/amd64 және linux/arm64 үшін жарияланған. Курс Apple silicon және Docker Desktop бар macOS-та тексерілген; Apple silicon ішінде орта ұяшығы демо Java сервистеріне M4 және кейінгі чиптерде қажет Java параметрін қосады. Linux тексерілмеген; айырмашылықтар [Linux жүйесінде](#on-linux) бөлімінде.\n- **Бағдарламалар:** Docker Compose 2.24.4 не жаңарақ нұсқасы бар Docker (орта ұяшығы тексереді), Git және Python 3.10–3.13.\n- **Жады:** DOG стегі шамамен 5 GB, көбі Doris үшін; демо шамамен 3 GB, 7-модульден Litefuse шамамен 1 GB; қосымша 7A модель сервері тағы шамамен 0.4 GB қолданады. Docker-ге кемінде 10 GB беріңіз; Linux-та контейнерлерге кемінде 10 GB бос ұстаңыз.\n- **CPU:** ескерту іске қосылуы үшін 8-модуль Docker хостының әр CPU-ын ең төмен басымдықпен 5 минутқа дейін жүктейді. Компьютер желдеткіштері қосылуы мүмкін.\n- **Диск:** бейнелерге шамамен 21 GB, оның 5 GB-ы Litefuse, оған Doris сақтайтын дерек қосылады. Қосымша 7A бейнесі мен моделіне тағы шамамен 1.7 GB қажет.\n- **Жүктеулер:** DOG стегінің бейнелеріне шамамен 2.1 GB, демоға 2.7 GB. 7-модуль Litefuse үшін 1.2 GB, оның қосымша 7A жұмысы модель серверіне 300 MB және модельге 491 MB жүктейді. Grafana алғаш қосылғанда екі шағын плагинді, 8-модуль 2 MB `busybox` бейнесін жүктейді.\n- **Уақыт:** бейнелер алынған соң 1-модуль ортаны шамамен бір минутта іске қосады. Кей қадам әдейі күтеді: жалаушаны қосқаннан кейін алғашқы сәтсіз тапсырыс (бір-үш минут) және 8-модульдегі 3–6 минуттан үш күту.\n- **Тіркелгілер мен кілттер:** қажет емес. 7-модуль LLM қолданбасы имитациялық модельді шақырады; Litefuse жергілікті, алғашқы іске қосуда жасайтын пайдаланушысы мен API кілттерімен орындалады. Қосымша 7A да жергілікті модель орындайды; балама ретінде `OPENAI_API_KEY` ішінде өз кілтіңізбен OpenAI API-ын шақыра алады.\n\nБарлық порт 127.0.0.1 адресіне байланған. Басқа порт қолдану үшін айнымалысын Jupyter бастамас бұрын орнатыңыз, мысалы `DORIS_OBS_GRAFANA_PORT=23001 .venv/bin/jupyter lab`. Орта ұяшықтары алдымен порттарды тексеріп, порт бос болмаса орнатылатын айнымалыны айтып тоқтайды.\n\n| Хост порты | Сервис | Айнымалы |\n| --- | --- | --- |\n| 29030 | Doris FE сұрау порты (MySQL протоколы, пайдаланушы `root`, құпиясөзсіз) | `DORIS_OBS_QUERY_PORT` |\n| 28030 | Doris FE HTTP | `DORIS_OBS_HTTP_PORT` |\n| 28040 | Doris BE HTTP | `DORIS_OBS_BE_HTTP_PORT` |\n| 23000 | Grafana (пайдаланушы `admin`, құпиясөз `admin`) | `DORIS_OBS_GRAFANA_PORT` |\n| 24317 | Collector OTLP gRPC | `DORIS_OBS_OTLP_GRPC_PORT` |\n| 24318 | Collector OTLP HTTP | `DORIS_OBS_OTLP_HTTP_PORT` |\n| 24328 | 2-модуль трасса collector-ының OTLP HTTP порты | `DORIS_OBS_TRACES_OTLP_HTTP_PORT` |\n| 28082 | Демо дүкені мен `/feature` жалауша беті | `DORIS_OBS_DEMO_PORT` |\n| 28025 | Grafana хаттарының Mailpit кіріс жәшігі | `DORIS_OBS_MAILPIT_PORT` |\n| 23100 | Litefuse веб-интерфейсі мен API (пайдаланушы `learner@example.com`, құпиясөз `doris-course-1`) | `DORIS_OBS_LITEFUSE_PORT` |\n| 28080 | Қосымша 7A жергілікті модель сервері (OpenAI-үйлесімді API) | `DORIS_OBS_LLM_PORT` |\n\n",
+      "target_hash": "72ee471967cea189282f7ec33f24355d219293053db58a1a39941d4bd6949292",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "1b09e31e864abdf3c8a38ab2f802b67d773e10e585fd693e87052c222e52a864",
+          "target_hash": "72ee471967cea189282f7ec33f24355d219293053db58a1a39941d4bd6949292"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b227030379ec4d79a132a869ba6b7bd7",
+      "source_hash": "112ef0ddfe6c3a2e4cc22b9a4eef7966f5cfbe164e1c28c623203d7b9b58844a",
+      "target_text": "## Тазалау\n\n- `lab.stop_demo()` демо контейнерлерін және Docker оларға құрған томдарды тоқтатып жояды. Doris-тегі телеметрия қалады, `lab.start_demo()` демоны қайта іске қосады. Мүмкіндік жалаушалары демо бетінде орнатқан күйде сақталады; 8-модуль `paymentFailure` мәнін `off` етеді.\n- `lab.stop_litefuse()` Litefuse контейнерлерін тоқтатып жояды. Пайдаланушысы, кілттері, трассалары томдары мен Doris-те қалады; `lab.start_litefuse()` солармен қайта қосады.\n- `lab.stop_local_model()` қосымша 7A модель серверін тоқтатады. Жүктелген модель томында қалады.\n- `lab.teardown()` курстың барлық контейнері, желісі мен томын жояды: демо, Litefuse, жергілікті модель, 2-модуль collector-лары, әлі қосулы болса 8-модуль CPU жүктемесі, DOG стегі және 3-модуль тақтасы мен 8-модуль ескертулері бар Grafana томы. 2-модуль журнал collector-ының оқу орны сақталатын `.runtime/collector-state/` каталогын да жойып, демо жалаушаларын өшіреді. `lab.teardown(keep_data=True)` DOG стегінің, Litefuse пен жергілікті модельдің томдарын, оқу орнын және жалаушаларды сақтайды; кейін `lab.prepare_environment()` және `lab.start_litefuse()` сол деректермен жалғасады.\n- Upstream көшірмесі мен Doris FE журналдары `.runtime/` ішінде қалады. Қажет болмағанда каталогты жойыңыз. Doris журналдарын root ретінде жазады; `lab.teardown()` оларды сіздің пайдаланушыңызға береді, сондықтан Linux-та да жоя аласыз.\n\n",
+      "target_hash": "3320c26c542546c682f3b22d4fe0591d2222f72d9c12f1b7ae068acdbdd9e194",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "112ef0ddfe6c3a2e4cc22b9a4eef7966f5cfbe164e1c28c623203d7b9b58844a",
+          "target_hash": "3320c26c542546c682f3b22d4fe0591d2222f72d9c12f1b7ae068acdbdd9e194"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3846f712860442bbaf358722f1009cf2",
+      "source_hash": "36e03813553a6edac4e48ae83f891b5780c85220de397e1749f7e7dc5b653154",
+      "target_text": "# Apache Doris көмегімен жүйені бақылау\n\nКомпьютерде онлайн дүкен іске қосып, ақау тудырыңыз және DOG стегімен тексеріңіз: OpenTelemetry Collector дүкеннің журналдары, метрикалары мен трассаларын жинайды; Apache Doris сақтап сұрайды; Grafana іздейді, диаграмма құрып ескертеді. Сегіз модульде бір инцидентті алғашқы сәтсіз тапсырыстан ақау біткенде шешілетін ескертуге дейін қадағалап, телеметрияға Doris кестелерін жобалауды және әр таңдаудың әсерін өлшеуді үйренесіз.\n\n",
+      "target_hash": "df914430c93caf8087fb6d032bbac0c6a9fa8a9e1a99668687611ce0db9a343a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "36e03813553a6edac4e48ae83f891b5780c85220de397e1749f7e7dc5b653154",
+          "target_hash": "df914430c93caf8087fb6d032bbac0c6a9fa8a9e1a99668687611ce0db9a343a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a7d70af3ad9f43b2b1d946342b931094",
+      "source_hash": "c6cff40f0510684a097feee06555179d04a2dba188ecbe836977088ba1bd0b74",
+      "target_text": "### Linux жүйесінде\n\nКурс тек macOS Docker Desktop ішінде тексерілген. Linux Docker Engine үшін мына қадамдар өзгеше:\n\n- Docker Engine мен Compose плагинін [Docker репозиторийінен](https://docs.docker.com/engine/install/) орнатыңыз. Дистрибутив пакеті Compose 2.24.4-тен ескі болуы мүмкін; орта ұяшығы соны хабарлайды.\n- Ноутбуктер `docker` орындайтындықтан, пайдаланушыңызға `sudo` қолданбай рұқсат беріңіз: `sudo usermod -aG docker \"$USER\"`, кейін жүйеден шығып қайта кіріңіз.\n- Docker Engine-де жады баптауы жоқ: контейнерлер компьютер жадын Jupyter және браузермен бөліседі. Оларға кемінде 10 GB бос ұстаңыз.\n- Debian мен Ubuntu ішінде `python3 -m venv` үшін `python3-venv` пакеті керек, мысалы `sudo apt install python3-venv`.\n- Doris `.runtime/doris-logs/` ішіне root ретінде жазады, сондықтан компьютерде де файлдар root-қа тиесілі. `lab.teardown()` соңында оларды пайдаланушыңызға береді; `.runtime/` жоймас бұрын соны орындаңыз.\n- Rootless Docker және Podman сыналмаған. Мысалы демо collector-ы Docker сокетін `/var/run/docker.sock` жолына байланыстырады.\n\n",
+      "target_hash": "89cdd750af86f8235aea0f725c582caf05b06a7363ea8bd736ef5162d232e4c9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c6cff40f0510684a097feee06555179d04a2dba188ecbe836977088ba1bd0b74",
+          "target_hash": "89cdd750af86f8235aea0f725c582caf05b06a7363ea8bd736ef5162d232e4c9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5aeb5475155749b5b18fbf89f5d2701c",
+      "source_hash": "cbe06e58a2c81fba91f7ba94c04af7ef209f421fb84a2476a80ba245c6d16f96",
+      "target_text": "## Курс жоспары\n\nӘр модульде сабақ, зертханалық ноутбук және алты сұрақтық тест бар. Сабақты оқып, жұмысты орындап, кейін тест тапсырыңыз. Уақыт үшеуін де қамтиды.\n\n| Деңгей | Модуль | Не істейсіз | Уақыт |\n| --- | --- | --- | --- |\n| 1 | [1-модуль: DOG стегіндегі жүйені бақылау негіздері](level1/module01-observability-introduction/course.md) | Стек пен дүкенді іске қосып, үш сигналдың Doris-ке жеткенін тексересіз, төлемдердің жартысын сәтсіз ететін жалаушаны қосып, сәтсіз тапсырыстарды трассалардан көресіз. | 70 мин |\n| 1 | [2-модуль: Жүйені бақылау деректерін жүктеу](level1/module02-data-ingest/course.md) | Doris-ке өз Collector конвейерлеріңізді құрып, бір сәтсіз тапсырысты үш кестеге дейін қадағалап, журнал жібермейтін сервистерді табасыз. | 70 мин |\n| 1 | [3-модуль: Жүйені бақылау деректерін визуализациялау](level1/module03-data-visualization/course.md) | Grafana-да тексересіз: қате іздеуі ақауды өткізеді, қатынас журналы табады, трасса payment exception-ын көрсетеді, хост CPU-ы себептен алынып, тақта дәлелді сақтайды. | 85 мин |\n| 2 | [4-модуль: Жүйені бақылау деректерінің кесте модельдері](level2/module04-table-model/course.md) | Инциденттің ықшам қорытындысын сақтайсыз: сервис пен минут сұраулары/ақауларын AGGREGATE кестесінде, әр қате түрінің бір ескертуін UNIQUE ішінде. | 70 мин |\n| 2 | [5-модуль: Жүйені бақылау деректерін бөлімдеу және bucket-терге бөлу](level2/module05-partition-bucket/course.md) | Инцидент сұрауларына тек тиісті жолдар болуы мүмкін бөлімдер мен tablet-терді оқытып, span бөлудің үш тәсілін салыстырасыз. | 75 мин |\n| 2 | [6-модуль: Кесте қасиеттері, материалданған көріністер және индекстер](level2/module06-property-mv-index/course.md) | Журнал мәтін индексінің инцидент іздеуіне әсерін өлшеп, санақтарды материалданған көріністе сақтайсыз және екі сығу тәсілін салыстырасыз. | 85 мин |\n| 2 | [7-модуль: Трассаларды талдау және Litefuse](level2/module07-data-analysis-litefuse/course.md) | Инцидентті SQL-мен өлшейсіз: ақау үлестері, кідіріс, әр ақау басталатын сервис; кейін Litefuse арқылы LLM қолданбасын трассалайсыз. | 90 мин |\n| 2 | [8-модуль: Grafana көмегімен ескерту](level2/module08-alerting/course.md) | Хост CPU-ы мен сәтсіз тапсырыстарға ескерту жасап, ережені кодпен сақтайсыз; жалаушаны өшіріп, ескертудің шешілуін бақылайсыз. | 95 мин |\n\nБүкіл курс шамамен 11 сағат алады. Модульдер біріне-бірі сүйенеді: 1-модуль кейінгілер қолданатын орта мен инцидентті бастайды. 7-модульдің қосымша 7A жұмысы нақты модельді компьютеріңізде не өз OpenAI кілтіңізбен трассалайды.\n\n",
+      "target_hash": "27a6f35854590f74db8284dbbff1105066f8567948676823c06c119198082f6b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "cbe06e58a2c81fba91f7ba94c04af7ef209f421fb84a2476a80ba245c6d16f96",
+          "target_hash": "27a6f35854590f74db8284dbbff1105066f8567948676823c06c119198082f6b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.da82cd317e354e31a90e573a50cf187f",
+      "source_hash": "a1634b4b5855b4166b7d1a3b077c1a186a28815f8c6bc21d5b7b1bb56285cd9c",
+      "target_text": "## Курс кімдерге арналған\n\n- Сервистерді басқаратын инженерлерге және сервистері не тіркейтінін білгісі келетін әзірлеушілерге.\n- Doris-ті журналдар, метрикалар және трассаларға қолданғысы келетін деректер инженерлеріне.\n\nҚажет білім:\n\n- SQL: `WHERE`, `GROUP BY` және біріктірулері бар `SELECT`. Курс Doris-тің өз синтаксисін түсіндіреді.\n- Docker: контейнер іске қосу, журналын оқу және Docker жадын баптау.\n- Python мен Jupyter: ноутбук ұяшықтарын орындау және шағын Python кодын оқу.\n- Doris, OpenTelemetry не Grafana туралы алдын ала білім қажет емес.\n\n",
+      "target_hash": "f12bbf1079d85f6c6b3967bd4a3fb15087937823ad7f84e20097feb2eb2cd4b0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "a1634b4b5855b4166b7d1a3b077c1a186a28815f8c6bc21d5b7b1bb56285cd9c",
+          "target_hash": "f12bbf1079d85f6c6b3967bd4a3fb15087937823ad7f84e20097feb2eb2cd4b0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fb8023db6e8649ba841309df560cb1bc",
+      "source_hash": "c0e627beb74b191fbf6cb1290a32f42ca38bb897744ccdf1bf3b4912cd72e48c",
+      "target_text": "## Бастау\n\n1. Docker орнатып, кемінде 10 GB жады беріп, іске қосыңыз. Linux-та алдымен [Linux жүйесінде](#on-linux) бөлімін оқыңыз.\n2. Курстың Python ортасын құрыңыз. Осы каталогта Python 3.10–3.13 арқылы орындаңыз:\n\n   ```bash\n   python3 -m venv .venv\n   source .venv/bin/activate\n   python -m pip install -r requirements.txt\n   ```\n\n   `requirements.txt` курстарға ортақ ноутбук ортасы `doris_labkit` пакетін `../common` ішінен де орнатады. Сондықтан команданы осы каталогтан орындап, репозиторийді тұтас сақтаңыз.\n3. Сол каталогтан `.venv/bin/jupyter lab` арқылы JupyterLab бастаңыз.\n4. [1-модуль](level1/module01-observability-introduction/course.md) сабағын, кейін зертханалық жұмысын ашып, ұяшықтарды ретімен орындаңыз.\n\nӘр ноутбуктің алғашқы код ұяшығы `lab` объектісін құрады. Әдістері ортаны іске қосады, Doris-те SQL орындайды, Grafana, Mailpit пен Litefuse оқиды; әрқайсысы жіберетін SQL не HTTP сұрауын көрсетеді, сондықтан MySQL клиентінде не `curl` арқылы қайталай аласыз. Әр жұмыс қолданар алдында қажет дерегін тексереді, ұяшықтарын қайталауға болады.\n\n",
+      "target_hash": "2eba90bd4628725ecce509bb43bf6b684b4e4cdd1225babecaab3578d8318650",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c0e627beb74b191fbf6cb1290a32f42ca38bb897744ccdf1bf3b4912cd72e48c",
+          "target_hash": "2eba90bd4628725ecce509bb43bf6b684b4e4cdd1225babecaab3578d8318650"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.42ace39bf03d43b98b27dffa42013d2c",
+      "source_hash": "4b728b95d86416c1afe1a4d7a9d6b91e4416c73a63f2e106b77df43c5cbb92bc",
+      "target_text": "## Ақауларды жою\n\n- **Порт қолданыста.** Орта ұяшығы еш контейнер бастамай тұрып тоқтап, порт айнымалысын атайды. Оны қолданған бағдарламаны тоқтатыңыз не айнымалыға бос порт орнатып, Jupyter-ді қайта іске қосыңыз.\n- **Демо басталмайды не контейнерлері қайта-қайта іске қосылады.** Docker жады аз болуы мүмкін: кемінде 10 GB беріңіз не Linux-та сонша босатыңыз. Ұяшық жұмыс істемейтін контейнерлерді тізеді; `docker logs <container>` себебін көрсетеді.\n- **Docker «permission denied» хабарлайды (Linux).** Пайдаланушыңызда Docker рұқсаты болмауы мүмкін. `sudo usermod -aG docker \"$USER\"` орындап, жүйеден шығып қайта кіріңіз, Jupyter-ді қайта қосыңыз.\n- **`.runtime/` жойылмайды (Linux).** Doris файлдарды root ретінде жазған. `lab.teardown()` не деректі сақтау үшін `lab.teardown(keep_data=True)` орындаңыз; ол файлдарды пайдаланушыңызға береді, кейін каталогты жойыңыз.\n- **Discover не Traces нәтиже көрсетпейді.** Doris App 1.0.5 компьютердің уақыт белдеуіндегі аралықты Doris UTC уақытымен салыстырады. Сондықтан компьютер UTC болмаса, Last 15 minutes сияқты салыстырмалы аралық жаңа жолдарды өткізіп алады. Абсолют UTC аралығын орнатыңыз; 3-зертханалық жұмыс шығарып береді. Grafana тақталарына әсер етпейді.\n- **Тапсырыстар сәтсіз болмайды.** [http://127.0.0.1:28082/feature](http://127.0.0.1:28082/feature) жалауша бетінде `paymentFailure` — `50%` және демо қосулы екенін тексеріңіз. Жүктеме генераторы минутына бір-төрт тапсырыс қана береді, алғашқы ақауға бірнеше минут кетуі мүмкін.\n- **8-модульде Grafana әкімші құпиясөзін қабылдамайды.** Алғаш кіргенде жаңа құпиясөз орнатсаңыз, жұмыста `GRAFANA_ADMIN_PASSWORD` мәнін соған орнатыңыз. Басқа ұяшықтар Grafana-ны жүйеге кірмей оқиды.\n- **Қосымша 7A моделі жүктелмейді.** huggingface.co қолжетімсіз болса, Jupyter бастамас бұрын `DORIS_OBS_LLM_MODEL_URL` мәнін айнадағы сол модель файлына орнатыңыз.\n",
+      "target_hash": "c3664f63f95ca3cf53b275db16c2e916a0aeb2edea0dc23ce14fd0982570950a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "4b728b95d86416c1afe1a4d7a9d6b91e4416c73a63f2e106b77df43c5cbb92bc",
+          "target_hash": "c3664f63f95ca3cf53b275db16c2e916a0aeb2edea0dc23ce14fd0982570950a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.15f15be645514e9b889d9d1d4a4db968",
+      "source_hash": "a15c1433e82d58986806febb7b38dda8663f538a7af641bd93edae84d906a86b",
+      "target_text": "## Не үйренесіз\n\n- OpenTelemetry Collector конвейерлерімен журнал, метрика және трассаларды Doris-ке жинап, жеткенін SQL-мен тексеру.\n- Grafana-да инцидент тексеру: Lucene және SQL арқылы журнал іздеу, трассамен ақау басталған span-ға жету, бақылау тақтасын құру.\n- Doris телеметрия кестелерін жобалау: модельдер, бөлімдер мен bucket-тер, compaction мен сығу, кері индекстер және материалданған көріністер; әсерін `EXPLAIN` және Query Profile арқылы өлшеу.\n- SQL-мен трасса талдау: ақау үлестері, процентильдер, ақау бастауы және терезелік функциялар; дерегін Doris-те сақтайтын Litefuse арқылы LLM қолданбасын трассалау.\n- Doris сұраулары бойынша Grafana ескертулерін жасау, хабарландыруларды бағыттау және ережелерді кодпен сақтау.\n\n",
+      "target_hash": "7288bade40f0e1fca87ac3c655201118933ea68ce4a9f1f76e3cda480ce9aa04",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "a15c1433e82d58986806febb7b38dda8663f538a7af641bd93edae84d906a86b",
+          "target_hash": "7288bade40f0e1fca87ac3c655201118933ea68ce4a9f1f76e3cda480ce9aa04"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c83dcbba7de2445190d3252c0ea68ed4",
+      "source_hash": "0470afd6a5c659de777d8ed126fd22df0e44f21e5e9611bf98b73046d9c878e7",
+      "target_text": "## Деректер жиыны\n\nКурс деректер жиынын жүктемейді. Телеметрия өзі іске қосқан жүйелерден келеді:\n\n- [OpenTelemetry демосы](https://opentelemetry.io/docs/demo/) (Astronomy Shop, Apache License 2.0): әртүрлі тілдегі шамамен он екі сервис және дүкенді қарап, минутына бір-төрт тапсырыс беретін жүктеме генераторы. Қосулы кезде Doris минутына шамамен 10,000 span, 3,000 журнал жолын және сервистер, хосттары мен контейнерлері метрикаларын алады.\n- Инцидент: 1-модульде 50% орнататын `paymentFailure` жалаушасы payment-ті төлемдердің шамамен жартысын қабылдамайтын етеді; тапсырыстардың жартысына жуығы сәтсіз болады.\n- 2-модуль collector-лары жүктейтін Doris FE-нің өз журналы мен метрикалары.\n- 7-модуль Litefuse-ке жіберетін имитациялық моделі бар шағын LLM қолданбасының трассалары.\n\nDoris телеметрияны `otel` дерекқорында, Doris экспорттаушысы құратын кестелерде, UTC уақытымен, әр UTC күніне бір бөлімде, 7 күн сақтайды. Litefuse кестелері сол Doris-тің `litefuse` дерекқорында.\n\n",
+      "target_hash": "ca360a9deb5c31ba58c8803c96e5649e84a57215d274a2e7b0e1b4e4eebb2c11",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0470afd6a5c659de777d8ed126fd22df0e44f21e5e9611bf98b73046d9c878e7",
+          "target_hash": "ca360a9deb5c31ba58c8803c96e5649e84a57215d274a2e7b0e1b4e4eebb2c11"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d778b68345604bcd8df6ed03c606a995",
+      "source_hash": "ddd050d7db18142ac51837575580eb1481e69bf244df692c56f146252b88817e",
+      "target_text": "Журналдар, метрикалар, трассалар, визуализация, талдау және ескерту жұмыс процестерін құру.",
+      "target_hash": "57e0dfddd11cfe3c77c106158fb1dbfc49a17765b462bad86d14ddbb8fa78175",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "ddd050d7db18142ac51837575580eb1481e69bf244df692c56f146252b88817e",
+          "target_hash": "57e0dfddd11cfe3c77c106158fb1dbfc49a17765b462bad86d14ddbb8fa78175"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cb94be14db234a2facf1bfa02872232b",
+      "source_hash": "c17fb48f0cac90aaecc42b40ce3d0c39fc7a5145bb1bf1ec8ba6f70cce7c5a08",
+      "target_text": "Жүйені бақылау негізін құру",
+      "target_hash": "161bae1768e5bbb20e0a6c4b3d4b60e64f1bfd146b16c4e176526772671e1830",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c17fb48f0cac90aaecc42b40ce3d0c39fc7a5145bb1bf1ec8ba6f70cce7c5a08",
+          "target_hash": "161bae1768e5bbb20e0a6c4b3d4b60e64f1bfd146b16c4e176526772671e1830"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fe84d07d49814c42b2f575ed25c4037f",
+      "source_hash": "0949f8bcaa50704d66db3611e4f98f3cea10b5c5c35c209494093e6268660f20",
+      "target_text": "Модельдеу, талдау және ескерту",
+      "target_hash": "007393050146802d2630aecca7174202acbb0791c600ed5501639fd2678ce879",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0949f8bcaa50704d66db3611e4f98f3cea10b5c5c35c209494093e6268660f20",
+          "target_hash": "007393050146802d2630aecca7174202acbb0791c600ed5501639fd2678ce879"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7f1db44cd862484f95322dedfc433575",
+      "source_hash": "f526c9a91ade9621031b402456b5e6b241643a4ed7aa45b4a1a909cc1623cf5d",
+      "target_text": "Apache Doris арқылы жүйені бақылау жұмыс процесінде жүйені бақылау негіздерін қолдану.",
+      "target_hash": "a78f11eb84538c195890eff582f48b0c128c2215060573f72dcd7d754ec77cef",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "f526c9a91ade9621031b402456b5e6b241643a4ed7aa45b4a1a909cc1623cf5d",
+          "target_hash": "a78f11eb84538c195890eff582f48b0c128c2215060573f72dcd7d754ec77cef"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.665a66f8d03c4d4caedee36cc5e1636d",
+      "source_hash": "e105f58326c888e043d7b3d58259c4210e427f6f0021f4cb1196d59a02ba9b2b",
+      "target_text": "DOG стегіндегі жүйені бақылау негіздері",
+      "target_hash": "5b40ab7ed321438a2ea4237ec3ef8f697ccb5bf17178ae4e42d1053414892f05",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "e105f58326c888e043d7b3d58259c4210e427f6f0021f4cb1196d59a02ba9b2b",
+          "target_hash": "5b40ab7ed321438a2ea4237ec3ef8f697ccb5bf17178ae4e42d1053414892f05"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.78b6c30bfcfa4f38b03974fc3bdaefc8",
+      "source_hash": "2b8e41f5685f41770b9518df009b71150f63d15de30ab600fa61809550c118ef",
+      "target_text": "Apache Doris арқылы жүйені бақылау жұмыс процесінде телеметрия жүктеуді қолдану.",
+      "target_hash": "ebfcea2362a19a517356ce95bcdcf60f60adde6b1962a05f7e4e402330d1a1ae",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "2b8e41f5685f41770b9518df009b71150f63d15de30ab600fa61809550c118ef",
+          "target_hash": "ebfcea2362a19a517356ce95bcdcf60f60adde6b1962a05f7e4e402330d1a1ae"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d9daf8772922493eb7fdc26d4d1efa04",
+      "source_hash": "2aaed155c9b613e59734305dfc235d6c89107767776d1be98a306932d2f1d3f8",
+      "target_text": "Жүйені бақылау деректерін жүктеу",
+      "target_hash": "66d5cb92ea5166b37d605d8a99bff4502cacd9514386e29c1f50668aac494bf1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "2aaed155c9b613e59734305dfc235d6c89107767776d1be98a306932d2f1d3f8",
+          "target_hash": "66d5cb92ea5166b37d605d8a99bff4502cacd9514386e29c1f50668aac494bf1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.51da20de50124aab917268a6febcd37b",
+      "source_hash": "229aa19b2e9a3ee93d76666bb315c4428bcca0bfb00c033d0628c83bdf08a7e1",
+      "target_text": "Apache Doris арқылы жүйені бақылау жұмыс процесінде визуализацияны қолдану.",
+      "target_hash": "ab545e70d34f94b849726e7823cd61af266b7541b737a016d7c96b9685899474",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "229aa19b2e9a3ee93d76666bb315c4428bcca0bfb00c033d0628c83bdf08a7e1",
+          "target_hash": "ab545e70d34f94b849726e7823cd61af266b7541b737a016d7c96b9685899474"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.9e7bf9454e104e118e76cbecf0b411b9",
+      "source_hash": "65e1ac4c4afca7614278cea8f1c8cba37cff473a5a9ec414a9e97aaac0f15f5f",
+      "target_text": "Жүйені бақылау деректерін визуализациялау",
+      "target_hash": "45e7e8bbb51d68251489398bfd4d3772425164ab9e3e6d5db8824b9f69b4446e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "65e1ac4c4afca7614278cea8f1c8cba37cff473a5a9ec414a9e97aaac0f15f5f",
+          "target_hash": "45e7e8bbb51d68251489398bfd4d3772425164ab9e3e6d5db8824b9f69b4446e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.476df35720c44f7db4083f5c6ae940cd",
+      "source_hash": "c88fbbda4af156c6a406bde1aee416a2d770619acf538bcb67c50894bdc26240",
+      "target_text": "Apache Doris арқылы жүйені бақылау жұмыс процесінде кесте модельдерін қолдану.",
+      "target_hash": "a87478914b146ced3dca20552df9061aaf59fd5b70f72d4549d56ee8f38afe71",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c88fbbda4af156c6a406bde1aee416a2d770619acf538bcb67c50894bdc26240",
+          "target_hash": "a87478914b146ced3dca20552df9061aaf59fd5b70f72d4549d56ee8f38afe71"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.153307d7999b4137a118661b9352ce4a",
+      "source_hash": "0629a85d9e15b72e060ac1bc4a9c5d81180f680fbdf0e7d685e3bb6c30d1934d",
+      "target_text": "Жүйені бақылау деректерінің кесте модельдері",
+      "target_hash": "bf0cf2cb008a3e5635316f3fef018417ce1698b03d391cd3312afb6b3299f9bb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0629a85d9e15b72e060ac1bc4a9c5d81180f680fbdf0e7d685e3bb6c30d1934d",
+          "target_hash": "bf0cf2cb008a3e5635316f3fef018417ce1698b03d391cd3312afb6b3299f9bb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7d3afed827ff416694f7a6278f9b254a",
+      "source_hash": "2b4a5a1e23e681975eca73261282b9da34c33ae906c5dece5b3a28c0429c697a",
+      "target_text": "Apache Doris арқылы жүйені бақылау жұмыс процесінде бөлім мен bucket таңдауларын қолдану.",
+      "target_hash": "e304502537395f20c6fecfeb487888d15d457760c319927775380a9dfaab97e0",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "2b4a5a1e23e681975eca73261282b9da34c33ae906c5dece5b3a28c0429c697a",
+          "target_hash": "e304502537395f20c6fecfeb487888d15d457760c319927775380a9dfaab97e0"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5d0370ea5e2145eb99ef43a265af864b",
+      "source_hash": "4f5c8136875b19c3e7f491eb43c937e3c5a983beda2deac8b96353cda9ae3d61",
+      "target_text": "Жүйені бақылау деректерін бөлімдеу және bucket-терге бөлу",
+      "target_hash": "4316f66002eeb8865885f67e68afbdde1abd6e49625cd5d0405f8c5830ee5c3b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "4f5c8136875b19c3e7f491eb43c937e3c5a983beda2deac8b96353cda9ae3d61",
+          "target_hash": "4316f66002eeb8865885f67e68afbdde1abd6e49625cd5d0405f8c5830ee5c3b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.180b4a0e479b483bb1b26ffb7fbd737d",
+      "source_hash": "cfaa01575bbed32705daf766a1292bf2efaf5784bc24549ee1e9e12562a8720d",
+      "target_text": "Apache Doris арқылы жүйені бақылау жұмыс процесінде қасиеттерді, материалданған көріністер мен индекстерді қолдану.",
+      "target_hash": "463c20f4321b8cc1db42b0133968485523a203a192cd701bd6447415bb7dc6f5",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "cfaa01575bbed32705daf766a1292bf2efaf5784bc24549ee1e9e12562a8720d",
+          "target_hash": "463c20f4321b8cc1db42b0133968485523a203a192cd701bd6447415bb7dc6f5"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.37acc9d005154a099ec45c14bf4d3e21",
+      "source_hash": "8ed15ac3c9bdb50fbb3f64ce1e0e84597ef08a2177ca771a6fb39838b74d7bcd",
+      "target_text": "Кесте қасиеттері, материалданған көріністер және индекстер",
+      "target_hash": "2443b0b893f4301f00ef8a259beae6a746727af55dbe400c66a670fe28087f4c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "8ed15ac3c9bdb50fbb3f64ce1e0e84597ef08a2177ca771a6fb39838b74d7bcd",
+          "target_hash": "2443b0b893f4301f00ef8a259beae6a746727af55dbe400c66a670fe28087f4c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2dc8f24d1c4e48f5b568636c66201086",
+      "source_hash": "ad3aa2eb54280923bfbf6618c03e70832fa3b08cd5d1d6bbe5a98fdc7205cdc9",
+      "target_text": "Қосымша 7A зертханалық жұмысы: Нақты модельді Litefuse арқылы трассалау",
+      "target_hash": "4920ea0c821efe0c3e1d980c4f34c0f3600c46ce6db883096e698adda4b88cf4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "ad3aa2eb54280923bfbf6618c03e70832fa3b08cd5d1d6bbe5a98fdc7205cdc9",
+          "target_hash": "4920ea0c821efe0c3e1d980c4f34c0f3600c46ce6db883096e698adda4b88cf4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.58f009b04e3f4023998fccb3055adcf2",
+      "source_hash": "db0cc54c789b63225a49486977b64b1301f0c260df81d81e4441d937f4ab04df",
+      "target_text": "Apache Doris арқылы жүйені бақылау жұмыс процесінде талдау мен Litefuse-ті қолдану.",
+      "target_hash": "dc83a2b7f1d290ac8bfc8ae0ee7e6b1b0ac7fe0aa50f8e75fd7b7d6923dbe7ba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "db0cc54c789b63225a49486977b64b1301f0c260df81d81e4441d937f4ab04df",
+          "target_hash": "dc83a2b7f1d290ac8bfc8ae0ee7e6b1b0ac7fe0aa50f8e75fd7b7d6923dbe7ba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f82ce76feb5f43739fe42a92d5267d3f",
+      "source_hash": "955fa987fa462739ec7e628893fb9d0181e2908b051a297544ecd6dba46569ce",
+      "target_text": "Трассаларды талдау және Litefuse",
+      "target_hash": "9435af9fb1ce20fcd704e267f0a1ec436a41f984af07499d28490f94c2917801",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "955fa987fa462739ec7e628893fb9d0181e2908b051a297544ecd6dba46569ce",
+          "target_hash": "9435af9fb1ce20fcd704e267f0a1ec436a41f984af07499d28490f94c2917801"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.14da4e9838ba448e910d6967237055d7",
+      "source_hash": "fbde7b59b449f38593490a5bb97e307b08fd5b4b6887e1cc2ddaabab48d94ed2",
+      "target_text": "Apache Doris арқылы жүйені бақылау жұмыс процесінде ескерту ережелерін қолдану.",
+      "target_hash": "cebef8e48226f24e4fe2f795ece2009e5f347b46cabcd05c1fb38d815290fa69",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "fbde7b59b449f38593490a5bb97e307b08fd5b4b6887e1cc2ddaabab48d94ed2",
+          "target_hash": "cebef8e48226f24e4fe2f795ece2009e5f347b46cabcd05c1fb38d815290fa69"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3cd73ae798604ba88df836cc8a6bd631",
+      "source_hash": "d4063f7a326ce3a2e94b8f209515b6b88d7c34bd9f56d93d01f495580e453dd9",
+      "target_text": "Grafana көмегімен ескерту",
+      "target_hash": "e467800a7d2f6aa51ff2b81e2b35b4b791f42ea13bdd798f02c2b21e5f5949d9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d4063f7a326ce3a2e94b8f209515b6b88d7c34bd9f56d93d01f495580e453dd9",
+          "target_hash": "e467800a7d2f6aa51ff2b81e2b35b4b791f42ea13bdd798f02c2b21e5f5949d9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6734e1c783274811b70ec1101c08d399",
+      "source_hash": "48dc0f9f94dc6184a3841fd8bd7d04d347024cbb857b309fc565f13d27c3717d",
+      "target_text": "БАҚЫЛАУ",
+      "target_hash": "29be8ec6b96848c86581c65358fbd9e0e159ea8990dd169ce6ef584905e2a52b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "48dc0f9f94dc6184a3841fd8bd7d04d347024cbb857b309fc565f13d27c3717d",
+          "target_hash": "29be8ec6b96848c86581c65358fbd9e0e159ea8990dd169ce6ef584905e2a52b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cf7b8c484e444646bfe443b31e687c56",
+      "source_hash": "a37c93100e7c535c881a2a05767331145e0bcd4830543f6c1d84a0e10219b6bb",
+      "target_text": "Жүйені бақылау",
+      "target_hash": "ff80537cc6689c33a5ed0ee67d28dcebc0cac5e5ffdf83297e3c1ed057794a31",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "a37c93100e7c535c881a2a05767331145e0bcd4830543f6c1d84a0e10219b6bb",
+          "target_hash": "ff80537cc6689c33a5ed0ee67d28dcebc0cac5e5ffdf83297e3c1ed057794a31"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.68c12bf4382742959052a495013c5774",
+      "source_hash": "9ccd0265a9f6deb23a24550175f715611b819fc6bed4007e4771d11da0e9c14f",
+      "target_text": "Apache Doris көмегімен жүйені бақылау",
+      "target_hash": "ed5420c1d20a14f34a6e413976ab7192e00842f13ae8336332cee1d17d0c4dd1",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-meta",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for all 33 Observability course metadata and complete README units on 2026-11-08. Re-read saved targets against frozen English and course.yaml, including all eight module titles/summaries and optional Lab 7A title. Checked pinned versions/digest, all container names and 11 port-variable mappings, local resource/download estimates, platform verification limits, commands/credentials, optional local-versus-user-key model path, teardown preservation/removal scope, UTC retention, course order/timing and no prior-knowledge conditions. Normalized summary wording and clarified maintained fork. Code blocks, IDs, URLs, anchors and machine literals are preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "9ccd0265a9f6deb23a24550175f715611b819fc6bed4007e4771d11da0e9c14f",
+          "target_hash": "ed5420c1d20a14f34a6e413976ab7192e00842f13ae8336332cee1d17d0c4dd1"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,1160 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.41f12ccf7fcb492ba9d2d87f108c5e8d",
+      "source_hash": "575f3c225bf67bf3c5be76485c53f3df58e62ffd3feedca820e8dd37ac2ccbe9",
+      "target_text": "<div>\n  <div>02-ТЕСТ · APACHE DORIS КӨМЕГІМЕН ЖҮЙЕНІ БАҚЫЛАУ</div>\n  <div>Жүйені бақылау деректерін жүктеу</div>\n  <p>Collector конвейерін оқи алатыныңызды, қабылдағыштарын таңдап, пакеттерін болжай және экспорт пен жоқ журнал жолы нені дәлелдейтінін бағалай алатыныңызды тексеріңіз.</p>\n  <span>6 сұрақ · Бір жауап таңдау · Шамамен 10 минут</span>\n</div>",
+      "target_hash": "17e09d986e294416e7e3feff3ff51f4a44f658f954dc29d2aa5b85cf2fa5aacf",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "575f3c225bf67bf3c5be76485c53f3df58e62ffd3feedca820e8dd37ac2ccbe9",
+          "target_hash": "17e09d986e294416e7e3feff3ff51f4a44f658f954dc29d2aa5b85cf2fa5aacf"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.02edf22eba294038bcb8a72ecf18c678",
+      "source_hash": "5ef57dba8a4323232f239be84eedd528367fc2c23938d47787a2e17aafda56a4",
+      "target_text": "## Бұл тест нені бағалайды\n\nАлты сұрақ [2-модуль сабағының](course.md) алты мақсатына сәйкес келеді: конвейер бөліктері, жіберу және тарту қабылдағыштары, пакеттеу уақыты, экспорттаушының кесте баптаулары, экспорт шақыруы нені дәлелдейді және қай сервис қай сигналды жібереді.\n\nБұл — өзін-өзі тексеру, бағаланатын зертханалық жұмыс емес. Іске қосылған collector-лар, қолданбалар не Doris сервистері қажет емес.",
+      "target_hash": "4c3f6f6151b258b2853a5b4ff75852409564277c60b84285a77d00cb2aa37621",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "5ef57dba8a4323232f239be84eedd528367fc2c23938d47787a2e17aafda56a4",
+          "target_hash": "4c3f6f6151b258b2853a5b4ff75852409564277c60b84285a77d00cb2aa37621"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f51479c5722747df8317aff29f9ae9dc",
+      "source_hash": "88855008e9a27b01cda9c29da0ce4471101cf92b9275cdd649db701ff94a2d1b",
+      "target_text": "### Тестті инициализациялау\n\nҰяшықты бір рет орындаңыз. Ол курс пакетін тауып, осы модульдің тест анықтамасын оқиды және интерактивті тест объектісін жасайды.",
+      "target_hash": "942b9d92b4f357c6cae67b6c4f3c117574fa1b14fc6b936eecc1082f54db4ad3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "88855008e9a27b01cda9c29da0ce4471101cf92b9275cdd649db701ff94a2d1b",
+          "target_hash": "942b9d92b4f357c6cae67b6c4f3c117574fa1b14fc6b936eecc1082f54db4ad3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.03d002ca73ce4015892f075c715a7aa4",
+      "source_hash": "ee67e0ac672237014946d22f52275d624b9c164e0050d4be2d7716bdbebee5da",
+      "target_text": "## Білімді тексеруді бастау\n\n1-сұрақты көрсету үшін келесі ұяшықты орындаңыз. Бір нұсқа таңдап, **Submit answer** басыңыз.",
+      "target_hash": "749c18a34bd61e4358f7dc22a2f0d0ba26439cc8fae29a93eff905b1d649216c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ee67e0ac672237014946d22f52275d624b9c164e0050d4be2d7716bdbebee5da",
+          "target_hash": "749c18a34bd61e4358f7dc22a2f0d0ba26439cc8fae29a93eff905b1d649216c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.20b515f26a7349bbabb852d94ed280f7",
+      "source_hash": "7433189112306a33e58de790358e92332d80a209e9d6bbc29e9cb48fcea8a987",
+      "target_text": "Алты сұрақ Collector конвейерінің бөліктерін оқи алатыныңызды, жіберу мен тарту қабылдағыштарын таңдап, пакеттеуді болжай, экспорттаушының қай баптаулары тек жаңа кестелерге қолданылатынын ажырата, экспорт шақыруы нені дәлелдейтінін бағалай және қай сервис қай сигналды жіберетінін түсіндіре алатыныңызды тексереді.",
+      "target_hash": "4bd9e98a74d47f0722cbee4987009ee7576fb24b598c2520fe840e39ab301876",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "7433189112306a33e58de790358e92332d80a209e9d6bbc29e9cb48fcea8a987",
+          "target_hash": "4bd9e98a74d47f0722cbee4987009ee7576fb24b598c2520fe840e39ab301876"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b14764f56b0b4f429d508ba9f38de6cc",
+      "source_hash": "56c296601eb3d591379489dd5331910a17aab4296194f01f3050ed242f4bd26d",
+      "target_text": "Resource өңдегіші өзінен өткен әр жазбаға ресурс атрибуттарын қосады, экспорттаушы service.name мәнін service_name бағанына жазады. Filelog қабылдағышы файл атауын log.file.name атрибутына жазады, сервис атауын емес. Экспорттаушы атрибуттарды бағандарға сәйкестендіреді, сервис атауын ойдан қоспайды. File_storage кеңейтімі тек қабылдағыштың оқу орнын сақтайды; ол дерек жолында тұрмайды.",
+      "target_hash": "953b356024149aa2ac10534b6c567ac8509dfc40b05752b1bcaa37462b741516",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "56c296601eb3d591379489dd5331910a17aab4296194f01f3050ed242f4bd26d",
+          "target_hash": "953b356024149aa2ac10534b6c567ac8509dfc40b05752b1bcaa37462b741516"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c0b133b1ec22477f88962ea9cd561a06",
+      "source_hash": "ff745cf145f6763d2ebdd471797a5867c9fc70f7acc762edce5202b5b9d463f7",
+      "target_text": "Collector конвейерінің қабылдағыштары, өңдегіштері, экспорттаушылары мен кеңейтімдері не істейтінін сипаттау.",
+      "target_hash": "254ff69b341e135c5e4b6868bf3c2fc5ffc6a9bc5168cbc99b7fb99eaf2c703a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ff745cf145f6763d2ebdd471797a5867c9fc70f7acc762edce5202b5b9d463f7",
+          "target_hash": "254ff69b341e135c5e4b6868bf3c2fc5ffc6a9bc5168cbc99b7fb99eaf2c703a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6fc2144e6c084581b054bfcc54ced293",
+      "source_hash": "8a97863fc4d7a2783aeab0fc9a75ab74846a2d28d825add71a670197adc89596",
+      "target_text": "Әр жазбада service.name атрибутын орнататын resource өңдегіші",
+      "target_hash": "e86305aaa2697fd675a6bd3fa5ca3ab3ca50f5dcf8c750a0b10d1b7b8ecca95b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8a97863fc4d7a2783aeab0fc9a75ab74846a2d28d825add71a670197adc89596",
+          "target_hash": "e86305aaa2697fd675a6bd3fa5ca3ab3ca50f5dcf8c750a0b10d1b7b8ecca95b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.54d0d2a930164051ac1b43d0246ec219",
+      "source_hash": "1b881455e99012da6181d5cb3e224e5eddfc3f7134ae9666cc52158ba5cbf09a",
+      "target_text": "Файл атауынан сервис атауын алатын filelog қабылдағышы",
+      "target_hash": "0559a1a4cd59d579e12c279c6fe05b70ee25c868282e8db7b984f22823f9640f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "1b881455e99012da6181d5cb3e224e5eddfc3f7134ae9666cc52158ba5cbf09a",
+          "target_hash": "0559a1a4cd59d579e12c279c6fe05b70ee25c868282e8db7b984f22823f9640f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4e016e4dcbad4d09b36174302d0fde34",
+      "source_hash": "64324cb552c181aa0d3adc1dfb1eed1d18e62f6f367be3e0b25f357f1ef02de5",
+      "target_text": "Әр жолды collector жұмыс істейтін контейнер атымен атайтын Doris экспорттаушысы",
+      "target_hash": "caf0edf56dd73e75c72045a2081219309103ffeb93b917df752e2d1b4a1c73ae",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "64324cb552c181aa0d3adc1dfb1eed1d18e62f6f367be3e0b25f357f1ef02de5",
+          "target_hash": "caf0edf56dd73e75c72045a2081219309103ffeb93b917df752e2d1b4a1c73ae"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d241fd67776b46c89f6b3796ff40a9fd",
+      "source_hash": "47c479b070ed2c748f3e1f2303df74bace96fe0cfffd1184c9b9400ce0b3071f",
+      "target_text": "Өзі оқитын әр файлдың сервисін тіркейтін file_storage кеңейтімі",
+      "target_hash": "b7be9aef31ee182fc3bb2a0483f96486c033462d5dd2f92a8776d5eee247c215",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "47c479b070ed2c748f3e1f2303df74bace96fe0cfffd1184c9b9400ce0b3071f",
+          "target_hash": "b7be9aef31ee182fc3bb2a0483f96486c033462d5dd2f92a8776d5eee247c215"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b0924d12ec494890866504934bd6319a",
+      "source_hash": "d13380a5748f4ef8db9cbe62fcf271f0ffe1f5d6a6a5afd65a94a8c1b58d79a2",
+      "target_text": "fe.log өз сервисін атамаса да, 2-зертханалық жұмыстың журнал collector-ы жолдары Doris-ке service_name doris-fe мәнімен келеді. Оны конвейердің қай бөлігі орнатады?",
+      "target_hash": "c564a4d309f5d88256658d3d8f674ad842be1092d45da731c8cd79a2ff132c05",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d13380a5748f4ef8db9cbe62fcf271f0ffe1f5d6a6a5afd65a94a8c1b58d79a2",
+          "target_hash": "c564a4d309f5d88256658d3d8f674ad842be1092d45da731c8cd79a2ff132c05"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a133f9bcbccd4b9a9c9ff28eee9b5743",
+      "source_hash": "b117c6e010998e186c6a289a1d8af707545a15e3072b49d6fe9c35c63aa5aa38",
+      "target_text": "FE мен BE Prometheus мәтінін жариялап күтеді, сондықтан prometheus қабылдағышы оны аралықпен тартуы керек. Python бағдарламасы OTLP арқылы жібереді, сондықтан collector-ға бағдарлама жете алатын порттағы otlp қабылдағышы керек, мысалы 2-зертханалық жұмыстың 127.0.0.1:24328 адресі. Doris метрикаларын OTLP арқылы жібермейді, prometheus қабылдағышы бағдарламадан span ала алмайды, ал екеуін де файлға жазу ешбір дереккөзге қажет емес қосымша қадам болар еді.",
+      "target_hash": "d0fb90585ef3d79eb71c8e29056027412ce244b2b544ef2da7f5b520d554b66b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "b117c6e010998e186c6a289a1d8af707545a15e3072b49d6fe9c35c63aa5aa38",
+          "target_hash": "d0fb90585ef3d79eb71c8e29056027412ce244b2b544ef2da7f5b520d554b66b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6c02c862dba647f4b4cf7502b480de75",
+      "source_hash": "3d01f46b5487ccdade386d292f4cfa87bfd5ac83cb3c3f0c7f424bcf6fff64a0",
+      "target_text": "Телеметриясын өзі жіберетін және дерегі тартылуы қажет дереккөздерге қабылдағыш таңдау.",
+      "target_hash": "c15121f519cf6eafdaf00a5f66b10296d940b34becf5615c25291376a60898f9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3d01f46b5487ccdade386d292f4cfa87bfd5ac83cb3c3f0c7f424bcf6fff64a0",
+          "target_hash": "c15121f519cf6eafdaf00a5f66b10296d940b34becf5615c25291376a60898f9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f398d485828a4ec08ea3cfd59c6e668e",
+      "source_hash": "74634cfbba6b527164bff20dc1e823e81db9b045b80e919e6563f0eda79eff2c",
+      "target_text": "/metrics жолынан жинайтын prometheus қабылдағышы және бағдарлама жете алатын otlp қабылдағышы",
+      "target_hash": "14843ef5c620a205e50f7d23aa40de0a0694536f36c2b640c2adf859a7fd6920",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "74634cfbba6b527164bff20dc1e823e81db9b045b80e919e6563f0eda79eff2c",
+          "target_hash": "14843ef5c620a205e50f7d23aa40de0a0694536f36c2b640c2adf859a7fd6920"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.142d5582b25e4bd7a7a7d70c80f65c35",
+      "source_hash": "13d03dfe7e8b6c84090eb80d2da2e895fcdd0a111c8357a67b94d98cc0b8f8f4",
+      "target_text": "Екеуіне бір otlp қабылдағышы, өйткені Doris бапталған соң метрикаларын OTLP арқылы жібереді",
+      "target_hash": "9fc78f3b9a15068e1f3d425103cac308e9381db89db59dca20c196b73eb4c9e6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "13d03dfe7e8b6c84090eb80d2da2e895fcdd0a111c8357a67b94d98cc0b8f8f4",
+          "target_hash": "9fc78f3b9a15068e1f3d425103cac308e9381db89db59dca20c196b73eb4c9e6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.70c5eedbf606451197c0ed6a6821ed4a",
+      "source_hash": "3846a6f42edc14a5efdacf9c64046000b69ef4955914e876c1fc6d4ad45a1862",
+      "target_text": "Екеуіне бір prometheus қабылдағышы, өйткені ол Python бағдарламасынан span-дарды да жинай алады",
+      "target_hash": "6d65f684f9063db12791fbb84ec53718c73a509acd3704b80a41046297c50c83",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "3846a6f42edc14a5efdacf9c64046000b69ef4955914e876c1fc6d4ad45a1862",
+          "target_hash": "6d65f684f9063db12791fbb84ec53718c73a509acd3704b80a41046297c50c83"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f7fed5d231084bab97ea060c6cf260d9",
+      "source_hash": "f32ebe013d53bfa0bb92139de9ddecdb27dca7db091856676a44a1213738486b",
+      "target_text": "Екі дереккөз де телеметриясын ортақ файлға жазғаннан кейін екеуіне filelog қабылдағышы",
+      "target_hash": "0e4672b79f84d41272d818618a5f7a8caac23d11cb6958956efc03be91e935c8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f32ebe013d53bfa0bb92139de9ddecdb27dca7db091856676a44a1213738486b",
+          "target_hash": "0e4672b79f84d41272d818618a5f7a8caac23d11cb6958956efc03be91e935c8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e0f63cd557be4db1866c37028362447a",
+      "source_hash": "69a2a74550a05f5f656e1d46d9883b7076cadb26b2d756fbe94d45b6f5a3afec",
+      "target_text": "Doris FE мен BE метрикаларын /metrics жолында жариялап, сұрауды күтеді. Python бағдарламасы span-дарын OTLP арқылы жібереді. Collector-ға қай қабылдағыштар қажет?",
+      "target_hash": "5d8adafde0e1c5a67078d2ae9277b18ba89c0bff16e481dce66c2e9a639ae10a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "69a2a74550a05f5f656e1d46d9883b7076cadb26b2d756fbe94d45b6f5a3afec",
+          "target_hash": "5d8adafde0e1c5a67078d2ae9277b18ba89c0bff16e481dce66c2e9a639ae10a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e4941cdedd0d4e849cc71b1a0dbc02fc",
+      "source_hash": "8de55ab067e00e9d0184df9c3e129af12e36229fee423b44d3f300e024de952c",
+      "target_text": "Пакет өңдегіші send_batch_size шегіне жеткенде не timeout өткенде, қайсысы бұрын болса, пакетті жібереді; сондықтан жалғыз span шамамен 10 секундтан кейін шығады. Сол себепті 2-зертханалық жұмыстың span-ы Doris-те шамамен 20 секундта көрінеді. Әр span-ды дереу жіберу пакеттеудің мәнін жояды, ал timeout өткенде пакет 10,000 span күтпейді. Пакеттер жадыда қалады, дискіге ештеңе жазылмайды; сондықтан жіберу кезегі де құлаудан сақталмайды.",
+      "target_hash": "d8455cbf2a101bea4131c28f498ca3a5153e8db21489f763bd96ff90f159c501",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8de55ab067e00e9d0184df9c3e129af12e36229fee423b44d3f300e024de952c",
+          "target_hash": "d8455cbf2a101bea4131c28f498ca3a5153e8db21489f763bd96ff90f159c501"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f1cefcf8904a497189f5674b2eded219",
+      "source_hash": "eea60ac52e2d2355de5905f3037cfa805356f990fad82f649d7535649032f790",
+      "target_text": "Пакет өңдегіші деректі қашан жіберетінін және жіберу кезегі мен қайталаулар неге кепілдік беретінін болжау.",
+      "target_hash": "d420192e435815346ec62e6d9c09594f2ea87c4e4803cfedcd966f0e4f643bcc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "eea60ac52e2d2355de5905f3037cfa805356f990fad82f649d7535649032f790",
+          "target_hash": "d420192e435815346ec62e6d9c09594f2ea87c4e4803cfedcd966f0e4f643bcc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d3e3ac9dd99a4655a4e9436fd9d7e1cf",
+      "source_hash": "c869b01112d7d3b126c7cbd7261c0d16afe0bd437aa19b5b01a4a53cc833830c",
+      "target_text": "Пакет басталғаннан шамамен 10 секунд кейін, күту мерзімі өткенде",
+      "target_hash": "36efa66a33274b2f0325950e611c306228b5668b59b32d67c1f8e2294f052e14",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "c869b01112d7d3b126c7cbd7261c0d16afe0bd437aa19b5b01a4a53cc833830c",
+          "target_hash": "36efa66a33274b2f0325950e611c306228b5668b59b32d67c1f8e2294f052e14"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e9f2abbda1344783a125e41f5288267f",
+      "source_hash": "8ed0a8896f2b944b3b9b492d482dccb4322f625c69928900335c2919cc5a8750",
+      "target_text": "Бірден, өйткені жалғыз span-ы бар пакетке күтетін ештеңе жоқ",
+      "target_hash": "6880d287a0024877e7f43fe2bfd56034751d08ac33c72938e4ddc6d8b8bc1efc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8ed0a8896f2b944b3b9b492d482dccb4322f625c69928900335c2919cc5a8750",
+          "target_hash": "6880d287a0024877e7f43fe2bfd56034751d08ac33c72938e4ddc6d8b8bc1efc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3947522bb0f3422b9707851c4cc32151",
+      "source_hash": "ba2e49e4a7cabd3bfa534378cfc32190caaf0e82d15f070132d00935000ae257",
+      "target_text": "Тек 10,000 span келгеннен кейін, өйткені пакет тек толғанда шығады",
+      "target_hash": "fb60448236c1c982a5e23df65f1a9f554b6acb1818ed7be2175928b2b003e322",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ba2e49e4a7cabd3bfa534378cfc32190caaf0e82d15f070132d00935000ae257",
+          "target_hash": "fb60448236c1c982a5e23df65f1a9f554b6acb1818ed7be2175928b2b003e322"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4ca9e439b3ed41eab5f37c090d5a1e29",
+      "source_hash": "acff53c9fc55963bd82ea197e94abd23d5434aaa7b2957f20efbf16542f44000",
+      "target_text": "Collector қайта іске қосылғанда, өйткені күту мерзімі біткенде пакет дискіге жазылады",
+      "target_hash": "ad16d65b44fce3005d5009f8b7735c0c3587bdeb85be2ca280492c6c0593d823",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "acff53c9fc55963bd82ea197e94abd23d5434aaa7b2957f20efbf16542f44000",
+          "target_hash": "ad16d65b44fce3005d5009f8b7735c0c3587bdeb85be2ca280492c6c0593d823"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2d1867ad081d4d9ea3ec1a189dba727c",
+      "source_hash": "f77341aba6e74ac4493ee3631c30035d67718338e83fe2494c191483b1c58e2f",
+      "target_text": "Пакет өңдегішінің send_batch_size мәні 10000, timeout мәні 10s. Бағдарлама бір span жіберді, басқа ештеңе келмейді. Collector span-ды қашан экспорттайды?",
+      "target_hash": "68110dbff2005e5a6283ad007b67197aa672c23451bfca568fea3ecb93e92b69",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f77341aba6e74ac4493ee3631c30035d67718338e83fe2494c191483b1c58e2f",
+          "target_hash": "68110dbff2005e5a6283ad007b67197aa672c23451bfca568fea3ecb93e92b69"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.96605ddd8cc64d1d8338addcf6f5b299",
+      "source_hash": "496095f0e2f24642c295213fd950497e2db00c3c866278f8d2ec2574e94cffc0",
+      "target_text": "Экспорттаушы кесте баптауларын тек кестені құрғанда қолданады. create_schema: true кезінде CREATE TABLE IF NOT EXISTS орындайды; бұрынғы кестені ол өзгертпейді, сондықтан otel_logs өз 7 күнін сақтайды. Экспорттаушы кестелерді өзгертпейді, ешқашан жоймайды және өз баптауын кестенікімен салыстырмайды, сондықтан collector қалыпты іске қосылады.",
+      "target_hash": "bb30be3c55f6ca80c7624a1df3412c77dda7e97e19163c62871df383c356c4c7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "496095f0e2f24642c295213fd950497e2db00c3c866278f8d2ec2574e94cffc0",
+          "target_hash": "bb30be3c55f6ca80c7624a1df3412c77dda7e97e19163c62871df383c356c4c7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f38a976456684f33a04f4bffb0d2d7a2",
+      "source_hash": "abfcd92014d7c117fd3e260015cdead47f82d52ec9b71dedf4273975e05aabc9",
+      "target_text": "Doris экспорттаушысының қай баптаулары кестені құрғанда ғана қолданылатынын түсіндіру.",
+      "target_hash": "4d4fd81aa1b4fbfc2afbdd0545673bf76b9735cfd78f34668eca4c69e14ebe57",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "abfcd92014d7c117fd3e260015cdead47f82d52ec9b71dedf4273975e05aabc9",
+          "target_hash": "4d4fd81aa1b4fbfc2afbdd0545673bf76b9735cfd78f34668eca4c69e14ebe57"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ae96413724064b6fb0138d0a374fded5",
+      "source_hash": "385491d6d0d38ab95724808f82f508e036efa29d38cca3352ff4fef0c0074bb5",
+      "target_text": "Ештеңе: CREATE TABLE IF NOT EXISTS бұрынғы кестені өзгеріссіз қалдырады",
+      "target_hash": "7d2e8403945ad3f9dce6fd0661d57f24d8ebaef8b29b0bf9f8f4d24d90b906c4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "385491d6d0d38ab95724808f82f508e036efa29d38cca3352ff4fef0c0074bb5",
+          "target_hash": "7d2e8403945ad3f9dce6fd0661d57f24d8ebaef8b29b0bf9f8f4d24d90b906c4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6aef1f21f08c4df3977af7e50b228cf4",
+      "source_hash": "001d285d188ef19405838be1afb453783f0589a919812f14c513a1b53f74ff54",
+      "target_text": "Кесте енді 30 күндік бөлімдерді сақтайды, өйткені экспорттаушы оны өзгертеді",
+      "target_hash": "96948f82ebc321dad6a136ff3035975647976bec87e913366bd0e65efd80e124",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "001d285d188ef19405838be1afb453783f0589a919812f14c513a1b53f74ff54",
+          "target_hash": "96948f82ebc321dad6a136ff3035975647976bec87e913366bd0e65efd80e124"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.dbf85b6457f74ae894af77c7415fbb09",
+      "source_hash": "c9168de859b659ebe5b3be39e61ea634a75aaf43c37ed8d3ff08b50c7dba04a0",
+      "target_text": "Экспорттаушы кестені жойып, 30 күнмен қайта құрады, ескі жолдар жоғалады",
+      "target_hash": "9a5ed141e543c3d51b8f1979916e60a596c9bbed2e7ba5f17cf78a30bf552796",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "c9168de859b659ebe5b3be39e61ea634a75aaf43c37ed8d3ff08b50c7dba04a0",
+          "target_hash": "9a5ed141e543c3d51b8f1979916e60a596c9bbed2e7ba5f17cf78a30bf552796"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.ada80f539cff46139869adbde9d2f549",
+      "source_hash": "2655dfb7c65673a79a5438ff7f6afdda004905ad8ea9137a774a2c0eec46a9ec",
+      "target_text": "Баптауы кестенікімен сәйкес келмегендіктен, collector іске қосылудан бас тартады",
+      "target_hash": "f5a6aae8b0cb1cbb0999f67ed801ac31f1dc4bb990afe2f3eba5b2fbfe4b5c6d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "2655dfb7c65673a79a5438ff7f6afdda004905ad8ea9137a774a2c0eec46a9ec",
+          "target_hash": "f5a6aae8b0cb1cbb0999f67ed801ac31f1dc4bb990afe2f3eba5b2fbfe4b5c6d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.945d61bac527472aa42a70393f75c83a",
+      "source_hash": "f3d7517dd470caa98c1b7fdc22a56365b9c34ab791720ca52197b190651c4b04",
+      "target_text": "otel_logs кестесі бар, оның күндік бөлімдері 7 күн сақталады. Collector-дың Doris экспорттаушысына history_days: 30 және create_schema: true орнатып, collector-ды қайта іске қостыңыз. otel_logs кестесіне не болады?",
+      "target_hash": "b2618dcf9728e43c952ebfa8cdb93139128434d15c3da7a6f29d38839274fd7a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "f3d7517dd470caa98c1b7fdc22a56365b9c34ab791720ca52197b190651c4b04",
+          "target_hash": "b2618dcf9728e43c952ebfa8cdb93139128434d15c3da7a6f29d38839274fd7a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8f3e625a22f44efdacd22cf52a707cd8",
+      "source_hash": "68590baa7c4d97a91524826221ad8bf7ea244bebaf60f5cbe1ea973c16b7339e",
+      "target_text": "force_flush() экспорт әрекетін күтеді, бірақ сәттілігін хабарламайды: collector-ға жету мүмкін болмаса, SDK тек ескерту жазады. Collector қабылдаған span да пакет пен Doris-ке жүктеуді әлі күтеді, сондықтан келесі қадам — collector-ды тексеріп, қайта сұрау. Flush сәтсіз болса exception тудырмайды, сәтті flush жолды Doris-ке бірден орналастырмайды, ал Grafana дерек жүктеуге қатыспайды.",
+      "target_hash": "ee74190d8df93e8f5c94f6ad11717c0ad6119f48f16caccea8aa50e5f1d6a5c6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "68590baa7c4d97a91524826221ad8bf7ea244bebaf60f5cbe1ea973c16b7339e",
+          "target_hash": "ee74190d8df93e8f5c94f6ad11717c0ad6119f48f16caccea8aa50e5f1d6a5c6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6d368fd68b7743fc9611245c73641418",
+      "source_hash": "0a67ee4ef2bf172d6dc76d804b5d720f936c970317377e638e96ddb40ab96ae9",
+      "target_text": "Сәтті экспорт шақыруы нені, ал тек Doris сұрауы нені көрсететінін бағалау.",
+      "target_hash": "3e6d366df7d5190fc2c26f4096554bd6bc84fdd28f877051f5c845fe54de6074",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "0a67ee4ef2bf172d6dc76d804b5d720f936c970317377e638e96ddb40ab96ae9",
+          "target_hash": "3e6d366df7d5190fc2c26f4096554bd6bc84fdd28f877051f5c845fe54de6074"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a8b11ae2387049368a1e887bb16727b2",
+      "source_hash": "8af0768fecb851fa38c163b07196822d5b7c39ab71022b94db38c0cca0047ead",
+      "target_text": "Flush тек экспорт әрекеті жасалғанын көрсетеді; collector-ды тексеріп, сұрауды қайталау керек",
+      "target_hash": "d1ffa8408ea40c1f17ada08a5babbb578a89e0b4fb939c7fdd01470213345894",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "8af0768fecb851fa38c163b07196822d5b7c39ab71022b94db38c0cca0047ead",
+          "target_hash": "d1ffa8408ea40c1f17ada08a5babbb578a89e0b4fb939c7fdd01470213345894"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.97afebd93b4848ed816529051ec17a21",
+      "source_hash": "ca378442b9187d23cc0abac7d20d46903c2ed6ce5447a3ba644aa6a28b174c00",
+      "target_text": "Span Doris-те сақталған, өйткені force_flush() сәтсіз экспортты exception арқылы хабарлайды",
+      "target_hash": "e1e006ffb4ea3507eafba47edbf7e698ad3f56f19665f343e69a485efad1b211",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "ca378442b9187d23cc0abac7d20d46903c2ed6ce5447a3ba644aa6a28b174c00",
+          "target_hash": "e1e006ffb4ea3507eafba47edbf7e698ad3f56f19665f343e69a485efad1b211"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.99e41250a44f409e8a671def3de00e7c",
+      "source_hash": "994776d33db5763b5fd17c977bf0285cf86e9f3002da42d60c8b347e0349afc5",
+      "target_text": "Сұрау қате болуы тиіс, өйткені flush шақыруы аяқталғанда span Doris-те болады",
+      "target_hash": "5b68c3843fb32439d6383dd73753f7ca67036261ea045507f7f40fdc5e843f70",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "994776d33db5763b5fd17c977bf0285cf86e9f3002da42d60c8b347e0349afc5",
+          "target_hash": "5b68c3843fb32439d6383dd73753f7ca67036261ea045507f7f40fdc5e843f70"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8103dab40a1d4b819da413479588a8f1",
+      "source_hash": "aabbb993e8935ba0afee50d6a3afdf36d4f9811436241e44bc8ebdc69b62b849",
+      "target_text": "Span Grafana оның трассасын бір рет ашқаннан кейін ғана Doris-те көрінеді",
+      "target_hash": "e873d1e6e31c428da622c885ba23cff80a137216532dc96c30f9367f0919001b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "aabbb993e8935ba0afee50d6a3afdf36d4f9811436241e44bc8ebdc69b62b849",
+          "target_hash": "e873d1e6e31c428da622c885ba23cff80a137216532dc96c30f9367f0919001b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a73f7f9c85b74112b6713b4db67eaf4b",
+      "source_hash": "27ff310f2a5c135a6d8881a6d3b590ac334361a100117ec5cc9ea4b2713fe75a",
+      "target_text": "Python коды span-ды аяқтап, provider.force_flush() шақырады да, Flushed the span деп шығарады. otel_traces ішінде оның трасса ID-ін іздеген сұрау жол қайтармайды. Қай қорытынды ең негізді?",
+      "target_hash": "06637b33a9b771306a9d28304199f7b70ee0088ae952e4f8caaf2ef7173379f8",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "27ff310f2a5c135a6d8881a6d3b590ac334361a100117ec5cc9ea4b2713fe75a",
+          "target_hash": "06637b33a9b771306a9d28304199f7b70ee0088ae952e4f8caaf2ef7173379f8"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d034b666e1774886aa0cbfd7333cba91",
+      "source_hash": "31a9ab856ceadf417025f77949d63fc6847bf11a390cd936b0d02eb0dd91fef8",
+      "target_text": "Демода payment пен checkout журналдарын тек контейнер шығысына жазады, оларды docker logs көрсетеді; Collector-ға журнал жібермейді, ал прокси және cart пен currency сияқты сервистер жібереді. Doris экспорттаушысы маңыздылығына қарамастан әр журнал жазбасын жүктейді; журналдар трасса аяқталғанша ұсталмайды, ал журнал жазбасы трасса ID-і болса да, болмаса да otel_logs кестесіне түседі.",
+      "target_hash": "c678f7fbcfc7037539dab7d9319c174b5aed05d81441a63f295f28e48d65f4ba",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "31a9ab856ceadf417025f77949d63fc6847bf11a390cd936b0d02eb0dd91fef8",
+          "target_hash": "c678f7fbcfc7037539dab7d9319c174b5aed05d81441a63f295f28e48d65f4ba"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.047285dbf5f246b2948f70607a43bb3c",
+      "source_hash": "1c882ba45928bd17d8835b2445a5e9d7b20e297436194b8864206a4d8e8d4b9f",
+      "target_text": "Әр сигналдан бір сұраудың дәлелін тауып, қай сервис қай сигналды жіберетінін ажырату.",
+      "target_hash": "6a4154361190f4a68a1ec1bc9b1b3185883af9849cf183a0afeadea1ef888294",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "1c882ba45928bd17d8835b2445a5e9d7b20e297436194b8864206a4d8e8d4b9f",
+          "target_hash": "6a4154361190f4a68a1ec1bc9b1b3185883af9849cf183a0afeadea1ef888294"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3ebb3db3db14497d92c3f7d531f2570f",
+      "source_hash": "2841b1c73a29e7f1008bccb02e18ae090bb89db96d254a3fd893f2a60e21e10a",
+      "target_text": "Payment пен checkout журналдарын Collector-ға емес, тек өз контейнерлерінің шығысына жазады",
+      "target_hash": "e752ff18bb1ddb00e49b538ea842201370e45d555531091bd6e5594506dda548",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "2841b1c73a29e7f1008bccb02e18ae090bb89db96d254a3fd893f2a60e21e10a",
+          "target_hash": "e752ff18bb1ddb00e49b538ea842201370e45d555531091bd6e5594506dda548"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.56c81bd8bf0c49d98870d6c1be32b094",
+      "source_hash": "9621ea433d1145cf6b32f61891a06166593e63ec3de45352f12f78a90f930e48",
+      "target_text": "Doris экспорттаушысы тек INFO не одан төмен маңыздылықтағы жазбаларды жүктейді, сондықтан қателер тасталады",
+      "target_hash": "0cacf095d6d26f59867ab6345ea8c8d04c84035849d82c291a02ae597c2538ed",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "9621ea433d1145cf6b32f61891a06166593e63ec3de45352f12f78a90f930e48",
+          "target_hash": "0cacf095d6d26f59867ab6345ea8c8d04c84035849d82c291a02ae597c2538ed"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3b83f3c1c6644e36a48b18863d897bec",
+      "source_hash": "d6ffe1dbda6b87b8631130f3621ed6082a4d10fce865549ddfc8799612c3a258",
+      "target_text": "Журналдары бірнеше сағаттан кейін келеді, өйткені журналдар сұрау трассаларынан кейін экспортталады",
+      "target_hash": "fbf6978a67d61d38392cd0c1d2f2ec822666d73584e26e9aa31d201db0aeec2f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "d6ffe1dbda6b87b8631130f3621ed6082a4d10fce865549ddfc8799612c3a258",
+          "target_hash": "fbf6978a67d61d38392cd0c1d2f2ec822666d73584e26e9aa31d201db0aeec2f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.625c94d4420444409d7a5fb2a1f18477",
+      "source_hash": "a9cb801042d7ddf5fdc267a6c842b8d1c00fad4ee165b82d9ef97a0921ae2367",
+      "target_text": "Жазбаларында трасса ID-і бар, сондықтан Doris оларды otel_logs орнына otel_traces кестесінде сақтайды",
+      "target_hash": "ade80523821b9e6ab6a9b3d21f3ab7085fdfae164acc2529a9cd9e3ccd899853",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "a9cb801042d7ddf5fdc267a6c842b8d1c00fad4ee165b82d9ef97a0921ae2367",
+          "target_hash": "ade80523821b9e6ab6a9b3d21f3ab7085fdfae164acc2529a9cd9e3ccd899853"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0daebc5b6097444e8ab5ba9f09e14da0",
+      "source_hash": "37020bd16a76bd2974ec531b8328f5315bfa3fbbabb7a3163baf5afbd9dc4450",
+      "target_text": "Сәтсіз тапсырыс трассасында payment пен checkout қате span-дары бар. otel_logs ішінде тапсырыс трассасының ID-і бар прокси қатынас журналы жолы бар, бірақ payment не checkout жолы жоқ. Ең дұрыс түсіндіру қайсы?",
+      "target_hash": "e0662a3db1ecc101528c7a89e541da56c577a0a4e2da7b66eb0d32536404ef6a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "37020bd16a76bd2974ec531b8328f5315bfa3fbbabb7a3163baf5afbd9dc4450",
+          "target_hash": "e0662a3db1ecc101528c7a89e541da56c577a0a4e2da7b66eb0d32536404ef6a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d3cc9b44cdde4a668d5ee01e8cada9fe",
+      "source_hash": "615f8e2f912672272369958b7a6b0feae0c9f4827d076f947d1070a01dbfcdbf",
+      "target_text": "2-модуль тесті: Жүйені бақылау деректерін жүктеу",
+      "target_hash": "4003dffab79adccf48473f696d25da8da6e47590c26c733b1ae1547c2c71e605",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-obs-m02-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed for every unit of Observability Module 2 on 2026-11-08. Re-read all saved lesson, Lab and six Quiz target strings against frozen English; read complete Lab code and all three Collector YAML configurations. Checked push/pull reachability, rotation/read positions, batch size-versus-timeout, volatile queues/retry limits, create-only settings, graph-job undercount/recreation, UTC/microseconds, force_flush limitations, missing logs, unique correct answers and all alternatives. Corrected summary grammar. Viewed all three source PNGs and checked adjacent full Kazakh label legends. Technical admission and native human review remain unperformed.",
+          "source_hash": "615f8e2f912672272369958b7a6b0feae0c9f4827d076f947d1070a01dbfcdbf",
+          "target_hash": "4003dffab79adccf48473f696d25da8da6e47590c26c733b1ae1547c2c71e605"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

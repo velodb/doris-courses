@@ -1,0 +1,1136 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.8d5444dac4a34df6b0aa983ab5447e13",
+      "source_hash": "e1d8c8257b16b8cc2d61f8e9911a04772472f3c2fe4276a0ddc51a77cffe002f",
+      "target_text": "<div>\n  <div>01-ТЕСТ · APACHE DORIS КӨМЕГІМЕН ДЕРЕКТЕР ҚОЙМАСЫН ҚҰРУ</div>\n  <div>Doris-пен танысу және алғашқы тапсырыстарды талдау</div>\n  <p>Әр сұрақтан кейін кері байланыс берілетін, бір дұрыс жауабы бар алты сұрақ; дерекқорға қосылу қажет емес.</p>\n  <span>6 сұрақ · Бір дұрыс жауап · Шамамен 10 минут</span>\n</div>\n\n[Сабақ](course.md) · [Зертханалық жұмыс](lab01_connect_and_query.ipynb)\n",
+      "target_hash": "174bdb8bb5466cc844b21c32c294615d6171adad29fa5744e1f7612a49dfb42e",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "e1d8c8257b16b8cc2d61f8e9911a04772472f3c2fe4276a0ddc51a77cffe002f",
+          "target_hash": "174bdb8bb5466cc844b21c32c294615d6171adad29fa5744e1f7612a49dfb42e"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.25f590298ec54fdaae8b5e7149244125",
+      "source_hash": "48854cf063580a1fef133192f06bcda89906098043ee7a3f8e3e90f7fd626a3e",
+      "target_text": "### Тестті жүктеу\n\nТестті жүктеу үшін келесі ұяшықты орындаңыз. Ядроны қайта іске қосқаннан кейін осы жерден қайта орындаңыз.\n",
+      "target_hash": "974461d755c2cb386b87743756c704517b6ef2ac0f8a010f35ff1c53de367818",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "48854cf063580a1fef133192f06bcda89906098043ee7a3f8e3e90f7fd626a3e",
+          "target_hash": "974461d755c2cb386b87743756c704517b6ef2ac0f8a010f35ff1c53de367818"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.099f7212de3d43fabdc73c6d33794e8a",
+      "source_hash": "da03dcaa14e4b7d04a0c11989974b251c9a27d631b58aac0d88e00c263a3214e",
+      "target_text": "## Тестті бастау\n\nЖауапты таңдап, жіберіңіз, содан кейін келесі сұраққа өтпес бұрын түсіндірмені оқыңыз.\n",
+      "target_hash": "103adb2f3351803ea62db122d9cbc65d8d3c157eb858e1aa490b3cb380e339b7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "da03dcaa14e4b7d04a0c11989974b251c9a27d631b58aac0d88e00c263a3214e",
+          "target_hash": "103adb2f3351803ea62db122d9cbc65d8d3c157eb858e1aa490b3cb380e339b7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1d82fc1c4b154ff5bb094ee4238302a1",
+      "source_hash": "061e0735afce68afc7cb6870c083a5c50861ca935ac425840a758e5461aea26f",
+      "target_text": "Бір дұрыс жауабы бар алты сұрақ; дерекқорға қосылу қажет емес. Жібергеннен кейін түсіндірмелерді қараңыз.",
+      "target_hash": "ac23d0c80f7e81c749e1728ceeec1671092cfc9e3e92acffaa0f6593a48c4a59",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "061e0735afce68afc7cb6870c083a5c50861ca935ac425840a758e5461aea26f",
+          "target_hash": "ac23d0c80f7e81c749e1728ceeec1671092cfc9e3e92acffaa0f6593a48c4a59"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8ec5bb5f7e744a73aa54b804a9cca5eb",
+      "source_hash": "479979dfc05fd95bf1245baca3f245c2ca61bfb8ea35014490b90d9d7fcbacc5",
+      "target_text": "Көп тапсырысты оқып, күн бойынша қорытындылау — нәтиже бірнеше жол болса да, талдау. Тапсырысты беру және қойма қорын азайту бір транзакцияны аяқтайды. Бір тапсырыстың мекенжайын іздеу SELECT қолданады, бірақ тапсырыстарды жалпы талдауға емес, тұтынушының транзакциясына қызмет етеді. Төлемді тіркеу және тапсырыс күйін жаңарту бір бизнес нысанын өзгертеді, бұл да транзакциялық жұмыс.",
+      "target_hash": "f09ec8a26fbb5cae4153122adf88ab0aaaa486d6aa754928750d4a49c86387b4",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "479979dfc05fd95bf1245baca3f245c2ca61bfb8ea35014490b90d9d7fcbacc5",
+          "target_hash": "f09ec8a26fbb5cae4153122adf88ab0aaaa486d6aa754928750d4a49c86387b4"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.96cc1359084141d3a07e1d6bd588bc5d",
+      "source_hash": "4a0e485eb83c8506f11795938e0824d3321177c10eb6ced8fb136231463dbafb",
+      "target_text": "Транзакцияны аяқтауды тапсырыстар тобын талдаудан ажырату.",
+      "target_hash": "2a43897594ce9696a225f05989f4ab43b3492108980faa8c07ddddc51fd178e6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "4a0e485eb83c8506f11795938e0824d3321177c10eb6ced8fb136231463dbafb",
+          "target_hash": "2a43897594ce9696a225f05989f4ab43b3492108980faa8c07ddddc51fd178e6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.26148ae73bb04d6fbfb3021c86f940a3",
+      "source_hash": "60fbc733d1f58b757c0921d5c801b11820975c0a5fc222fdcf07ac65408ee25d",
+      "target_text": "Бір бизнес операциясында тапсырысты беру және оның тауарларын қойма қорынан шегеру",
+      "target_hash": "270a9c63ee6a97541a342f7aac53a45be4141559b18fc55b0e97d5dbc083fc8f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "60fbc733d1f58b757c0921d5c801b11820975c0a5fc222fdcf07ac65408ee25d",
+          "target_hash": "270a9c63ee6a97541a342f7aac53a45be4141559b18fc55b0e97d5dbc083fc8f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.55fd0670a20f4b50a3f98944f44ac927",
+      "source_hash": "c74efcde4e86882cd61977580340446723a08197bdf03fe5e94446dc17aa6171",
+      "target_text": "Бір айдың тапсырыстарын оқу, оларды санау және сомаларын күн бойынша қосу",
+      "target_hash": "622cf4464ba99f7d1d9f3a008cbc3075e7ed66f4490cc7dbb6eede9011efa513",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c74efcde4e86882cd61977580340446723a08197bdf03fe5e94446dc17aa6171",
+          "target_hash": "622cf4464ba99f7d1d9f3a008cbc3075e7ed66f4490cc7dbb6eede9011efa513"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.119e9d658f944a91a405ac02d374f2c9",
+      "source_hash": "110429c3eaf57ddbc1e003984ae07fcd62b9a7beb04daf9c37c68a3b40d5a039",
+      "target_text": "Тұтынушы растауы немесе өзгертуі үшін бір тапсырыстың жеткізу мекенжайын іздеу",
+      "target_hash": "2b7e604bb861e0e42777afa282390795f7b1febab1e13503f220d04ec6e4463b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "110429c3eaf57ddbc1e003984ae07fcd62b9a7beb04daf9c37c68a3b40d5a039",
+          "target_hash": "2b7e604bb861e0e42777afa282390795f7b1febab1e13503f220d04ec6e4463b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8206013c334d408e822e732a18858c66",
+      "source_hash": "9b5c45662a2d000ab50d8339d65675ddda6233a88d628a895ed1f6f049bba2a8",
+      "target_text": "Төлем нәтижесін тіркеу және сол төлеммен төленген тапсырыстың күйін жаңарту",
+      "target_hash": "b0219ad1e42436ce1a1b31b5bdb86a34f2e67c9516e3646014bf97510288e271",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "9b5c45662a2d000ab50d8339d65675ddda6233a88d628a895ed1f6f049bba2a8",
+          "target_hash": "b0219ad1e42436ce1a1b31b5bdb86a34f2e67c9516e3646014bf97510288e271"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7b71df20c5f349d99da1eaad89fe481b",
+      "source_hash": "3fed9c634082d6e27d39b5d2cc74be411670a4a41fc28c0650fcc1213aeda598",
+      "target_text": "Бөлшек саудагер сатып алуды рәсімдеу сұрауларын өткен ай тапсырыстары туралы есептен бөледі. Қай сұрау талдамалық жұмыс жүктемесіне жатады?",
+      "target_hash": "6128ee9599c6174bf98ebc67b046e03ed6db3eb231c1a70d65c4caee16a7d84a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "3fed9c634082d6e27d39b5d2cc74be411670a4a41fc28c0650fcc1213aeda598",
+          "target_hash": "6128ee9599c6174bf98ebc67b046e03ed6db3eb231c1a70d65c4caee16a7d84a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.83845b32c6144a40a374b64e360b17a3",
+      "source_hash": "b54f13db0ea98340ebcacf07da8abe63a75e455d97293720543cc0d40304116b",
+      "target_text": "Бизнес дерекқоры транзакцияларды орындауды жалғастырады, ал Doris тапсырыс деректерін қабылдап, талдамалық жұмысты орындайды, сондықтан ауыр талдау сатып алуды рәсімдеуді баяулатпайды. Doris — талдамалық дерекқор, сатып алуды рәсімдеу дерекқорының орнына қолданылмайды. Талдаушылардың дүкен дерекқорына тікелей сұрау жасауы — рәсімдеуді баяулататын жүктеменің өзі, ал сақтық көшірме ешбір сұрауға жауап бермейді. Doris өзі сақтайтын деректермен есептейді; үрдістерді есептеу бастапқы дерекқордың емес, Doris-тің жұмысы.",
+      "target_hash": "1b06d414019821f68e1337e5d54e33a468bb4df3e360a4b990e65947f2a3fbdd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "b54f13db0ea98340ebcacf07da8abe63a75e455d97293720543cc0d40304116b",
+          "target_hash": "1b06d414019821f68e1337e5d54e33a468bb4df3e360a4b990e65947f2a3fbdd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.af56ef7c41204d8bb5fbea61b4487f6f",
+      "source_hash": "4b6b1833446b294f844d4c32e538611e707815a7968b48f18f3eb0053b916d9b",
+      "target_text": "Бизнес дерекқорлары мен аналитика пайдаланушылары арасындағы Doris рөлін түсіндіру.",
+      "target_hash": "4e80218dfa22f60f04b27cae10588a6f3e5de3c5fec6df553dce8ebd75f06cff",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "4b6b1833446b294f844d4c32e538611e707815a7968b48f18f3eb0053b916d9b",
+          "target_hash": "4e80218dfa22f60f04b27cae10588a6f3e5de3c5fec6df553dce8ebd75f06cff"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b93506fe9da84a41a3df9bd0522a2e42",
+      "source_hash": "46caeaf5cbd7eec2988fa304ad42db18d74821c66354252473245388c2ae7894",
+      "target_text": "Дүкен дерекқоры сатып алуды рәсімдейді; Doris тапсырыс деректерін қабылдап, талдаушылардың сұрауларына жауап береді",
+      "target_hash": "7772c29b336ddf673ab746df6bb4b6cd58e9692257b84c4132012ad566d83647",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "46caeaf5cbd7eec2988fa304ad42db18d74821c66354252473245388c2ae7894",
+          "target_hash": "7772c29b336ddf673ab746df6bb4b6cd58e9692257b84c4132012ad566d83647"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.7f5e6e9729a84a29b1820ff451f815ac",
+      "source_hash": "e1e16b4454211ee6f2fc8c46d1c4854ad556b27601418fc81189e5cd12915d5a",
+      "target_text": "Doris талдаушылардың сұрауларына да жауап бере алатындықтан, сатып алуды рәсімдеуде дүкен дерекқорын алмастырады",
+      "target_hash": "d08ea28485be303772ac070ded8d03ec169bc7c876999a736a9e79b43de906a3",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "e1e16b4454211ee6f2fc8c46d1c4854ad556b27601418fc81189e5cd12915d5a",
+          "target_hash": "d08ea28485be303772ac070ded8d03ec169bc7c876999a736a9e79b43de906a3"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6d18824dcc9b42ac81381c130506212a",
+      "source_hash": "649b503850079ab44af566c29fabc5be4d9d26a1893eb75e783464af5a63a2c9",
+      "target_text": "Талдаушылар дүкен дерекқорына тікелей сұрау жасайды, ал Doris оның кестелерінің сақтық көшірмесін сақтайды",
+      "target_hash": "bfd9f152eb480e7e22094ac9b399e0f16838186f9af55f2224289f6467a3b5cb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "649b503850079ab44af566c29fabc5be4d9d26a1893eb75e783464af5a63a2c9",
+          "target_hash": "bfd9f152eb480e7e22094ac9b399e0f16838186f9af55f2224289f6467a3b5cb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e09f0be1fec14ffab50ed1a752c8d03a",
+      "source_hash": "9284620d08ed397723cf24c7f1a64f8a07c0264fa19cfa7c3aa28f5a2a1c0e4a",
+      "target_text": "Doris тапсырыстарды сақтайды, ал дүкен дерекқоры Doris көшірмесінен сағаттық үрдістерді есептейді",
+      "target_hash": "b411e21dc00473a862e5d1fa6b5856c3a52348d0b29960a8df701ae8620bebeb",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "9284620d08ed397723cf24c7f1a64f8a07c0264fa19cfa7c3aa28f5a2a1c0e4a",
+          "target_hash": "b411e21dc00473a862e5d1fa6b5856c3a52348d0b29960a8df701ae8620bebeb"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c9b4505835db4969b09ff7fc030d0a17",
+      "source_hash": "beb44669a3cf0a589fbe5fcf8d2f0f3139bdd6fc042aca03d8828d221a466474",
+      "target_text": "Интернет-дүкенде талдаушылар екі жылдық тапсырыстар бойынша сағаттық сату үрдістерін зерттегенде де, сатып алуды рәсімдеу жылдам болуы керек. Міндеттерді қалай бөлу дұрыс?",
+      "target_hash": "a4df3eee88af1d3736919f9f1252c29c58cc3cc43e2caf15ff59d68267c31634",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "beb44669a3cf0a589fbe5fcf8d2f0f3139bdd6fc042aca03d8828d221a466474",
+          "target_hash": "a4df3eee88af1d3736919f9f1252c29c58cc3cc43e2caf15ff59d68267c31634"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8adfb712095e48f593e0501a004b6e66",
+      "source_hash": "96c1cb043a9d30815189e07f84f10fad638ca6afa98e04d28057b5598a122fcc",
+      "target_text": "FE SQL қабылдайды, метадеректерді басқарады, сұрауды жоспарлап, үйлестіреді; ал BE кестелердің деректерін сақтап, оларды сканерлейді, сүзеді және агрегаттайды. Сақтау мен есептеуі біріктірілген архитектурада BE сақтау мен есептеудің екеуін де атқарады. FE метадеректерді басқарады, бірақ деректерді сканерлемейді. Клиент тек SQL жібереді: таратылған жоспарды FE құрады. Кестелердің деректері FE-де емес, BE-де орналасады.",
+      "target_hash": "7b66073765889700d81e7d7236346a56b025bd4c9549dc578b784c731b6fcdd6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "96c1cb043a9d30815189e07f84f10fad638ca6afa98e04d28057b5598a122fcc",
+          "target_hash": "7b66073765889700d81e7d7236346a56b025bd4c9549dc578b784c731b6fcdd6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.48de59f1055f4f38b83cff48b04eaf2b",
+      "source_hash": "724358ba0478598a86c72133ac298651dc289ce0eba88e55968d20778b79557d",
+      "target_text": "Сақтау мен есептеуі біріктірілген орналастыруда Frontend (FE) және Backend (BE) міндеттерін түсіндіру.",
+      "target_hash": "accb01544cb3b329e4fb7d2d4b4f0e6975cd729d04f087edff534118b873154c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "724358ba0478598a86c72133ac298651dc289ce0eba88e55968d20778b79557d",
+          "target_hash": "accb01544cb3b329e4fb7d2d4b4f0e6975cd729d04f087edff534118b873154c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3c78ae01a97246c8b74e333553664d81",
+      "source_hash": "1d48f8b6ba7afdecfa02b8f830e033de2175fa2f73e3f1dbead87aefce0e76eb",
+      "target_text": "FE SQL қабылдап, сұрауды жоспарлайды; BE деректерді сақтап, жоспарды орындайды",
+      "target_hash": "d29b7ba39802150dd0d90fb03a65c2917545213ceb84659cca343268079ea146",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "1d48f8b6ba7afdecfa02b8f830e033de2175fa2f73e3f1dbead87aefce0e76eb",
+          "target_hash": "d29b7ba39802150dd0d90fb03a65c2917545213ceb84659cca343268079ea146"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.62131ab954ad4fd29d1dac95104b61f9",
+      "source_hash": "16b56bc344a11d24b426e8d67216e9b888ec583b5f9f97016a4a12f562567b13",
+      "target_text": "FE метадеректерді сақтап, тапсырыс жолдарын сканерлейді; BE тек файлдарды дискіге жазады",
+      "target_hash": "e4e26dca2a1fcec520d3c9ce6c22947f5ed202b88e0fa4373e779805751ebb07",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "16b56bc344a11d24b426e8d67216e9b888ec583b5f9f97016a4a12f562567b13",
+          "target_hash": "e4e26dca2a1fcec520d3c9ce6c22947f5ed202b88e0fa4373e779805751ebb07"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cf5ecc30feac46f8950e1e4191d75a5c",
+      "source_hash": "fd9458df4c23a3ce90aec808834263df8869df5a20f735f6bbc98ddd9de4cb62",
+      "target_text": "Клиент сұрауды жоспарға бөледі, ал FE оның әр бөлігін BE-ге жібереді",
+      "target_hash": "a3089fef43abfec0863ff1f5f1ce5344154c15445a963db1c709ec2c155d7c73",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "fd9458df4c23a3ce90aec808834263df8869df5a20f735f6bbc98ddd9de4cb62",
+          "target_hash": "a3089fef43abfec0863ff1f5f1ce5344154c15445a963db1c709ec2c155d7c73"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.5b15f794ede540848890142b196ed747",
+      "source_hash": "beefd8b087e17f18dfcd241816916bf9fab26f15d2bb31c82f4d1143c408e1c0",
+      "target_text": "FE кестелердің деректерін сақтайды, ал BE жиі қолданылатын деректердің кэшін сақтап, нәтижелерді қайтарады",
+      "target_hash": "6f38707dd94353149357af8a5a5d39c9ec2ff4a837cf29e66da3530a58de85e7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "beefd8b087e17f18dfcd241816916bf9fab26f15d2bb31c82f4d1143c408e1c0",
+          "target_hash": "6f38707dd94353149357af8a5a5d39c9ec2ff4a837cf29e66da3530a58de85e7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.4fdb304ea0da45d685e043536da97d5b",
+      "source_hash": "b36988c0208d673823398f3abbe93f22362f11ed89e7b4da837be7d2433d53b3",
+      "target_text": "SQL клиенті сақтау мен есептеуі біріктірілген архитектура қолданылатын курстың сынақ ортасына тапсырыстарды агрегаттау сұрауын жібереді. Топ Frontend (FE) және Backend (BE) арасында міндеттер қалай бөлінеді деп күтуі керек?",
+      "target_hash": "a0029bec9840bc95a82a1ec8a7465f53e8d9e89b48f7785d7d4812c01277c925",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "b36988c0208d673823398f3abbe93f22362f11ed89e7b4da837be7d2433d53b3",
+          "target_hash": "a0029bec9840bc95a82a1ec8a7465f53e8d9e89b48f7785d7d4812c01277c925"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.552d3b2d51974ed085cacf805d5830ce",
+      "source_hash": "e48e8a89e93f9140ae3924b724288359a7a3fe8803b6d95a3b190e71e5cf4f19",
+      "target_text": "MySQL хаттамасы MySQL клиенттері мен драйверлеріне қосылып, SQL жіберуге мүмкіндік береді; деректерді бәрібір жүктеу не синхрондау арқылы енгізу қажет, ал Doris-тің SQL синтаксисі, кесте модельдері және параметрлері өзіне тән. Қосылым деректерді көшірмейді, сондықтан ештеңе автоматты шағылыстырылмайды. 5.7.99 — Doris MySQL клиенттеріне хабарлайтын хаттама нұсқасы, MySQL 5.7 мінез-құлқын уәде ету емес; Doris нұсқасы SHOW FRONTENDS және SHOW BACKENDS нәтижелерінде. Doris-ке қосылу MySQL серверін де, оның кестелерін де өзгертпейді.",
+      "target_hash": "66949bfe51a6ce1d7f716c974e7a5f7132d65d880c8cc45c82f29d59c055138d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "e48e8a89e93f9140ae3924b724288359a7a3fe8803b6d95a3b190e71e5cf4f19",
+          "target_hash": "66949bfe51a6ce1d7f716c974e7a5f7132d65d880c8cc45c82f29d59c055138d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.6d62b6343ceb469ab53b52ccb4f50c4d",
+      "source_hash": "10d846fe447ff2b39d5789a76302261957e27abcdd8ea63d1ecad7fcd4ff1e77",
+      "target_text": "MySQL хаттамасы арқылы қосылу нені беретінін және нені бермейтінін түсіндіру.",
+      "target_hash": "75f54117c30426bbd4fa9686591bb4f8071b6c8821852fdb69a3779d6767c203",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "10d846fe447ff2b39d5789a76302261957e27abcdd8ea63d1ecad7fcd4ff1e77",
+          "target_hash": "75f54117c30426bbd4fa9686591bb4f8071b6c8821852fdb69a3779d6767c203"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.fb0f818909464feca50b3b28fcd12b3b",
+      "source_hash": "0646545564e0cb14883fe5a6a099b322cb0dab2f538aa7f2e8a6003fa85a315e",
+      "target_text": "Құралдар Doris-ке SQL жібере алады; деректерді әлі де жүктеу керек және Doris-тің SQL синтаксисі өзіне тән",
+      "target_hash": "eee05ff0898bbda6488363ab8c374285bbf103fc2141694df0b932825e4d3359",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "0646545564e0cb14883fe5a6a099b322cb0dab2f538aa7f2e8a6003fa85a315e",
+          "target_hash": "eee05ff0898bbda6488363ab8c374285bbf103fc2141694df0b932825e4d3359"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f9880d4a4bac4a4ab6ef6e7ac0fd4a8b",
+      "source_hash": "4dffd125605ba29ba469bb2118fece3da1cf2cd413ef412d9b47a65139e4f712",
+      "target_text": "Енді Doris топтың MySQL дерекқорын шағылыстырып, оның кестелерін өздігінен жаңартып отырады",
+      "target_hash": "2efcbf1efd416e53cf6812e19fdb58e05d8b62184e69175815b19a110ccb9194",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "4dffd125605ba29ba469bb2118fece3da1cf2cd413ef412d9b47a65139e4f712",
+          "target_hash": "2efcbf1efd416e53cf6812e19fdb58e05d8b62184e69175815b19a110ccb9194"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.42523079d31c47aa90eb1c519988150f",
+      "source_hash": "bfee4a975c9adb54f88ef6e2d6bb58a9536eb9ee0d613a3cc93f577f99e1674f",
+      "target_text": "Нұсқа нөміріне сай Doris әр оператор мен параметрде MySQL 5.7 сияқты әрекет етеді",
+      "target_hash": "8238c9e28452b54060853f0f4d7a1c71a3daea41858a313f697dd9065ec1249d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "bfee4a975c9adb54f88ef6e2d6bb58a9536eb9ee0d613a3cc93f577f99e1674f",
+          "target_hash": "8238c9e28452b54060853f0f4d7a1c71a3daea41858a313f697dd9065ec1249d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.95d23cf57ff34cf4ac12bbb82b964861",
+      "source_hash": "86e4561118723820ee9e447079124b91d74c0bb6d9f36d50a05d27321b673b23",
+      "target_text": "Енді топтың MySQL сервері кестелерін Doris-те сақтайды, сондықтан оны өшіруге болады",
+      "target_hash": "45e4c73c72fcb5f31ea38e1626466542ab2d12ebdd7516feeaefc2fb8c02eea6",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "86e4561118723820ee9e447079124b91d74c0bb6d9f36d50a05d27321b673b23",
+          "target_hash": "45e4c73c72fcb5f31ea38e1626466542ab2d12ebdd7516feeaefc2fb8c02eea6"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.8726f5754a4f45d18b12b1def221543d",
+      "source_hash": "92689dcab1f9811f790ccba8ab25cb0dc513054d049f5a674956823fe17fad27",
+      "target_text": "Топ MySQL клиентін және MySQL драйвері бар BI құралын Doris-ке қосады, екеуі де жұмыс істейді. SELECT VERSION() 5.7.99 мәнін қайтарады. Қай қорытынды дұрыс?",
+      "target_hash": "3f607cf4f3fcaebdf781061c09d2360854f35bc12a04c44e3930d84be2a4fd43",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "92689dcab1f9811f790ccba8ab25cb0dc513054d049f5a674956823fe17fad27",
+          "target_hash": "3f607cf4f3fcaebdf781061c09d2360854f35bc12a04c44e3930d84be2a4fd43"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3858b1fec41f466ca1d26ccc5aea891c",
+      "source_hash": "eb487a6425035c7fc452702b81baf7e9e6dbab56d7c3fe9e9974bfbaf67e60a2",
+      "target_text": "WHERE топтаудан бұрын сомасы кемінде 300 болатын тапсырыстарды қалдырады, GROUP BY order_date әр күнге бір жол жасайды, COUNT(*) тапсырыстарды санайды, себебі кестеде әр тапсырысқа бір жол келеді, SUM олардың сомаларын қосады, ал ORDER BY күндерді сұрыптайды. order_id бойынша топтау әр күнге емес, әр тапсырысқа бір жол қалдырады. ORDER BY өзі тек сұрыптайды; ол бір күннің тапсырыстарын бір жолға біріктірмейді. AVG жалпы соманы емес, тапсырыстың орташа сомасын береді.",
+      "target_hash": "91d515fa61d799023c7093c5f133d067650d775c73d80960eb150c8a45d56038",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "eb487a6425035c7fc452702b81baf7e9e6dbab56d7c3fe9e9974bfbaf67e60a2",
+          "target_hash": "91d515fa61d799023c7093c5f133d067650d775c73d80960eb150c8a45d56038"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.41b93d20f1c245fdb62601c1e8d59aca",
+      "source_hash": "7138b1a179ddfe2c53ccffa2db4c87bf20b642c1bd0990075885610ac0909b1e",
+      "target_text": "Тапсырыстарды сүзетін және күн бойынша қорытындылайтын SQL жазу.",
+      "target_hash": "4723ced27e6904ce4bdcdd58ec3aa3da95a0645012b7e40957f4b47de78121b7",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "7138b1a179ddfe2c53ccffa2db4c87bf20b642c1bd0990075885610ac0909b1e",
+          "target_hash": "4723ced27e6904ce4bdcdd58ec3aa3da95a0645012b7e40957f4b47de78121b7"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.cebb4aac8ca04ef69a075b96817b5c02",
+      "source_hash": "4d7fb4aff537971ab28b4eae3ed82a0ae4288e4208c5a570d29a6dd60347982d",
+      "target_text": "WHERE order_amount >= 300, GROUP BY order_date, COUNT(*) және SUM(order_amount) арқылы, ORDER BY order_date",
+      "target_hash": "e096b83240570ff83a4b4c42fcfe498345c266d7a6afb04cb9e39f224eb35b3d",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "4d7fb4aff537971ab28b4eae3ed82a0ae4288e4208c5a570d29a6dd60347982d",
+          "target_hash": "e096b83240570ff83a4b4c42fcfe498345c266d7a6afb04cb9e39f224eb35b3d"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3f4a005c071d4bc1b107eeca7afd64fc",
+      "source_hash": "ed59165f06328a19d5a5e1f445e0ba793772774ab8201cc3316452b8aa627d31",
+      "target_text": "WHERE order_amount >= 300, GROUP BY order_id, COUNT(*) және SUM(order_amount) арқылы, ORDER BY order_date",
+      "target_hash": "69c376d5ac8b83f7f2d1811ff1f8791bd814d9c3288bbfc8c1bc9f859bd07056",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "ed59165f06328a19d5a5e1f445e0ba793772774ab8201cc3316452b8aa627d31",
+          "target_hash": "69c376d5ac8b83f7f2d1811ff1f8791bd814d9c3288bbfc8c1bc9f859bd07056"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b172b4a2425d499da381f44b33026cb9",
+      "source_hash": "4980ef84de03725206807cbd10a4b124e41c5fdf7a74f13dcdec8a01d4d475d8",
+      "target_text": "WHERE order_amount >= 300 және ORDER BY order_date, әр тапсырыстың ID-і мен сомасын әр тапсырысқа бір жолмен көрсету",
+      "target_hash": "a94987dbc4248373f2f3673a37d366bf7baf1516fbec9e89fe5f3703a2b75677",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "4980ef84de03725206807cbd10a4b124e41c5fdf7a74f13dcdec8a01d4d475d8",
+          "target_hash": "a94987dbc4248373f2f3673a37d366bf7baf1516fbec9e89fe5f3703a2b75677"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1b95d4ff4a0a4f5cb4a92206da73a657",
+      "source_hash": "2267b365f949575849ed9962dbd9c6235e9679b0e11a4161d95919f83a002fa8",
+      "target_text": "WHERE order_amount >= 300, GROUP BY order_date, COUNT(*) және AVG(order_amount) арқылы, ORDER BY order_date",
+      "target_hash": "88d3d9859f8637629055ef841b1052937b0d46f2d49b506bc51a8711edd509b9",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "2267b365f949575849ed9962dbd9c6235e9679b0e11a4161d95919f83a002fa8",
+          "target_hash": "88d3d9859f8637629055ef841b1052937b0d46f2d49b506bc51a8711edd509b9"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.66b9ccaf61c84bafb9d867035c3702d8",
+      "source_hash": "7d171e80468312ee0f10bf4f508d40a8111f523e0af7c9945cd27374cc5e5921",
+      "target_text": "orders_sample кестесінің әр жолы — бір тапсырыс. Қай сұрау әр күн үшін сомасы кемінде 300 болатын тапсырыстар санын және жалпы сомасын күн бойынша сұрыптап қайтарады?",
+      "target_hash": "75143dc100ab5706b8d3a4b53459e7b819be611aa86655dd426dbae68c921309",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "7d171e80468312ee0f10bf4f508d40a8111f523e0af7c9945cd27374cc5e5921",
+          "target_hash": "75143dc100ab5706b8d3a4b53459e7b819be611aa86655dd426dbae68c921309"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.898ed89826bc489586d943a5200ef0ca",
+      "source_hash": "5fb369411b218135fb2a0b71536103543d8a685111a88038c343365b8818b74c",
+      "target_text": "Деректер үлгі және оның салыққа дейінгі тапсырыс сомалары туралы тұжырымды қолдайды: салыққа дейін неге тапсырыс берілгені. 20 тапсырыстық үлгі дүкеннің сол күнгі басқа тапсырыстары туралы ештеңе айтпайды. Төлем өрісінің болмауы тапсырыстар төленбегенін білдірмейді: экспортта төлем деректері жай ғана жоқ. Тапсырыс сомасы — алынған ақша емес, тапсырыс берілген құн; төлемдер үшін төлем немесе шот деректері қажет.",
+      "target_hash": "2575c47ba14829053c497b073aeae668c14ab334493c165f59a8637707115c01",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "5fb369411b218135fb2a0b71536103543d8a685111a88038c343365b8818b74c",
+          "target_hash": "2575c47ba14829053c497b073aeae668c14ab334493c165f59a8637707115c01"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.3493dee8134a4a8c9adf9f490c66faeb",
+      "source_hash": "f0ec8615cf214dc58d474d08dcbe9cbf35718177cdc30a178c53e6b6bc96b5cb",
+      "target_text": "Тапсырыстың салыққа дейінгі сомасы нені өлшейтінін және үлгінің жалпы сомасы нені көрсете алатынын және көрсете алмайтынын айту.",
+      "target_hash": "d56c074424b17698ff600d77e6fe37c45ef449fdf8b0fcf0e993be81aacc2d17",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "f0ec8615cf214dc58d474d08dcbe9cbf35718177cdc30a178c53e6b6bc96b5cb",
+          "target_hash": "d56c074424b17698ff600d77e6fe37c45ef449fdf8b0fcf0e993be81aacc2d17"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.069401a9cf414a629ccec135d56d508e",
+      "source_hash": "2f493ce1ba9263c4e7ebed90b733995a7a340cdd9dff9274869e341f6bab6820",
+      "target_text": "Үлгідегі 20 тапсырыстың салыққа дейінгі жалпы сомасы — 8,600.00",
+      "target_hash": "4775f17008c6f0e48cc5275f136b9ca54454685c776d5da551f79b74ab5b974a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "2f493ce1ba9263c4e7ebed90b733995a7a340cdd9dff9274869e341f6bab6820",
+          "target_hash": "4775f17008c6f0e48cc5275f136b9ca54454685c776d5da551f79b74ab5b974a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.577edc57d30e454082c6e129ead1faa9",
+      "source_hash": "e409e046eb8209a1310fb990996cccd3699d472f6c4c9086c591553523e25d13",
+      "target_text": "Дүкеннің сол күнгі барлық тапсырыстарының салыққа дейінгі жалпы сомасы — 8,600.00",
+      "target_hash": "b73983fb875e74f36fa0407e0aea07a9d6592b556b4e4f1e39723f370d82a43a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "e409e046eb8209a1310fb990996cccd3699d472f6c4c9086c591553523e25d13",
+          "target_hash": "b73983fb875e74f36fa0407e0aea07a9d6592b556b4e4f1e39723f370d82a43a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.1ba9f16a4fd84b578fadea306028b778",
+      "source_hash": "d6545f46fde7796de09e1fc051a61a4c5434be19cf49c4b9a25b341e035d3447",
+      "target_text": "Экспортта төлемдер көрсетілмегендіктен, 20 тапсырыстың ешқайсысы төленбеген",
+      "target_hash": "ff5318d6cd304c0616987deda0ea1a2e28cb7dc2cef8c3a240b17108e56079cc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "d6545f46fde7796de09e1fc051a61a4c5434be19cf49c4b9a25b341e035d3447",
+          "target_hash": "ff5318d6cd304c0616987deda0ea1a2e28cb7dc2cef8c3a240b17108e56079cc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.56e64a0cbadd40be9490973110dd79a5",
+      "source_hash": "c80d355213c98cb4d5458604a7c316e290185dd61362dad492207f91b4189d15",
+      "target_text": "Дүкен осы тапсырыстар үшін осы тұтынушылардан 8,600.00 алды",
+      "target_hash": "c50afcbde1cdc5f4e7847429895b9980a36128df1d9bb27dc447a8fcca61045f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "c80d355213c98cb4d5458604a7c316e290185dd61362dad492207f91b4189d15",
+          "target_hash": "c50afcbde1cdc5f4e7847429895b9980a36128df1d9bb27dc447a8fcca61045f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.e56aa054786b4c6b9a2d3fb1f820aa87",
+      "source_hash": "fa0f761345bf26d3db335929ab6bcc9fcdacc75611dd7966109002c125b9d4b1",
+      "target_text": "Дүкен салыққа дейінгі жалпы сомасы 8,600.00 болатын үлгідегі 20 тапсырысты экспорттайды. Экспортта төлем өрістері жоқ. Деректер қай қорытындыны қолдайды?",
+      "target_hash": "8eece186ba688351d23f6ef5780e3453348c7499c7deac2a74b696e7ece78174",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "fa0f761345bf26d3db335929ab6bcc9fcdacc75611dd7966109002c125b9d4b1",
+          "target_hash": "8eece186ba688351d23f6ef5780e3453348c7499c7deac2a74b696e7ece78174"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.52b60be53e2b44c6b38e5267f43fb990",
+      "source_hash": "a876ab1521855cc911fbbe618131340ae8f15112da68bcf63e3a59a1e3456aba",
+      "target_text": "1-модуль тесті: Doris-пен танысу және алғашқы тапсырыстарды талдау",
+      "target_hash": "9c9f67834b7058d2a59b3f2fc28be4abfa53ca5821bd3b1b7f6aa12ed5053bff",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m01-quiz",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on 2026-11-08 for the three Quiz shell cells and all 44 quiz-bank leaves: all six prompts, six objectives, 24 options, six explanations, title and description. Checked each complete four-option set against its explanation: OLTP/OLAP, Doris responsibility, FE/BE work, MySQL protocol, aggregation vs sorting/AVG, and sampled pre-tax amount vs payment/store totals. Unique-answer meaning and all numeric thresholds preserved. Technical admission and native human review remain unperformed.",
+          "source_hash": "a876ab1521855cc911fbbe618131340ae8f15112da68bcf63e3a59a1e3456aba",
+          "target_hash": "9c9f67834b7058d2a59b3f2fc28be4abfa53ca5821bd3b1b7f6aa12ed5053bff"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

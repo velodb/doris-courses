@@ -574,4 +574,15 @@ def save_submission_from_environment(path, presentation, attempt_id, answers):
         for part in course.get('optional', []):
             if part.get('quiz') and (source / course['course_dir'] / part['quiz']).resolve() == path:
                 return {'optional': True}
+            for entry in part.get('quiz_presentations', []):
+                if selected_path(entry['path']) != path or entry['locale'] != presentation.locale:
+                    continue
+                raw_digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                if raw_digest != entry['source_digest']:
+                    raise QuizConflict('Installed Quiz bytes changed; reload before submitting.')
+                installed = Presentation.admitted(load_quiz(path, localized=True), part['quiz_binding'],
+                    locale=entry['locale'], policy_revision=part['policy_revision'], source_digest=raw_digest).in_order_of(presentation)
+                if installed.snapshot() != presentation.snapshot():
+                    raise QuizConflict('Installed Quiz bytes changed; reload before submitting.')
+                return {'optional': True}
     raise ProgressError('This quiz is not selected in the current workshop; progress was not saved.')

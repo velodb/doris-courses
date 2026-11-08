@@ -1,0 +1,176 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.c223ec832c2844d6ab41836933d05093",
+      "source_hash": "4a14e9be4f3089456bbc77f2260e6de27ef885b3bb90e16b2f2c43e3e30ef3ba",
+      "target_text": "## Дереккөздер\n\n- [Apache Doris: Терезе функциялары](https://doris.apache.org/docs/4.x/query-data/window-function/)\n- [Apache Doris: Aggregate Key моделі](https://doris.apache.org/docs/4.x/table-design/data-model/aggregate/)\n- [Apache Doris: Bitmap арқылы нақты қайталануларды жою](https://doris.apache.org/docs/4.x/query-acceleration/distinct-counts/bitmap-precise-deduplication/)\n- [Apache Doris: HLL арқылы жуық қайталануларды жою](https://doris.apache.org/docs/4.x/query-acceleration/distinct-counts/hll-approximate-deduplication/)\n- [Apache Doris: Query Profile](https://doris.apache.org/docs/4.x/query-acceleration/query-profile/)\n",
+      "target_hash": "fc38b64ec2db2748218f1984b298ac03cce3b7ebc7d7e6438fa5ae475a01f43f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections. Checked additive/semi/non-additive measures and NULL versus zero, AggregateSUM repeat-batch doubling and rebuild scope, metric contracts and exact time/grain, 20k exact versus19834 HLL observation-not-bound, bitmap non-negative integers, equal32-row results before100000-vs32 scan work and20-sample latency with explicit measurement limits. No meaning correction needed. Technical admission and native human review remain unperformed.",
+          "source_hash": "4a14e9be4f3089456bbc77f2260e6de27ef885b3bb90e16b2f2c43e3e30ef3ba",
+          "target_hash": "fc38b64ec2db2748218f1984b298ac03cce3b7ebc7d7e6438fa5ae475a01f43f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.30176655f0c349cb91847010d281b116",
+      "source_hash": "4685b78fb351d71dba6d22b3e08b6d14ef270bf7676abbcaee1065871003f205",
+      "target_text": "## Қорытынды\n\n- Метрика — оның келісімшарты: жиын, түйіршіктілік, көрсеткіштер, уақыт, қатынас, нөл және жоқ жолдар ережелері; сомалар мен сандар қосылады, қалдықтар тек кей кілттер бойынша, қатынастар мүлде қосылмайды.\n- Ұсыну кестесі бір түйіршіктілікте қосындылар мен сандарды сақтайды; егжей-тегжейлі деректерден қайта құрыңыз, себебі `SUM` бағандары қайталанған пакетті жаңасынан ажырата алмайды.\n- Ұсыну түйіршіктілігінде толық сыртқы біріктірумен салыстырыңыз, ол бір жақта жоқ жолдарды сақтайды; ішкі біріктіру оларды салыстырудан алып тастайды.\n- Алдымен түйіршіктілікті құрып, содан кейін терезені қолданыңыз; қатынасты орташалардың орташасы емес, есеп түйіршіктілігінің қосындыларынан есептеңіз.\n- Төленген GMV терезедегі қайталанулары жойылған төлемдерден, тапсырыс сомасы тапсырыстардан, таза түсім төлемнен қайтарымды шегеруден алынады; күндік бөлек сандар терезе санына қосылмайды.\n- Салыстырып тексеруге нақты сандарды, қатесі қабылданатын жерде HLL қолданыңыз; нәтижелер теңдігін дәлелдеп, Profile өлшеген жұмысты оқыңыз, содан кейін уақыт өлшеңіз.\n",
+      "target_hash": "010e94cd572544373af8da82727496a2d2c1c8c48f9e968feeb6bbc167eb730c",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections. Checked additive/semi/non-additive measures and NULL versus zero, AggregateSUM repeat-batch doubling and rebuild scope, metric contracts and exact time/grain, 20k exact versus19834 HLL observation-not-bound, bitmap non-negative integers, equal32-row results before100000-vs32 scan work and20-sample latency with explicit measurement limits. No meaning correction needed. Technical admission and native human review remain unperformed.",
+          "source_hash": "4685b78fb351d71dba6d22b3e08b6d14ef270bf7676abbcaee1065871003f205",
+          "target_hash": "010e94cd572544373af8da82727496a2d2c1c8c48f9e968feeb6bbc167eb730c"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c84b75e7492c49caa18256b3129c4725",
+      "source_hash": "18145253e39a93493524c5405e0f0445ee0d990d914b6242abe783b5c55df209",
+      "target_text": "## 10.6 Нақты сандар, ықшам көріністер және өлшенген жұмыс\n\nБөлек тұтынушылар санын есептеуде функциядан бұрын дәлдік туралы уәде қажет:\n\n| Әдіс | Нәтиже | Қайда жарайды | Шығыны |\n| --- | --- | --- | --- |\n| `COUNT(DISTINCT id)` | Нақты | Салыстырып тексеру, орташа көлем | Санағанда әр бөлек ID-ді сақтайды |\n| Bitmap (`BITMAP_UNION_COUNT(TO_BITMAP(id))`) | Нақты | Теріс емес бүтін ID-лер, үлкен көлемде қайта қолданылатын бөлек сандар | Тек бүтін ID-лер, bitmap функциялары |\n| HLL (`HLL_UNION_AGG(HLL_HASH(id))`) | Жуық | Соңғы бірліктен гөрі масштаб маңызды болса | Тұтынушылар білуі тиіс қате |\n\n20,000 бөлек мәні бар 100,000 ID үшін 10-жұмыстың нақты әдістері 20,000, HLL 19,834 береді, осы орындауда қате 0.0083: бұл — шек емес, бір бақылау. Шағын мысалға сәйкес келді деп HLL-ді нақты атамаңыз.\n\nҰсыну кестесінің көмегін көрсету үшін алдымен егжей-тегжейлі деректердей жауап беретінін дәлелдеңіз: 10-жұмыс 32 күндік жолдың әрқайсысын салыстырады. Содан кейін әр орындалудың не істегенін оқыңыз: `EXPLAIN` жоспарды, **Query Profile** бір орындалудың өлшенген жұмысын көрсетеді, мұнда егжей-тегжейлі деректер үшін 100,000, ұсыну кестесі үшін 32 жол сканерленген. Соңында жарияланған жағдайдағы уақыттар: қыздырудан кейін, нәтиже кэші өшірулі, әр сұрау бір-бірден 20 рет орындалды; екеуінің де эмпирикалық 95-процентилі (P95) бірнеше миллисекунд болды. Аз жол оқу әрқашан жылдамырақ сұрау емес, бір компьютердегі уақыт бақылау тақтасының қызмет деңгейі емес.\n",
+      "target_hash": "f732e6a930b507b52797c6bd81e7c1962588edbafd785baa19b66ee58587cb63",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections. Checked additive/semi/non-additive measures and NULL versus zero, AggregateSUM repeat-batch doubling and rebuild scope, metric contracts and exact time/grain, 20k exact versus19834 HLL observation-not-bound, bitmap non-negative integers, equal32-row results before100000-vs32 scan work and20-sample latency with explicit measurement limits. No meaning correction needed. Technical admission and native human review remain unperformed.",
+          "source_hash": "18145253e39a93493524c5405e0f0445ee0d990d914b6242abe783b5c55df209",
+          "target_hash": "f732e6a930b507b52797c6bd81e7c1962588edbafd785baa19b66ee58587cb63"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.a358faf822f04bcfa1ebdf0a40d294c0",
+      "source_hash": "026ab4dabf9492e95e8d5232d90d33df7066c3662b0963e3136cc2f2fa50c477",
+      "target_text": "## 10.2 Келісімшарт түйіршіктілігіндегі ұсыну кестесі\n\nЕгжей-тегжейлі деректер әр сұраққа жауап беріп, әр жолы сканерлеу шығынын талап етеді; **ұсыну кестесі** есеп сұрайтын көрсеткіштерді өз түйіршіктілігінде азырақ жолда сақтайды. 10-зертханалық жұмыс кестесі — Aggregate Key:\n\n**Оқуға арналған SQL мысалы: 10-зертханалық жұмыстың ұсыну кестесі. Жұмыстан кейін қайта орындамаңыз.**\n\n<!-- reading-only-example -->\n```sql\nCREATE TABLE daily_order_metrics_l2 (\n    order_date DATE NOT NULL,\n    region VARCHAR(16) NOT NULL,\n    order_count BIGINT SUM NOT NULL DEFAULT \"0\",\n    gross_amount DECIMAL(18,2) SUM NOT NULL DEFAULT \"0.00\"\n)\nAGGREGATE KEY(order_date, region)\nDISTRIBUTED BY HASH(order_date) BUCKETS 1\nPROPERTIES (\"replication_num\"=\"1\");\n```\n\n| order_date | region | order_count | gross_amount |\n| --- | --- | ---: | ---: |\n| 2026-01-01 | EAST | 5 | 720.00 |\n| 2026-01-01 | WEST | 4 | 480.00 |\n| 2026-01-02 | EAST | 1 | 110.00 |\n\nБірге 10 тапсырыс және 1310.00, 8-модуль көрінісіндегідей. `SUM` бағандары бірдей кілтті жолдарды қосады, бұл жаңа тапсырыс үшін дұрыс, бір пакетті екі рет жүктеуге қате: 1 қаңтар EAST 10 тапсырыс және 1440.00 көрсетер еді. Кесте жаңа пакетті қайталанғанынан ажырата алмайды, оны толтыратын тапсырма ажыратуы керек: 10-жұмыс әр орындауда кестені жойып, егжей-тегжейлі деректерден қайта құрады; өндірістік тапсырма әсер еткен бөлімдерді ауыстырады не әр пакетті бір рет жүктеп, не жүктегенін тіркейді.\n\n| Нұсқа | Қашан | Нені басқару керек |\n| --- | --- | --- |\n| Тапсырма құратын ұсыну кестесі | Тазалау, сапа тексерістері және жариялау конвейер қадамдары болса | Қайта орындаулар, әр қайта құру аясы, салыстыру |\n| Асинхронды материалданған көрініс (8-модуль) | Жаңартуын Doris басқара алатын тұрақты сұрау | Жаңарту күйі, өзектілік, қай сұрауларға жауап береді |\n| Кәдімгі көрініс | Анықтама ортақ болуы керек, шығыны қабылданады | Әр сұрау шығыны |\n\nҰсыну кестесі бар болса да, егжей-тегжейлі деректерді сақтаңыз: оның қателерін солар табады.\n",
+      "target_hash": "a7983132810819ef1ea57081f1f40a730518de517d0f03250e52d9656616342f",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections. Checked additive/semi/non-additive measures and NULL versus zero, AggregateSUM repeat-batch doubling and rebuild scope, metric contracts and exact time/grain, 20k exact versus19834 HLL observation-not-bound, bitmap non-negative integers, equal32-row results before100000-vs32 scan work and20-sample latency with explicit measurement limits. No meaning correction needed. Technical admission and native human review remain unperformed.",
+          "source_hash": "026ab4dabf9492e95e8d5232d90d33df7066c3662b0963e3136cc2f2fa50c477",
+          "target_hash": "a7983132810819ef1ea57081f1f40a730518de517d0f03250e52d9656616342f"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.b84c7a3d38e74c6b97c79e82205dc25d",
+      "source_hash": "a084063322d46cd42904792f8d572461b54a2c0f1ee677974ef48f7516c5a05c",
+      "target_text": "## 10.1 Метрика келісімшартын жазу\n\nҮш топ «тапсырыстың орташа құнын» есептейді: бірі кезең сомасын тапсырыс санына бөледі, екіншісі күндік орташалардың орташасын алады, үшіншісі бас тартылғандарды қоса санайды. Үшеуі де орындалады. SQL-ден бұрын метриканың не екенін жазыңыз:\n\n| Тармақ | Осы курстағы күндік тапсырыстар мен тапсырыс сомасы |\n| --- | --- |\n| Жиын | `orders_fact_l2` ішіндегі CANCELLED емес тапсырыстар |\n| Түйіршіктілік | Әр тапсырыс күні мен аймағына бір жол |\n| Көрсеткіштер | `order_count` — тапсырыс саны; `gross_amount` — алынған ақша емес, тапсырыстың салыққа дейінгі құны `order_amount` қосындысы |\n| Уақыт | `order_date` — тапсырыстың 1-нұсқа оқиғасының күні, сеанстың +08:00 уақыт белдеуінде |\n| Қатынас | Орташа тапсырыс сомасы = `gross_amount` / `order_count`, сұралған түйіршіктіліктің қосындыларынан есептеледі |\n| Нөл және жоқ мән | Тапсырыссыз қатынас 0 емес, `NULL`; жолы жоқ күн — нөл емес, жетіспейтін күн |\n\nКөрсеткіштер әртүрлі қосылады. Сома не сан **аддитивті**: біріктіру қайталамаған болса, күндер, аймақтар және тұтынушылар бойынша қосылады. Қалдық **жартылай аддитивті**: тұтынушылар бойынша қосылады, күндер бойынша емес, әйтпесе сол ақша әр күнге бір рет саналар еді. Қатынас **аддитивті емес**: орташалардың орташасы әр топқа өлшеміне қарамастан бірдей салмақ береді. Қатынастың алымы мен бөлімін сақтап, есеп беретін түйіршіктілікте бөліңіз.\n",
+      "target_hash": "244b60d3d41cf0e4fb82b4870971be48fbe78894e910f26e388c288d3516da08",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections. Checked additive/semi/non-additive measures and NULL versus zero, AggregateSUM repeat-batch doubling and rebuild scope, metric contracts and exact time/grain, 20k exact versus19834 HLL observation-not-bound, bitmap non-negative integers, equal32-row results before100000-vs32 scan work and20-sample latency with explicit measurement limits. No meaning correction needed. Technical admission and native human review remain unperformed.",
+          "source_hash": "a084063322d46cd42904792f8d572461b54a2c0f1ee677974ef48f7516c5a05c",
+          "target_hash": "244b60d3d41cf0e4fb82b4870971be48fbe78894e910f26e388c288d3516da08"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.d7cf3440cdbf4de78a7c6916a0036d32",
+      "source_hash": "cca4d9b130142d9f360c4e2417ab900ee1792efdc7692ee0be12b59b13fda3ef",
+      "target_text": "## Оқу мақсаттары\n\nОсы модульді аяқтағаннан кейін сіз:\n\n1. SQL жазбас бұрын метриканың жиынын, түйіршіктілігін, көрсеткіштерін, уақыт және қатынас ережесін анықтайсыз.\n2. Жарияланған түйіршіктілікте ұсыну кестесін жасап, бір пакетті екі рет жүктеудің орнына қайта құрасыз.\n3. Толық сыртқы біріктіру арқылы ұсыну кестесін егжей-тегжейлі деректермен салыстырасыз.\n4. Нәтиже түйіршіктілігін өзгертпей, терезе функциялары мен шартты агрегаттауды қолданасыз.\n5. Төленген GMV, тапсырыс сомасы мен таза түсімді ажыратып, әр қатынастың алымы мен бөлімін сақтайсыз.\n6. Нақты не жуық бөлек мәндер санын таңдап, оңтайландыруды тең нәтижелер және өлшенген жұмыспен тексересіз.\n",
+      "target_hash": "be77a8033f883e7ba583c588811211b5329b6000906b9217978e48ae6feb2665",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections. Checked additive/semi/non-additive measures and NULL versus zero, AggregateSUM repeat-batch doubling and rebuild scope, metric contracts and exact time/grain, 20k exact versus19834 HLL observation-not-bound, bitmap non-negative integers, equal32-row results before100000-vs32 scan work and20-sample latency with explicit measurement limits. No meaning correction needed. Technical admission and native human review remain unperformed.",
+          "source_hash": "cca4d9b130142d9f360c4e2417ab900ee1792efdc7692ee0be12b59b13fda3ef",
+          "target_hash": "be77a8033f883e7ba583c588811211b5329b6000906b9217978e48ae6feb2665"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.0f9a025cff0c44549de4ffdbb333834d",
+      "source_hash": "a67d7b12a9a0e610c09923d807282e225517bf91133a3fdc307ef866c40384e7",
+      "target_text": "## Модуль құрылымы\n\n| Бөлім | Уақыт | Нәтиже |\n| --- | ---: | --- |\n| 10.1 Метрика келісімшартын жазу | 9 мин | Жиын, түйіршіктілік, көрсеткіштер, уақыт және қатынастар кестесі |\n| 10.2 Келісімшарт түйіршіктілігіндегі ұсыну кестесі | 8 мин | Егжей-тегжейлі деректерден қайта құрылған бір түйіршіктіліктегі қосындылар мен сандар |\n| 10.3 Егжей-тегжейлі деректермен салыстыру | 7 мин | Жоғалған күнді байқайтын толық сыртқы біріктіру |\n| 10.4 Терезелер, шарттар және қатынастар | 8 мин | Түйіршіктілікті сақтау, орташаларды емес, қосындыларды бөлу |\n| 10.5 Тапсырыс сомасы төленген GMV емес | 8 мин | Терезедегі төлемдер, жасалған тапсырыс когорты, қайта сатып алушылар |\n| 10.6 Нақты сандар, ықшам көріністер және өлшенген жұмыс | 6 мин | Bitmap және HLL, жылдамдаудан бұрын Profile |\n| 10-зертханалық жұмыс | 90 мин | Ұсыну кестесін жасау және салыстыру, мысал төлемдерін өлшеу, бөлек мәндер санын салыстыру және шағын кестені өлшеу |\n| 10-тест | 10 мин | Осы мақсаттарға арналған алты сұрақ |\n",
+      "target_hash": "633cc1e830d0c6fc19e483fd631abd74110b73de175ec542496bcce1b1270c10",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m10-lesson-b",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison completed on2026-11-08. Compared all seven sections. Checked additive/semi/non-additive measures and NULL versus zero, AggregateSUM repeat-batch doubling and rebuild scope, metric contracts and exact time/grain, 20k exact versus19834 HLL observation-not-bound, bitmap non-negative integers, equal32-row results before100000-vs32 scan work and20-sample latency with explicit measurement limits. No meaning correction needed. Technical admission and native human review remain unperformed.",
+          "source_hash": "a67d7b12a9a0e610c09923d807282e225517bf91133a3fdc307ef866c40384e7",
+          "target_hash": "633cc1e830d0c6fc19e483fd631abd74110b73de175ec542496bcce1b1270c10"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

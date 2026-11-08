@@ -1,0 +1,176 @@
+{
+  "schema_version": 2,
+  "contract_version": "2.0.0",
+  "kind": "doris-locale-overlay",
+  "locale": "kk-Cyrl",
+  "units": [
+    {
+      "unit_id": "u.4c2cc4f6b4fd4698ae1d14ac06a2759c",
+      "source_hash": "e6588c65669705f22425e5e64a651a429804f0eb60e1876c7d9be215d09981f0",
+      "target_text": "## Қорытынды\n\n- Семантикалық көрініс — келісімшарт: тұрақты атаулар, бір түйіршіктілік, жазылған мағыналар, уақыт белдеуі, өзектілік және null ережелері, жауаптылар; жаңа түйіршіктілікке жаңа көрініс қажет.\n- Бақылау тақтасында өлшемдер бойынша топтап, аддитивті көрсеткіштерді қосыңыз, қатынастарды орташаламай, қосындыларынан қайта есептеңіз.\n- Жарияламас бұрын күндерді, null мәндерін, күн ауқымын және қорытындыларды тексеріп, жұмысын дәлелдеу үшін келісімшарт пен өзектілік тексеруін бір рет сәтсіз етіңіз.\n- Тапсырыссыз күнге де жол болуы үшін белгілерді күнтізбе бойынша проекциялаңыз; белгілер — модель дәлдігінің дәлелі емес, тексерілген кірістер.\n- Doris SQL интерфейсінің жылдамдығын, өзектілігін, дұрыстығын көрсетеді; BI құралы диаграммаларына, сүзгілері мен кэшіне, AI қолданбасы моделіне және бағалауына жауап береді.\n- AI құралына жарияланған көріністермен шектелген тек оқитын тіркелгісі бар бөлек MCP сервері арқылы қатынау беріңіз; сервердің өз шектері рұқсаттарға қосылады, оларды алмастырмайды.\n",
+      "target_hash": "a1a662fb4d3a1cadcf513bb0725911ac317a5ccb35602a30a25e515d2ea6b246",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m11-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison of all 7 lesson sections after reading the complete module and original Lab code. Verified the published four-column contract, fixed-date lag pass/fail, BI connection ports, calendar versus missing day, NULL ratio and feature limitations. Corrected target-leakage negation to explicitly say the projection does not prevent leakage. Actual feature PNG viewed; every visible label has an adjacent Kazakh equivalent. SQL fences, URLs, IDs and numeric values retained; no model accuracy or rendered dashboard claim.",
+          "source_hash": "e6588c65669705f22425e5e64a651a429804f0eb60e1876c7d9be215d09981f0",
+          "target_hash": "a1a662fb4d3a1cadcf513bb0725911ac317a5ccb35602a30a25e515d2ea6b246"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.f14f2adee0b14c048b5319f05a07a680",
+      "source_hash": "7e17a5d0f559c64e2c6e61b1615364a4bc97f6c2d0580bb49a4fdc63f57bad87",
+      "target_text": "## 11.2 Жарияламас бұрын интерфейсті тексеру\n\nБақылау тақтасы не модель көріністі оқымас бұрын сүйенетін нәрселерін тексеріңіз:\n\n```sql\nSELECT COUNT(*) AS serving_days,\n       SUM(CASE WHEN order_count IS NULL OR gross_amount IS NULL THEN 1 ELSE 0 END) AS days_with_nulls,\n       MIN(order_date) AS first_date,\n       MAX(order_date) AS last_date,\n       SUM(order_count) AS served_orders,\n       SUM(gross_amount) AS served_amount\nFROM bi_order_metrics_l2;\n```\n\n| Тексеру | 11-зертханалық жұмыстың нәтижесі |\n| --- | --- |\n| Ұсынылған күндер және null бар күндер | 2 және 0 |\n| Алғашқы және соңғы күн | 2026-01-01 және 2026-01-02 |\n| Тапсырыстар мен сома | Ұсыну кестесіндегідей 10 және 1310.00 |\n\nОрындалатын сұрау келісімшарт сынағы емес. 11-жұмыс курсор арқылы көрініс бағандарының атауларын оқып, келісімшарт жариялайтын төртеумен салыстырады, содан кейін `average_order_amount` жоқ бұзылған көшірме жасайды: сол тексеру оны қабылдамауы керек. Тапсырыстар 2026 қаңтарынан болғандықтан, өзектілікті бекітілген оқу күндерімен өлшейді: соңғы күн 2 қаңтар, 3 қаңтарда бір күн ескі, біркүндік ереже рұқсат етеді, 9 қаңтарда жеті күн ескі, рұқсат етпейді. Нақты тексеру бизнес уақытын және жарияланған ережесін қолданады. Ешқашан сәтсіз болмаған тексеру ештеңені тексермеуі мүмкін, сондықтан әрқайсысын әдейі бір рет сәтсіз етіңіз.\n",
+      "target_hash": "a3953e8db1bc3af806973c460c5621c0155752b504448db60611b2d7fb8a4acc",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m11-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison of all 7 lesson sections after reading the complete module and original Lab code. Verified the published four-column contract, fixed-date lag pass/fail, BI connection ports, calendar versus missing day, NULL ratio and feature limitations. Corrected target-leakage negation to explicitly say the projection does not prevent leakage. Actual feature PNG viewed; every visible label has an adjacent Kazakh equivalent. SQL fences, URLs, IDs and numeric values retained; no model accuracy or rendered dashboard claim.",
+          "source_hash": "7e17a5d0f559c64e2c6e61b1615364a4bc97f6c2d0580bb49a4fdc63f57bad87",
+          "target_hash": "a3953e8db1bc3af806973c460c5621c0155752b504448db60611b2d7fb8a4acc"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.bcd9809aca0549179282b4abe37d1ac1",
+      "source_hash": "d0c6bf0997e8cc9df30e1c9194296e52bcae6295d781107752f3c36862139868",
+      "target_text": "## 11-тест\n\n[11-тест: BI және AI тұтынушыларына арналған интерфейстер мен шекаралар](quiz11_bi_and_ai.ipynb) файлын ашыңыз. Онда бір дұрыс жауабы бар алты сұрақ бар және іске қосылған орта қажет емес.\n\nКелесі: бұл — 2-деңгейдің соңғы модулі. 3-деңгей [12-модуль: жариялау, рұқсаттар және аудит](../../level3/module12-publishing-permissions-audit/course.md) бөлімінен басталады.\n",
+      "target_hash": "0d0fe644e393dd47eb0da85ee124cf1046aa68895afc4e0dfb1a97355d2aae7a",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m11-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison of all 7 lesson sections after reading the complete module and original Lab code. Verified the published four-column contract, fixed-date lag pass/fail, BI connection ports, calendar versus missing day, NULL ratio and feature limitations. Corrected target-leakage negation to explicitly say the projection does not prevent leakage. Actual feature PNG viewed; every visible label has an adjacent Kazakh equivalent. SQL fences, URLs, IDs and numeric values retained; no model accuracy or rendered dashboard claim.",
+          "source_hash": "d0c6bf0997e8cc9df30e1c9194296e52bcae6295d781107752f3c36862139868",
+          "target_hash": "0d0fe644e393dd47eb0da85ee124cf1046aa68895afc4e0dfb1a97355d2aae7a"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.514e177724fb40ca9a76dff5697a38c7",
+      "source_hash": "b0dd25331f93d0fe347ac4b2d552449a691c425c238d50f6ab125aa384f6c799",
+      "target_text": "## Модуль мақсаты\n\nКүндік метрикаларды бақылау тақталары мен модельдер үшін жолдары және мағынасы тұрақты интерфейс ретінде жариялаңыз, оны біреу оқымас бұрын тексеріңіз және Doris кепілдік беретін нәрсе мен BI, AI құралдары өздері тексеруі тиіс нәрсенің шекарасын анықтаңыз.\n",
+      "target_hash": "01e7f7024537b89329c992b482e2c020af017fb153bb8d002f03244a43dc011b",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m11-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison of all 7 lesson sections after reading the complete module and original Lab code. Verified the published four-column contract, fixed-date lag pass/fail, BI connection ports, calendar versus missing day, NULL ratio and feature limitations. Corrected target-leakage negation to explicitly say the projection does not prevent leakage. Actual feature PNG viewed; every visible label has an adjacent Kazakh equivalent. SQL fences, URLs, IDs and numeric values retained; no model accuracy or rendered dashboard claim.",
+          "source_hash": "b0dd25331f93d0fe347ac4b2d552449a691c425c238d50f6ab125aa384f6c799",
+          "target_hash": "01e7f7024537b89329c992b482e2c020af017fb153bb8d002f03244a43dc011b"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.2a19eb2230c34e34885a89463258f411",
+      "source_hash": "f758f688c053c3c8be4931df1cb8e5206c3500cb00528858c354851c9163b3ec",
+      "target_text": "## 11.3 Doris пен BI құралының жауапкершілігі\n\nApache Superset сияқты BI құралы Doris-ті SQL интерфейсі арқылы оқиды; құрал диаграммаларына, сүзгілеріне, кэшіне, өз пайдаланушылары мен рөлдеріне жауап береді. Қосылым URI-і мына түрде:\n\n```text\ndoris://<username>:<password>@<host>:<port>/internal.<database>\n```\n\n> **Нақты құпиясөзді ноутбукке, сабаққа не commit жасайтын файлға жазбаңыз.** 11-жұмыстың қосымша бақылау тақтасы Doris тіркелгісінің құпиясөзін жасап, көрсетпей Superset-ке береді.\n\nBI құралы жете алатын портты қолданыңыз: курс контейнерлері ішінде Doris MySQL порты — 9030; өз компьютеріңізден — жарияланған 52030 не `DW_FE_QUERY_PORT`. Көріністе деректер жиынын жасамас бұрын тіркелгі тек тиістісін оқитынын (12-модуль), Catalog пен дерекқор дұрыстығын, сандар 10-модуль салыстыруына сәйкес екенін, уақыт белдеуі мен өзектілік жазылғанын тексеріңіз.\n\n| Уәде | Doris не көрсете алады | Басқа жауапты не тексереді |\n| --- | --- | --- |\n| Жылдамдық | Query Profile ішіндегі сұрау кідірісі, сканерленген жолдар, оператор уақыты | BI құралының сұраулары, параллельдігі және кэші |\n| Өзектілік | Соңғы жаңарту, соңғы оқиға уақыты | Жоспарлағыш, кешіккен деректер, BI кэші |\n| Дұрыстық | Бекітілген күтулер, егжей-тегжейлі деректермен салыстыру, null және сан тексерулері | Метрикаға жауапты және диаграмма сүзгілері |\n\n200 ms жауап деректердің өзектілігін айтпайды, диаграммадағы сан артындағы анықтаманың дұрыстығын айтпайды.\n",
+      "target_hash": "f0046198fdaa7d702bb4f052bafc7c1b4d298e6afed61e3ed09d35911d72d074",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m11-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison of all 7 lesson sections after reading the complete module and original Lab code. Verified the published four-column contract, fixed-date lag pass/fail, BI connection ports, calendar versus missing day, NULL ratio and feature limitations. Corrected target-leakage negation to explicitly say the projection does not prevent leakage. Actual feature PNG viewed; every visible label has an adjacent Kazakh equivalent. SQL fences, URLs, IDs and numeric values retained; no model accuracy or rendered dashboard claim.",
+          "source_hash": "f758f688c053c3c8be4931df1cb8e5206c3500cb00528858c354851c9163b3ec",
+          "target_hash": "f0046198fdaa7d702bb4f052bafc7c1b4d298e6afed61e3ed09d35911d72d074"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.c7fcc598031f42b08482599e32a2cec3",
+      "source_hash": "010a28dbe410fe7b6d29b436652b5d39e4b08e19a02132f28a0ac758138c8f75",
+      "target_text": "## 11.4 AI белгілері: қорытынды емес, кірістер\n\nКүндік белгілерді оқитын модельге тапсырыссыз күнді қоса әр күнге жол қажет: жоқ жол — кіріс жоқ, ал нөл — кіріс. Семантикалық көріністе тек тапсырыс болған күндер бар, сондықтан 11-жұмыс проекцияны есеп терезесінің күнтізбесінен бастап, көріністі соған біріктіреді:\n\n```sql\nWITH calendar AS (\n    SELECT DATE_ADD(DATE '2026-01-01', number) AS feature_date FROM numbers(\"number\"=\"3\")\n)\nSELECT c.feature_date,\n       COALESCE(m.order_count, 0) AS feature_order_count,\n       COALESCE(m.gross_amount, 0.00) AS feature_gross_amount,\n       m.average_order_amount AS feature_average_amount,\n       CASE WHEN COALESCE(m.order_count, 0) = 0 THEN 1 ELSE 0 END AS zero_order_flag\nFROM calendar c\nLEFT JOIN bi_order_metrics_l2 m ON m.order_date = c.feature_date\nORDER BY c.feature_date;\n```\n\n3 қаңтар 0 тапсырыс, орташа мәнсіз және `zero_order_flag` 1 болып көрінеді. Белгі күнде тапсырыс болмағанын не әлі келмегенін айта алмайды: өзектілік тексеруі мен конвейер жазбалары айта алады. Белгі проекциясы бірізді, тексерілген кірістер дайындайды; модель дәлдігін дәлелдемейді, мақсатты айнымалы туралы ақпараттың белгілерге өтіп кетуінен қорғамайды және оқыту мен қызмет көрсету деректерін өздігінен сәйкестендірмейді: бұларға өз бағалауымен AI қолданбасы жауап береді. Doris ұқсастық іздеуге вектор бағандары мен индекстерін де ұсынады; олар да көрсеткішті жақсы белгіге айналдырмайды.\n\n![Күнтізбемен сол жақ біріктіру 3 қаңтарды нөлдік аддитивті көрсеткіштермен, NULL орташамен және тапсырыссыз күн белгісімен қосады.](images/02-calendar-feature-projection.png)\n\n*Күнтізбе орташа мәнді ойдан шығармай, жетіспейтін күндерді береді.*\n\nСуреттегі жазулар: A CALENDAR SUPPLIES THE ABSENT DATE — күнтізбе жетіспейтін күнді береді; CALENDAR — күнтізбе; feature_date — белгі күні; bi_order_metrics_l2 — семантикалық көрініс; order_date — тапсырыс күні; order_count — тапсырыс саны; gross_amount — салыққа дейінгі тапсырыс сомасы; average_order_amount — орташа тапсырыс сомасы; LEFT JOIN — сол жақ біріктіру; CALENDAR IS THE LEFT SIDE — сол жақта күнтізбе; FEATURE PROJECTION — белгі проекциясы; feature_order_count, feature_gross_amount, feature_average_amount — белгі ретіндегі тапсырыс саны, сомасы, орташасы; zero_order_flag — тапсырыссыз күн белгісі; THE FLAG CANNOT DISTINGUISH NO ORDERS FROM LATE ARRIVALS — белгі тапсырыссыз күнді кешіккен келуден ажыратпайды; CHECK FRESHNESS AND PIPELINE RECORDS — өзектілік пен конвейер жазбаларын тексеру. 2026-01-03 жолы: 0, 0.00, NULL, 1; алғашқы екі күннің 9/1200.00/133.333333 және 1/110.00/110.000000 мәндері, 0 белгілері сақталады.\n",
+      "target_hash": "234bf0e1cae65c14736b85b76f2d97004b1a970184fcf1589373f403339471fd",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m11-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison of all 7 lesson sections after reading the complete module and original Lab code. Verified the published four-column contract, fixed-date lag pass/fail, BI connection ports, calendar versus missing day, NULL ratio and feature limitations. Corrected target-leakage negation to explicitly say the projection does not prevent leakage. Actual feature PNG viewed; every visible label has an adjacent Kazakh equivalent. SQL fences, URLs, IDs and numeric values retained; no model accuracy or rendered dashboard claim.",
+          "source_hash": "010a28dbe410fe7b6d29b436652b5d39e4b08e19a02132f28a0ac758138c8f75",
+          "target_hash": "234bf0e1cae65c14736b85b76f2d97004b1a970184fcf1589373f403339471fd"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    },
+    {
+      "unit_id": "u.97da767896de4d22b542586be33bd097",
+      "source_hash": "874debebea995e1292602972d2134551ea529e8f22d2db65ced06a11df20d4e1",
+      "target_text": "# 11-модуль: BI және AI тұтынушыларына арналған интерфейстер мен шекаралар\n\n| Курс туралы ақпарат | Мәні |\n| --- | --- |\n| Курс | Apache Doris көмегімен деректер қоймасын құру · 2-деңгей |\n| Doris | Apache Doris 4.1.3 |\n| Орта | 1-модульдегі курс сынақ ортасы; 10-зертханалық жұмыстың `daily_order_metrics_l2`; қосымша бақылау тақтасына Docker-дің тағы шамамен 2 GiB жады және бір реттік интернет қатынауы |\n| Болжалды уақыт | Шамамен 120 минут: оқу 40, зертханалық жұмыс 70, тест 10 |\n\n[Курстың README файлы](../../README.md) · [11-зертханалық жұмысты ашу](lab11_bi_and_ai_delivery.ipynb) · [11-тестті ашу](quiz11_bi_and_ai.ipynb)\n",
+      "target_hash": "e6ba8b1fb0d7deea32f42985fb3f8b96605985c21003cecc3b0a835465c68f11",
+      "state": "translated",
+      "provenance": {
+        "translator": "current-session-llm",
+        "session_id": "2026-11-08-ml09",
+        "batch_id": "ml09-dw-m11-lesson-a",
+        "glossary_version": "kk-rta-m1-1"
+      },
+      "checks": {
+        "llm_self_check": {
+          "method": "current-session-llm",
+          "actor": "current-session-llm / Codex / 2026-11-08-ml09",
+          "record": "Second source/target comparison of all 7 lesson sections after reading the complete module and original Lab code. Verified the published four-column contract, fixed-date lag pass/fail, BI connection ports, calendar versus missing day, NULL ratio and feature limitations. Corrected target-leakage negation to explicitly say the projection does not prevent leakage. Actual feature PNG viewed; every visible label has an adjacent Kazakh equivalent. SQL fences, URLs, IDs and numeric values retained; no model accuracy or rendered dashboard claim.",
+          "source_hash": "874debebea995e1292602972d2134551ea529e8f22d2db65ced06a11df20d4e1",
+          "target_hash": "e6ba8b1fb0d7deea32f42985fb3f8b96605985c21003cecc3b0a835465c68f11"
+        },
+        "technical_admission": null,
+        "native_review": null
+      }
+    }
+  ]
+}

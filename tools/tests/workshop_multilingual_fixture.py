@@ -18,8 +18,9 @@ import host
 
 
 class InstalledFixture:
-    def __init__(self, directory, package, learner='alice'):
+    def __init__(self, directory, package, learner='alice', activity='ml05-local'):
         self.directory, self.package, self.learner = Path(directory), Path(package), learner
+        self.activity = activity
         self.layout = host.Layout(self.directory / 'host')
         self.process = None
         with socket.socket() as sock:
@@ -29,7 +30,7 @@ class InstalledFixture:
         self.directory.mkdir(parents=True)
         binding = workshop_content.admit(self.package)
         config = wc.load_document(wc.SPEC / 'examples/event.example.yaml')
-        config.update(schema_version=2, course_ref=binding['source_ref'], course_profiles=['rta-module-1'], content=binding)
+        config.update(schema_version=2, course_ref=binding['source_ref'], course_profiles=binding['profiles'], content=binding)
         path = self.directory / 'config.json'; path.write_text(json.dumps(config))
         bundle = self.directory / 'bundle'
         self.plan = workshop_runtime.create_bundle(path, bundle, content_package=self.package)
@@ -39,6 +40,8 @@ class InstalledFixture:
         self.layout.helpers.mkdir(parents=True)
         for name in ('kernel.py', 'multilingual.py', 'host.py', 'portal.py', 'serve.py'):
             shutil.copyfile(bundle / name, self.layout.helpers / name)
+        if (bundle / 'profiles.v2.json').exists():
+            shutil.copyfile(bundle / 'profiles.v2.json', self.layout.helpers / 'profiles.v2.json')
         host.install_ui(bundle, self.layout)
         host.materialize(self.plan, files, self.layout)
         host.atomic_json(self.layout.config / 'runtime.json', self.plan, 0o644)
@@ -49,7 +52,7 @@ class InstalledFixture:
     def start(self):
         self.log = (self.directory / 'jupyter.log').open('a')
         env = {**os.environ, 'JUPYTER_CONFIG_DIR': str(self.directory / 'config'), 'JUPYTER_DATA_DIR': str(self.directory / 'data'),
-               'DORIS_WORKSHOP_EVENT_ID': 'ml05-local', 'DORIS_WORKSHOP_LEARNER_ID': self.learner}
+               'DORIS_WORKSHOP_EVENT_ID': self.activity, 'DORIS_WORKSHOP_LEARNER_ID': self.learner}
         self.process = subprocess.Popen([sys.executable, str(self.layout.helpers / 'serve.py'),
             '--runtime-json', str(self.layout.config / 'runtime.json'), '--workspace', str(self.layout.workspace),
             '--source', str(self.layout.source), '--content-root', str(self.layout.content),

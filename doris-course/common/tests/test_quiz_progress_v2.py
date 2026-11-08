@@ -336,6 +336,30 @@ class BoundQuizTests(unittest.TestCase):
             with self.assertRaises(QuizConflict):
                 p.save_submission_from_environment(path, view, uuid.uuid4().hex, answers)
 
+    def test_localized_optional_quiz_keeps_main_credit_and_checks_its_frozen_bytes(self):
+        self.store.submit_quiz(self.module, self.request())
+        before_records, before_attempts = self.store.records(), self.store.attempts()
+        source = Path(self.temp.name) / 'optional-source'; source.mkdir()
+        path = source / 'translated.yaml'; path.write_text(QUIZ_YAML)
+        bank = parse_quiz(yaml.safe_load(QUIZ_YAML))
+        view = replace(presentation('kk-Cyrl', bank=bank), source_digest=hashlib.sha256(path.read_bytes()).hexdigest())
+        descriptor = {'id': view.quiz_id, 'semantic_revision': view.semantic_revision, 'passing_score_percent': bank.passing_score_percent,
+            'questions': [{'id': q.question_id, 'option_ids': [o.option_id for o in q.options], 'answer': q.answer} for q in bank.questions],
+            'presentations': [{'locale': view.locale, 'presentation_revision': view.presentation_revision}]}
+        part = {'path': 'optional.ipynb', 'quiz': 'canonical.yaml', 'quiz_binding': descriptor, 'policy_revision': 'policy.1',
+                'quiz_presentations': [{'path': path.name, 'locale': view.locale, 'source_digest': view.source_digest}]}
+        plan = {'course_ref': 'b'*40, 'courses': [{'slug': self.module['course_slug'], 'course_dir': '.', 'status': 'published', 'modules': [], 'optional': [part]}]}
+        plan_path = source / 'plan.json'; plan_path.write_text(json.dumps(plan))
+        env = {'DORIS_WORKSHOP_PROGRESS_DB': str(self.path), 'DORIS_WORKSHOP_PROGRESS_PLAN': str(plan_path), 'DORIS_WORKSHOP_PROGRESS_SOURCE': str(source)}
+        with mock.patch.dict(os.environ, env):
+            answers = {q.question_id: q.answer for q in bank.questions}
+            self.assertEqual(p.save_submission_from_environment(path, view, uuid.uuid4().hex, answers), {'optional': True})
+            path.write_text(QUIZ_YAML.replace('Which node', 'What node'))
+            with self.assertRaises(QuizConflict):
+                p.save_submission_from_environment(path, view, uuid.uuid4().hex, answers)
+        self.assertEqual(self.store.records(), before_records)
+        self.assertEqual(self.store.attempts(), before_attempts)
+
 
 if __name__ == '__main__':
     unittest.main()
