@@ -408,6 +408,13 @@ class SdkScanTests(unittest.TestCase):
                                   expected_params={'InstanceIds': [INSTANCE]})
             scanner.confirm_tagging_discrepancies()
             self.assertEqual(scanner.snapshot['tagging_discrepancies'][0]['result'], 'not-found')
+            stub.add_response('describe_instances', {'Reservations': []}, {'InstanceIds': [INSTANCE]})
+            scanner.confirm_tagging_discrepancies()
+            self.assertEqual(scanner.snapshot['tagging_discrepancies'][0]['result'], 'not-found')
+            for incomplete in ({}, {'Reservations': [], 'NextToken': 'more'}):
+                stub.add_response('describe_instances', incomplete, {'InstanceIds': [INSTANCE]})
+                scanner.confirm_tagging_discrepancies()
+                self.assertEqual(scanner.snapshot['tagging_discrepancies'], [])
             stub.add_client_error('describe_instances', service_error_code='UnauthorizedOperation',
                                   expected_params={'InstanceIds': [INSTANCE]})
             scanner.confirm_tagging_discrepancies()

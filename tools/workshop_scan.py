@@ -168,7 +168,12 @@ class Scanner:
                 if native["kind"] == "instances":
                     response = self.call("ec2", "describe_instances", InstanceIds=[native["id"]])
                     instances = [i for reservation in response.get("Reservations", []) for i in reservation.get("Instances", [])]
-                    result = "terminated" if len(instances) == 1 and instances[0].get("InstanceId") == native["id"] and instances[0].get("State", {}).get("Name") == "terminated" else None
+                    if response.get('Reservations') == [] and not response.get('NextToken'):
+                        # EC2 can age terminated records out before its tag index.
+                        # This exact-ID lookup is separate from the native catalog.
+                        result = 'not-found'
+                    else:
+                        result = "terminated" if len(instances) == 1 and instances[0].get("InstanceId") == native["id"] and instances[0].get("State", {}).get("Name") == "terminated" else None
                 elif native["kind"] == "volumes":
                     self.call("ec2", "describe_volumes", VolumeIds=[native["id"]])
                     result = None
