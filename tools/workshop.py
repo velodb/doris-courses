@@ -286,8 +286,12 @@ class Controller:
                 if self.config['schema_version'] == 2:
                     required.update('content:' + locale for locale in self.config['content']['available_locales'])
                 for course in wc.load_document(Path(self.pilot["runtime_bundle_dir"]) / "runtime.json")["courses"]:
-                    required.update({course["kernel"] + ":interpreter-imports-cwd-restart-docker",
-                                     course["kernel"] + ":notebook-bindings"})
+                    required.add(course["kernel"] + ":notebook-bindings")
+                    if self.config.get('content', {}).get('abi') == 'doris-workshop-content-3.0':
+                        required.update(course['kernel'] + ':' + locale + ':interpreter-imports-cwd-restart-docker'
+                                        for locale in self.config['content']['available_locales'])
+                    else:
+                        required.add(course["kernel"] + ":interpreter-imports-cwd-restart-docker")
                 valid = (status == "Success" and report.get("scope") == "host-runtime" and report.get("ready") is True
                          and report.get("course_ref") == self.config["course_ref"]
                          and report.get("runtime_sha256") == self.binding["runtime_sha256"]

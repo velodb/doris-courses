@@ -16,6 +16,9 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+# Python -I excludes the script directory. Only load the deployed helpers/UI.
+sys.path[:0] = [str(Path(__file__).resolve().parent), str(Path(__file__).resolve().parent / 'ui')]
+
 
 def command_ok(command):
     try:

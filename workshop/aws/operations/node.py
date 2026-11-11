@@ -32,6 +32,9 @@ CHECKS = {"target-platform", "learner-identity", "source-version", "docker-daemo
 CHECKS |= {kernel + ":" + suffix for kernel in ("doris-rta", "doris-dw", "doris-obs", "doris-ai")
            for suffix in ("notebook-bindings", "interpreter-imports-cwd-restart-docker")}
 CHECKS |= {'content:en', 'content:kk-Cyrl'}
+CHECKS |= {kernel + ':' + locale + ':interpreter-imports-cwd-restart-docker'
+           for kernel in ('doris-rta', 'doris-dw', 'doris-obs', 'doris-ai')
+           for locale in ('en', 'kk-Cyrl')}
 STAGES = {"preflight", "system-packages", "user-and-docker", "course-environments", "jupyter-service", "readiness"}
 REASONS = {"stage", "disk-full", "permission", "network", "dependency", "error", "completed", "suppressed"}
 ROOT = Path("/")
@@ -54,13 +57,16 @@ def unit_state(unit):
     return {key: enum(fields.get(key), values) for key, values in STATES.items()}
 
 
-def required_checks(kernels, locales=()):
-    return (CHECKS - {"course-service-inventory"} - {c for c in CHECKS if ":" in c}) | {
-        kernel + ":" + suffix for kernel in kernels
-        for suffix in ("notebook-bindings", "interpreter-imports-cwd-restart-docker")} | {'content:' + locale for locale in locales}
+def required_checks(kernels, locales=(), *, course_files=False):
+    base = CHECKS - {"course-service-inventory"} - {c for c in CHECKS if ":" in c}
+    bindings = {kernel + ':notebook-bindings' for kernel in kernels}
+    execution = ({kernel + ':' + locale + ':interpreter-imports-cwd-restart-docker'
+                  for kernel in kernels for locale in locales} if course_files else
+                 {kernel + ':interpreter-imports-cwd-restart-docker' for kernel in kernels})
+    return base | bindings | execution | {'content:' + locale for locale in locales}
 
 
-def probe_projection(value, course_ref, runtime_sha256, kernels=(), locales=()):
+def probe_projection(value, course_ref, runtime_sha256, kernels=(), locales=(), *, course_files=False):
     """Validate even well-formed JSON as untrusted; strings must be fixed enums."""
     if not isinstance(value, dict):
         value = {}
@@ -72,7 +78,7 @@ def probe_projection(value, course_ref, runtime_sha256, kernels=(), locales=()):
     version = value.get("course_ref") == course_ref and value.get("runtime_sha256") == runtime_sha256
     return {"version_matches": version, "checks": checks,
             "ready": bool(version and value.get("scope") == "host-runtime" and checks and value.get("ready") is True
-                          and required_checks(kernels, locales).issubset(r["check"] for r in checks)
+                          and required_checks(kernels, locales, course_files=course_files).issubset(r["check"] for r in checks)
                           and len({r["check"] for r in checks}) == len(checks) and all(r["passed"] for r in checks))}
 
 
@@ -223,7 +229,9 @@ def safe_probe():
     except ValueError:
         value = {}
     kernels = [c["kernel"] for c in plan["courses"]]
-    projection = probe_projection(value, course_ref, checksum, kernels, plan.get('content', {}).get('available_locales', []))
+    projection = probe_projection(value, course_ref, checksum, kernels,
+        plan.get('content', {}).get('available_locales', []),
+        course_files=plan.get('content', {}).get('abi') == 'doris-workshop-content-3.0')
     services = []
     for row in value.get("services", []) if isinstance(value, dict) and isinstance(value.get("services"), list) else []:
         if not isinstance(row, dict) or not isinstance(row.get("name"), str):
@@ -250,9 +258,11 @@ def collect(event, learner, course_ref, runtime_sha256, prebuilt):
         plan = json.loads((ROOT / "etc/doris-workshop/runtime.json").read_text())
         kernels = [c["kernel"] for c in plan["courses"]]
         locales = plan.get('content', {}).get('available_locales', [])
+        course_files = plan.get('content', {}).get('abi') == 'doris-workshop-content-3.0'
     except (OSError, ValueError, KeyError, TypeError):
         kernels = []
         locales = []
+        course_files = False
     logs = {}
     last_stage = "unknown"
     for name in ("bootstrap", "cloud-init", "image-start"):
@@ -269,7 +279,7 @@ def collect(event, learner, course_ref, runtime_sha256, prebuilt):
                     counts[reason] = counts.get(reason, 0) + 1
         logs[name] = counts
     report = {"schema_version": 1, "units": units, "logs": logs, "last_install_stage": last_stage,
-              "runtime": probe_projection(value, course_ref, runtime_sha256, kernels, locales),
+              "runtime": probe_projection(value, course_ref, runtime_sha256, kernels, locales, course_files=course_files),
               "probe_outcome": "timeout-or-unavailable" if probe is None else "completed",
               "log_policy_installed": (ROOT / "etc/doris-workshop/operations.json").exists(),
               "gateway": "not-installed" if units["gateway"]["LoadState"] == "not-found" else "installed-unverified",

@@ -258,6 +258,28 @@ class LifecycleTests(unittest.TestCase):
         self.assertTrue(self.up()["ready"])
         self.assertEqual(self.tf.apply_count, 1)
 
+    def test_native_file_probe_requires_both_language_execution_checks(self):
+        controller = self.controller()
+        controller.config = {**controller.config, 'schema_version': 2,
+            'content': {'abi': 'doris-workshop-content-3.0', 'available_locales': ['en', 'kk-Cyrl']}}
+        original = self.cloud.command
+        def localized(command_id, instance, *, probe=False):
+            result = original(command_id, instance, probe=probe)
+            report = json.loads(result['StandardOutputContent'])
+            report['checks'] = [r for r in report['checks'] if r['check'] != 'doris-rta:interpreter-imports-cwd-restart-docker']
+            report['checks'] += [{'check': name, 'passed': True} for name in (
+                'content:en', 'content:kk-Cyrl', 'doris-rta:en:interpreter-imports-cwd-restart-docker',
+                'doris-rta:kk-Cyrl:interpreter-imports-cwd-restart-docker')]
+            result['StandardOutputContent'] = json.dumps(report)
+            return result
+        self.cloud.command = localized
+        node = {'instance_id': 'i-alice'}
+        controller.record['nodes']['alice'] = node
+        self.assertTrue(controller.poll_command(node, 'probe', 'AWS-RunShellScript', self.clock() + 10))
+        self.assertTrue(node['probe']['ready'])
+        self.assertIn('doris-rta:kk-Cyrl:interpreter-imports-cwd-restart-docker',
+                      {r['check'] for r in node['probe']['checks']})
+
     def test_pending_install_resumes_same_ssm_command_after_timeout(self):
         self.cloud.pending = True
         with self.assertRaises(ws.wc.ConfigError):

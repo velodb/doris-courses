@@ -124,6 +124,27 @@ class RuntimeTests(unittest.TestCase):
         with self.assertRaisesRegex(builder.config_tool.ConfigError, "already exists"):
             builder.create_bundle(self.config_path, self.bundle, repo=self.repo)
 
+    def test_isolated_readiness_entry_loads_only_installed_multilingual_helpers(self):
+        self.materialize()
+        for name in ('check.py', 'multilingual.py', 'profiles.v2.json'):
+            original = builder.RUNTIME / name if name != 'profiles.v2.json' else builder.config_tool.SPEC / name
+            shutil.copyfile(original, self.layout.helpers / name)
+        poison = Path(self.case_dir.name) / 'untrusted-cwd'
+        poison.mkdir()
+        for name in ('multilingual.py', 'i18n.py'):
+            (poison / name).write_text("raise RuntimeError('untrusted working directory imported')\n")
+        code = """
+import pathlib,runpy,sys
+runpy.run_path(sys.argv[1])
+import multilingual,i18n
+print(pathlib.Path(multilingual.__file__).resolve())
+print(pathlib.Path(i18n.__file__).resolve())
+"""
+        result = subprocess.run([sys.executable, '-I', '-c', code, str(self.layout.helpers / 'check.py')],
+                                cwd=poison, capture_output=True, text=True, check=True)
+        self.assertEqual(result.stdout.splitlines(), [str((self.layout.helpers / 'multilingual.py').resolve()),
+                                                     str((self.layout.helpers / 'ui/i18n.py').resolve())])
+
     def test_bundle_detects_tampering_and_unsafe_selection(self):
         modified = Path(self.case_dir.name) / "modified-bundle"
         shutil.copytree(self.bundle, modified)

@@ -81,6 +81,28 @@ class ProjectionTests(unittest.TestCase):
                         {**value, "checks": value["checks"] * 2}):
             self.assertFalse(ops.node.probe_projection(altered, "a" * 40, "b" * 64, ["doris-rta"])["ready"])
 
+    def test_native_file_readiness_requires_each_installed_language_at_both_boundaries(self):
+        legacy = ops.node.required_checks(['doris-rta'])
+        names = legacy - {'doris-rta:interpreter-imports-cwd-restart-docker'} | {
+            'content:en', 'content:kk-Cyrl',
+            'doris-rta:en:interpreter-imports-cwd-restart-docker',
+            'doris-rta:kk-Cyrl:interpreter-imports-cwd-restart-docker'}
+        config = {'course_ref': 'a' * 40, 'content': {'abi': 'doris-workshop-content-3.0',
+                  'available_locales': ['en', 'kk-Cyrl']}}
+        binding = {'runtime_sha256': 'b' * 64}
+        for absent in (None, 'doris-rta:kk-Cyrl:interpreter-imports-cwd-restart-docker'):
+            checks = [{'check': name, 'passed': True} for name in names if name != absent]
+            raw = {'scope': 'host-runtime', 'ready': True, 'course_ref': 'a' * 40,
+                   'runtime_sha256': 'b' * 64, 'checks': checks}
+            node = ops.node.probe_projection(raw, 'a' * 40, 'b' * 64, ['doris-rta'],
+                                            ['en', 'kk-Cyrl'], course_files=True)
+            self.assertEqual(node['ready'], absent is None)
+            report = remote_report(config, binding)
+            report['runtime']['checks'] = checks
+            self.assertEqual(ops.project(report, config, binding, ['doris-rta'])['runtime']['ready'], absent is None)
+        self.assertFalse(ops.node.probe_projection(raw, 'a' * 40, 'b' * 64,
+                                                   ['doris-rta'], ['en', 'kk-Cyrl'])['ready'])
+
     def test_local_expiry_count_size_and_protected_state(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
