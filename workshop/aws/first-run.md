@@ -48,9 +48,15 @@ your normal SSO/role process. Remove unintended credential environment variables
 custom AWS endpoint overrides, `TF_VAR_*`, `TF_CLI_ARGS*` and `TF_WORKSPACE`.
 The gate rejects them rather than choosing an implicit identity or workspace.
 
-For an existing IAM console-login profile, use the AWS CLI as a process
-credential provider so the Python preflight, Terraform provider and S3 backend
-can share the same temporary credentials. For example, after authenticating the
+For an existing `aws login` profile, install the preflight dependencies above,
+including the SDK's CRT extra, and set `aws_profile` to that named profile.
+Without CRT, the Python SDK reports `MissingDependencyException` when loading
+login credentials. Verify the selected identity in both the CLI and Python
+before planning. The native login profile was also verified with Terraform
+1.17.1 and AWS provider 6.71.0; check support when using other versions.
+
+If an older tool cannot read login credentials directly, use the AWS CLI as a
+process credential provider. For example, after authenticating the
 `workshop-login` profile, add the following to `~/.aws/config` (replace the Region
 with the actual target):
 
@@ -60,8 +66,8 @@ credential_process = aws configure export-credentials --profile workshop-login -
 region = us-east-1
 ```
 
-Set `aws_profile: workshop-admin` in the event YAML. Keep passwords, access keys,
-refresh tokens and session tokens outside the project. This route uses an IAM
+For this fallback, set `aws_profile: workshop-admin` in the event YAML. Keep
+passwords, access keys, refresh tokens and session tokens outside the project. This route uses an IAM
 user and does not require enabling IAM Identity Center. See the
 [AWS console-login guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sign-in.html).
 
