@@ -118,7 +118,10 @@ def render_markdown(text, current, base, context=None, aliases=None, adapter=Non
             lambda value: rewrite_link(value, current, base, context, adapter), renderer)
     tokens = renderer.parse(text)
     used = {}
-    heading_ids = context.heading_ids(current) if context else None
+    # Native files own their section IDs and retained aliases; only overlay-v2
+    # content requires the separate translated-heading map.
+    native_files = bool(adapter and getattr(adapter, 'course_files', False))
+    heading_ids = context.heading_ids(current) if context and not native_files else None
     heading_index = 0
     for index, token in enumerate(tokens):
         if token.type == "heading_open":

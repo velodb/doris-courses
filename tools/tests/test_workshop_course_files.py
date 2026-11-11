@@ -123,9 +123,12 @@ class CourseFilesTests(unittest.TestCase):
 
     def test_v3_markdown_renders_its_explicit_anchors_without_english_aliases(self):
         fixture = self.fixture(); adapter = fixture.adapter()
+        messages = json.loads((wc.REPO / 'locales/ui.en.json').read_text())['messages']
+        context = portal.InstalledUI({'en': messages, 'kk-Cyrl': messages}).context(explicit='kk-Cyrl')
         rendered = portal.render_markdown('<a id="prior-alias"></a>\n\n## Жаңа бөлім\n',
-                                          'doris-course/example/lesson.md', '/', adapter=adapter)
+                                          'doris-course/example/lesson.md', '/', context=context, adapter=adapter)
         self.assertIn('<a id="prior-alias"></a>', rendered)
+        self.assertIn('id="жаңа-бөлім"', rendered)
         self.assertNotIn('&lt;a', rendered)
         title, body = portal.lesson_title('<a id="prior-title"></a>\n\n# Қазақша атау\n\n## Жаңа бөлім\n',
                                           'course', course_files=True)

@@ -26,13 +26,16 @@ class RendererTests(unittest.TestCase):
             with self.subTest(url=bad), self.assertRaises(ValueError):
                 self.renderer.activities([{'id': 'test', 'href': bad}])
 
-    def test_pages_are_server_rendered_and_do_not_contain_preview_identity_or_script(self):
+    def test_pages_allow_only_the_locale_script_and_no_preview_identity(self):
         html = self.renderer.workspace(event='class-a', learner='learner-a', course='https://own.example.com/workshop/',
             tools=[{'id': 'jupyter', 'title': 'Notebooks', 'href': 'https://own.example.com/lab', 'external': True}],
             extra=[], logout='/_workshop/logout')
         self.assertIn('learner-a', html)
         self.assertIn('https://own.example.com/lab', html)
-        for absent in ('demo-rta', 's001', '<script', '<style', 'localStorage', 'first-login', 'fe2'):
+        locale_script = '<script src="/doris-courses/static/locale.js" defer></script>'
+        self.assertEqual(html.count(locale_script), 1)
+        self.assertNotIn('<script', html.replace(locale_script, ''))
+        for absent in ('demo-rta', 's001', '<style', 'localStorage', 'first-login', 'fe2'):
             self.assertNotIn(absent, html)
         self.assertIn('method="post"', html)
         self.assertIn('rel="noopener"', html)
