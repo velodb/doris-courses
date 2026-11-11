@@ -198,9 +198,9 @@ transformation and attribution in full.
 | Lab 3 samples | Three small files (about 250 KB in total) under `https://doris-public-dataset.s3.us-east-1.amazonaws.com/doris-course/lab3/v2/`, downloaded into `level1/module03-loading-data/downloads/` |
 | Access | Public and read-only. Doris reads the bucket with the S3 TVF and `"s3.credentials_provider_type" = "ANONYMOUS"`; no AWS account or key is needed. |
 
-Anonymous listing is limited to `doris-course/events/v1/`, which the
-`events-*.parquet` wildcard needs. Listing the bucket root and writing objects
-remain restricted.
+The bucket supports anonymous listing of all prefixes, including the root,
+so `events-*.parquet` works without credentials. Uploads, overwrites, and
+deletions require an authorized AWS identity.
 
 `datasets/events.yaml` records the same locations, the schema, and the expected
 row count and time range.
