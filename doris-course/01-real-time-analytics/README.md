@@ -103,7 +103,7 @@ changes anything and names the Lab to run.
 | Resources | Docker needs at least 4 CPUs, 8 GB of memory, and 20 GiB of free disk. With 4 CPUs and 8 GB, the Doris container peaks at about 3.1 GiB during Lab 1's load. Module 9 runs three FEs, three BEs, and HAProxy within the same minimum (about 6.4 GiB in all at its peak in the tested run); stop the single-node sandbox first and, with only 8 GB for Docker, the Kafka broker and Metabase too (see [Clean up](#clean-up)). |
 | Downloads | Docker images: `apache/doris:all-in-one-4.1.3` (about 1.9 GB to download, 4.5 GB on disk), `apache/kafka:3.9.1` for Module 3 (0.2 GB), `haproxy:3.0.30-alpine3.24` for Module 9 (20 MB), and `metabase/metabase:v0.59.6.3` for the optional Metabase lab (0.7 GB); a lab reuses an image that Docker already has. The optional Metabase lab also downloads the Doris driver for Metabase (19 KB) from GitHub. Data: 72 MiB of Parquet files from AWS S3 in Lab 1 and again in Lab 3; on its first run, Lab 9 reads a seven-hour slice of the same files, and because those rows are spread over all 40 files, Doris reads about 59 MB to find them; three small files in Lab 3. Python packages from PyPI. |
 | Doris version | Apache Doris 4.1.3, from the image `apache/doris:all-in-one-4.1.3` with the digest `sha256:82a5cabc7900ebcd3d080412d636c0cebd6602799fffe2605c652b2ea7d42609`. `SHOW FRONTENDS` and `SHOW BACKENDS` report the version as `doris-4.1.3-rc02-7126cf65d96`: the 4.1.3 release is that build. |
-| Network | Docker Hub for the images; `s3.us-east-1.amazonaws.com` and `doris-courses-public-dataset.s3.us-east-1.amazonaws.com` over HTTPS for the data; PyPI for the packages; GitHub for the optional Metabase lab's driver. From some networks, including mainland China, Docker Hub and AWS `us-east-1` can be slow or unreachable: use the registry mirror or proxy that your network provides. The labs give Doris longer S3 timeouts than its defaults (Module 3 explains them), so a slow connection makes a load slower instead of failing it: the 72 MiB load of Labs 1 and 3 took 11 seconds to 2 minutes over direct connections in the tested runs, and 22 minutes through a proxy that delivered about 60 KB/s; through the same proxy, Lab 9's first load took 13 minutes. |
+| Network | Docker Hub for the images; `s3.us-east-1.amazonaws.com` and `doris-public-dataset.s3.us-east-1.amazonaws.com` over HTTPS for the data; PyPI for the packages; GitHub for the optional Metabase lab's driver. From some networks, including mainland China, Docker Hub and AWS `us-east-1` can be slow or unreachable: use the registry mirror or proxy that your network provides. The labs give Doris longer S3 timeouts than its defaults (Module 3 explains them), so a slow connection makes a load slower instead of failing it: the 72 MiB load of Labs 1 and 3 took 11 seconds to 2 minutes over direct connections in the tested runs, and 22 minutes through a proxy that delivered about 60 KB/s; through the same proxy, Lab 9's first load took 13 minutes. |
 | Accounts and keys | None. The dataset bucket is public and is read anonymously. |
 | Python | 3.9 to 3.13. If `python3 --version` reports 3.14 or later, create the virtual environment with a supported version, for example `python3.12 -m venv .venv`. |
 
@@ -194,9 +194,13 @@ transformation and attribution in full.
 | | |
 | --- | --- |
 | Rows | 10,158,080 events from 2019-12-01 00:00:12 to 2020-03-11 04:53:08 (26 days in December 2019 and March 2020) |
-| Files | 40 Parquet files, about 72 MiB, in the public bucket `doris-courses-public-dataset` (AWS `us-east-1`): `s3://doris-courses-public-dataset/doris-course/events/v1/events-*.parquet` |
-| Lab 3 samples | Three small files (about 250 KB in total) under `https://doris-courses-public-dataset.s3.us-east-1.amazonaws.com/doris-course/lab3/v2/`, downloaded into `level1/module03-loading-data/downloads/` |
+| Files | 40 Parquet files, about 72 MiB, in the public bucket `doris-public-dataset` (AWS `us-east-1`): `s3://doris-public-dataset/doris-course/events/v1/events-*.parquet` |
+| Lab 3 samples | Three small files (about 250 KB in total) under `https://doris-public-dataset.s3.us-east-1.amazonaws.com/doris-course/lab3/v2/`, downloaded into `level1/module03-loading-data/downloads/` |
 | Access | Public and read-only. Doris reads the bucket with the S3 TVF and `"s3.credentials_provider_type" = "ANONYMOUS"`; no AWS account or key is needed. |
+
+Anonymous listing is limited to `doris-course/events/v1/`, which the
+`events-*.parquet` wildcard needs. Listing the bucket root and writing objects
+remain restricted.
 
 `datasets/events.yaml` records the same locations, the schema, and the expected
 row count and time range.

@@ -78,7 +78,7 @@ class DatasetSourceTests(unittest.TestCase):
 
     def test_every_bucket_named_in_the_course_is_the_public_one(self):
         # course-bucket is the placeholder of Module 3's private-bucket example.
-        allowed = {"doris-courses-public-dataset", "course-bucket"}
+        allowed = {"doris-public-dataset", "course-bucket"}
         for path in ROOT.rglob("*"):
             if ".venv" in path.parts or "__pycache__" in path.parts or not path.is_file():
                 continue

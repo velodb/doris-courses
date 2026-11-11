@@ -195,7 +195,7 @@ class DorisLab:
     BE_VOLUME = env.BE_VOLUME
     # The course's public bucket; datasets/events.yaml describes the same objects.
     S3_CONFIG = {
-        "uri": "s3://doris-courses-public-dataset/doris-course/events/v1/events-*.parquet",
+        "uri": "s3://doris-public-dataset/doris-course/events/v1/events-*.parquet",
         "endpoint": "https://s3.us-east-1.amazonaws.com",
         "region": "us-east-1",
         "format": "parquet",

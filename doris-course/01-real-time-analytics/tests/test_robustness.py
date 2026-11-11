@@ -151,7 +151,7 @@ class StopTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             lab = DorisLab.__new__(DorisLab)
             lab.lab_dir = Path(directory)
-            url = "https://doris-courses-public-dataset.s3.us-east-1.amazonaws.com/doris-course/lab3/v2/x.csv"
+            url = "https://doris-public-dataset.s3.us-east-1.amazonaws.com/doris-course/lab3/v2/x.csv"
             with patch.object(client.urllib.request, "urlopen", side_effect=urllib.error.URLError("timed out")), \
                  patch.object(client, "card") as card:
                 with self.assertRaises(client.EnvironmentNotReady):
