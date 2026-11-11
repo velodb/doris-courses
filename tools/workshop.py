@@ -598,7 +598,15 @@ class Controller:
             self.tf.run(["plan", "-destroy", "-input=false", "-lock-timeout=60s",
                          f"-var-file={self.directory / 'inputs.tfvars.json'}", f"-out={plan_path}"])
             plan = json.loads(self.tf.run(["show", "-json", str(plan_path)], capture=True))
-            absent = cleanup.validate_destroy_plan(resources, plan)
+            refresh_proof = None
+            if cleanup.missing_destroy_evidence(resources, plan):
+                # Terraform destroy plans can omit an already expired instance
+                # without resource_drift. Prove its exact deletion separately.
+                refresh_path = self.directory / 'destroy-refresh.tfplan'
+                self.tf.run(['plan', '-refresh-only', '-input=false', '-lock-timeout=60s',
+                             f'-var-file={self.directory / "inputs.tfvars.json"}', f'-out={refresh_path}'])
+                refresh_proof = json.loads(self.tf.run(['show', '-json', str(refresh_path)], capture=True))
+            absent = cleanup.validate_destroy_plan(resources, plan, refresh_proof)
             pf.require(all(row["address"] in absent for row in claims if row.get("requires_refresh_absence")),
                 "destroy: a tagless object without an owned parent may only be forgotten after explicit refresh deletion proof")
             self.tf.run(["apply", "-input=false", "-lock-timeout=60s", str(plan_path)])

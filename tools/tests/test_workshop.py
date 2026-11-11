@@ -258,6 +258,44 @@ class LifecycleTests(unittest.TestCase):
         self.assertTrue(self.up()["ready"])
         self.assertEqual(self.tf.apply_count, 1)
 
+    def test_destroy_after_expiry_uses_exact_refresh_proof_without_applying_it(self):
+        self.tf.create()
+        expired = copy.deepcopy(self.tf.resources[0])
+        original = self.tf.run
+        def omit_expired(args, *, capture=False):
+            if args[0] == 'show':
+                if Path(args[-1]).name == 'destroy-refresh.tfplan':
+                    self.tf.calls.append(list(args))
+                    return json.dumps({'complete': True, 'resource_changes': [], 'resource_drift': [{
+                        'mode': 'managed', 'address': expired['address'],
+                        'change': {'actions': ['delete'], 'before': expired['values'], 'after': None}}]})
+                result = json.loads(original(args, capture=capture))
+                result['resource_changes'] = [r for r in result['resource_changes'] if r['address'] != expired['address']]
+                return json.dumps(result)
+            return original(args, capture=capture)
+        self.tf.run = omit_expired
+        result = self.controller().destroy()
+        self.assertEqual(result['phase'], 'destroyed')
+        self.assertTrue(any('-refresh-only' in args for args in self.tf.calls))
+        applied = [args for args in self.tf.calls if args[0] == 'apply']
+        self.assertEqual(len(applied), 1)
+        self.assertEqual(Path(applied[0][-1]).name, 'destroy.tfplan')
+
+    def test_destroy_missing_expired_object_without_refresh_proof_remains_blocked(self):
+        self.tf.create()
+        original = self.tf.run
+        def omit_without_proof(args, *, capture=False):
+            result = original(args, capture=capture)
+            if args[0] == 'show':
+                value = json.loads(result)
+                value['resource_changes'] = value['resource_changes'][1:]
+                return json.dumps(value)
+            return result
+        self.tf.run = omit_without_proof
+        with self.assertRaises(ws.wc.ConfigError):
+            self.controller().destroy()
+        self.assertFalse(any(args[0] == 'apply' for args in self.tf.calls))
+
     def test_native_file_probe_requires_both_language_execution_checks(self):
         controller = self.controller()
         controller.config = {**controller.config, 'schema_version': 2,
