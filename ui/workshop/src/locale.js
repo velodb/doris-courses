@@ -76,7 +76,7 @@
     link.addEventListener('click', event => {
       if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       event.preventDefault(); picker.open = false; select.value = option.value;
-      switchLocale(option.value); trigger.focus();
+      switchLocale(option.value); trigger.focus({preventScroll:true});
     });
     return link;
   });
@@ -119,4 +119,136 @@
       form.after(notice); sessionStorage.removeItem(ctx.key + '.storage-error');
     }
   } catch (_) { /* URL selection remains usable when browser storage is disabled. */ }
+})();
+
+/* Multi-course navigation enhances the rendered outline without replacing any
+ * course links, progress forms, working copies or learning records. */
+(() => {
+  'use strict';
+  const main = document.querySelector('main.main');
+  const courses = main ? Array.from(main.children).filter(node => node.matches('.course-outline')) : [];
+  if (courses.length < 2) return;
+  const headings = courses.map(course => course.querySelector(':scope > .section-heading h2'));
+  if (headings.some(heading => !heading)) return;
+
+  const anchor = (node, preferred) => {
+    if (!node.id) {
+      let id = preferred, suffix = 1;
+      while (document.getElementById(id)) id = preferred + '-' + suffix++;
+      node.id = id;
+    }
+    return node.id;
+  };
+  const label = main.querySelector('h1').textContent;
+  const shell = document.createElement('div'); shell.className = 'course-navigation-layout';
+  const sidebar = document.createElement('nav'); sidebar.className = 'course-sidebar';
+  sidebar.setAttribute('aria-label', label);
+  const caption = document.createElement('p'); caption.className = 'course-sidebar-caption'; caption.textContent = label;
+  const list = document.createElement('ol'); list.className = 'course-switcher';
+  const levelList = document.createElement('div'); levelList.className = 'course-levels';
+  const content = document.createElement('div'); content.className = 'course-navigation-content';
+  const links = [], groups = [];
+  const makeLink = (title, target, className) => {
+    const link = document.createElement('a'); link.className = className;
+    link.textContent = title; link.setAttribute('href', '#' + target.id);
+    return link;
+  };
+  courses[0].before(shell);
+  shell.append(sidebar, content); sidebar.append(caption, list, levelList);
+  courses.forEach((course, index) => {
+    // Order is frozen within an installed activity and identical across locales.
+    const id = anchor(course, 'workshop-course-' + (index + 1));
+    const heading = headings[index]; heading.tabIndex = -1;
+    const link = makeLink(heading.textContent, course, 'course-switcher-link');
+    const item = document.createElement('li'); item.append(link); list.append(item); links.push(link);
+    const group = document.createElement('div'); group.className = 'course-level-group'; group.hidden = index !== 0;
+    group.setAttribute('aria-label', heading.textContent);
+    for (const [number, level] of Array.from(course.querySelectorAll(':scope > .level-block')).entries()) {
+      const title = level.querySelector('.section-heading h2');
+      if (!title) continue;
+      anchor(level, id + '-level-' + (number + 1)); title.tabIndex = -1;
+      const levelLabel = level.querySelector('.section-heading .muted');
+      group.append(makeLink((levelLabel ? levelLabel.textContent + ' · ' : '') + title.textContent, level, 'course-level-link'));
+    }
+    groups.push(group); levelList.append(group); content.append(course);
+  });
+  document.body.classList.add('course-navigation-page');
+
+  // Keep the original transfer controls intact, within reach at the page head.
+  const record = main.querySelector(':scope > .progress-panel');
+  const pageHead = main.querySelector('.page-head');
+  if (record && pageHead && record.querySelector('h2')) {
+    const tools = document.createElement('details'); tools.className = 'course-progress-tools';
+    const summary = document.createElement('summary'); summary.textContent = record.querySelector('h2').textContent;
+    tools.append(summary, record); pageHead.append(tools);
+    document.addEventListener('click', event => { if (!tools.contains(event.target)) tools.open = false; });
+    tools.addEventListener('keydown', event => { if (event.key === 'Escape') { tools.open = false; summary.focus(); } });
+  }
+
+  let active = -1, pending = false;
+  const current = index => {
+    if (active === index) return;
+    active = index;
+    links.forEach((link, i) => {
+      if (i === index) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+      groups[i].hidden = i !== index;
+    });
+    // Locale links already preserve the fragment; keep the visible course in
+    // the URL even after manual scrolling, without adding history entries.
+    const hash = location.hash.slice(1);
+    const belongsHere = hash === courses[index].id || hash.startsWith(courses[index].id + '-level-');
+    if (!belongsHere && (!hash || courses.some(course => hash === course.id || hash.startsWith(course.id + '-level-')))) {
+      const destination = new URL(location.href); destination.hash = courses[index].id;
+      history.replaceState(history.state, '', destination);
+    }
+  };
+  const offset = () => {
+    const topnav = document.querySelector('.topnav');
+    return (topnav ? topnav.getBoundingClientRect().height : 0) +
+      (window.matchMedia('(max-width:700px)').matches ? sidebar.getBoundingClientRect().height : 0) + 24;
+  };
+  const jump = (target, focus) => {
+    const course = target.closest('.course-outline');
+    const index = courses.indexOf(course);
+    if (index < 0) return;
+    current(index);
+    const heading = target.matches('.course-outline') ? headings[index] : target.querySelector('.section-heading h2');
+    if (focus && heading) heading.focus({preventScroll:true});
+    window.scrollTo({top:Math.max(0, target.getBoundingClientRect().top + window.scrollY - offset()), behavior:'instant'});
+  };
+  const fragment = () => {
+    let id;
+    try { id = decodeURIComponent(location.hash.slice(1)); } catch (_) { return null; }
+    const target = document.getElementById(id);
+    return target && content.contains(target) && target.matches('.course-outline,.level-block') ? target : null;
+  };
+  sidebar.addEventListener('click', event => {
+    const link = event.target.closest('a');
+    if (!link || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const target = document.getElementById(link.hash.slice(1));
+    if (!target || !content.contains(target)) return;
+    event.preventDefault();
+    const destination = new URL(location.href); destination.hash = target.id;
+    if (destination.href !== location.href) history.pushState(null, '', destination);
+    jump(target, true);
+  });
+  const track = () => {
+    pending = false;
+    const boundary = offset() + 16;
+    let index = -1;
+    courses.forEach((course, i) => { if (course.getBoundingClientRect().top <= boundary) index = i; });
+    // Visiting the header to change language must not reset a selected course.
+    if (index >= 0) current(index);
+    else if (active < 0) current(0);
+  };
+  window.addEventListener('scroll', () => {
+    if (!pending) { pending = true; requestAnimationFrame(track); }
+  }, {passive:true});
+  window.addEventListener('hashchange', () => { const target = fragment(); if (target) jump(target, true); });
+  const initial = fragment();
+  if (initial) {
+    // Wait for the layout font before restoring a deep link on reload/switch.
+    Promise.resolve(document.fonts ? document.fonts.ready : null).then(() => jump(initial, false));
+  } else track();
 })();

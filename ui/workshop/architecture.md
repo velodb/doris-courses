@@ -34,6 +34,10 @@ Terraform中只有精确的门户退出落地路径改为转发门户，其余�
 
 UI在目标机安装到独立的 `ui/` 目录，由root拥有。归档拒绝路径越界、链接、特殊文件和重复项。新bundle含UI且重新计算runtime hash；既有AMI、旧runtime、TTL binding和runner镜像没有被改写或重标。使用新UI需要构建新包/新镜像并完成对应真实验收。
 
+课程目录的B布局由 `src/locale.js` 和 `src/styles.css` 渐进增强：多课时生成固定左侧课程/Level索引，手机转为顶部课程栏；标题直接取本页的实际语言文本。页内锚点按安装活动内冻结的课程顺序生成，语言切换和浏览器历史保留定位。学习记录工具收进页头菜单，原表单节点、XSRF、课程/Notebook链接和选修原样保留，不写学习记录。单课和禁用JavaScript时保持原目录。
+
+明确安排的既有试用环境可单独覆盖这两个静态文件：先核验目标归属、原字节和期限，备份后按CSS、JS顺序原子替换，并记录独立overlay摘要及恢复路径。两个资源逐请求读取且不缓存，因此无需重启Jupyter或内核。此覆盖不改写原runtime、教学包、身份或TTL；后续整套新安装仍构建包含新UI的完整bundle，既有overlay的实测也不替代新环境验收。
+
 ## 本地验证
 
 ```bash
@@ -41,5 +45,7 @@ python3 -m unittest discover -s ui/workshop/tests -q
 GIT_NO_LAZY_FETCH=1 .venv-workshop/bin/python -m unittest discover -s tools/tests -q
 .venv-workshop/bin/python tools/tests/run_ui_browser.py
 ```
+
+多课程导航的真实安装浏览器检查使用 `scripts/verify-course-navigation.cjs <私有fixture.json> <证据目录>`；fixture取自 `tools/tests/workshop_multilingual_fixture.py` 的隔离安装，仅用本机临时token。
 
 浏览器脚本使用项目Playwright或 `PLAYWRIGHT_MODULE` / `PLAYWRIGHT_EXECUTABLE` 指向的安装。fixture只绑定loopback，以临时测试签名和本地Jupyter token连接真实handler，结束后回收进程和凭证。它不验证真实ALB/Cognito、云端浏览器、网络/IAM或部署，不能替代新活动的端到端验收。
