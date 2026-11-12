@@ -21,6 +21,11 @@ EC2 course/browser validation and private publication. Its three-learner shared
 acceptance and temporary-resource cleanup also passed; see
 [the recorded scope](data-warehousing.md#current-acceptance).
 
+The combined English `obs-main` and `obs-local-model` selection also passed
+independent validation, private publication and three complete shared course
+runs. Its browser, resource and external-client delivery limits are recorded in
+[observability acceptance](observability.md#current-acceptance).
+
 ## Validation levels
 
 | Profile | Configuration | EC2 course execution | Shared HTTPS/Cognito |
@@ -28,7 +33,8 @@ acceptance and temporary-resource cleanup also passed; see
 | `rta-main` | Implemented | Verified within the limits above | Verified; three-learner scope above |
 | `rta-metabase` | Implemented | Unverified | Pending |
 | `dw-main`, `dw-kafka`, `dw-cdc`, `dw-bi`, `dw-backup`, `dw-extensions` | Implemented | Verified together; [exact scope](data-warehousing.md#current-acceptance) | Verified; three learners, full selection and scoped cleanup |
-| `obs-main`, `obs-local-model`, `obs-openai` | Implemented | Unverified; main course delivery selected, optional scope pending | Pending |
+| `obs-main`, `obs-local-model` | Implemented | Verified together; [exact scope](observability.md#current-acceptance) | Verified for three learners using AWS-hosted Chromium; external-client delivery remains unqualified |
+| `obs-openai` | Declared; image path refused pending model/credential/spending contract | Unverified | Pending |
 | `ai-mcp`, `ai-functions` | Draft configuration | Unverified; scope, model access and quotas pending | Pending |
 
 `ai-mcp` requires a separately implemented browser/cloud Host. A stdio MCP
@@ -52,9 +58,9 @@ perform cloud or browser acceptance.
   gateway and portal operations remain separate commands; no spare promotion
   is implemented. Larger events require their own capacity acceptance.
 - Shared access, stable allocation, Cognito and service routing have local tests
-  and real integration evidence for the declared RTA and complete Data Warehousing
-  scopes. The older RTA AMI shares a Docker engine ID between clones. The newer
-  RTA release includes
+  and real integration evidence for the declared RTA, complete Data Warehousing
+  and combined Observability scopes. The older RTA AMI shares a Docker engine ID
+  between clones. The newer RTA release includes
   the sealing change, passed the fresh-instance audit, full RTA run and browser
   gate, and produced three distinct Docker engine, machine and token identities.
   Its new three-learner authenticated browser round passed all six directed

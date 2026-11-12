@@ -160,22 +160,42 @@
     "obs-main": {
       "course_dir": "doris-course/03-observability",
       "kernel": "doris-obs",
-      "ec2_course": "unverified",
-      "shared_browser": "pending",
+      "ec2_course": "verified",
+      "shared_browser": "verified",
       "browser_host": "not-required",
-      "evidence": null,
-      "summary": "support.md#validation-levels",
-      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+      "evidence": {
+        "course_sha": "4f401d1c91220fc736a395a510e7660ae88836fe",
+        "transport": "shared-https",
+        "hosts": 3,
+        "region": "us-east-1",
+        "instance_type": "m7i.2xlarge",
+        "disk_gib": 200,
+        "image_release": "obs-4f401d1-full-v1",
+        "validated_on": "2026-11-13",
+        "operator_sha": "4f401d1c91220fc736a395a510e7660ae88836fe"
+      },
+      "summary": "observability.md#current-acceptance",
+      "limitations": "Verified together as English legacy schema-v1 obs-main plus obs-local-model on Linux x86_64/us-east-1/m7i.2xlarge/200GiB. One fresh instance passed 29 audits, 17 Notebooks/148 cells and 14 browser checks; three shared clones each completed all 17/148 (51/444 total) with distinct identities, six browser gates, ownership and HTTP/API/WebSocket isolation, logout/reauthentication, CPU-load entry/SQL, exact browser-to-Doris trace correlation and application recovery. All temporary cloud resources were retired and reconciled. Shared browser checks used AWS-hosted Chromium 156; external-client delivery remains unqualified after a macOS Grafana asset truncation. Temporary browser OOM, Jupyter save conflicts and stale pages required recorded recovery; no performance guarantee, larger-event, translated/v2, other-selection, first-password-change/MFA, natural-session or long-idle qualification. Litefuse parent-domain PostHog analytics privacy/isolation was not certified."
     },
     "obs-local-model": {
       "course_dir": "doris-course/03-observability",
       "kernel": "doris-obs",
-      "ec2_course": "unverified",
-      "shared_browser": "pending",
+      "ec2_course": "verified",
+      "shared_browser": "verified",
       "browser_host": "not-required",
-      "evidence": null,
-      "summary": "support.md#validation-levels",
-      "limitations": "Configuration is declared; EC2 course execution and shared browser acceptance are pending."
+      "evidence": {
+        "course_sha": "4f401d1c91220fc736a395a510e7660ae88836fe",
+        "transport": "shared-https",
+        "hosts": 3,
+        "region": "us-east-1",
+        "instance_type": "m7i.2xlarge",
+        "disk_gib": 200,
+        "image_release": "obs-4f401d1-full-v1",
+        "validated_on": "2026-11-13",
+        "operator_sha": "4f401d1c91220fc736a395a510e7660ae88836fe"
+      },
+      "summary": "observability.md#current-acceptance",
+      "limitations": "Verified together as English legacy schema-v1 obs-main plus obs-local-model on Linux x86_64/us-east-1/m7i.2xlarge/200GiB. One fresh instance passed 29 audits, 17 Notebooks/148 cells and 14 browser checks; three shared clones each completed all 17/148 (51/444 total) with distinct identities, six browser gates, ownership and HTTP/API/WebSocket isolation, logout/reauthentication, CPU-load entry/SQL, exact browser-to-Doris trace correlation and application recovery. All temporary cloud resources were retired and reconciled. Shared browser checks used AWS-hosted Chromium 156; external-client delivery remains unqualified after a macOS Grafana asset truncation. Temporary browser OOM, Jupyter save conflicts and stale pages required recorded recovery; no performance guarantee, larger-event, translated/v2, other-selection, first-password-change/MFA, natural-session or long-idle qualification. Litefuse parent-domain PostHog analytics privacy/isolation was not certified."
     },
     "obs-openai": {
       "course_dir": "doris-course/03-observability",

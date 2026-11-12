@@ -1,9 +1,62 @@
 # Observability workshop validation
 
 The image pipeline accepts `obs-main`, optionally with `obs-local-model`.
-These selections currently have local build-input and execution-contract tests.
-Fresh EC2, browser, private-image publication and three-learner shared access
-still need their own acceptance; no observability AMI is certified yet.
+The combined English selection has passed the independent and three-learner
+acceptance described below. Other selections need their own evidence.
+
+## Current acceptance
+
+Private release `obs-4f401d1-full-v1`, at course and deployment commit
+`4f401d1c91220fc736a395a510e7660ae88836fe`, passed on Linux x86_64,
+Python 3.12, `us-east-1`, `m7i.2xlarge` and a 200 GiB root disk on
+2026-11-13 (Asia/Shanghai). This covers English legacy schema-v1
+`obs-main` **together with** `obs-local-model`.
+
+One fresh independent instance passed 29 image/runtime checks, all 17 Notebooks
+and 148 code cells, and 14 actual browser checks before private publication.
+Three fresh shared clones then each passed the same complete selection:
+51 Notebooks and 444 code cells in total. Their Docker engine, machine and token
+identities were distinct. Three isolated Chromium contexts passed normal
+Cognito login, native Notebook save/download/restart/reconnect, quiz feedback,
+terminal execution, FE profiles, all six browser checkpoints, Grafana Live,
+Litefuse simulated and local-model traces, and the seven-email alert cycle.
+Browser telemetry returned actual HTTP 200 responses; all 46 captured trace IDs
+were found in the respective Doris instances, with 102 spans.
+
+Shared ownership checks covered all six directed learner pairs, including
+HTTP/API and kernel/terminal WebSocket denial, the five additional application
+origins, and entry logout/reauthentication. Each original CPU load measured
+about 99.8% busy while its entry returned HTTP 200 and its existing browser
+kernel returned SQL 42. Stopping the five applications left each reader and
+terminal available; restarting the same containers retained dashboards, flags,
+model traces and data volumes. Course teardown removed all course containers,
+networks and Docker volumes and verified log ownership. All temporary cloud
+resources were retired and reconciled; the private release remains retained.
+
+The shared runs took about 34–35 minutes. They sampled at least 17.5 GiB of
+available memory and 164.6 GiB of free disk. These are observations for the
+stated configuration, not minimum sizing or a performance guarantee. A temporary
+browser on one learner host added two CPU and a 3 GiB memory limit, raised to
+5 GiB after browser OOM kills. Transient Jupyter save conflicts, stale Grafana
+pages and crashed browser pages required recorded recovery. Original course
+commands were not replayed, and failed attempts remain separate evidence.
+
+Browser acceptance used Chromium 156 hosted in AWS. An earlier macOS access
+attempt received a truncated Grafana JavaScript asset; its cause remains
+unresolved, so external-client delivery is not qualified by this round.
+First-password-change and MFA UI, natural session expiry, long idle periods,
+translated/schema-v2 content, other selections, browsers, Regions, instance
+types and larger classrooms remain outside this acceptance. Litefuse also sets
+a PostHog analytics cookie on the parent site domain; analytics privacy and
+isolation were not certified. Mailpit's temporary inbox can reset on restart;
+the full alert cycle was captured before the restart.
+
+A partner builds and validates an image in its own account. The retained private
+AMI is not a public dependency: deployment currently requires matching account
+ownership and no launch grants. An AMI encrypted with the default AWS-managed
+EBS key cannot be shared directly across accounts; a distribution workflow
+would need a customer-managed KMS key and recipient-owned validation.
+See [AWS AMI sharing rules](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sharingamis-explicit.html).
 
 ## Selection and dependencies
 
