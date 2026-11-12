@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -107,12 +108,12 @@ def packer_environment(config, env):
         credentials = directory / 'empty-credentials'
         credentials.touch(mode=0o600)
         settings = directory / 'config'
-        command = ' '.join(json.dumps(part, ensure_ascii=False) for part in (sys.executable, str(helper)))
+        command = shlex.join((sys.executable, str(helper)))
         settings.write_text(f'[profile {config["aws_profile"]}]\n'
                             f'region = {config["region"]}\ncredential_process = {command}\n')
         settings.chmod(0o600)
         yield {**env, 'AWS_CONFIG_FILE': str(settings),
-               'AWS_SHARED_CREDENTIALS_FILE': str(credentials)}
+               'AWS_SHARED_CREDENTIALS_FILE': str(credentials), 'AWS_SDK_LOAD_CONFIG': '1'}
 
 
 def prepare(config_path, output, *, content_package=None):

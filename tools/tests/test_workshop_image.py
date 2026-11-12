@@ -183,6 +183,7 @@ print(json.dumps({'Version':1,'AccessKeyId':'fixture-only','SecretAccessKey':'fi
         env = {**os.environ, 'PATH': str(bin_dir), 'AWS_CONFIG_FILE': 'original-config',
                'AWS_SHARED_CREDENTIALS_FILE': 'original-credentials'}
         with image.packer_environment(self.config, env) as actual:
+            self.assertEqual(actual['AWS_SDK_LOAD_CONFIG'], '1')
             settings = Path(actual['AWS_CONFIG_FILE'])
             directory = settings.parent
             self.assertEqual(directory.stat().st_mode & 0o777, 0o700)
@@ -190,6 +191,9 @@ print(json.dumps({'Version':1,'AccessKeyId':'fixture-only','SecretAccessKey':'fi
             self.assertEqual(Path(actual['AWS_SHARED_CREDENTIALS_FILE']).read_bytes(), b'')
             process = next(line.split(' = ', 1)[1] for line in settings.read_text().splitlines()
                            if line.startswith('credential_process'))
+            # The plugin's Go INI parser removes enclosing double quotes from
+            # the whole value before the process provider parses its arguments.
+            process = process.strip('"')
             response = subprocess.run(shlex.split(process), env=actual, capture_output=True,
                                       text=True, check=True)
             self.assertEqual(json.loads(response.stdout)['AccessKeyId'], 'fixture-only')
