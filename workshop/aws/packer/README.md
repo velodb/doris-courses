@@ -27,6 +27,14 @@ widgets frontend and gzip changes. `image-input.json` records the course and
 deployment revisions and runtime/helper hashes, without account login profiles,
 learner IDs, browser domains or event credentials.
 
+For an `aws login` profile, the pinned Packer Amazon plugin uses a temporary
+[process credential provider](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sign-in.html)
+backed by `aws configure export-credentials`.
+The CLI reads and refreshes the original selected login profile. The adapter
+exists only for the Packer process and its local provisioner; it does not change
+your AWS configuration or write credential values to files. The AWS CLI must be
+on `PATH`. Terraform and the Python preflight keep using the original profile.
+
 `locks/` contains the resolved Python 3.12/Linux x86_64 dependencies and artifact
 hashes. The installer uses wheel-only `pip --require-hashes --no-deps`, followed
 by the pinned source's local editable packages with dependency resolution and

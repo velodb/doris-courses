@@ -2,6 +2,8 @@
 import importlib.util
 import itertools
 import json
+import os
+import shlex
 import subprocess
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -146,6 +148,62 @@ class ImageProvenance(unittest.TestCase):
             (repo / 'plan-doc').mkdir()
             (repo / 'plan-doc/private.md').write_text('local planning\n')
             self.assertFalse(image.deployment_dirty(repo=repo))
+
+
+class PackerLoginCredentials(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.config = {'aws_profile': 'selected-login', 'region': 'us-east-1'}
+        self.aws = MagicMock()
+        self.aws.session._session.full_config = {
+            'profiles': {'selected-login': {'login_session': 'arn:aws:iam::123456789012:user/fixture'}}}
+        self.provider = patch.object(image.preflight, 'Aws', return_value=self.aws)
+        self.provider.start()
+        self.addCleanup(self.provider.stop)
+
+    def test_existing_process_and_role_profiles_keep_the_original_environment(self):
+        self.aws.session._session.full_config['profiles']['selected-login'] = {'credential_process': 'existing'}
+        env = {'PATH': '/fixture/bin'}
+        with image.packer_environment(self.config, env) as actual:
+            self.assertIs(actual, env)
+
+    def test_login_provider_refreshes_through_cli_without_persisting_credentials(self):
+        bin_dir = self.root / 'bin with spaces'
+        bin_dir.mkdir()
+        executable = bin_dir / 'aws'
+        executable.write_text(f'#!{sys.executable}\n' + '''import json,os,sys
+assert sys.argv[1:] == ['configure','export-credentials','--profile','selected-login','--format','process']
+assert os.environ['AWS_CONFIG_FILE'] == 'original-config'
+assert os.environ['AWS_SHARED_CREDENTIALS_FILE'] == 'original-credentials'
+print(json.dumps({'Version':1,'AccessKeyId':'fixture-only','SecretAccessKey':'fixture-secret','SessionToken':'fixture-session','Expiration':'2030-01-01T00:00:00Z'}))
+''')
+        executable.chmod(0o700)
+        env = {**os.environ, 'PATH': str(bin_dir), 'AWS_CONFIG_FILE': 'original-config',
+               'AWS_SHARED_CREDENTIALS_FILE': 'original-credentials'}
+        with image.packer_environment(self.config, env) as actual:
+            settings = Path(actual['AWS_CONFIG_FILE'])
+            directory = settings.parent
+            self.assertEqual(directory.stat().st_mode & 0o777, 0o700)
+            self.assertEqual(settings.stat().st_mode & 0o777, 0o600)
+            self.assertEqual(Path(actual['AWS_SHARED_CREDENTIALS_FILE']).read_bytes(), b'')
+            process = next(line.split(' = ', 1)[1] for line in settings.read_text().splitlines()
+                           if line.startswith('credential_process'))
+            response = subprocess.run(shlex.split(process), env=actual, capture_output=True,
+                                      text=True, check=True)
+            self.assertEqual(json.loads(response.stdout)['AccessKeyId'], 'fixture-only')
+            self.assertTrue(all('fixture-secret' not in p.read_text() for p in directory.iterdir()))
+        self.assertFalse(directory.exists())
+        self.assertEqual(env['AWS_CONFIG_FILE'], 'original-config')
+
+    def test_temporary_provider_is_removed_when_packer_fails(self):
+        with patch.object(image.shutil, 'which', return_value='/fixture/aws'):
+            with self.assertRaisesRegex(RuntimeError, 'packer failed'):
+                with image.packer_environment(self.config, dict(os.environ)) as actual:
+                    directory = Path(actual['AWS_CONFIG_FILE']).parent
+                    raise RuntimeError('packer failed')
+        self.assertFalse(directory.exists())
 
 
 @unittest.skipUnless(importlib.util.find_spec('boto3'), 'Install preflight-requirements.txt for SSM contract tests')

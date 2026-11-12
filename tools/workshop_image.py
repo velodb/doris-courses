@@ -2,15 +2,18 @@
 """Prepare fixed private-image inputs and provision Packer hosts through SSM only."""
 
 import argparse
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 
 import workshop_config as wc
@@ -71,6 +74,45 @@ def write(path, value):
             return wc.utc_text(item)
         raise TypeError('image: unsupported operational record value')
     wc.write_manifest(path, json.loads(json.dumps(value, default=timestamp_value)))
+
+
+@contextmanager
+def packer_environment(config, env):
+    """Give the pinned plugin process credentials for native AWS login profiles."""
+    aws = preflight.Aws(config)
+    profile = aws.session._session.full_config.get('profiles', {}).get(config['aws_profile'], {})
+    if not profile.get('login_session'):
+        yield env
+        return
+    executable = shutil.which('aws', path=env.get('PATH'))
+    preflight.require(executable is not None, 'image: AWS CLI is required for login profile credentials')
+    # The plugin's pinned SDK predates login_session. The CLI remains the
+    # refreshable provider; never write its credential output to disk or logs.
+    original = {name: env.get(name) for name in ('AWS_CONFIG_FILE', 'AWS_SHARED_CREDENTIALS_FILE')}
+    with tempfile.TemporaryDirectory(prefix='doris-packer-login-') as temporary:
+        directory = Path(temporary)
+        helper = directory / 'credentials.py'
+        helper.write_text(
+            'import os,subprocess,sys\n'
+            'env = dict(os.environ)\n'
+            f'original = {original!r}\n'
+            'for key, value in original.items():\n'
+            '    if value is None:\n'
+            '        env.pop(key, None)\n'
+            '    else:\n'
+            '        env[key] = value\n'
+            f'sys.exit(subprocess.call({[executable, "configure", "export-credentials", "--profile", config["aws_profile"], "--format", "process"]!r}, env=env))\n'
+        )
+        helper.chmod(0o600)
+        credentials = directory / 'empty-credentials'
+        credentials.touch(mode=0o600)
+        settings = directory / 'config'
+        command = ' '.join(json.dumps(part, ensure_ascii=False) for part in (sys.executable, str(helper)))
+        settings.write_text(f'[profile {config["aws_profile"]}]\n'
+                            f'region = {config["region"]}\ncredential_process = {command}\n')
+        settings.chmod(0o600)
+        yield {**env, 'AWS_CONFIG_FILE': str(settings),
+               'AWS_SHARED_CREDENTIALS_FILE': str(credentials)}
 
 
 def prepare(config_path, output, *, content_package=None):
@@ -224,10 +266,11 @@ def build_image(run_dir):
                          retain_until=wc.utc_text(datetime.now(timezone.utc) + timedelta(days=7)),
                          **{k: outputs[k] for k in ('subnet_id', 'security_group_id', 'instance_profile')})
         write(run_dir / 'build.pkrvars.json', variables)
-        for command in (['packer', 'init', str(SPEC)],
-                        ['packer', 'validate', '-var-file=' + str(run_dir / 'build.pkrvars.json'), str(SPEC)],
-                        ['packer', 'build', '-color=false', '-on-error=cleanup', '-var-file=' + str(run_dir / 'build.pkrvars.json'), str(SPEC)]):
-            subprocess.run(command, env=env, check=True)
+        with packer_environment(config, env) as packer_env:
+            for command in (['packer', 'init', str(SPEC)],
+                            ['packer', 'validate', '-var-file=' + str(run_dir / 'build.pkrvars.json'), str(SPEC)],
+                            ['packer', 'build', '-color=false', '-on-error=cleanup', '-var-file=' + str(run_dir / 'build.pkrvars.json'), str(SPEC)]):
+                subprocess.run(command, env=packer_env, check=True)
         record_candidate(run_dir, preflight.Aws(config))
     finally:
         # Packer normally terminates its own instance before this destroy. Do not
