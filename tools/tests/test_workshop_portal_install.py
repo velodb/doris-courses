@@ -3,6 +3,7 @@ import copy
 import io
 import json
 import subprocess
+import tarfile
 from pathlib import Path
 import sys
 import tempfile
@@ -44,6 +45,24 @@ class PortalInstallTests(unittest.TestCase):
             "alb_security_group_id": "sg-alb", "portal": {"instance_id": "i-portal", "target_group_arn": "tg"}}
         self.config = {"aws_account_id": "123456789012", "region": "us-east-1", "domain": "example.com", "owner_id": "owner", "aws_profile": "operator"}
         self.cloud = Cloud()
+
+    def test_staged_portal_imports_with_nested_ui_under_isolated_python(self):
+        bundle = self.root / 'bundle'
+        bundle.mkdir()
+        sources = install.access.portal_sources()
+        for name, data in sources.items():
+            if name != 'ui.tar':
+                (bundle / name).write_bytes(data)
+        with tarfile.open(fileobj=io.BytesIO(sources['ui.tar'])) as archive:
+            archive.extractall(bundle / 'ui', filter='data')
+        config = {'schema_version': 1, 'domain': 'example.com', 'region': 'us-east-1',
+                  'alb_arn': 'arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/workshop/0123456789abcdef',
+                  'activities': {}}
+        script = ('import json,sys; sys.path.insert(0,sys.argv[1]); '
+                  'from portal import validate_config; validate_config(json.loads(sys.argv[2]))')
+        result = subprocess.run([sys.executable, '-I', '-c', script, str(bundle), json.dumps(config)],
+                                cwd=self.root, capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_fixed_payload_is_deterministic_bounded_and_empty(self):
         commands, digest, raw = install.payload(self.shared)

@@ -26,7 +26,8 @@ from yarl import URL
 
 UI_ROOT = Path(__file__).resolve().parent
 if not (UI_ROOT / 'i18n.py').exists():
-    UI_ROOT = Path(__file__).resolve().parents[3] / 'ui/workshop'
+    nested = UI_ROOT / 'ui'
+    UI_ROOT = nested if (nested / 'i18n.py').is_file() else Path(__file__).resolve().parents[3] / 'ui/workshop'
 sys.path.insert(0, str(UI_ROOT))
 from i18n import InstalledUI, LocaleUnavailable
 
