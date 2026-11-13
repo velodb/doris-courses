@@ -92,6 +92,15 @@ bindings. If the activity has already been removed and reconciled, omit all
 three. This command does not retire the portal or shared infrastructure or revoke
 unrelated identities.
 
+Removing the exact registered assignment does not require learner instances to
+be running. Stopped, terminated or absent learners can be unregistered while
+the operator portal remains running. If Terraform refresh has already removed
+a learner from pilot state, its instance ID must still match both the saved
+learner assignment and known-instance history. Returned instances retain all
+ownership and learner-tag checks. Registration and assignment updates still
+require running learners. An absent EC2 response permits only this registry
+removal; the separate destroy-plan and residual checks must prove cleanup.
+
 Use the latest pilot run, the bindings directory containing its original
 `inputs.tfvars.json` and `backend.tfbackend.json`, and the exact current route
 plan whose `terraform` object matches those variables. The bindings backend

@@ -53,11 +53,27 @@ def verify(controller, bindings_run, current_route, route, identity, subjects, p
     portal = shared.get("portal")
     require(isinstance(portal, dict) and portal.get("instance_id") and portal.get("target_group_arn"), "shared portal is not bound")
     instances, _ = controller.inventory()
-    require(all(instances.get(k) == v for k, v in variables["learners"].items()), "portal targets do not match current pilot instances")
-    actual = controller.actual_instances(instances.values())
-    require(set(actual) == set(instances.values()) and all(v.get("State", {}).get("Name") == "running" for v in actual.values()),
-            "pilot instances are not running")
-    for learner, instance_id in instances.items():
+    if remove_activity:
+        targets = variables["learners"]
+        require(all(targets.get(k) == v for k, v in instances.items()), "portal targets do not match current pilot instances")
+        # Expiry and Terraform refresh can remove learners before the portal
+        # assignment. Only the exact saved assignment may fill those gaps.
+        history = controller.record
+        require(all(instance_id in history.get("known_instances", []) and
+                    history.get("nodes", {}).get(learner, {}).get("instance_id") == instance_id
+                    for learner, instance_id in targets.items() if learner not in instances),
+                "missing target has no matching saved pilot assignment")
+    else:
+        require(all(instances.get(k) == v for k, v in variables["learners"].items()), "portal targets do not match current pilot instances")
+        targets = instances
+    actual = controller.actual_instances(targets.values())
+    require(set(actual) <= set(targets.values()), "live pilot instances differ from the assignment")
+    if not remove_activity:
+        require(set(actual) == set(targets.values()) and all(v.get("State", {}).get("Name") == "running" for v in actual.values()),
+                "pilot instances are not running")
+    for learner, instance_id in targets.items():
+        if instance_id not in actual:
+            continue
         tags = {tag["Key"]: tag["Value"] for tag in actual[instance_id].get("Tags", [])}
         require(tags.get("Learner") == learner, "live instance learner tag differs")
     rows = controller.cloud.call("ec2", "describe_instances", InstanceIds=[portal["instance_id"]])["Reservations"]

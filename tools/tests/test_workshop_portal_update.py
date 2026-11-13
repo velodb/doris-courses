@@ -34,6 +34,7 @@ class Controller:
         self.binding, self.pilot, self.cloud = {"shared_access": self.shared, "tool_sha256": pf.tool_hash()}, {"state_bucket_name": "state"}, Cloud()
         self.cloud.call = self.call
         self.instances = {"alice": "i-alice"}
+        self.record = {"known_instances": ["i-alice"], "nodes": {"alice": {"instance_id": "i-alice"}}}
 
     def call(self, service, operation, **kwargs):
         return {"Reservations": [{"Instances": [{"InstanceId": "i-portal", "State": {"Name": "running"}, "VpcId": "vpc-1",
@@ -108,6 +109,98 @@ class PortalUpdateTests(unittest.TestCase):
                               self.identity, self.subjects, broken, remove_activity=True)
             with self.assertRaisesRegex(ValueError, "subject differs"):
                 portal.verify(self.controller, self.bindings, self.route, self.route, self.identity, {"alice": ["wrong"]}, previous)
+
+    def registered(self):
+        return access.portal_config([self.route], [self.identity], [self.subjects])
+
+    def test_removal_accepts_nonrunning_or_missing_learners_but_registration_does_not(self):
+        for state in ("stopping", "stopped", "shutting-down", "terminated", None):
+            with self.subTest(state=state):
+                actual = {} if state is None else {"i-alice": {"State": {"Name": state},
+                    "Tags": [{"Key": "Learner", "Value": "alice"}]}}
+                with mock.patch.object(portal.shared_cleanup, "Terraform", StateTerraform), \
+                        mock.patch.object(portal.bindings, "verify_state"), \
+                        mock.patch.object(self.controller, "actual_instances", return_value=actual):
+                    _, result = portal.verify(self.controller, self.bindings, self.route, self.route,
+                        self.identity, self.subjects, self.registered(), remove_activity=True)
+                    self.assertEqual(result["activities"], {})
+                    with self.assertRaisesRegex(ValueError, "not running"):
+                        portal.verify(self.controller, self.bindings, self.route, self.route,
+                            self.identity, self.subjects, self.previous)
+
+    def test_removal_after_refresh_requires_the_saved_instance_assignment(self):
+        self.controller.instances = {}
+        with mock.patch.object(portal.shared_cleanup, "Terraform", StateTerraform), \
+                mock.patch.object(portal.bindings, "verify_state"), \
+                mock.patch.object(self.controller, "actual_instances", return_value={}) as actual:
+            _, result = portal.verify(self.controller, self.bindings, self.route, self.route,
+                self.identity, self.subjects, self.registered(), remove_activity=True)
+            self.assertEqual(result["activities"], {})
+            self.assertEqual(set(actual.call_args.args[0]), {"i-alice"})
+            for history in ({}, {"known_instances": [], "nodes": {"alice": {"instance_id": "i-alice"}}},
+                            {"known_instances": ["i-alice"], "nodes": {"alice": {"instance_id": "i-other"}}}):
+                with self.subTest(history=history):
+                    self.controller.record = history
+                    with self.assertRaisesRegex(ValueError, "saved pilot assignment"):
+                        portal.verify(self.controller, self.bindings, self.route, self.route,
+                            self.identity, self.subjects, self.registered(), remove_activity=True)
+
+    def test_removal_rejects_reassigned_instances_and_live_ownership_changes(self):
+        with mock.patch.object(portal.shared_cleanup, "Terraform", StateTerraform), \
+                mock.patch.object(portal.bindings, "verify_state"):
+            self.controller.instances = {"alice": "i-replacement"}
+            with self.assertRaisesRegex(ValueError, "current pilot instances"):
+                portal.verify(self.controller, self.bindings, self.route, self.route,
+                    self.identity, self.subjects, self.registered(), remove_activity=True)
+            self.controller.instances = {"alice": "i-alice"}
+            with mock.patch.object(self.controller, "actual_instances", side_effect=wc.ConfigError("ownership differs")):
+                with self.assertRaisesRegex(ValueError, "ownership differs"):
+                    portal.verify(self.controller, self.bindings, self.route, self.route,
+                        self.identity, self.subjects, self.registered(), remove_activity=True)
+            with mock.patch.object(self.controller, "actual_instances", return_value={"i-alice": {
+                    "State": {"Name": "terminated"}, "Tags": [{"Key": "Learner", "Value": "bob"}]}}):
+                with self.assertRaisesRegex(ValueError, "learner tag differs"):
+                    portal.verify(self.controller, self.bindings, self.route, self.route,
+                        self.identity, self.subjects, self.registered(), remove_activity=True)
+
+    def test_removal_requires_a_running_operator_portal(self):
+        response = self.controller.call("ec2", "describe_instances")
+        response["Reservations"][0]["Instances"][0]["State"]["Name"] = "stopped"
+        with mock.patch.object(portal.shared_cleanup, "Terraform", StateTerraform), \
+                mock.patch.object(portal.bindings, "verify_state"), \
+                mock.patch.object(self.controller.cloud, "call", return_value=response):
+            with self.assertRaisesRegex(ValueError, "portal host or network differs"):
+                portal.verify(self.controller, self.bindings, self.route, self.route,
+                    self.identity, self.subjects, self.registered(), remove_activity=True)
+
+    def test_shared_cleanup_review_and_dispatch_remove_only_the_expired_assignment(self):
+        other_config = {**self.controller.config, "event_id": "another"}
+        other_route = access.routes(other_config, self.controller.shared, self.controller.instances)
+        other_identity = {**self.identity, "event_id": "another"}
+        previous = access.portal_config([self.route, other_route], [self.identity, other_identity],
+            [self.subjects, self.subjects])
+        self.previous_file = self.root / "registered.json"
+        wc.write_manifest(self.previous_file, previous)
+        files = {"registry": self.previous_file}
+        for key, value in (("identity", self.identity), ("subjects", self.subjects)):
+            files[key] = self.root / (key + ".json")
+            wc.write_manifest(files[key], value)
+        route_file = self.root / "route.json"
+        wc.write_manifest(route_file, self.route)
+        self.controller.instances = {}
+        with mock.patch.object(portal.shared_cleanup, "Terraform", StateTerraform), \
+                mock.patch.object(portal.bindings, "verify_state"), \
+                mock.patch.object(self.controller, "actual_instances", return_value={}), \
+                mock.patch.object(self.controller.cloud, "send_command", wraps=self.controller.cloud.send_command) as send:
+            receipt = portal.shared_cleanup.portal_review(self.controller, self.bindings, route_file, files)
+            result = portal.update(self.controller, self.bindings, self.route, self.route,
+                self.identity, self.subjects, self.previous_file, self.output, remove_activity=True)
+        self.assertEqual(result["status"], "Success")
+        next_registry = wc.load_document(self.output / "next-portal.json")
+        self.assertEqual(receipt["next_registry_sha256"], wc.canonical_hash(next_registry))
+        self.assertEqual(next_registry["activities"], {"another": previous["activities"]["another"]})
+        self.assertEqual(send.call_count, 1)
+        self.assertEqual(send.call_args.kwargs["InstanceIds"], ["i-portal"])
 
     def test_remote_code_compiles_and_binds_old_and_new_hash(self):
         commands, old_hash, new_hash = portal.remote_commands(b"old", b"new")
