@@ -35,7 +35,7 @@ resource "aws_kms_key" "copy" {
   enable_key_rotation     = true
   # Disabling this dedicated export key also blocks outstanding KMS grants.
   # Recipient copies already re-encrypted under their own key remain usable.
-  is_enabled = var.mode == "import" || var.share_enabled
+  is_enabled = !var.revoked
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = concat([{
@@ -77,7 +77,7 @@ resource "aws_ami_copy" "copy" {
   timeouts { create = "120m" }
   lifecycle {
     precondition {
-      condition     = var.mode == "export" ? var.source_account_id == var.expected_account_id && var.recipient_account_id != var.expected_account_id : var.source_account_id != var.expected_account_id && var.recipient_account_id == var.expected_account_id && !var.share_enabled
+      condition     = (var.mode == "export" ? var.source_account_id == var.expected_account_id && var.recipient_account_id != var.expected_account_id : var.source_account_id != var.expected_account_id && var.recipient_account_id == var.expected_account_id && !var.share_enabled) && !(var.revoked && var.share_enabled) && (var.mode == "export" || !var.revoked)
       error_message = "Export owns the source; import owns an unshared recipient copy in a different account."
     }
   }

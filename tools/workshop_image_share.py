@@ -51,10 +51,14 @@ def package(directory, trusted=None):
     require(all(not (directory / name).is_symlink() and (directory/name).resolve().is_relative_to(directory.resolve()) and
                 wi.checksum(directory / name) == digest
                 for name, digest in index['sha256'].items()), 'transfer: package file checksum mismatch')
-    require(re.fullmatch(r'[a-z][a-z0-9-]{0,31}', index['transfer_id']) and
-            re.fullmatch(r'[0-9]{12}', index['recipient_account_id']), 'transfer: invalid transfer or recipient ID')
-    require(re.fullmatch(r'arn:aws:iam::' + index['recipient_account_id'] + r':(?:role|user)/[A-Za-z0-9+=,.@_/-]+',
-                         index['recipient_principal_arn']), 'transfer: select an exact recipient user or role')
+    require(re.fullmatch(r'[a-z][a-z0-9-]{0,31}', index['transfer_id']), 'transfer: invalid transfer ID')
+    bound = index['recipient_account_id'] is not None or index['recipient_principal_arn'] is not None
+    if bound:
+        require(isinstance(index['recipient_account_id'], str) and re.fullmatch(r'[0-9]{12}', index['recipient_account_id']),
+                'transfer: invalid recipient ID')
+        require(isinstance(index['recipient_principal_arn'], str) and re.fullmatch(
+            r'arn:aws:iam::' + index['recipient_account_id'] + r':(?:role|user)/[A-Za-z0-9+=,.@_/-]+',
+            index['recipient_principal_arn']), 'transfer: select an exact recipient user or role')
     release = releases.load_release(directory / 'release.json')
     runtime = wc.load_document(directory / 'runtime/runtime.json')
     require(index['sha256']['runtime/runtime.json'] == release['runtime_sha256'] and
@@ -66,7 +70,8 @@ def package(directory, trusted=None):
             'transfer: matching runtime bundle is incomplete or changed')
     manifest = wc.load_document(directory / 'image-manifest.json')
     require(re.fullmatch(r'(us|eu|ap|ca|sa|me|af|il|mx)-[a-z]+-[0-9]+', release['region']) and
-            release['aws_account_id'] != index['recipient_account_id'], 'transfer: use two commercial accounts in one Region')
+            (not bound or release['aws_account_id'] != index['recipient_account_id']),
+            'transfer: use two commercial accounts in one Region')
     require(index['sha256']['image-manifest.json'] == release['image_manifest_sha256'] and
             all(manifest[k] == release[k] for k in ('course_ref', 'deployment_ref', 'runtime_sha256')) and
             manifest['profiles'] == release['course_profiles'] and
@@ -78,6 +83,7 @@ def package(directory, trusted=None):
     require(set(builder) == {'instance_id'} and re.fullmatch(r'i-[0-9a-f]{17}', builder['instance_id']),
             'transfer: retain the original builder identity for fresh-instance audits')
     if 'distribution.json' in index['sha256']:
+        require(bound, 'transfer: an exported shared package needs an exact recipient')
         distribution = wc.load_document(directory / 'distribution.json')
         require(set(distribution) == {'ami_id', 'snapshot_ids', 'kms_key_arn', 'account_id', 'region',
                                       'transfer_id', 'shared', 'source_ami_id'} and
@@ -220,7 +226,7 @@ def cloud_check(aws, index, release, directory, mode, action):
     identity = account(aws, expected)
     # Cleanup must still work after the original release was retired or its
     # sharing window ended. It operates only on this run's recorded state.
-    if action == 'create':
+    if action in {'create', 'stage', 'share'}:
         if mode == 'export':
             source_live(aws, release)
         else:
@@ -242,8 +248,17 @@ def check_plan(value, action):
                 not row.get('module_address'), 'transfer: unexpected or duplicate managed resource')
         addresses.add(row['address'])
         actions = row['change']['actions']
-        allowed = {'create', 'no-op'} if action == 'create' else {'update', 'delete', 'no-op'} if action == 'revoke' else {'delete', 'no-op'}
+        allowed = ({'create', 'no-op'} if action in {'create', 'stage'} else
+                   {'create', 'update', 'no-op'} if action == 'share' else
+                   {'update', 'delete', 'no-op'} if action == 'revoke' else {'delete', 'no-op'})
         require(set(actions) <= allowed, 'transfer: replacement or unexpected plan action rejected')
+        if action == 'stage':
+            require(row['type'] in {'aws_kms_key', 'aws_ami_copy'}, 'transfer: staging cannot create sharing grants')
+        if action == 'share':
+            require((row['type'] == 'aws_kms_key' and actions in (['update'], ['no-op'])) or
+                    (row['type'] == 'aws_ami_copy' and actions == ['no-op']) or
+                    (row['type'] in {'aws_ami_launch_permission', 'aws_snapshot_create_volume_permission'} and
+                     actions in (['create'], ['no-op'])), 'transfer: sharing must preserve the staged copy and key')
         if action == 'revoke':
             require((row['type'] == 'aws_kms_key' and actions in (['update'], ['no-op'])) or
                     (row['type'] == 'aws_ami_copy' and actions == ['no-op']) or
@@ -255,6 +270,12 @@ def plan(directory, trusted, mode, profile, root, action, budget=None, retain=No
     directory, root = directory.resolve(), root.resolve()
     index, release, _ = package(directory, trusted)
     require(mode != 'import' or 'distribution.json' in index['sha256'], 'transfer: import needs an exported package')
+    require(action not in {'stage', 'share', 'revoke'} or mode == 'export',
+            'transfer: staging and permission changes belong to the source operator')
+    require(action not in {'create', 'share'} or index['recipient_account_id'] is not None,
+            'transfer: bind a recipient before sharing; use --action stage for source-only preparation')
+    require(action != 'stage' or index['recipient_account_id'] is None,
+            'transfer: staging uses an unbound source package')
     expected = release['aws_account_id'] if mode == 'export' else index['recipient_account_id']
     aws = pf.Aws({'aws_profile': profile, 'region': release['region']})
     cloud_check(aws, index, release, directory, mode, action)
@@ -264,7 +285,7 @@ def plan(directory, trusted, mode, profile, root, action, budget=None, retain=No
         require(run['config'] == config and run['mode'] == mode and run['package_sha256'] == trusted,
                 'transfer: this run belongs to different inputs; do not reuse its state')
     else:
-        require(action == 'create' and not root.exists(), 'transfer: use a new run directory for a new copy')
+        require(action in {'create', 'stage'} and not root.exists(), 'transfer: use a new run directory for a new copy')
         require(budget is not None and Decimal(budget).is_finite() and Decimal(budget) > 0 and retain and
                 wc.timestamp(retain, 'retain-until') > datetime.now(timezone.utc),
                 'transfer: provide a positive budget and future retention review time')
@@ -272,8 +293,11 @@ def plan(directory, trusted, mode, profile, root, action, budget=None, retain=No
         run = dict(config=config, mode=mode, package_sha256=trusted, package_dir=str(directory),
                    budget_usd=str(budget), retain_until=retain)
         wi.write(root / 'run.json', run)
-    require(action != 'create' or wc.timestamp(run['retain_until'], 'retain-until') > datetime.now(timezone.utc),
+    require(action not in {'create', 'stage', 'share'} or wc.timestamp(run['retain_until'], 'retain-until') > datetime.now(timezone.utc),
             'transfer: retention window expired; only revocation and cleanup remain available')
+    if action == 'share':
+        applied = wc.load_document(root / 'applied-inputs.json')
+        require(applied.get('revoked') is False, 'transfer: revoked or unfinished copies need a new transfer')
     require(action != 'revoke' or mode == 'export', 'transfer: only the exporter owns sharing grants')
     # Locking is handled by main; attempts are immutable and share one stable state.
     attempt = root / 'plans' / datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f')
@@ -281,10 +305,11 @@ def plan(directory, trusted, mode, profile, root, action, budget=None, retain=No
     source = release if mode == 'export' else wc.load_document(directory / 'distribution.json')
     variables = dict(aws_profile=profile, expected_account_id=expected, region=release['region'], mode=mode,
         source_account_id=release['aws_account_id'], source_ami_id=source['ami_id'],
-        recipient_account_id=index['recipient_account_id'], recipient_principal_arn=index['recipient_principal_arn'],
+        recipient_account_id=index['recipient_account_id'] or '', recipient_principal_arn=index['recipient_principal_arn'] or '',
         transfer_id=index['transfer_id'], course_ref=release['course_ref'],
         manifest_sha256=release['image_manifest_sha256'], source_release_sha256=wc.canonical_hash(release),
-        retain_until=run['retain_until'], share_enabled=(mode == 'export' and action == 'create'))
+        retain_until=run['retain_until'], share_enabled=(mode == 'export' and action in {'create', 'share'}),
+        revoked=(mode == 'export' and action == 'revoke'))
     if action == 'destroy' and (root / 'applied-inputs.json').exists():
         variables = wc.load_document(root / 'applied-inputs.json')
     wi.write(attempt / 'inputs.json', variables)
@@ -321,7 +346,7 @@ def apply(root, attempt, approved):
     require(not (attempt / 'apply-started.json').exists(),
             'transfer: previous apply was dispatched; inspect state and make a fresh recovery plan')
     run = wc.load_document(root / 'run.json')
-    require(b['action'] != 'create' or wc.timestamp(run['retain_until'], 'retain-until') > datetime.now(timezone.utc),
+    require(b['action'] not in {'create', 'stage', 'share'} or wc.timestamp(run['retain_until'], 'retain-until') > datetime.now(timezone.utc),
             'transfer: retention window expired before apply')
     directory = Path(run['package_dir'])
     index, release, _ = package(directory, run['package_sha256'])
@@ -424,13 +449,61 @@ def status(root, *, aws=None):
             artifact['transfer_id'] == index['transfer_id'] and artifact['source_ami_id'] == expected_source and
             artifact['ami_id'] != expected_source and (run['mode'] == 'export' or artifact['shared'] is False),
             'transfer: unexpected state output identity')
+    inputs = wc.load_document(root / 'applied-inputs.json') if (root / 'applied-inputs.json').exists() else {}
+    enabled = run['mode'] == 'import' or not inputs.get('revoked', not artifact['shared'])
     artifact_live(aws, artifact, release, owned=True,
                   sharing=index['recipient_account_id'] if artifact['shared'] else None,
-                  key_enabled=run['mode'] == 'import' or artifact['shared'])
+                  key_enabled=enabled)
     key_policy_live(aws, artifact, index['recipient_principal_arn'] if artifact['shared'] else None)
-    if run['mode'] == 'export' and artifact['shared']:
+    if run['mode'] == 'export' and enabled:
         source_live(aws, release)
     return artifact
+
+
+def readiness(root):
+    """Prove source-side prerequisites without any recipient credentials."""
+    run = wc.load_document(root / 'run.json')
+    require(run['mode'] == 'export', 'transfer: readiness is a source-side check')
+    applied = wc.load_document(root / 'applied-inputs.json')
+    require(applied.get('revoked') is False and applied['share_enabled'] is False,
+            'transfer: readiness requires an enabled, unshared staged copy')
+    artifact = status(root)
+    require(artifact['shared'] is False, 'transfer: readiness must not grant a recipient access')
+    report = dict(kind='doris-workshop-source-image-readiness', schema_version=1,
+        checked_at=wc.utc_text(datetime.now(timezone.utc)), share_ready=True, artifact=artifact,
+        recipient_credentials_required=False, cross_account_copy_verified=False,
+        checks={name: True for name in ('original-release-private-and-unchanged', 'copy-available-and-owned',
+            'single-encrypted-root', 'customer-managed-key-enabled', 'no-ami-or-snapshot-grants',
+            'key-policy-owner-only', 'sealed-manifest-runtime-binding', 'copy-lineage')})
+    wi.write(root / 'reports' / ('source-readiness-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f') + '.json'), report)
+    return report
+
+
+def bind(root, output, recipient, principal):
+    """Bind public recipient identifiers locally; no recipient API or cloud mutation."""
+    run = wc.load_document(root / 'run.json')
+    require(run['mode'] == 'export', 'transfer: only the publisher binds a recipient')
+    applied = wc.load_document(root / 'applied-inputs.json')
+    require(applied.get('revoked') is False and applied['share_enabled'] is False,
+            'transfer: bind only a staged, unshared copy')
+    source = Path(run['package_dir'])
+    index, _, _ = package(source, run['package_sha256'])
+    require(index['recipient_account_id'] is None and index['recipient_principal_arn'] is None and not output.exists(),
+            'transfer: preserve the existing recipient binding and choose a new package directory')
+    output.mkdir(parents=True, mode=0o700)
+    for name in index['sha256']:
+        (output / name).parent.mkdir(parents=True, mode=0o700, exist_ok=True)
+        shutil.copyfile(source / name, output / name)
+    wi.write(output / 'package.json', {**index, 'recipient_account_id': recipient, 'recipient_principal_arn': principal})
+    package(output)
+    # Changing this explicit binding invalidates old plans through run_sha256;
+    # both the previous package and state remain intact for audit and cleanup.
+    digest = wi.checksum(output / 'package.json')
+    wi.write(root / 'bindings' / (datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f') + '.json'),
+             dict(previous_run=run, new_package_sha256=digest, recipient_account_id=recipient,
+                  recipient_principal_arn=principal))
+    ws.atomic_json(root / 'run.json', {**run, 'package_sha256': digest, 'package_dir': str(output.resolve())})
+    return digest
 
 
 def export(root, output):
@@ -504,12 +577,17 @@ def main():
     sub = parser.add_subparsers(dest='command', required=True)
     prep = sub.add_parser('prepare')
     for name in ('release', 'manifest', 'builder', 'output', 'runtime-bundle'): prep.add_argument('--' + name, type=Path, required=True)
-    for name in ('transfer-id', 'recipient-account', 'recipient-principal'): prep.add_argument('--' + name, required=True)
+    prep.add_argument('--transfer-id', required=True)
+    for name in ('recipient-account', 'recipient-principal'): prep.add_argument('--' + name)
+    bp = sub.add_parser('bind')
+    bp.add_argument('--output', type=Path, required=True)
+    bp.add_argument('--recipient-account', required=True)
+    bp.add_argument('--recipient-principal', required=True)
     pp = sub.add_parser('plan')
     pp.add_argument('--package', type=Path, required=True)
     pp.add_argument('--trusted-package-sha256', required=True)
     pp.add_argument('--mode', choices=['export', 'import'], required=True)
-    pp.add_argument('--action', choices=['create', 'revoke', 'destroy'], default='create')
+    pp.add_argument('--action', choices=['stage', 'share', 'create', 'revoke', 'destroy'], default='create')
     pp.add_argument('--profile', required=True)
     pp.add_argument('--budget-usd')
     pp.add_argument('--retain-until')
@@ -518,10 +596,10 @@ def main():
     ap.add_argument('--approved-plan-sha256', required=True)
     rc = sub.add_parser('reconcile')
     rc.add_argument('--attempt', type=Path, required=True)
-    for name in ('status', 'export', 'candidate'):
+    for name in ('status', 'readiness', 'export', 'candidate'):
         item = sub.add_parser(name)
-        if name != 'status': item.add_argument('--output', type=Path, required=True)
-    for name in ('plan', 'apply', 'status', 'export', 'candidate', 'reconcile'):
+        if name in {'export', 'candidate'}: item.add_argument('--output', type=Path, required=True)
+    for name in ('plan', 'apply', 'status', 'readiness', 'export', 'candidate', 'reconcile', 'bind'):
         sub.choices[name].add_argument('--run-dir', type=Path, required=True)
     args = parser.parse_args()
     os.umask(0o077)
@@ -540,6 +618,8 @@ def main():
                 if args.command == 'apply': result = apply(root, args.attempt.resolve(), args.approved_plan_sha256)
                 elif args.command == 'reconcile': result = reconcile(root, args.attempt.resolve())
                 elif args.command == 'status': result = status(root)
+                elif args.command == 'readiness': result = readiness(root)
+                elif args.command == 'bind': result = bind(root, args.output, args.recipient_account, args.recipient_principal)
                 else: result = globals()[args.command](root, args.output)
         print(json.dumps(result, indent=2))
         return 0

@@ -2,7 +2,10 @@
   "schema_version": 1,
   "image_distribution": {
     "implementation": "offline-tested",
-    "cross_account_acceptance": "pending",
+    "qualification_scope": "source-share-prerequisites-and-recipient-handoff",
+    "source_live_readiness": "pending",
+    "cross_account_acceptance": "recipient-operated-unverified",
+    "recipient_credentials_required_by_publisher": false,
     "ownership": "recipient-owned-copy",
     "region_scope": "same-commercial-region",
     "summary": "image-sharing.md"

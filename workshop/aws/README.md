@@ -19,8 +19,10 @@ Use [external TTL cleanup preparation](ttl/README.md) for revision-bound
 control records, operator fencing and the disabled Scheduler/Fargate interface.
 For a validated private AMI, use [prebuilt activity startup](prebuilt.md),
 including pinned release metadata and guarded single-learner replacement.
-Use [private image transfer](image-sharing.md) to prepare separate CMK-encrypted
-distribution and recipient copies. Its cross-account cloud acceptance is pending.
+Use [source image readiness](image-sharing.md) to prepare an unshared CMK-encrypted
+distribution copy without recipient credentials, then give the partner the
+[self-service receiving runbook](image-sharing-recipient.md). Source cloud readiness
+and recipient-operated cross-account acceptance are recorded separately.
 Use [controlled SSM diagnostics and log handling](operations.md) to locate
 initialization, service and kernel failures without exporting student content.
 Real EC2 infrastructure, the default `rta-main` Labs and the private image have

@@ -5,8 +5,10 @@ profile set and `release_ref` in the event's `image` object. Use
 `image.mode: prebuilt` and the [prebuilt example](examples/prebuilt.example.yaml)
 for its shape. There is no latest-image lookup or automatic upgrade.
 
-For a partner account, first [copy and validate the transferred image](image-sharing.md)
-in that account and publish its own release. This activity flow still requires
+For a partner account, the partner follows the [receiving runbook](image-sharing-recipient.md)
+using their own credentials to copy, validate and publish its own release. The
+publisher checks [source sharing prerequisites](image-sharing.md) independently.
+This activity flow still requires
 the AMI owner to match the deployment account and forbids sharing grants.
 
 The pilot settings additionally require `image_release_file`, pointing to the

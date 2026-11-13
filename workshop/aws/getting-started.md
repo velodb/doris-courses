@@ -42,7 +42,10 @@ expiry and budget. Keep credential material outside these files.
 For a prebuilt image, validate the operator-owned release manifest against
 the exact account, Region, AMI, source and profiles. For another account, use
 the public base-image installation path or build/validate an image in that
-account. See [image release](packer/README.md) and [validation](image-validation.md).
+account. A publisher can also [prepare a CMK-encrypted shareable image](image-sharing.md)
+and supply a [recipient handoff](image-sharing-recipient.md); the recipient copies,
+validates and publishes it under their own account and credentials. See
+[image release](packer/README.md) and [validation](image-validation.md).
 
 For formal shared access, establish DNS ownership/delegation, certificate,
 network, independent operator portal and Cognito prerequisites before using

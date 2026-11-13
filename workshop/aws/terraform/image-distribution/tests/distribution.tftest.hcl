@@ -40,7 +40,10 @@ run "separate_encrypted_distribution_copy_and_exact_grants" {
 }
 run "revoke_preserves_copy_and_removes_policy_and_ec2_permissions" {
   command = apply
-  variables { share_enabled = false }
+  variables {
+    share_enabled = false
+    revoked       = true
+  }
   assert {
     condition     = length(aws_ami_launch_permission.recipient) == 0 && length(aws_snapshot_create_volume_permission.recipient) == 0 && length(jsondecode(aws_kms_key.copy.policy).Statement) == 1 && output.artifact.shared == false && !aws_kms_key.copy.is_enabled
     error_message = "Revocation must remove future sharing, not claim to recall recipient copies."
@@ -82,4 +85,36 @@ run "reject_wrong_effective_account" {
   command = plan
   variables { expected_account_id = "222222222222" }
   expect_failures = [data.aws_caller_identity.current, aws_ami_copy.copy]
+}
+run "stage_without_any_recipient_keeps_key_enabled_and_grants_absent" {
+  command = apply
+  variables {
+    recipient_account_id    = ""
+    recipient_principal_arn = ""
+    share_enabled           = false
+    revoked                 = false
+  }
+  assert {
+    condition     = aws_kms_key.copy.is_enabled && length(jsondecode(aws_kms_key.copy.policy).Statement) == 1 && length(aws_ami_launch_permission.recipient) == 0 && length(aws_snapshot_create_volume_permission.recipient) == 0 && !output.artifact.shared
+    error_message = "Source preparation requires no recipient identity and must not grant external access."
+  }
+}
+run "sharing_cannot_omit_recipient" {
+  command = plan
+  variables {
+    recipient_account_id    = ""
+    recipient_principal_arn = ""
+    share_enabled           = true
+  }
+  expect_failures = [var.recipient_account_id]
+}
+run "sharing_requires_exact_recipient_principal" {
+  command = plan
+  variables { recipient_principal_arn = "" }
+  expect_failures = [var.recipient_principal_arn]
+}
+run "reject_shared_revoked_key" {
+  command = plan
+  variables { revoked = true }
+  expect_failures = [aws_ami_copy.copy]
 }

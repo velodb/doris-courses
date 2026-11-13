@@ -50,11 +50,13 @@ perform cloud or browser acceptance.
 
 ## Platforms and deployment modes
 
-The [private image transfer workflow](image-sharing.md) has offline tool and
-Terraform mock coverage. It preserves recipient ownership and the existing
-publication gates; actual cross-account copying, course/browser validation,
-unauthorized-account rejection, revocation and two-sided cleanup remain pending.
-The same-account results above do not certify this workflow.
+The [source image readiness workflow](image-sharing.md) has offline tool and
+Terraform mock coverage. Publisher qualification covers an enabled CMK-encrypted
+source copy, private permissions and a recipient handoff; actual source cloud
+readiness is pending. A [recipient operates their own copy and workshop](image-sharing-recipient.md)
+using their own credentials and the existing publication gates. Those external
+results are unverified until reported and are separate from publisher acceptance.
+The same-account results above do not certify cross-account delivery.
 
 - EC2 runtime and AMI validation cover Linux x86_64 and the stated Region and
   instance type. Arm64 EC2, other Regions/types and optional course combinations

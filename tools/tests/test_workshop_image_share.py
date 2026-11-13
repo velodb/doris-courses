@@ -328,6 +328,115 @@ class TransferTests(unittest.TestCase):
             self.assertFalse(root.exists())
             tf.assert_not_called()
 
+    def unbound_package(self):
+        output = self.root/'unbound'
+        digest = share.prepare(self.root/'release.json', self.root/'manifest.json', self.root/'builder.json',
+            'rta-partner-v1', None, None, output, self.runtime)
+        return output, digest
+
+    def test_source_package_needs_no_recipient_or_recipient_credentials(self):
+        output, digest = self.unbound_package()
+        index, _, _ = share.package(output, digest)
+        self.assertIsNone(index['recipient_account_id'])
+        self.assertIsNone(index['recipient_principal_arn'])
+        with mock.patch.object(share.pf,'Aws') as aws, self.assertRaisesRegex(wc.ConfigError,'bind a recipient'):
+            share.plan(output,digest,'export','publisher',self.root/'run','create','10','2099-01-01T00:00:00Z')
+        aws.assert_not_called()
+
+    def test_half_bound_package_and_shared_package_without_recipient_are_rejected(self):
+        output, _ = self.unbound_package()
+        original = wc.load_document(output/'package.json')
+        for account, principal in [(TARGET,None),(None,self.principal)]:
+            self.replace(output/'package.json',dict(original,recipient_account_id=account,recipient_principal_arn=principal))
+            with self.subTest(account=account), self.assertRaises(wc.ConfigError): share.package(output)
+        self.replace(output/'package.json',original)
+        wi.write(output/'distribution.json', self.artifact)
+        original['sha256']['distribution.json'] = wi.checksum(output/'distribution.json')
+        self.replace(output/'package.json',original)
+        with self.assertRaisesRegex(wc.ConfigError,'exact recipient'): share.package(output)
+
+    def staged_run(self):
+        directory, digest = self.unbound_package()
+        root = self.root/'staged-run'
+        root.mkdir()
+        wi.write(root/'run.json',dict(config=dict(aws_profile='publisher',aws_account_id=SOURCE,region='us-east-1'),
+            mode='export',package_sha256=digest,package_dir=str(directory),retain_until='2099-01-01T00:00:00Z'))
+        wi.write(root/'applied-inputs.json',dict(share_enabled=False,revoked=False))
+        self.artifact['shared'] = False
+        return root, directory, digest
+
+    def test_staged_status_checks_enabled_key_and_owner_policy_with_only_source_profile(self):
+        root, _, _ = self.staged_run()
+        aws,*_ = self.cloud()
+        with mock.patch.object(share,'tf',return_value=json.dumps(dict(artifact=dict(value=self.artifact)))), \
+             mock.patch.object(share,'source_live') as source:
+            self.assertEqual(share.status(root,aws=aws),self.artifact)
+            source.assert_called_once_with(aws,self.release)
+        aws.client.assert_not_called()
+
+    def test_readiness_is_source_only_and_does_not_claim_cross_account_acceptance(self):
+        root,_,_ = self.staged_run()
+        with mock.patch.object(share,'status',return_value=self.artifact):
+            report = share.readiness(root)
+        self.assertTrue(report['share_ready'])
+        self.assertFalse(report['recipient_credentials_required'])
+        self.assertFalse(report['cross_account_copy_verified'])
+        self.assertEqual(len(list((root/'reports').glob('*.json'))),1)
+
+    def test_bind_requires_only_public_identifiers_and_preserves_state_and_payload(self):
+        root, original, digest = self.staged_run()
+        before = wi.checksum(root/'run.json')
+        (root/'terraform.tfstate').write_bytes(b'unchanged source state')
+        bound = self.root/'bound'
+        with mock.patch.object(share.pf,'Aws') as aws:
+            new_digest = share.bind(root,bound,TARGET,self.principal)
+            aws.assert_not_called()
+        index,_,_ = share.package(bound,new_digest)
+        self.assertEqual(index['recipient_account_id'],TARGET)
+        self.assertEqual(index['sha256'],wc.load_document(original/'package.json')['sha256'])
+        self.assertEqual((root/'terraform.tfstate').read_bytes(),b'unchanged source state')
+        self.assertEqual(wi.checksum(original/'package.json'),digest)
+        self.assertNotEqual(wi.checksum(root/'run.json'),before)
+        self.assertEqual(wc.load_document(root/'run.json')['package_sha256'],new_digest)
+        with self.assertRaises(wc.ConfigError): share.bind(root,self.root/'another-binding','222222222222',
+                                                         'arn:aws:iam::222222222222:role/Another')
+
+    def test_source_stage_plan_creates_no_grants_and_keeps_key_enabled(self):
+        directory,digest = self.unbound_package()
+        root = self.root/'stage-plan'
+        aws = mock.Mock()
+        aws.call.return_value = dict(Account=SOURCE)
+        def terraform(directory,*args,capture=False):
+            if args[0] == 'plan':
+                output = next(arg.removeprefix('-out=') for arg in args if arg.startswith('-out='))
+                Path(output).write_bytes(b'fixed stage plan')
+            if args[0] == 'show': return json.dumps(dict(complete=True,resource_changes=[]))
+        with mock.patch.object(share.pf,'Aws',return_value=aws) as factory, \
+             mock.patch.object(share,'source_live'),mock.patch.object(share,'tf',side_effect=terraform):
+            attempt = Path(share.plan(directory,digest,'export','publisher',root,'stage','10','2099-01-01T00:00:00Z'))
+        factory.assert_called_once_with(dict(aws_profile='publisher',region='us-east-1'))
+        variables = wc.load_document(attempt/'inputs.json')
+        self.assertEqual(variables['recipient_account_id'],'')
+        self.assertEqual(variables['recipient_principal_arn'],'')
+        self.assertFalse(variables['share_enabled'])
+        self.assertFalse(variables['revoked'])
+
+    def test_share_plan_cannot_create_or_replace_staged_key_or_copy(self):
+        for resource in ['aws_ami_copy','aws_kms_key']:
+            for actions in [['create'],['delete','create'],['delete']]:
+                with self.subTest(resource=resource,actions=actions),self.assertRaises(wc.ConfigError):
+                    share.check_plan(dict(resource_changes=[dict(mode='managed',address=resource+'.copy',type=resource,
+                                                                change=dict(actions=actions))]),'share')
+        with self.assertRaises(wc.ConfigError):
+            share.check_plan(dict(resource_changes=[dict(mode='managed',address='aws_ami_launch_permission.recipient[0]',
+                type='aws_ami_launch_permission',change=dict(actions=['create']))]),'stage')
+
+    def test_readiness_and_binding_reject_revoked_copies(self):
+        root,_,_ = self.staged_run()
+        self.replace(root/'applied-inputs.json',dict(share_enabled=False,revoked=True))
+        with self.assertRaises(wc.ConfigError): share.readiness(root)
+        with self.assertRaises(wc.ConfigError): share.bind(root,self.root/'forbidden',TARGET,self.principal)
+
 
 def pf_hash():
     return share.pf.module_hash('image-distribution')

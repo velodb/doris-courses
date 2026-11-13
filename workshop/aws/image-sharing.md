@@ -1,4 +1,11 @@
-# Transfer a private course image to another account
+# Prepare a private course image for sharing
+
+The publisher's acceptance target is a **source-owned image that meets the
+prerequisites for private sharing**, plus a complete recipient handoff. The
+publisher never needs a recipient profile, password, access key or permission
+to assume a recipient role. Recipient copy, validation and workshop deployment
+are performed by the recipient using their own credentials and are recorded
+separately from source readiness.
 
 The transfer workflow creates a separate customer-managed-key (CMK) encrypted
 distribution copy, then lets one named recipient copy it into their own account
@@ -7,10 +14,12 @@ release tags and its release file stay unchanged. The recipient copy is a
 **candidate** until it passes the existing independent-instance audit, complete
 selected course, real browser and cleanup gates in [image validation](image-validation.md).
 
-The tools and Terraform module have offline coverage. Two-account cloud,
-course/browser, unauthorized-account and revocation acceptance is **pending**.
+The tools and Terraform module have offline coverage. Actual source-side CMK
+copy/readiness verification is pending a source budget and retention window.
+Recipient-side cloud/course/browser results remain unverified until supplied
+by the recipient; they are not prerequisites for publisher qualification.
 Existing [support claims](support.md) do not certify cross-account delivery.
-Both accounts must use the same commercial AWS Region, Linux x86_64, one
+The documented recipient workflow uses the same commercial AWS Region, Linux x86_64, one
 200 GiB EBS root and the exact released profile set. Schema-v1 releases and
 schema-v2 content bindings are preserved; this does not extend any course's
 tested language, Region, profile or browser scope. Cross-Region transfers and
@@ -40,13 +49,16 @@ to the attached key; no public or wildcard principal is used. Account
 administrators can change their own IAM policies and assume their own roles.
 This is not a boundary against a recipient account's administrators.
 
-Before cloud execution, confirm both account IDs and explicit profiles, the
-recipient IAM principal, Region, course selection, budget, retention review
-time and who will perform cleanup in each account. Install the existing
+For source preparation, confirm the source account/profile, Region, course
+selection, source-side budget and retention review time. No recipient identity
+is needed at this stage. At actual grant time, obtain only the recipient's
+account ID, exact IAM user/role ARN and agreed copy window. The recipient keeps
+their profile and credentials in their own environment. Each side manages its
+own costs and cleanup. Install the existing
 [preflight dependencies](preflight-requirements.txt) and Terraform 1.10+.
 The module pins the same AWS provider as the other workshop modules.
 
-## Prepare and share the distribution copy
+## Prepare the source image without a recipient
 
 Use the exact publisher release, sealed manifest, original builder record and
 matching runtime bundle. The package includes only the three selected
@@ -56,47 +68,89 @@ credentials. In particular, the recipient does not need paths on the publisher's
 computer. The runtime bundle allows the existing offline/live preflight to
 verify the exact baked runtime without rebuilding the image.
 
-The account IDs and principal below are fictional. Choose a new transfer ID
-and private directories for every recipient/version pair.
+Choose a new transfer ID and private directories for the version being prepared.
+Omitting both recipient options creates an unbound package.
 
 ```bash
 python tools/workshop_image_share.py prepare \
   --release private/release.json --manifest private/image-manifest.json \
   --builder private/build-instance.json --runtime-bundle private/runtime-bundle \
-  --transfer-id rta-partner-v1 --recipient-account 111111111111 \
-  --recipient-principal arn:aws:iam::111111111111:role/WorkshopImporter \
+  --transfer-id rta-partner-v1 \
   --output workshop/aws/.local/transfer-input
 ```
 
 `prepare` is offline and prints the SHA256 of `package.json`. No command logs
 credentials. Copy the printed digest into `INPUT_SHA256` in the next command.
 `REVIEW_TIME` must be a future RFC3339 timestamp. `SOURCE_BUDGET_USD` is the
-agreed source-side budget; record a separate recipient-side budget and account
-for both sides together. This value is a declaration, not a price estimate,
+agreed source-side budget. This value is a declaration, not a price estimate,
 AWS Budget configuration or hard spending cap. Review current AWS pricing and
-the two additional snapshots, two CMKs, validation instances and retained
-source artifacts before approving either cloud plan.
+the source distribution snapshot, dedicated CMK and retained source artifacts
+before approving the source plan. The recipient separately budgets their own
+copy/key, validation instances and workshop resources.
 
 ```bash
-python tools/workshop_image_share.py plan --mode export --action create \
+python tools/workshop_image_share.py plan --mode export --action stage \
   --package workshop/aws/.local/transfer-input --trusted-package-sha256 INPUT_SHA256 \
   --profile publisher-profile --budget-usd SOURCE_BUDGET_USD \
   --retain-until REVIEW_TIME --run-dir workshop/aws/.local/transfer-source
 ```
 
 Read the printed attempt directory's `review.json` and `binding.json`. The only
-managed resources may be one dedicated CMK, one AMI copy, one account-specific
-AMI launch grant and one snapshot read grant. No original image is a managed
-resource. Obtain the plan SHA256 from `binding.json` after review:
+managed resources are one enabled dedicated CMK with an owner-only policy and
+one AMI copy. No external AMI, snapshot or key-policy grant is created. The
+original published image is not a managed resource. Obtain the plan SHA256
+from `binding.json` after review:
 
 ```bash
 python tools/workshop_image_share.py apply \
   --run-dir workshop/aws/.local/transfer-source --attempt SOURCE_PLAN_DIRECTORY \
   --approved-plan-sha256 REVIEWED_SOURCE_PLAN_SHA256
 python tools/workshop_image_share.py status --run-dir workshop/aws/.local/transfer-source
+python tools/workshop_image_share.py readiness --run-dir workshop/aws/.local/transfer-source
+```
+
+`readiness` rechecks the original release, available owned copy, encrypted root,
+enabled customer-managed key, owner-only policy, absence of image/snapshot
+grants and the exact manifest/runtime/copy lineage. It writes a timestamped
+source-side report with `share_ready: true`, `recipient_credentials_required:
+false` and `cross_account_copy_verified: false`. Successful source readiness
+does not claim that a recipient has copied or deployed the image.
+
+## Grant access when a recipient is known
+
+Ask the recipient for their 12-digit account ID and exact receiving IAM role
+or user ARN. They do not need to trust the publisher to assume that role;
+the ARN identifies the principal authorized to use the source encryption key.
+The following account and role are fictional.
+
+```bash
+python tools/workshop_image_share.py bind \
+  --run-dir workshop/aws/.local/transfer-source \
+  --recipient-account 111111111111 \
+  --recipient-principal arn:aws:iam::111111111111:role/WorkshopImporter \
+  --output workshop/aws/.local/transfer-bound
+python tools/workshop_image_share.py plan --mode export --action share \
+  --package workshop/aws/.local/transfer-bound --trusted-package-sha256 BOUND_PACKAGE_SHA256 \
+  --profile publisher-profile --run-dir workshop/aws/.local/transfer-source
+```
+
+`bind` only writes a recipient-bound package and preserves the previous binding;
+it makes no cloud calls and invalidates earlier plans. `share` creates a new
+reviewed plan for the existing source copy: one exact AMI account grant, one
+snapshot account grant and an update of the dedicated key policy for the named
+recipient. It cannot replace the staged image/key. Review and apply the new
+attempt using `apply --approved-plan-sha256`, then:
+
+```bash
 python tools/workshop_image_share.py export \
   --run-dir workshop/aws/.local/transfer-source --output workshop/aws/.local/partner-delivery
 ```
+
+The receiver keeps the same Region and performs all receiving operations under
+their own identity. Source staging, binding, sharing, revocation and source
+cleanup never load a recipient profile. Keep the agreed source retention/copy
+window open until the recipient confirms their copy is complete. Do not edit
+expired run metadata to extend it; review a new transfer/window explicitly.
 
 Each run has its own local Terraform state and data directory. Keep the entire
 run private and backed up for cleanup. It is separate from foundation, activity
@@ -122,7 +176,14 @@ CMK-management and validation permissions, plus the source CMK permissions
 listed in the AWS encrypted-snapshot guide, scoped to the distribution key ARN.
 Do not interpret the source key policy as a substitute for recipient IAM.
 
-## Recipient copy, validation and publication
+## Recipient handoff
+
+Give the recipient the [self-service receiving runbook](image-sharing-recipient.md).
+Include the source account, Region, distribution AMI/snapshot IDs, CMK ARN,
+course/release/profile and runtime binding, verified operator revision or Git
+bundle, delivery package and independently trusted digests, copy window and
+contact. The original source AMI ID is provenance; the newly CMK-encrypted
+distribution AMI ID is the one they copy.
 
 Deliver the `partner-delivery` directory through an approved private channel.
 Send the `export` command's printed package SHA256 through an independently
@@ -172,7 +233,7 @@ account; successful copying alone does not certify them.
 
 ## Revoke, recover and clean up
 
-After the recipient copy is complete, make a fresh source `plan` using the
+After the recipient reports their copy complete, make a fresh source `plan` using the
 same package, profile and run directory with `--mode export --action revoke`.
 Review and apply that attempt through the same hash gate. Revocation removes
 the AMI and snapshot grants, removes recipient key-policy statements and
