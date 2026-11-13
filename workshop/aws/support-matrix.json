@@ -1,5 +1,24 @@
 {
   "schema_version": 1,
+  "dual_course": {
+    "status": "partial",
+    "course_ref": "0ade736bc8596386658d5d9a891b1e6c3e6358b7",
+    "operator_ref": "0ade736bc8596386658d5d9a891b1e6c3e6358b7",
+    "runtime_schema_version": 1,
+    "locale": "en",
+    "learners": 3,
+    "hosts": 6,
+    "notebooks": 162,
+    "code_cells": 1179,
+    "sql_terminal_overlap_seconds": 89.81977701187134,
+    "shared_service_overlap": "unverified",
+    "cross_course_logout_continuity": "unverified",
+    "bidirectional_fault_continuity": "partial",
+    "independent_retirement_continuity": "verified",
+    "temporary_resource_retirement": "verified",
+    "validated_on": "2026-11-13",
+    "summary": "support.md#dual-course-validation"
+  },
   "image_distribution": {
     "implementation": "offline-tested",
     "qualification_scope": "source-share-prerequisites-and-recipient-handoff",

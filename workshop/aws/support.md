@@ -26,6 +26,57 @@ independent validation, private publication and three complete shared course
 runs. Its browser, resource and external-client delivery limits are recorded in
 [observability acceptance](observability.md#current-acceptance).
 
+The combined RTA and Data Warehousing round is
+[partially validated](#dual-course-validation); its remaining checks are separate
+from the single-course results above.
+
+## Dual-course validation
+
+The 2026-11-13 combination remains **partially validated**. Course and operator
+source were fixed at `0ade736bc8596386658d5d9a891b1e6c3e6358b7`, using the English
+schema-v1 selection: `rta-main` and all six Data Warehousing profiles. Three
+learners each had two separate `m7i.2xlarge` instances with 200 GiB root disks in
+`us-east-1`, behind one shared HTTPS/Cognito portal and ALB.
+
+Both temporary private images passed fresh-instance course, browser and cleanup
+gates before activity creation. All six activity instances completed their full
+selected courses: 162 Notebooks and 1,179 code cells. Six native Notebook
+executions, saves, downloads and Docker terminal operations passed. SQL and file
+checks on the original kernels overlapped for 89.82 seconds, with 18 checks per
+instance and terminal commands during that interval. FE, BI, Flink and
+save/download operations were not all validated in that same interval.
+
+Twelve directed cross-learner cases rejected 48 HTTP/API requests and 24 kernel
+or terminal WebSocket connections. Six cross-activity cookie replay cases were
+also rejected. Manual progress import into a new activity passed for each
+course, without restoring Lab data.
+
+Shared service GUI coverage was partial. RTA FE passed for one learner; two
+learners had loading or authentication failures. DW FE navigation, three
+Superset dashboards and Flink overview counters were observed. Some FE system
+tables were empty and Task Managers navigation was not established. Both course
+containers were stopped and restarted, but complete browser coverage of the
+other course during both faults was not obtained. RTA entry logout with an
+independently valid DW session still needs a complete repeat. DW entry-only
+logout and reauthentication passed separately.
+
+Initial probes incorrectly ran API and WebSocket requests from the reader page,
+whose CSP blocks those requests. Corrected probes on native JupyterLab pages
+verified the original DW kernels, files, SQL markers, APIs and terminal sockets.
+After RTA resource deletion, all three DW learners retained those original
+kernels and data, and reconnected their terminals; the portal listed only DW.
+
+Both activities, the dedicated shared entry and the two temporary image/snapshot
+pairs were retired. Exact AWS checks confirmed twelve known instances retired
+and their root volumes absent; six remote and five local state files were empty.
+The existing OBS image/snapshot, long-lived DNS zone, foundation and original
+dataset versions were preserved. Test credentials were deleted and the browser
+was closed.
+
+This round does not qualify multilingual schema-v2 bundles, cold external-client
+loading, first-password changes, MFA, larger classrooms, performance guarantees
+or remote GitHub Actions.
+
 ## Validation levels
 
 | Profile | Configuration | EC2 course execution | Shared HTTPS/Cognito |
@@ -92,8 +143,9 @@ same-named Python packages in one environment.
 Published course IDs, completion rules and certificate metadata remain in the
 [content contract](../../contracts/v1/schema.json). New source bundles add
 [instance-local progress](runtime/progress.md) and manual JSON transfer without
-changing the content contract or normal website records. Local acceptance does
-not qualify an older published image; new image/cloud validation remains pending.
+changing the content contract or normal website records. Fresh English schema-v1
+RTA/DW images exercised progress and manual transfer in the partial dual-course
+round above. This result does not qualify multilingual bundles or older images.
 Certificates and a long-term learning service remain outside the workshop.
 Notebook edits and experiment data remain temporary, and manual Notebook
 download is available while the activity exists.
