@@ -50,6 +50,12 @@ perform cloud or browser acceptance.
 
 ## Platforms and deployment modes
 
+The [private image transfer workflow](image-sharing.md) has offline tool and
+Terraform mock coverage. It preserves recipient ownership and the existing
+publication gates; actual cross-account copying, course/browser validation,
+unauthorized-account rejection, revocation and two-sided cleanup remain pending.
+The same-account results above do not certify this workflow.
+
 - EC2 runtime and AMI validation cover Linux x86_64 and the stated Region and
   instance type. Arm64 EC2, other Regions/types and optional course combinations
   need their own validation.

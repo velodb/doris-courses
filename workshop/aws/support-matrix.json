@@ -1,5 +1,12 @@
 {
   "schema_version": 1,
+  "image_distribution": {
+    "implementation": "offline-tested",
+    "cross_account_acceptance": "pending",
+    "ownership": "recipient-owned-copy",
+    "region_scope": "same-commercial-region",
+    "summary": "image-sharing.md"
+  },
   "runtime": {
     "os": "linux",
     "architecture": "x86_64",

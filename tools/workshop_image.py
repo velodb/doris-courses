@@ -328,6 +328,15 @@ def recovery_reference(run_dir):
 
 
 def record_candidate(run_dir, aws):
+    if (run_dir / 'imported-artifact.json').exists():
+        import workshop_image_share
+        record = workshop_image_share.imported_candidate(run_dir, aws)
+        path = run_dir / 'candidate.json'
+        if path.exists():
+            preflight.require(wc.load_document(path) == record, 'image: imported candidate record differs')
+        else:
+            write(path, record)
+        return
     recovery = None
     if (run_dir / 'packer-manifest.json').exists():
         packer = wc.load_document(run_dir / 'packer-manifest.json')

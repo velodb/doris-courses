@@ -145,11 +145,16 @@ class LocaleTests(unittest.TestCase):
         from doris_labkit.quiz import CourseQuiz
         path = next((ROOT / 'doris-course/01-real-time-analytics/level1').glob('*/quiz*.yaml'))
         en = CourseQuiz.from_yaml(path)
-        from doris_labkit.quizsession import Presentation, QuizConflict
+        from doris_labkit.quizsession import Presentation
         from doris_labkit.quizbank import load_quiz
         import hashlib
-        with self.assertRaises(QuizConflict):
-            CourseQuiz.from_yaml(path, messages=installed().context(explicit='kk').messages)
+        # An explicit UI locale may be used for unbound self-study. It must
+        # not turn the English source into an admitted translated release.
+        unbound = CourseQuiz.from_yaml(path, messages=installed().context(explicit='kk').messages)
+        self.assertIsNone(unbound.presentation)
+        self.assertEqual(unbound.source_locale, 'en')
+        self.assertEqual(unbound.locale, 'kk-Cyrl')
+        self.assertEqual(unbound.questions, en.questions)
         # Synthetic admitted presentation: verifies UI wiring, not translation.
         bank = load_quiz(path)
         descriptor = {'id': 'fixture.quiz', 'semantic_revision': 'fixture.semantic',

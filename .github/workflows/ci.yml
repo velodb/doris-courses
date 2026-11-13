@@ -104,7 +104,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        module: [bootstrap, partner-dns, pilot, image-build, image-validation, shared-access, shared-portal, access-bindings, ttl-control]
+        module: [bootstrap, partner-dns, pilot, image-build, image-distribution, image-validation, shared-access, shared-portal, access-bindings, ttl-control]
     defaults:
       run:
         working-directory: workshop/aws/terraform/${{ matrix.module }}
