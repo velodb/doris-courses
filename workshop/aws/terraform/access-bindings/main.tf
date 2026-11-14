@@ -140,7 +140,9 @@ resource "aws_lb_listener_rule" "learner" {
   dynamic "condition" {
     for_each = each.value.kind == "page" ? [] : [1]
     content {
-      path_pattern { values = each.value.kind == "logout" ? ["/_workshop/logged-out"] : ["/api/*", "/terminals/*"] }
+      # Background recovery probes must not start OAuth or replace the nonce
+      # cookie while the learner is signing in in another tab.
+      path_pattern { values = each.value.kind == "logout" ? ["/_workshop/logged-out"] : ["/api/*", "/terminals/*", "/_workshop/session"] }
     }
   }
   dynamic "action" {

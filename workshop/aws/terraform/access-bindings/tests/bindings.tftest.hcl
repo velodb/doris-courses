@@ -100,6 +100,10 @@ run "owned_cognito_and_authenticated_routes" {
     error_message = "Both pages and APIs authenticate before forwarding; anonymous APIs must not return a login page."
   }
   assert {
+    condition     = anytrue([for condition in aws_lb_listener_rule.learner["alice-api"].condition : contains(try(condition.path_pattern[0].values, []), "/_workshop/session")]) && anytrue([for action in aws_lb_listener_rule.learner["alice-page"].action : try(action.authenticate_cognito[0].on_unauthenticated_request, "") == "authenticate"])
+    error_message = "Expired background session probes return 401 without starting OAuth; interactive pages still start sign-in."
+  }
+  assert {
     condition     = aws_lb_listener_rule.learner["alice-logout"].action[0].type == "fixed-response" && length(aws_cognito_user_pool_client.alb.callback_urls) == 2
     error_message = "Logout must not immediately log in again; only exact HTTPS callbacks are registered."
   }
