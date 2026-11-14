@@ -5,6 +5,18 @@ install -d -m 0700 /var/log/doris-workshop
 install -m 0600 /dev/null /var/log/doris-workshop/image-start.log
 exec >/dev/null 2>&1
 trap 'echo "{\"reason\":\"error\"}" >> /var/log/doris-workshop/image-start.log' ERR
+# Keep a short-lived clone consistent with the sealed package inventory.
+# Apply updates by rebuilding the image, rather than changing a live workshop.
+systemctl disable --now apt-daily.timer apt-daily-upgrade.timer
+systemctl mask apt-daily.service apt-daily-upgrade.service
+for maintenance_unit in apt-daily.service apt-daily-upgrade.service; do
+ case "$(systemctl show --property=ActiveState --value "$maintenance_unit")" in
+  active|activating|reloading)
+   echo 'Package maintenance already started; use a fresh sealed-image clone.' >&2
+   exit 2
+   ;;
+ esac
+done
 cat > /usr/local/lib/doris-workshop/start_image.py <<'IMAGE_INITIALIZER'
 ${init_script}
 IMAGE_INITIALIZER

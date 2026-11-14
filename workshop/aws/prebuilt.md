@@ -100,3 +100,14 @@ The validation activity was destroyed, a repeated destroy succeeded, and AWS
 API checks found no remaining owned EC2/EBS, network/ENI, IAM, SSM document or
 runtime bucket resources. The original foundation and one validated image with
 its encrypted snapshot were retained separately.
+
+## System packages during a workshop
+
+Prebuilt activity and independent validation hosts disable Ubuntu's automatic
+APT timers and mask their services before injecting the activity. This keeps the
+sealed system-package inventory stable for a short-lived event. An already
+running package-maintenance job fails startup; it is not interrupted or treated
+as a verified image. The independent image audit still requires an exact package
+match. Rebuild and independently validate images to apply operating-system
+updates, and retire activity hosts at their approved expiry. Base-image builds
+continue to install their declared packages normally.
