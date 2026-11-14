@@ -101,6 +101,11 @@ perform cloud or browser acceptance.
 
 ## Platforms and deployment modes
 
+The current partner delivery path is [an image built and qualified in the
+partner's own account](partner-guide.md). The [organizer](organizer-guide.md),
+[learner](learner-guide.md) and [cost](costs.md) runbooks cover this path. Image
+sharing is not a delivery prerequisite.
+
 The [source image readiness workflow](image-sharing.md) has offline tool and
 Terraform mock coverage. Publisher qualification covers an enabled CMK-encrypted
 source copy, private permissions and a recipient handoff; actual source cloud

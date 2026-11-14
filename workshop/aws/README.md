@@ -7,6 +7,11 @@ course metadata. A [host runtime bundle and installer](runtime/README.md) and
 Start with the [operator quick start](getting-started.md) and
 [support and validation matrix](support.md) for the tested scope and pending
 release gates.
+Use the [organizer runbook](organizer-guide.md) for event operations,
+[learner guide](learner-guide.md) for account/file/progress instructions, and
+[cost observations](costs.md) for measured billing scope and budget assumptions.
+Partners follow [self-built image delivery](partner-guide.md): they build,
+validate and publish images in their own AWS account.
 The [temporary course reader](runtime/access.md) and
 [browser URL mapping](browser-urls.md) reuse the host runtime.
 Use the [activity lifecycle CLI](lifecycle.md) for reviewed-plan up, status,
@@ -19,10 +24,9 @@ Use [external TTL cleanup preparation](ttl/README.md) for revision-bound
 control records, operator fencing and the disabled Scheduler/Fargate interface.
 For a validated private AMI, use [prebuilt activity startup](prebuilt.md),
 including pinned release metadata and guarded single-learner replacement.
-Use [source image readiness](image-sharing.md) to prepare an unshared CMK-encrypted
-distribution copy without recipient credentials, then give the partner the
-[self-service receiving runbook](image-sharing-recipient.md). Source cloud readiness
-and recipient-operated cross-account acceptance are recorded separately.
+The [optional image-sharing tools](image-sharing.md) remain outside the current
+partner delivery path. Partner deployment does not require a publisher image,
+snapshot copy, KMS grant or company AWS credential.
 Use [controlled SSM diagnostics and log handling](operations.md) to locate
 initialization, service and kernel failures without exporting student content.
 Real EC2 infrastructure, the default `rta-main` Labs and the private image have

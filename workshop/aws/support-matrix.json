@@ -21,6 +21,8 @@
   },
   "image_distribution": {
     "implementation": "offline-tested",
+    "required_for_delivery": false,
+    "default_delivery": "partner-build-validate-publish",
     "qualification_scope": "source-share-prerequisites-and-recipient-handoff",
     "source_live_readiness": "pending",
     "cross_account_acceptance": "recipient-operated-unverified",
