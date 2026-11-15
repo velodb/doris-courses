@@ -37,9 +37,68 @@ from the single-course results above.
 
 ## Dual-course validation
 
-### Current round: 2026-11-14/15
+### Current round: 2026-11-15 resume
 
-The latest combination remains **partially validated**. RTA and all six Data
+The round remains **partial overall** because the external OBS checks did not
+finish and shared-resource retirement exceeded the approved eight-hour window.
+The RTA/Data Warehousing functional combination passed at course source
+`9359e35369b92558fba9e72b12d90d7c873144fa` and operator source
+`3c70443f4d4e73b79c6e2947a9b9dae4fc41a865`. Three learners each used a separate
+instance for each course. All six hosts completed 162 Notebooks and 1,179 code
+cells. Fresh independent image validation and clone identity checks also passed.
+
+A single conservative common interval of **283.86 seconds** contained all 24
+required actions: six native Notebook saves/downloads, six actual terminal
+commands, six FE backend operations, three BI dashboard operations and three
+Flink operations. Each original kernel completed 60 SQL/file checks. Earlier
+attempts completed 21 and 19 actions and remain failed attempts; their actions
+were not combined with the successful window.
+
+Cross-learner HTTP/API and WebSocket denial, wrong-activity cookie rejection,
+scoped logout, and both directions of service-fault continuity passed. After
+RTA's reviewed retirement, all three original DW kernels, files, SQL markers,
+new kernel/terminal WebSockets and actual FE/BI/Flink pages remained usable.
+The public portal showed only DW and all three learners could sign in again.
+Progress import preserved the distinction between learning records and Lab data:
+preview wrote nothing, confirmation imported one module, and old Lab artifacts
+remained absent.
+
+Three independent browser samples passed natural expiry and recovery after at
+least 66 real minutes, including one 3,900.44-second SHA-256 job. Actual API
+responses changed from 401 to 200; each original page could execute again on its
+original kernel without a page reload, and editing content survived. One sample
+needed a normal retry after an authorization error page and cancellation of a
+File Changed prompt. These recoveries are not a zero-error or performance claim.
+Native FE origins also needed normal top-level sign-in after their own expiry.
+
+The retained OBS image passed all 29 initial checks with the prebuilt APT freeze.
+One external learner passed hosted first-password change, assigned entry, reader
+images/read state, native Notebook save/download, terminal and positive sockets,
+kernel restart/reload and quiz feedback. Only the first of six required browser
+checkpoints was acknowledged. Grafana navigation first reported a browser network
+suspension; a later attempt was still at hosted sign-in. The full OBS course
+command ended Failed, so this attempt does not qualify external OBS delivery.
+The acceptance driver had assumed an existing hosted sign-in; its prepared fix
+has not been cloud-tested. Historical AWS-hosted OBS evidence remains separate.
+
+The client was macOS Chromium 153 using HTTP/1.1 through the operator's proxy,
+with normal TLS verification. This scope does not qualify other browsers,
+networks, translated/schema-v2 content, larger classrooms, MFA or performance.
+The published operator revision passed all 18 jobs in
+[real GitHub Actions](https://github.com/velodb/doris-courses/actions/runs/43676057930).
+
+The cleanup watcher started at 10:24 UTC but stopped when its local proxy was
+unavailable. No renewed validation was authorized after 12:24:35 UTC. Reviewed
+cleanup continued after expiry. Final native checks at 2026-11-15T14:25:34.982543+00:00 confirmed
+8 empty remote states, 4 empty local states, 12 retired instances, 12 absent root
+volumes and 7 absent learner network interfaces. Both temporary RTA/DW image and
+snapshot pairs were deleted. The original OBS image/snapshot, DNS NS/SOA, private
+foundation and original 43-version dataset were preserved. This is absence proof,
+not proof of on-time retirement or completed overall acceptance.
+
+### Historical round: 2026-11-14/15
+
+That combination remained **partially validated**. RTA and all six Data
 Warehousing profiles used English schema-v1 course source
 `9359e35369b92558fba9e72b12d90d7c873144fa`, with three learners and six separate
 `m7i.2xlarge` hosts in `us-east-1`, each with a 200 GiB root disk. The temporary

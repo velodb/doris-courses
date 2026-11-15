@@ -210,3 +210,9 @@ actual completion timestamp. The 2026-11-14/15 validation required overdue
 shared-resource cleanup; its instance timers did not prove an eight-hour global
 retirement. After an authorization expires, perform cleanup and obtain a new
 explicit budget/window before creating validation resources again.
+
+The 2026-11-15 local cleanup watcher also exited after its proxy became
+unavailable. Learner timers did not remove the portal, ALB or images; those
+required reviewed overdue cleanup. Verify cleanup that survives loss of the
+operator workstation/network before another paid event. Keep failed attempts
+and actual API absence timestamps separate from the intended deadline.

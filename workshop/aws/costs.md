@@ -61,7 +61,7 @@ configure and verify the account's cost-allocation tags before the event.
 Record the billing scope, whether tag data was available and whether results
 were estimated. Never label an unfiltered account total as one workshop's bill.
 
-## Current event and cleanup timing
+## Historical event and cleanup timing: 2026-11-14/15
 
 A query at 2026-11-15 01:41 UTC reported only **0.0315986581 USD** for the whole
 account's UTC 2026-11-14 `UnblendedCost`, excluding credits and refunds, with
@@ -81,6 +81,22 @@ actual timestamps do not establish the event's final billed amount.
 
 Stop new work after the authorized deadline and continue cleanup. A later paid
 validation needs a new explicit budget/window and fresh reviewed plans.
+
+## Additional 2026-11-15 authorization and cleanup
+
+The new authorization was 100 USD, from 04:24:35 to 12:24:35 UTC, with immediate
+retirement after validation. A fresh Price List reserve was 48.9160 USD; this is
+a planning model, not the event's bill or a spending cap. The local watcher
+attempted cleanup at 10:24 UTC but failed to reach its proxy and exited.
+Learner instance expiry did not retire the remaining shared resources. The
+portal's native termination was verified at 14:03 UTC; reviewed deletion actions
+finished at 14:17 UTC. Final absence/preservation checks passed at
+2026-11-15T14:25:34.982543+00:00. These timestamps exceed the authorized window.
+
+A local timer shares the workstation and network's failure modes. Before another
+paid event, verify a cleanup path that remains reachable when the operator's
+workstation or proxy is unavailable. An expiry tag, instance timer, small cost
+model or failed cleanup attempt does not establish global retirement.
 
 ## Retained resources and observations
 

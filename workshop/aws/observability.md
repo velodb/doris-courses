@@ -58,6 +58,19 @@ EBS key cannot be shared directly across accounts; a distribution workflow
 would need a customer-managed KMS key and recipient-owned validation.
 See [AWS AMI sharing rules](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sharingamis-explicit.html).
 
+## Additional external-client attempt: 2026-11-15
+
+A fresh clone of the retained release passed its 29 initial checks, including
+exact system packages with the prebuilt automatic-APT freeze. An external macOS
+Chromium 153 client passed hosted first-password change, assigned entry, reader
+images/read state, native Notebook save/download, terminal/sockets, kernel
+restart/reload and quiz feedback. The first browser checkpoint also passed.
+Grafana and the remaining checkpoints did not finish; the original full-course
+command ended Failed at 10:02 UTC. This does not extend external-client
+qualification. See the [current support record](support.md#dual-course-validation)
+for the network/sign-in failures and overdue cleanup. The earlier three-learner
+AWS-hosted acceptance above retains its original scope.
+
 ## Selection and dependencies
 
 `obs-main` contains all eight main modules: eight Labs and eight quiz Notebooks.
