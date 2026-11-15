@@ -32,7 +32,57 @@ from the single-course results above.
 
 ## Dual-course validation
 
-The 2026-11-13 combination remains **partially validated**. Course and operator
+### Current round: 2026-11-14/15
+
+The latest combination remains **partially validated**. RTA and all six Data
+Warehousing profiles used English schema-v1 course source
+`9359e35369b92558fba9e72b12d90d7c873144fa`, with three learners and six separate
+`m7i.2xlarge` hosts in `us-east-1`, each with a 200 GiB root disk. The temporary
+images passed independent full-course, browser and cleanup gates. All six
+activity hosts then completed 162 Notebooks and 1,179 code cells.
+
+Six actual Cognito first-password changes passed without an API preset of the
+permanent password. Twelve directed cross-learner cases rejected 48 HTTP/API
+requests and 24 new kernel/terminal WebSocket connections. Six cross-activity
+cookie replays were rejected while the source API and original kernel remained
+valid. Both courses passed manual progress import without restoring Lab files.
+Six directions of entry-only and Jupyter-origin logout, other-course continuity
+and normal reauthentication preserved the original kernels and temporary data.
+These are distinct origin-scoped sessions, not global sign-out or cross-course
+single sign-on. MFA and hosted-login branding were not tested.
+
+Four separate five-minute SQL/file loops produced conservative common intervals
+of about 292 seconds, but every attempt completed only 21 of the required 24
+combined GUI actions. The missing actions involved independently loading BI
+panels, aged Flink job listings and, most recently, empty DW FE System views.
+Flink's live API later reported one TaskManager, two slots, three cumulative
+completed jobs and an empty current job-history list. The DW FE issue remains
+unresolved. Actions from separate intervals do not establish one complete
+combined window. Bidirectional fault testing, the 65-minute idle/computation
+recovery test and current-round independent-retirement continuity were not run.
+
+The session-probe routing fix was checked against real expired ALB sessions:
+`/_workshop/session` returned 401 without replacing the OAuth nonce cookie;
+valid sessions still returned 200. This does not qualify the pending long-idle
+recovery test. The external client was macOS Chromium 153 using HTTP/1.1 through
+the operator's proxy, with normal TLS verification. Other browsers, networks,
+performance guarantees, larger classrooms and remote GitHub Actions remain
+outside this result.
+
+An OBS clone of the existing `4f401d1` release failed its exact system-package
+audit after Ubuntu unattended upgrades. The original AMI was unchanged. The
+prebuilt startup fix that freezes automatic APT maintenance passed 16 pilot and
+three image-validation Terraform mocks, and a replacement reached runtime
+readiness. Its complete package audit and external-client course/browser
+acceptance were not completed before expiry. OBS external-client delivery
+therefore remains unqualified.
+
+The per-profile records below retain their separately validated versions;
+this partial combination does not replace those historical scopes.
+
+### Historical round: 2026-11-13
+
+The 2026-11-13 combination was **partially validated**. Course and operator
 source were fixed at `0ade736bc8596386658d5d9a891b1e6c3e6358b7`, using the English
 schema-v1 selection: `rta-main` and all six Data Warehousing profiles. Three
 learners each had two separate `m7i.2xlarge` instances with 200 GiB root disks in

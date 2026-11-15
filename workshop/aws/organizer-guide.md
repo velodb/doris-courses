@@ -200,3 +200,13 @@ files after the identity and runtime resources are gone.
 See [cost and validation observations](costs.md). Keep foundation state versions,
 DNS and image storage costs in the retained-resource report. `ExpiresAt` tags do
 not delete images, snapshots or the entire shared entry.
+
+## Account for the shared-resource deadline
+
+An activity's instance expiry does not retire its Cognito/DNS/ALB bindings,
+shared portal and ALB, or image snapshots. Assign an explicit retirement time
+and operator for those resources, allow time for reconciliation, and record the
+actual completion timestamp. The 2026-11-14/15 validation required overdue
+shared-resource cleanup; its instance timers did not prove an eight-hour global
+retirement. After an authorization expires, perform cleanup and obtain a new
+explicit budget/window before creating validation resources again.

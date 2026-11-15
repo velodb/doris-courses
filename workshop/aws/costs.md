@@ -61,6 +61,22 @@ configure and verify the account's cost-allocation tags before the event.
 Record the billing scope, whether tag data was available and whether results
 were estimated. Never label an unfiltered account total as one workshop's bill.
 
+## Current event and cleanup timing
+
+A query at 2026-11-15 01:41 UTC reported only **0.0315986581 USD** for the whole
+account's UTC 2026-11-14 `UnblendedCost`, excluding credits and refunds, with
+`Estimated=true`. It had not established this event's compute charges. It is
+not an event bill, a finalized invoice or evidence that the event cost that
+amount. The earlier 48.9160 USD reserve remains a planning model.
+
+The 2026-11-14/15 validation exceeded its approved eight-hour shared-resource
+retirement window. Learner/build/validation instances were absent when checked,
+but the shared portal, ALB and temporary images still required explicit cleanup.
+Record their actual retirement timestamps and the overdue interval separately;
+instance expiry does not establish complete or on-time resource retirement.
+Stop new work after the authorized deadline and continue cleanup. A later paid
+validation needs a new explicit budget/window and fresh reviewed plans.
+
 ## Retained resources and observations
 
 Track these separately after activity cleanup:
