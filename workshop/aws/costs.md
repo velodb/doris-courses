@@ -74,6 +74,11 @@ retirement window. Learner/build/validation instances were absent when checked,
 but the shared portal, ALB and temporary images still required explicit cleanup.
 Record their actual retirement timestamps and the overdue interval separately;
 instance expiry does not establish complete or on-time resource retirement.
+The authorized deadline was 2026-11-14 23:33:28 UTC. The portal retired at
+2026-11-15 02:04:23 UTC; the shared entry/network retired at 02:13:47 UTC.
+Final native absence and preservation checks passed at 02:23:06 UTC. These
+actual timestamps do not establish the event's final billed amount.
+
 Stop new work after the authorized deadline and continue cleanup. A later paid
 validation needs a new explicit budget/window and fresh reviewed plans.
 

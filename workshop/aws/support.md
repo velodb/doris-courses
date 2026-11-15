@@ -54,7 +54,7 @@ single sign-on. MFA and hosted-login branding were not tested.
 Four separate five-minute SQL/file loops produced conservative common intervals
 of about 292 seconds, but every attempt completed only 21 of the required 24
 combined GUI actions. The missing actions involved independently loading BI
-panels, aged Flink job listings and, most recently, empty DW FE System views.
+panels, missing historical Flink job rows and, most recently, empty DW FE System views.
 Flink's live API later reported one TaskManager, two slots, three cumulative
 completed jobs and an empty current job-history list. The DW FE issue remains
 unresolved. Actions from separate intervals do not establish one complete
@@ -76,6 +76,15 @@ three image-validation Terraform mocks, and a replacement reached runtime
 readiness. Its complete package audit and external-client course/browser
 acceptance were not completed before expiry. OBS external-client delivery
 therefore remains unqualified.
+
+Final native AWS checks at 2026-11-15 02:23 UTC confirmed seven empty remote
+states, four empty local states, thirteen known instances retired, thirteen root
+volumes absent and eight known learner network interfaces absent. The temporary
+RTA/DW image and snapshot pairs were deleted. The original OBS image/snapshot,
+long-lived DNS zone, private foundation and original 43-version dataset were
+preserved. Twelve test-password files and the browser control token were removed.
+Shared-resource retirement exceeded the approved eight-hour window; this is
+cleanup proof, not proof of on-time global retirement or completed acceptance.
 
 The per-profile records below retain their separately validated versions;
 this partial combination does not replace those historical scopes.

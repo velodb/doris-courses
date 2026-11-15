@@ -15,7 +15,7 @@
     "cross_course_logout_continuity": "verified",
     "bidirectional_fault_continuity": "not-run",
     "independent_retirement_continuity": "unverified-current-round",
-    "temporary_resource_retirement": "pending-final-native-audit",
+    "temporary_resource_retirement": "verified",
     "validated_on": "2026-11-15",
     "summary": "support.md#dual-course-validation",
     "first_password_change_ui": "verified-six-accounts",
@@ -26,7 +26,13 @@
     "obs_external_client": "unverified",
     "remote_github_actions": "pending-publication-authorization",
     "retirement_within_authorized_window": false,
-    "prebuilt_freeze_operator_ref": "7d5d6b08bce6842aa62f951497c422bcd60af93b"
+    "prebuilt_freeze_operator_ref": "7d5d6b08bce6842aa62f951497c422bcd60af93b",
+    "retirement_audited_at": "2026-11-15T02:23:06.716486+00:00",
+    "empty_remote_states": 7,
+    "empty_local_states": 4,
+    "retired_instances": 13,
+    "root_volumes_absent": 13,
+    "learner_network_interfaces_absent": 8
   },
   "image_distribution": {
     "implementation": "offline-tested",
