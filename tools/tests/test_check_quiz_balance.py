@@ -59,6 +59,44 @@ class QuizCheckTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("without 6 questions", result.stdout)
 
+    def test_native_titles_use_manifest_language_and_separate_statistics(self):
+        translated = quiz()
+        translated["title"] = "1-модуль тесті: Мысал"
+        tree = {
+            "09-example/level1/module01-x/quiz01_x.yaml": quiz(),
+            "kk-Cyrl/09-example/course.yaml": {"language": "kk-Cyrl"},
+            "kk-Cyrl/09-example/level1/module01-x/quiz01_x.yaml": translated,
+        }
+        result = run(tree)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        english = next(line for line in result.stdout.splitlines() if line.startswith("09-example level1"))
+        native = next(line for line in result.stdout.splitlines() if line.startswith("kk-Cyrl 09-example level1"))
+        self.assertEqual(english.split()[2], "6")
+        self.assertEqual(native.split()[3], "6")
+
+    def test_native_quizzes_still_reject_invalid_answers_and_ids(self):
+        translated = quiz(letter_ids=True)
+        translated["title"] = "1-модуль тесті: Мысал"
+        result = run({
+            "kk-Cyrl/09-example/course.yaml": {"language": "kk-Cyrl"},
+            "kk-Cyrl/09-example/level1/module01-x/quiz01_x.yaml": translated,
+        })
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("single letter", result.stdout)
+
+    def test_english_title_policy_and_native_root_binding_remain_enforced(self):
+        document = quiz()
+        document["title"] = "1-модуль тесті: Мысал"
+        result = run({"09-example/level1/module01-x/quiz01_x.yaml": document})
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("Module N Quiz", result.stdout)
+        result = run({
+            "09-example/course.yaml": {"language": "kk-Cyrl"},
+            "09-example/level1/module01-x/quiz01_x.yaml": document,
+        })
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("native source root", result.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

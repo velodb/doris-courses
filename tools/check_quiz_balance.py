@@ -43,11 +43,31 @@ def display(path):
         return path
 
 
-def group_name(path):
+def group_name(path, language="en"):
     parts = display(path).parts
     course = next((part for part in parts if re.match(r"^0\d-", part)), "?")
     level = next((part for part in parts if part.startswith("level")), "")
-    return f"{course} {level}".strip()
+    group = f"{course} {level}".strip()
+    return group if language == "en" else f"{language} {group}"
+
+
+def course_language(path):
+    """Use the adjacent course manifest, as the native Quiz loader does."""
+    for parent in path.resolve().parents:
+        manifest = parent / "course.yaml"
+        if manifest.is_symlink():
+            raise ValueError("course language metadata must not be a symlink")
+        if manifest.is_file():
+            document = yaml.safe_load(manifest.read_text(encoding="utf-8"))
+            if not isinstance(document, dict):
+                raise ValueError("course language metadata must be a mapping")
+            language = document.get("language", "en")
+            if not isinstance(language, str) or language not in {"en", "kk-Cyrl"}:
+                raise ValueError("unsupported course language")
+            if language != "en" and parent.parent.name != language:
+                raise ValueError("course language must match the native source root")
+            return language
+    return "en"
 
 
 def main():
@@ -65,15 +85,20 @@ def main():
         for path in files:
             if any(part in {".venv", ".runtime"} for part in path.parts):
                 continue
+            try:
+                language = course_language(path)
+            except ValueError as error:
+                problems.append(f"{display(path)} {error}")
+                continue
             document = yaml.safe_load(path.read_text(encoding="utf-8"))
-            found = structure_problems(document)
+            found = structure_problems(document, localized=language != "en")
             problems += [f"{display(path)} {problem}" for problem in found]
             if found:
                 continue
-            quiz = display_order(parse_quiz(document))
+            quiz = display_order(parse_quiz(document, localized=language != "en"))
             if len(quiz.questions) != QUESTIONS_PER_QUIZ:
                 short_quizzes.append(f"{display(path)}: {len(quiz.questions)} questions")
-            item = stats[group_name(path)]
+            item = stats[group_name(path, language)]
             for question in quiz.questions:
                 texts = [option.text for option in question.options]
                 answer = [option.option_id for option in question.options].index(question.answer)

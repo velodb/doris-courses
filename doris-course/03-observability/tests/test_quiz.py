@@ -58,13 +58,14 @@ class QuizTests(unittest.TestCase):
                 quiz = CourseQuiz.from_yaml(path)
                 quiz._render_question()
                 for index, question in enumerate(quiz.questions):
+                    self.assertEqual(quiz._current, index)
                     content = quiz._root.children[0]
                     self.assertIn(
                         f"{index + 1}. {escape(question.prompt)}",
                         content.children[0].value,
                     )
                     choices, feedback = content.children[1:3]
-                    previous, submit, advance = content.children[3].children
+                    previous, submit, _ = content.children[3].children
                     submit.click()
                     self.assertIn("Select one", feedback.value)
                     choices.value = next(
@@ -82,7 +83,8 @@ class QuizTests(unittest.TestCase):
                         previous.click()
                         self.assertEqual(quiz._current, index - 1)
                         quiz._root.children[0].children[3].children[2].click()
-                    advance.click()
+                        self.assertEqual(quiz._current, index)
+                    quiz._root.children[0].children[3].children[2].click()
                 self.assertIn("100%", quiz._root.children[0].children[0].value)
                 self.assertIn(
                     "doris-quiz-result-description",
