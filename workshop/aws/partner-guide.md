@@ -44,8 +44,9 @@ aws login --profile "$PARTNER_PROFILE"
 aws sts get-caller-identity --profile "$PARTNER_PROFILE"
 ```
 
-Use the exact repository/revision from the release handoff and verify the
-returned account ID. Existing IAM Identity Center users can use their named SSO
+The organizer must publish the reviewed ref to a repository the partner can
+fetch before the handoff. A local or unpublished commit is not a usable partner
+release. Use that exact repository/revision and verify the returned account ID. Existing IAM Identity Center users can use their named SSO
 profile instead. Install Terraform 1.17.1, Packer 1.16.2, the pinned Amazon plugin
 1.8.3 and the Session Manager plugin; verify official checksums. Docker is needed
 on the EC2 image builder, not on every learner laptop. AWS login provides local

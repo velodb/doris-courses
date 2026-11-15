@@ -1,7 +1,12 @@
 # Workshop support and validation
 
+The latest combined RTA/Data Warehousing acceptance is
+[partial](#dual-course-validation). Partner delivery uses the
+[self-built image workflow](partner-guide.md); the per-profile records below
+retain their separately validated historical versions.
+
 The validated RTA profile is **`rta-main` on Linux x86_64**, using
-Python 3.12, `us-east-1`, `m7i.2xlarge` and a 200 GiB root disk. The published
+Python 3.12, `us-east-1`, `m7i.2xlarge` and a 200 GiB root disk. The historical
 private course image release `rta-db2620c-ui-v1` was validated at course commit
 `db2620cb51c29a5fb6577e242dadeb03c15c368e`. Its fresh three-learner shared
 HTTPS/Cognito round passed concurrent Lab 1, browser isolation, logout and
